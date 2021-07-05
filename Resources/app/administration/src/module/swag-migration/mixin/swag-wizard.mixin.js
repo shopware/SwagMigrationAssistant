@@ -34,8 +34,8 @@ Mixin.register('swag-wizard', {
             } */
             currentRoute: {
                 name: '',
-                index: 0
-            }
+                index: 0,
+            },
         };
     },
 
@@ -125,7 +125,7 @@ Mixin.register('swag-wizard', {
          */
         navigateToNextPossible() {
             return this.routeNext !== false;
-        }
+        },
     },
 
     /**
@@ -182,7 +182,7 @@ Mixin.register('swag-wizard', {
         onChildRouteChanged() {
             debug.warn(
                 'swag-wizard Mixin',
-                'When using the wizard mixin you have to implement your custom "onChildRouteChanged()" method.'
+                'When using the wizard mixin you have to implement your custom "onChildRouteChanged()" method.',
             );
         },
 
@@ -225,6 +225,6 @@ Mixin.register('swag-wizard', {
             }
 
             return false;
-        }
-    }
+        },
+    },
 });

@@ -7,18 +7,18 @@ Component.register('swag-migration-grid-selection', {
     template,
 
     mixins: [
-        Mixin.getByName('listing')
+        Mixin.getByName('listing'),
     ],
 
     props: {
         choices: {
             type: Array,
-            required: true
+            required: true,
         },
         mapping: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
     },
 
     data() {
@@ -26,7 +26,7 @@ Component.register('swag-migration-grid-selection', {
             items: [],
             disableRouteParams: true,
             limit: 10,
-            paginationSteps: [5, 10, 15, 20, 25, 30]
+            paginationSteps: [5, 10, 15, 20, 25, 30],
         };
     },
 
@@ -52,6 +52,6 @@ Component.register('swag-migration-grid-selection', {
         getClassesAfterValidation(item) {
             const hasError = item.destinationUuid === null || item.destinationUuid.length === 0;
             return { 'has--error': hasError };
-        }
-    }
+        },
+    },
 });

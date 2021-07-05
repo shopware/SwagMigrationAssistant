@@ -7,7 +7,7 @@ Component.register('swag-migration-wizard-page-introduction', {
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
-    }
+    },
 });

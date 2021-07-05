@@ -50,7 +50,7 @@ export default {
          * The current status of the migration.
          * Each migration runs through different states (e.g. premapping, fetch, write, download)
          */
-        statusIndex: MIGRATION_STATUS.WAITING
+        statusIndex: MIGRATION_STATUS.WAITING,
     },
 
     mutations: {
@@ -101,7 +101,7 @@ export default {
             state.entityGroups.forEach((data) => {
                 data.currentCount = 0;
             });
-        }
+        },
     },
 
     getters: {
@@ -115,6 +115,6 @@ export default {
             return state.entityGroups.filter((group) => {
                 return group.id !== 'processMediaFiles';
             });
-        }
-    }
+        },
+    },
 };

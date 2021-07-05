@@ -7,34 +7,34 @@ Component.register('swag-migration-wizard-page-connection-select', {
     template,
 
     inject: {
-        repositoryFactory: 'repositoryFactory'
+        repositoryFactory: 'repositoryFactory',
     },
 
     props: {
         currentConnectionId: {
             type: String,
-            default: ''
-        }
+            default: '',
+        },
     },
 
     data() {
         return {
             selectedConnectionId: null,
             connections: [],
-            context: Shopware.Context.api
+            context: Shopware.Context.api,
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
     computed: {
         migrationConnectionRepository() {
             return this.repositoryFactory.create('swag_migration_connection');
-        }
+        },
     },
 
     watch: {
@@ -43,8 +43,8 @@ Component.register('swag-migration-wizard-page-connection-select', {
             handler(newConnectionId) {
                 this.selectedConnectionId = newConnectionId;
                 this.onConnectionSelected();
-            }
-        }
+            },
+        },
     },
 
     created() {
@@ -73,6 +73,6 @@ Component.register('swag-migration-wizard-page-connection-select', {
             } else {
                 this.$emit('onChildRouteReadyChanged', false);
             }
-        }
-    }
+        },
+    },
 });

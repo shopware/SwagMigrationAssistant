@@ -7,7 +7,7 @@ const { Component, State } = Shopware;
 const TAKEOVER_STATE = Object.freeze({
     RUNNING: 'running',
     INTERRUPTED: 'interrupted',
-    ABORTED: 'aborted'
+    ABORTED: 'aborted',
 });
 
 
@@ -16,16 +16,16 @@ Component.register('swag-migration-loading-screen-takeover', {
 
     inject: {
         /** @var {MigrationWorkerService} migrationWorkerService */
-        migrationWorkerService: 'migrationWorkerService'
+        migrationWorkerService: 'migrationWorkerService',
     },
 
     props: {
         isTakeoverForbidden: {
-            type: Boolean
+            type: Boolean,
         },
         isMigrationInterrupted: {
-            type: Boolean
-        }
+            type: Boolean,
+        },
     },
 
     data() {
@@ -35,7 +35,7 @@ Component.register('swag-migration-loading-screen-takeover', {
             state: TAKEOVER_STATE.RUNNING,
             showTakeoverModal: false,
             showAbortModal: false,
-            showRedirectModal: false
+            showRedirectModal: false,
         };
     },
 
@@ -53,7 +53,7 @@ Component.register('swag-migration-loading-screen-takeover', {
             }
 
             return `swag-migration.index.loadingScreenCard.takeoverScreen.${this.state}.message`;
-        }
+        },
     },
 
     created() {
@@ -156,6 +156,6 @@ Component.register('swag-migration-loading-screen-takeover', {
                 State.commit('swagMigration/ui/setIsLoading', false);
                 this.$router.push({ name: 'swag.migration.index.main' });
             });
-        }
-    }
+        },
+    },
 });

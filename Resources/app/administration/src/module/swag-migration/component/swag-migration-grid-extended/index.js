@@ -8,8 +8,8 @@ Component.extend('swag-migration-grid-extended', 'sw-grid', {
     props: {
         disabledAttribute: {
             type: String,
-            default: 'disabled'
-        }
+            default: 'disabled',
+        },
     },
 
     methods: {
@@ -22,12 +22,12 @@ Component.extend('swag-migration-grid-extended', 'sw-grid', {
                 'is--selected': this.isSelected(item.id) && !this.isDisabled(item),
                 'is--deleted': item.isDeleted,
                 'is--new': item.isLocal,
-                'is--disabled': this.isDisabled(item)
+                'is--disabled': this.isDisabled(item),
             };
 
             classes[`sw-grid__row--${index}`] = true;
 
             return classes;
-        }
-    }
+        },
+    },
 });

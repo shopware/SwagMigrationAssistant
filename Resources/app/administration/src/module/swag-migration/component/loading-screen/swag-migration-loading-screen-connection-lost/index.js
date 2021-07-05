@@ -9,6 +9,6 @@ Component.register('swag-migration-loading-screen-connection-lost', {
     methods: {
         onNavigateMainClick() {
             window.location.reload(); // trigger full page refresh, because the user can be still offline.
-        }
-    }
+        },
+    },
 });

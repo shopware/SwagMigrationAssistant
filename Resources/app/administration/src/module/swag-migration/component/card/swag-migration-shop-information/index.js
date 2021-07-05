@@ -8,7 +8,7 @@ const { Criteria } = Shopware.Data;
 
 const BADGE_TYPE = Object.freeze({
     SUCCESS: 'success',
-    DANGER: 'danger'
+    DANGER: 'danger',
 });
 
 Component.register('swag-migration-shop-information', {
@@ -18,11 +18,11 @@ Component.register('swag-migration-shop-information', {
         migrationProcessStoreInitService: 'processStoreInitService',
         /** @var {MigrationApiService} migrationService */
         migrationService: 'migrationService',
-        repositoryFactory: 'repositoryFactory'
+        repositoryFactory: 'repositoryFactory',
     },
 
     mixins: [
-        Mixin.getByName('notification')
+        Mixin.getByName('notification'),
     ],
 
     filters: {
@@ -30,14 +30,14 @@ Component.register('swag-migration-shop-information', {
             const locale = `${this.adminLocaleLanguage}-${this.adminLocaleRegion}`;
             const formatter = new Intl.NumberFormat(locale);
             return formatter.format(value);
-        }
+        },
     },
 
     props: {
         connected: {
             type: Boolean,
-            default: false
-        }
+            default: false,
+        },
     },
 
     data() {
@@ -50,19 +50,19 @@ Component.register('swag-migration-shop-information', {
             lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
-            context: Shopware.Context.api
+            context: Shopware.Context.api,
         };
     },
 
     computed: {
         ...mapState('swagMigration/process', [
             'connectionId',
-            'environmentInformation'
+            'environmentInformation',
         ]),
 
         ...mapGetters([
             'adminLocaleLanguage',
-            'adminLocaleRegion'
+            'adminLocaleRegion',
         ]),
 
         displayEnvironmentInformation() {
@@ -153,16 +153,16 @@ Component.register('swag-migration-shop-information', {
         lastConnectionCheckDateTimeParams() {
             return {
                 date: this.getDateString(this.lastConnectionCheck),
-                time: this.getTimeString(this.lastConnectionCheck)
+                time: this.getTimeString(this.lastConnectionCheck),
             };
         },
 
         lastMigrationDateTimeParams() {
             return {
                 date: this.getDateString(this.lastMigrationDate),
-                time: this.getTimeString(this.lastMigrationDate)
+                time: this.getTimeString(this.lastMigrationDate),
             };
-        }
+        },
     },
 
     watch: {
@@ -170,7 +170,7 @@ Component.register('swag-migration-shop-information', {
             immediate: true,
             handler() {
                 this.showResetMigrationConfirmModal = this.$route.meta.resetMigration;
-            }
+            },
         },
 
         connectionId: {
@@ -180,8 +180,8 @@ Component.register('swag-migration-shop-information', {
              */
             handler(newConnectionId) {
                 this.fetchConnection(newConnectionId);
-            }
-        }
+            },
+        },
     },
 
     created() {
@@ -196,14 +196,14 @@ Component.register('swag-migration-shop-information', {
         openResetMigrationModal() {
             this.showResetMigrationConfirmModal = true;
             this.$router.push({
-                name: 'swag.migration.index.resetMigration'
+                name: 'swag.migration.index.resetMigration',
             });
         },
 
         onCloseResetModal() {
             this.showResetMigrationConfirmModal = false;
             this.$router.push({
-                name: 'swag.migration.index.main'
+                name: 'swag.migration.index.main',
             });
         },
 
@@ -231,7 +231,7 @@ Component.register('swag-migration-shop-information', {
 
                 return this.migrationService.getProfileInformation(
                     connection.profileName,
-                    connection.gatewayName
+                    connection.gatewayName,
                 ).then((profileInformation) => {
                     this.connection.profile = profileInformation.profile;
                     this.connection.gateway = profileInformation.gateway;
@@ -245,7 +245,7 @@ Component.register('swag-migration-shop-information', {
                 month: undefined,
                 year: undefined,
                 hour: 'numeric',
-                minute: '2-digit'
+                minute: '2-digit',
             });
         },
 
@@ -257,26 +257,26 @@ Component.register('swag-migration-shop-information', {
             this.$router.push({
                 name: 'swag.migration.wizard.credentials',
                 params: {
-                    connectionId: this.connectionId
-                }
+                    connectionId: this.connectionId,
+                },
             });
         },
 
         onClickCreateConnection() {
             this.$router.push({
-                name: 'swag.migration.wizard.connectionCreate'
+                name: 'swag.migration.wizard.connectionCreate',
             });
         },
 
         onClickSelectConnection() {
             this.$router.push({
-                name: 'swag.migration.wizard.connectionSelect'
+                name: 'swag.migration.wizard.connectionSelect',
             });
         },
 
         onClickProfileInstallation() {
             this.$router.push({
-                name: 'swag.migration.wizard.profileInstallation'
+                name: 'swag.migration.wizard.profileInstallation',
             });
         },
 
@@ -284,7 +284,7 @@ Component.register('swag-migration-shop-information', {
             this.confirmModalIsLoading = true;
             return this.migrationService.updateConnectionCredentials(
                 this.connectionId,
-                null
+                null,
             ).then(() => {
                 this.$router.go(); // Refresh the page
             });
@@ -316,9 +316,9 @@ Component.register('swag-migration-shop-information', {
                     title: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title'),
                     message: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message'),
                     variant: 'error',
-                    growl: true
+                    growl: true,
                 });
             });
-        }
-    }
+        },
+    },
 });

@@ -8,8 +8,8 @@ Component.register('swag-migration-history-selected-data', {
     props: {
         entityGroups: {
             type: Array,
-            default: () => { return []; }
-        }
+            default: () => { return []; },
+        },
     },
 
     computed: {
@@ -18,12 +18,12 @@ Component.register('swag-migration-history-selected-data', {
             this.entityGroups.forEach((group) => {
                 if (group.id !== 'processMediaFiles') {
                     snippets.push(
-                        group.snippet
+                        group.snippet,
                     );
                 }
             });
 
             return snippets;
-        }
-    }
+        },
+    },
 });

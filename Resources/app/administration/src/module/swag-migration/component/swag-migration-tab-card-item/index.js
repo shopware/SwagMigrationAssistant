@@ -9,32 +9,32 @@ Component.register('swag-migration-tab-card-item', {
     props: {
         title: {
             type: String,
-            required: true
+            required: true,
         },
 
         isGrid: {
             type: Boolean,
             default: false,
-            required: false
+            required: false,
         },
 
         errorBadgeNumber: {
             type: Number,
             default: 0,
-            required: false
-        }
+            required: false,
+        },
     },
 
     data() {
         return {
             id: utils.createId(),
-            active: false
+            active: false,
         };
     },
 
     methods: {
         setActive(active) {
             this.active = active;
-        }
-    }
+        },
+    },
 });

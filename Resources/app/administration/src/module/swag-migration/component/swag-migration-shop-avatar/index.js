@@ -9,18 +9,18 @@ Component.register('swag-migration-shop-avatar', {
     props: {
         size: {
             type: String,
-            required: true
+            required: true,
         },
         color: {
             type: String,
-            required: true
-        }
+            required: true,
+        },
     },
 
     data() {
         return {
             fontSize: 16,
-            lineHeight: 16
+            lineHeight: 16,
         };
     },
 
@@ -31,9 +31,9 @@ Component.register('swag-migration-shop-avatar', {
                 height: this.size,
                 'background-color': this.color,
                 'font-size': `${this.fontSize}px`,
-                'line-height': `${this.lineHeight}px`
+                'line-height': `${this.lineHeight}px`,
             };
-        }
+        },
     },
 
     mounted() {
@@ -50,6 +50,6 @@ Component.register('swag-migration-shop-avatar', {
 
             this.fontSize = Math.round(avatarSize * 0.4);
             this.lineHeight = Math.round(avatarSize * 0.98);
-        }
-    }
+        },
+    },
 });

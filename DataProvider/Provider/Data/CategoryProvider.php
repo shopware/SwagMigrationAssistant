@@ -50,6 +50,7 @@ class CategoryProvider extends AbstractProvider
             'childCount',
             'breadcrumb',
             'autoIncrement',
+            'visibleChildCount',
 
             // media
             'mimeType',

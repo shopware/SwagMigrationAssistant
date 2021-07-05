@@ -9,22 +9,22 @@ Component.register('swag-migration-data-selector', {
 
     inject: {
         /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService'
+        migrationService: 'migrationService',
     },
 
     computed: {
         ...mapState('swagMigration/process', [
-            'environmentInformation'
+            'environmentInformation',
         ]),
 
         ...mapState('swagMigration/ui', [
             'dataSelectionTableData',
-            'dataSelectionIds'
+            'dataSelectionIds',
         ]),
 
         displayWarnings() {
             return this.environmentInformation.displayWarnings;
-        }
+        },
     },
 
     created() {
@@ -83,6 +83,6 @@ Component.register('swag-migration-data-selector', {
             });
 
             return string;
-        }
-    }
+        },
+    },
 });

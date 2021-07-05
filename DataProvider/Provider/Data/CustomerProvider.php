@@ -42,7 +42,7 @@ class CustomerProvider extends AbstractProvider
             $result = $this->customerRepo->search($criteria, $context);
         });
 
-        return $this->cleanupSearchResult($result, ['customerId', 'autoIncrement']);
+        return $this->cleanupSearchResult($result, ['customerId', 'tagIds', 'autoIncrement']);
     }
 
     public function getProvidedTotal(Context $context): int

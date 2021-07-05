@@ -66,11 +66,11 @@ class DataProviderController
      */
     public function getData(Request $request, Context $context): Response
     {
-        $identifier = $request->query->get('identifier');
+        $identifier = (string) $request->query->get('identifier');
         $limit = (int) $request->query->get('limit', '250');
         $offset = (int) $request->query->get('offset', '0');
 
-        if ($identifier === null) {
+        if ($identifier === '') {
             throw new MissingRequestParameterException('identifier');
         }
 
@@ -102,9 +102,9 @@ class DataProviderController
      */
     public function getTable(Request $request, Context $context): Response
     {
-        $identifier = $request->query->get('identifier');
+        $identifier = (string) $request->query->get('identifier');
 
-        if ($identifier === null) {
+        if ($identifier === '') {
             throw new MissingRequestParameterException('identifier');
         }
 
@@ -120,9 +120,9 @@ class DataProviderController
      */
     public function generateDocument(Request $request, Context $context): JsonResponse
     {
-        $identifier = $request->query->get('identifier');
+        $identifier = (string) $request->query->get('identifier');
 
-        if ($identifier === null) {
+        if ($identifier === '') {
             throw new MissingRequestParameterException('identifier');
         }
 

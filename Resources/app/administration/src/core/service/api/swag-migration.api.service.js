@@ -5,7 +5,7 @@ class MigrationApiService extends ApiService {
         super(httpClient, loginService, apiEndpoint);
         this.basicConfig = {
             timeout: 30000,
-            version: Shopware.Context.api.apiVersion
+            version: Shopware.Context.api.apiVersion,
         };
     }
 
@@ -14,10 +14,10 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/update-connection-credentials`, {
             connectionId,
-            credentialFields
+            credentialFields,
         }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -28,7 +28,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/check-connection`, { connectionId }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -40,9 +40,9 @@ class MigrationApiService extends ApiService {
         return this.httpClient.get(`_action/${this.getApiBasePath()}/data-selection`, {
             ...this.basicConfig,
             params: {
-                connectionId
+                connectionId,
             },
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -51,13 +51,13 @@ class MigrationApiService extends ApiService {
     createMigration(connectionId, dataSelectionIds) {
         const params = {
             connectionId,
-            dataSelectionIds
+            dataSelectionIds,
         };
         const headers = this.getBasicHeaders();
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/create-migration`, params, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -69,7 +69,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/fetch-data`, params, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -79,10 +79,10 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/update-write-progress`, {
-            runUuid
+            runUuid,
         }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -92,10 +92,10 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/update-media-files-progress`, {
-            runUuid
+            runUuid,
         }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -107,7 +107,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/write-data`, params, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -119,7 +119,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/process-media`, params, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -131,7 +131,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/get-state`, params, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -142,7 +142,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -153,7 +153,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/abort-migration`, { runUuid }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -164,7 +164,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/finish-migration`, { runUuid }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -175,7 +175,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/assign-themes`, { runUuid }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -186,7 +186,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/generate-premapping`, { runUuid }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -197,7 +197,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/write-premapping`, { runUuid, premapping }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -208,7 +208,7 @@ class MigrationApiService extends ApiService {
 
         return this.httpClient.get(`_action/${this.getApiBasePath()}/get-profiles`, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -220,9 +220,9 @@ class MigrationApiService extends ApiService {
         return this.httpClient.get(`_action/${this.getApiBasePath()}/get-gateways`, {
             ...this.basicConfig,
             params: {
-                profileName
+                profileName,
             },
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -235,9 +235,9 @@ class MigrationApiService extends ApiService {
             ...this.basicConfig,
             params: {
                 profileName,
-                gatewayName
+                gatewayName,
             },
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -249,9 +249,9 @@ class MigrationApiService extends ApiService {
         return this.httpClient.get(`${this.getApiBasePath()}/get-grouped-logs-of-run`, {
             ...this.basicConfig,
             params: {
-                runUuid
+                runUuid,
             },
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -261,10 +261,10 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders();
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/clear-data-of-run`, {
-            runUuid
+            runUuid,
         }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -274,10 +274,10 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         return this.httpClient.post(`_action/${this.getApiBasePath()}/reset-checksums`, {
-            connectionId
+            connectionId,
         }, {
             ...this.basicConfig,
-            headers
+            headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
         });
@@ -287,7 +287,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
         return this.httpClient.post('_action/index', {
             ...this.basicConfig,
-            headers
+            headers,
         });
     }
 
@@ -295,7 +295,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
         return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
             ...this.basicConfig,
-            headers
+            headers,
         });
     }
 
@@ -303,7 +303,7 @@ class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
         return this.httpClient.get(`_action/${this.getApiBasePath()}/is-media-processing`, {
             ...this.basicConfig,
-            headers
+            headers,
         });
     }
 }

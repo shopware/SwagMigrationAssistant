@@ -9,13 +9,13 @@ Component.register('swag-migration-wizard-page-credentials-error', {
         errorMessageSnippet: {
             type: String,
             default: '',
-            required: false
-        }
+            required: false,
+        },
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
-    }
+    },
 });

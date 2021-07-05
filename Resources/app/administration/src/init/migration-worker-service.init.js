@@ -6,12 +6,12 @@ const { Application } = Shopware;
 Application.addServiceProvider('migrationWorkerService', (container) => {
     return new MigrationWorkerService(
         container.migrationService,
-        container.migrationIndexingWorkerService
+        container.migrationIndexingWorkerService,
     );
 });
 
 Application.addServiceProvider('migrationIndexingWorkerService', (container) => {
     return new MigrationIndexingWorker(
-        container.migrationIndexingApiService
+        container.migrationIndexingApiService,
     );
 });

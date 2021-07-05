@@ -10,13 +10,13 @@ Component.register('swag-migration-confirm-warning', {
     data() {
         return {
             isCurrencyChecked: false,
-            isLanguageChecked: false
+            isLanguageChecked: false,
         };
     },
 
     computed: {
         ...mapState('swagMigration/process', [
-            'environmentInformation'
+            'environmentInformation',
         ]),
 
         hasDifferentCurrency() {
@@ -46,12 +46,12 @@ Component.register('swag-migration-confirm-warning', {
         isContinuable() {
             return (!this.hasDifferentCurrency || this.isCurrencyChecked) &&
                 (!this.hasDifferentLanguage || this.isLanguageChecked);
-        }
+        },
     },
 
     methods: {
         onCheckboxValueChanged() {
             this.$emit('confirmation-change', this.isContinuable);
-        }
-    }
+        },
+    },
 });

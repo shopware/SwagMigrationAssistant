@@ -21,15 +21,15 @@ Component.register('swag-migration-tab-card', {
         title: {
             type: String,
             default: '',
-            required: false
-        }
+            required: false,
+        },
     },
 
     data() {
         return {
             items: [],
             itemDictionary: {},
-            selectedItemName: ''
+            selectedItemName: '',
         };
     },
 
@@ -44,9 +44,9 @@ Component.register('swag-migration-tab-card', {
             }
 
             return {
-                'sw-card--grid': this.itemDictionary[this.selectedItemName].isGrid
+                'sw-card--grid': this.itemDictionary[this.selectedItemName].isGrid,
             };
-        }
+        },
     },
 
     mounted() {
@@ -80,6 +80,6 @@ Component.register('swag-migration-tab-card', {
             this.itemDictionary[this.selectedItemName].setActive(false);
             this.selectedItemName = item.name;
             this.itemDictionary[this.selectedItemName].setActive(true);
-        }
-    }
+        },
+    },
 });

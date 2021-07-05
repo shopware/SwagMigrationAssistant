@@ -12,8 +12,8 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
 
     data() {
@@ -21,9 +21,9 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
             inputCredentials: {
                 endpoint: '',
                 apiUser: '',
-                apiKey: ''
+                apiKey: '',
             },
-            apiKeyErrorCode: ''
+            apiKeyErrorCode: '',
         };
     },
 
@@ -45,11 +45,11 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
                 code: this.apiKeyErrorCode,
                 meta: {
                     parameters: {
-                        length: this.apiKeyLength
-                    }
-                }
+                        length: this.apiKeyLength,
+                    },
+                },
             });
-        }
+        },
     },
 
     watch: {
@@ -63,17 +63,17 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
 
                 this.inputCredentials = newCredentials;
                 this.emitOnChildRouteReadyChanged(
-                    this.areCredentialsValid(this.inputCredentials)
+                    this.areCredentialsValid(this.inputCredentials),
                 );
-            }
+            },
         },
 
         inputCredentials: {
             deep: true,
             handler(newInputCredentials) {
                 this.emitCredentials(newInputCredentials);
-            }
-        }
+            },
+        },
     },
 
     methods: {
@@ -108,12 +108,12 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
         emitCredentials(newInputCredentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
             this.emitOnChildRouteReadyChanged(
-                this.areCredentialsValid(newInputCredentials)
+                this.areCredentialsValid(newInputCredentials),
             );
         },
 
         onKeyPressEnter() {
             this.$emit('onTriggerPrimaryClick');
-        }
-    }
+        },
+    },
 });

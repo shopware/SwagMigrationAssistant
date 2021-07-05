@@ -161,6 +161,7 @@ class AbstractDataProviderTest extends TestCase
             'childCount',
             'breadcrumb',
             'autoIncrement',
+            'visibleChildCount',
         ]);
 
         static::assertSame($expectedCleanResultData, $cleanResultData);

@@ -8,13 +8,13 @@ Component.register('swag-migration-empty-screen', {
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
     methods: {
         onConnectClick() {
             this.$router.push({ name: 'swag.migration.wizard.introduction' });
-        }
-    }
+        },
+    },
 });

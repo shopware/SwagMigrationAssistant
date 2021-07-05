@@ -71,12 +71,15 @@
         <DeprecatedMethod>
             <errorLevel type="info">
                 <referencedMethod name="Doctrine\DBAL\Driver\ResultStatement::fetchAll"/>
+                <referencedMethod name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer::iterate"/>
+                <referencedMethod name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer::getTotal"/>
             </errorLevel>
         </DeprecatedMethod>
 
         <DeprecatedClass>
             <errorLevel type="info">
                 <file name="Controller/MigrationController.php"/>
+                <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer"/>
             </errorLevel>
         </DeprecatedClass>
 

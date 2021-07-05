@@ -9,7 +9,7 @@ Component.register('swag-migration-result-screen', {
     props: {
         runId: {
             type: String,
-            required: true
-        }
-    }
+            required: true,
+        },
+    },
 });

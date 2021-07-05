@@ -7,7 +7,7 @@ export const UI_COMPONENT_INDEX = Object.freeze({
     RESULT_SUCCESS: 4,
     PAUSE_SCREEN: 5,
     TAKEOVER: 6,
-    CONNECTION_LOST: 7
+    CONNECTION_LOST: 7,
 });
 
 /**
@@ -64,7 +64,7 @@ export default {
         /**
          * Only the filled part of the premapping.
          */
-        filledPremapping: []
+        filledPremapping: [],
     },
 
     mutations: {
@@ -106,13 +106,13 @@ export default {
                 const newFilledGroup = {
                     choices: group.choices,
                     entity: group.entity,
-                    mapping: []
+                    mapping: [],
                 };
 
                 const newUnfilledGroup = {
                     choices: group.choices,
                     entity: group.entity,
-                    mapping: []
+                    mapping: [],
                 };
 
                 group.mapping.forEach((mapping) => {
@@ -135,7 +135,7 @@ export default {
             state.unfilledPremapping = unfilledMapping;
             state.filledPremapping = filledMapping;
             state.premapping = newPremapping;
-        }
+        },
     },
 
     getters: {
@@ -148,6 +148,6 @@ export default {
                 return null;
             });
             return state.dataSelectionIds.some(id => tableDataIds.includes(id));
-        }
-    }
+        },
+    },
 };

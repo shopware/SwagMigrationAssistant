@@ -4,7 +4,7 @@ import { UI_COMPONENT_INDEX } from '../../../../core/data/migrationUI.store';
 import { MIGRATION_STATUS } from '../../../../core/service/migration/swag-migration-worker-status-manager.service';
 import {
     MIGRATION_ACCESS_TOKEN_NAME,
-    WORKER_INTERRUPT_TYPE
+    WORKER_INTERRUPT_TYPE,
 } from '../../../../core/service/migration/swag-migration-worker.service';
 
 const { Component, State, Mixin } = Shopware;
@@ -21,11 +21,11 @@ Component.register('swag-migration-process-screen', {
         /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
         migrationProcessStoreInitService: 'processStoreInitService',
         /** @var {MigrationUiStoreInitService} migrationUiStoreInitService */
-        migrationUiStoreInitService: 'uiStoreInitService'
+        migrationUiStoreInitService: 'uiStoreInitService',
     },
 
     mixins: [
-        Mixin.getByName('notification')
+        Mixin.getByName('notification'),
     ],
 
     data() {
@@ -41,13 +41,13 @@ Component.register('swag-migration-process-screen', {
             flowChartItemIndex: 0,
             flowChartItemVariant: 'info',
             flowChartInitialItemVariants: [],
-            isWarningConfirmed: false
+            isWarningConfirmed: false,
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -57,7 +57,7 @@ Component.register('swag-migration-process-screen', {
             'isMigrating',
             'connectionId',
             'environmentInformation',
-            'runId'
+            'runId',
         ]),
 
         ...mapState('swagMigration/ui', [
@@ -67,7 +67,7 @@ Component.register('swag-migration-process-screen', {
             'isPremappingValid',
             'unfilledPremapping',
             'premapping',
-            'dataSelectionIds'
+            'dataSelectionIds',
         ]),
 
         /**
@@ -169,7 +169,7 @@ Component.register('swag-migration-process-screen', {
                 !this.componentIndexIsResult &&
                 [
                     MIGRATION_STATUS.WAITING,
-                    MIGRATION_STATUS.PREMAPPING
+                    MIGRATION_STATUS.PREMAPPING,
                 ].includes(this.statusIndex) === false;
         },
 
@@ -185,7 +185,7 @@ Component.register('swag-migration-process-screen', {
          */
         continueButtonVisible() {
             return this.isPaused;
-        }
+        },
     },
 
     watch: {
@@ -234,7 +234,7 @@ Component.register('swag-migration-process-screen', {
                     this.isOtherMigrationRunning = false;
                     this.onFinishWithoutErrors();
                 }
-            }
+            },
         },
 
         isPremappingValid: {
@@ -245,8 +245,8 @@ Component.register('swag-migration-process-screen', {
                 }
 
                 this.flowChartItemVariant = 'error';
-            }
-        }
+            },
+        },
     },
 
     created() {
@@ -415,11 +415,11 @@ Component.register('swag-migration-process-screen', {
         onSaveButtonClick() {
             this.migrationService.writePremapping(
                 this.runId,
-                this.premapping
+                this.premapping,
             ).then(() => {
                 this.createNotificationSuccess({
                     message: this.$t('swag-migration.index.savePremapping.message'),
-                    growl: true
+                    growl: true,
                 });
             });
         },
@@ -440,12 +440,12 @@ Component.register('swag-migration-process-screen', {
             State.commit('swagMigration/ui/setIsLoading', true);
             return this.migrationService.writePremapping(
                 this.runId,
-                this.premapping
+                this.premapping,
             ).then(() => {
                 State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.LOADING_SCREEN);
                 State.commit('swagMigration/ui/setIsLoading', false);
                 return this.migrationWorkerService.startMigration(
-                    this.runId
+                    this.runId,
                 ).then(() => {
                     State.commit('swagMigration/ui/setIsLoading', false);
                 }).catch(() => {
@@ -529,7 +529,7 @@ Component.register('swag-migration-process-screen', {
                 this.migrationWorkerService.subscribeInterrupt(this.onInterrupt.bind(this));
 
                 await this.migrationWorkerService.createMigration(
-                    this.dataSelectionIds
+                    this.dataSelectionIds,
                 ).then((runState) => {
                     State.commit('swagMigration/process/setEntityGroups', runState.runProgress);
 
@@ -740,6 +740,6 @@ Component.register('swag-migration-process-screen', {
 
         onProcessMediaFiles() {
             State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.MEDIA_SCREEN);
-        }
-    }
+        },
+    },
 });

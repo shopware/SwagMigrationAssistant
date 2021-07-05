@@ -9,15 +9,15 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
     inject: {
         /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService'
+        migrationService: 'migrationService',
     },
 
     props: {
         connectionNameErrorCode: {
             type: String,
             default: '',
-            required: false
-        }
+            required: false,
+        },
     },
 
     data() {
@@ -26,16 +26,16 @@ Component.register('swag-migration-wizard-page-connection-create', {
             selection: {
                 profile: null,
                 gateway: null,
-                connectionName: null
+                connectionName: null,
             },
             profiles: [],
-            gateways: []
+            gateways: [],
         };
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
@@ -55,7 +55,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             }
 
             return new ShopwareError({
-                code: this.connectionNameErrorCode
+                code: this.connectionNameErrorCode,
             });
         },
 
@@ -70,7 +70,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             }
 
             return '';
-        }
+        },
     },
 
     created() {
@@ -93,7 +93,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         pushLinkToProfiles() {
             this.profiles.push({
-                name: 'profileLink'
+                name: 'profileLink',
             });
         },
 
@@ -185,6 +185,6 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         onKeyPressEnter() {
             this.$emit('onTriggerPrimaryClick');
-        }
-    }
+        },
+    },
 });

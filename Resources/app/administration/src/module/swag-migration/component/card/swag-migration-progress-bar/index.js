@@ -10,28 +10,28 @@ Component.register('swag-migration-progress-bar', {
         title: {
             type: String,
             default: '',
-            required: false
+            required: false,
         },
         leftPointDescription: {
             type: String,
             default: '',
-            required: false
+            required: false,
         },
         rightPointDescription: {
             type: String,
             default: '',
-            required: false
+            required: false,
         },
         value: {
             type: Number,
             default: 0,
-            required: false
+            required: false,
         },
         maxValue: {
             type: Number,
             default: 100,
-            required: false
-        }
+            required: false,
+        },
     },
 
     computed: {
@@ -39,8 +39,8 @@ Component.register('swag-migration-progress-bar', {
             return {
                 'swag-migration-progress-bar__bubble': true,
                 'swag-migration-progress-bar__bubble--disabled': this.value < this.maxValue,
-                'swag-migration-progress-bar__bubble--active': this.value >= this.maxValue
+                'swag-migration-progress-bar__bubble--active': this.value >= this.maxValue,
             };
-        }
-    }
+        },
+    },
 });

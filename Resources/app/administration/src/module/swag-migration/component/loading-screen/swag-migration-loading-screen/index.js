@@ -12,15 +12,15 @@ Component.register('swag-migration-loading-screen', {
     computed: {
         ...mapState('swagMigration/process', [
             'statusIndex',
-            'currentEntityGroupId'
+            'currentEntityGroupId',
         ]),
 
         ...mapState('swagMigration/ui', [
-            'isPaused'
+            'isPaused',
         ]),
 
         ...mapGetters('swagMigration/process', [
-            'displayEntityGroups'
+            'displayEntityGroups',
         ]),
 
         currentStatus() {
@@ -41,7 +41,7 @@ Component.register('swag-migration-loading-screen', {
             }
 
             return `${this.$tc(
-                `swag-migration.index.selectDataCard.dataSelection.${this.currentEntityGroupId}`
+                `swag-migration.index.selectDataCard.dataSelection.${this.currentEntityGroupId}`,
             )}`;
         },
 
@@ -63,7 +63,7 @@ Component.register('swag-migration-loading-screen', {
         hint() {
             return this.currentStatus === undefined ? '' :
                 this.$tc(`swag-migration.index.loadingScreenCard.status.${this.currentStatus}.hint`);
-        }
+        },
     },
 
     created() {
@@ -73,6 +73,6 @@ Component.register('swag-migration-loading-screen', {
     methods: {
         createdComponent() {
             State.commit('swagMigration/process/resetProgress');
-        }
-    }
+        },
+    },
 });

@@ -63,6 +63,10 @@ class ProductProvider extends AbstractProvider
             'productId',
             'cheapestPrice',
             'mainVariantId',
+            'propertyIds',
+            'optionIds',
+            'tagIds',
+            'categoryIds',
 
             // media
             'mimeType',

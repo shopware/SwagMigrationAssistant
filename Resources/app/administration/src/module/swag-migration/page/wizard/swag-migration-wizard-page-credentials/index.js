@@ -8,26 +8,26 @@ Component.register('swag-migration-wizard-page-credentials', {
     props: {
         credentialsComponent: {
             type: String,
-            default: ''
+            default: '',
         },
 
         credentials: {
             type: Object,
             default() {
                 return {};
-            }
-        }
+            },
+        },
     },
 
     metaInfo() {
         return {
-            title: this.$createTitle()
+            title: this.$createTitle(),
         };
     },
 
     computed: {
         componentIsLoaded() {
             return Component.getComponentRegistry().has(this.credentialsComponent);
-        }
-    }
+        },
+    },
 });
