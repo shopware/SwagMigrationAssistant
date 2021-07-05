@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 4.2.0
 - MIG-100 - Add migration profile for Shopware 5.7
 - MIG-243 - Fix migration of orders for Shopware 6 profile
 - MIG-247 - Fix write protection errors for Shopware 6 migration
