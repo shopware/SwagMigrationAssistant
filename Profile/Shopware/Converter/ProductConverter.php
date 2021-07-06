@@ -425,6 +425,7 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['active']);
         }
 
+        $this->convertValue($converted, 'createdAt', $data, 'datum', self::TYPE_DATETIME);
         $this->convertValue($converted, 'isCloseout', $data, 'laststock', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'markAsTopseller', $data, 'topseller', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'allowNotification', $data, 'notification', self::TYPE_BOOLEAN);
@@ -757,6 +758,8 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $mediaObjects = [];
         $cover = null;
+        $lastPosition = null;
+        $main = false;
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
@@ -825,8 +828,19 @@ abstract class ProductConverter extends ShopwareConverter
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
 
-            if ($cover === null && ((int) $mediaData['main'] === 1 || \count($media) === 1)) {
+            if ($main === true) {
+                continue;
+            }
+
+            if ($cover === null
+                || (int) $mediaData['main'] === 1
+                || ((int) $newProductMedia['position'] < $lastPosition && (int) $mediaData['main'] !== 1)
+            ) {
                 $cover = $newProductMedia;
+                $lastPosition = (int) $newProductMedia['position'];
+                if ((int) $mediaData['main'] === 1) {
+                    $main = true;
+                }
             }
         }
 

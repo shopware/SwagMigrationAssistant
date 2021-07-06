@@ -12,11 +12,11 @@ use Shopware\Core\Framework\ShopwareHttpException;
 class ExceptionRunLog extends BaseRunLogEntry
 {
     /**
-     * @var \Exception
+     * @var \Throwable
      */
     private $exception;
 
-    public function __construct(string $runId, string $entity, \Exception $exception, ?string $sourceId = null)
+    public function __construct(string $runId, string $entity, \Throwable $exception, ?string $sourceId = null)
     {
         parent::__construct($runId, $entity, $sourceId);
         $this->exception = $exception;
@@ -54,7 +54,7 @@ class ExceptionRunLog extends BaseRunLogEntry
             'exceptionLine' => $this->exception->getLine(),
             'exceptionTrace' => \preg_replace('/[[:^print:]]/', '', $this->exception->getTraceAsString()),
             'description' => \sprintf(
-                'Entity: %s, sourceId: %s' . PHP_EOL . '%s',
+                'Entity: %s, sourceId: %s' . \PHP_EOL . '%s',
                 $entity,
                 $this->getSourceId() ?? '-',
                 \preg_replace('/[[:^print:]]/', '', $this->exception->getMessage())

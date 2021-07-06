@@ -443,7 +443,7 @@ SQL;
         foreach ($salesChannels as $salesChannel) {
             try {
                 $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
-            } catch (\Exception $exception) {
+            } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
                     $runUuid,
                     $defaultTheme
@@ -631,7 +631,7 @@ SQL;
                 }
 
                 $entityProgress = new EntityProgress();
-                $entityProgress->setEntityName($entityName);
+                $entityProgress->setEntityName((string) $entityName);
                 $entityProgress->setCurrentCount(0);
                 $entityProgress->setTotal($total);
 

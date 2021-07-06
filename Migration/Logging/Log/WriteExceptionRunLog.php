@@ -45,7 +45,7 @@ class WriteExceptionRunLog extends BaseRunLogEntry
                 'entity' => $this->getEntity(),
                 'dataId' => $this->getSourceId(),
                 'error' => $this->error,
-            ], JSON_PRETTY_PRINT),
+            ], \JSON_PRETTY_PRINT),
         ];
     }
 

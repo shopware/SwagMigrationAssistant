@@ -102,7 +102,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     WriteContext::createFromContext($context)
                 );
             }
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
                 $dataSet::getEntity(),
@@ -136,7 +136,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'mappingUuid' => $convertStruct->getMappingUuid(),
                     'convertFailure' => $convertFailureFlag,
                 ];
-            } catch (\Exception $exception) {
+            } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $runUuid,
                     $dataSet::getEntity(),

@@ -43,7 +43,7 @@
           "availableVersionHeadline": "Supported:",
           "installedHint": "Installed",
           "installationButton": "Install",
-          "shopwareProfileHeadline": "Shopware 5 - Profil",
+          "shopwareProfileHeadline": "Shopware - Profil",
           "magentoProfileHeadline": "Magento - Profil",
           "profileManufacturer": "shopware AG"
         },
@@ -79,6 +79,12 @@
             "contentTitle": "Plugin required",
             "contentInformation": "The required plugin “Migration Connector” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
             "pluginLink": "More information about the plugin"
+          },
+          "shopware6Api": {
+            "contentTitle": "Integration required",
+            "contentInformation": "It is required to create an integration in the source system via Settings > System > Integrations.",
+            "pluginLink": "More information about integrations",
+            "link": "https://docs.shopware.com/en/shopware-6-en/settings/system/integrationen"
           }
         },
         "credentials": {
@@ -110,6 +116,20 @@
               "dbPasswordPlaceholder": "Enter password",
               "installationRoot": "Shop installation folder",
               "installationRootPlaceholder": "Enter installation root"
+            }
+          },
+          "shopware6": {
+            "api": {
+              "contentInformation": "You need valid API credentials to establish a connection between your source and target Shopware 6 instance. You get these when you create an integration in your source system.",
+              "apiPasswordLabel": "Secret access key",
+              "apiPasswordTooltip": "The secret access key is used for security and identification.",
+              "apiPasswordPlaceholder": "Enter secret access key",
+              "apiUserLabel": "Access key ID",
+              "apiUserTooltip": "Access key ID of your integration.",
+              "apiUserPlaceholder": "Enter access key ID",
+              "endpointLabel": "Shop domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "My shop uses a secure connection (SSL)"
             }
           },
           "statusTitle": "Connection check",
@@ -237,12 +257,15 @@
           "newsletterRecipient": "Newsletter recipient",
           "productReviews": "Product reviews",
           "seoUrls": "Seo urls",
-          "promotions": "Promotions"
+          "promotions": "Promotions",
+          "cms": "Layouts",
+          "customerWishlists": "Wishlists"
         },
         "entities": {
           "category": "Categories:",
           "product": "Products:",
           "customer": "Customers:",
+          "delivery_time": "Delivery times:",
           "order": "Orders:",
           "media": "Media:",
           "translation": "Translations:",
@@ -252,14 +275,44 @@
           "property_group_option": "Properties:",
           "number_range": "Number ranges:",
           "order_document": "Order documents:",
+          "order_document_base_config": "Document config:",
+          "order_document_inheritance": "Order document relations:",
           "shipping_method": "Shipping methods:",
           "currency": "Currencies:",
           "sales_channel": "Sales channels:",
+          "sales_channel_domain": "Domains:",
           "product_review": "Reviews:",
-          "seo_url": "Seo urls:",
+          "seo_url": "SEO URLs:",
+          "seo_url_template": "SEO URL templates:",
           "product_cross_selling": "Cross Selling:",
+          "promotion": "Promotions:",
+          "language": "Languages:",
+          "category_association": "Category associations:",
+          "category_cms_page_association": "Category layout associations:",
+          "tax": "Tax rates:",
+          "tax_rule": "Tax rules:",
+          "property_group": "Property groups:",
+          "product_manufacturer": "Product manufacturers:",
           "main_variant_relation": "Main variant relations:",
-          "promotion": "Promotions:"
+          "customer_wishlist": "Wishlists:",
+          "unit": "Scale units:",
+          "media_folder": "Media folders:",
+          "media_folder_inheritance": "Media folder inheritances:",
+          "salutation": "Salutations:",
+          "rule": "Rules:",
+          "country": "Countries:",
+          "custom_field_set": "Custom field sets:",
+          "snippet": "Snippets:",
+          "snippet_set": "Snippet sets:",
+          "mail_template": "Email templates:",
+          "product_feature_set": "Essential characteristics:",
+          "product_sorting": "Product sorting:",
+          "system_config": "Basic information:",
+          "page_system_config": "Page basic information:",
+          "cms_page": "Layouts:",
+          "product_stream": "Dynamic product groups:",
+          "product_stream_filter_inheritance": "Dynamic product group filters:",
+          "country_state": "Country states:"
         },
         "noData": "Nothing found to migrate."
       },
@@ -528,6 +581,10 @@
         "SWAG_MIGRATION_ENTITY_UNKNOWN": {
           "title": "Cannot find {entity}",
           "description": "The {requiredForEntity} entity with the source id \"{requiredForSourceId}\" cannot find the depended {entity} entity with the source id \"{sourceId}\"."
+        },
+        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
+          "title": "Invalid Email address",
+          "description": "The email address of the entity {entity}  with source id \"{sourceId}\" is invalid: {email}"
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Unsupported number range type",

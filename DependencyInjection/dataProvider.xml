@@ -1,0 +1,275 @@
+<?xml version="1.0" ?>
+
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+    <services>
+        <service id="SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry">
+            <argument type="tagged" tag="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Controller\DataProviderController" public="true">
+            <argument type="service" id="SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService"/>
+            <argument type="service" id="SwagMigrationAssistant\DataProvider\Provider\GenerateDocumentProvider"/>
+        </service>
+
+        <!-- Data providers -->
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductManufacturerProvider">
+            <argument type="service" id="product_manufacturer.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\LanguageProvider">
+            <argument type="service" id="language.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CategoryProvider">
+            <argument type="service" id="category.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CategoryAssociationProvider">
+            <argument type="service" id="category.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CategoryCmsPageAssociationProvider">
+            <argument type="service" id="category.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CurrencyProvider">
+            <argument type="service" id="currency.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MediaFolderProvider">
+            <argument type="service" id="media_folder.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MediaFolderInheritanceProvider">
+            <argument type="service" id="media_folder.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DeliveryTimeProvider">
+            <argument type="service" id="delivery_time.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider">
+            <argument type="service" id="product.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductMainVariantRelationProvider">
+            <argument type="service" id="product.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\TaxProvider">
+            <argument type="service" id="tax.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\TaxRuleProvider">
+            <argument type="service" id="tax_rule.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PropertyGroupProvider">
+            <argument type="service" id="property_group.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\UnitProvider">
+            <argument type="service" id="unit.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\RuleProvider">
+            <argument type="service" id="rule.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CountryProvider">
+            <argument type="service" id="country.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CountryStateProvider">
+            <argument type="service" id="country_state.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelProvider">
+            <argument type="service" id="sales_channel.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalesChannelDomainProvider">
+            <argument type="service" id="sales_channel_domain.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SalutationProvider">
+            <argument type="service" id="salutation.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ShippingMethodProvider">
+            <argument type="service" id="shipping_method.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomerGroupProvider">
+            <argument type="service" id="customer_group.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomFieldSetProvider">
+            <argument type="service" id="custom_field_set.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\NumberRangeProvider">
+            <argument type="service" id="number_range.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SnippetProvider">
+            <argument type="service" id="snippet.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SnippetSetProvider">
+            <argument type="service" id="snippet_set.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MailTemplateProvider">
+            <argument type="service" id="mail_template.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductFeatureSetProvider">
+            <argument type="service" id="product_feature_set.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PaymentMethodProvider">
+            <argument type="service" id="payment_method.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\OrderProvider">
+            <argument type="service" id="order.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MediaProvider">
+            <argument type="service" id="media.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SeoUrlTemplateProvider">
+            <argument type="service" id="seo_url_template.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SeoUrlProvider">
+            <argument type="service" id="seo_url.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\NewsletterRecipientProvider">
+            <argument type="service" id="newsletter_recipient.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CustomerProvider">
+            <argument type="service" id="customer.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\SystemConfigProvider">
+            <argument type="service" id="system_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PageSystemConfigProvider">
+            <argument type="service" id="system_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductSortingProvider">
+            <argument type="service" id="product_sorting.repository" on-invalid="ignore"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CmsPageProvider">
+            <argument type="service" id="cms_page.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductStreamProvider">
+            <argument type="service" id="product_stream.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductStreamFilterInheritanceProvider">
+            <argument type="service" id="product_stream_filter.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CrossSellingProvider">
+            <argument type="service" id="product_cross_selling.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductReviewProvider">
+            <argument type="service" id="product_review.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentProvider">
+            <argument type="service" id="document.repository"/>
+            <argument type="service" id="router"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentInheritanceProvider">
+            <argument type="service" id="document.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\DocumentBaseConfigProvider">
+            <argument type="service" id="document_base_config.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\PromotionProvider">
+            <argument type="service" id="promotion.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\DataProvider\Provider\GenerateDocumentProvider">
+            <argument type="service" id="document.repository"/>
+            <argument type="service" id="order.repository"/>
+            <argument type="service" id="Shopware\Core\Checkout\Document\FileGenerator\FileGeneratorRegistry"/>
+            <argument type="service" id="Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorRegistry"/>
+        </service>
+
+        <!-- Services -->
+        <service id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService">
+            <argument type="service" id="currency.repository"/>
+            <argument type="service" id="language.repository"/>
+            <argument>%kernel.shopware_version%</argument>
+            <argument>%kernel.shopware_version_revision%</argument>
+        </service>
+
+    </services>
+</container>

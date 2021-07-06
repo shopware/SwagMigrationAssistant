@@ -43,7 +43,7 @@
           "availableVersionHeadline": "Unterstützt:",
           "installedHint": "Installiert",
           "installationButton": "Installieren",
-          "shopwareProfileHeadline": "Shopware 5 - Profil",
+          "shopwareProfileHeadline": "Shopware - Profil",
           "magentoProfileHeadline": "Magento - Profil",
           "profileManufacturer": "shopware AG"
         },
@@ -79,6 +79,12 @@
             "contentTitle": "Installiere den Migration Connector",
             "contentInformation": "Für die Migration ist die Installation des kostenlosen Plugins „Migration Connector“ erforderlich. Dieses findest Du in Deinem Shopware 5 Backend unter: Plugin Manager > Erweiterungen > Migrationstools. Bitte installiere und aktiviere das Plugin.",
             "pluginLink": "Mehr Informationen zum Plugin"
+          },
+          "shopware6Api": {
+            "contentTitle": "Integration benötigt",
+            "contentInformation": "Es ist erforderlich, eine Integration im Quellsystem unter Einstellungen > System > Integrationen anzulegen.",
+            "pluginLink": "Weitere Informationen über Integrationen",
+            "link": "https://docs.shopware.com/de/shopware-6-de/settings/system/integrationen"
           }
         },
         "credentials": {
@@ -110,6 +116,20 @@
               "dbPasswordPlaceholder": "Passwort eintragen",
               "installationRoot": "Ordner der Shopinstallation",
               "installationRootPlaceholder": "Root-Verzeichnis eingeben"
+            }
+          },
+          "shopware6": {
+            "api": {
+              "contentInformation": "Du benötigst gültige API-Anmeldeinformationen, um eine Verbindung zwischen Deiner Quell- und Ziel-Instanz von Shopware 6 herzustellen. Diese erhälst Du, wenn Du eine Integration in Deinem Quellsystem erstellst.",
+              "apiPasswordLabel": "Sicherheitsschlüssel",
+              "apiPasswordTooltip": "Der Sicherheitsschlüssel dient der Sicherheit und Identifizierung.",
+              "apiPasswordPlaceholder": "Sicherheitsschlüssel einfügen",
+              "apiUserLabel": "Zugangs-ID",
+              "apiUserTooltip": "Zugangs-ID Deiner Integration im Quellsystem",
+              "apiUserPlaceholder": "Zugangs-ID eintragen",
+              "endpointLabel": "Shop-Domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"
             }
           },
           "statusTitle": "Verbindungscheck",
@@ -237,12 +257,15 @@
           "newsletterRecipient": "Newsletter-Empfänger",
           "productReviews": "Produktbewertungen",
           "seoUrls": "SEO Urls",
-          "promotions": "Rabatte & Aktionen"
+          "promotions": "Rabatte & Aktionen",
+          "cms": "Layouts",
+          "customerWishlists": "Merklisten"
         },
         "entities": {
           "category": "Kategorien:",
           "product": "Produkte:",
           "customer": "Kunden:",
+          "delivery_time": "Lieferzeiten:",
           "order": "Bestellungen:",
           "media": "Medien:",
           "translation": "Übersetzungen:",
@@ -251,15 +274,46 @@
           "product_property_relation": "Produkteigenschaften:",
           "property_group_option": "Eigenschaften:",
           "order_document": "Bestelldokumente:",
+          "order_document_base_config": "Dokumentkonfigurationen:",
+          "order_document_inheritance": "Bestelldokument-Relationen:",
           "number_range": "Nummernkreise:",
           "shipping_method": "Versandmethoden:",
           "currency": "Währungen:",
           "sales_channel": "Verkaufskanäle:",
+          "sales_channel_domain": "Domänen:",
           "product_review": "Bewertungen:",
-          "seo_url": "Seo Urls:",
+          "seo_url": "SEO-URLs:",
+          "seo_url_template": "SEO-URL-Vorlagen:",
           "product_cross_selling": "Cross Selling:",
+          "promotion": "Rabatte & Aktionen:",
+          "language": "Sprachen:",
+          "category_association": "Kategorie-Verbindungen:",
+          "category_cms_page_association": "Kategorie-Layout-Verbindungen:",
+          "tax": "Steuersätze:",
+          "tax_rule": "Steuerregeln:",
+          "property_group": "Produkteigenschaften-Gruppen:",
+          "product_manufacturer": "Hersteller:",
           "main_variant_relation": "Hauptvariantenrelationen:",
-          "promotion": "Rabatte & Aktionen:"
+          "customerWishlist": "Merklisten:",
+          "unit": "Einheiten:",
+          "media_folder": "Medienordner:",
+          "media_folder_inheritance": "Medienordner-Vererbungen:",
+          "salutation": "Anreden:",
+          "rule": "Regeln:",
+          "country": "Länder:",
+          "custom_field_set": "Zusatzfelder:",
+          "snippet": "Textbausteine:",
+          "snippet_set": "Textbaustein-Sets:",
+          "mail_template": "E-Mail-Template:",
+          "product_feature_set": "Wesentliche Merkmale:",
+          "product_sorting": "Produkt-Sortierungen:",
+          "system_config": "Stammdaten:",
+          "page_system_config": "Layout-Stammdaten:",
+          "cms_page": "Layouts:",
+          "product_stream": "Dynamische Produktgruppen:",
+          "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter:",
+          "promotions": "Rabatte & Aktionen:",
+          "country_state": "Bundesländer:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },
@@ -528,6 +582,10 @@
         "SWAG_MIGRATION_ENTITY_UNKNOWN": {
           "title": "Konnte {entity} nicht finden",
           "description": "Die {requiredForEntity} Entität mit der Quell-ID „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
+        },
+        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
+          "title": "E-Mail-Adresse ungültig",
+          "description": "Die E-Mail-Adresse der Entität {entity} mit der Quell-ID „{sourceId}“ ist ungültig: {email}"
         },
         "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
           "title": "Nummernkreis-Typ nicht unterstützt",

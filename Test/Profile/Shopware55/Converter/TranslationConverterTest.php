@@ -159,6 +159,34 @@ class TranslationConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    public function testConvertProductAttributeTranslation(): void
+    {
+        $context = Context::createDefaultContext();
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::PRODUCT_MAIN, '6', $context);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::PRODUCT . '_custom_field', 'checkboxTrue', $context, null, ['columnType' => 'boolean']);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::PRODUCT . '_custom_field', 'checkboxFalse', $context, null, ['columnType' => 'boolean']);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::PRODUCT . '_custom_field', 'int', $context, null, ['columnType' => 'integer']);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::PRODUCT . '_custom_field', 'float', $context, null, ['columnType' => 'float']);
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $convertResult = $this->translationConverter->convert($translationData['product'], $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        $customFields = $converted['translations'][$this->mappingService::DEFAULT_LANGUAGE_UUID]['customFields'];
+        $expected = [
+            'migration_Shopware55_product_checkboxTrue' => true,
+            'migration_Shopware55_product_checkboxFalse' => false,
+            'migration_Shopware55_product_int' => 100,
+            'migration_Shopware55_product_float' => 55.23,
+        ];
+        static::assertSame($expected, $customFields);
+        static::assertNull($convertResult->getUnmapped());
+    }
+
     public function testConvertManufacturerTranslation(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';

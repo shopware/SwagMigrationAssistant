@@ -1,3 +1,10 @@
+# 3.1.0
+- MIG-126 - Migrationsprofil für Shopware 6 hinzugefügt
+
+# 3.0.2
+- MIG-218 - Verhindert den Abbruch der Migration, wenn ein Kunde eine ungültige E-Mail-Adresse hat
+- MIG-219 - Behebt ein Problem bei der Migration von Übersetzungen der Freitextfelder
+
 # 3.0.1
 - MIG-213 - Verhindert den Abbruch der Migration beim Schreiben von fehlerhaften Produktvarianten
 - MIG-214 - Verbessert die Fortschrittsdarstellung in der CLI

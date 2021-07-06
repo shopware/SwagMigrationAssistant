@@ -66,7 +66,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === MediaDataSet::getEntity();
     }
 
     /**
@@ -91,11 +91,10 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         }
 
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::MEDIA,
-                $exception
+                new NoFileSystemPermissionsException()
             ));
             $this->loggingService->saveLogging($context);
 
@@ -152,7 +151,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             }
 
             $response = $result['value'];
-            $fileExtension = \pathinfo($additionalData['uri'], PATHINFO_EXTENSION);
+            $fileExtension = $additionalData['file_extension'] ?? \pathinfo($additionalData['uri'], \PATHINFO_EXTENSION);
             $filePath = \sprintf('_temp/%s.%s', $uuid, $fileExtension);
 
             $streamContext = \stream_context_create([
@@ -204,23 +203,12 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         return \array_values($mappedWorkload);
     }
 
-    private function getMediaName(array $media, string $mediaId): string
-    {
-        foreach ($media as $mediaFile) {
-            if ($mediaFile['media_id'] === $mediaId) {
-                return $mediaFile['file_name'];
-            }
-        }
-
-        return '';
-    }
-
     /**
      * Start all the download requests for the media in parallel (async) and return the promise array.
      *
      * @param MediaProcessWorkloadStruct[] $mappedWorkload
      */
-    private function doMediaDownloadRequests(array $media, array &$mappedWorkload, Client $client): array
+    protected function doMediaDownloadRequests(array $media, array &$mappedWorkload, Client $client): array
     {
         $promises = [];
         foreach ($media as $mediaFile) {
@@ -243,7 +231,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
     /**
      * @throws MediaNotFoundException
      */
-    private function persistFileToMedia(string $filePath, string $uuid, string $name, int $fileSize, string $fileExtension, Context $context): void
+    protected function persistFileToMedia(string $filePath, string $uuid, string $name, int $fileSize, string $fileExtension, Context $context): void
     {
         $context->disableCache(function (Context $context) use ($filePath, $uuid, $name, $fileSize, $fileExtension): void {
             $mimeType = \mime_content_type($filePath);
@@ -265,7 +253,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         });
     }
 
-    private function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, Client $client): ?Promise\PromiseInterface
+    protected function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, Client $client): ?Promise\PromiseInterface
     {
         $additionalData = $workload->getAdditionalData();
 
@@ -279,12 +267,23 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
 
             $workload->setCurrentOffset((int) $additionalData['file_size']);
             $workload->setState(MediaProcessWorkloadStruct::FINISH_STATE);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             $promise = null;
             $workload->setErrorCount($workload->getErrorCount() + 1);
         }
 
         return $promise;
+    }
+
+    private function getMediaName(array $media, string $mediaId): string
+    {
+        foreach ($media as $mediaFile) {
+            if ($mediaFile['media_id'] === $mediaId) {
+                return $mediaFile['file_name'];
+            }
+        }
+
+        return '';
     }
 
     private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void

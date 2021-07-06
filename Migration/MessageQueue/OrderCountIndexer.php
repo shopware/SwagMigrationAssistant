@@ -49,26 +49,19 @@ class OrderCountIndexer extends EntityIndexer
         $data = [];
         $context = $message->getContext();
 
-        foreach ($ids as $customerId) {
-            $customerResult = $this->customerRepository->search(
-                (new Criteria([$customerId]))->addAssociation('orderCustomers'),
-                $context
-            );
+        $criteria = new Criteria($ids);
+        $criteria->addAssociation('orderCustomers');
+        $searchResult = $this->customerRepository->search($criteria, $context);
 
-            /** @var CustomerEntity|null $customer */
-            $customer = $customerResult->first();
-            if ($customer === null) {
-                continue;
-            }
-
+        /** @var CustomerEntity $customer */
+        foreach ($searchResult->getEntities() as $customer) {
             $orderCount = 0;
-            $orderCustomer = $customer->getOrderCustomers();
-            if ($orderCustomer !== null) {
-                $orderCount = $orderCustomer->count();
+            $orderCustomers = $customer->getOrderCustomers();
+            if ($orderCustomers !== null) {
+                $orderCount = $orderCustomers->count();
             }
-
             $data[] = [
-                'id' => $customerId,
+                'id' => $customer->getId(),
                 'orderCount' => $orderCount,
             ];
         }

@@ -124,6 +124,7 @@ class DataSelectionRegistryTest extends TestCase
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
 
         static::assertCount(1, $dataSelections);
+        static::assertNotNull($dataSelections->first());
         static::assertSame($dataSelections->first()->getId(), (new MediaDataSelection())->getData()->getId());
     }
 

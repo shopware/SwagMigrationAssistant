@@ -132,6 +132,7 @@ class OrderDocumentConverterTest extends TestCase
         $converted = $convertResult->getConverted();
 
         static::assertEmpty($convertResult->getUnmapped());
+        static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderId', $converted);
         static::assertArrayHasKey('deepLinkCode', $converted);
@@ -141,6 +142,8 @@ class OrderDocumentConverterTest extends TestCase
         static::assertTrue($converted['static']);
         static::assertSame('Rechnung', $converted['documentType']['name']);
         static::assertSame('invoice', $converted['documentType']['technicalName']);
+        static::assertSame($orderDocumentData[0]['docID'], $converted['config']['documentNumber']);
+        static::assertSame($orderDocumentData[0]['docID'], $converted['config']['custom']['invoiceNumber']);
     }
 
     public function testConvertWithUnknownType(): void

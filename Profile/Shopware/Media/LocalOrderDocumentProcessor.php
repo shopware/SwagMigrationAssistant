@@ -77,11 +77,10 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         }
 
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $exception = new NoFileSystemPermissionsException();
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::ORDER_DOCUMENT,
-                $exception
+                new NoFileSystemPermissionsException()
             ));
             $this->loggingService->saveLogging($context);
 
@@ -156,51 +155,49 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         array $media,
         Context $context
     ): void {
-        $context->disableCache(function (Context $context) use ($sourcePath, $media): void {
-            $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($sourcePath, $media): void {
-                $fileExtension = \pathinfo($sourcePath, PATHINFO_EXTENSION);
-                $mimeType = \mime_content_type($sourcePath);
-                $streamContext = \stream_context_create([
-                    'http' => [
-                        'follow_location' => 0,
-                        'max_redirects' => 0,
-                    ],
-                ]);
-                $fileBlob = \file_get_contents($sourcePath, false, $streamContext);
-                $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
+        $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($sourcePath, $media): void {
+            $fileExtension = \pathinfo($sourcePath, \PATHINFO_EXTENSION);
+            $mimeType = \mime_content_type($sourcePath);
+            $streamContext = \stream_context_create([
+                'http' => [
+                    'follow_location' => 0,
+                    'max_redirects' => 0,
+                ],
+            ]);
+            $fileBlob = \file_get_contents($sourcePath, false, $streamContext);
+            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
 
-                try {
-                    $this->mediaService->saveFile(
-                        $fileBlob,
-                        $fileExtension,
-                        $mimeType,
-                        $name,
-                        $context,
-                        'document',
-                        $media['media_id']
-                    );
-                } catch (DuplicatedMediaFileNameException $e) {
-                    $this->mediaService->saveFile(
-                        $fileBlob,
-                        $fileExtension,
-                        $mimeType,
-                        $name . \mb_substr(Uuid::randomHex(), 0, 5),
-                        $context,
-                        'document',
-                        $media['media_id']
-                    );
-                } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
-                    $this->mediaService->saveFile(
-                        $fileBlob,
-                        $fileExtension,
-                        $mimeType,
-                        $media['media_id'],
-                        $context,
-                        'document',
-                        $media['media_id']
-                    );
-                }
-            });
+            try {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $name,
+                    $context,
+                    'document',
+                    $media['media_id']
+                );
+            } catch (DuplicatedMediaFileNameException $e) {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $name . \mb_substr(Uuid::randomHex(), 0, 5),
+                    $context,
+                    'document',
+                    $media['media_id']
+                );
+            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+                $this->mediaService->saveFile(
+                    $fileBlob,
+                    $fileExtension,
+                    $mimeType,
+                    $media['media_id'],
+                    $context,
+                    'document',
+                    $media['media_id']
+                );
+            }
         });
     }
 

@@ -9,7 +9,7 @@ return [
     'product' => [
         'id' => '270',
         'objecttype' => 'article',
-        'objectdata' => 'a:2:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtlangbeschreibung";s:25:"short english description";}',
+        'objectdata' => 'a:6:{s:10:"txtArtikel";s:65:"Main product with marking free of shipping costs and highlighting";s:19:"txtlangbeschreibung";s:25:"short english description";s:24:"__attribute_checkboxTrue";s:1:"1";s:25:"__attribute_checkboxFalse";s:1:"0";s:15:"__attribute_int";s:3:"100";s:17:"__attribute_float";s:5:"55.23";}',
         'objectkey' => '6',
         'objectlanguage' => '2',
         'dirty' => '1',

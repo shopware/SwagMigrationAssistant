@@ -18,14 +18,6 @@ Component.register('swag-migration-history', {
         Mixin.getByName('notification')
     ],
 
-    created() {
-        this.migrationService.isMediaProcessing().then((response) => {
-            this.isMediaProcessing = response.data;
-        });
-        this.logDownloadEndpoint = `/api/v${this.migrationService.getApiVersion()}/_action/` +
-            `${this.migrationService.getApiBasePath()}/download-logs-of-run`;
-    },
-
     data() {
         return {
             isLoading: false,
@@ -62,6 +54,14 @@ Component.register('swag-migration-history', {
         migrationColumns() {
             return this.getMigrationColumns();
         }
+    },
+
+    created() {
+        this.migrationService.isMediaProcessing().then((response) => {
+            this.isMediaProcessing = response.data;
+        });
+        this.logDownloadEndpoint = '/api/_action/' +
+            `${this.migrationService.getApiBasePath()}/download-logs-of-run`;
     },
 
     methods: {

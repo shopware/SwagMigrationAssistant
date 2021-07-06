@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductReviewDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\PromotionDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\WishlistDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
@@ -68,6 +69,7 @@ class SalutationReader extends AbstractPremappingReader
             && (\in_array(CustomerAndOrderDataSelection::IDENTIFIER, $entityGroupNames, true)
             || \in_array(NewsletterRecipientDataSelection::IDENTIFIER, $entityGroupNames, true)
             || \in_array(ProductReviewDataSelection::IDENTIFIER, $entityGroupNames, true)
+            || \in_array(WishlistDataSelection::IDENTIFIER, $entityGroupNames, true)
             || \in_array(PromotionDataSelection::IDENTIFIER, $entityGroupNames, true));
     }
 

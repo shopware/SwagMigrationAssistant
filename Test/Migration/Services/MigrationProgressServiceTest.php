@@ -87,7 +87,7 @@ class MigrationProgressServiceTest extends TestCase
     private $migrationDataFetcher;
 
     /**
-     * @var RunProgress
+     * @var RunProgress[]
      */
     private $runProgress;
 
@@ -102,8 +102,14 @@ class MigrationProgressServiceTest extends TestCase
         'media' => 23,
     ];
 
+    /**
+     * @var array
+     */
     private $writeArray;
 
+    /**
+     * @var array|null
+     */
     private $credentialFields;
 
     /**
@@ -409,7 +415,6 @@ class MigrationProgressServiceTest extends TestCase
                 $currentProgress['currentCount'] = $this->writeArray['category']['write'];
             }
         }
-        unset($entityGroup);
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame(5, $progress->getFinishedCount());
@@ -477,7 +482,6 @@ class MigrationProgressServiceTest extends TestCase
                 $currentProgress['currentCount'] = $this->writeArray['customer']['write'] + $this->writeArray['order']['write'];
             }
         }
-        unset($entityGroup);
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame(0, $progress->getFinishedCount());
@@ -568,7 +572,6 @@ class MigrationProgressServiceTest extends TestCase
                 $currentProgress['currentCount'] = 20;
             }
         }
-        unset($entityGroup);
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame(20, $progress->getFinishedCount());
@@ -652,7 +655,6 @@ class MigrationProgressServiceTest extends TestCase
                 $progress->setTotal(2);
             }
         }
-        unset($entityGroup);
 
         $this->runRepo->update(
             [

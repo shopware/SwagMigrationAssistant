@@ -17,6 +17,7 @@
             <directory name="vendor"/>
             <directory name="var"/>
             <directory name="bin"/>
+            <file name="easy-coding-standard.php"/>
         </ignoreFiles>
     </projectFiles>
 
@@ -65,6 +66,12 @@
                 <referencedFunction name="guzzlehttp\promise\settle"/>
             </errorLevel>
         </DeprecatedFunction>
+
+        <DeprecatedMethod>
+            <errorLevel type="info">
+                <referencedMethod name="Doctrine\DBAL\Driver\ResultStatement::fetchAll"/>
+            </errorLevel>
+        </DeprecatedMethod>
 
         <DeprecatedClass>
             <errorLevel type="info">

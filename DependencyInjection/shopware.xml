@@ -135,7 +135,9 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="validator"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">

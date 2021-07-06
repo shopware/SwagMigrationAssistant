@@ -117,7 +117,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
         try {
             $connection->connect();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $error = new DatabaseConnectionException();
 
             return new EnvironmentInformation(
