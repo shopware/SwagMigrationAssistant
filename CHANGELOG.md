@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-252 - Fix profile installer view
+
 # 4.2.0
 - MIG-100 - Add migration profile for Shopware 5.7
 - MIG-243 - Fix migration of orders for Shopware 6 profile

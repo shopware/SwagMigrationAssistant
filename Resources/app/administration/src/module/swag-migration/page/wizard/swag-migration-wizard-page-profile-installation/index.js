@@ -7,7 +7,7 @@ const { Criteria } = Shopware.Data;
 Component.register('swag-migration-wizard-page-profile-installation', {
     template,
 
-    inject: ['storeService', 'pluginService', 'cacheApiService', 'repositoryFactory'],
+    inject: ['storeService', 'shopwareExtensionService', 'cacheApiService', 'repositoryFactory'],
 
     data() {
         return {
@@ -62,14 +62,14 @@ Component.register('swag-migration-wizard-page-profile-installation', {
             this.pluginIsLoading = true;
             this.pluginIsSaveSuccessful = false;
 
-            return this.storeService.downloadPlugin(this.pluginName, true)
+            return this.storeService.downloadAndUpdatePlugin(this.pluginName, true)
                 .then(() => {
                     this.pluginIsSaveSuccessful = true;
 
-                    return this.pluginService.install(this.pluginName);
+                    return this.shopwareExtensionService.install(this.pluginName);
                 })
                 .then(() => {
-                    return this.pluginService.activate(this.pluginName);
+                    return this.shopwareExtensionService.activate(this.pluginName);
                 })
                 .finally(() => {
                     this.pluginIsLoading = false;

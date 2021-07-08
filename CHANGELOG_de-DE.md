@@ -1,3 +1,6 @@
+# REPLACE-GLOBAL-WITH-NEXT-VERSION
+- MIG-252 - Behebt ein Problem auf der Profil-Installationsseite
+
 # 4.2.0
 - MIG-100 - Migrationsprofil für Shopware 5.7 hinzugefügt
 - MIG-243 - Behebt ein Problem bei der Migration von Bestellungen mit dem Shopware-6-Profil
