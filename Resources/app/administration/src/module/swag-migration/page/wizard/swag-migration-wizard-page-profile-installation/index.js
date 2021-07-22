@@ -62,7 +62,7 @@ Component.register('swag-migration-wizard-page-profile-installation', {
             this.pluginIsLoading = true;
             this.pluginIsSaveSuccessful = false;
 
-            return this.storeService.downloadAndUpdatePlugin(this.pluginName, true)
+            return this.storeService.downloadPlugin(this.pluginName, true)
                 .then(() => {
                     this.pluginIsSaveSuccessful = true;
 
