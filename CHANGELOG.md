@@ -1,4 +1,4 @@
-# REPLACE-GLOBAL-WITH-NEXT-VERSION
+# 4.2.1
 - MIG-252 - Fix profile installer view
 
 # 4.2.0
