@@ -49,6 +49,12 @@
             </errorLevel>
         </ImplementedReturnTypeMismatch>
 
+        <PossiblyNullArgument>
+            <errorLevel type="suppress">
+                <file name="Profile/Shopware/Premapping/DeliveryTimeReader.php"/>
+            </errorLevel>
+        </PossiblyNullArgument>
+
         <MoreSpecificImplementedParamType>
             <errorLevel type="suppress">
                 <file name="Migration/Setting/GeneralSettingCollection.php"/>

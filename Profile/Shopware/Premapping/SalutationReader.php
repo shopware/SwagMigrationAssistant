@@ -149,9 +149,11 @@ class SalutationReader extends AbstractPremappingReader
         $choices = [];
         /** @var SalutationEntity $salutation */
         foreach ($salutations as $salutation) {
+            $key = $salutation->getSalutationKey() ?? '';
+
             $id = $salutation->getId();
-            $this->preselectionDictionary[$salutation->getSalutationKey()] = $id;
-            $choices[] = new PremappingChoiceStruct($id, $salutation->getSalutationKey());
+            $this->preselectionDictionary[$key] = $id;
+            $choices[] = new PremappingChoiceStruct($id, $key);
             $this->choiceUuids[$id] = $id;
         }
 

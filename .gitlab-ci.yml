@@ -58,7 +58,7 @@ PHPUnit (MariaDB):
         - mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --host mysql < $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/Test/testData/Migration/sw55.sql
         - ./psh.phar init
         - php bin/console plugin:install --activate SwagMigrationAssistant
-        - composer dump-autoload -d custom/plugins/SwagMigrationAssistant
+        - composer dump-autoload --dev -d custom/plugins/SwagMigrationAssistant
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
         - touch vendor/composer/InstalledVersions.php
         - cd -
@@ -88,3 +88,6 @@ PHPUnit (MariaDB):
                 PLATFORM_BRANCH: 6.4.2.0
             -   DEVELOPMENT_BRANCH: trunk
                 PLATFORM_BRANCH: trunk
+    rules:
+        - if: '$CI_MERGE_REQUEST_LABELS =~ /.*unit::skip.*/'
+          when: never
