@@ -66,7 +66,8 @@ class SalesChannelConverterTest extends TestCase
             $paymentMethodRepo,
             $shippingMethodRepo,
             $countryRepo,
-            $salesChannelRepo
+            $salesChannelRepo,
+            null
         );
 
         $runId = Uuid::randomHex();
@@ -119,7 +120,7 @@ class SalesChannelConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
-        static::assertCount(2, $converted['languages']);
+        static::assertCount(3, $converted['languages']);
         static::assertSame('Gartensubshop', $converted['name']);
     }
 

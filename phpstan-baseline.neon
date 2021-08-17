@@ -1754,8 +1754,3 @@ parameters:
 			message: "#^Offset 'unit' does not exist on array\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$description of class SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingChoiceStruct constructor expects string, string\\|null given\\.$#"
-			count: 1
-			path: Profile/Shopware/Premapping/DeliveryTimeReader.php

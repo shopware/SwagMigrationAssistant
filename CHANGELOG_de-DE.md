@@ -1,3 +1,6 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+- MIG-260 - Behebt ein Problem bei der Migration von Verkaufskanälen mit dem Shopware-Sprachpacket
+
 # 4.2.1
 - MIG-252 - Behebt ein Problem auf der Profil-Installationsseite
 

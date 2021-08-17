@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
@@ -794,7 +795,7 @@ class MigrationDataWriterTest extends TestCase
             $this->context
         );
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, Uuid::randomHex(), [], $languageUuid);
-        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $this->context, Uuid::randomHex(), [], $languageUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $this->context, Uuid::randomHex(), [], Defaults::LANGUAGE_SYSTEM);
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', $this->context, Uuid::randomHex(), [], $languageUuid);
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', $this->context, Uuid::randomHex(), [], $languageUuid);
 

@@ -113,7 +113,7 @@ trait MigrationServicesTrait
                         $loggingService,
                         new TaxCalculator()
                     ),
-                    new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo),
+                    new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo, null),
                     new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator),
                 ]
             )

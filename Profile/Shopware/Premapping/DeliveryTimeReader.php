@@ -112,7 +112,8 @@ class DeliveryTimeReader extends AbstractPremappingReader
         /** @var DeliveryTimeEntity $deliveryTime */
         foreach ($deliveryTimes as $deliveryTime) {
             $id = $deliveryTime->getId();
-            $choices[] = new PremappingChoiceStruct($id, $deliveryTime->getName());
+            $name = $deliveryTime->getName() ?? '';
+            $choices[] = new PremappingChoiceStruct($id, $name);
             $this->choiceUuids[$id] = $id;
         }
 
