@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -20,6 +21,8 @@ use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageLog;
 
 abstract class SalesChannelConverter extends ShopwareConverter
 {
@@ -44,6 +47,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
     protected $salesChannelRepo;
 
     /**
+     * @var EntityRepositoryInterface|null
+     */
+    protected $languagePackRepo;
+
+    /**
      * @var string
      */
     protected $mainLocale;
@@ -58,13 +66,19 @@ abstract class SalesChannelConverter extends ShopwareConverter
      */
     protected $connectionId;
 
+    /**
+     * @var string
+     */
+    protected $oldIdentifier;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         EntityRepositoryInterface $paymentRepository,
         EntityRepositoryInterface $shippingMethodRepo,
         EntityRepositoryInterface $countryRepo,
-        EntityRepositoryInterface $salesChannelRepo
+        EntityRepositoryInterface $salesChannelRepo,
+        ?EntityRepositoryInterface $languagePackRepo
     ) {
         parent::__construct($mappingService, $loggingService);
 
@@ -72,13 +86,16 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->shippingMethodRepo = $shippingMethodRepo;
         $this->countryRepository = $countryRepo;
         $this->salesChannelRepo = $salesChannelRepo;
+        $this->languagePackRepo = $languagePackRepo;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
+        $this->migrationContext = $migrationContext;
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
+        $this->oldIdentifier = $data['id'];
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = '';
@@ -146,6 +163,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
 
         $this->filterExistingLanguageSalesChannelRelation($converted['id'], $converted['languages']);
+        $this->filterDisabledPackLanguages($converted);
 
         if (empty($converted['languages'])) {
             unset($converted['languages']);
@@ -370,6 +388,40 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
 
         $languageIds = $insertLanguages;
+    }
+
+    protected function filterDisabledPackLanguages(array &$converted): void
+    {
+        if ($this->languagePackRepo === null) {
+            return;
+        }
+
+        $criteria = (new Criteria())
+            ->addFilter(new EqualsAnyFilter('languageId', \array_column($converted['languages'], 'id')))
+            ->addFilter(new EqualsFilter('salesChannelActive', false));
+
+        $result = $this->languagePackRepo->search($criteria, Context::createDefaultContext());
+
+        if ($result->getTotal() !== 0) {
+            foreach ($result->getElements() as $packLanguage) {
+                $packLanguageId = $packLanguage->getLanguageId();
+
+                foreach ($converted['languages'] as &$language) {
+                    if ($language['id'] === $packLanguageId) {
+                        $language['id'] = Defaults::LANGUAGE_SYSTEM;
+                    }
+                }
+                unset($language);
+
+                if ($converted['languageId'] === $packLanguageId) {
+                    $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
+                }
+
+                $this->loggingService->addLogEntry(
+                    new DeactivatedPackLanguageLog($this->migrationContext->getRunUuid(), SalesChannelDataSet::getEntity(), $this->oldIdentifier, $packLanguageId)
+                );
+            }
+        }
     }
 
     protected function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array

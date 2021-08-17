@@ -180,6 +180,7 @@
             <argument type="service" id="shipping_method.repository"/>
             <argument type="service" id="country.repository"/>
             <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="swag_language_pack_language.repository" on-invalid="null"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConverter"

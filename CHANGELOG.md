@@ -1,3 +1,6 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+- MIG-260 - Fix sales channel migration with Shopware language pack
+
 # 4.2.1
 - MIG-252 - Fix profile installer view
 
