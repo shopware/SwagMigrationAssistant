@@ -34,6 +34,10 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 
 abstract class OrderConverter extends ShopwareConverter
 {
+    private const BILLING_ADDRESS = 'billing';
+
+    private const SHIPPING_ADDRESS = 'shipping';
+
     /**
      * @var string
      */
@@ -475,7 +479,7 @@ abstract class OrderConverter extends ShopwareConverter
         return $paymentMethodMapping['entityUuid'];
     }
 
-    protected function getAddress(array $originalData): array
+    protected function getAddress(array $originalData, string $type = self::BILLING_ADDRESS): array
     {
         $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
         if (!empty($fields)) {
@@ -489,10 +493,15 @@ abstract class OrderConverter extends ShopwareConverter
             return [];
         }
 
+        $entityName = DefaultEntities::ORDER_ADDRESS;
+        if ($type !== self::BILLING_ADDRESS) {
+            $entityName = DefaultEntities::ORDER_ADDRESS . '_' . $type;
+        }
+
         $address = [];
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            DefaultEntities::ORDER_ADDRESS,
+            $entityName,
             $originalData['id'],
             $this->context
         );
@@ -739,7 +748,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (isset($data['shippingaddress']['id'])) {
-            $delivery['shippingOrderAddress'] = $this->getAddress($data['shippingaddress']);
+            $delivery['shippingOrderAddress'] = $this->getAddress($data['shippingaddress'], self::SHIPPING_ADDRESS);
         }
 
         if (!isset($delivery['shippingOrderAddress'])) {
