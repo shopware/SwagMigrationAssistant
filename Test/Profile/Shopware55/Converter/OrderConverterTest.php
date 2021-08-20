@@ -387,6 +387,41 @@ class OrderConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    public function testConvertWithDifferentAdresses(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        $orderData = $orderData[0];
+        $context = Context::createDefaultContext();
+
+        $orderData['shippingaddress']['firstname'] = 'John';
+        $orderData['shippingaddress']['lastname'] = 'Doe';
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame('test@example.com', $converted['orderCustomer']['email']);
+        static::assertNotSame($converted['billingAddressId'], $converted['deliveries'][0]['shippingOrderAddress']['id']);
+        static::assertSame('John', $converted['deliveries'][0]['shippingOrderAddress']['firstName']);
+        static::assertSame('Doe', $converted['deliveries'][0]['shippingOrderAddress']['lastName']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
     public function requiredAddressProperties(): array
     {
         return [
