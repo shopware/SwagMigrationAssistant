@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+# 4.2.2
 - MIG-263 - Behebt ein Problem, bei dem Bestelladressen fälschlicherweise identisch oder vertauscht sein konnten
 - MIG-260 - Behebt ein Problem bei der Migration von Verkaufskanälen mit dem Shopware-Sprachpacket
 

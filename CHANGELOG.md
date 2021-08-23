@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+# 4.2.2
 - MIG-263 - Fixes a problem, where order addresses might be erroneously identical or interchanged
 - MIG-260 - Fix sales channel migration with Shopware language pack
 
