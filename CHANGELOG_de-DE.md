@@ -1,3 +1,6 @@
+# 4.2.3
+- MIG-269 - Fehlende Daten in der Bestellung korrigiert, für Systeme auf denen MySQL-Trigger nicht funktionieren
+
 # 4.2.2
 - MIG-263 - Behebt ein Problem, bei dem Bestelladressen fälschlicherweise identisch oder vertauscht sein konnten
 - MIG-260 - Behebt ein Problem bei der Migration von Verkaufskanälen mit dem Shopware-Sprachpacket

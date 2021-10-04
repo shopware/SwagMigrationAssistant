@@ -180,6 +180,8 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('lineItems', $converted);
         static::assertArrayHasKey('options', $converted['lineItems'][0]['payload']);
         static::assertSame([], $converted['lineItems'][0]['payload']['options']);
+        static::assertNotNull($converted['itemRounding']);
+        static::assertNotNull($converted['totalRounding']);
 
         /** @var QuantityPriceDefinition $priceDefinition */
         $priceDefinition = $converted['lineItems'][0]['priceDefinition'];
