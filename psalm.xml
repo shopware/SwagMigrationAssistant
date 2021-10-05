@@ -76,9 +76,13 @@
 
         <DeprecatedMethod>
             <errorLevel type="info">
+                <referencedMethod name="Doctrine\DBAL\Statement::execute"/>
+                <referencedMethod name="Doctrine\DBAL\Statement::fetchAllAssociative"/>
+                <referencedMethod name="Doctrine\DBAL\Statement::fetchOne"/>
                 <referencedMethod name="Doctrine\DBAL\Driver\ResultStatement::fetchAll"/>
                 <referencedMethod name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer::iterate"/>
                 <referencedMethod name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer::getTotal"/>
+                <referencedMethod name="Shopware\Core\Framework\Struct\Collection::getIterator"/>
             </errorLevel>
         </DeprecatedMethod>
 
@@ -88,6 +92,14 @@
                 <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer"/>
             </errorLevel>
         </DeprecatedClass>
+
+        <DeprecatedConstant>
+            <errorLevel type="info">
+                <file name="Profile/Shopware/Converter/CustomerConverter.php"/>
+                <file name="Profile/Shopware/Converter/OrderConverter.php"/>
+                <file name="Profile/Shopware6/Converter/SalesChannelConverter.php"/>
+            </errorLevel>
+        </DeprecatedConstant>
 
     </issueHandlers>
 </psalm>
