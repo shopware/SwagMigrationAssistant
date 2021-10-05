@@ -234,6 +234,13 @@ abstract class OrderConverter extends ShopwareConverter
 
         $converted['currencyId'] = $currencyUuid;
 
+        $converted['itemRounding'] = [
+            'decimals' => $context->getRounding()->getDecimals(),
+            'interval' => 0.01,
+            'roundForNet' => true,
+        ];
+        $converted['totalRounding'] = $converted['itemRounding'];
+
         $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
 
         $stateMapping = $this->mappingService->getMapping(
