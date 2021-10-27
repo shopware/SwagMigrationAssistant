@@ -35,7 +35,7 @@ Static analyze:
         - php bin/console plugin:install --activate SwagMigrationAssistant
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
         - php ../../../dev-ops/analyze/vendor/bin/ecs check --config=../../../vendor/shopware/platform/easy-coding-standard.php bin Command Controller Core DependencyInjection Exception Migration Profile Resources Test SwagMigrationAssistant.php
-        - php ../../../dev-ops/analyze/vendor/bin/ecs check --fix --config=easy-coding-standard.php
+        - php ../../../dev-ops/analyze/vendor/bin/ecs check --config=easy-coding-standard.php
         - bin/static-analyze.sh
         - php ../../../bin/console snippets:validate
     only:
@@ -70,6 +70,7 @@ PHPUnit (MariaDB):
         - cd -
         - mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --host mysql < $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/Test/testData/Migration/sw55.sql
         - ./psh.phar init
+        - php bin/console plugin:refresh
         - php bin/console plugin:install --activate SwagMigrationAssistant
         - composer dump-autoload --dev -d custom/plugins/SwagMigrationAssistant
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant

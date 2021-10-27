@@ -92,7 +92,7 @@ abstract class ProductConverter extends ShopwareConverter
     protected $connectionName;
 
     /**
-     * @var string | null
+     * @var string|null
      */
     protected $currencyUuid;
 
