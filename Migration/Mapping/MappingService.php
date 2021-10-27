@@ -130,7 +130,7 @@ class MappingService implements MappingServiceInterface
     protected $entityWriter;
 
     /**
-     * @var string | null
+     * @var string|null
      */
     protected $defaultAvailabilityRule;
 
