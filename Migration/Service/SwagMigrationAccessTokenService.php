@@ -42,7 +42,7 @@ class SwagMigrationAccessTokenService
             /**
              * @psalm-suppress PossiblyNullArgument
              */
-            $userId = \mb_strtoupper($sourceContext->getUserId());
+            $userId = \mb_strtoupper((string) $sourceContext->getUserId());
         }
 
         if ($sourceContext instanceof SystemSource) {

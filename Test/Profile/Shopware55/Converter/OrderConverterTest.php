@@ -150,8 +150,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvert(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -218,8 +217,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertNetOrder(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -255,8 +253,7 @@ class OrderConverterTest extends TestCase
      */
     public function testConvertWithoutRequiredProperties(string $missingProperty): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData[$missingProperty]);
         $context = Context::createDefaultContext();
@@ -297,8 +294,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutOrderDetails(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['details']);
         $context = Context::createDefaultContext();
@@ -329,8 +325,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutShippingMethod(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['dispatchID']);
         $context = Context::createDefaultContext();
@@ -360,8 +355,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutShippingAddress(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['shippingaddress']);
         $context = Context::createDefaultContext();
@@ -391,8 +385,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithDifferentAdresses(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         $context = Context::createDefaultContext();
 
@@ -440,8 +433,7 @@ class OrderConverterTest extends TestCase
      */
     public function testConvertWithoutValidBillingAddress(string $missingAddressProperty): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['billingaddress'][$missingAddressProperty]);
         $context = Context::createDefaultContext();
@@ -478,8 +470,7 @@ class OrderConverterTest extends TestCase
      */
     public function testConvertWithoutValidShippingAddress(string $missingProperty): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['shippingaddress'][$missingProperty]);
         $context = Context::createDefaultContext();
@@ -512,8 +503,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutPaymentName(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['payment']['name']);
         $context = Context::createDefaultContext();
@@ -543,8 +533,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutKnownOrderState(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $orderData = $orderData[0];
         $orderData['status'] = 100;
         $context = Context::createDefaultContext();
@@ -573,8 +562,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithOrderLanguage(): void
     {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+        list($customerData, $orderData) = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -598,5 +586,66 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertCount(0, $this->loggingService->getLoggingArray());
         static::assertSame(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['languageId']);
+    }
+
+    public function testConvertWithDuplicatedEMails(): void
+    {
+        list($customerData, $orderData) = $this->getFixtureData();
+        $context = Context::createDefaultContext();
+
+        foreach ([0, 1] as $index) {
+            $customerData[$index]['email'] = 'd2023c93-81d8-4d2e-8bac-d29edde45374@example.com';
+            $customerData[$index]['accountmode'] = \sprintf('%d', $index);
+
+            $orderData[$index]['userID'] = $customerData[$index]['id'];
+            $orderData[$index]['customer']['id'] = $customerData[$index]['id'];
+            $orderData[$index]['customer']['email'] = $customerData[$index]['email'];
+            $orderData[$index]['customer']['accountmode'] = $customerData[$index]['accountmode'];
+            $orderData[$index]['billingaddress']['userID'] = $customerData[$index]['id'];
+            $orderData[$index]['shippingaddress']['userID'] = $customerData[$index]['id'];
+        }
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $this->customerConverter->convert(
+            $customerData[1],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertFirstResult = $this->orderConverter->convert(
+            $orderData[0],
+            $context,
+            $this->migrationContext
+        );
+
+        $convertSecondResult = $this->orderConverter->convert(
+            $orderData[1],
+            $context,
+            $this->migrationContext
+        );
+
+        $convertedFirst = $convertFirstResult->getConverted();
+        $convertedSecond = $convertSecondResult->getConverted();
+
+        static::assertNotNull($convertedFirst);
+        static::assertNotNull($convertedSecond);
+
+        static::assertNotSame($convertedFirst['orderCustomer']['customerId'], $convertedSecond['orderCustomer']['customerId']);
+    }
+
+    /**
+     * @return array{0: array<int, array>, 1: array<int, array>}
+     */
+    private function getFixtureData(): array
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
+
+        return [$customerData, $orderData];
     }
 }

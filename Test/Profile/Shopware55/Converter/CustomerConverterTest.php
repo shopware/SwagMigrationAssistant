@@ -243,7 +243,7 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
-        static::assertSame('number-test@example.com', $converted['customerNumber']);
+        static::assertSame('number-1', $converted['customerNumber']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
@@ -294,7 +294,7 @@ class CustomerConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER');
-        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['email']);
+        static::assertSame($logs[0]['parameters']['sourceId'], $customerData['id']);
         static::assertSame($logs[0]['parameters']['emptyField'], 'address data');
     }
 
@@ -327,7 +327,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[1]['parameters']['emptyField'], 'lastname');
 
         static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER');
-        static::assertSame($logs[2]['parameters']['sourceId'], $customerData['email']);
+        static::assertSame($logs[2]['parameters']['sourceId'], $customerData['id']);
         static::assertSame($logs[2]['parameters']['emptyField'], 'address data');
     }
 
