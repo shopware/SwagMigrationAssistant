@@ -46,11 +46,6 @@ parameters:
 			path: Migration/Profile/ProfileRegistry.php
 
 		-
-			message: "#^Parameter \\#1 \\$str of function mb_strtoupper expects string, string\\|null given\\.$#"
-			count: 1
-			path: Migration/Service/SwagMigrationAccessTokenService.php
-
-		-
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterRegistry\\:\\:\\$writers \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\>\\.$#"
 			count: 1
 			path: Migration/Writer/WriterRegistry.php
@@ -476,16 +471,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
 
 		-
-			message: "#^Parameter \\#1 \\$fp of function fwrite expects resource, resource\\|false given\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
 			message: "#^Parameter \\#2 \\$mimeType of class Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\MediaFile constructor expects string, string\\|false given\\.$#"
 			count: 1
 			path: Profile/Shopware/Media/HttpMediaDownloadService.php
@@ -497,16 +482,6 @@ parameters:
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$fp of function fwrite expects resource, resource\\|false given\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$fp of function fclose expects resource, resource\\|false given\\.$#"
 			count: 1
 			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
 

@@ -175,6 +175,11 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                 ],
             ]);
             $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
+
+            if (!\is_resource($fileHandle)) {
+                throw new \RuntimeException(\sprintf('Could not open file %s in mode %s.', $filePath, 'ab'));
+            }
+
             \fwrite($fileHandle, $response->getBody()->getContents());
             \fclose($fileHandle);
 

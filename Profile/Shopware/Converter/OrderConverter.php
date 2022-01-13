@@ -173,18 +173,9 @@ abstract class OrderConverter extends ShopwareConverter
         $customerMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER,
-            $data['customer']['email'],
+            $data['userID'],
             $this->context
         );
-
-        if ($customerMapping === null) {
-            $customerMapping = $this->mappingService->getMapping(
-                $this->connectionId,
-                DefaultEntities::CUSTOMER,
-                $data['userID'],
-                $this->context
-            );
-        }
 
         if ($customerMapping === null) {
             throw new AssociationEntityRequiredMissingException(

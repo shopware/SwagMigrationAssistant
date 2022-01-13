@@ -151,25 +151,10 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->checksum
         );
 
-        $emailMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER,
-            $data['email'],
-            $this->context,
-            null,
-            null,
-            $this->mainMapping['entityUuid']
-        );
+        $this->oldCustomerId = $data['id'];
 
         $converted = [];
-        if (isset($data['accountmode']) && $data['accountmode'] === '1') {
-            $this->oldCustomerId = $data['id'];
-            $converted['id'] = $this->mainMapping['entityUuid'];
-        } else {
-            $this->oldCustomerId = $data['email'];
-            $converted['id'] = $emailMapping['entityUuid'];
-        }
-        $this->mappingIds[] = $emailMapping['id'];
+        $converted['id'] = $this->mainMapping['entityUuid'];
 
         unset($data['id']);
 
