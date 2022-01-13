@@ -49,7 +49,6 @@ class AbstractDataProviderTest extends TestCase
         $tax1->setName($expectedCleanResultData[0]['name']);
         $tax1->setTaxRate($expectedCleanResultData[0]['taxRate']);
         $tax1->setExtensions(['foreignKeys' => new ArrayStruct()]);
-        $tax1->internalSetEntityName('tax');
         $tax1->setCreatedAt(new \DateTimeImmutable());
 
         $tax2 = new TaxEntity();
@@ -57,7 +56,6 @@ class AbstractDataProviderTest extends TestCase
         $tax2->setName($expectedCleanResultData[1]['name']);
         $tax2->setTaxRate($expectedCleanResultData[1]['taxRate']);
         $tax2->setExtensions(['foreignKeys' => new ArrayStruct()]);
-        $tax2->internalSetEntityName('tax');
         $tax2->setCreatedAt(new \DateTimeImmutable());
         $tax2->setUpdatedAt(new \DateTimeImmutable());
 
@@ -117,7 +115,6 @@ class AbstractDataProviderTest extends TestCase
             $expectedCleanResultData[0]['id'] => $expectedCleanResultData[0]['translations'][0]['name'],
         ]);
         $category1Translation1->setExtensions(['foreignKeys' => new ArrayStruct()]);
-        $category1Translation1->internalSetEntityName('category_translation');
         $category1Translation1->setCreatedAt(new \DateTimeImmutable());
         $category1Translation1->setUpdatedAt(new \DateTimeImmutable());
 
@@ -130,7 +127,6 @@ class AbstractDataProviderTest extends TestCase
             $expectedCleanResultData[0]['id'] => $expectedCleanResultData[0]['translations'][1]['name'],
         ]);
         $category1Translation2->setExtensions(['foreignKeys' => new ArrayStruct()]);
-        $category1Translation2->internalSetEntityName('category_translation');
         $category1Translation2->setCreatedAt(new \DateTimeImmutable());
         $category1Translation2->setUpdatedAt(new \DateTimeImmutable());
 
@@ -149,7 +145,6 @@ class AbstractDataProviderTest extends TestCase
             'keywords' => null,
         ]);
         $category1->setExtensions(['foreignKeys' => new ArrayStruct()]);
-        $category1->internalSetEntityName('category');
         $category1->setCreatedAt(new \DateTimeImmutable());
         $category1->setUpdatedAt(new \DateTimeImmutable());
 

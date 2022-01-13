@@ -23,7 +23,7 @@ class DummyThemeService extends ThemeService
         $this->themeSalesChannelRepository = $themeSalesChannelRepository;
     }
 
-    public function assignTheme(string $themeId, string $salesChannelId, Context $context): bool
+    public function assignTheme(string $themeId, string $salesChannelId, Context $context, bool $skipCompile = false): bool
     {
         $this->themeSalesChannelRepository->upsert([[
             'themeId' => $themeId,

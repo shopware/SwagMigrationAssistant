@@ -13,6 +13,8 @@ stages:
 
 default:
     image: $DEV_IMAGE
+    tags:
+      - t3.nano
     before_script:
         - zip -rq plugin.zip .
         - git clone --branch $DEVELOPMENT_BRANCH http://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/development.git
@@ -27,6 +29,8 @@ default:
 # Stage: Static validation
 Static analyze:
     stage: Static validation
+    tags:
+      - t3.medium
     services:
         - name: mysql:5.7
           alias: mysql
@@ -60,6 +64,8 @@ ToDos resolved:
 
 PHPUnit (MariaDB):
     stage: Testing
+    tags:
+      - t3.medium
     services:
         -   name: mariadb:10.3
             alias: mysql

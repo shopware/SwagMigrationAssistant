@@ -284,7 +284,7 @@ Component.register('swag-migration-shop-information', {
             this.confirmModalIsLoading = true;
             return this.migrationService.updateConnectionCredentials(
                 this.connectionId,
-                null,
+                { },
             ).then(() => {
                 this.$router.go(); // Refresh the page
             });
