@@ -23,29 +23,21 @@ Component.register('swag-migration-tab-card', {
             default: '',
             required: false,
         },
+        items: {
+            type: Array,
+            required: true
+        }
     },
 
     data() {
         return {
-            items: [],
-            itemDictionary: {},
-            selectedItemName: '',
+            selectedNumber: '',
         };
     },
 
     computed: {
         tabItems() {
             return this.$refs.swTabsItems;
-        },
-
-        cardClasses() {
-            if (this.selectedItemName === undefined || this.selectedItemName === '') {
-                return {};
-            }
-
-            return {
-                'sw-card--grid': this.itemDictionary[this.selectedItemName].isGrid,
-            };
         },
     },
 
@@ -55,14 +47,6 @@ Component.register('swag-migration-tab-card', {
 
     methods: {
         mountedComponent() {
-            // read tab-card items
-            this.$refs.card.$children.forEach((child) => {
-                if (child.$options._componentTag === 'swag-migration-tab-card-item') {
-                    this.items.push(child);
-                    this.itemDictionary[child.id] = child;
-                }
-            });
-
             this.$nextTick(() => {
                 // let the tabs component know that the content may need a scrollbar
                 this.$refs.tabs.checkIfNeedScroll();
@@ -70,16 +54,26 @@ Component.register('swag-migration-tab-card', {
 
                 // select first tab
                 if (this.tabItems !== undefined && this.tabItems.length > 0) {
-                    this.selectedItemName = this.tabItems[0].name;
+                    this.selectedNumber = this.tabItems[0].name;
                     this.$refs.tabs.setActiveItem(this.tabItems[0]);
                 }
             });
         },
 
         onNewActiveItem(item) {
-            this.itemDictionary[this.selectedItemName].setActive(false);
-            this.selectedItemName = item.name;
-            this.itemDictionary[this.selectedItemName].setActive(true);
+            this.$refs.contentContainer[this.selectedNumber].setActive(false);
+            this.selectedNumber = item.name;
+            this.$refs.contentContainer[this.selectedNumber].setActive(true);
+        },
+
+        getErrorCountForGroupTab(group) {
+            return group.mapping.reduce((currentValue, mapping) => {
+                if (mapping.destinationUuid === null || mapping.destinationUuid.length === 0) {
+                    return currentValue + 1;
+                }
+
+                return currentValue;
+            }, 0);
         },
     },
 });

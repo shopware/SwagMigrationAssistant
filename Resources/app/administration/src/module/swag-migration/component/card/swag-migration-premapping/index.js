@@ -121,15 +121,5 @@ Component.register('swag-migration-premapping', {
 
             return isValid;
         },
-
-        getErrorCountForGroupTab(group) {
-            return group.mapping.reduce((currentValue, mapping) => {
-                if (mapping.destinationUuid === null || mapping.destinationUuid.length === 0) {
-                    return currentValue + 1;
-                }
-
-                return currentValue;
-            }, 0);
-        },
     },
 });
