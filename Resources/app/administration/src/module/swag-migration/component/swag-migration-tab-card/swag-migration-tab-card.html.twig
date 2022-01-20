@@ -1,27 +1,34 @@
 {% block swag_migration_tab_card %}
     <div class="swag-migration-tab-card">
-        <sw-card :class="cardClasses" ref="card" :title="title">
+        <sw-card class="sw-card--grid" ref="card" :title="title">
             <template #tabs>
 
                 {% block swag_migration_tab_card_item_tab %}
                     <sw-tabs :small="false" ref="tabs" @new-item-active="onNewActiveItem">
-                        <sw-tabs-item v-for="item in items" :name="item.id" :key="item.id" ref="swTabsItems">
+                        <sw-tabs-item v-for="(item, key) in items" :name="key.toString()" :key="key.toString()" ref="swTabsItems">
 
                             {% block swag_migration_tab_card_item_tab_content %}
                                 <span class="swag-migration-tab-card__title">
-                                    {{ item.title }}
+                                    {{ $tc(`swag-migration.index.premappingCard.group.${item.entity}`) }}
                                 </span>
                             {% endblock %}
 
                             {% block swag_migration_tab_card_item_tab_invalid_badge %}
                                 <span v-show="item.errorBadgeNumber" class="swag-migration-tab-card__invalid-badge">
-                                    {{ item.errorBadgeNumber }}
+                                    {{ getErrorCountForGroupTab(item) }}
                                 </span>
                             {% endblock %}
                         </sw-tabs-item>
                     </sw-tabs>
                 {% endblock %}
             </template>
+            <template v-for="item in items">
+                    <swag-migration-tab-card-item ref="contentContainer">
+                        <slot name="items" :item="item">
+                        </slot>
+                    </swag-migration-tab-card-item>
+            </template>
+
             <slot>
                 {% block swag_migration_tab_card_slot %}{% endblock %}
             </slot>

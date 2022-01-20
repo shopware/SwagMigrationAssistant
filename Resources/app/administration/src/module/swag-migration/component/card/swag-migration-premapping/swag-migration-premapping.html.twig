@@ -58,18 +58,14 @@
         {% block swag_migration_premapping_unfilled_mapping %}
             <swag-migration-tab-card v-if="displayUnfilledPremapping"
                                      class="swag-migration-premapping__tab-card"
-                                     :title="$tc('swag-migration.index.premappingCard.unfilledCardTitle')">
-                <swag-migration-tab-card-item v-for="group in unfilledPremapping"
-                                              class="swag-migration-premapping__tab-card-item"
-                                              :key="group.entity"
-                                              :title="$tc(`swag-migration.index.premappingCard.group.${group.entity}`)"
-                                              :isGrid="true"
-                                              :errorBadgeNumber="getErrorCountForGroupTab(group)">
-                    <swag-migration-grid-selection :choices="group.choices"
-                                                   :mapping="group.mapping"
+                                     :title="$tc('swag-migration.index.premappingCard.unfilledCardTitle')"
+                                     :items="unfilledPremapping">
+                <template slot="items" slot-scope="slotProps">
+                    <swag-migration-grid-selection :choices="slotProps.item.choices"
+                                                   :mapping="slotProps.item.mapping"
                                                    @input="validatePremapping">
                     </swag-migration-grid-selection>
-                </swag-migration-tab-card-item>
+                </template>
             </swag-migration-tab-card>
         {% endblock %}
 
@@ -82,18 +78,14 @@
                 {% block swag_migration_premapping_filled_mapping %}
                     <swag-migration-tab-card v-if="displayFilledPremapping"
                                              class="swag-migration-premapping__filled-tab-card swag-migration-premapping__tab-card"
-                                             :title="$tc('swag-migration.index.premappingCard.filledCardTitle')">
-                        <swag-migration-tab-card-item v-for="group in filledPremapping"
-                                                      class="swag-migration-premapping__tab-card-item"
-                                                      :key="group.entity"
-                                                      :title="$tc(`swag-migration.index.premappingCard.group.${group.entity}`)"
-                                                      :isGrid="true"
-                                                      :errorBadgeNumber="getErrorCountForGroupTab(group)">
-                            <swag-migration-grid-selection :choices="group.choices"
-                                                           :mapping="group.mapping"
+                                             :title="$tc('swag-migration.index.premappingCard.filledCardTitle')"
+                                             :items="filledPremapping">
+                        <template slot="items" slot-scope="slotProps">
+                            <swag-migration-grid-selection :choices="slotProps.item.choices"
+                                                           :mapping="slotProps.item.mapping"
                                                            @input="validatePremapping">
                             </swag-migration-grid-selection>
-                        </swag-migration-tab-card-item>
+                        </template>
                     </swag-migration-tab-card>
                 {% endblock %}
             </swag-migration-expand-div>
