@@ -1,3 +1,8 @@
+# 4.2.4
+- MIG-246 - Fix resetting of connection settings
+- MIG-262 - Customer migrations are no longer grouped by email address
+- MIG-279 - Fix pre-mapping
+
 # 4.2.3
 - MIG-269 - Fix missing order data for systems where MySQL trigger do not work
 
