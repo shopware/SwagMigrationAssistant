@@ -1,3 +1,8 @@
+# 4.2.4
+- MIG-246 - Zurücksetzen der Verbindungseinstellungen korrigiert
+- MIG-262 - Kundenmigrationen werden nicht mehr nach E-Mail-Adressen gruppiert
+- MIG-279 - Vorabzuordnung korrigiert
+
 # 4.2.3
 - MIG-269 - Fehlende Daten in der Bestellung korrigiert, für Systeme auf denen MySQL-Trigger nicht funktionieren
 
