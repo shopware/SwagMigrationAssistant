@@ -76,7 +76,8 @@ class OrderDocumentReader extends AbstractReader
         $query->leftJoin('document', 's_core_documents', 'document_documenttype', 'document.type = document_documenttype.id');
         $this->addTableSelection($query, 's_core_documents', 'document_documenttype');
 
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->where('document.id IN (:ids)');
+        $query->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
 
         $query = $query->execute();
         if (!($query instanceof ResultStatement)) {

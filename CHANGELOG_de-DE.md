@@ -1,3 +1,6 @@
+# 4.2.5
+- MIG-293 - Performance der Migration von Bestelldokumenten verbessert
+
 # 4.2.4
 - MIG-246 - Zurücksetzen der Verbindungseinstellungen korrigiert
 - MIG-262 - Kundenmigrationen werden nicht mehr nach E-Mail-Adressen gruppiert
