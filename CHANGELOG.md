@@ -1,3 +1,6 @@
+# 4.2.5
+- MIG-293 - Improve performance of order documents migration
+
 # 4.2.4
 - MIG-246 - Fix resetting of connection settings
 - MIG-262 - Customer migrations are no longer grouped by email address

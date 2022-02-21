@@ -41,7 +41,7 @@ class OrderDocumentReaderTest extends TestCase
             $this->runId,
             new OrderDocumentDataSet(),
             0,
-            10
+            5
         );
 
         $this->migrationContext->setGateway(new DummyLocalGateway());
@@ -53,7 +53,7 @@ class OrderDocumentReaderTest extends TestCase
 
         $data = $this->orderDocumentReader->read($this->migrationContext);
 
-        static::assertCount(8, $data);
+        static::assertCount(5, $data);
         static::assertSame('1', $data[0]['id']);
         static::assertSame('1', $data[0]['type']);
         static::assertSame('15', $data[0]['orderID']);
