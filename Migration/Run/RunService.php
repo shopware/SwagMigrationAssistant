@@ -784,6 +784,7 @@ SQL;
 
     private function getSalesChannels(string $connectionId, Context $context): array
     {
+        /** @var array<array<string>|string> $salesChannelUuids */
         $salesChannelUuids = $this->mappingService->getUuidsByEntity(
             $connectionId,
             SalesChannelDefinition::ENTITY_NAME,

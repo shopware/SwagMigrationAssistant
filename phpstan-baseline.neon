@@ -981,11 +981,6 @@ parameters:
 			path: Profile/Shopware56/Converter/Shopware56TranslationConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
-			count: 1
-			path: Test/Mock/DummyCollection.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Mock/Gateway/Dummy/Local/DummyLocalGateway.php

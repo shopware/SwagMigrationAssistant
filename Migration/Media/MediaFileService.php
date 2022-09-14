@@ -169,9 +169,14 @@ class MediaFileService implements MediaFileServiceInterface
         $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
 
         $updateWrittenMediaFiles = [];
+        /* @var SwagMigrationMediaFileEntity $data */
         foreach ($mediaFiles->getElements() as $data) {
-            /* @var SwagMigrationMediaFileEntity $data */
-            $value = $data->getId();
+            $value = method_exists($data, 'getId') ? $data->getId() : null;
+
+            if ($value === null) {
+                continue;
+            }
+
             $updateWrittenMediaFiles[] = [
                 'id' => $value,
                 'written' => true,

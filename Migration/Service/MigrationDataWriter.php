@@ -104,8 +104,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $converted = [];
         $mappingIds = [];
         $updateWrittenData = [];
+        /* @var SwagMigrationDataEntity $data */
         foreach ($migrationData->getElements() as $data) {
-            /* @var SwagMigrationDataEntity $data */
+            if (!method_exists($data, 'getConverted') || !method_exists($data, 'getId') || !method_exists($data, 'getMappingUuid')) {
+                continue;
+            }
+
             $value = $data->getConverted();
             if ($value !== null) {
                 $converted[$data->getId()] = $value;

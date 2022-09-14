@@ -65,6 +65,12 @@ class ConnectionFactory implements ConnectionFactoryInterface
             $connectionParams['port'] = (int) $credentials['dbPort'];
         }
 
-        return DriverManager::getConnection($connectionParams);
+        $connection = DriverManager::getConnection($connectionParams);
+
+        if (method_exists($connection->getWrappedConnection(), 'setAttribute')) {
+            $connection->getWrappedConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+        }
+
+        return $connection;
     }
 }

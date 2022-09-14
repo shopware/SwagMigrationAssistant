@@ -17,9 +17,9 @@ default:
       - t3.nano
     before_script:
         - zip -rq plugin.zip .
-        - git clone --branch $DEVELOPMENT_BRANCH http://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/development.git
+        - git clone --branch $DEVELOPMENT_BRANCH https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/development.git
         - rm -rf development/platform
-        - git clone --branch $PLATFORM_BRANCH http://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/platform.git development/platform
+        - git clone --branch $PLATFORM_BRANCH https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/platform.git development/platform
         - unzip -q plugin.zip -d development/custom/plugins/SwagMigrationAssistant
         - cd development
         - cp -v dev-ops/gitlab/.psh.yaml.override .
@@ -38,8 +38,8 @@ Static analyze:
         - ./psh.phar init
         - php bin/console plugin:install --activate SwagMigrationAssistant
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
-        - php ../../../dev-ops/analyze/vendor/bin/ecs check --config=../../../vendor/shopware/platform/easy-coding-standard.php bin Command Controller Core DependencyInjection Exception Migration Profile Resources Test SwagMigrationAssistant.php
-        - php ../../../dev-ops/analyze/vendor/bin/ecs check --config=easy-coding-standard.php
+        - php ../../../platform/vendor/bin/ecs check --config=../../../vendor/shopware/platform/easy-coding-standard.php bin Command Controller Core DependencyInjection Exception Migration Profile Resources Test SwagMigrationAssistant.php
+        - php ../../../platform/vendor/bin/ecs check --config=easy-coding-standard.php
         - bin/static-analyze.sh
         - php ../../../bin/console snippets:validate
     only:

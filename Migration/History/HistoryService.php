@@ -208,7 +208,10 @@ class HistoryService implements HistoryServiceInterface
             return null;
         }
 
-        return $run[$runUuid];
+        /** @var SwagMigrationRunEntity $runEntity */
+        $runEntity = $run[$runUuid];
+
+        return $runEntity;
     }
 
     private function getLogChunk(string $runUuid, int $offset, Context $context): EntityCollection
