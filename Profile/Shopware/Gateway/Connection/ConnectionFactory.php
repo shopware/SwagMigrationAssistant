@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Connection;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Exception\ConnectionException;
 use GuzzleHttp\Client;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -67,8 +68,12 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
         $connection = DriverManager::getConnection($connectionParams);
 
-        if (method_exists($connection->getWrappedConnection(), 'setAttribute')) {
-            $connection->getWrappedConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+        try {
+            if (method_exists($connection->getWrappedConnection(), 'setAttribute')) {
+                $connection->getWrappedConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+            }
+        } catch (ConnectionException $exception) {
+            // nth
         }
 
         return $connection;

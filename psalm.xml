@@ -10,7 +10,6 @@
 >
     <projectFiles>
         <directory name="."/>
-        <directory name="Test"/>
         <ignoreFiles>
             <directory name="../../../platform"/> <!-- prevents to check shopware -->
             <directory name="../../../vendor"/> <!-- would otherwise inspect vendor -->
@@ -65,6 +64,8 @@
                 <file name="Migration/DataSelection/DataSelectionCollection.php"/>
                 <file name="Migration/Data/SwagMigrationDataCollection.php"/>
                 <file name="Migration/Connection/SwagMigrationConnectionCollection.php"/>
+                <file name="Migration/MessageQueue/Handler/CleanupMigrationHandler.php"/>
+                <file name="Migration/MessageQueue/Handler/ProcessMediaHandler.php"/>
             </errorLevel>
         </MoreSpecificImplementedParamType>
 
@@ -83,10 +84,19 @@
                 <referencedMethod name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer::iterate"/>
                 <referencedMethod name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer::getTotal"/>
                 <referencedMethod name="Shopware\Core\Framework\Struct\Collection::getIterator"/>
+                <referencedMethod name="Doctrine\DBAL\ForwardCompatibility\Result::fetchAll"/>
             </errorLevel>
         </DeprecatedMethod>
 
         <DeprecatedClass>
+            <errorLevel type="info">
+                <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface"/>
+                <referencedClass name="Shopware\Core\Checkout\Document\GeneratedDocument"/>
+                <referencedClass name="Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorRegistry"/>
+                <referencedClass name="Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorInterface"/>
+                <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResult"/>
+                <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext"/>
+            </errorLevel>
             <errorLevel type="info">
                 <file name="Controller/MigrationController.php"/>
                 <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer"/>
@@ -100,6 +110,12 @@
                 <file name="Profile/Shopware6/Converter/SalesChannelConverter.php"/>
             </errorLevel>
         </DeprecatedConstant>
+
+        <UndefinedMethod>
+            <errorLevel type="info">
+                <file name="Profile/Shopware/Converter/SalesChannelConverter.php"/>
+            </errorLevel>
+        </UndefinedMethod>
 
     </issueHandlers>
 </psalm>

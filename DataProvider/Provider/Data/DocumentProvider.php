@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use Symfony\Component\Routing\RouterInterface;
 

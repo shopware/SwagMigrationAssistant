@@ -156,6 +156,11 @@ parameters:
 			path: Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
+			message: "#^Call to an undefined method Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Entity\\:\\:getLanguageId\\(\\).$#"
+			count: 1
+			path: Profile/Shopware/Converter/SalesChannelConverter.php
+
+		-
 			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/SeoUrlConverter.php

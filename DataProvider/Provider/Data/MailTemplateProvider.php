@@ -42,7 +42,7 @@ class MailTemplateProvider extends AbstractProvider
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->mailTemplateRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result,[
+        return $this->cleanupSearchResult($result, [
             'mailTemplateId',
 
             // media

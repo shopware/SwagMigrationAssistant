@@ -41,7 +41,8 @@ class ProductManufacturerProvider extends AbstractProvider
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->manufacturerRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result,
+        return $this->cleanupSearchResult(
+            $result,
             [
                 'mimeType',
                 'fileExtension',
@@ -53,7 +54,8 @@ class ProductManufacturerProvider extends AbstractProvider
                 'thumbnailsRo',
                 'hasFile',
                 'userId', // maybe put back in, if we migrate users
-            ]);
+            ]
+        );
     }
 
     public function getProvidedTotal(Context $context): int

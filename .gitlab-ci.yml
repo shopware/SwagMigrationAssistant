@@ -72,7 +72,7 @@ PHPUnit (MariaDB):
     script:
         - apt-get update && apt-get --assume-yes install default-mysql-client
         - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/Test
-        - git clone http://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/services/testdata.git testData
+        - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/services/testdata.git testData
         - cd -
         - mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --host mysql < $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/Test/testData/Migration/sw55.sql
         - ./psh.phar init

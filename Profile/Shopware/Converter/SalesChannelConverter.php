@@ -404,7 +404,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if ($result->getTotal() !== 0) {
             foreach ($result->getElements() as $packLanguage) {
-                $packLanguageId = method_exists($packLanguage, 'getLanguageId') ? $packLanguage->getLanguageId() : '';
+                $packLanguageId = $packLanguage->getLanguageId();
 
                 foreach ($converted['languages'] as &$language) {
                     if ($language['id'] === $packLanguageId) {
