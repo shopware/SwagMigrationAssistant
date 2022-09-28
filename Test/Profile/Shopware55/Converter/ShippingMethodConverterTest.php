@@ -187,6 +187,23 @@ class ShippingMethodConverterTest extends TestCase
                 ],
             ],
 
+            'fromAndToTimeRangeWithMinutes' => [
+                'bindValues' => [
+                    'bind_time_from' => 80560,
+                    'bind_time_to' => 85500,
+                ],
+
+                'expectedConditions' => [
+                    [
+                        'type' => 'timeRange',
+                        'value' => [
+                            'fromTime' => '22:22',
+                            'toTime' => '23:45',
+                        ],
+                    ],
+                ],
+            ],
+
             'lastStock' => [
                 'bindValues' => [
                     'bind_laststock' => true,

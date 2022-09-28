@@ -96,6 +96,8 @@
                 <referencedClass name="Shopware\Core\Checkout\Document\DocumentGenerator\DocumentGeneratorInterface"/>
                 <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResult"/>
                 <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext"/>
+                <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
+                <referencedClass name="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
             </errorLevel>
             <errorLevel type="info">
                 <file name="Controller/MigrationController.php"/>
