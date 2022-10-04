@@ -47,7 +47,7 @@ class ProductStreamProvider extends AbstractProvider
             'productStreamId',
             'parentId',
         ], [
-            'parameters'
+            'parameters',
         ]);
 
         // cleanup categories - only ids are needed

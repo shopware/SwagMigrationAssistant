@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -38,7 +37,7 @@ class ProductMainVariantRelationProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [ new EqualsFilter('mainVariantId', NULL) ]));
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('mainVariantId', null)]));
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->productRepo->search($criteria, $context);
 
@@ -58,7 +57,7 @@ class ProductMainVariantRelationProvider extends AbstractProvider
     public function getProvidedTotal(Context $context): int
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [ new EqualsFilter('mainVariantId', NULL) ]));
+        $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_AND, [new EqualsFilter('mainVariantId', null)]));
 
         return $this->readTotalFromRepo($this->productRepo, $context, $criteria);
     }

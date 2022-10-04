@@ -8,17 +8,13 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\DataProvider\Exception\ProviderHasNoTableAccessException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderInterface;
-use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 abstract class AbstractProvider implements ProviderInterface
 {
@@ -76,12 +72,14 @@ abstract class AbstractProvider implements ProviderInterface
                 // cleanup forbidden keys that match exactly
                 if (\in_array($key, self::FORBIDDEN_EXACT_KEYS, true)) {
                     unset($cleanResult[$key]);
+
                     continue;
                 }
 
                 // cleanup keys that were specified as an argument
                 if (\in_array($key, $stripExactKeys, true)) {
                     unset($cleanResult[$key]);
+
                     continue;
                 }
 
@@ -89,6 +87,7 @@ abstract class AbstractProvider implements ProviderInterface
                 foreach (self::FORBIDDEN_CONTAINS_KEYS as $forbiddenNeedle) {
                     if (\mb_strpos($key, $forbiddenNeedle)) {
                         unset($cleanResult[$key]);
+
                         continue;
                     }
                 }
@@ -104,17 +103,20 @@ abstract class AbstractProvider implements ProviderInterface
                 if (empty(\array_filter($value))) {
                     // if all entries of the array equal to FALSE this key will be removed (for example null or '' entries).
                     unset($cleanResult[$key]);
+
                     continue;
                 }
 
                 // cleanup child array
                 $cleanResult[$key] = $this->cleanupSearchResult($cleanResult[$key], $stripExactKeys, $doNotTouchKeys);
+
                 continue;
             }
 
             // remove null value keys
             if ($value === null && !\in_array($key, $doNotTouchKeys, true)) {
                 unset($cleanResult[$key]);
+
                 continue;
             }
         }

@@ -9,8 +9,6 @@ namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -49,7 +47,7 @@ class SystemConfigProvider extends AbstractProvider
                 'core.basicInformation.revocationPage',
                 'core.basicInformation.tosPage',
                 'core.scheduled_indexers',
-            ])
+            ]),
         ]));
         $criteria->addSorting(new FieldSorting('salesChannelId', FieldSorting::DESCENDING), new FieldSorting('id'));
         $result = $this->systemConfigRepo->search($criteria, $context);
@@ -70,7 +68,7 @@ class SystemConfigProvider extends AbstractProvider
                 'core.basicInformation.revocationPage',
                 'core.basicInformation.tosPage',
                 'core.scheduled_indexers',
-            ])
+            ]),
         ]));
 
         return $this->readTotalFromRepo($this->systemConfigRepo, $context, $criteria);

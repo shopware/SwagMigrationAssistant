@@ -50,7 +50,7 @@ class MediaFolderInheritanceProvider extends AbstractProvider
             'configurationId',
             'childCount',
             'name',
-            'customFields'
+            'customFields',
         ]);
     }
 

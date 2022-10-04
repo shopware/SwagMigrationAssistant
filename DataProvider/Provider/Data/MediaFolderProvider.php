@@ -47,7 +47,7 @@ class MediaFolderProvider extends AbstractProvider
             'configurationId',
             'childCount',
             'parentId', // will be entered in separate, simulated MediaFolderInheritance entity
-            'useParentConfiguration'
+            'useParentConfiguration',
         ]);
     }
 

@@ -39,6 +39,7 @@ class OrderCountIndexer extends EntityIndexer
     {
         $this->inner->handle($message);
 
+        /** @var array<array<string>|string> $ids */
         $ids = $message->getData();
         $ids = \array_unique(\array_filter($ids));
 

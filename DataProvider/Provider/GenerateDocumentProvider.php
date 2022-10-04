@@ -14,6 +14,7 @@ use Shopware\Core\Checkout\Document\FileGenerator\FileGeneratorRegistry;
 use Shopware\Core\Checkout\Document\GeneratedDocument;
 use Shopware\Core\Checkout\Order\OrderEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
@@ -44,8 +45,7 @@ class GenerateDocumentProvider
         EntityRepositoryInterface $orderRepository,
         FileGeneratorRegistry $fileGeneratorRegistry,
         DocumentGeneratorRegistry $documentGeneratorRegistry
-    )
-    {
+    ) {
         $this->documentRepository = $documentRepository;
         $this->orderRepository = $orderRepository;
         $this->fileGeneratorRegistry = $fileGeneratorRegistry;
@@ -54,7 +54,7 @@ class GenerateDocumentProvider
 
     public function generateDocument(string $identifier, Context $context): ?GeneratedDocument
     {
-        $criteria = new Criteria([ $identifier ]);
+        $criteria = new Criteria([$identifier]);
         $criteria->addAssociation('documentType');
         /** @var DocumentEntity|null $document */
         $document = $this->documentRepository->search($criteria, $context)->first();
@@ -86,6 +86,7 @@ class GenerateDocumentProvider
             $documentType->getTechnicalName()
         );
 
+        /** @var OrderEntity|null $order */
         $order = $this->getOrderById($document->getOrderId(), $document->getOrderVersionId(), $context);
 
         if ($order === null) {
@@ -100,7 +101,7 @@ class GenerateDocumentProvider
         return $generatedDocument;
     }
 
-    private function getOrderById(string $orderId, string $versionId, Context $context): ?OrderEntity
+    private function getOrderById(string $orderId, string $versionId, Context $context): ?Entity
     {
         $criteria = (new Criteria([$orderId]))
             ->addAssociation('lineItems')

@@ -7,15 +7,11 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\RestrictDelete;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\Framework\Feature;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class CmsPageProvider extends AbstractProvider

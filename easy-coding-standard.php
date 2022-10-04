@@ -8,9 +8,9 @@
 use PhpCsFixer\Fixer\Alias\MbStrFunctionsFixer;
 use PhpCsFixer\Fixer\Comment\HeaderCommentFixer;
 use PhpCsFixer\Fixer\FunctionNotation\NativeFunctionInvocationFixer;
-use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symplify\EasyCodingStandard\Config\ECSConfig;
 
-return static function (ContainerConfigurator $containerConfigurator): void {
+return static function (ECSConfig $containerConfigurator): void {
     $services = $containerConfigurator->services();
 
     $services->set(HeaderCommentFixer::class)

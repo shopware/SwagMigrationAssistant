@@ -39,7 +39,7 @@ class ProductStreamFilterInheritanceProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addSorting(new FieldSorting('id'));
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
-            new EqualsFilter('parentId', null)
+            new EqualsFilter('parentId', null),
         ]));
         $result = $this->productStreamFilterRepo->search($criteria, $context);
 
@@ -61,7 +61,7 @@ class ProductStreamFilterInheritanceProvider extends AbstractProvider
     {
         $criteria = new Criteria();
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [
-            new EqualsFilter('parentId', null)
+            new EqualsFilter('parentId', null),
         ]));
 
         return $this->readTotalFromRepo($this->productStreamFilterRepo, $context, $criteria);
