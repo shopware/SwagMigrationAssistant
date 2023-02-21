@@ -17,45 +17,21 @@ class SwagMigrationConnectionEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    protected $name;
+    protected string $name;
 
-    /**
-     * @var array|null
-     */
-    protected $credentialFields;
+    protected ?array $credentialFields;
 
-    /**
-     * @var array
-     */
-    protected $premapping;
+    protected array $premapping;
 
-    /**
-     * @var string
-     */
-    protected $profileName;
+    protected string $profileName;
 
-    /**
-     * @var string
-     */
-    protected $gatewayName;
+    protected string $gatewayName;
 
-    /**
-     * @var SwagMigrationRunCollection|null
-     */
-    protected $runs;
+    protected ?SwagMigrationRunCollection $runs;
 
-    /**
-     * @var SwagMigrationMappingCollection|null
-     */
-    protected $mappings;
+    protected ?SwagMigrationMappingCollection $mappings;
 
-    /**
-     * @var GeneralSettingCollection|null
-     */
-    protected $settings;
+    protected ?GeneralSettingCollection $settings;
 
     public function getName(): string
     {

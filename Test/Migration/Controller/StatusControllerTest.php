@@ -11,7 +11,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -75,50 +75,23 @@ class StatusControllerTest extends TestCase
     use IntegrationTestBehaviour;
     use LocalCredentialTrait;
 
-    /**
-     * @var StatusController
-     */
-    private $controller;
+    private StatusController $controller;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $generalSettingRepo;
+    private EntityRepository $generalSettingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var string
-     */
-    private $invalidConnectionId;
+    private string $invalidConnectionId;
 
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
+    private MigrationContextFactoryInterface $migrationContextFactory;
 
     protected function setUp(): void
     {

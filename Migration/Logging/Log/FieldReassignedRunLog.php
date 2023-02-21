@@ -9,21 +9,14 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class FieldReassignedRunLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $emptyField;
-
-    /**
-     * @var string
-     */
-    private $replacementField;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $emptyField, string $replacementField)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $emptyField,
+        private readonly string $replacementField
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->emptyField = $emptyField;
-        $this->replacementField = $replacementField;
     }
 
     public function getLevel(): string

@@ -9,15 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $emptyField;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $emptyField)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $emptyField
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->emptyField = $emptyField;
     }
 
     public function getCode(): string

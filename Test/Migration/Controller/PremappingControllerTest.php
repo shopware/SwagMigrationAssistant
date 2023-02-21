@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\PremappingController;
@@ -37,50 +37,23 @@ class PremappingControllerTest extends TestCase
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var PremappingController
-     */
-    private $controller;
+    private PremappingController $controller;
 
-    /**
-     * @var PremappingStruct
-     */
-    private $premapping;
+    private PremappingStruct $premapping;
 
-    /**
-     * @var MappingService
-     */
-    private $mappingService;
+    private MappingService $mappingService;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var PremappingEntityStruct
-     */
-    private $firstState;
+    private PremappingEntityStruct $firstState;
 
-    /**
-     * @var PremappingEntityStruct
-     */
-    private $secondState;
+    private PremappingEntityStruct $secondState;
 
     protected function setUp(): void
     {

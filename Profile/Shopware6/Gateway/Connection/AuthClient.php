@@ -12,7 +12,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,41 +21,14 @@ class AuthClient implements AuthClientInterface
 {
     private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';
 
-    /**
-     * @var Client
-     */
-    private $apiClient;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepositoy;
-
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
-
-    /**
-     * @var Context
-     */
-    private $context;
-
-    /**
-     * @var string
-     */
-    private $bearerToken = '';
+    private string $bearerToken = '';
 
     public function __construct(
-        Client $apiClient,
-        EntityRepositoryInterface $connectionRepositoy,
-        MigrationContextInterface $migrationContext,
-        Context $context
+        private readonly Client $apiClient,
+        private readonly EntityRepository $connectionRepositoy,
+        private readonly MigrationContextInterface $migrationContext,
+        private readonly Context $context
     ) {
-        $this->apiClient = $apiClient;
-        $this->connectionRepositoy = $connectionRepositoy;
-        $this->migrationContext = $migrationContext;
-        $this->context = $context;
     }
 
     public function getRequest(string $endpoint, array $config): ResponseInterface

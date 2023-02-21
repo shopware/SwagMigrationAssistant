@@ -15,57 +15,18 @@ use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 class MigrationContext extends Struct implements MigrationContextInterface
 {
-    public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
+    final public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
 
-    /**
-     * @var ProfileInterface
-     */
-    private $profile;
-
-    /**
-     * @var SwagMigrationConnectionEntity|null
-     */
-    private $connection;
-
-    /**
-     * @var string
-     */
-    private $runUuid;
-
-    /**
-     * @var DataSet|null
-     */
-    private $dataSet;
-
-    /**
-     * @var int
-     */
-    private $offset;
-
-    /**
-     * @var int
-     */
-    private $limit;
-
-    /**
-     * @var GatewayInterface
-     */
-    private $gateway;
+    private GatewayInterface $gateway;
 
     public function __construct(
-        ProfileInterface $profile,
-        ?SwagMigrationConnectionEntity $connection = null,
-        string $runUuid = '',
-        ?DataSet $dataSet = null,
-        int $offset = 0,
-        int $limit = 0
+        private readonly ProfileInterface $profile,
+        private readonly ?SwagMigrationConnectionEntity $connection = null,
+        private readonly string $runUuid = '',
+        private readonly ?DataSet $dataSet = null,
+        private readonly int $offset = 0,
+        private readonly int $limit = 0
     ) {
-        $this->profile = $profile;
-        $this->connection = $connection;
-        $this->runUuid = $runUuid;
-        $this->dataSet = $dataSet;
-        $this->offset = $offset;
-        $this->limit = $limit;
     }
 
     public function getProfile(): ProfileInterface

@@ -20,22 +20,10 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class TableCountReader implements TableCountReaderInterface
 {
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
-
-    /**
-     * @var LoggingService
-     */
-    private $loggingService;
-
     public function __construct(
-        ConnectionFactoryInterface $connectionFactory,
-        LoggingService $loggingService
+        private readonly ConnectionFactoryInterface $connectionFactory,
+        private readonly LoggingService $loggingService
     ) {
-        $this->connectionFactory = $connectionFactory;
-        $this->loggingService = $loggingService;
     }
 
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array

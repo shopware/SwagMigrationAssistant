@@ -20,15 +20,9 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductPriceAttributeConverterTest extends TestCase
 {
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55ProductPriceAttributeConverter
-     */
-    private $converter;
+    private Shopware55ProductPriceAttributeConverter $converter;
 
     protected function setUp(): void
     {

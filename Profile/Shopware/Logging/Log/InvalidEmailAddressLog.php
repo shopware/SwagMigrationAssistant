@@ -11,15 +11,13 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class InvalidEmailAddressLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $email;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $email)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $email
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->email = $email;
     }
 
     public function getLevel(): string

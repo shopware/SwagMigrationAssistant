@@ -15,18 +15,12 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 
 abstract class ShopwareMediaConverter extends ShopwareConverter
 {
-    /**
-     * @var MediaFileServiceInterface
-     */
-    protected $mediaFileService;
-
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService
     ) {
         parent::__construct($mappingService, $loggingService);
-        $this->mediaFileService = $mediaFileService;
     }
 
     protected function updateMediaAssociation(array &$mediaArray, ?string $entity = null): void

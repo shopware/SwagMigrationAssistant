@@ -19,15 +19,9 @@ class SalesChannelReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var SalesChannelReader
-     */
-    private $salesChannelReader;
+    private SalesChannelReader $salesChannelReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

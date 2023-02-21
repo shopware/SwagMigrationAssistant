@@ -8,10 +8,8 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -31,80 +29,25 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class MigrationController extends AbstractController
 {
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
-
-    /**
-     * @var MigrationDataWriterInterface
-     */
-    private $migrationDataWriter;
-
-    /**
-     * @var MediaFileProcessorServiceInterface
-     */
-    private $mediaFileProcessorService;
-
-    /**
-     * @var SwagMigrationAccessTokenService
-     */
-    private $accessTokenService;
-
-    /**
-     * @var RunServiceInterface
-     */
-    private $runService;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepo;
-
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
-
-    /**
-     * @var MigrationDataConverterInterface
-     */
-    private $migrationDataConverter;
-
-    /**
-     * @var EntityPartialIndexerService
-     */
-    private $entityPartialIndexerService;
-
     public function __construct(
-        MigrationDataFetcherInterface $migrationDataFetcher,
-        MigrationDataConverterInterface $migrationDataConverter,
-        MigrationDataWriterInterface $migrationDataWriter,
-        MediaFileProcessorServiceInterface $mediaFileProcessorService,
-        SwagMigrationAccessTokenService $accessTokenService,
-        RunServiceInterface $runService,
-        EntityRepositoryInterface $migrationRunRepo,
-        MigrationContextFactoryInterface $migrationContextFactory,
-        EntityPartialIndexerService $indexerService
+        private readonly MigrationDataFetcherInterface $migrationDataFetcher,
+        private readonly MigrationDataConverterInterface $migrationDataConverter,
+        private readonly MigrationDataWriterInterface $migrationDataWriter,
+        private readonly MediaFileProcessorServiceInterface $mediaFileProcessorService,
+        private readonly SwagMigrationAccessTokenService $accessTokenService,
+        private readonly RunServiceInterface $runService,
+        private readonly EntityRepository $migrationRunRepo,
+        private readonly MigrationContextFactoryInterface $migrationContextFactory,
+        private readonly EntityPartialIndexerService $indexerService
     ) {
-        $this->migrationDataFetcher = $migrationDataFetcher;
-        $this->migrationDataConverter = $migrationDataConverter;
-        $this->migrationDataWriter = $migrationDataWriter;
-        $this->mediaFileProcessorService = $mediaFileProcessorService;
-        $this->accessTokenService = $accessTokenService;
-        $this->runService = $runService;
-        $this->migrationRunRepo = $migrationRunRepo;
-        $this->migrationContextFactory = $migrationContextFactory;
-        $this->entityPartialIndexerService = $indexerService;
     }
 
     /**
-     * @Route("/api/_action/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function fetchData(Request $request, Context $context): JsonResponse
     {
@@ -156,8 +99,7 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/update-write-progress", name="api.admin.migration.update-write-progress", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/update-write-progress", name="api.admin.migration.update-write-progress", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function updateWriteProgress(Request $request, Context $context): JsonResponse
     {
@@ -187,8 +129,7 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function writeData(Request $request, Context $context): JsonResponse
     {
@@ -232,8 +173,7 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/update-media-files-progress", name="api.admin.migration.update-media-files-progress", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/update-media-files-progress", name="api.admin.migration.update-media-files-progress", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function updateMediaFilesProgress(Request $request, Context $context): JsonResponse
     {
@@ -263,8 +203,7 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function processMedia(Request $request, Context $context): JsonResponse
     {
@@ -308,8 +247,7 @@ class MigrationController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/indexing", name="api.action.migration.indexing", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/indexing", name="api.action.migration.indexing", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function indexing(Request $request): JsonResponse
     {

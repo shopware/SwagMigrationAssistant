@@ -99,7 +99,7 @@ class CustomerReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function assignAssociatedData(array $customers, array $ids): array

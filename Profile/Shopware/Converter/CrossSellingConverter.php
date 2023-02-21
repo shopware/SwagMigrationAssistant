@@ -15,20 +15,11 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class CrossSellingConverter extends ShopwareConverter
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     public function getSourceIdentifier(array $data): string
     {

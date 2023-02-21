@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\System\Salutation\SalutationEntity;
@@ -33,29 +33,17 @@ class SalutationReader extends AbstractPremappingReader
     /**
      * @var string[]
      */
-    protected $preselectionDictionary = [];
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salutationRepo;
-
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
+    protected array $preselectionDictionary = [];
 
     /**
      * @var string[]
      */
-    private $choiceUuids;
+    private array $choiceUuids;
 
     public function __construct(
-        EntityRepositoryInterface $salutationRepo,
-        GatewayRegistryInterface $gatewayRegistry
+        private readonly EntityRepository $salutationRepo,
+        private readonly GatewayRegistryInterface $gatewayRegistry
     ) {
-        $this->salutationRepo = $salutationRepo;
-        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public static function getMappingName(): string

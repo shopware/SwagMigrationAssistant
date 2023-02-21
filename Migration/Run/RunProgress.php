@@ -12,34 +12,17 @@ use Shopware\Core\Framework\Struct\Struct;
 class RunProgress extends Struct
 {
     /**
-     * @var string
-     */
-    protected $id;
-
-    /**
      * @var EntityProgress[]
      */
-    protected $entities;
+    protected array $entities;
 
-    /**
-     * @var int
-     */
-    protected $currentCount;
+    protected int $currentCount;
 
-    /**
-     * @var int
-     */
-    protected $total;
+    protected int $total;
 
-    /**
-     * @var bool
-     */
-    protected $processMediaFiles;
+    protected bool $processMediaFiles;
 
-    /**
-     * @var string
-     */
-    protected $snippet;
+    protected string $snippet;
 
     public function getId(): string
     {

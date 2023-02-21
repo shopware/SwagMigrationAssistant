@@ -11,20 +11,10 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class TotalStruct extends Struct
 {
-    /**
-     * @var string
-     */
-    protected $entityName;
-
-    /**
-     * @var int
-     */
-    protected $total;
-
-    public function __construct(string $entityName, int $total = 0)
-    {
-        $this->entityName = $entityName;
-        $this->total = $total;
+    public function __construct(
+        protected string $entityName,
+        protected int $total = 0
+    ) {
     }
 
     public function getEntityName(): string

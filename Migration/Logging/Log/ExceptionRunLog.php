@@ -11,15 +11,13 @@ use Shopware\Core\Framework\ShopwareHttpException;
 
 class ExceptionRunLog extends BaseRunLogEntry
 {
-    /**
-     * @var \Throwable
-     */
-    private $exception;
-
-    public function __construct(string $runId, string $entity, \Throwable $exception, ?string $sourceId = null)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        private readonly \Throwable $exception,
+        ?string $sourceId = null
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->exception = $exception;
     }
 
     public function getLevel(): string

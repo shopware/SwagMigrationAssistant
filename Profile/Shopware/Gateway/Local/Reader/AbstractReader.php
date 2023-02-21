@@ -17,19 +17,10 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 
 abstract class AbstractReader implements ReaderInterface
 {
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    protected $connectionFactory;
+    protected Connection $connection;
 
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    public function __construct(protected ConnectionFactoryInterface $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

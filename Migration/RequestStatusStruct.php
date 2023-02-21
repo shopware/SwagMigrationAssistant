@@ -11,26 +11,11 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class RequestStatusStruct extends Struct
 {
-    /**
-     * @var bool
-     */
-    protected $isWarning;
-
-    /**
-     * @var string
-     */
-    protected $code;
-
-    /**
-     * @var string
-     */
-    protected $message;
-
-    public function __construct(string $code = '', string $message = 'No error.', bool $isWarning = false)
-    {
-        $this->isWarning = $isWarning;
-        $this->code = $code;
-        $this->message = $message;
+    public function __construct(
+        protected string $code = '',
+        protected string $message = 'No error.',
+        protected bool $isWarning = false
+    ) {
     }
 
     public function getIsWarning(): bool

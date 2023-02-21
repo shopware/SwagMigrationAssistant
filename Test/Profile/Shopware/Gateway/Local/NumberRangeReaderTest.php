@@ -19,15 +19,9 @@ class NumberRangeReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var NumberRangeReader
-     */
-    private $numberRangeReader;
+    private NumberRangeReader $numberRangeReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class MediaDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'media';
+    final public const IDENTIFIER = 'media';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {

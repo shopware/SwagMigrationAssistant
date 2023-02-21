@@ -8,21 +8,15 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class MediaProvider extends AbstractProvider
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaRepo;
-
-    public function __construct(EntityRepositoryInterface $mediaRepo)
+    public function __construct(private readonly EntityRepository $mediaRepo)
     {
-        $this->mediaRepo = $mediaRepo;
     }
 
     public function getIdentifier(): string

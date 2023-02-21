@@ -9,26 +9,14 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class InvalidUnserializedData extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $unserializedEntity;
-
-    /**
-     * @var string
-     */
-    private $serializedData;
-
     public function __construct(
         string $runId,
         string $entity,
         string $sourceId,
-        string $unserializedEntity,
-        string $serializedData
+        private readonly string $unserializedEntity,
+        private readonly string $serializedData
     ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->unserializedEntity = $unserializedEntity;
-        $this->serializedData = $serializedData;
     }
 
     public function getLevel(): string

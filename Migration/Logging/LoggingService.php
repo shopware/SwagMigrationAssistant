@@ -8,24 +8,15 @@
 namespace SwagMigrationAssistant\Migration\Logging;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 
 class LoggingService implements LoggingServiceInterface
 {
-    /**
-     * @var array
-     */
-    protected $logging = [];
+    protected array $logging = [];
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
-
-    public function __construct(EntityRepositoryInterface $loggingRepo)
+    public function __construct(private readonly EntityRepository $loggingRepo)
     {
-        $this->loggingRepo = $loggingRepo;
     }
 
     public function saveLogging(Context $context): void

@@ -30,20 +30,11 @@ class ApiEnvironmentReaderTest extends TestCase
 
     private $body;
 
-    /**
-     * @var RequestException
-     */
-    private $sslInsecureException;
+    private RequestException $sslInsecureException;
 
-    /**
-     * @var ShopwareHttpException
-     */
-    private $sslInsecureShopwareException;
+    private ShopwareHttpException $sslInsecureShopwareException;
 
-    /**
-     * @var ShopwareHttpException
-     */
-    private $gatewayReadException;
+    private ShopwareHttpException $gatewayReadException;
 
     private $error = [
         'code' => '',

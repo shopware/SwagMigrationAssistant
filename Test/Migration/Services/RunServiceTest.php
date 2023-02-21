@@ -11,7 +11,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -50,55 +50,25 @@ class RunServiceTest extends TestCase
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $dataRepo;
+    private EntityRepository $dataRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mappingRepo;
+    private EntityRepository $mappingRepo;
 
-    /**
-     * @var MappingService
-     */
-    private $mappingService;
+    private MappingService $mappingService;
 
-    /**
-     * @var RunService
-     */
-    private $runServiceWithoutStructure;
+    private RunService $runServiceWithoutStructure;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
+    private MigrationContextFactoryInterface $migrationContextFactory;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepo;
+    private EntityRepository $salesChannelRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeRepo;
+    private EntityRepository $themeRepo;
 
     protected function setUp(): void
     {

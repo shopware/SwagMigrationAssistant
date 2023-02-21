@@ -15,45 +15,21 @@ class SwagMigrationMappingEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    protected $connection;
+    protected SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string|null
-     */
-    protected $entity;
+    protected ?string $entity;
 
-    /**
-     * @var string|null
-     */
-    protected $oldIdentifier;
+    protected ?string $oldIdentifier;
 
-    /**
-     * @var string|null
-     */
-    protected $entityUuid;
+    protected ?string $entityUuid;
 
-    /**
-     * @var string|null
-     */
-    protected $entityValue;
+    protected ?string $entityValue;
 
-    /**
-     * @var string|null
-     */
-    protected $checksum;
+    protected ?string $checksum;
 
-    /**
-     * @var array|null
-     */
-    protected $additionalData;
+    protected ?array $additionalData;
 
     public function getConnectionId(): string
     {

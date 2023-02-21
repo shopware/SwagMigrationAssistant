@@ -14,15 +14,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class ProductOptionRelationConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var array
-     */
-    protected $originalData;
+    protected array $originalData;
 
     public function getSourceIdentifier(array $data): string
     {

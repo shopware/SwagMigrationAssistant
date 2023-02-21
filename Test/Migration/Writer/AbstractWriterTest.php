@@ -17,35 +17,23 @@ use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
 class AbstractWriterTest extends TestCase
 {
-    /**
-     * @var AbstractWriter
-     */
-    private $abstractWriter;
+    private AbstractWriter $abstractWriter;
 
-    /**
-     * @var array
-     */
-    private $dataToWrite;
+    private array $dataToWrite;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
     /**
      * @var MockObject|EntityWriterInterface
      */
-    private $entityWriter;
+    private EntityWriterInterface $entityWriter;
 
     /**
      * @var MockObject|EntityDefinition
      */
-    private $entityDefinition;
+    private EntityDefinition $entityDefinition;
 
-    /**
-     * @var array
-     */
-    private $writeResult;
+    private array $writeResult;
 
     protected function setUp(): void
     {

@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -17,18 +17,12 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class MediaFolderWriter extends AbstractWriter
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFolderRepo;
-
     public function __construct(
         EntityWriterInterface $entityWriter,
         EntityDefinition $definition,
-        EntityRepositoryInterface $mediaFolderRepo
+        private readonly EntityRepository $mediaFolderRepo
     ) {
         parent::__construct($entityWriter, $definition);
-        $this->mediaFolderRepo = $mediaFolderRepo;
     }
 
     public function supports(): string

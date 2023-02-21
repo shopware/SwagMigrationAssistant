@@ -11,15 +11,12 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class DocumentTypeNotSupported extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $type;
-
-    public function __construct(string $runId, string $sourceId, string $type)
-    {
+    public function __construct(
+        string $runId,
+        string $sourceId,
+        private readonly string $type
+    ) {
         parent::__construct($runId, DefaultEntities::ORDER_DOCUMENT, $sourceId);
-        $this->type = $type;
     }
 
     public function getLevel(): string

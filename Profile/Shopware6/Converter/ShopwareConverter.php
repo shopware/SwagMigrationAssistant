@@ -12,40 +12,26 @@ use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 abstract class ShopwareConverter extends Converter
 {
     /**
      * @psalm-suppress NonInvariantDocblockPropertyType
-     *
-     * @var Shopware6MappingServiceInterface
      */
-    protected $mappingService;
+    protected MappingServiceInterface $mappingService;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    protected $migrationContext;
+    protected MigrationContextInterface $migrationContext;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     public function __construct(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService
     ) {
         parent::__construct($mappingService, $loggingService);

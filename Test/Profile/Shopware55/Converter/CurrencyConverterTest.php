@@ -22,40 +22,19 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CurrencyConverterTest extends TestCase
 {
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var Shopware55CurrencyConverter
-     */
-    private $converter;
+    private Shopware55CurrencyConverter $converter;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var BasicSettingsMappingService
-     */
-    private $mappingService;
+    private BasicSettingsMappingService $mappingService;
 
     protected function setUp(): void
     {

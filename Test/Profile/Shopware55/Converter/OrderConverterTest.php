@@ -41,40 +41,19 @@ class OrderConverterTest extends TestCase
 {
     use MigrationServicesTrait;
 
-    /**
-     * @var Shopware55OrderConverter
-     */
-    private $orderConverter;
+    private Shopware55OrderConverter $orderConverter;
 
-    /**
-     * @var Shopware55CustomerConverter
-     */
-    private $customerConverter;
+    private Shopware55CustomerConverter $customerConverter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var MigrationContext
-     */
-    private $customerMigrationContext;
+    private MigrationContext $customerMigrationContext;
 
     protected function setUp(): void
     {

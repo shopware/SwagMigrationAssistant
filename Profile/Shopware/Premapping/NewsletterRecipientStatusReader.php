@@ -20,10 +20,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'newsletter_status';
 
-    /**
-     * @var string
-     */
-    private $connectionPremappingValue = '';
+    private string $connectionPremappingValue = '';
 
     public static function getMappingName(): string
     {

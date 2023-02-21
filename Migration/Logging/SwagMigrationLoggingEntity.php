@@ -15,60 +15,27 @@ class SwagMigrationLoggingEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    protected $level;
+    protected string $level;
 
-    /**
-     * @var string
-     */
-    protected $code;
+    protected string $code;
 
-    /**
-     * @var string
-     */
-    protected $title;
+    protected string $title;
 
-    /**
-     * @var string
-     */
-    protected $description;
+    protected string $description;
 
-    /**
-     * @var array
-     */
-    protected $parameters;
+    protected array $parameters;
 
-    /**
-     * @var string
-     */
-    protected $titleSnippet;
+    protected string $titleSnippet;
 
-    /**
-     * @var string
-     */
-    protected $descriptionSnippet;
+    protected string $descriptionSnippet;
 
-    /**
-     * @var ?string
-     */
-    protected $entity;
+    protected ?string $entity;
 
-    /**
-     * @var ?string
-     */
-    protected $sourceId;
+    protected ?string $sourceId;
 
-    /**
-     * @var ?string
-     */
-    protected $runId;
+    protected ?string $runId;
 
-    /**
-     * @var ?SwagMigrationRunEntity
-     */
-    protected $run;
+    protected ?SwagMigrationRunEntity $run;
 
     public function getLevel(): string
     {

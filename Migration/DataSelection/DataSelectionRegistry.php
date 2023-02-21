@@ -13,16 +13,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class DataSelectionRegistry implements DataSelectionRegistryInterface
 {
     /**
-     * @var DataSelectionInterface[]
-     */
-    private $dataSelections;
-
-    /**
      * @param DataSelectionInterface[] $dataSelections
      */
-    public function __construct(iterable $dataSelections)
+    public function __construct(private readonly iterable $dataSelections)
     {
-        $this->dataSelections = $dataSelections;
     }
 
     public function getDataSelections(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation): DataSelectionCollection

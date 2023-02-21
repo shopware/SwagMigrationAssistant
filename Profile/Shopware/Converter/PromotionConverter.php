@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Checkout\Promotion\Aggregate\PromotionDiscount\PromotionDiscountEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
@@ -22,35 +22,20 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class PromotionConverter extends ShopwareConverter
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var array
-     */
-    private $productUuids;
+    private array $productUuids;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepository;
+    private string $runId;
 
-    /**
-     * @var string
-     */
-    private $runId;
-
-    public function __construct(MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, EntityRepositoryInterface $salesChannelRepository)
-    {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly EntityRepository $salesChannelRepository
+    ) {
         parent::__construct($mappingService, $loggingService);
-        $this->salesChannelRepository = $salesChannelRepository;
     }
 
     public function getSourceIdentifier(array $data): string

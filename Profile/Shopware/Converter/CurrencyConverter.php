@@ -14,20 +14,11 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class CurrencyConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $mainLocale;
+    protected string $mainLocale;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
     public function getSourceIdentifier(array $data): string
     {

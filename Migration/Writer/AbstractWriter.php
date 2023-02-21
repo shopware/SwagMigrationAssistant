@@ -14,20 +14,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 
 abstract class AbstractWriter implements WriterInterface
 {
-    /**
-     * @var EntityWriterInterface
-     */
-    protected $entityWriter;
-
-    /**
-     * @var EntityDefinition
-     */
-    protected $definition;
-
-    public function __construct(EntityWriterInterface $entityWriter, EntityDefinition $definition)
-    {
-        $this->entityWriter = $entityWriter;
-        $this->definition = $definition;
+    public function __construct(
+        protected EntityWriterInterface $entityWriter,
+        protected EntityDefinition $definition
+    ) {
     }
 
     public function writeData(array $data, Context $context): array

@@ -14,7 +14,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -71,185 +71,77 @@ class MigrationDataWriterTest extends TestCase
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $productRepo;
+    private EntityRepository $productRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $categoryRepo;
+    private EntityRepository $categoryRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaRepo;
+    private EntityRepository $mediaRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $customerRepo;
+    private EntityRepository $customerRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepo;
+    private EntityRepository $orderRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $currencyRepo;
+    private EntityRepository $currencyRepo;
 
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
+    private MigrationDataFetcherInterface $migrationDataFetcher;
 
-    /**
-     * @var MigrationDataConverterInterface
-     */
-    private $migrationDataConverter;
+    private MigrationDataConverterInterface $migrationDataConverter;
 
-    /**
-     * @var MigrationDataWriterInterface
-     */
-    private $migrationDataWriter;
+    private MigrationDataWriterInterface $migrationDataWriter;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var MigrationDataWriterInterface
-     */
-    private $dummyDataWriter;
+    private MigrationDataWriterInterface $dummyDataWriter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
+    private EntityRepository $loggingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationDataRepo;
+    private EntityRepository $migrationDataRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationMappingRepo;
+    private EntityRepository $migrationMappingRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $stateMachineStateRepository;
+    private EntityRepository $stateMachineStateRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $stateMachineRepository;
+    private EntityRepository $stateMachineRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentRepo;
+    private EntityRepository $paymentRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salutationRepo;
+    private EntityRepository $salutationRepo;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var MappingService
-     */
-    private $mappingService;
+    private MappingService $mappingService;
 
-    /**
-     * @var EntityWriter
-     */
-    private $entityWriter;
+    private EntityWriter $entityWriter;
 
-    /**
-     * @var Connection
-     */
-    private $dbConnection;
+    private Connection $dbConnection;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $deliveryTimeRepo;
+    private EntityRepository $deliveryTimeRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $localeRepo;
+    private EntityRepository $localeRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepo;
+    private EntityRepository $languageRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepo;
+    private EntityRepository $salesChannelRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $shippingRepo;
+    private EntityRepository $shippingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $countryRepo;
+    private EntityRepository $countryRepo;
 
-    /**
-     * @var RunService
-     */
-    private $runService;
+    private RunService $runService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeSalesChannelRepo;
+    private EntityRepository $themeSalesChannelRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeRepo;
+    private EntityRepository $themeRepo;
 
     protected function setUp(): void
     {

@@ -71,6 +71,6 @@ class MainVariantRelationReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll(\PDO::FETCH_ASSOC);
+        return $query->fetchAllAssociative();
     }
 }

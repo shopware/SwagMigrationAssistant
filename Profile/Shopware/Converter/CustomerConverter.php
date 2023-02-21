@@ -25,35 +25,20 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class CustomerConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $mainLocale;
+    protected string $mainLocale;
 
-    /**
-     * @var string
-     */
-    protected $oldCustomerId;
+    protected string $oldCustomerId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     /**
      * @var string[]
      */
-    protected $requiredDataFieldKeys = [
+    protected array $requiredDataFieldKeys = [
         'firstname',
         'lastname',
         'email',
@@ -64,7 +49,7 @@ abstract class CustomerConverter extends ShopwareConverter
     /**
      * @var string[]
      */
-    protected $requiredAddressDataFieldKeys = [
+    protected array $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
         'zipcode',
@@ -73,23 +58,14 @@ abstract class CustomerConverter extends ShopwareConverter
         'salutation',
     ];
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
-
-    /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
+    protected string $connectionName;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        ValidatorInterface $validator
+        protected ValidatorInterface $validator
     ) {
         parent::__construct($mappingService, $loggingService);
-        $this->validator = $validator;
     }
 
     public function getSourceIdentifier(array $data): string

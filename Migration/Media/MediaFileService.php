@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Media;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -21,46 +21,16 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MediaFileService implements MediaFileServiceInterface
 {
-    /**
-     * @var array
-     */
-    protected $writeArray = [];
+    protected array $writeArray = [];
 
-    /**
-     * @var array
-     */
-    protected $uuids = [];
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $mediaFileRepo;
-
-    /**
-     * @var EntityWriterInterface
-     */
-    protected $entityWriter;
-
-    /**
-     * @var EntityDefinition
-     */
-    protected $mediaFileDefinition;
-
-    /**
-     * @var ConverterRegistryInterface
-     */
-    protected $converterRegistry;
+    protected array $uuids = [];
 
     public function __construct(
-        EntityRepositoryInterface $mediaFileRepo,
-        EntityWriterInterface $entityWriter,
-        EntityDefinition $mediaFileDefinition,
-        ConverterRegistryInterface $converterRegistry
+        protected EntityRepository $mediaFileRepo,
+        protected EntityWriterInterface $entityWriter,
+        protected EntityDefinition $mediaFileDefinition,
+        protected ConverterRegistryInterface $converterRegistry
     ) {
-        $this->mediaFileRepo = $mediaFileRepo;
-        $this->entityWriter = $entityWriter;
-        $this->mediaFileDefinition = $mediaFileDefinition;
-        $this->converterRegistry = $converterRegistry;
     }
 
     public function writeMediaFile(Context $context): void

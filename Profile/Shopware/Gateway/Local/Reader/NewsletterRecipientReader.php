@@ -118,7 +118,7 @@ class NewsletterRecipientReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function getDefaultShopAndLocaleByGroupId(): array
@@ -139,7 +139,7 @@ class NewsletterRecipientReader extends AbstractReader
             return [];
         }
 
-        $shops = $query->fetchAll();
+        $shops = $query->fetchAllAssociative();
 
         return $this->getGroupedResult($shops);
     }
@@ -164,7 +164,7 @@ class NewsletterRecipientReader extends AbstractReader
             return [];
         }
 
-        $shops = $query->fetchAll();
+        $shops = $query->fetchAllAssociative();
 
         return $this->getGroupedResult($shops);
     }

@@ -9,21 +9,14 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class UnknownEntityLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $requiredForEntity;
-
-    /**
-     * @var string
-     */
-    private $requiredForSourceId;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $requiredForEntity, string $requiredForSourceId)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $requiredForEntity,
+        private readonly string $requiredForSourceId
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->requiredForEntity = $requiredForEntity;
-        $this->requiredForSourceId = $requiredForSourceId;
     }
 
     public function getLevel(): string

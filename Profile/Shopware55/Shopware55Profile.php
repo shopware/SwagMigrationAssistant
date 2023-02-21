@@ -11,15 +11,15 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class Shopware55Profile implements ShopwareProfileInterface
 {
-    public const PROFILE_NAME = 'shopware55';
+    final public const PROFILE_NAME = 'shopware55';
 
-    public const SOURCE_SYSTEM_NAME = 'Shopware';
+    final public const SOURCE_SYSTEM_NAME = 'Shopware';
 
-    public const SOURCE_SYSTEM_VERSION = '5.5';
+    final public const SOURCE_SYSTEM_VERSION = '5.5';
 
-    public const AUTHOR_NAME = 'shopware AG';
+    final public const AUTHOR_NAME = 'shopware AG';
 
-    public const ICON_PATH = '/swagmigrationassistant/static/img/migration-assistant-plugin.svg';
+    final public const ICON_PATH = '/swagmigrationassistant/static/img/migration-assistant-plugin.svg';
 
     public function getName(): string
     {

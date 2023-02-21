@@ -9,15 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class WriteExceptionRunLog extends BaseRunLogEntry
 {
-    /**
-     * @var array
-     */
-    private $error;
-
-    public function __construct(string $runId, string $entity, array $error, ?string $dataId = null)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        private readonly array $error,
+        ?string $dataId = null
+    ) {
         parent::__construct($runId, $entity, $dataId);
-        $this->error = $error;
     }
 
     public function getLevel(): string

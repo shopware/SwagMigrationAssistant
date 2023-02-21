@@ -12,16 +12,10 @@ use SwagMigrationAssistant\Exception\WriterNotFoundException;
 class WriterRegistry implements WriterRegistryInterface
 {
     /**
-     * @var WriterInterface[]
-     */
-    private $writers;
-
-    /**
      * @param WriterInterface[] $writers
      */
-    public function __construct(iterable $writers)
+    public function __construct(private readonly iterable $writers)
     {
-        $this->writers = $writers;
     }
 
     public function getWriter(string $entityName): WriterInterface

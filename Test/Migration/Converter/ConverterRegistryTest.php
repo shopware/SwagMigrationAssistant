@@ -134,10 +134,7 @@ class ConverterRegistryTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var ConverterRegistryInterface
-     */
-    private $converterRegistry;
+    private ConverterRegistryInterface $converterRegistry;
 
     protected function setUp(): void
     {

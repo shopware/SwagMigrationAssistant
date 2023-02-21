@@ -12,77 +12,23 @@ use SwagMigrationAssistant\Migration\Run\RunProgress;
 
 class ProgressState extends Struct
 {
-    public const STATUS_WAITING = -1;
-    public const STATUS_PREMAPPING = 0;
-    public const STATUS_FETCH_DATA = 1;
-    public const STATUS_WRITE_DATA = 2;
-    public const STATUS_DOWNLOAD_DATA = 3;
-
-    /**
-     * @var string|null
-     */
-    protected $runId;
-
-    /**
-     * @var string|null
-     */
-    protected $accessToken;
-
-    /**
-     * @var bool
-     */
-    protected $migrationRunning;
-
-    /**
-     * @var bool
-     */
-    protected $validMigrationRunToken;
-
-    /**
-     * @var int
-     */
-    protected $status;
-
-    /**
-     * @var string|null
-     */
-    protected $entity;
-
-    /**
-     * @var int
-     */
-    protected $entityCount;
-
-    /**
-     * @var int
-     */
-    protected $finishedCount;
-
-    /**
-     * @var array
-     */
-    protected $runProgress;
+    final public const STATUS_WAITING = -1;
+    final public const STATUS_PREMAPPING = 0;
+    final public const STATUS_FETCH_DATA = 1;
+    final public const STATUS_WRITE_DATA = 2;
+    final public const STATUS_DOWNLOAD_DATA = 3;
 
     public function __construct(
-        bool $isMigrationRunning,
-        bool $validMigrationRunToken,
-        ?string $runId = null,
-        ?string $accessToken = null,
-        int $status = ProgressState::STATUS_WAITING,
-        ?string $entity = null,
-        int $finishedCount = 0,
-        int $entityCount = 0,
-        array $runProgress = []
+        protected bool $migrationRunning,
+        protected bool $validMigrationRunToken,
+        protected ?string $runId = null,
+        protected ?string $accessToken = null,
+        protected int $status = ProgressState::STATUS_WAITING,
+        protected ?string $entity = null,
+        protected int $finishedCount = 0,
+        protected int $entityCount = 0,
+        protected array $runProgress = []
     ) {
-        $this->migrationRunning = $isMigrationRunning;
-        $this->runId = $runId;
-        $this->validMigrationRunToken = $validMigrationRunToken;
-        $this->accessToken = $accessToken;
-        $this->status = $status;
-        $this->entity = $entity;
-        $this->finishedCount = $finishedCount;
-        $this->entityCount = $entityCount;
-        $this->runProgress = $runProgress;
     }
 
     public function isMigrationRunning(): bool

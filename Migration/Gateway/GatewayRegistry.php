@@ -14,16 +14,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class GatewayRegistry implements GatewayRegistryInterface
 {
     /**
-     * @var GatewayInterface[]
-     */
-    private $gateways;
-
-    /**
      * @param GatewayInterface[] $gateways
      */
-    public function __construct(iterable $gateways)
+    public function __construct(private readonly iterable $gateways)
     {
-        $this->gateways = $gateways;
     }
 
     /**

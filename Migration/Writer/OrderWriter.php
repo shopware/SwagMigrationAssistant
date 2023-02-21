@@ -15,18 +15,12 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class OrderWriter extends AbstractWriter
 {
-    /**
-     * @var StructNormalizer
-     */
-    private $structNormalizer;
-
     public function __construct(
         EntityWriterInterface $entityWriter,
         EntityDefinition $definition,
-        StructNormalizer $structNormalizer
+        private readonly StructNormalizer $structNormalizer
     ) {
         parent::__construct($entityWriter, $definition);
-        $this->structNormalizer = $structNormalizer;
     }
 
     public function supports(): string

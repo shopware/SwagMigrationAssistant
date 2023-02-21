@@ -38,50 +38,24 @@ abstract class OrderConverter extends ShopwareConverter
 
     private const SHIPPING_ADDRESS = 'shipping';
 
-    /**
-     * @var string
-     */
-    protected $mainLocale;
+    protected string $mainLocale;
 
-    /**
-     * @var TaxCalculator
-     */
-    protected $taxCalculator;
+    protected Context $context;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionName;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
+    protected string $oldId;
 
-    /**
-     * @var string
-     */
-    protected $oldId;
+    protected string $uuid;
 
-    /**
-     * @var string
-     */
-    protected $uuid;
-
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     /**
      * @var string[]
      */
-    protected $requiredDataFieldKeys = [
+    protected array $requiredDataFieldKeys = [
         'customer',
         'currency',
         'currencyFactor',
@@ -92,7 +66,7 @@ abstract class OrderConverter extends ShopwareConverter
     /**
      * @var string[]
      */
-    protected $requiredAddressDataFieldKeys = [
+    protected array $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
         'zipcode',
@@ -104,11 +78,9 @@ abstract class OrderConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        TaxCalculator $taxCalculator
+        protected TaxCalculator $taxCalculator
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->taxCalculator = $taxCalculator;
     }
 
     /**

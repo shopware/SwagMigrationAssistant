@@ -9,11 +9,10 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Driver\ResultStatement;
-use Doctrine\DBAL\FetchMode;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
@@ -50,134 +49,26 @@ class RunService implements RunServiceInterface
     private const TRACKING_EVENT_MIGRATION_FINISHED = 'Migration finished';
     private const TRACKING_EVENT_MIGRATION_ABORTED = 'Migration aborted';
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
-
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
-
-    /**
-     * @var SwagMigrationAccessTokenService
-     */
-    private $accessTokenService;
-
-    /**
-     * @var DataSelectionRegistryInterface
-     */
-    private $dataSelectionRegistry;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationDataRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepository;
-
-    /**
-     * @var EntityIndexerRegistry
-     */
-    private $indexer;
-
-    /**
-     * @var TagAwareAdapterInterface
-     */
-    private $cache;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeRepository;
-
-    /**
-     * @var EntityDefinition
-     */
-    private $migrationDataDefinition;
-
-    /**
-     * @var Connection
-     */
-    private $dbalConnection;
-
-    /**
-     * @var ThemeService
-     */
-    private $themeService;
-
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var StoreService
-     */
-    private $storeService;
-
-    /**
-     * @var MessageBusInterface
-     */
-    private $bus;
-
     public function __construct(
-        EntityRepositoryInterface $migrationRunRepo,
-        EntityRepositoryInterface $connectionRepo,
-        MigrationDataFetcherInterface $migrationDataFetcher,
-        SwagMigrationAccessTokenService $accessTokenService,
-        DataSelectionRegistryInterface $dataSelectionRegistry,
-        EntityRepositoryInterface $migrationDataRepository,
-        EntityRepositoryInterface $mediaFileRepository,
-        EntityRepositoryInterface $salesChannelRepository,
-        EntityRepositoryInterface $themeRepository,
-        EntityIndexerRegistry $indexer,
-        ThemeService $themeService,
-        MappingServiceInterface $mappingService,
-        TagAwareAdapterInterface $cache,
-        EntityDefinition $migrationDataDefinition,
-        Connection $dbalConnection,
-        LoggingServiceInterface $loggingService,
-        StoreService $storeService,
-        MessageBusInterface $bus
+        private readonly EntityRepository $migrationRunRepo,
+        private readonly EntityRepository $connectionRepo,
+        private readonly MigrationDataFetcherInterface $migrationDataFetcher,
+        private readonly SwagMigrationAccessTokenService $accessTokenService,
+        private readonly DataSelectionRegistryInterface $dataSelectionRegistry,
+        private readonly EntityRepository $migrationDataRepository,
+        private readonly EntityRepository $mediaFileRepository,
+        private readonly EntityRepository $salesChannelRepository,
+        private readonly EntityRepository $themeRepository,
+        private readonly EntityIndexerRegistry $indexer,
+        private readonly ThemeService $themeService,
+        private readonly  MappingServiceInterface $mappingService,
+        private readonly TagAwareAdapterInterface $cache,
+        private readonly EntityDefinition $migrationDataDefinition,
+        private readonly Connection $dbalConnection,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly StoreService $storeService,
+        private readonly MessageBusInterface $bus
     ) {
-        $this->migrationRunRepo = $migrationRunRepo;
-        $this->connectionRepo = $connectionRepo;
-        $this->migrationDataFetcher = $migrationDataFetcher;
-        $this->accessTokenService = $accessTokenService;
-        $this->dataSelectionRegistry = $dataSelectionRegistry;
-        $this->migrationDataRepository = $migrationDataRepository;
-        $this->mediaFileRepository = $mediaFileRepository;
-        $this->salesChannelRepository = $salesChannelRepository;
-        $this->themeRepository = $themeRepository;
-        $this->indexer = $indexer;
-        $this->themeService = $themeService;
-        $this->mappingService = $mappingService;
-        $this->cache = $cache;
-        $this->migrationDataDefinition = $migrationDataDefinition;
-        $this->dbalConnection = $dbalConnection;
-        $this->loggingService = $loggingService;
-        $this->storeService = $storeService;
-        $this->bus = $bus;
     }
 
     public function takeoverMigration(string $runUuid, Context $context): string
@@ -574,7 +465,7 @@ SQL;
             return [];
         }
 
-        $results = $query->fetchAll(FetchMode::ASSOCIATIVE);
+        $results = $query->fetchAllAssociative();
 
         $mappedCounts = [];
         foreach ($results as $result) {

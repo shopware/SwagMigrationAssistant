@@ -56,7 +56,7 @@ SQL;
                 'pos' => $table,
                 'table' => $table . '%',
             ]
-        )->fetchAll();
+        )->fetchAllAssociative();
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();

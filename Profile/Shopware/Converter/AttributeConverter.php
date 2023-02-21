@@ -15,15 +15,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeConverter extends Converter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
+    protected string $connectionName;
 
     public function getSourceIdentifier(array $data): string
     {

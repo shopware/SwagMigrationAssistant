@@ -32,45 +32,21 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class TranslationConverterTest extends TestCase
 {
-    /**
-     * @var Shopware55TranslationConverter
-     */
-    private $translationConverter;
+    private Shopware55TranslationConverter $translationConverter;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $productMigrationContext;
+    private MigrationContextInterface $productMigrationContext;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $categoryMigrationContext;
+    private MigrationContextInterface $categoryMigrationContext;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
     protected function setUp(): void
     {

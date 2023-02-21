@@ -55,7 +55,7 @@ class MediaAlbumReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function prepareMediaAlbums(array $mediaAlbums): array

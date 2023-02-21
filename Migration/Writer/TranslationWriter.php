@@ -15,20 +15,10 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class TranslationWriter implements WriterInterface
 {
-    /**
-     * @var EntityWriterInterface
-     */
-    private $entityWriter;
-
-    /**
-     * @var DefinitionInstanceRegistry
-     */
-    private $registry;
-
-    public function __construct(EntityWriterInterface $entityWriter, DefinitionInstanceRegistry $registry)
-    {
-        $this->entityWriter = $entityWriter;
-        $this->registry = $registry;
+    public function __construct(
+        private readonly EntityWriterInterface $entityWriter,
+        private readonly DefinitionInstanceRegistry $registry
+    ) {
     }
 
     public function supports(): string

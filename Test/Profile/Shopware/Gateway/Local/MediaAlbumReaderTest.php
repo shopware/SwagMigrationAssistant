@@ -20,25 +20,13 @@ class MediaAlbumReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var MediaAlbumReader
-     */
-    private $mediaAlbumReader;
+    private MediaAlbumReader $mediaAlbumReader;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

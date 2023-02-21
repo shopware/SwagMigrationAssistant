@@ -9,15 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class UnsupportedObjectType extends BaseRunLogEntry
 {
-    /**
-     * @var string string
-     */
-    private $type;
-
-    public function __construct(string $runId, string $type, string $entity, string $sourceId)
-    {
+    public function __construct(
+        string $runId,
+        private readonly string $type,
+        string $entity,
+        string $sourceId
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->type = $type;
     }
 
     public function getLevel(): string

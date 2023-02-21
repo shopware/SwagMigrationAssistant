@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -31,35 +31,17 @@ class HistoryControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var HistoryController
-     */
-    private $controller;
+    private HistoryController $controller;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
+    private EntityRepository $loggingRepo;
 
-    /**
-     * @var HistoryServiceInterface
-     */
-    private $historyService;
+    private HistoryServiceInterface $historyService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
     protected function setUp(): void
     {

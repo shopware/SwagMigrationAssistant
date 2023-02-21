@@ -23,40 +23,19 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class NewsletterRecipientConverterTest extends TestCase
 {
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var Shopware55NewsletterRecipientConverter
-     */
-    private $newsletterReceiverConverter;
+    private Shopware55NewsletterRecipientConverter $newsletterReceiverConverter;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $context;
+    private MigrationContext $context;
 
     protected function setUp(): void
     {

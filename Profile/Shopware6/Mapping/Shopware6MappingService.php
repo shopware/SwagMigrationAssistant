@@ -12,7 +12,7 @@ use Shopware\Core\Content\Cms\CmsPageCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -25,95 +25,35 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class Shopware6MappingService extends MappingService implements Shopware6MappingServiceInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $numberRangeTypeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $mailTemplateTypeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $mailTemplateRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $salutationRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $seoUrlTemplateRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $systemConfigRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $productSortingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $stateMachineStateRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $countryStateRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $taxRuleRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $taxRuleTypeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $documentBaseConfigRepo;
-
     public function __construct(
-        EntityRepositoryInterface $migrationMappingRepo,
-        EntityRepositoryInterface $localeRepository,
-        EntityRepositoryInterface $languageRepository,
-        EntityRepositoryInterface $countryRepository,
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $taxRepo,
-        EntityRepositoryInterface $numberRangeRepo,
-        EntityRepositoryInterface $ruleRepo,
-        EntityRepositoryInterface $thumbnailSizeRepo,
-        EntityRepositoryInterface $mediaDefaultRepo,
-        EntityRepositoryInterface $categoryRepo,
-        EntityRepositoryInterface $cmsPageRepo,
-        EntityRepositoryInterface $deliveryTimeRepo,
-        EntityRepositoryInterface $documentTypeRepo,
+        EntityRepository $migrationMappingRepo,
+        EntityRepository $localeRepository,
+        EntityRepository $languageRepository,
+        EntityRepository $countryRepository,
+        EntityRepository $currencyRepository,
+        EntityRepository $taxRepo,
+        EntityRepository $numberRangeRepo,
+        EntityRepository $ruleRepo,
+        EntityRepository $thumbnailSizeRepo,
+        EntityRepository $mediaDefaultRepo,
+        EntityRepository $categoryRepo,
+        EntityRepository $cmsPageRepo,
+        EntityRepository $deliveryTimeRepo,
+        EntityRepository $documentTypeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
-        EntityRepositoryInterface $numberRangeTypeRepo,
-        EntityRepositoryInterface $mailTemplateTypeRepo,
-        EntityRepositoryInterface $mailTemplateRepo,
-        EntityRepositoryInterface $salutationRepo,
-        EntityRepositoryInterface $seoUrlTemplateRepo,
-        EntityRepositoryInterface $systemConfigRepo,
-        EntityRepositoryInterface $productSortingRepo,
-        EntityRepositoryInterface $stateMachineStateRepo,
-        EntityRepositoryInterface $documentBaseConfigRepo,
-        EntityRepositoryInterface $countryStateRepo,
-        EntityRepositoryInterface $taxRuleRepo,
-        EntityRepositoryInterface $taxRuleTypeRepo
+        private readonly EntityRepository $numberRangeTypeRepo,
+        private readonly EntityRepository $mailTemplateTypeRepo,
+        private readonly EntityRepository $mailTemplateRepo,
+        private readonly EntityRepository $salutationRepo,
+        private readonly EntityRepository $seoUrlTemplateRepo,
+        private readonly EntityRepository $systemConfigRepo,
+        private readonly EntityRepository $productSortingRepo,
+        private readonly EntityRepository $stateMachineStateRepo,
+        private readonly EntityRepository $documentBaseConfigRepo,
+        private readonly EntityRepository $countryStateRepo,
+        private readonly EntityRepository $taxRuleRepo,
+        private readonly EntityRepository $taxRuleTypeRepo
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -133,19 +73,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             $entityWriter,
             $mappingDefinition
         );
-
-        $this->numberRangeTypeRepo = $numberRangeTypeRepo;
-        $this->mailTemplateTypeRepo = $mailTemplateTypeRepo;
-        $this->mailTemplateRepo = $mailTemplateRepo;
-        $this->salutationRepo = $salutationRepo;
-        $this->seoUrlTemplateRepo = $seoUrlTemplateRepo;
-        $this->systemConfigRepo = $systemConfigRepo;
-        $this->productSortingRepo = $productSortingRepo;
-        $this->stateMachineStateRepo = $stateMachineStateRepo;
-        $this->documentBaseConfigRepo = $documentBaseConfigRepo;
-        $this->countryStateRepo = $countryStateRepo;
-        $this->taxRuleRepo = $taxRuleRepo;
-        $this->taxRuleTypeRepo = $taxRuleTypeRepo;
     }
 
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string

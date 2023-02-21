@@ -26,35 +26,17 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class ProductConverterTest extends TestCase
 {
-    /**
-     * @var Shopware55ProductConverter
-     */
-    private $productConverter;
+    private Shopware55ProductConverter $productConverter;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
     protected function setUp(): void
     {

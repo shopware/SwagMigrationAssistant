@@ -32,30 +32,15 @@ class PaymentMethodReaderTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var PaymentMethodReader
-     */
-    private $reader;
+    private PaymentMethodReader $reader;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var PaymentMethodEntity
-     */
-    private $debitMock;
+    private PaymentMethodEntity $debitMock;
 
-    /**
-     * @var PaymentMethodEntity
-     */
-    private $cashMock;
+    private PaymentMethodEntity $cashMock;
 
     public function setUp(): void
     {

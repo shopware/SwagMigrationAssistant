@@ -17,14 +17,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class TotalReader implements TotalReaderInterface
 {
-    /**
-     * @var ConnectionFactory
-     */
-    private $connectionFactory;
-
-    public function __construct(ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ConnectionFactory $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array

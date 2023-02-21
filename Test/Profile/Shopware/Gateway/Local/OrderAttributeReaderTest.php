@@ -20,25 +20,13 @@ class OrderAttributeReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var OrderAttributeReader
-     */
-    private $orderAttributeReader;
+    private OrderAttributeReader $orderAttributeReader;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

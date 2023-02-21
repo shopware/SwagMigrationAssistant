@@ -77,7 +77,7 @@ class NumberRangeReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function fetchPrefix(): string

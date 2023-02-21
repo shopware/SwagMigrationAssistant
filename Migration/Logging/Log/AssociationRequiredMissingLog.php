@@ -9,15 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class AssociationRequiredMissingLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $requiredFor;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $requiredFor)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $requiredFor
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->requiredFor = $requiredFor;
     }
 
     public function getLevel(): string

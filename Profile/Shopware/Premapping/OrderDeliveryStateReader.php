@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
@@ -30,38 +30,20 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'order_delivery_state';
 
     /**
-     * @var EntityRepositoryInterface
+     * @var string[]
      */
-    protected $stateMachineRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $stateMachineStateRepo;
+    protected array $preselectionDictionary = [];
 
     /**
      * @var string[]
      */
-    protected $preselectionDictionary = [];
-
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
-
-    /**
-     * @var string[]
-     */
-    private $choiceUuids;
+    private array $choiceUuids;
 
     public function __construct(
-        EntityRepositoryInterface $stateMachineRepo,
-        EntityRepositoryInterface $stateMachineStateRepo,
-        GatewayRegistryInterface $gatewayRegistry
+        private readonly EntityRepository $stateMachineRepo,
+        private readonly EntityRepository $stateMachineStateRepo,
+        private readonly GatewayRegistryInterface $gatewayRegistry
     ) {
-        $this->stateMachineRepo = $stateMachineRepo;
-        $this->stateMachineStateRepo = $stateMachineStateRepo;
-        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public static function getMappingName(): string

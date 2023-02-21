@@ -24,50 +24,14 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MigrationDataConverter implements MigrationDataConverterInterface
 {
-    /**
-     * @var EntityWriterInterface
-     */
-    private $entityWriter;
-
-    /**
-     * @var ConverterRegistryInterface
-     */
-    private $converterRegistry;
-
-    /**
-     * @var MediaFileServiceInterface
-     */
-    private $mediaFileService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var EntityDefinition
-     */
-    private $dataDefinition;
-
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
-
     public function __construct(
-        EntityWriterInterface $entityWriter,
-        ConverterRegistryInterface $converterRegistry,
-        MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService,
-        EntityDefinition $dataDefinition,
-        MappingServiceInterface $mappingService
+        private readonly EntityWriterInterface $entityWriter,
+        private readonly ConverterRegistryInterface $converterRegistry,
+        private readonly MediaFileServiceInterface $mediaFileService,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly EntityDefinition $dataDefinition,
+        private readonly MappingServiceInterface $mappingService
     ) {
-        $this->entityWriter = $entityWriter;
-        $this->converterRegistry = $converterRegistry;
-        $this->mediaFileService = $mediaFileService;
-        $this->loggingService = $loggingService;
-        $this->dataDefinition = $dataDefinition;
-        $this->mappingService = $mappingService;
     }
 
     public function convert(array $data, MigrationContextInterface $migrationContext, Context $context): void

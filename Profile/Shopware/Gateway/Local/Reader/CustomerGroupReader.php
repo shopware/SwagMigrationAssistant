@@ -94,7 +94,7 @@ class CustomerGroupReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function fetchCustomerGroupDiscounts(array $groupIds): array

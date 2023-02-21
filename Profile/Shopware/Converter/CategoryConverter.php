@@ -21,49 +21,24 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFou
 
 abstract class CategoryConverter extends ShopwareConverter
 {
-    /**
-     * @var MediaFileServiceInterface
-     */
-    protected $mediaFileService;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionName;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
+    protected Context $context;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected string $oldCategoryId;
 
-    /**
-     * @var string
-     */
-    protected $oldCategoryId;
+    protected string $locale;
 
-    /**
-     * @var string
-     */
-    protected $locale;
-
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->mediaFileService = $mediaFileService;
     }
 
     public function getMediaUuids(array $converted): ?array

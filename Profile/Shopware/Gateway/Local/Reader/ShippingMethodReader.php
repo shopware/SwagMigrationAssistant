@@ -107,7 +107,7 @@ class ShippingMethodReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function fetchShippingCosts(array $shippingMethodIds): array

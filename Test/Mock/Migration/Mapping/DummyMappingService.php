@@ -21,10 +21,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class DummyMappingService extends MappingService
 {
-    public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
-    public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830531';
-    public const DEFAULT_GERMANY_UUID = '20080911ffff4fffafffffff19830511';
-    public const DEFAULT_UK_UUID = '20080911ffff4fffafffffff19830512';
+    final public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
+    final public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830531';
+    final public const DEFAULT_GERMANY_UUID = '20080911ffff4fffafffffff19830511';
+    final public const DEFAULT_UK_UUID = '20080911ffff4fffafffffff19830512';
 
     public function __construct()
     {

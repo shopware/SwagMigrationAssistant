@@ -25,20 +25,11 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationTy
 
 abstract class TranslationConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     public function convert(
         array $data,

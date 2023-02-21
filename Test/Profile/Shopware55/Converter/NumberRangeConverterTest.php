@@ -23,15 +23,9 @@ class NumberRangeConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55NumberRangeConverter
-     */
-    private $converter;
+    private Shopware55NumberRangeConverter $converter;
 
     protected function setUp(): void
     {

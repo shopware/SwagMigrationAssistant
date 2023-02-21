@@ -11,15 +11,13 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class UnsupportedMediaDefaultFolderLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $defaultEntity;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $defaultEntity)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $defaultEntity
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->defaultEntity = $defaultEntity;
     }
 
     public function getLevel(): string

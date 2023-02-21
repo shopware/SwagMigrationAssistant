@@ -17,7 +17,7 @@ use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
@@ -35,30 +35,12 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class HttpMediaDownloadService extends BaseMediaService implements MediaFileProcessorInterface
 {
-    /**
-     * @var FileSaver
-     */
-    private $fileSaver;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
     public function __construct(
-        EntityRepositoryInterface $migrationMediaFileRepo,
-        FileSaver $fileSaver,
-        LoggingServiceInterface $loggingService,
+        private readonly EntityRepository $migrationMediaFileRepo,
+        private readonly FileSaver $fileSaver,
+        private readonly LoggingServiceInterface $loggingService,
         Connection $dbalConnection
     ) {
-        $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->fileSaver = $fileSaver;
-        $this->loggingService = $loggingService;
         parent::__construct($dbalConnection);
     }
 

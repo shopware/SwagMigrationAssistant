@@ -84,7 +84,7 @@ class MediaReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function prepareMedia(array $media): array

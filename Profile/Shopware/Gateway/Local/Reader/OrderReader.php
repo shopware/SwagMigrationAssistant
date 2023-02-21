@@ -17,10 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class OrderReader extends AbstractReader
 {
-    /**
-     * @var array
-     */
-    private $orderIds;
+    private array $orderIds;
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -131,7 +128,7 @@ class OrderReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function appendAssociatedData(array $orders): array

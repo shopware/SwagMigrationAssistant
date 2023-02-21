@@ -17,10 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProfileRegistryTest extends TestCase
 {
-    /**
-     * @var ProfileRegistryInterface
-     */
-    private $profileRegistry;
+    private ProfileRegistryInterface $profileRegistry;
 
     protected function setUp(): void
     {

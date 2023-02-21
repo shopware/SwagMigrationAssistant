@@ -9,15 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class DataSetNotFoundLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $profileName;
-
-    public function __construct(string $runUuid, string $entity, string $sourceId, string $profileName)
-    {
+    public function __construct(
+        string $runUuid,
+        string $entity,
+        string $sourceId,
+        private readonly string $profileName
+    ) {
         parent::__construct($runUuid, $entity, $sourceId);
-        $this->profileName = $profileName;
     }
 
     public function getLevel(): string

@@ -19,10 +19,7 @@ use SwagMigrationAssistant\Test\Mock\DataProvider\DummyDataProvider;
 
 class AbstractDataProviderTest extends TestCase
 {
-    /**
-     * @var DummyDataProvider
-     */
-    private $dataProvider;
+    private DummyDataProvider $dataProvider;
 
     protected function setUp(): void
     {

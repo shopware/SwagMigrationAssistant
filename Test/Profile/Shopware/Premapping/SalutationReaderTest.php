@@ -31,30 +31,15 @@ class SalutationReaderTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var OrderStateReader
-     */
-    private $reader;
+    private OrderStateReader $reader;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var SalutationEntity
-     */
-    private $salutationTwo;
+    private SalutationEntity $salutationTwo;
 
-    /**
-     * @var SalutationEntity
-     */
-    private $salutationOne;
+    private SalutationEntity $salutationOne;
 
     public function setUp(): void
     {

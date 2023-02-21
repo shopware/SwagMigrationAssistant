@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Test\Mock\Repositories;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResultCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -22,16 +22,10 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class MigrationConnectionRepo implements EntityRepositoryInterface
+class MigrationConnectionRepo implements EntityRepository
 {
-    /**
-     * @var string
-     */
-    private $entityUuid;
-
-    public function __construct(string $uuid)
+    public function __construct(private readonly string $entityUuid)
     {
-        $this->entityUuid = $uuid;
     }
 
     public function getDefinition(): EntityDefinition

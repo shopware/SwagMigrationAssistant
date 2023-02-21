@@ -15,29 +15,11 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class MigrationContextFactory implements MigrationContextFactoryInterface
 {
-    /**
-     * @var ProfileRegistryInterface
-     */
-    private $profileRegistry;
-
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
-
-    /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
-
     public function __construct(
-        ProfileRegistryInterface $profileRegistry,
-        GatewayRegistryInterface $gatewayRegistry,
-        DataSetRegistryInterface $dataSetRegistry
+        private readonly ProfileRegistryInterface $profileRegistry,
+        private readonly GatewayRegistryInterface $gatewayRegistry,
+        private readonly DataSetRegistryInterface $dataSetRegistry
     ) {
-        $this->profileRegistry = $profileRegistry;
-        $this->gatewayRegistry = $gatewayRegistry;
-        $this->dataSetRegistry = $dataSetRegistry;
     }
 
     public function create(

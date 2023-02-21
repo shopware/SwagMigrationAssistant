@@ -14,30 +14,15 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class Converter implements ConverterInterface
 {
-    /**
-     * @var MappingServiceInterface
-     */
-    protected $mappingService;
+    protected MappingServiceInterface $mappingService;
 
-    /**
-     * @var LoggingServiceInterface
-     */
-    protected $loggingService;
+    protected LoggingServiceInterface $loggingService;
 
-    /**
-     * @var array|null
-     */
-    protected $mainMapping;
+    protected ?array $mainMapping;
 
-    /**
-     * @var array
-     */
-    protected $mappingIds = [];
+    protected array $mappingIds = [];
 
-    /**
-     * @var string
-     */
-    protected $checksum;
+    protected string $checksum;
 
     public function __construct(
         MappingServiceInterface $mappingService,

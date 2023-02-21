@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 
 class SwagMigrationMediaFileDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'swag_migration_media_file';
+    final public const ENTITY_NAME = 'swag_migration_media_file';
 
     public function getEntityName(): string
     {

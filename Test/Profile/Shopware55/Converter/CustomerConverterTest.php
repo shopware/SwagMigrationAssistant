@@ -30,40 +30,19 @@ class CustomerConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var Shopware55CustomerConverter
-     */
-    private $customerConverter;
+    private Shopware55CustomerConverter $customerConverter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
     protected function setUp(): void
     {

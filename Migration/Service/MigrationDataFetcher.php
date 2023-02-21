@@ -16,22 +16,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MigrationDataFetcher implements MigrationDataFetcherInterface
 {
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
     public function __construct(
-        GatewayRegistryInterface $gatewayRegistry,
-        LoggingServiceInterface $loggingService
+        private readonly GatewayRegistryInterface $gatewayRegistry,
+        private readonly LoggingServiceInterface $loggingService
     ) {
-        $this->gatewayRegistry = $gatewayRegistry;
-        $this->loggingService = $loggingService;
     }
 
     public function fetchData(MigrationContextInterface $migrationContext, Context $context): array

@@ -8,8 +8,6 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
@@ -23,23 +21,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class HistoryController extends AbstractController
 {
-    /**
-     * @var HistoryServiceInterface
-     */
-    private $historyService;
-
-    public function __construct(HistoryServiceInterface $historyService)
+    public function __construct(private readonly HistoryServiceInterface $historyService)
     {
-        $this->historyService = $historyService;
     }
 
     /**
-     * @Route("/api/migration/get-grouped-logs-of-run", name="api.admin.migration.get-grouped-logs-of-run", methods={"GET"})
-     * @Acl({"admin"})
+     * @Route("/api/migration/get-grouped-logs-of-run", name="api.admin.migration.get-grouped-logs-of-run", methods={"GET"}, defaults={"_acl"={"admin"}})
      */
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
@@ -66,8 +57,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/download-logs-of-run", name="api.admin.migration.download-logs-of-run", defaults={"auth_required"=false}, methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/download-logs-of-run", name="api.admin.migration.download-logs-of-run", defaults={"auth_required"=false}, methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
@@ -95,8 +85,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/clear-data-of-run", name="api.admin.migration.clear-data-of-run", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/clear-data-of-run", name="api.admin.migration.clear-data-of-run", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function clearDataOfRun(Request $request, Context $context): Response
     {
@@ -116,8 +105,7 @@ class HistoryController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/is-media-processing", name="api.admin.migration.clear-logs-of-run", methods={"GET"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/is-media-processing", name="api.admin.migration.clear-logs-of-run", methods={"GET"}, defaults={"_acl"={"admin"}})
      */
     public function isMediaProcessing(): JsonResponse
     {

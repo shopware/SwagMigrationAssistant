@@ -19,15 +19,9 @@ class NewsletterRecipientReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var NewsletterRecipientReader
-     */
-    private $newsletterRecipientReader;
+    private NewsletterRecipientReader $newsletterRecipientReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

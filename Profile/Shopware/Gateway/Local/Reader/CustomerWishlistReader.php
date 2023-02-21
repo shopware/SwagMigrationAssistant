@@ -76,6 +76,6 @@ class CustomerWishlistReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 }

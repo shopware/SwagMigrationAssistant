@@ -11,7 +11,7 @@ use Doctrine\DBAL\Connection;
 use GuzzleHttp\Promise;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -31,56 +31,17 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class HttpOrderDocumentGenerationService extends BaseMediaService implements MediaFileProcessorInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $documentRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationMediaFileRepo;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
-
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
-
-    /**
-     * @var MediaService
-     */
-    private $mediaService;
-
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
+    private SwagMigrationConnectionEntity $connection;
 
     public function __construct(
-        EntityRepositoryInterface $documentRepo,
-        EntityRepositoryInterface $migrationMediaFileRepo,
-        LoggingServiceInterface $loggingService,
-        MappingServiceInterface $mappingService,
-        MediaService $mediaService,
-        ConnectionFactoryInterface $connectionFactory,
+        private readonly EntityRepository $documentRepo,
+        private readonly EntityRepository $migrationMediaFileRepo,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly MappingServiceInterface $mappingService,
+        private readonly MediaService $mediaService,
+        private readonly ConnectionFactoryInterface $connectionFactory,
         Connection $dbalConnection
     ) {
-        $this->documentRepository = $documentRepo;
-        $this->migrationMediaFileRepo = $migrationMediaFileRepo;
-        $this->loggingService = $loggingService;
-        $this->mappingService = $mappingService;
-        $this->mediaService = $mediaService;
-        $this->connectionFactory = $connectionFactory;
         $this->dbalConnection = $dbalConnection;
         parent::__construct($dbalConnection);
     }

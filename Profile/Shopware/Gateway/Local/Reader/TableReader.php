@@ -14,14 +14,8 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 
 class TableReader implements TableReaderInterface
 {
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
-
-    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
@@ -48,6 +42,6 @@ class TableReader implements TableReaderInterface
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 }

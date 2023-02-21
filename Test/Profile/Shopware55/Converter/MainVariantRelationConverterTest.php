@@ -21,45 +21,21 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class MainVariantRelationConverterTest extends TestCase
 {
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55MainVariantRelationConverter
-     */
-    private $converter;
+    private Shopware55MainVariantRelationConverter $converter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var array
-     */
-    private $productContainer1;
+    private array $productContainer1;
 
-    /**
-     * @var array
-     */
-    private $productContainer2;
+    private array $productContainer2;
 
-    /**
-     * @var array
-     */
-    private $productVariant1;
+    private array $productVariant1;
 
-    /**
-     * @var array
-     */
-    private $productVariant2;
+    private array $productVariant2;
 
     protected function setUp(): void
     {

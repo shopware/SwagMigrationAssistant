@@ -15,25 +15,13 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class MediaFolderConverter extends ShopwareConverter
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $mainLocale;
+    protected string $mainLocale;
 
-    /**
-     * @var string
-     */
-    protected $oldId;
+    protected string $oldId;
 
     /**
      * Converts the given data into the internal structure

@@ -20,39 +20,20 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 
 abstract class PropertyGroupOptionConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
-    /**
-     * @var MediaFileServiceInterface
-     */
-    protected $mediaFileService;
-
-    /**
-     * @var string
-     */
-    protected $locale;
+    protected string $locale;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->mediaFileService = $mediaFileService;
     }
 
     public function getSourceIdentifier(array $data): string

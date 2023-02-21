@@ -9,43 +9,19 @@ namespace SwagMigrationAssistant\DataProvider\Service;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 
 class EnvironmentService implements EnvironmentServiceInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $currencyRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepository;
-
-    /**
-     * @var string
-     */
-    private $shopwareVersion;
-
-    /**
-     * @var string
-     */
-    private $shopwareRevision;
-
     public function __construct(
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $languageRepository,
-        string $shopwareVersion,
-        string $shopwareRevision
+        private readonly EntityRepository $currencyRepository,
+        private readonly EntityRepository $languageRepository,
+        private readonly string $shopwareVersion,
+        private readonly string $shopwareRevision
     ) {
-        $this->currencyRepository = $currencyRepository;
-        $this->languageRepository = $languageRepository;
-        $this->shopwareVersion = $shopwareVersion;
-        $this->shopwareRevision = $shopwareRevision;
     }
 
     public function getEnvironmentData(Context $context): array

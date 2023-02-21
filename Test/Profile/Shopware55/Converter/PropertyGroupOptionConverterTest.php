@@ -26,55 +26,25 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 class PropertyGroupOptionConverterTest extends TestCase
 {
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var Shopware55PropertyGroupOptionConverter
-     */
-    private $propertyGroupOptionConverter;
+    private Shopware55PropertyGroupOptionConverter $propertyGroupOptionConverter;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55ProductConverter
-     */
-    private $productConverter;
+    private Shopware55ProductConverter $productConverter;
 
-    /**
-     * @var Shopware55ProductOptionRelationConverter
-     */
-    private $optionRelationConverter;
+    private Shopware55ProductOptionRelationConverter $optionRelationConverter;
 
-    /**
-     * @var Shopware55ProductPropertyRelationConverter
-     */
-    private $propertyRelationConverter;
+    private Shopware55ProductPropertyRelationConverter $propertyRelationConverter;
 
     protected function setUp(): void
     {

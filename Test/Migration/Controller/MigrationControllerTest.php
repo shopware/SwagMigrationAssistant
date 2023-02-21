@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Store\Services\StoreService;
@@ -52,60 +52,27 @@ class MigrationControllerTest extends TestCase
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
 
-    /**
-     * @var MigrationController
-     */
-    private $controller;
+    private MigrationController $controller;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
+    private DataSetRegistryInterface $dataSetRegistry;
 
-    /**
-     * @var string
-     */
-    private $invalidRunUuid;
+    private string $invalidRunUuid;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $dataRepo;
+    private EntityRepository $dataRepo;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
+    private EntityRepository $mediaFileRepo;
 
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
+    private MigrationContextFactoryInterface $migrationContextFactory;
 
     protected function setUp(): void
     {

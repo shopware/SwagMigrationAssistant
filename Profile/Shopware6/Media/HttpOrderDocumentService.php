@@ -82,7 +82,7 @@ class HttpOrderDocumentService extends BaseHttpMediaDownloadService
             return [];
         }
 
-        $result = $query->fetchAll();
+        $result = $query->fetchAllAssociative();
         foreach ($result as &$media) {
             $media['id'] = \mb_strtolower($media['id']);
             $media['run_id'] = \mb_strtolower($media['run_id']);

@@ -8,19 +8,13 @@
 namespace SwagMigrationAssistant\Test\Mock;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Storefront\Theme\ThemeService;
 
 class DummyThemeService extends ThemeService
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeSalesChannelRepository;
-
-    public function __construct(EntityRepositoryInterface $themeSalesChannelRepository)
+    public function __construct(private readonly EntityRepository $themeSalesChannelRepository)
     {
-        $this->themeSalesChannelRepository = $themeSalesChannelRepository;
     }
 
     public function assignTheme(string $themeId, string $salesChannelId, Context $context, bool $skipCompile = false): bool

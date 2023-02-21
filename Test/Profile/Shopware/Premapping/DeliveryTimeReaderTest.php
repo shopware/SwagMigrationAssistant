@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
@@ -30,25 +30,13 @@ class DeliveryTimeReaderTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var DeliveryTimeReader
-     */
-    private $deliveryTimeReader;
+    private DeliveryTimeReader $deliveryTimeReader;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var DeliveryTimeEntity
-     */
-    private $timeOne;
+    private DeliveryTimeEntity $timeOne;
 
     public function setUp(): void
     {
@@ -82,7 +70,7 @@ class DeliveryTimeReaderTest extends TestCase
 
         $mock->method('search')->willReturn(new EntitySearchResult(DeliveryTimeDefinition::ENTITY_NAME, 2, new EntityCollection([$this->timeOne, $timeTwo]), null, new Criteria(), $this->context));
 
-        /* @var EntityRepositoryInterface $mock */
+        /* @var EntityRepository $mock */
         $this->deliveryTimeReader = new DeliveryTimeReader($mock);
 
         $this->migrationContext = new MigrationContext(

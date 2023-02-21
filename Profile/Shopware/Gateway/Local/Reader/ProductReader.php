@@ -19,10 +19,7 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 class ProductReader extends AbstractReader
 {
-    /**
-     * @var ParameterBag
-     */
-    private $productMapping;
+    private ParameterBag $productMapping;
 
     public function __construct(ConnectionFactoryInterface $connectionFactory)
     {
@@ -201,7 +198,7 @@ class ProductReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function getCategories(): array

@@ -20,15 +20,9 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CustomerGroupAttributeConverterTest extends TestCase
 {
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55CustomerGroupAttributeConverter
-     */
-    private $converter;
+    private Shopware55CustomerGroupAttributeConverter $converter;
 
     protected function setUp(): void
     {

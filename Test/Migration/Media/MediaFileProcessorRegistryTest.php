@@ -23,10 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MediaFileProcessorRegistryTest extends TestCase
 {
-    /**
-     * @var MediaFileProcessorRegistryInterface
-     */
-    private $processorRegistry;
+    private MediaFileProcessorRegistryInterface $processorRegistry;
 
     protected function setUp(): void
     {

@@ -16,7 +16,7 @@ use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
 use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
@@ -35,37 +35,13 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
-
-    /**
-     * @var MediaService
-     */
-    private $mediaService;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
-
     public function __construct(
-        EntityRepositoryInterface $migrationMediaFileRepo,
-        MediaService $mediaService,
-        LoggingServiceInterface $loggingService,
-        ConnectionFactoryInterface $connectionFactory,
+        private readonly EntityRepository $migrationMediaFileRepo,
+        private readonly MediaService $mediaService,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly ConnectionFactoryInterface $connectionFactory,
         Connection $dbalConnection
     ) {
-        $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->mediaService = $mediaService;
-        $this->loggingService = $loggingService;
-        $this->connectionFactory = $connectionFactory;
         parent::__construct($dbalConnection);
     }
 

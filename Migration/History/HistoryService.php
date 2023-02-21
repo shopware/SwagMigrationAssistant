@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\History;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\Bucket;
@@ -33,29 +33,11 @@ class HistoryService implements HistoryServiceInterface
     private const LOG_FETCH_LIMIT = 50;
     private const LOG_TIME_FORMAT = 'd.m.Y h:i:s e';
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
-
-    /**
-     * @var Connection
-     */
-    private $connection;
-
     public function __construct(
-        EntityRepositoryInterface $loggingRepo,
-        EntityRepositoryInterface $runRepo,
-        Connection $connection
+        private readonly EntityRepository $loggingRepo,
+        private readonly EntityRepository $runRepo,
+        private readonly Connection $connection
     ) {
-        $this->loggingRepo = $loggingRepo;
-        $this->runRepo = $runRepo;
-        $this->connection = $connection;
     }
 
     public function getGroupedLogsOfRun(

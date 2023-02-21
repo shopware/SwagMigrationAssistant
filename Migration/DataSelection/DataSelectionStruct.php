@@ -12,72 +12,39 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
 class DataSelectionStruct extends Struct
 {
-    public const BASIC_DATA_TYPE = 'basicData';
-    public const PLUGIN_DATA_TYPE = 'pluginData';
-
-    /**
-     * @var string
-     */
-    protected $id;
+    final public const BASIC_DATA_TYPE = 'basicData';
+    final public const PLUGIN_DATA_TYPE = 'pluginData';
 
     /**
      * @var string[]
      */
-    protected $entityNames;
+    protected array $entityNames;
 
     /**
      * @var string[]
      */
-    protected $entityNamesRequiredForCount;
+    protected array $entityNamesRequiredForCount;
 
     /**
      * @var int[]
      */
-    protected $entityTotals = [];
+    protected array $entityTotals = [];
 
-    /**
-     * @var int
-     */
-    protected $total = 0;
-
-    /**
-     * @var bool
-     */
-    protected $processMediaFiles;
-
-    /**
-     * @var string
-     */
-    protected $snippet;
-
-    /**
-     * @var int
-     */
-    protected $position;
-
-    /**
-     * @var string
-     */
-    protected $dataType;
-
-    /**
-     * @var bool
-     */
-    protected $requiredSelection;
+    protected int $total = 0;
 
     /**
      * @param DataSet[] $dataSets
      * @param DataSet[] $dataSetsRequiredForCount
      */
     public function __construct(
-        string $id,
-        array $dataSets,
-        array $dataSetsRequiredForCount,
-        string $snippet,
-        int $position,
-        bool $processMediaFiles = false,
-        string $dataType = self::BASIC_DATA_TYPE,
-        bool $requiredSelection = false
+        protected string $id,
+        protected array $dataSets,
+        protected array $dataSetsRequiredForCount,
+        protected string $snippet,
+        protected int $position,
+        protected bool $processMediaFiles = false,
+        protected string $dataType = self::BASIC_DATA_TYPE,
+        protected bool $requiredSelection = false
     ) {
         $entityNameArray = [];
         foreach ($dataSets as $dataSet) {
@@ -89,14 +56,8 @@ class DataSelectionStruct extends Struct
             $entityNamesRequiredForCount[] = $dataSet::getEntity();
         }
 
-        $this->id = $id;
         $this->entityNames = $entityNameArray;
         $this->entityNamesRequiredForCount = $entityNamesRequiredForCount;
-        $this->snippet = $snippet;
-        $this->position = $position;
-        $this->processMediaFiles = $processMediaFiles;
-        $this->dataType = $dataType;
-        $this->requiredSelection = $requiredSelection;
     }
 
     public function getId(): string

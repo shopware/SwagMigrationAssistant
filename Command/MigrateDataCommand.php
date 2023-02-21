@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Command;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
@@ -33,96 +33,27 @@ use Symfony\Component\Console\Output\OutputInterface;
 class MigrateDataCommand extends Command
 {
     /**
-     * @var EntityRepositoryInterface
-     */
-    private $generalSettingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationConnectionRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepo;
-
-    /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
-
-    /**
-     * @var RunServiceInterface
-     */
-    private $runService;
-
-    /**
-     * @var PremappingServiceInterface
-     */
-    private $premappingService;
-
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
-
-    /**
-     * @var MigrationDataConverterInterface
-     */
-    private $migrationDataConverter;
-
-    /**
-     * @var MigrationDataWriterInterface
-     */
-    private $migrationDataWriter;
-
-    /**
      * @var string[]
      */
-    private $dataSelectionNames;
+    private array $dataSelectionNames;
 
-    /**
-     * @var MediaFileProcessorServiceInterface
-     */
-    private $processorService;
-
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
-
-    /**
-     * @var OutputInterface
-     */
-    private $output;
+    private OutputInterface $output;
 
     public function __construct(
-        EntityRepositoryInterface $generalSettingRepo,
-        EntityRepositoryInterface $migrationConnectionRepo,
-        EntityRepositoryInterface $migrationRunRepo,
-        DataSetRegistryInterface $dataSetRegistry,
-        RunServiceInterface $runService,
-        PremappingServiceInterface $premappingService,
-        MigrationDataFetcherInterface $migrationDataFetcher,
-        MigrationDataConverterInterface $migrationDataConverter,
-        MigrationDataWriterInterface $migrationDataWriter,
-        MediaFileProcessorServiceInterface $processorService,
-        MigrationContextFactoryInterface $migrationContextFactory,
+        private readonly EntityRepository $generalSettingRepo,
+        private readonly EntityRepository $migrationConnectionRepo,
+        private readonly EntityRepository $migrationRunRepo,
+        private readonly DataSetRegistryInterface $dataSetRegistry,
+        private readonly RunServiceInterface $runService,
+        private readonly PremappingServiceInterface $premappingService,
+        private readonly MigrationDataFetcherInterface $migrationDataFetcher,
+        private readonly MigrationDataConverterInterface $migrationDataConverter,
+        private readonly MigrationDataWriterInterface $migrationDataWriter,
+        private readonly MediaFileProcessorServiceInterface $processorService,
+        private readonly MigrationContextFactoryInterface $migrationContextFactory,
         ?string $name = null
     ) {
         parent::__construct($name);
-        $this->generalSettingRepo = $generalSettingRepo;
-        $this->migrationConnectionRepo = $migrationConnectionRepo;
-        $this->migrationRunRepo = $migrationRunRepo;
-        $this->dataSetRegistry = $dataSetRegistry;
-        $this->runService = $runService;
-        $this->premappingService = $premappingService;
-        $this->migrationDataFetcher = $migrationDataFetcher;
-        $this->migrationDataConverter = $migrationDataConverter;
-        $this->migrationDataWriter = $migrationDataWriter;
-        $this->processorService = $processorService;
-        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     protected function configure(): void

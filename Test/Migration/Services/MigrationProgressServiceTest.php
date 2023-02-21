@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\Services;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -51,50 +51,26 @@ class MigrationProgressServiceTest extends TestCase
     use IntegrationTestBehaviour;
     use LocalCredentialTrait;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $dataRepo;
+    private EntityRepository $dataRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
+    private EntityRepository $loggingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
+    private EntityRepository $mediaFileRepo;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var MigrationProgressServiceInterface
-     */
-    private $progressService;
+    private MigrationProgressServiceInterface $progressService;
 
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
+    private MigrationDataFetcherInterface $migrationDataFetcher;
 
     /**
      * @var RunProgress[]
      */
-    private $runProgress;
+    private array $runProgress;
 
-    /**
-     * @var array
-     */
-    private $toBeFetched = [
+    private array $toBeFetched = [
         'category' => 8,
         'product' => 37,
         'customer' => 3,
@@ -102,40 +78,19 @@ class MigrationProgressServiceTest extends TestCase
         'media' => 23,
     ];
 
-    /**
-     * @var array
-     */
-    private $writeArray;
+    private array $writeArray;
 
-    /**
-     * @var array|null
-     */
-    private $credentialFields;
+    private ?array $credentialFields;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepo;
+    private EntityRepository $salesChannelRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeRepo;
+    private EntityRepository $themeRepo;
 
     protected function setUp(): void
     {

@@ -9,26 +9,11 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 abstract class BaseRunLogEntry implements LogEntryInterface
 {
-    /**
-     * @var string
-     */
-    protected $runId;
-
-    /**
-     * @var ?string
-     */
-    protected $entity;
-
-    /**
-     * @var ?string
-     */
-    protected $sourceId;
-
-    public function __construct(string $runId, ?string $entity = null, ?string $sourceId = null)
-    {
-        $this->runId = $runId;
-        $this->entity = $entity;
-        $this->sourceId = $sourceId;
+    public function __construct(
+        protected string $runId,
+        protected ?string $entity = null,
+        protected ?string $sourceId = null
+    ) {
     }
 
     public function getRunId(): ?string

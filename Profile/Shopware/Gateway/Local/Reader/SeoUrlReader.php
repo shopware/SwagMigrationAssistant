@@ -82,7 +82,7 @@ class SeoUrlReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function extractTypeInformation(array $seoUrls): array

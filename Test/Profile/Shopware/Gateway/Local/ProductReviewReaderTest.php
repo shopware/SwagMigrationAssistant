@@ -19,15 +19,9 @@ class ProductReviewReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var ProductReviewReader
-     */
-    private $productReviewReader;
+    private ProductReviewReader $productReviewReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

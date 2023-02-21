@@ -25,44 +25,22 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentD
 
 abstract class OrderDocumentConverter extends ShopwareConverter
 {
-    /**
-     * @var MediaFileServiceInterface
-     */
-    protected $mediaFileService;
+    protected string $oldId;
 
-    /**
-     * @var string
-     */
-    protected $oldId;
+    protected string $runId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionName;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
-
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->mediaFileService = $mediaFileService;
     }
 
     public function getMediaUuids(array $converted): ?array

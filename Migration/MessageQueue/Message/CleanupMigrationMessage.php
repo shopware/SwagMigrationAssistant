@@ -9,14 +9,8 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 class CleanupMigrationMessage
 {
-    /**
-     * @var string|null
-     */
-    private $tableName;
-
-    public function __construct(?string $tableName = null)
+    public function __construct(private readonly ?string $tableName = null)
     {
-        $this->tableName = $tableName;
     }
 
     public function getTableName(): ?string

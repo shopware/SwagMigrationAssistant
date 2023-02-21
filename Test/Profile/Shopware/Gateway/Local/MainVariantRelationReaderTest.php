@@ -19,15 +19,9 @@ class MainVariantRelationReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var MainVariantRelationReader
-     */
-    private $reader;
+    private MainVariantRelationReader $reader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

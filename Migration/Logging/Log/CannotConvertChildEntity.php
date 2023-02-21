@@ -9,21 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class CannotConvertChildEntity extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $parentEntity;
-
-    /**
-     * @var string
-     */
-    private $parentSourceId;
-
-    public function __construct(string $runId, string $entity, string $parentEntity, string $parentSourceId)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        private readonly string $parentEntity,
+        private readonly string $parentSourceId
+    ) {
         parent::__construct($runId, $entity, null);
-        $this->parentEntity = $parentEntity;
-        $this->parentSourceId = $parentSourceId;
     }
 
     public function getLevel(): string

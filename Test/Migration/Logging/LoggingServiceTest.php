@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Logging;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -23,25 +23,13 @@ class LoggingServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var LoggingService
-     */
-    private $loggingService;
+    private LoggingService $loggingService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
+    private EntityRepository $loggingRepo;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
     protected function setUp(): void
     {

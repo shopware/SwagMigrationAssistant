@@ -15,55 +15,25 @@ class SwagMigrationMediaFileEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
-    /**
-     * @var SwagMigrationRunEntity
-     */
-    protected $run;
+    protected SwagMigrationRunEntity $run;
 
-    /**
-     * @var string
-     */
-    protected $entity;
+    protected string $entity;
 
-    /**
-     * @var string
-     */
-    protected $fileName;
+    protected string $fileName;
 
-    /**
-     * @var string
-     */
-    protected $uri;
+    protected string $uri;
 
-    /**
-     * @var int
-     */
-    protected $fileSize;
+    protected int $fileSize;
 
-    /**
-     * @var string
-     */
-    protected $mediaId;
+    protected string $mediaId;
 
-    /**
-     * @var bool
-     */
-    protected $written;
+    protected bool $written;
 
-    /**
-     * @var bool
-     */
-    protected $processed;
+    protected bool $processed;
 
-    /**
-     * @var bool
-     */
-    protected $processFailure;
+    protected bool $processFailure;
 
     public function getRunId(): string
     {

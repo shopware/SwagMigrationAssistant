@@ -23,77 +23,47 @@ class SwagMigrationRunEntity extends Entity
     /**
      * @var string
      */
-    public const STATUS_RUNNING = 'running';
+    final public const STATUS_RUNNING = 'running';
 
     /**
      * @var string
      */
-    public const STATUS_FINISHED = 'finished';
+    final public const STATUS_FINISHED = 'finished';
 
     /**
      * @var string
      */
-    public const STATUS_ABORTED = 'aborted';
+    final public const STATUS_ABORTED = 'aborted';
 
-    /**
-     * @var string|null
-     */
-    protected $connectionId;
+    protected ?string $connectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity|null
-     */
-    protected $connection;
+    protected ?SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var array|null
-     */
-    protected $totals;
+    protected ?array $totals;
 
-    /**
-     * @var array|null
-     */
-    protected $environmentInformation;
+    protected ?array $environmentInformation;
 
-    /**
-     * @var string|null
-     */
-    protected $status;
+    protected ?string $status;
 
-    /**
-     * @var string|null
-     */
-    protected $userId;
+    protected ?string $userId;
 
-    /**
-     * @var string|null
-     */
-    protected $accessToken;
+    protected ?string $accessToken;
 
     /**
      * @var RunProgress[]
      */
-    protected $progress;
+    protected array $progress;
 
     /**
      * @var PremappingStruct[]
      */
-    protected $premapping;
+    protected array $premapping;
 
-    /**
-     * @var SwagMigrationDataCollection|null
-     */
-    protected $data;
+    protected ?SwagMigrationDataCollection $data;
 
-    /**
-     * @var SwagMigrationMediaFileCollection|null
-     */
-    protected $mediaFiles;
+    protected ?SwagMigrationMediaFileCollection $mediaFiles;
 
-    /**
-     * @var SwagMigrationLoggingCollection|null
-     */
-    protected $logs;
+    protected ?SwagMigrationLoggingCollection $logs;
 
     public function getConnectionId(): ?string
     {

@@ -16,19 +16,10 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 
 class EnvironmentReader implements EnvironmentReaderInterface
 {
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    protected $connectionFactory;
+    protected Connection $connection;
 
-    /**
-     * @var Connection
-     */
-    protected $connection;
-
-    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    public function __construct(protected ConnectionFactoryInterface $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

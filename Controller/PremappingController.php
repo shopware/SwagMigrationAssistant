@@ -8,10 +8,8 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -24,38 +22,19 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 /**
- * @RouteScope(scopes={"api"})
+ * @Route(defaults={"_routeScope"={"api"}})
  */
 class PremappingController extends AbstractController
 {
-    /**
-     * @var PremappingServiceInterface
-     */
-    private $premappingService;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepo;
-
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
-
     public function __construct(
-        PremappingServiceInterface $premappingService,
-        EntityRepositoryInterface $migrationRunRepo,
-        MigrationContextFactoryInterface $migrationContextFactory
+        private readonly PremappingServiceInterface $premappingService,
+        private readonly EntityRepository $migrationRunRepo,
+        private readonly MigrationContextFactoryInterface $migrationContextFactory
     ) {
-        $this->premappingService = $premappingService;
-        $this->migrationRunRepo = $migrationRunRepo;
-        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     /**
-     * @Route("/api/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
@@ -82,8 +61,7 @@ class PremappingController extends AbstractController
     }
 
     /**
-     * @Route("/api/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"})
-     * @Acl({"admin"})
+     * @Route("/api/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"}, defaults={"_acl"={"admin"}})
      */
     public function writePremapping(Request $request, Context $context): JsonResponse
     {

@@ -19,15 +19,9 @@ class SeoUrlReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var SeoUrlReader
-     */
-    private $seoUrlReader;
+    private SeoUrlReader $seoUrlReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

@@ -31,60 +31,27 @@ class PromotionConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55PromotionConverter
-     */
-    private $converter;
+    private Shopware55PromotionConverter $converter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var string
-     */
-    private $manufacturerId;
+    private string $manufacturerId;
 
-    /**
-     * @var array
-     */
-    private $restrictedProducts;
+    private array $restrictedProducts;
 
-    /**
-     * @var string
-     */
-    private $customerGroup;
+    private string $customerGroup;
 
-    /**
-     * @var string
-     */
-    private $salesChannel;
+    private string $salesChannel;
 
-    /**
-     * @var string
-     */
-    private $customer;
+    private string $customer;
 
     protected function setUp(): void
     {

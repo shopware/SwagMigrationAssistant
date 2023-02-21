@@ -13,16 +13,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class DataSetRegistry implements DataSetRegistryInterface
 {
     /**
-     * @var DataSet[]
-     */
-    private $dataSets;
-
-    /**
      * @param DataSet[] $dataSets
      */
-    public function __construct(iterable $dataSets)
+    public function __construct(private readonly iterable $dataSets)
     {
-        $this->dataSets = $dataSets;
     }
 
     /**

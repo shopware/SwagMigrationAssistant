@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Mapping;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -28,25 +28,13 @@ class MappingServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
+    private MappingServiceInterface $mappingService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $localeRepo;
+    private EntityRepository $localeRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var EntityWriterInterface
-     */
-    private $entityWriter;
+    private EntityWriterInterface $entityWriter;
 
     protected function setUp(): void
     {

@@ -119,7 +119,7 @@ class CategoryReader extends AbstractReader
             return [];
         }
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function setAllLocales(array $categories, array $mainCategoryLocales): array

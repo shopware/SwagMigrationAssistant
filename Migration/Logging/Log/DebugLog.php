@@ -9,20 +9,10 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class DebugLog implements LogEntryInterface
 {
-    /**
-     * @var array
-     */
-    private $logData;
-
-    /**
-     * @var string|null
-     */
-    private $runId;
-
-    public function __construct(array $logData, ?string $runId)
-    {
-        $this->logData = $logData;
-        $this->runId = $runId;
+    public function __construct(
+        private readonly array $logData,
+        private readonly ?string $runId
+    ) {
     }
 
     public function getLevel(): string

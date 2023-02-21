@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
@@ -17,14 +17,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class ProductMainVariantRelationProvider extends AbstractProvider
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $productRepo;
-
-    public function __construct(EntityRepositoryInterface $productRepo)
+    public function __construct(private readonly EntityRepository $productRepo)
     {
-        $this->productRepo = $productRepo;
     }
 
     public function getIdentifier(): string

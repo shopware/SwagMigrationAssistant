@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 
 class SwagMigrationDataDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'swag_migration_data';
+    final public const ENTITY_NAME = 'swag_migration_data';
 
     public function getEntityName(): string
     {

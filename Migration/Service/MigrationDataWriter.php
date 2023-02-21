@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
@@ -27,57 +27,15 @@ use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationDataRepo;
-
-    /**
-     * @var WriterRegistryInterface
-     */
-    private $writerRegistry;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var MediaFileServiceInterface
-     */
-    private $mediaFileService;
-
-    /**
-     * @var EntityWriterInterface
-     */
-    private $entityWriter;
-
-    /**
-     * @var EntityDefinition
-     */
-    private $dataDefinition;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mappingRepo;
-
     public function __construct(
-        EntityWriterInterface $entityWriter,
-        EntityRepositoryInterface $migrationDataRepo,
-        WriterRegistryInterface $writerRegistry,
-        MediaFileServiceInterface $mediaFileService,
-        LoggingServiceInterface $loggingService,
-        EntityDefinition $dataDefinition,
-        EntityRepositoryInterface $mappingRepo
+        private readonly EntityWriterInterface $entityWriter,
+        private readonly EntityRepository $migrationDataRepo,
+        private readonly WriterRegistryInterface $writerRegistry,
+        private readonly MediaFileServiceInterface $mediaFileService,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly EntityDefinition $dataDefinition,
+        private readonly EntityRepository $mappingRepo
     ) {
-        $this->migrationDataRepo = $migrationDataRepo;
-        $this->writerRegistry = $writerRegistry;
-        $this->mediaFileService = $mediaFileService;
-        $this->loggingService = $loggingService;
-        $this->entityWriter = $entityWriter;
-        $this->dataDefinition = $dataDefinition;
-        $this->mappingRepo = $mappingRepo;
     }
 
     public function writeData(MigrationContextInterface $migrationContext, Context $context): void
