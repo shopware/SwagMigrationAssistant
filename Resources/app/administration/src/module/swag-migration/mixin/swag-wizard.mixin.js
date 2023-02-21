@@ -137,16 +137,8 @@ Mixin.register('swag-wizard', {
         this.matchCurrentRoute(false);
     },
 
-    /**
-     * Match the future route after the routing has happened.
-     *
-     * @param to
-     * @param from
-     * @param next
-     */
-    beforeRouteUpdate(to, from, next) {
-        next();
-        this.matchCurrentRoute();
+    updated() {
+        this.matchCurrentRoute(true);
     },
 
     methods: {
@@ -192,7 +184,9 @@ Mixin.register('swag-wizard', {
          * @param {Object} route
          */
         navigateToRoute(route) {
-            this.$router.push({ name: route.name });
+            this.$router.push({ name: route.name }).catch((error) => {
+                console.info(error.message)
+            });
         },
 
         /**

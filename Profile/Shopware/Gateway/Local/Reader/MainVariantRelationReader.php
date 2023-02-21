@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -40,24 +39,22 @@ class MainVariantRelationReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles')
             ->where('main_detail_id IS NOT NULL')
             ->andWhere('configurator_set_id IS NOT NULL')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::MAIN_VARIANT_RELATION, $total);
     }
 
     private function fetchMainVariantRelations(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder()
+        return $this->connection->createQueryBuilder()
             ->addSelect('articles.id, details.ordernumber')
             ->from('s_articles', 'articles')
             ->innerJoin('articles', 's_articles_details', 'details', 'details.id = articles.main_detail_id')
@@ -65,12 +62,7 @@ class MainVariantRelationReader extends AbstractReader
             ->andWhere('configurator_set_id IS NOT NULL')
             ->setFirstResult($migrationContext->getOffset())
             ->setMaxResults($migrationContext->getLimit())
-            ->execute();
-
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAllAssociative();
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 }

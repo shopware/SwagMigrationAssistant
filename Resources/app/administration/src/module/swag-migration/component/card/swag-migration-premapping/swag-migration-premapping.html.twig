@@ -10,8 +10,11 @@
         {% endblock %}
 
         {% block swag_migration_premapping_unfilled_card %}
-            <sw-card v-if="!isLoading && !isPremappingValid"
-                     class="swag-migration-premapping__unfilled-card">
+            <sw-card
+                v-if="!isLoading && !isPremappingValid"
+                class="swag-migration-premapping__unfilled-card"
+                position-identifier="swag-migration-premapping"
+            >
 
                 {% block swag_migration_premapping_unfilled_title %}
                     <div class="swag-migration-premapping__unfilled-title">
@@ -29,12 +32,13 @@
 
         {% block swag_migration_premapping_success_card %}
             <sw-card v-if="!isLoading && isPremappingValid"
-                     class="swag-migration-premapping__success-card">
+                     class="swag-migration-premapping__success-card"
+                     position-identifier="swag-migration-premapping__success-card">
 
                 {% block swag_migration_premapping_success_bubble %}
                     <div class="swag-migration-premapping__success-bubble">
                         <sw-icon class="swag-migration-premapping__success-icon"
-                                 name="default-basic-checkmark-line"
+                                 name="regular-checkmark"
                                  size="36px"
                                  decorative>
                         </sw-icon>
@@ -92,7 +96,8 @@
         {% endblock %}
 
         <sw-card v-if="isLoading"
-                 class="swag-migration-premapping__loading-card">
+                 class="swag-migration-premapping__loading-card"
+                 position-identifier="swag-migration-premapping__loading-card">
             <div>
 
                 {% block swag_migration_premapping_loader %}

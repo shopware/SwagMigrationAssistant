@@ -19,19 +19,19 @@ class SwagMigrationConnectionEntity extends Entity
 
     protected string $name;
 
-    protected ?array $credentialFields;
+    protected ?array $credentialFields = null;
 
-    protected array $premapping;
+    protected array $premapping = [];
 
     protected string $profileName;
 
     protected string $gatewayName;
 
-    protected ?SwagMigrationRunCollection $runs;
+    protected ?SwagMigrationRunCollection $runs = null;
 
-    protected ?SwagMigrationMappingCollection $mappings;
+    protected ?SwagMigrationMappingCollection $mappings = null;
 
-    protected ?GeneralSettingCollection $settings;
+    protected ?GeneralSettingCollection $settings = null;
 
     public function getName(): string
     {

@@ -88,10 +88,6 @@ class SalutationReader extends AbstractPremappingReader
         $salutations[] = \explode(',', \unserialize($result[0]['value'], ['allowed_classes' => false]));
         $salutations = \array_filter($salutations);
 
-        if (empty($salutations)) {
-            return [];
-        }
-
         $configuredSalutations = $gateway->readTable($migrationContext, 's_core_config_values', ['element_id' => $result[0]['id']]);
 
         if (!empty($configuredSalutations)) {

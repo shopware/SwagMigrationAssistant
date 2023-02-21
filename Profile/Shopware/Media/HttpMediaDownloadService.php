@@ -36,7 +36,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 class HttpMediaDownloadService extends BaseMediaService implements MediaFileProcessorInterface
 {
     public function __construct(
-        private readonly EntityRepository $migrationMediaFileRepo,
+        private readonly EntityRepository $mediaFileRepo,
         private readonly FileSaver $fileSaver,
         private readonly LoggingServiceInterface $loggingService,
         Connection $dbalConnection

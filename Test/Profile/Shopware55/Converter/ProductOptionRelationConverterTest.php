@@ -15,7 +15,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductOptionRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductOptionRelationConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPropertyRelationConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
@@ -28,7 +27,7 @@ class ProductOptionRelationConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private Shopware55ProductPropertyRelationConverter $converter;
+    private Shopware55ProductOptionRelationConverter $converter;
 
     private MigrationContext $migrationContext;
 

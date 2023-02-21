@@ -106,15 +106,16 @@ trait MigrationServicesTrait
                     new Shopware55TranslationConverter($mappingService, $loggingService),
                     new Shopware55CategoryConverter($mappingService, $loggingService, $mediaFileService),
                     new Shopware55MediaConverter($mappingService, $loggingService, $mediaFileService),
-                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator),
-                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator),
+                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator, $salesChannelRepo),
+                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator, $salesChannelRepo),
                     new Shopware55OrderConverter(
                         $mappingService,
                         $loggingService,
-                        new TaxCalculator()
+                        new TaxCalculator(),
+                        $salesChannelRepo
                     ),
                     new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo, null),
-                    new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator),
+                    new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator, $salesChannelRepo),
                 ]
             )
         );

@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -71,15 +70,13 @@ class ShippingMethodReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_premium_dispatch')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::SHIPPING_METHOD, $total);
     }
@@ -102,10 +99,7 @@ class ShippingMethodReader extends AbstractReader
 
         $query->addOrderBy('dispatch.id');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
         return $query->fetchAllAssociative();
     }
@@ -122,16 +116,14 @@ class ShippingMethodReader extends AbstractReader
         $query->addSelect('currency.currency as currencyShortName');
 
         $query->where('shippingcosts.dispatchID IN (:ids)');
+        $query->addGroupBy('shippingcosts.dispatchID');
         $query->setParameter('ids', $shippingMethodIds, Connection::PARAM_STR_ARRAY);
 
         $query->orderBy('shippingcosts.from');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        $fetchedShippingCosts = $query->fetchAll(\PDO::FETCH_GROUP);
+        $fetchedShippingCosts = $query->fetchAllAssociative();
 
         return $this->mapData($fetchedShippingCosts, [], ['shippingcosts', 'currencyShortName']);
     }
@@ -147,15 +139,13 @@ class ShippingMethodReader extends AbstractReader
         $query->addSelect('country.countryiso, country.iso3');
 
         $query->where('shippingcountries.dispatchID IN (:ids)');
+        $query->addGroupBy('shippingcountries.dispatchID');
         $query->setParameter('ids', $shippingMethodIds, Connection::PARAM_STR_ARRAY);
         $query->orderBy('shippingcountries.dispatchID, shippingcountries.countryID');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_GROUP);
+        return $query->fetchAllAssociative();
     }
 
     private function fetchPaymentMethods(array $shippingMethodIds): array
@@ -166,15 +156,13 @@ class ShippingMethodReader extends AbstractReader
         $query->addSelect('paymentMethods.dispatchID, paymentMethods.paymentID');
 
         $query->where('paymentMethods.dispatchID IN (:ids)');
+        $query->addGroupBy('paymentMethods.dispatchID');
         $query->setParameter('ids', $shippingMethodIds, Connection::PARAM_STR_ARRAY);
         $query->orderBy('paymentMethods.dispatchID, paymentMethods.paymentID');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_GROUP);
+        return $query->fetchAllAssociative();
     }
 
     private function fetchExcludedCategories(array $shippingMethodIds): array
@@ -185,14 +173,12 @@ class ShippingMethodReader extends AbstractReader
         $query->addSelect('categories.dispatchID, categories.categoryID');
 
         $query->where('categories.dispatchID IN (:ids)');
+        $query->addGroupBy('categories.dispatchID');
         $query->setParameter('ids', $shippingMethodIds, Connection::PARAM_STR_ARRAY);
         $query->orderBy('categories.dispatchID, categories.categoryID');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_GROUP);
+        return $query->fetchAllAssociative();
     }
 }

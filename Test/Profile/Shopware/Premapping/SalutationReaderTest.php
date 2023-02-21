@@ -23,7 +23,6 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
-use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
@@ -33,7 +32,7 @@ class SalutationReaderTest extends TestCase
 
     private MigrationContextInterface $migrationContext;
 
-    private OrderStateReader $reader;
+    private SalutationReader $reader;
 
     private Context $context;
 

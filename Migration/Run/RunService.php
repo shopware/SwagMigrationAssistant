@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -23,7 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
-use Shopware\Core\Framework\Store\Services\StoreService;
+use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
@@ -66,7 +65,7 @@ class RunService implements RunServiceInterface
         private readonly EntityDefinition $migrationDataDefinition,
         private readonly Connection $dbalConnection,
         private readonly LoggingServiceInterface $loggingService,
-        private readonly StoreService $storeService,
+        private readonly TrackingEventClient $trackingEventClient,
         private readonly MessageBusInterface $bus
     ) {
     }
@@ -367,7 +366,7 @@ SQL;
             }
 
             $information['abortedAt'] = $timestamp;
-            $this->storeService->fireTrackingEvent($eventName, $information);
+            $this->trackingEventClient->fireTrackingEvent($eventName, $information);
 
             return;
         }
@@ -408,7 +407,7 @@ SQL;
             $information['finishedAt'] = $timestamp;
         }
 
-        $this->storeService->fireTrackingEvent($eventName, $information);
+        $this->trackingEventClient->fireTrackingEvent($eventName, $information);
     }
 
     private function cleanupMigration(string $runUuid, bool $removeOnlyWrittenData = false): void
@@ -452,20 +451,15 @@ SQL;
     private function calculateFetchedTotals(string $runId): array
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
-        $query = $queryBuilder
+        $results = $queryBuilder
             ->select('entity, COUNT(id) AS total')
             ->from('swag_migration_data')
             ->where('HEX(run_id) = :runId')
             ->andWhere('convert_failure = 0 AND converted IS NOT NULL')
             ->groupBy('entity')
             ->setParameter('runId', $runId)
-            ->execute();
-
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        $results = $query->fetchAllAssociative();
+            ->executeQuery()
+            ->fetchAllAssociative();
 
         $mappedCounts = [];
         foreach ($results as $result) {
@@ -497,7 +491,7 @@ SQL;
     }
 
     /**
-     * @return RunProgress[]
+     * @return array<RunProgress>
      */
     private function calculateRunProgress(
         EnvironmentInformation $environmentInformation,

@@ -7,7 +7,7 @@
 
 use Composer\InstalledVersions;
 use Shopware\Core\Framework\Plugin\KernelPluginLoader\StaticKernelPluginLoader;
-use Shopware\Development\Kernel;
+use Shopware\Core\Kernel;
 use SwagMigrationAssistant\SwagMigrationAssistant;
 use Symfony\Component\Dotenv\Dotenv;
 

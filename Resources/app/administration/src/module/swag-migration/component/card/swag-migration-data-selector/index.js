@@ -39,8 +39,12 @@ Component.register('swag-migration-data-selector', {
         fetchTableData() {
             if (this.dataSelectionTableData.length > 0) {
                 this.$nextTick(() => {
+                    if (!this.$refs.tableDataGrid) {
+                        this.fetchTableData();
+                    }
+
                     this.dataSelectionIds.forEach((id) => {
-                        this.$refs.tableDataGrid.selectItem(true, { id });
+                        this.$refs.tableDataGrid?.selectItem(true, { id });
                     });
                 });
             }

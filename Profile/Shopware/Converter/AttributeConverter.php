@@ -115,7 +115,7 @@ abstract class AttributeConverter extends Converter
 
     protected function getCustomFieldConfiguration(array $data): array
     {
-        $locale = \str_replace('_', '-', $data['_locale']);
+        $locale = (string) \str_replace('_', '-', $data['_locale']);
 
         if (isset($data['configuration'])) {
             return $this->getConfiguredCustomFieldData($data, $locale);

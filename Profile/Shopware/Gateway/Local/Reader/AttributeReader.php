@@ -7,9 +7,9 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeReader extends AbstractReader
@@ -34,13 +34,13 @@ abstract class AttributeReader extends AbstractReader
             ->select('config.column_name, config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
+            ->addGroupBy('config.column_name')
             ->setParameter('table', $table)
-            ->execute();
+            ->executeQuery();
 
-        $attributeConfiguration = [];
-        if ($query instanceof ResultStatement) {
-            $attributeConfiguration = $query->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
-        }
+        $rows = $query->fetchAllAssociative();
+
+        $attributeConfiguration = FetchModeHelper::groupUnique($rows);
 
         $sql = <<<SQL
 SELECT s.*, l.locale

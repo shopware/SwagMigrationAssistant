@@ -34,7 +34,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
     private SwagMigrationConnectionEntity $connection;
 
     public function __construct(
-        private readonly EntityRepository $documentRepo,
+        private readonly EntityRepository $documentRepository,
         private readonly EntityRepository $migrationMediaFileRepo,
         private readonly LoggingServiceInterface $loggingService,
         private readonly MappingServiceInterface $mappingService,

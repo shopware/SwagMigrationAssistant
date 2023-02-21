@@ -178,7 +178,7 @@ class LocalGatewayTest extends TestCase
         static::assertSame($response->getTotals(), []);
     }
 
-    public function profileProvider()
+    public function profileProvider(): array
     {
         return [
             [

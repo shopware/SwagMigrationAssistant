@@ -15,14 +15,32 @@ class MediaProcessWorkloadStruct extends Struct
     final public const FINISH_STATE = 'finished';
     final public const ERROR_STATE = 'error';
 
+    private string $mediaId;
+
+    private string $runId;
+
+    private string $state;
+
+    private array $additionalData;
+
+    private int $errorCount;
+
+    private int $currentOffset;
+
     public function __construct(
-        private readonly string $mediaId,
-        private readonly string $runId,
-        private readonly string $state = self::IN_PROGRESS_STATE,
-        private readonly array $additionalData = [],
-        private readonly int $errorCount = 0,
-        private readonly int $currentOffset = 0
+        string $mediaId,
+        string $runId,
+        string $state = self::IN_PROGRESS_STATE,
+        array $additionalData = [],
+        int $errorCount = 0,
+        int $currentOffset = 0
     ) {
+        $this->mediaId = $mediaId;
+        $this->runId = $runId;
+        $this->state = $state;
+        $this->additionalData = $additionalData;
+        $this->errorCount = $errorCount;
+        $this->currentOffset = $currentOffset;
     }
 
     public function getMediaId(): string

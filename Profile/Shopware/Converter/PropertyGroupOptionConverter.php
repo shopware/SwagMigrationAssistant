@@ -267,24 +267,17 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
 
         $defaultLanguageUuid = $language->getId();
-        $converted['translations'][$defaultLanguageUuid] = [];
-        $this->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', self::TYPE_STRING);
-        $this->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', self::TYPE_INTEGER);
 
-        if (!isset($converted['translations'][$defaultLanguageUuid]['name'])) {
-            unset($converted['translations'][$defaultLanguageUuid]);
+        if (isset($data['name']) && $data['name'] !== '') {
+            $converted['translations'][$defaultLanguageUuid] = [];
+            $this->convertValue($converted['translations'][$defaultLanguageUuid], 'name', $data, 'name', self::TYPE_STRING);
+            $this->convertValue($converted['translations'][$defaultLanguageUuid], 'position', $data, 'position', self::TYPE_INTEGER);
         }
 
-        $converted['group']['translations'][$defaultLanguageUuid] = [];
-        $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', self::TYPE_STRING);
-        $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', self::TYPE_STRING);
-
-        if (!isset($converted['group']['translations'][$defaultLanguageUuid]['name'])) {
-            unset($converted['group']['translations'][$defaultLanguageUuid]);
-        }
-
-        if ($converted['translations'] === []) {
-            unset($converted['translations']);
+        if (isset($data['group']['name']) && $data['group']['name'] !== '') {
+            $converted['group']['translations'][$defaultLanguageUuid] = [];
+            $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'name', $data['group'], 'name', self::TYPE_STRING);
+            $this->convertValue($converted['group']['translations'][$defaultLanguageUuid], 'description', $data['group'], 'description', self::TYPE_STRING);
         }
     }
 }

@@ -19,6 +19,9 @@ class EntityPartialIndexerService
     {
     }
 
+    /**
+     * @param array{offset: int|null}|null $lastId
+     */
     public function partial(?string $lastIndexer, ?array $lastId): ?EntityIndexingMessage
     {
         $indexers = $this->getIndexers();

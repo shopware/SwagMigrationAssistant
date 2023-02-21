@@ -14,11 +14,14 @@ use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 abstract class ShopwareConverter extends Converter
 {
     /**
      * @psalm-suppress NonInvariantDocblockPropertyType
+     *
+     * @var Shopware6MappingServiceInterface
      */
     protected MappingServiceInterface $mappingService;
 
@@ -31,7 +34,7 @@ abstract class ShopwareConverter extends Converter
     protected string $runId;
 
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService
     ) {
         parent::__construct($mappingService, $loggingService);

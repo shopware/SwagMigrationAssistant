@@ -18,6 +18,9 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -78,7 +81,8 @@ abstract class OrderConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected TaxCalculator $taxCalculator
+        protected TaxCalculator $taxCalculator,
+        private readonly EntityRepository $salesChannelRepository
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -296,7 +300,6 @@ abstract class OrderConverter extends ShopwareConverter
         $converted['addresses'][] = $billingAddress;
         unset($data['billingaddress']);
 
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
         if (isset($data['subshopID'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -310,6 +313,13 @@ abstract class OrderConverter extends ShopwareConverter
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
             }
+        }
+
+        if (empty($converted['salesChannelId'])) {
+            $criteria = new Criteria();
+            $criteria->setLimit(1);
+            $criteria->addFilter(new EqualsFilter('typeId', Defaults::SALES_CHANNEL_TYPE_STOREFRONT));
+            $converted['salesChannelId'] = $this->salesChannelRepository->searchIds($criteria, $context)->firstId();
         }
 
         if (isset($data['attributes'])) {

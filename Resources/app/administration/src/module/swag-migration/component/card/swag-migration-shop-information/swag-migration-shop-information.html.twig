@@ -1,5 +1,9 @@
 {% block swag_migration_shop_information %}
-    <sw-card class="swag-migration-shop-information" :title="$tc('swag-migration.index.shopInfoCard.cardTitle')">
+    <sw-card
+        class="swag-migration-shop-information"
+        :title="$tc('swag-migration.index.shopInfoCard.cardTitle')"
+        position-identifier="swag-migration-shop-information"
+    >
 
         {% block swag_migration_shop_information_content %}
             <template #grid>
@@ -40,12 +44,12 @@
                                                       :class="shopUrlPrefixClass">
                                                     <sw-icon v-if="sslActive"
                                                              class="swag-migration-shop-information__shop-domain-prefix-icon"
-                                                             name="small-lock-closed"
+                                                             name="regular-lock"
                                                              size="12px">
                                                     </sw-icon>
                                                     <sw-icon v-else
                                                              class="swag-migration-shop-information__shop-domain-prefix-icon"
-                                                             name="small-lock-open"
+                                                             name="regular-lock-open-s"
                                                              size="12px">
                                                     </sw-icon>
                                                     {{ shopUrlPrefix }}</span>{{ shopUrl }}
@@ -66,7 +70,7 @@
                                                     <sw-context-button>
                                                         <template #button>
                                                             <sw-button size="small" square>
-                                                                <sw-icon name="small-more" small></sw-icon>
+                                                                <sw-icon name="solid-ellipsis-h-s" small></sw-icon>
                                                             </sw-button>
                                                         </template>
 
@@ -289,7 +293,7 @@
 
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_icon %}
                             <div class="swag-migration-shop-information__reset-confirm-modal-icon-wrapper">
-                                <sw-icon class="swag-migration-shop-information__confirm-modal-icon" name="default-award-trophy" color="#37D046" size="40"></sw-icon>
+                                <sw-icon class="swag-migration-shop-information__confirm-modal-icon" name="regular-trophy" color="#37D046" size="40"></sw-icon>
                             </div>
                         {% endblock %}
 

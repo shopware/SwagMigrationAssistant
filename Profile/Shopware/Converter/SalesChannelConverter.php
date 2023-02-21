@@ -39,7 +39,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         LoggingServiceInterface $loggingService,
         protected EntityRepository $paymentRepository,
         protected EntityRepository $shippingMethodRepo,
-        protected EntityRepository $countryRepo,
+        protected EntityRepository $countryRepository,
         protected EntityRepository $salesChannelRepo,
         protected ?EntityRepository $languagePackRepo
     ) {

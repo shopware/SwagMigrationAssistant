@@ -13,7 +13,7 @@ class DummyCollection implements \IteratorAggregate
     {
     }
 
-    public function getIterator()
+    public function getIterator(): \ArrayIterator
     {
         return new \ArrayIterator($this->data);
     }

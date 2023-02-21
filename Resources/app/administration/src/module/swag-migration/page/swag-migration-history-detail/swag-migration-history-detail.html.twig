@@ -48,12 +48,12 @@
                                                               :class="shopUrlPrefixClass">
                                                             <sw-icon v-if="sslActive"
                                                                      class="swag-migration-history-detail__shop-domain-prefix-icon"
-                                                                     name="small-lock-closed"
+                                                                     name="regular-lock"
                                                                      size="12px">
                                                             </sw-icon>
                                                             <sw-icon v-else
                                                                      class="swag-migration-history-detail__shop-domain-prefix-icon"
-                                                                     name="small-lock-open"
+                                                                     name="regular-lock-open-s"
                                                                      size="12px">
                                                             </sw-icon>
                                                             {{ shopUrlPrefix }}</span>{{ shopUrl }}
@@ -92,8 +92,11 @@
                         <div class="swag-migration-history-detail__body">
 
                             {% block swag_migration_history_detail_body_tabs %}
-                                <sw-tabs ref="tabReference"
-                                         @new-item-active="newActiveTabItem">
+                                <sw-tabs
+                                    ref="tabReference"
+                                    @new-item-active="newActiveTabItem"
+                                    position-identifier="swag-migration-history-detail-body-tabs"
+                                >
 
                                     {% block swag_migration_history_detail_body_tabs_data %}
                                         <sw-tabs-item name="data" ref="dataTabItem">

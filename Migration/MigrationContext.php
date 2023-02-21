@@ -17,16 +17,34 @@ class MigrationContext extends Struct implements MigrationContextInterface
 {
     final public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
 
+    private ProfileInterface $profile;
+
+    private ?SwagMigrationConnectionEntity $connection;
+
+    private string $runUuid;
+
+    private ?DataSet $dataSet;
+
+    private int $offset;
+
+    private int $limit;
+
     private GatewayInterface $gateway;
 
     public function __construct(
-        private readonly ProfileInterface $profile,
-        private readonly ?SwagMigrationConnectionEntity $connection = null,
-        private readonly string $runUuid = '',
-        private readonly ?DataSet $dataSet = null,
-        private readonly int $offset = 0,
-        private readonly int $limit = 0
+        ProfileInterface $profile,
+        ?SwagMigrationConnectionEntity $connection = null,
+        string $runUuid = '',
+        ?DataSet $dataSet = null,
+        int $offset = 0,
+        int $limit = 0
     ) {
+        $this->profile = $profile;
+        $this->connection = $connection;
+        $this->runUuid = $runUuid;
+        $this->dataSet = $dataSet;
+        $this->offset = $offset;
+        $this->limit = $limit;
     }
 
     public function getProfile(): ProfileInterface

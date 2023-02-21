@@ -21,9 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class PremappingController extends AbstractController
 {
     public function __construct(
@@ -33,9 +31,7 @@ class PremappingController extends AbstractController
     ) {
     }
 
-    /**
-     * @Route("/api/_action/migration/generate-premapping", name="api.admin.migration.generate-premapping", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/generate-premapping', name: 'api.admin.migration.generate-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -60,21 +56,19 @@ class PremappingController extends AbstractController
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $run));
     }
 
-    /**
-     * @Route("/api/_action/migration/write-premapping", name="api.admin.migration.write-premapping", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/write-premapping', name: 'api.admin.migration.write-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function writePremapping(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
 
         /** @var array|mixed $premapping */
-        $premapping = $request->request->get('premapping');
+        $premapping = $request->request->all('premapping');
 
         if ($runUuid === '') {
             throw new MigrationContextPropertyMissingException('runUuid');
         }
 
-        if (!\is_array($premapping)) {
+        if (empty($premapping)) {
             throw new MigrationContextPropertyMissingException('premapping');
         }
 

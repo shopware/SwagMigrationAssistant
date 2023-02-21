@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -59,15 +58,11 @@ class CustomerGroupReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_customergroups')
-            ->execute();
-
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+            ->executeQuery()
+            ->fetchOne();
 
         return new TotalStruct(DefaultEntities::CUSTOMER_GROUP, $total);
     }
@@ -89,10 +84,7 @@ class CustomerGroupReader extends AbstractReader
 
         $query->addOrderBy('customerGroup.id');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
         return $query->fetchAllAssociative();
     }
@@ -108,11 +100,8 @@ class CustomerGroupReader extends AbstractReader
         $query->where('groupID IN (:ids)');
         $query->setParameter('ids', $groupIds, Connection::PARAM_INT_ARRAY);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_GROUP);
+        return $query->fetchAllAssociative();
     }
 }

@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class RunProgress extends Struct
 {
+    protected string $id;
+
     /**
      * @var EntityProgress[]
      */

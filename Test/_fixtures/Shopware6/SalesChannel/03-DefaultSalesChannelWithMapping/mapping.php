@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-use Shopware\Core\Defaults;
+use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 return [
@@ -71,7 +71,7 @@ return [
     ],
     [
         'entityName' => DefaultEntities::SALES_CHANNEL,
-        'oldIdentifier' => Defaults::SALES_CHANNEL,
+        'oldIdentifier' => TestDefaults::SALES_CHANNEL,
         'newIdentifier' => 'cfbd5018d38d41d8adca10d94fc8bdd7',
     ],
 ];

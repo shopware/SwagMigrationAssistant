@@ -13,7 +13,7 @@ final class Shopware5DatabaseConnection
     final public const DB_USER = 'root';
     final public const DB_PASSWORD = 'app';
     final public const DB_HOST = 'mysql';
-    final public const DB_PORT = '3306';
+    final public const DB_PORT = 3306;
 
     private function __construct()
     {

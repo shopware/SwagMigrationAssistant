@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class CustomerWishlistProvider extends AbstractProvider
 {
-    public function __construct(private readonly EntityRepository $customerRepo)
+    public function __construct(private readonly EntityRepository $customerWishlistRepo)
     {
     }
 

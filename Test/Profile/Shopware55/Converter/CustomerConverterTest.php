@@ -8,10 +8,11 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -48,9 +49,14 @@ class CustomerConverterTest extends TestCase
     {
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new DummyMappingService();
+
         /** @var ValidatorInterface $validator */
         $validator = $this->getContainer()->get('validator');
-        $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService, $validator);
+
+        /** @var EntityRepository $salesChannelRepo */
+        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+
+        $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService, $validator, $salesChannelRepo);
 
         $this->connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
@@ -77,7 +83,7 @@ class CustomerConverterTest extends TestCase
             $context,
             null,
             null,
-            Defaults::SALES_CHANNEL
+            TestDefaults::SALES_CHANNEL
         );
 
         $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), '3', $context, Uuid::randomHex(), [], Uuid::randomHex());
@@ -115,7 +121,7 @@ class CustomerConverterTest extends TestCase
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('addresses', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
@@ -196,7 +202,7 @@ class CustomerConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('addresses', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Test', $converted['lastName']);
         static::assertTrue($converted['guest']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -220,7 +226,7 @@ class CustomerConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('addresses', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertSame('number-1', $converted['customerNumber']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -248,7 +254,7 @@ class CustomerConverterTest extends TestCase
         static::assertCount(0, $logs);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('addresses', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertSame($mapping['entityUuid'], $converted['defaultPaymentMethodId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());

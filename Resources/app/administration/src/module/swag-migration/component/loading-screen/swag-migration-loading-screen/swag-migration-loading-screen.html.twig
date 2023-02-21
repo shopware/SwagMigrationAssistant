@@ -2,7 +2,11 @@
     <div class="swag-migration-loading-screen">
 
         {% block swag_migration_loading_screen_card %}
-            <sw-card v-show="!isPaused" class="swag-migration-loading-screen__card">
+            <sw-card
+                v-show="!isPaused"
+                class="swag-migration-loading-screen__card"
+                position-identifier="swag-migration-loading-screen__card"
+            >
 
                 {% block swag_migration_index_loading_screen_content %}
                     <div class="swag-migration-loading-screen__content">
@@ -38,7 +42,7 @@
                                 {{ hint }}
                                 <template #customIcon>
                                     <sw-icon class="swag-migration-loading-screen__alert-icon"
-                                             name="default-object-lightbulb"
+                                             name="regular-lightbulb"
                                              size="20px"
                                              decorative>
                                     </sw-icon>

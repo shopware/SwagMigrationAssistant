@@ -33,10 +33,12 @@ class GeneralSettingRepo extends EntityRepository
 
     public function aggregate(Criteria $criteria, Context $context): AggregationResultCollection
     {
+        throw new \Error('GeneralSettingRepo->aggregate: Not implemented');
     }
 
     public function searchIds(Criteria $criteria, Context $context): IdSearchResult
     {
+        throw new \Error('GeneralSettingRepo->searchIds: Not implemented');
     }
 
     public function search(Criteria $criteria, Context $context): EntitySearchResult
@@ -50,22 +52,27 @@ class GeneralSettingRepo extends EntityRepository
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('GeneralSettingRepo->update: Not implemented');
     }
 
     public function upsert(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('GeneralSettingRepo->upsert: Not implemented');
     }
 
     public function create(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('GeneralSettingRepo->create: Not implemented');
     }
 
     public function delete(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('GeneralSettingRepo->delete: Not implemented');
     }
 
     public function createVersion(string $id, Context $context, ?string $name = null, ?string $versionId = null): string
     {
+        throw new \Error('GeneralSettingRepo->createVersion: Not implemented');
     }
 
     public function merge(string $versionId, Context $context): void
@@ -74,5 +81,6 @@ class GeneralSettingRepo extends EntityRepository
 
     public function clone(string $id, Context $context, ?string $newId = null, ?CloneBehavior $behavior = null): EntityWrittenContainerEvent
     {
+        throw new \Error('GeneralSettingRepo->clone: Not implemented');
     }
 }

@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -37,10 +36,7 @@ class TableReader implements TableReaderInterface
             }
         }
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query = $query->executeQuery();
 
         return $query->fetchAllAssociative();
     }

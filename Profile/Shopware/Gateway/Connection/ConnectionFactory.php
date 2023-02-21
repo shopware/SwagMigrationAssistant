@@ -25,7 +25,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
         $credentials = $connection->getCredentialFields();
 
-        if ($credentials === null) {
+        if (empty($credentials)) {
             return null;
         }
 

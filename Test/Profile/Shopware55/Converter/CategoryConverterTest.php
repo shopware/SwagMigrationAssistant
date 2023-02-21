@@ -31,7 +31,7 @@ class CategoryConverterTest extends TestCase
 
     private string $runId;
 
-    private string $connection;
+    private SwagMigrationConnectionEntity $connection;
 
     private MigrationContextInterface $migrationContext;
 

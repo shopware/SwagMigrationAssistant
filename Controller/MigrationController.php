@@ -28,9 +28,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class MigrationController extends AbstractController
 {
     public function __construct(
@@ -42,13 +40,11 @@ class MigrationController extends AbstractController
         private readonly RunServiceInterface $runService,
         private readonly EntityRepository $migrationRunRepo,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
-        private readonly EntityPartialIndexerService $indexerService
+        private readonly EntityPartialIndexerService $entityPartialIndexerService
     ) {
     }
 
-    /**
-     * @Route("/api/_action/migration/fetch-data", name="api.admin.migration.fetch-data", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/fetch-data', name: 'api.admin.migration.fetch-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function fetchData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -98,9 +94,7 @@ class MigrationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/_action/migration/update-write-progress", name="api.admin.migration.update-write-progress", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/update-write-progress', name: 'api.admin.migration.update-write-progress', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function updateWriteProgress(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -128,9 +122,7 @@ class MigrationController extends AbstractController
         return new JsonResponse($writeProgress);
     }
 
-    /**
-     * @Route("/api/_action/migration/write-data", name="api.admin.migration.write-data", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/write-data', name: 'api.admin.migration.write-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function writeData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -172,9 +164,7 @@ class MigrationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/_action/migration/update-media-files-progress", name="api.admin.migration.update-media-files-progress", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/update-media-files-progress', name: 'api.admin.migration.update-media-files-progress', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function updateMediaFilesProgress(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -202,9 +192,7 @@ class MigrationController extends AbstractController
         return new JsonResponse($mediaFilesProgress);
     }
 
-    /**
-     * @Route("/api/_action/migration/process-media", name="api.admin.migration.process-media", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/process-media', name: 'api.admin.migration.process-media', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function processMedia(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -246,16 +234,16 @@ class MigrationController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/_action/migration/indexing", name="api.action.migration.indexing", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/indexing', name: 'api.action.migration.indexing', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function indexing(Request $request): JsonResponse
     {
         $lastIndexer = $request->get('lastIndexer');
-        $offset = $request->get('offset');
+
+        /** @var array{offset: int|null}|null $offset */
+        $offset = $request->request->all('offset');
         $result = $this->entityPartialIndexerService->partial(
             \is_string($lastIndexer) ? $lastIndexer : null,
-            \is_array($offset) ? $offset : null
+            !empty($offset) ? $offset : null
         );
 
         if (!$result) {

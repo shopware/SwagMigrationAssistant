@@ -9,6 +9,9 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -63,7 +66,8 @@ abstract class CustomerConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected ValidatorInterface $validator
+        protected ValidatorInterface $validator,
+        private readonly EntityRepository $salesChannelRepository
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -134,7 +138,6 @@ abstract class CustomerConverter extends ShopwareConverter
 
         unset($data['id']);
 
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
         if (isset($data['subshopID'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -148,6 +151,13 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
             }
+        }
+
+        if (empty($converted['salesChannelId'])) {
+            $criteria = new Criteria();
+            $criteria->setLimit(1);
+            $criteria->addFilter(new EqualsFilter('typeId', Defaults::SALES_CHANNEL_TYPE_STOREFRONT));
+            $converted['salesChannelId'] = $this->salesChannelRepository->searchIds($criteria, $context)->firstId();
         }
 
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);

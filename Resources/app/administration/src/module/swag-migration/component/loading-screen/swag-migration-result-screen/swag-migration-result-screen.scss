@@ -8,7 +8,7 @@
 
     .swag-migration-result-screen__title {
         margin-bottom: 5px;
-        font-size: $font-size-large;
+        font-size: $font-size-m;
         font-weight: $font-weight-semi-bold;
     }
 
@@ -19,7 +19,7 @@
     }
 
     a.swag-migration-result-screen__link {
-        font-size: $font-size-extra-small;
+        font-size: $font-size-xxs;
         font-weight: $font-weight-semi-bold;
         color: $color-shopware-brand-500;
         text-decoration: none;
@@ -49,7 +49,7 @@
 
     .swag-migration-result-survey__content {
         text-align: center;
-        font-size: $font-size-extra-small;
+        font-size: $font-size-xxs;
     }
 
     .swag-migration-result-survey__title {
@@ -60,7 +60,7 @@
 
     .swag-migration-result-survey__caption {
         margin: 10px 60px 24px 60px;
-        font-size: $font-size-extra-small;
+        font-size: $font-size-xxs;
         color: $color-darkgray-200;
     }
 

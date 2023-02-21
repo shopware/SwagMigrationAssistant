@@ -1,12 +1,16 @@
 {% block swag_migration_loading_screen_takeover %}
-    <sw-card class="swag-migration-loading-screen-takeover" :isLoading="isLoading">
+    <sw-card
+        class="swag-migration-loading-screen-takeover"
+        :isLoading="isLoading"
+        position-identifier="swag-migration-loading-screen-takeover"
+    >
 
         {% block swag_migration_loading_screen_takeover_content %}
             <div class="swag-migration-loading-screen-takeover__content">
 
                 {% block swag_migration_loading_screen_takeover_content_icon %}
                     <div class="swag-migration-loading-screen-takeover__icon-wrapper">
-                        <sw-icon name="default-communication-speech-bubble" color="#189EFF" large></sw-icon>
+                        <sw-icon name="regular-comment" color="#189EFF" large></sw-icon>
                     </div>
                 {% endblock %}
 

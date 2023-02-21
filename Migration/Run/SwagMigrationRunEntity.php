@@ -52,18 +52,18 @@ class SwagMigrationRunEntity extends Entity
     /**
      * @var RunProgress[]
      */
-    protected array $progress;
+    protected array $progress = [];
 
     /**
      * @var PremappingStruct[]
      */
-    protected array $premapping;
+    protected array $premapping = [];
 
-    protected ?SwagMigrationDataCollection $data;
+    protected ?SwagMigrationDataCollection $data = null;
 
-    protected ?SwagMigrationMediaFileCollection $mediaFiles;
+    protected ?SwagMigrationMediaFileCollection $mediaFiles = null;
 
-    protected ?SwagMigrationLoggingCollection $logs;
+    protected ?SwagMigrationLoggingCollection $logs = null;
 
     public function getConnectionId(): ?string
     {

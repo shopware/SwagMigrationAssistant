@@ -151,7 +151,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $filePath = \sprintf('_temp/%s.%s', $rowId, $fileExtension);
 
             if (\copy($sourcePath, $filePath)) {
-                $fileSize = \filesize($filePath);
+                $fileSize = (int) \filesize($filePath);
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
 
                 try {

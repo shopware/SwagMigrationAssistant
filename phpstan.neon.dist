@@ -13,10 +13,21 @@ parameters:
     symfony:
         constantHassers: false
         containerXmlPath: '../../../var/cache/test/Shopware_Core_DevOps_StaticAnalyze_StaticAnalyzeKernelTestDebugContainer.xml'
-        consoleApplicationLoader: tests/console-application.php
+        consoleApplicationLoader: ../../../src/Core/DevOps/StaticAnalyze/PHPStan/console-application.php
     excludePaths:
         - vendor
         - var
         - ecs.php
+
+        # extends final class, which is ok for mocks
+        - Test/Mock/Repositories/GeneralSettingRepo.php
+        - Test/Mock/Repositories/MigrationConnectionRepo.php
+
+    ignoreErrors:
+        -
+            message: '#Service ".*" is private#'
+            paths:
+                - Test/**/*Test.php
+
     paths:
         - .

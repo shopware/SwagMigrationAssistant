@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Doctrine\DBAL\Query\QueryBuilder;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -17,7 +16,10 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 
 abstract class AbstractReader implements ReaderInterface
 {
-    protected ?Connection $connection = null;
+    /**
+     * @var Connection $connection
+     */
+    protected $connection;
 
     public function __construct(protected ConnectionFactoryInterface $connectionFactory)
     {
@@ -69,7 +71,7 @@ abstract class AbstractReader implements ReaderInterface
     /**
      * @psalm-suppress MissingParamType
      */
-    protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, $value): void
+    protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, array $value): void
     {
         $key = \array_shift($path);
 
@@ -122,30 +124,23 @@ abstract class AbstractReader implements ReaderInterface
             $query->addOrderBy($order);
         }
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query = $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_COLUMN);
+        return $query->fetchFirstColumn();
     }
 
     protected function getDefaultShopLocale(): string
     {
-        $query = $this->connection->createQueryBuilder()
+        $result = $this->connection->createQueryBuilder()
             ->select('locale.locale')
             ->from('s_core_locales', 'locale')
             ->innerJoin('locale', 's_core_shops', 'shop', 'locale.id = shop.locale_id')
             ->where('shop.default = 1')
             ->andWhere('shop.active = 1')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $defaultShopLocale = '';
-        if ($query instanceof ResultStatement) {
-            $defaultShopLocale = (string) $query->fetchColumn();
-        }
-
-        return $defaultShopLocale;
+        return $result ?: '';
     }
 
     protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array

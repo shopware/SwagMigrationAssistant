@@ -66,8 +66,8 @@ FROM
     ) AS result
 SQL;
         $statement = $this->connection->prepare($sql);
-        $statement->execute();
-        $total = (int) $statement->fetchOne();
+        $result = $statement->executeQuery();
+        $total = (int) $result->fetchOne();
 
         return new TotalStruct(DefaultEntities::PROPERTY_GROUP_OPTION, $total);
     }
@@ -124,8 +124,9 @@ SQL;
         $statement = $this->connection->prepare($sql);
         $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
         $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
-        $statement->execute();
 
-        return $statement->fetchAllAssociative();
+        $result = $statement->executeQuery();
+
+        return $result->fetchAllAssociative();
     }
 }

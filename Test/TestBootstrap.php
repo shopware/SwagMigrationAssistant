@@ -1,15 +1,15 @@
 <?php declare(strict_types=1);
 
 use Doctrine\DBAL\DriverManager;
-use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 use Shopware\Core\DevOps\StaticAnalyze\StaticAnalyzeKernel;
 use Shopware\Core\Framework\Plugin\KernelPluginLoader\StaticKernelPluginLoader;
 use Shopware\Core\TestBootstrapper;
+use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
 require __DIR__ . '/../../../../src/Core/TestBootstrapper.php';
 
 /** @var Shopware\Core\TestBootstrapper $bootstrapper */
-$bootstrapper = (new TestBootstrapper());
+$bootstrapper = new TestBootstrapper();
 $_SERVER['PROJECT_ROOT'] = $_ENV['PROJECT_ROOT'] = $bootstrapper->getProjectDir();
 if (!defined('TEST_PROJECT_DIR')) {
     define('TEST_PROJECT_DIR', $_SERVER['PROJECT_ROOT']);
@@ -27,15 +27,14 @@ $plugins = [
         'version' => 'dev-master',
         'autoload' => ['psr-4' => ['SwagMigrationAssistant\\' => 'src/']],
         'managedByComposer' => false,
-        'composerName' => 'swag/migration-assistant'
-    ]
+        'composerName' => 'swag/migration-assistant',
+    ],
 ];
 
 try {
     $bootstrapper->addActivePlugins('SwagMigrationAssistant');
     $bootstrapper->addCallingPlugin();
     $bootstrapper->bootstrap();
-
 } catch (\Throwable $e) {
 }
 
@@ -60,7 +59,7 @@ $ping = true;
 try {
     $connection->executeStatement('SELECT 1');
 } catch (\Exception $e) {
-   $ping = false;
+    $ping = false;
 }
 
 if ($ping === false) {

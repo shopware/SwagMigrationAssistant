@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
-use Shopware\Core\Framework\Store\Services\StoreService;
+use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
@@ -193,7 +193,7 @@ class MigrationControllerTest extends TestCase
                 $dataDefinition,
                 $this->getContainer()->get(Connection::class),
                 $loggingService,
-                $this->getContainer()->get(StoreService::class),
+                $this->getContainer()->get(TrackingEventClient::class),
                 $this->getContainer()->get('messenger.bus.shopware')
             ),
             $this->runRepo,

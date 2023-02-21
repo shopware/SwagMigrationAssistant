@@ -95,10 +95,6 @@ class MediaFileService implements MediaFileServiceInterface
             $mediaIds[] = $mediaFile['mediaId'];
         }
 
-        if (empty($mediaIds)) {
-            return;
-        }
-
         $criteria = new Criteria();
         $criteria->addFilter(new MultiFilter(
             MultiFilter::CONNECTION_OR,

@@ -145,9 +145,7 @@ class HistoryService implements HistoryServiceInterface
 
     public function isMediaProcessing(): bool
     {
-        $messageSize = $this->connection->executeQuery('SELECT size FROM message_queue_stats WHERE name = :name', ['name' => ProcessMediaMessage::class])->fetchColumn();
-
-        return $messageSize > 0;
+        return $this->connection->executeQuery('SELECT 1 FROM messenger_messages WHERE queue_name = :name', ['name' => ProcessMediaMessage::class])->fetchOne();
     }
 
     private function extractBucketInformation(Bucket $bucket): array

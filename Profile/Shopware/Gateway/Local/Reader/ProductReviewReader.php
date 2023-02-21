@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -47,15 +46,13 @@ class ProductReviewReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles_vote')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::PRODUCT_REVIEW, $total);
     }
@@ -77,10 +74,7 @@ class ProductReviewReader extends AbstractReader
         $query->where('vote.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
         return $query->fetchAllAssociative();
     }

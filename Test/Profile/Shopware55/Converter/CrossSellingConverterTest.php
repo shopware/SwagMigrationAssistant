@@ -29,7 +29,7 @@ class CrossSellingConverterTest extends TestCase
 
     private string $runId;
 
-    private string $connection;
+    private SwagMigrationConnectionEntity $connection;
 
     private MigrationContextInterface $migrationContext;
 
@@ -37,13 +37,12 @@ class CrossSellingConverterTest extends TestCase
 
     private array $products;
 
-    private $type = [
+    private array $type = [
         'Similar Items',
         'Accessory Items',
     ];
 
-    private $compareProduct
-    = [
+    private array $compareProduct = [
         'id' => null,
         'name' => 'Similar Items',
         'type' => 'productList',

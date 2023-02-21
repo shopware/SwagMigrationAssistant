@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Migration\Service;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
@@ -89,7 +88,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     private function getMediaFiles(MigrationContextInterface $migrationContext): array
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
-        $query = $queryBuilder
+
+        return $queryBuilder
             ->select('*')
             ->from('swag_migration_media_file')
             ->where('HEX(run_id) = :runId')
@@ -97,14 +97,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             ->orderBy('entity, file_size')
             ->setFirstResult($migrationContext->getOffset())
             ->setMaxResults($migrationContext->getLimit())
-            ->setParameter('runId', $migrationContext->getRunUuid());
-
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAllAssociative();
+            ->setParameter('runId', $migrationContext->getRunUuid())
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void

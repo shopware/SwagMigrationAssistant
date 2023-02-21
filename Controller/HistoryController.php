@@ -20,18 +20,14 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-/**
- * @Route(defaults={"_routeScope"={"api"}})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class HistoryController extends AbstractController
 {
     public function __construct(private readonly HistoryServiceInterface $historyService)
     {
     }
 
-    /**
-     * @Route("/api/migration/get-grouped-logs-of-run", name="api.admin.migration.get-grouped-logs-of-run", methods={"GET"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->getAlnum('runUuid');
@@ -56,9 +52,7 @@ class HistoryController extends AbstractController
         ]);
     }
 
-    /**
-     * @Route("/api/_action/migration/download-logs-of-run", name="api.admin.migration.download-logs-of-run", defaults={"auth_required"=false}, methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/download-logs-of-run', name: 'api.admin.migration.download-logs-of-run', methods: ['POST'], defaults: ['auth_required' => false, '_acl' => ['admin']])]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -84,9 +78,7 @@ class HistoryController extends AbstractController
         return $response;
     }
 
-    /**
-     * @Route("/api/_action/migration/clear-data-of-run", name="api.admin.migration.clear-data-of-run", methods={"POST"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/clear-data-of-run', name: 'api.admin.migration.clear-data-of-run', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function clearDataOfRun(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -104,9 +96,7 @@ class HistoryController extends AbstractController
         return new Response();
     }
 
-    /**
-     * @Route("/api/_action/migration/is-media-processing", name="api.admin.migration.clear-logs-of-run", methods={"GET"}, defaults={"_acl"={"admin"}})
-     */
+    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.clear-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function isMediaProcessing(): JsonResponse
     {
         $result = $this->historyService->isMediaProcessing();

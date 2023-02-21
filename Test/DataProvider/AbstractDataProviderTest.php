@@ -73,14 +73,14 @@ class AbstractDataProviderTest extends TestCase
                 'displayNestedProducts' => true,
                 'translations' => [
                     [
+                        'languageId' => '1d4d1c257dab4759ae9dbc15314822a5',
                         'categoryId' => '3756f93ae4bc4a73a10f9b00e514ad67',
                         'name' => 'Mein Shop',
-                        'languageId' => '1d4d1c257dab4759ae9dbc15314822a5',
                     ],
                     [
+                        'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
                         'categoryId' => '3756f93ae4bc4a73a10f9b00e514ad67',
                         'name' => 'My store',
-                        'languageId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
                     ],
                 ],
                 'cmsPageId' => '772242e71c2a4c319572d03f733a1574',

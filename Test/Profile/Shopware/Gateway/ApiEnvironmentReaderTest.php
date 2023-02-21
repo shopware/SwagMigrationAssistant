@@ -24,11 +24,11 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 class ApiEnvironmentReaderTest extends TestCase
 {
-    private $dataArray = [
+    private array $dataArray = [
         'testKey' => 'testValue',
     ];
 
-    private $body;
+    private string $body;
 
     private RequestException $sslInsecureException;
 
@@ -36,14 +36,14 @@ class ApiEnvironmentReaderTest extends TestCase
 
     private ShopwareHttpException $gatewayReadException;
 
-    private $error = [
+    private array $error = [
         'code' => '',
         'message' => 'No error.',
     ];
 
     protected function setUp(): void
     {
-        $this->body = \json_encode([
+        $this->body = (string) \json_encode([
             'data' => $this->dataArray,
         ]);
 

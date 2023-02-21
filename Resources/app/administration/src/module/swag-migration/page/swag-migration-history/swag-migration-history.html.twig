@@ -1,7 +1,8 @@
 {% block swag_migration_history %}
     <sw-card class="swag-migration-history"
              :isLoading="isLoading"
-             :large="true">
+             :large="true"
+             position-identifier="swag-migration-history">
         <template #grid>
 
             {% block swag_migration_history_grid %}
@@ -20,17 +21,17 @@
                         <template #column-status="{ item }">
                             <sw-icon v-if="item.status === 'finished'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--finished"
-                                     name="default-basic-checkmark-line"
+                                     name="regular-checkmark"
                                      size="16px">
                             </sw-icon>
                             <sw-icon v-else-if="item.status === 'aborted'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted"
-                                     name="default-basic-x-line"
+                                     name="regular-times"
                                      size="16px">
                             </sw-icon>
                             <sw-icon v-else-if="item.status === 'running'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--loading"
-                                     name="default-basic-shape-circle"
+                                     name="regular-circle"
                                      size="16px">
                             </sw-icon>
                         </template>
