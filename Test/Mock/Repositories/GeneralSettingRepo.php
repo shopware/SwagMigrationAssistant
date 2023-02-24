@@ -20,7 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 
-class GeneralSettingRepo implements EntityRepository
+class GeneralSettingRepo extends EntityRepository
 {
     public function __construct(private readonly string $entityUuid)
     {

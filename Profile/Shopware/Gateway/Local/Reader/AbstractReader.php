@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 
 abstract class AbstractReader implements ReaderInterface
 {
-    protected Connection $connection;
+    protected ?Connection $connection = null;
 
     public function __construct(protected ConnectionFactoryInterface $connectionFactory)
     {
