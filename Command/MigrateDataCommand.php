@@ -366,7 +366,7 @@ class MigrateDataCommand extends Command
         }
 
         $this->output->writeln('The download of media files will be executed in the background of the administration.');
-        $this->output->writeln('You can also use the cli worker for that with the bin\console "messenger:consume-messages default" command.');
+        $this->output->writeln('You can also use the cli worker for that with the "bin/console messenger:consume default" command.');
     }
 
     private function generatePremapping(SwagMigrationRunEntity $run, Context $context): void
