@@ -1,115 +1,29 @@
 variables:
-    DOCKER_DRIVER: overlay2
-    DOCKER_HOST: "tcp://docker:2375"
-    MYSQL_ROOT_PASSWORD: app
-    WEB_DOCUMENT_ROOT: $CI_PROJECT_DIR/development/public
-    DEV_IMAGE: shopware/development:7.4-composer-2
-    DEVELOPMENT_BRANCH: "trunk"
-    PLATFORM_BRANCH: "trunk"
+    PLUGIN_NAME: SwagMigrationAssistant
+    PLATFORM_BRANCH: 'trunk'
+    DEV_IMAGE: shopware/development:8.1-composer-2
 
-stages:
-    - Static validation
-    - Testing
-
-default:
-    image: $DEV_IMAGE
-    tags:
-      - t3.nano
-    before_script:
-        - zip -rq plugin.zip .
-        - git clone --branch $DEVELOPMENT_BRANCH https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/development.git
-        - rm -rf development/platform
-        - git clone --branch $PLATFORM_BRANCH https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/platform.git development/platform
-        - unzip -q plugin.zip -d development/custom/plugins/SwagMigrationAssistant
-        - cd development
-        - cp -v dev-ops/gitlab/.psh.yaml.override .
-        - /entrypoint supervisord > /dev/null 2>&1 &
+include:
+    project: 'shopware/6/product/platform'
+    ref: 'trunk'
+    file: '.gitlab/templates/plugin.yml'
 
 
-# Stage: Static validation
-Static analyze:
-    stage: Static validation
-    tags:
-      - t3.medium
-    services:
-        - name: mysql:5.7
-          alias: mysql
-    script:
-        - ./psh.phar init
-        - php bin/console plugin:install --activate SwagMigrationAssistant
-        - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
-        - php ../../../platform/vendor/bin/ecs check --config=../../../vendor/shopware/platform/easy-coding-standard.php bin Command Controller Core DependencyInjection Exception Migration Profile Resources Test SwagMigrationAssistant.php
-        - php ../../../platform/vendor/bin/ecs check --config=easy-coding-standard.php
-        - bin/static-analyze.sh
-        - php ../../../bin/console snippets:validate
-    only:
-        refs:
-            - merge_requests
-            - master
-            - schedules
-            - pipelines
 
-ToDos resolved:
-    stage: Static validation
-    allow_failure: true
-    script:
-        - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
-        - bin/check-todos.sh $CI_COMMIT_BRANCH
-    only:
-        refs:
-            - merge_requests
-            - master
-            - schedules
-            - pipelines
 
-PHPUnit (MariaDB):
-    stage: Testing
-    tags:
-      - t3.medium
-    services:
-        -   name: mariadb:10.3
-            alias: mysql
-    script:
-        - apt-get update && apt-get --assume-yes install default-mysql-client
-        - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/Test
-        - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/services/testdata.git testData
-        - cd -
-        - mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --host mysql < $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant/Test/testData/Migration/sw55.sql
-        - ./psh.phar init
-        - php bin/console plugin:refresh
-        - php bin/console plugin:install --activate SwagMigrationAssistant
-        - composer dump-autoload --dev -d custom/plugins/SwagMigrationAssistant
-        - cd $CI_PROJECT_DIR/development/custom/plugins/SwagMigrationAssistant
-        - touch vendor/composer/InstalledVersions.php
-        - cd -
-        - ./psh.phar init-test-databases
-        - php -d pcov.enabled=1 -d pcov.directory=$CI_PROJECT_DIR
-            vendor/bin/phpunit
-            --configuration custom/plugins/SwagMigrationAssistant/phpunit.xml.dist
-            --log-junit build/artifacts/phpunit.junit.xml
-            --colors=never
-            --coverage-clover build/artifacts/phpunit.clover.xml
-            --coverage-html build/artifacts/phpunit-coverage-html
-            --coverage-text
-    coverage: '/^\s*Lines:\s*(\d+(?:\.\d+)?%)/'
-    artifacts:
-        paths:
-            - development/build/artifacts/phpunit.clover.xml
-        reports:
-            junit: development/build/artifacts/phpunit.junit.xml
-    parallel:
-        matrix:
-            -   DEV_IMAGE:
-                    - shopware/development:7.4-composer-2
-                    - shopware/development:8.0-composer-2
-            -   DEVELOPMENT_BRANCH: 6.4.0.0
-                PLATFORM_BRANCH: 6.4.0.0
-            -   DEVELOPMENT_BRANCH: trunk
-                PLATFORM_BRANCH: 6.4.2.0
-            -   DEVELOPMENT_BRANCH: trunk
-                PLATFORM_BRANCH: trunk
-    rules:
-        - if: '$CI_MERGE_REQUEST_LABELS =~ /.*unit::skip.*/'
-          when: never
-        - if: '$CI_COMMIT_BRANCH == "master"'
-        - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+phpunit:
+  script:
+    - php
+      -d pcov.enabled=0 -d pcov.directory=$PWD -d pcov.exclude='~(vendor|tests|node_modules)~'
+      ${PROJECT_ROOT}/vendor/bin/phpunit
+      --configuration phpunit.xml.dist
+      --log-junit ${CI_PROJECT_DIR}/phpunit.junit.xml
+      --colors=never
+      --coverage-cobertura ${CI_PROJECT_DIR}/cobertura.xml
+      --coverage-text #| grep -v -E '^Shopware\\|^  Methods:' # do not output covered files lines
+
+phpstan:
+  script:
+    - composer dump-autoload
+    - php Test/TestBootstrap.php
+    - ${PROJECT_ROOT}/vendor/bin/phpstan analyze --error-format=gitlab --no-progress | tee ${CI_PROJECT_DIR}/phpstan-report.json
