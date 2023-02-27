@@ -5,8 +5,7 @@ variables:
 
 include:
     project: 'shopware/6/product/platform'
-    # use trunk
-    ref: 'next-25385/use-new-runners-in-ci-template'
+    ref: 'trunk'
     file: '.gitlab/templates/plugin.yml'
 
 
