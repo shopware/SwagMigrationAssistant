@@ -1,4 +1,9 @@
-# 4.2.5
+# 5.0.0
+- MIG-847 - Shopware 6.5 compatibility
+- MIG-827 - Fix migration of shipping methods with time configuration
+- MIG-829 - Fixed the progress bar is displayed incorrectly at a specific viewport
+
+- # 4.2.5
 - MIG-293 - Improve performance of order documents migration
 
 # 4.2.4
