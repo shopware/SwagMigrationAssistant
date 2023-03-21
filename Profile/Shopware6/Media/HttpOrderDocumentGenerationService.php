@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
 use Doctrine\DBAL\Connection;
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\Utils;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -107,7 +107,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
         // Wait for the requests to complete, even if some of them fail
         /** @var array $results */
-        $results = Promise\settle($promises)->wait();
+        $results = Utils::settle($promises)->wait();
 
         //handle responses
         $failureUuids = [];

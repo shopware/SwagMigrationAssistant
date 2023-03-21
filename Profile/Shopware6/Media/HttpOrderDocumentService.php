@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -73,7 +73,7 @@ class HttpOrderDocumentService extends BaseHttpMediaDownloadService
         $query->leftJoin('migrationFile', 'media', 'media', 'migrationFile.media_id = media.id');
         $query->where('HEX(run_id) = :runId');
         $query->andWhere('HEX(media_id) IN (:ids)');
-        $query->setParameter('ids', $mediaIds, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $mediaIds, ArrayParameterType::STRING);
         $query->setParameter('runId', $runId);
 
         $query->executeQuery();

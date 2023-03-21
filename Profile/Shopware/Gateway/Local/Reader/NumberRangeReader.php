@@ -52,13 +52,11 @@ class NumberRangeReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_number')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::NUMBER_RANGE, $total);
     }

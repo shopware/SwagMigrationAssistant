@@ -298,7 +298,7 @@ SQL;
 
     public function cleanupMigrationData(): void
     {
-        $result = $this->dbalConnection->executeQuery('SELECT * FROM swag_migration_run WHERE `status` = :status', ['status' => SwagMigrationRunEntity::STATUS_RUNNING])->fetch();
+        $result = $this->dbalConnection->fetchOne('SELECT 1 FROM swag_migration_run WHERE `status` = :status', ['status' => SwagMigrationRunEntity::STATUS_RUNNING]);
 
         if ($result !== false) {
             throw new MigrationIsRunningException();
@@ -664,7 +664,7 @@ SQL;
         }
 
         $qb->setParameter('runId', $runUuid)
-            ->execute();
+            ->executeStatement();
     }
 
     private function getSalesChannels(string $connectionId, Context $context): array
@@ -722,7 +722,7 @@ SQL;
             $qb->delete($this->migrationDataDefinition->getEntityName())
                 ->andWhere('HEX(run_id) = :runId')
                 ->setParameter('runId', $lastRunUuid)
-                ->execute();
+                ->executeStatement();
         }
     }
 

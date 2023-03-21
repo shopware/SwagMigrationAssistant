@@ -7,7 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -60,13 +61,11 @@ class NewsletterRecipientReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_campaigns_mailaddresses')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::NEWSLETTER_RECIPIENT, $total);
     }
@@ -108,7 +107,7 @@ class NewsletterRecipientReader extends AbstractReader
         $this->addTableSelection($query, 's_campaigns_maildata', 'recipient_address');
 
         $query->where('recipient.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->executeQuery();
 
@@ -173,12 +172,13 @@ class NewsletterRecipientReader extends AbstractReader
         $query->innerJoin('language', 's_core_locales', 'locale', 'locale.id = language.locale_id');
         $query->where('addresses.customer = 1');
         $query->andWhere('addresses.id IN (:ids)');
-        $query->addGroupBy('addresses.id');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 
     private function getGroupedResult(array $shops): array

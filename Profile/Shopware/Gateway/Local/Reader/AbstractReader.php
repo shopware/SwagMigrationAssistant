@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 abstract class AbstractReader implements ReaderInterface
 {
     /**
-     * @var Connection $connection
+     * @var Connection
      */
     protected $connection;
 
@@ -55,7 +55,7 @@ abstract class AbstractReader implements ReaderInterface
 
     protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
     {
-        $columns = $this->connection->getSchemaManager()->listTableColumns($table);
+        $columns = $this->connection->createSchemaManager()->listTableColumns($table);
 
         foreach ($columns as $column) {
             $selection = \str_replace(
@@ -71,7 +71,7 @@ abstract class AbstractReader implements ReaderInterface
     /**
      * @psalm-suppress MissingParamType
      */
-    protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, array $value): void
+    protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, mixed $value): void
     {
         $key = \array_shift($path);
 

@@ -9,10 +9,11 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
-use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class CleanupMigrationHandler implements MessageSubscriberInterface
+#[AsMessageHandler]
+class CleanupMigrationHandler
 {
     public function __construct(
         private readonly Connection $connection,
@@ -20,10 +21,7 @@ class CleanupMigrationHandler implements MessageSubscriberInterface
     ) {
     }
 
-    /**
-     * @param CleanupMigrationMessage $message
-     */
-    public function __invoke($message): void
+    public function __invoke(CleanupMigrationMessage $message): void
     {
         $currentStep = 0;
         $tablesToReset = [
@@ -46,12 +44,5 @@ class CleanupMigrationHandler implements MessageSubscriberInterface
             $this->bus->dispatch($nextMessage);
         }
         $this->connection->executeStatement('DELETE FROM ' . $tablesToReset[$currentStep] . ';');
-    }
-
-    public static function getHandledMessages(): iterable
-    {
-        return [
-            CleanupMigrationMessage::class,
-        ];
     }
 }

@@ -51,7 +51,7 @@ class CurrencyReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_currencies')
             ->executeQuery()

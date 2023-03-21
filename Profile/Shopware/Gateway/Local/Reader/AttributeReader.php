@@ -9,11 +9,61 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Types\AsciiStringType;
+use Doctrine\DBAL\Types\BigIntType;
+use Doctrine\DBAL\Types\BinaryType;
+use Doctrine\DBAL\Types\BlobType;
+use Doctrine\DBAL\Types\BooleanType;
+use Doctrine\DBAL\Types\DateImmutableType;
+use Doctrine\DBAL\Types\DateIntervalType;
+use Doctrine\DBAL\Types\DateTimeImmutableType;
+use Doctrine\DBAL\Types\DateTimeType;
+use Doctrine\DBAL\Types\DateTimeTzImmutableType;
+use Doctrine\DBAL\Types\DateTimeTzType;
+use Doctrine\DBAL\Types\DateType;
+use Doctrine\DBAL\Types\DecimalType;
+use Doctrine\DBAL\Types\FloatType;
+use Doctrine\DBAL\Types\GuidType;
+use Doctrine\DBAL\Types\IntegerType;
+use Doctrine\DBAL\Types\JsonType;
+use Doctrine\DBAL\Types\SimpleArrayType;
+use Doctrine\DBAL\Types\SmallIntType;
+use Doctrine\DBAL\Types\StringType;
+use Doctrine\DBAL\Types\TextType;
+use Doctrine\DBAL\Types\TimeImmutableType;
+use Doctrine\DBAL\Types\TimeType;
+use Doctrine\DBAL\Types\Types;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeReader extends AbstractReader
 {
+    private const BUILTIN_TYPES_MAP = [
+        AsciiStringType::class => Types::ASCII_STRING,
+        BigIntType::class => Types::BIGINT,
+        BinaryType::class => Types::BINARY,
+        BlobType::class => Types::BLOB,
+        BooleanType::class => Types::BOOLEAN,
+        DateType::class => Types::DATE_MUTABLE,
+        DateImmutableType::class => Types::DATE_IMMUTABLE,
+        DateIntervalType::class => Types::DATEINTERVAL,
+        DateTimeType::class => Types::DATETIME_MUTABLE,
+        DateTimeImmutableType::class => Types::DATETIME_IMMUTABLE,
+        DateTimeTzType::class => Types::DATETIMETZ_MUTABLE,
+        DateTimeTzImmutableType::class => Types::DATETIMETZ_IMMUTABLE,
+        DecimalType::class => Types::DECIMAL,
+        FloatType::class => Types::FLOAT,
+        GuidType::class => Types::GUID,
+        IntegerType::class => Types::INTEGER,
+        JsonType::class => Types::JSON,
+        SimpleArrayType::class => Types::SIMPLE_ARRAY,
+        SmallIntType::class => Types::SMALLINT,
+        StringType::class => Types::STRING,
+        TextType::class => Types::TEXT,
+        TimeType::class => Types::TIME_MUTABLE,
+        TimeImmutableType::class => Types::TIME_IMMUTABLE,
+    ];
+
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
@@ -34,7 +84,6 @@ abstract class AttributeReader extends AbstractReader
             ->select('config.column_name, config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
-            ->addGroupBy('config.column_name')
             ->setParameter('table', $table)
             ->executeQuery();
 
@@ -82,7 +131,7 @@ SQL;
         foreach ($columns as $column) {
             $columnData = [
                 'name' => $column->getName(),
-                'type' => $column->getType()->getName(),
+                'type' => self::BUILTIN_TYPES_MAP[\get_class($column->getType())],
                 '_locale' => \str_replace('_', '-', $locale),
                 'configuration' => null,
             ];
@@ -101,7 +150,7 @@ SQL;
      */
     private function getTableColumns(string $table): array
     {
-        return $this->connection->getSchemaManager()->listTableColumns($table);
+        return $this->connection->createSchemaManager()->listTableColumns($table);
     }
 
     /**
@@ -109,7 +158,7 @@ SQL;
      */
     private function getTableForeignKeys(string $table): array
     {
-        return $this->connection->getSchemaManager()->listTableForeignKeys($table);
+        return $this->connection->createSchemaManager()->listTableForeignKeys($table);
     }
 
     private function cleanupColumns(array $columns, array $foreignKeys): array

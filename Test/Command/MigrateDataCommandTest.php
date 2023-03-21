@@ -203,12 +203,12 @@ class MigrateDataCommandTest extends TestCase
     public function testExecution(): void
     {
         $dbConnection = $this->getContainer()->get(Connection::class);
-        $productTotalBefore = (int) $dbConnection->query('select count(*) from product')->fetchOne();
+        $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         $this->commandTester->execute([
             'command' => $this->command->getName(),
             'dataSelections' => ['products'],
         ]);
-        $productTotalAfter = (int) $dbConnection->query('select count(*) from product')->fetchOne();
+        $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }
 }

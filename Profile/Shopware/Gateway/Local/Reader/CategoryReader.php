@@ -45,7 +45,7 @@ class CategoryReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_categories')
             ->where('path IS NOT NULL AND parent IS NOT NULL')

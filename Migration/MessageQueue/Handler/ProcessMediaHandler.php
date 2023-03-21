@@ -22,9 +22,10 @@ use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
-use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
+use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
-class ProcessMediaHandler implements MessageSubscriberInterface
+#[AsMessageHandler]
+class ProcessMediaHandler
 {
     final public const MEDIA_ERROR_THRESHOLD = 3;
 
@@ -37,11 +38,9 @@ class ProcessMediaHandler implements MessageSubscriberInterface
     }
 
     /**
-     * @param ProcessMediaMessage $message
-     *
      * @throws EntityNotExistsException
      */
-    public function __invoke($message): void
+    public function __invoke(ProcessMediaMessage $message): void
     {
         $context = $message->readContext();
 
@@ -86,13 +85,6 @@ class ProcessMediaHandler implements MessageSubscriberInterface
 
             $this->loggingService->saveLogging($context);
         }
-    }
-
-    public static function getHandledMessages(): iterable
-    {
-        return [
-            ProcessMediaMessage::class,
-        ];
     }
 
     /**

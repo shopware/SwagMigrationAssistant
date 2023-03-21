@@ -1,9 +1,9 @@
 .swag-migration-process-screen {
     .swag-migration-process-screen__step-display {
         position: absolute;
-        padding-right: 56px;
+        padding-right: 50px;
         top: 40px;
-        left: calc(50% - 800px / 2);
+        left: calc(50% - 450px);
         transform: translate(-100%, 0);
 
         @media screen and (max-width: 1600px) {

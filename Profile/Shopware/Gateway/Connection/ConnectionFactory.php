@@ -69,8 +69,8 @@ class ConnectionFactory implements ConnectionFactoryInterface
         $connection = DriverManager::getConnection($connectionParams);
 
         try {
-            if (method_exists($connection->getWrappedConnection(), 'setAttribute')) {
-                $connection->getWrappedConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+            if (\is_object($connection->getNativeConnection()) && method_exists($connection->getNativeConnection(), 'setAttribute')) {
+                $connection->getNativeConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
             }
         } catch (ConnectionException $exception) {
             // nth

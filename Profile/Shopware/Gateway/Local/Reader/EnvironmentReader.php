@@ -50,7 +50,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
     protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
     {
-        $columns = $this->connection->getSchemaManager()->listTableColumns($table);
+        $columns = $this->connection->createSchemaManager()->listTableColumns($table);
 
         foreach ($columns as $column) {
             $selection = \str_replace(
@@ -112,7 +112,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
     /**
      * @psalm-suppress MissingParamType
      */
-    private function buildArrayFromChunks(array &$array, array $path, string $fieldKey, array $value): void
+    private function buildArrayFromChunks(array &$array, array $path, string $fieldKey, mixed $value): void
     {
         $key = \array_shift($path);
 
@@ -151,8 +151,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
         $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
         $this->addTableSelection($query, 's_core_locales', 'locale');
-
-        $query->addGroupBy('shop.id');
 
         $query->orderBy('shop.main_id');
 

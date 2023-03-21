@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -47,13 +47,11 @@ class OrderDocumentReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_documents')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::ORDER_DOCUMENT, $total);
     }
@@ -74,7 +72,7 @@ class OrderDocumentReader extends AbstractReader
         $this->addTableSelection($query, 's_core_documents', 'document_documenttype');
 
         $query->where('document.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 

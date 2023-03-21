@@ -7,7 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -52,13 +53,11 @@ class PromotionReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_emarketing_vouchers')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::PROMOTION, $total);
     }
@@ -75,11 +74,13 @@ class PromotionReader extends AbstractReader
         $query->addSelect('user.firstname AS `codes.firstname`, user.lastname AS `codes.lastname`');
 
         $query->where('codes.voucherID IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->executeQuery();
 
         $fetchedCodes = $query->fetchAllAssociative();
+
+        $fetchedCodes = FetchModeHelper::group($fetchedCodes);
 
         return $this->mapData($fetchedCodes, [], ['codes']);
     }
@@ -92,7 +93,7 @@ class PromotionReader extends AbstractReader
         $this->addTableSelection($query, 's_emarketing_vouchers', 'vouchers');
 
         $query->where('vouchers.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->executeQuery();
 
