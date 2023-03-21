@@ -2,12 +2,16 @@
     <div class="swag-migration-confirm-warning">
 
         {% block swag_migration_confirm_warning_card %}
-            <sw-card class="swag-migration-confirm-warning__card" v-if="hasDifferentCurrency">
+            <sw-card
+                v-if="hasDifferentCurrency"
+                class="swag-migration-confirm-warning"
+                position-identifier="swag-migration-confirm-warning"
+            >
 
                 {% block swag_migration_confirm_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
                         <sw-icon class="swag-migration-confirm-warning__bubble-icon"
-                                 name="default-badge-warning"
+                                 name="regular-exclamation-triangle"
                                  size="36px"
                                  decorative>
                         </sw-icon>
@@ -43,12 +47,16 @@
         {% endblock %}
 
         {% block swag_migration_confirm_language_warning_card %}
-            <sw-card class="swag-migration-confirm-warning__card" v-if="hasDifferentLanguage">
+            <sw-card
+                v-if="hasDifferentLanguage"
+                class="swag-migration-confirm-warning__card"
+                position-identifier="swag-migration-confirm-warning__card"
+            >
 
                 {% block swag_migration_confirm_language_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
                         <sw-icon class="swag-migration-confirm-warning__bubble-icon"
-                                 name="default-badge-warning"
+                                 name="regular-exclamation-triangle"
                                  size="36px"
                                  decorative>
                         </sw-icon>

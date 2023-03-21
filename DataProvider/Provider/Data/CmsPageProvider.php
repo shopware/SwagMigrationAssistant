@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
@@ -16,14 +16,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class CmsPageProvider extends AbstractProvider
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $cmsPageRepo;
-
-    public function __construct(EntityRepositoryInterface $cmsPageRepo)
+    public function __construct(private readonly EntityRepository $cmsPageRepo)
     {
-        $this->cmsPageRepo = $cmsPageRepo;
     }
 
     public function getIdentifier(): string

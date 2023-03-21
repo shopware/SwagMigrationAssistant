@@ -7,11 +7,9 @@
 
 namespace SwagMigrationAssistant\Controller;
 
+use Shopware\Core\Checkout\Document\Service\DocumentGenerator;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\Routing\Annotation\Acl;
-use Shopware\Core\Framework\Routing\Annotation\RouteScope;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
-use SwagMigrationAssistant\DataProvider\Provider\GenerateDocumentProvider;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -19,40 +17,17 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @RouteScope(scopes={"api"})
- */
+#[Route(defaults: ['_routeScope' => ['api']])]
 class DataProviderController
 {
-    /**
-     * @var ProviderRegistryInterface
-     */
-    private $providerRegistry;
-
-    /**
-     * @var EnvironmentServiceInterface
-     */
-    private $environmentService;
-
-    /**
-     * @var GenerateDocumentProvider
-     */
-    private $generateDocumentProvider;
-
     public function __construct(
-        ProviderRegistryInterface $providerRegistry,
-        EnvironmentServiceInterface $environmentService,
-        GenerateDocumentProvider $generateDocumentProvider
+        private readonly ProviderRegistryInterface $providerRegistry,
+        private readonly EnvironmentServiceInterface $environmentService,
+        private readonly DocumentGenerator $documentGenerator
     ) {
-        $this->providerRegistry = $providerRegistry;
-        $this->environmentService = $environmentService;
-        $this->generateDocumentProvider = $generateDocumentProvider;
     }
 
-    /**
-     * @Route("/api/_action/data-provider/get-environment", name="api.admin.data-provider.get-environment", methods={"GET"})
-     * @Acl({"admin"})
-     */
+    #[Route(path: '/api/_action/data-provider/get-environment', name: 'api.admin.data-provider.get-environment', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getEnvironment(Context $context): Response
     {
         $data = $this->environmentService->getEnvironmentData($context);
@@ -60,10 +35,7 @@ class DataProviderController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/_action/data-provider/get-data", name="api.admin.data-provider.get-data", methods={"GET"})
-     * @Acl({"admin"})
-     */
+    #[Route(path: '/api/_action/data-provider/get-data', name: 'api.admin.data-provider.get-data', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getData(Request $request, Context $context): Response
     {
         $identifier = (string) $request->query->get('identifier');
@@ -80,10 +52,7 @@ class DataProviderController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/_action/data-provider/get-total", name="api.admin.data-provider.get-total", methods={"GET"})
-     * @Acl({"admin"})
-     */
+    #[Route(path: '/api/_action/data-provider/get-total', name: 'api.admin.data-provider.get-total', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getTotal(Request $request, Context $context): Response
     {
         $providerArray = $this->providerRegistry->getAllDataProviders();
@@ -96,10 +65,7 @@ class DataProviderController
         return new JsonResponse($totals);
     }
 
-    /**
-     * @Route("/api/_action/data-provider/get-table", name="api.admin.data-provider.get-table", methods={"GET"})
-     * @Acl({"admin"})
-     */
+    #[Route(path: '/api/_action/data-provider/get-table', name: 'api.admin.data-provider.get-table', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getTable(Request $request, Context $context): Response
     {
         $identifier = (string) $request->query->get('identifier');
@@ -114,10 +80,7 @@ class DataProviderController
         return new JsonResponse($data);
     }
 
-    /**
-     * @Route("/api/_action/data-provider/generate-document", name="api.admin.data-provider.generate-document", methods={"GET"})
-     * @Acl({"admin"})
-     */
+    #[Route(path: '/api/_action/data-provider/generate-document', name: 'api.admin.data-provider.generate-document', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function generateDocument(Request $request, Context $context): JsonResponse
     {
         $identifier = (string) $request->query->get('identifier');
@@ -126,15 +89,15 @@ class DataProviderController
             throw new MissingRequestParameterException('identifier');
         }
 
-        $generatedDocument = $this->generateDocumentProvider->generateDocument($identifier, $context);
+        $generatedDocument = $this->documentGenerator->readDocument($identifier, $context);
 
         if ($generatedDocument === null) {
             throw new \Exception('Document could not be generated.');
         }
 
         return new JsonResponse([
-            'file_blob' => \base64_encode($generatedDocument->getFileBlob()),
-            'file_name' => $generatedDocument->getFilename(),
+            'file_blob' => \base64_encode($generatedDocument->getContent()),
+            'file_name' => $generatedDocument->getName(),
             'file_content_type' => $generatedDocument->getContentType(),
         ]);
     }

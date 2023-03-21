@@ -12,16 +12,10 @@ use SwagMigrationAssistant\Exception\ProfileNotFoundException;
 class ProfileRegistry implements ProfileRegistryInterface
 {
     /**
-     * @var ProfileInterface[]
-     */
-    private $profiles;
-
-    /**
      * @param ProfileInterface[] $profiles
      */
-    public function __construct(iterable $profiles)
+    public function __construct(private readonly iterable $profiles)
     {
-        $this->profiles = $profiles;
     }
 
     /**

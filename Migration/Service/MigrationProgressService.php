@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\Bucket;
@@ -26,67 +26,19 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressService implements MigrationProgressServiceInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepository;
+    private Context $context;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationDataRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationMediaFileRepository;
-
-    /**
-     * @var Context
-     */
-    private $context;
-
-    /**
-     * @var SwagMigrationAccessTokenService
-     */
-    private $migrationAccessTokenService;
-
-    /**
-     * @var bool
-     */
-    private $validMigrationAccessToken = false;
-
-    /**
-     * @var RunServiceInterface
-     */
-    private $runService;
-
-    /**
-     * @var PremappingServiceInterface
-     */
-    private $premappingService;
-
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
+    private bool $validMigrationAccessToken = false;
 
     public function __construct(
-        EntityRepositoryInterface $migrationRunRepository,
-        EntityRepositoryInterface $migrationDataRepository,
-        EntityRepositoryInterface $migrationMediaFileRepository,
-        SwagMigrationAccessTokenService $migrationAccessTokenService,
-        RunServiceInterface $runService,
-        PremappingServiceInterface $premappingService,
-        MigrationContextFactoryInterface $migrationContextFactory
+        private readonly EntityRepository $migrationRunRepository,
+        private readonly EntityRepository $migrationDataRepository,
+        private readonly EntityRepository $migrationMediaFileRepository,
+        private readonly SwagMigrationAccessTokenService $migrationAccessTokenService,
+        private readonly RunServiceInterface $runService,
+        private readonly PremappingServiceInterface $premappingService,
+        private readonly MigrationContextFactoryInterface $migrationContextFactory
     ) {
-        $this->migrationRunRepository = $migrationRunRepository;
-        $this->migrationDataRepository = $migrationDataRepository;
-        $this->migrationMediaFileRepository = $migrationMediaFileRepository;
-        $this->migrationAccessTokenService = $migrationAccessTokenService;
-        $this->runService = $runService;
-        $this->premappingService = $premappingService;
-        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     public function getProgress(Request $request, Context $context): ProgressState

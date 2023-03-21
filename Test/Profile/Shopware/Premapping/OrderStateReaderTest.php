@@ -32,30 +32,15 @@ class OrderStateReaderTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var OrderStateReader
-     */
-    private $reader;
+    private OrderStateReader $reader;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var StateMachineStateEntity
-     */
-    private $stateOpen;
+    private StateMachineStateEntity $stateOpen;
 
-    /**
-     * @var StateMachineStateEntity
-     */
-    private $stateClosed;
+    private StateMachineStateEntity $stateClosed;
 
     public function setUp(): void
     {

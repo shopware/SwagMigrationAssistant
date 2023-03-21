@@ -19,35 +19,20 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 
 abstract class NewsletterRecipientConverter extends ShopwareConverter
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $locale;
+    protected string $locale;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $oldNewsletterRecipientId;
+    protected string $oldNewsletterRecipientId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     /**
      * @var string[]
      */
-    protected $requiredDataFieldKeys = [
+    protected array $requiredDataFieldKeys = [
         '_locale',
         'shopId',
     ];

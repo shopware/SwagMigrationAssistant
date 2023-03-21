@@ -8,9 +8,8 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -23,41 +22,18 @@ use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 
-class ProcessMediaHandler extends AbstractMessageHandler
+class ProcessMediaHandler implements MessageSubscriberInterface
 {
-    public const MEDIA_ERROR_THRESHOLD = 3;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepo;
-
-    /**
-     * @var MediaFileProcessorRegistryInterface
-     */
-    private $mediaFileProcessorRegistry;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
+    final public const MEDIA_ERROR_THRESHOLD = 3;
 
     public function __construct(
-        EntityRepositoryInterface $migrationRunRepo,
-        MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
-        LoggingServiceInterface $loggingService,
-        MigrationContextFactoryInterface $migrationContextFactory
+        private readonly EntityRepository $migrationRunRepo,
+        private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly MigrationContextFactoryInterface $migrationContextFactory
     ) {
-        $this->migrationRunRepo = $migrationRunRepo;
-        $this->mediaFileProcessorRegistry = $mediaFileProcessorRegistry;
-        $this->loggingService = $loggingService;
-        $this->migrationContextFactory = $migrationContextFactory;
     }
 
     /**
@@ -65,7 +41,7 @@ class ProcessMediaHandler extends AbstractMessageHandler
      *
      * @throws EntityNotExistsException
      */
-    public function handle($message): void
+    public function __invoke($message): void
     {
         $context = $message->readContext();
 

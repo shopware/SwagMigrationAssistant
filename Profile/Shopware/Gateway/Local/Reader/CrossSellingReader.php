@@ -53,7 +53,7 @@ FROM
     ) AS result
 SQL;
 
-        $total = (int) $this->connection->executeQuery($sql)->fetchColumn();
+        $total = (int) $this->connection->executeQuery($sql)->fetchOne();
 
         return new TotalStruct(DefaultEntities::CROSS_SELLING, $total);
     }
@@ -82,9 +82,10 @@ SQL;
         $statement->bindValue('similar', DefaultEntities::CROSS_SELLING_SIMILAR, \PDO::PARAM_STR);
         $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
         $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
-        $statement->execute();
 
-        return $statement->fetchAllAssociative();
+        $result = $statement->executeQuery();
+
+        return $result->fetchAllAssociative();
     }
 
     private function enrichWithPositionData(array &$fetchedCrossSelling, int $offset): void

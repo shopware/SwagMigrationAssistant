@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-use Shopware\Core\Defaults;
+use Shopware\Core\Test\TestDefaults;
 
 return [
     'typeId' => '8a243080f92e4c719546314b577cf82b',
@@ -107,5 +107,5 @@ return [
     'customerGroupId' => 'cfbd5018d38d41d8adca10d94fc8bdd6',
     'paymentMethodIds' => ['c5917da8076b495ba80b14a61afd90fb'],
     'hreflangActive' => true,
-    'id' => Defaults::SALES_CHANNEL,
+    'id' => TestDefaults::SALES_CHANNEL,
 ];

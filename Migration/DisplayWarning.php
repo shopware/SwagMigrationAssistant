@@ -12,28 +12,13 @@ use Shopware\Core\Framework\Struct\Struct;
 class DisplayWarning extends Struct
 {
     /**
-     * @var string
-     */
-    protected $snippetKey;
-
-    /**
-     * @var string[]
-     */
-    protected $snippetArguments;
-
-    /**
-     * @var int
-     */
-    protected $pluralizationCount;
-
-    /**
      * @param string[] $snippetArguments
      */
-    public function __construct(string $snippetKey, array $snippetArguments = [], int $pluralizationCount = 0)
-    {
-        $this->snippetKey = $snippetKey;
-        $this->snippetArguments = $snippetArguments;
-        $this->pluralizationCount = $pluralizationCount;
+    public function __construct(
+        protected string $snippetKey,
+        protected array $snippetArguments = [],
+        protected int $pluralizationCount = 0
+    ) {
     }
 
     public function getSnippetKey(): string

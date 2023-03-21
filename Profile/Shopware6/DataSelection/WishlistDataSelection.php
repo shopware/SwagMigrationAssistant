@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class WishlistDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'customerWishlists';
+    final public const IDENTIFIER = 'customerWishlists';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {

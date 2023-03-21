@@ -15,52 +15,30 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductOptionRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductOptionRelationConverter;
-use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductPropertyRelationConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductOptionRelationConverterTest extends TestCase
 {
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var Shopware55ProductPropertyRelationConverter
-     */
-    private $converter;
+    private Shopware55ProductOptionRelationConverter $converter;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var string
-     */
-    private $productUuid;
+    private string $productUuid;
 
     /**
      * @var string[]
      */
-    private $propertyUuids;
+    private array $propertyUuids;
 
-    /**
-     * @var string
-     */
-    private $oldMappingId;
+    private string $oldMappingId;
 
     protected function setUp(): void
     {

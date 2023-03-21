@@ -21,40 +21,22 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductPropertyRelationConverterTest extends TestCase
 {
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var Shopware55ProductPropertyRelationConverter
-     */
-    private $converter;
+    private Shopware55ProductPropertyRelationConverter $converter;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var string
-     */
-    private $productUuid;
+    private string $productUuid;
 
     /**
      * @var string[]
      */
-    private $propertyUuids;
+    private array $propertyUuids;
 
     protected function setUp(): void
     {

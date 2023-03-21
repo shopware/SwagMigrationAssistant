@@ -25,30 +25,15 @@ use Symfony\Component\HttpFoundation\Response;
 
 class CategoryConverterTest extends TestCase
 {
-    /**
-     * @var Shopware55CategoryConverter
-     */
-    private $categoryConverter;
+    private Shopware55CategoryConverter $categoryConverter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var string
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
     protected function setUp(): void
     {

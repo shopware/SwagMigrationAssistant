@@ -9,32 +9,12 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class ProcessorNotFoundLog implements LogEntryInterface
 {
-    /**
-     * @var string
-     */
-    private $runId;
-
-    /**
-     * @var string
-     */
-    private $entity;
-
-    /**
-     * @var string
-     */
-    private $profileName;
-
-    /**
-     * @var string
-     */
-    private $gatewayName;
-
-    public function __construct(string $runId, string $entity, string $profileName, string $gatewayName)
-    {
-        $this->runId = $runId;
-        $this->entity = $entity;
-        $this->profileName = $profileName;
-        $this->gatewayName = $gatewayName;
+    public function __construct(
+        private readonly string $runId,
+        private readonly string $entity,
+        private readonly string $profileName,
+        private readonly string $gatewayName
+    ) {
     }
 
     public function getLevel(): string

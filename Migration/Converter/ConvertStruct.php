@@ -11,28 +11,11 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class ConvertStruct extends Struct
 {
-    /**
-     * @var array|null
-     */
-    private $converted;
-
-    /**
-     * @var array|null
-     */
-    private $unmapped;
-
-    /**
-     * Represents the mapping id of the entity which gets converted.
-     *
-     * @var string|null
-     */
-    private $mappingUuid;
-
-    public function __construct(?array $converted, ?array $unmapped, ?string $mappingUuid = null)
-    {
-        $this->converted = $converted;
-        $this->unmapped = $unmapped;
-        $this->mappingUuid = $mappingUuid;
+    public function __construct(
+        private readonly ?array $converted,
+        private readonly ?array $unmapped,
+        private readonly ?string $mappingUuid = null
+    ) {
     }
 
     public function getConverted(): ?array

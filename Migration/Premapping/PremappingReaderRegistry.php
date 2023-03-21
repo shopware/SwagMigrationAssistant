@@ -12,16 +12,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class PremappingReaderRegistry implements PremappingReaderRegistryInterface
 {
     /**
-     * @var PremappingReaderInterface[]
-     */
-    private $preMappingReaders;
-
-    /**
      * @param PremappingReaderInterface[] $preMappingReaders
      */
-    public function __construct(iterable $preMappingReaders)
+    public function __construct(private readonly iterable $preMappingReaders)
     {
-        $this->preMappingReaders = $preMappingReaders;
     }
 
     /**

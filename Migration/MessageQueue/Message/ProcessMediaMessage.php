@@ -15,27 +15,15 @@ class ProcessMediaMessage
     /**
      * @var string[]
      */
-    private $mediaFileIds;
+    private array $mediaFileIds;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var string
-     */
-    private $contextData;
+    private string $contextData;
 
-    /**
-     * @var DataSet
-     */
-    private $dataSet;
+    private DataSet $dataSet;
 
-    /**
-     * @var int
-     */
-    private $fileChunkByteSize;
+    private int $fileChunkByteSize;
 
     public function withContext(Context $context): ProcessMediaMessage
     {

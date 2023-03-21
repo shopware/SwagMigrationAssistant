@@ -13,18 +13,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 class EntityPartialIndexerService
 {
     /**
-     * @var EntityIndexer[]|iterable
-     */
-    private $indexer;
-
-    /**
      * @param EntityIndexer[] $indexer
      */
-    public function __construct(iterable $indexer)
+    public function __construct(private readonly iterable $indexer)
     {
-        $this->indexer = $indexer;
     }
 
+    /**
+     * @param array{offset: int|null}|null $lastId
+     */
     public function partial(?string $lastIndexer, ?array $lastId): ?EntityIndexingMessage
     {
         $indexers = $this->getIndexers();

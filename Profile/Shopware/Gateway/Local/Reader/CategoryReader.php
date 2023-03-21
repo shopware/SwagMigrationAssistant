@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -46,16 +45,12 @@ class CategoryReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_categories')
             ->where('path IS NOT NULL AND parent IS NOT NULL')
-            ->execute();
-
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+            ->executeQuery()
+            ->fetchOne();
 
         return new TotalStruct(DefaultEntities::CATEGORY, $total);
     }
@@ -113,13 +108,9 @@ class CategoryReader extends AbstractReader
                                                                                           LIMIT 1), category.id))');
         $query->setFirstResult($migrationContext->getOffset());
         $query->setMaxResults($migrationContext->getLimit());
+        $query->executeQuery();
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function setAllLocales(array $categories, array $mainCategoryLocales): array
@@ -163,13 +154,9 @@ class CategoryReader extends AbstractReader
         $query->addSelect('category.id');
         $query->from('s_categories', 'category');
         $query->andWhere('category.parent IS NULL AND category.path IS NULL');
+        $query->executeQuery();
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAll(\PDO::FETCH_COLUMN);
+        return $query->fetchFirstColumn();
     }
 
     private function fetchMainCategoryLocales(): array
@@ -180,12 +167,8 @@ class CategoryReader extends AbstractReader
         $query->addSelect('shop.category_id');
         $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
         $query->addSelect('locale.locale');
+        $query->executeQuery();
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAll(\PDO::FETCH_KEY_PAIR);
+        return $query->fetchAllKeyValue();
     }
 }

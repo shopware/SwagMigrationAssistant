@@ -11,15 +11,13 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class UnsupportedShippingCalculationType extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $type;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $type)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $type
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->type = $type;
     }
 
     public function getLevel(): string

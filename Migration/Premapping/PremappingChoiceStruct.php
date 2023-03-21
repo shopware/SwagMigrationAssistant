@@ -11,20 +11,10 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class PremappingChoiceStruct extends Struct
 {
-    /**
-     * @var string
-     */
-    protected $uuid;
-
-    /**
-     * @var string
-     */
-    protected $description;
-
-    public function __construct(string $uuid, string $description)
-    {
-        $this->uuid = $uuid;
-        $this->description = $description;
+    public function __construct(
+        protected string $uuid,
+        protected string $description
+    ) {
     }
 
     public function getUuid(): string

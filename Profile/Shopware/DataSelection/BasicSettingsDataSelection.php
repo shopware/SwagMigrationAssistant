@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class BasicSettingsDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'basicSettings';
+    final public const IDENTIFIER = 'basicSettings';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {

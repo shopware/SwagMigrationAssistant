@@ -21,45 +21,21 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductReviewConverterTest extends TestCase
 {
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var Shopware55ProductReviewConverter
-     */
-    private $converter;
+    private Shopware55ProductReviewConverter $converter;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var array
-     */
-    private $products;
+    private array $products;
 
-    /**
-     * @var array
-     */
-    private $salesChannel;
+    private array $salesChannel;
 
-    /**
-     * @var array
-     */
-    private $customer;
+    private array $customer;
 
     protected function setUp(): void
     {

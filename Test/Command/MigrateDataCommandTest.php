@@ -10,10 +10,10 @@ namespace SwagMigrationAssistant\Test\Command;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
-use Shopware\Core\Framework\Store\Services\StoreService;
+use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
@@ -50,50 +50,23 @@ class MigrateDataCommandTest extends TestCase
     use IntegrationTestBehaviour;
     use MigrationServicesTrait;
 
-    /**
-     * @var CommandTester
-     */
-    private $commandTester;
+    private CommandTester $commandTester;
 
-    /**
-     * @var Command
-     */
-    private $command;
+    private Command $command;
 
-    /**
-     * @var Application
-     */
-    private $application;
+    private Application $application;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $dataRepo;
+    private EntityRepository $dataRepo;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
+    private EntityRepository $mediaFileRepo;
 
     protected function setUp(): void
     {
@@ -196,7 +169,7 @@ class MigrateDataCommandTest extends TestCase
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo),
-                $this->getContainer()->get(StoreService::class),
+                $this->getContainer()->get(TrackingEventClient::class),
                 $this->getContainer()->get('messenger.bus.shopware')
             ),
             new PremappingService(
@@ -230,12 +203,12 @@ class MigrateDataCommandTest extends TestCase
     public function testExecution(): void
     {
         $dbConnection = $this->getContainer()->get(Connection::class);
-        $productTotalBefore = (int) $dbConnection->query('select count(*) from product')->fetchColumn();
+        $productTotalBefore = (int) $dbConnection->query('select count(*) from product')->fetchOne();
         $this->commandTester->execute([
             'command' => $this->command->getName(),
             'dataSelections' => ['products'],
         ]);
-        $productTotalAfter = (int) $dbConnection->query('select count(*) from product')->fetchColumn();
+        $productTotalAfter = (int) $dbConnection->query('select count(*) from product')->fetchOne();
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }
 }

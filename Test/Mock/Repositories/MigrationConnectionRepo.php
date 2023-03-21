@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Test\Mock\Repositories;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\AggregationResultCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -22,16 +22,10 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-class MigrationConnectionRepo implements EntityRepositoryInterface
+class MigrationConnectionRepo extends EntityRepository
 {
-    /**
-     * @var string
-     */
-    private $entityUuid;
-
-    public function __construct(string $uuid)
+    public function __construct(private readonly string $entityUuid)
     {
-        $this->entityUuid = $uuid;
     }
 
     public function getDefinition(): EntityDefinition
@@ -41,10 +35,12 @@ class MigrationConnectionRepo implements EntityRepositoryInterface
 
     public function aggregate(Criteria $criteria, Context $context): AggregationResultCollection
     {
+        throw new \Error('MigrationConnectionRepo->aggregate: Not implemented');
     }
 
     public function searchIds(Criteria $criteria, Context $context): IdSearchResult
     {
+        throw new \Error('MigrationConnectionRepo->searchIds: Not implemented');
     }
 
     public function search(Criteria $criteria, Context $context): EntitySearchResult
@@ -59,22 +55,27 @@ class MigrationConnectionRepo implements EntityRepositoryInterface
 
     public function update(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('MigrationConnectionRepo->update: Not implemented');
     }
 
     public function upsert(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('MigrationConnectionRepo->upsert: Not implemented');
     }
 
     public function create(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('MigrationConnectionRepo->create: Not implemented');
     }
 
     public function delete(array $data, Context $context): EntityWrittenContainerEvent
     {
+        throw new \Error('MigrationConnectionRepo->delete: Not implemented');
     }
 
     public function createVersion(string $id, Context $context, ?string $name = null, ?string $versionId = null): string
     {
+        throw new \Error('MigrationConnectionRepo->createVersion: Not implemented');
     }
 
     public function merge(string $versionId, Context $context): void
@@ -83,5 +84,6 @@ class MigrationConnectionRepo implements EntityRepositoryInterface
 
     public function clone(string $id, Context $context, ?string $newId = null, ?CloneBehavior $behavior = null): EntityWrittenContainerEvent
     {
+        throw new \Error('MigrationConnectionRepo->clone: Not implemented');
     }
 }

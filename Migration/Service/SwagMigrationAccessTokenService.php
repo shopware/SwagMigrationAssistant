@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Api\Context\Exception\InvalidContextSourceException;
 use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -19,17 +19,10 @@ use Symfony\Component\HttpFoundation\Request;
 
 class SwagMigrationAccessTokenService
 {
-    public const ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
+    final public const ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationRunRepo;
-
-    public function __construct(
-        EntityRepositoryInterface $migrationRunRepo
-    ) {
-        $this->migrationRunRepo = $migrationRunRepo;
+    public function __construct(private readonly EntityRepository $migrationRunRepo)
+    {
     }
 
     public function updateRunAccessToken(

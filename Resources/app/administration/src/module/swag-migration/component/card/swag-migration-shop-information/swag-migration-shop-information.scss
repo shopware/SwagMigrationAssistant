@@ -13,7 +13,7 @@
     }
 
     .swag-migration-shop-information__shop-domain {
-        font-size: $font-size-small;
+        font-size: $font-size-xxs;
         white-space: nowrap;
     }
 
@@ -26,7 +26,7 @@
     }
 
     .swag-migration-shop-information__connection-name {
-        font-size: $font-size-large;
+        font-size: $font-size-m;
         font-weight: 600;
         margin-bottom: 4px;
     }
@@ -101,12 +101,12 @@
 
     .swag-migration-shop-information__reset-confirm-modal-header {
         font-weight: $font-weight-semi-bold;
-        font-size: $font-size-large;
+        font-size: $font-size-m;
         text-align: center;
     }
 
     .swag-migration-shop-information__reset-confirm-modal-content {
-        font-size: $font-size-small;
+        font-size: $font-size-xxs;
         text-align: center;
         padding-top: 20px;
         max-width: 500px;
@@ -118,6 +118,6 @@
         padding-top: 32px;
         padding-bottom: 20px;
         font-weight: $font-weight-semi-bold;
-        font-size: $font-size-small;
+        font-size: $font-size-xxs;
     }
 }

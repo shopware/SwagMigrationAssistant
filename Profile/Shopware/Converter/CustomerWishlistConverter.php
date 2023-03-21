@@ -14,15 +14,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class CustomerWishlistConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {

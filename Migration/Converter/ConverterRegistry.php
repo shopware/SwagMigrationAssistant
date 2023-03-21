@@ -14,16 +14,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class ConverterRegistry implements ConverterRegistryInterface
 {
     /**
-     * @var ConverterInterface[]
-     */
-    private $converters;
-
-    /**
      * @param ConverterInterface[] $converters
      */
-    public function __construct(iterable $converters)
+    public function __construct(private readonly iterable $converters)
     {
-        $this->converters = $converters;
     }
 
     /**

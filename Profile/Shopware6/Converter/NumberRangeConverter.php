@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -18,19 +18,12 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 
 abstract class NumberRangeConverter extends ShopwareConverter
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $numberRangeStateRepository;
-
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        EntityRepositoryInterface $numberRangeStateRepository
+        protected EntityRepository $numberRangeStateRepository
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->numberRangeStateRepository = $numberRangeStateRepository;
     }
 
     protected function convertData(array $data): ConvertStruct

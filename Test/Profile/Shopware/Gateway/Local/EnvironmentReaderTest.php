@@ -20,25 +20,13 @@ class EnvironmentReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var EnvironmentReader
-     */
-    private $environmentReader;
+    private EnvironmentReader $environmentReader;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

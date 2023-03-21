@@ -25,10 +25,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         2 => 1, // Quantity
     ];
 
-    /**
-     * @var array
-     */
-    protected $relevantForAvailabilityRule = [
+    protected array $relevantForAvailabilityRule = [
         'bind_time_from',
         'bind_time_to',
         'bind_laststock',
@@ -44,35 +41,20 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         'bind_shippingfree',
     ];
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $oldShippingMethod;
+    protected string $oldShippingMethod;
 
-    /**
-     * @var string
-     */
-    protected $mainLocale;
+    protected string $mainLocale;
 
     /**
      * @var string[]
      */
-    protected $requiredDataFields = [
+    protected array $requiredDataFields = [
         'deliveryTimeId' => 'delivery_time',
         'availabilityRuleId' => 'availability_rule_id',
     ];

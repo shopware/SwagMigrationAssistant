@@ -15,15 +15,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class LanguageConverter extends ShopwareConverter
 {
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
     public function getSourceIdentifier(array $data): string
     {

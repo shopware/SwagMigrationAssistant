@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -25,52 +25,16 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class Shopware6ApiGateway implements ShopwareGatewayInterface
 {
-    public const GATEWAY_NAME = 'api';
-
-    /**
-     * @var ReaderRegistryInterface
-     */
-    private $readerRegistry;
-
-    /**
-     * @var EnvironmentReaderInterface
-     */
-    private $environmentReader;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $currencyRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepository;
-
-    /**
-     * @var TotalReaderInterface
-     */
-    private $totalReader;
-
-    /**
-     * @var TableReaderInterface
-     */
-    private $tableReader;
+    final public const GATEWAY_NAME = 'api';
 
     public function __construct(
-        ReaderRegistryInterface $readerRegistry,
-        EnvironmentReaderInterface $environmentReader,
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $languageRepository,
-        TotalReaderInterface $totalReader,
-        TableReaderInterface $tableReader
+        private readonly ReaderRegistryInterface $readerRegistry,
+        private readonly EnvironmentReaderInterface $environmentReader,
+        private readonly EntityRepository $currencyRepository,
+        private readonly EntityRepository $languageRepository,
+        private readonly TotalReaderInterface $totalReader,
+        private readonly TableReaderInterface $tableReader
     ) {
-        $this->readerRegistry = $readerRegistry;
-        $this->environmentReader = $environmentReader;
-        $this->currencyRepository = $currencyRepository;
-        $this->languageRepository = $languageRepository;
-        $this->totalReader = $totalReader;
-        $this->tableReader = $tableReader;
     }
 
     public function getName(): string

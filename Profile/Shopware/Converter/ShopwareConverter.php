@@ -20,10 +20,7 @@ abstract class ShopwareConverter extends Converter
     protected const TYPE_FLOAT = 'float';
     protected const TYPE_DATETIME = 'datetime';
 
-    /**
-     * @var MigrationContextInterface
-     */
-    protected $migrationContext;
+    protected MigrationContextInterface $migrationContext;
 
     public function getSourceIdentifier(array $data): string
     {

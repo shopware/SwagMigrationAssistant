@@ -20,25 +20,13 @@ class CurrencyReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var CurrencyReader
-     */
-    private $currencyReader;
+    private CurrencyReader $currencyReader;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

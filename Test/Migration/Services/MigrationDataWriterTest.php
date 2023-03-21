@@ -14,13 +14,13 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
-use Shopware\Core\Framework\Store\Services\StoreService;
+use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -71,185 +71,77 @@ class MigrationDataWriterTest extends TestCase
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $productRepo;
+    private EntityRepository $productRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $categoryRepo;
+    private EntityRepository $categoryRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaRepo;
+    private EntityRepository $mediaRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $customerRepo;
+    private EntityRepository $customerRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $orderRepo;
+    private EntityRepository $orderRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $currencyRepo;
+    private EntityRepository $currencyRepo;
 
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
+    private MigrationDataFetcherInterface $migrationDataFetcher;
 
-    /**
-     * @var MigrationDataConverterInterface
-     */
-    private $migrationDataConverter;
+    private MigrationDataConverterInterface $migrationDataConverter;
 
-    /**
-     * @var MigrationDataWriterInterface
-     */
-    private $migrationDataWriter;
+    private MigrationDataWriterInterface $migrationDataWriter;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var MigrationDataWriterInterface
-     */
-    private $dummyDataWriter;
+    private MigrationDataWriterInterface $dummyDataWriter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
+    private EntityRepository $loggingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationDataRepo;
+    private EntityRepository $migrationDataRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationMappingRepo;
+    private EntityRepository $migrationMappingRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $stateMachineStateRepository;
+    private EntityRepository $stateMachineStateRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $stateMachineRepository;
+    private EntityRepository $stateMachineRepository;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentRepo;
+    private EntityRepository $paymentRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salutationRepo;
+    private EntityRepository $salutationRepo;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var MappingService
-     */
-    private $mappingService;
+    private MappingService $mappingService;
 
-    /**
-     * @var EntityWriter
-     */
-    private $entityWriter;
+    private EntityWriter $entityWriter;
 
-    /**
-     * @var Connection
-     */
-    private $dbConnection;
+    private Connection $dbConnection;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $deliveryTimeRepo;
+    private EntityRepository $deliveryTimeRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $localeRepo;
+    private EntityRepository $localeRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepo;
+    private EntityRepository $languageRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepo;
+    private EntityRepository $salesChannelRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $shippingRepo;
+    private EntityRepository $shippingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $countryRepo;
+    private EntityRepository $countryRepo;
 
-    /**
-     * @var RunService
-     */
-    private $runService;
+    private RunService $runService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeSalesChannelRepo;
+    private EntityRepository $themeSalesChannelRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $themeRepo;
+    private EntityRepository $themeRepo;
 
     protected function setUp(): void
     {
@@ -322,7 +214,7 @@ class MigrationDataWriterTest extends TestCase
             new SwagMigrationDataDefinition(),
             $this->dbConnection,
             new LoggingService($this->loggingRepo),
-            $this->getContainer()->get(StoreService::class),
+            $this->getContainer()->get(TrackingEventClient::class),
             $this->getContainer()->get('messenger.bus.shopware')
         );
     }
@@ -411,7 +303,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->dummyDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
+        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchOne();
 
         static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
@@ -453,7 +345,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $salesChannelTotalAfter = $this->dbConnection->query('select count(*) from sales_channel')->fetchColumn();
+        $salesChannelTotalAfter = $this->dbConnection->query('select count(*) from sales_channel')->fetchOne();
 
         $this->runService->finishMigration($this->runUuid, $context);
 
@@ -479,9 +371,9 @@ class MigrationDataWriterTest extends TestCase
         });
         $this->runService->finishMigration($this->runUuid, $context);
 
-        $beforeThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
+        $beforeThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchOne();
         $this->runService->assignThemeToSalesChannel($this->runUuid, $context);
-        $afterThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchColumn();
+        $afterThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchOne();
 
         static::assertSame(2, $afterThemeSalesChannel - $beforeThemeSalesChannel);
     }
@@ -506,7 +398,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchColumn();
+        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchOne();
 
         static::assertSame(3, $customerTotalAfter - $customerTotalBefore);
     }
@@ -580,7 +472,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $totalAfter = $this->dbConnection->query('select count(*) from media')->fetchColumn();
+        $totalAfter = $this->dbConnection->query('select count(*) from media')->fetchOne();
 
         static::assertSame(23, $totalAfter - $totalBefore);
     }
@@ -605,7 +497,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $totalAfter = $this->dbConnection->query('select count(*) from category')->fetchColumn();
+        $totalAfter = $this->dbConnection->query('select count(*) from category')->fetchOne();
 
         static::assertSame(9, $totalAfter - $totalBefore);
     }
@@ -632,7 +524,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $productTotalAfter = (int) $this->dbConnection->query('select count(*) from product')->fetchColumn();
+        $productTotalAfter = (int) $this->dbConnection->query('select count(*) from product')->fetchOne();
 
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }

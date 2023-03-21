@@ -25,30 +25,15 @@ class SalesChannelConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55SalesChannelConverter
-     */
-    private $converter;
+    private Shopware55SalesChannelConverter $converter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var Connection
-     */
-    private $dbalConnection;
+    private Connection $dbalConnection;
 
     protected function setUp(): void
     {

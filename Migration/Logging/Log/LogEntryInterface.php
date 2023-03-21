@@ -9,10 +9,10 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 interface LogEntryInterface
 {
-    public const LOG_LEVEL_INFO = 'info';
-    public const LOG_LEVEL_WARNING = 'warning';
-    public const LOG_LEVEL_ERROR = 'error';
-    public const LOG_LEVEL_DEBUG = 'debug';
+    final public const LOG_LEVEL_INFO = 'info';
+    final public const LOG_LEVEL_WARNING = 'warning';
+    final public const LOG_LEVEL_ERROR = 'error';
+    final public const LOG_LEVEL_DEBUG = 'debug';
 
     public function getLevel(): string;
 

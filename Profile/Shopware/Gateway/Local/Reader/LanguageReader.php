@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -57,12 +57,9 @@ class LanguageReader extends AbstractReader
         $query->from('s_core_shops', 'shop');
         $query->addSelect('shop.locale_id');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query = $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_COLUMN);
+        return $query->fetchFirstColumn();
     }
 
     private function fetchLocales(array $fetchedShopLocaleIds): array
@@ -71,14 +68,13 @@ class LanguageReader extends AbstractReader
             ->addSelect('locale.locale as groupId, locale.id, locale.locale, locale.language')
             ->from('s_core_locales', 'locale')
             ->where('locale.id IN (:localeIds)')
+            ->addGroupBy('locale.locale')
             ->setParameter('localeIds', $fetchedShopLocaleIds, Connection::PARAM_STR_ARRAY)
-            ->execute();
+            ->executeQuery();
 
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $rows = $query->fetchAllAssociative();
 
-        return $query->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+        return FetchModeHelper::groupUnique($rows);
     }
 
     private function fetchTranslations(array $locales): array
@@ -88,13 +84,10 @@ class LanguageReader extends AbstractReader
             ->from('s_core_snippets', 'snippet')
             ->leftJoin('snippet', 's_core_locales', 'locale', 'snippet.localeID = locale.id')
             ->where('snippet.namespace = "backend/locale/language" AND snippet.name IN (:locales)')
+            ->addGroupBy('snippet.name')
             ->setParameter('locales', $locales, Connection::PARAM_STR_ARRAY)
-            ->execute();
+            ->executeQuery();
 
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAll(\PDO::FETCH_GROUP);
+        return $query->fetchAllAssociative();
     }
 }

@@ -9,15 +9,13 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class CannotGetFileRunLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $uri;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $uri)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $uri
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->uri = $uri;
     }
 
     public function getLevel(): string

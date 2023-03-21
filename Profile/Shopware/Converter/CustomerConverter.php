@@ -9,6 +9,9 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -25,35 +28,20 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class CustomerConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $mainLocale;
+    protected string $mainLocale;
 
-    /**
-     * @var string
-     */
-    protected $oldCustomerId;
+    protected string $oldCustomerId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     /**
      * @var string[]
      */
-    protected $requiredDataFieldKeys = [
+    protected array $requiredDataFieldKeys = [
         'firstname',
         'lastname',
         'email',
@@ -64,7 +52,7 @@ abstract class CustomerConverter extends ShopwareConverter
     /**
      * @var string[]
      */
-    protected $requiredAddressDataFieldKeys = [
+    protected array $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
         'zipcode',
@@ -73,23 +61,15 @@ abstract class CustomerConverter extends ShopwareConverter
         'salutation',
     ];
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
-
-    /**
-     * @var ValidatorInterface
-     */
-    protected $validator;
+    protected string $connectionName;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        ValidatorInterface $validator
+        protected ValidatorInterface $validator,
+        private readonly EntityRepository $salesChannelRepository
     ) {
         parent::__construct($mappingService, $loggingService);
-        $this->validator = $validator;
     }
 
     public function getSourceIdentifier(array $data): string
@@ -158,7 +138,6 @@ abstract class CustomerConverter extends ShopwareConverter
 
         unset($data['id']);
 
-        $converted['salesChannelId'] = Defaults::SALES_CHANNEL;
         if (isset($data['subshopID'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -172,6 +151,13 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
             }
+        }
+
+        if (empty($converted['salesChannelId'])) {
+            $criteria = new Criteria();
+            $criteria->setLimit(1);
+            $criteria->addFilter(new EqualsFilter('typeId', Defaults::SALES_CHANNEL_TYPE_STOREFRONT));
+            $converted['salesChannelId'] = $this->salesChannelRepository->searchIds($criteria, $context)->firstId();
         }
 
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);

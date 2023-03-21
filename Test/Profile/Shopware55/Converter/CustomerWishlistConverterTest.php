@@ -21,30 +21,15 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CustomerWishlistConverterTest extends TestCase
 {
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var Shopware55CustomerWishlistConverter
-     */
-    private $converter;
+    private Shopware55CustomerWishlistConverter $converter;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
     protected function setUp(): void
     {

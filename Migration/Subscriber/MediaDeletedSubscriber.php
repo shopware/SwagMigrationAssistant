@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Subscriber;
 
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Media\MediaEvents;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityDeletedEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -17,14 +17,8 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MediaDeletedSubscriber implements EventSubscriberInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepository;
-
-    public function __construct(EntityRepositoryInterface $mediaFileRepository)
+    public function __construct(private readonly EntityRepository $mediaFileRepository)
     {
-        $this->mediaFileRepository = $mediaFileRepository;
     }
 
     /**

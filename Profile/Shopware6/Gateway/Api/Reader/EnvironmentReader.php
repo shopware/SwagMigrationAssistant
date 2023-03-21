@@ -23,19 +23,10 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class EnvironmentReader implements EnvironmentReaderInterface
 {
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
+    private ?AuthClient $client;
 
-    /**
-     * @var ?AuthClient
-     */
-    private $client;
-
-    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

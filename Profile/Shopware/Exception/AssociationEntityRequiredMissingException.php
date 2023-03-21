@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AssociationEntityRequiredMissingException extends ShopwareHttpException
 {
-    public function __construct(string $entity, string $missingEntity)
-    {
+    public function __construct(
+        string $entity,
+        string $missingEntity
+    ) {
         parent::__construct(
             'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
             [

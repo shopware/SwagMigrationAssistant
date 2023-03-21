@@ -12,95 +12,23 @@ use Shopware\Core\Framework\Struct\Struct;
 class EnvironmentInformation extends Struct
 {
     /**
-     * @var string
-     */
-    protected $sourceSystemName;
-
-    /**
-     * @var string
-     */
-    protected $sourceSystemVersion;
-
-    /**
-     * @var string
-     */
-    protected $sourceSystemDomain;
-
-    /**
-     * @var TotalStruct[]
-     */
-    protected $totals;
-
-    /**
-     * @var array
-     */
-    protected $additionalData;
-
-    /**
-     * @var RequestStatusStruct|null
-     */
-    protected $requestStatus;
-
-    /**
-     * @var bool
-     */
-    protected $migrationDisabled;
-
-    /**
-     * @var string
-     */
-    protected $targetSystemCurrency;
-
-    /**
-     * @var string
-     */
-    protected $sourceSystemCurrency;
-
-    /**
-     * @var DisplayWarning[]
-     */
-    protected $displayWarnings;
-
-    /**
-     * @var string
-     */
-    protected $sourceSystemLocale;
-
-    /**
-     * @var string
-     */
-    protected $targetSystemLocale;
-
-    /**
      * @param TotalStruct[]    $totals
      * @param DisplayWarning[] $displayWarnings
      */
     public function __construct(
-        string $sourceSystemName,
-        string $sourceSystemVersion,
-        string $sourceSystemDomain,
-        array $totals = [],
-        array $additionalData = [],
-        ?RequestStatusStruct $requestStatus = null,
-        bool $migrationDisabled = false,
-        array $displayWarnings = [],
-        string $targetSystemCurrency = '',
-        string $sourceSystemCurrency = '',
-        string $sourceSystemLocale = '',
-        string $targetSystemLocale = ''
+        protected string $sourceSystemName,
+        protected string $sourceSystemVersion,
+        protected string $sourceSystemDomain,
+        protected array $totals = [],
+        protected array $additionalData = [],
+        protected ?RequestStatusStruct $requestStatus = null,
+        protected bool $migrationDisabled = false,
+        protected array $displayWarnings = [],
+        protected string $targetSystemCurrency = '',
+        protected string $sourceSystemCurrency = '',
+        protected string $sourceSystemLocale = '',
+        protected string $targetSystemLocale = ''
     ) {
-        $this->sourceSystemName = $sourceSystemName;
-        $this->sourceSystemVersion = $sourceSystemVersion;
-        $this->sourceSystemDomain = $sourceSystemDomain;
-        $this->totals = $totals;
-        $this->additionalData = $additionalData;
-        $this->requestStatus = $requestStatus;
-        $this->migrationDisabled = $migrationDisabled;
-        $this->targetSystemCurrency = $targetSystemCurrency;
-        $this->sourceSystemCurrency = $sourceSystemCurrency;
-        $this->displayWarnings = $displayWarnings;
-        $this->sourceSystemLocale = $sourceSystemLocale;
-        $this->targetSystemLocale = $targetSystemLocale;
     }
 
     public function getSourceSystemName(): string

@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\MessageQueue;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
@@ -17,22 +17,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
 class OrderCountIndexer extends EntityIndexer
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $customerRepository;
-
-    /**
-     * @var EntityIndexer
-     */
-    private $inner;
-
     public function __construct(
-        EntityRepositoryInterface $repository,
-        EntityIndexer $inner
+        private readonly EntityRepository $customerRepository,
+        private readonly EntityIndexer $inner
     ) {
-        $this->customerRepository = $repository;
-        $this->inner = $inner;
     }
 
     public function handle(EntityIndexingMessage $message): void
@@ -77,12 +65,7 @@ class OrderCountIndexer extends EntityIndexer
         return $this->inner->getName();
     }
 
-    /**
-     * @param array|null $offset
-     *
-     * @deprecated tag:v6.5.0 The parameter $offset will be native typed
-     */
-    public function iterate($offset): ?EntityIndexingMessage
+    public function iterate(?array $offset): ?EntityIndexingMessage
     {
         return $this->inner->iterate($offset);
     }

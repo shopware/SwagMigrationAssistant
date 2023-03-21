@@ -12,9 +12,11 @@ use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -40,49 +42,33 @@ use Symfony\Component\Validator\Validation;
 class OrderConverterTest extends TestCase
 {
     use MigrationServicesTrait;
+    use KernelTestBehaviour;
 
-    /**
-     * @var Shopware55OrderConverter
-     */
-    private $orderConverter;
+    private Shopware55OrderConverter $orderConverter;
 
-    /**
-     * @var Shopware55CustomerConverter
-     */
-    private $customerConverter;
+    private Shopware55CustomerConverter $customerConverter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
-    /**
-     * @var MigrationContext
-     */
-    private $customerMigrationContext;
+    private MigrationContext $customerMigrationContext;
 
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
         $mappingService = new DummyMappingService();
         $taxCalculator = new TaxCalculator();
-        $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator);
-        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService, Validation::createValidator());
+
+        /** @var EntityRepository $salesChannelRepo */
+        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+
+        $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator, $salesChannelRepo);
+        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService, Validation::createValidator(), $salesChannelRepo);
 
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
@@ -118,7 +104,7 @@ class OrderConverterTest extends TestCase
             $context,
             null,
             null,
-            Defaults::SALES_CHANNEL
+            TestDefaults::SALES_CHANNEL
         );
 
         $mappingService->getOrCreateMapping($connectionId, OrderStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
@@ -173,7 +159,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
         static::assertArrayHasKey('lineItems', $converted);
@@ -242,7 +228,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('mustermann@b2b.de', $converted['orderCustomer']['email']);
         static::assertSame($cartPrice->getTaxStatus(), CartPrice::TAX_STATE_NET);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -318,7 +304,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayNotHasKey('lineItems', $converted);
         static::assertCount(0, $converted['transactions']);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
@@ -347,7 +333,7 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertSame([], $converted['deliveries']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -377,7 +363,7 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertSame($converted['addresses'][0], $converted['deliveries'][0]['shippingOrderAddress']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -409,7 +395,7 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertNotSame($converted['billingAddressId'], $converted['deliveries'][0]['shippingOrderAddress']['id']);
         static::assertSame('John', $converted['deliveries'][0]['shippingOrderAddress']['firstName']);
@@ -492,7 +478,7 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
-        static::assertSame(Defaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(1, $this->loggingService->getLoggingArray());
 

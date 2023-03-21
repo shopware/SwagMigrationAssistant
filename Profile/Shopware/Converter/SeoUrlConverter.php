@@ -22,10 +22,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
     protected const ROUTE_NAME_NAVIGATION = 'frontend.navigation.page';
     protected const ROUTE_NAME_PRODUCT = 'frontend.detail.page';
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {

@@ -11,15 +11,12 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class UnsupportedMailTemplateType extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $type;
-
-    public function __construct(string $runId, string $sourceId, string $type)
-    {
+    public function __construct(
+        string $runId,
+        string $sourceId,
+        private readonly string $type
+    ) {
         parent::__construct($runId, null, $sourceId);
-        $this->type = $type;
     }
 
     public function getLevel(): string

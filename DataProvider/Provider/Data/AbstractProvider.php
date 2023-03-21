@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -26,7 +26,7 @@ abstract class AbstractProvider implements ProviderInterface
         throw new ProviderHasNoTableAccessException($this->getIdentifier());
     }
 
-    protected function readTotalFromRepo(EntityRepositoryInterface $repo, Context $context, ?Criteria $criteria = null): int
+    protected function readTotalFromRepo(EntityRepository $repo, Context $context, ?Criteria $criteria = null): int
     {
         if ($criteria === null) {
             $criteria = new Criteria();
@@ -44,7 +44,7 @@ abstract class AbstractProvider implements ProviderInterface
         return $result->getCount();
     }
 
-    protected function readTableFromRepo(EntityRepositoryInterface $repository, Context $context, ?Criteria $criteria = null): array
+    protected function readTableFromRepo(EntityRepository $repository, Context $context, ?Criteria $criteria = null): array
     {
         if ($criteria === null) {
             $criteria = new Criteria();

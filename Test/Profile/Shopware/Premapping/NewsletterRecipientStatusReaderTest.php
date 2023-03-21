@@ -23,20 +23,11 @@ class NewsletterRecipientStatusReaderTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var NewsletterRecipientStatusReader
-     */
-    private $reader;
+    private NewsletterRecipientStatusReader $reader;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
     public function setUp(): void
     {

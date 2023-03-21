@@ -8,21 +8,15 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class LanguageProvider extends AbstractProvider
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepo;
-
-    public function __construct(EntityRepositoryInterface $languageRepo)
+    public function __construct(private readonly EntityRepository $languageRepo)
     {
-        $this->languageRepo = $languageRepo;
     }
 
     public function getIdentifier(): string

@@ -15,7 +15,7 @@ use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderE
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
@@ -34,160 +34,40 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class MappingService implements MappingServiceInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $mediaDefaultFolderRepo;
+    protected array $values = [];
 
-    /**
-     * @var array
-     */
-    protected $values = [];
+    protected array $migratedSalesChannels = [];
 
-    /**
-     * @var array
-     */
-    protected $migratedSalesChannels = [];
+    protected array $writeArray = [];
 
-    /**
-     * @var array
-     */
-    protected $writeArray = [];
+    protected array $languageData = [];
 
-    /**
-     * @var array
-     */
-    protected $languageData = [];
+    protected array $locales = [];
 
-    /**
-     * @var array
-     */
-    protected $locales = [];
+    protected array $mappings = [];
 
-    /**
-     * @var array
-     */
-    protected $mappings = [];
+    protected LanguageEntity $defaultLanguageData;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $migrationMappingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $localeRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $languageRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $countryRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $currencyRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $taxRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $numberRangeRepo;
-
-    /**
-     * @var LanguageEntity
-     */
-    protected $defaultLanguageData;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $ruleRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $thumbnailSizeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $categoryRepo;
-
-    /**
-     * @var EntityWriterInterface
-     */
-    protected $entityWriter;
-
-    /**
-     * @var string|null
-     */
-    protected $defaultAvailabilityRule;
-
-    /**
-     * @var EntityDefinition
-     */
-    protected $mappingDefinition;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $cmsPageRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $deliveryTimeRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $documentTypeRepo;
+    protected ?string $defaultAvailabilityRule;
 
     public function __construct(
-        EntityRepositoryInterface $migrationMappingRepo,
-        EntityRepositoryInterface $localeRepository,
-        EntityRepositoryInterface $languageRepository,
-        EntityRepositoryInterface $countryRepository,
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $taxRepo,
-        EntityRepositoryInterface $numberRangeRepo,
-        EntityRepositoryInterface $ruleRepo,
-        EntityRepositoryInterface $thumbnailSizeRepo,
-        EntityRepositoryInterface $mediaDefaultRepo,
-        EntityRepositoryInterface $categoryRepo,
-        EntityRepositoryInterface $cmsPageRepo,
-        EntityRepositoryInterface $deliveryTimeRepo,
-        EntityRepositoryInterface $documentTypeRepo,
-        EntityWriterInterface $entityWriter,
-        EntityDefinition $mappingDefinition
+        protected EntityRepository $migrationMappingRepo,
+        protected EntityRepository $localeRepository,
+        protected EntityRepository $languageRepository,
+        protected EntityRepository $countryRepository,
+        protected EntityRepository $currencyRepository,
+        protected EntityRepository $taxRepo,
+        protected EntityRepository $numberRangeRepo,
+        protected EntityRepository $ruleRepo,
+        protected EntityRepository $thumbnailSizeRepo,
+        protected EntityRepository $mediaDefaultFolderRepo,
+        protected EntityRepository $categoryRepo,
+        protected EntityRepository $cmsPageRepo,
+        protected EntityRepository $deliveryTimeRepo,
+        protected EntityRepository $documentTypeRepo,
+        protected EntityWriterInterface $entityWriter,
+        protected EntityDefinition $mappingDefinition
     ) {
-        $this->migrationMappingRepo = $migrationMappingRepo;
-        $this->localeRepository = $localeRepository;
-        $this->languageRepository = $languageRepository;
-        $this->countryRepository = $countryRepository;
-        $this->currencyRepository = $currencyRepository;
-        $this->taxRepo = $taxRepo;
-        $this->numberRangeRepo = $numberRangeRepo;
-        $this->ruleRepo = $ruleRepo;
-        $this->thumbnailSizeRepo = $thumbnailSizeRepo;
-        $this->mediaDefaultFolderRepo = $mediaDefaultRepo;
-        $this->categoryRepo = $categoryRepo;
-        $this->cmsPageRepo = $cmsPageRepo;
-        $this->deliveryTimeRepo = $deliveryTimeRepo;
-        $this->documentTypeRepo = $documentTypeRepo;
-        $this->entityWriter = $entityWriter;
-        $this->mappingDefinition = $mappingDefinition;
     }
 
     public function getOrCreateMapping(

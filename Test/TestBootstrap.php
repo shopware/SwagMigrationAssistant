@@ -1,62 +1,46 @@
 <?php declare(strict_types=1);
 
-/*
- * (c) shopware AG <info@shopware.com>
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 use Doctrine\DBAL\DriverManager;
-use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
+use Shopware\Core\DevOps\StaticAnalyze\StaticAnalyzeKernel;
+use Shopware\Core\Framework\Plugin\KernelPluginLoader\StaticKernelPluginLoader;
+use Shopware\Core\TestBootstrapper;
 use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
-use Symfony\Component\Dotenv\Dotenv;
 
-function getProjectDir(): string
-{
-    if (isset($_SERVER['PROJECT_ROOT']) && file_exists($_SERVER['PROJECT_ROOT'])) {
-        return $_SERVER['PROJECT_ROOT'];
-    }
-    if (isset($_ENV['PROJECT_ROOT']) && file_exists($_ENV['PROJECT_ROOT'])) {
-        return $_ENV['PROJECT_ROOT'];
-    }
+require __DIR__ . '/../../../../src/Core/TestBootstrapper.php';
 
-    $rootDir = __DIR__;
-    $dir = $rootDir;
-    while (!file_exists($dir . '/.env')) {
-        if ($dir === dirname($dir)) {
-            return $rootDir;
-        }
-        $dir = dirname($dir);
-    }
-
-    return $dir;
+/** @var Shopware\Core\TestBootstrapper $bootstrapper */
+$bootstrapper = new TestBootstrapper();
+$_SERVER['PROJECT_ROOT'] = $_ENV['PROJECT_ROOT'] = $bootstrapper->getProjectDir();
+if (!defined('TEST_PROJECT_DIR')) {
+    define('TEST_PROJECT_DIR', $_SERVER['PROJECT_ROOT']);
 }
 
-$testProjectDir = getProjectDir();
+$classLoader = $bootstrapper->getClassLoader();
+$classLoader->addPsr4('SwagMigrationAssistant\\', dirname(__DIR__));
 
-$loader = require $testProjectDir . '/vendor/autoload.php';
-KernelLifecycleManager::prepare($loader);
-$pluginVendorDir = __DIR__ . '/../vendor';
-if (is_dir($pluginVendorDir)) {
-    require_once $pluginVendorDir . '/autoload.php';
-} else {
-    echo 'vendor directory not found. Please execute "composer dump-autoload"';
-    exit(1);
+$plugins = [
+    [
+        'name' => 'SwagMigrationAssistant',
+        'baseClass' => 'SwagMigrationAssistant\SwagMigrationAssistant',
+        'active' => true,
+        'path' => 'custom/plugins/SwagMigrationAssistant',
+        'version' => 'dev-master',
+        'autoload' => ['psr-4' => ['SwagMigrationAssistant\\' => 'src/']],
+        'managedByComposer' => false,
+        'composerName' => 'swag/migration-assistant',
+    ],
+];
+
+try {
+    $bootstrapper->addActivePlugins('SwagMigrationAssistant');
+    $bootstrapper->addCallingPlugin();
+    $bootstrapper->bootstrap();
+} catch (\Throwable $e) {
 }
 
-if (!class_exists(Dotenv::class)) {
-    throw new RuntimeException('APP_ENV environment variable is not defined. You need to define environment variables for configuration or add "symfony/dotenv" as a Composer dependency to load variables from a .env file.');
-}
-(new Dotenv())->load($testProjectDir . '/.env');
-
-$dbUrl = getenv('DATABASE_URL');
-if ($dbUrl !== false) {
-    $testDbUrl = $dbUrl . '_test';
-    putenv('DATABASE_URL=' . $testDbUrl);
-    $_ENV['DATABASE_URL'] = $testDbUrl;
-}
-
-// Test the connection to the Shopware 5 Test Setup. May not be available locally
+$pluginLoader = new StaticKernelPluginLoader($classLoader, null, $plugins);
+$kernel = new StaticAnalyzeKernel('test', true, $pluginLoader, 'phpstan-test-cache-id');
+$kernel->boot();
 
 $connectionParams = [
     'dbname' => Shopware5DatabaseConnection::DB_NAME,
@@ -73,11 +57,14 @@ $connection = DriverManager::getConnection($connectionParams);
 $ping = true;
 
 try {
-    $ping = $connection->ping();
+    $connection->executeStatement('SELECT 1');
 } catch (\Exception $e) {
-    putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
+    $ping = false;
 }
 
 if ($ping === false) {
+    $_SERVER['SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS'] = 'true';
     putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
 }
+
+return $kernel;

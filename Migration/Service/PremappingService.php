@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -21,43 +21,13 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 class PremappingService implements PremappingServiceInterface
 {
-    /**
-     * @var PremappingReaderRegistryInterface
-     */
-    private $mappingReaderRegistry;
-
-    /**
-     * @var MappingServiceInterface
-     */
-    private $mappingService;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mappingRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
-
     public function __construct(
-        PremappingReaderRegistryInterface $mappingReaderRegistry,
-        MappingServiceInterface $mappingService,
-        EntityRepositoryInterface $mappingRepo,
-        EntityRepositoryInterface $runRepo,
-        EntityRepositoryInterface $connectionRepo
+        private readonly PremappingReaderRegistryInterface $mappingReaderRegistry,
+        private readonly MappingServiceInterface $mappingService,
+        private readonly EntityRepository $mappingRepo,
+        private readonly EntityRepository $runRepo,
+        private readonly EntityRepository $connectionRepo
     ) {
-        $this->mappingReaderRegistry = $mappingReaderRegistry;
-        $this->mappingService = $mappingService;
-        $this->mappingRepo = $mappingRepo;
-        $this->runRepo = $runRepo;
-        $this->connectionRepo = $connectionRepo;
     }
 
     public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run): array

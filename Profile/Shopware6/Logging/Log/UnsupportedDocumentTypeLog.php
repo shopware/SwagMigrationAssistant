@@ -11,15 +11,13 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class UnsupportedDocumentTypeLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $technicalName;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $technicalName)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $technicalName
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->technicalName = $technicalName;
     }
 
     public function getLevel(): string

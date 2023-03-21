@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -27,52 +27,16 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class ShopwareLocalGateway implements ShopwareGatewayInterface
 {
-    public const GATEWAY_NAME = 'local';
-
-    /**
-     * @var ReaderRegistry
-     */
-    private $readerRegistry;
-
-    /**
-     * @var EnvironmentReaderInterface
-     */
-    private $localEnvironmentReader;
-
-    /**
-     * @var TableReaderInterface
-     */
-    private $localTableReader;
-
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $currencyRepository;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $languageRepository;
+    final public const GATEWAY_NAME = 'local';
 
     public function __construct(
-        ReaderRegistry $readerRegistry,
-        EnvironmentReaderInterface $localEnvironmentReader,
-        TableReaderInterface $localTableReader,
-        ConnectionFactoryInterface $connectionFactory,
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $languageRepository
+        private readonly ReaderRegistry $readerRegistry,
+        private readonly EnvironmentReaderInterface $localEnvironmentReader,
+        private readonly TableReaderInterface $localTableReader,
+        private readonly ConnectionFactoryInterface $connectionFactory,
+        private readonly EntityRepository $currencyRepository,
+        private readonly EntityRepository $languageRepository
     ) {
-        $this->readerRegistry = $readerRegistry;
-        $this->localEnvironmentReader = $localEnvironmentReader;
-        $this->localTableReader = $localTableReader;
-        $this->connectionFactory = $connectionFactory;
-        $this->currencyRepository = $currencyRepository;
-        $this->languageRepository = $languageRepository;
     }
 
     public function getName(): string

@@ -28,30 +28,15 @@ class OrderDocumentConverterTest extends TestCase
 {
     use MigrationServicesTrait;
 
-    /**
-     * @var OrderDocumentConverter
-     */
-    private $orderDocumentConverter;
+    private OrderDocumentConverter $orderDocumentConverter;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
     protected function setUp(): void
     {

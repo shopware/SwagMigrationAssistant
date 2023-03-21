@@ -2,7 +2,7 @@
     <div>
 
         {% block swag_migration_result_screen_card %}
-            <sw-card class="swag-migration-result-screen">
+            <sw-card class="swag-migration-result-screen" position-identifier="swag-migration-result-screen">
 
                 {% block swag_migration_result_screen_content %}
                     <div class="swag-migration-result-screen__content">
@@ -10,7 +10,7 @@
                         {% block swag_migration_result_screen_icon %}
                             <div class="swag-migration-result-screen__bubble">
                                 <sw-icon class="swag-migration-result-screen__icon"
-                                         name="default-action-thumb-up"
+                                         name="regular-thumbs-up"
                                          size="36px"
                                          decorative>
                                 </sw-icon>
@@ -38,7 +38,7 @@
         {% endblock %}
 
         {% block swag_migration_result_screen_survey_card %}
-            <sw-card class="swag-migration-result-survey">
+            <sw-card class="swag-migration-result-survey" position-identifier="swag-migration-result-survey">
 
                 {% block swag_migration_result_screen_survey_content %}
                     <div class="swag-migration-result-survey__content">
@@ -61,7 +61,7 @@
                                target="_blank"
                                rel="noopener">
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.survey.buttonText') }}
-                                <sw-icon class="swag-migration-result-survey__external-icon" name="small-arrow-small-external" size="8"></sw-icon>
+                                <sw-icon class="swag-migration-result-survey__external-icon" name="regular-external-link-s" size="8"></sw-icon>
                             </a>
                         {% endblock %}
 

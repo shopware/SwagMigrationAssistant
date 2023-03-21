@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GatewayReadException extends ShopwareHttpException
 {
-    public function __construct(string $gateway, int $code = 0)
-    {
+    public function __construct(
+        string $gateway,
+        int $code = 0
+    ) {
         parent::__construct(
             'Could not read from gateway: "{{ gateway }}".',
             ['gateway' => $gateway]

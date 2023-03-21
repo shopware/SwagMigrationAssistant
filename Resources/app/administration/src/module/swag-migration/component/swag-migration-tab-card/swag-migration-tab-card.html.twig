@@ -1,10 +1,15 @@
 {% block swag_migration_tab_card %}
     <div class="swag-migration-tab-card">
-        <sw-card class="sw-card--grid" ref="card" :title="title">
+        <sw-card class="sw-card--grid" ref="card" :title="title" position-identifier="swag-migration-tab-card">
             <template #tabs>
 
                 {% block swag_migration_tab_card_item_tab %}
-                    <sw-tabs :small="false" ref="tabs" @new-item-active="onNewActiveItem">
+                    <sw-tabs
+                        :small="false"
+                        ref="tabs"
+                        @new-item-active="onNewActiveItem"
+                        position-identifier="swag-migration-tab-card-item-tab"
+                    >
                         <sw-tabs-item v-for="(item, key) in items" :name="key.toString()" :key="key.toString()" ref="swTabsItems">
 
                             {% block swag_migration_tab_card_item_tab_content %}

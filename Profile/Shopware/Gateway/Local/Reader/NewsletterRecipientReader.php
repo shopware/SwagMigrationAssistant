@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -61,15 +60,13 @@ class NewsletterRecipientReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_campaigns_mailaddresses')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::NEWSLETTER_RECIPIENT, $total);
     }
@@ -113,12 +110,9 @@ class NewsletterRecipientReader extends AbstractReader
         $query->where('recipient.id IN (:ids)');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function getDefaultShopAndLocaleByGroupId(): array
@@ -134,12 +128,9 @@ class NewsletterRecipientReader extends AbstractReader
         $query->innerJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
         $query->where('config.name = \'newsletterdefaultgroup\'');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        $shops = $query->fetchAll();
+        $shops = $query->fetchAllAssociative();
 
         return $this->getGroupedResult($shops);
     }
@@ -159,12 +150,9 @@ class NewsletterRecipientReader extends AbstractReader
         $query->innerJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');
         $query->where('config.name = \'newsletterdefaultgroup\'');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        $shops = $query->fetchAll();
+        $shops = $query->fetchAllAssociative();
 
         return $this->getGroupedResult($shops);
     }
@@ -185,14 +173,12 @@ class NewsletterRecipientReader extends AbstractReader
         $query->innerJoin('language', 's_core_locales', 'locale', 'locale.id = language.locale_id');
         $query->where('addresses.customer = 1');
         $query->andWhere('addresses.id IN (:ids)');
+        $query->addGroupBy('addresses.id');
         $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll(\PDO::FETCH_GROUP);
+        return $query->fetchAllAssociative();
     }
 
     private function getGroupedResult(array $shops): array

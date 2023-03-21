@@ -11,20 +11,10 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class MappingDeltaResult extends Struct
 {
-    /**
-     * @var array
-     */
-    private $migrationData;
-
-    /**
-     * @var array
-     */
-    private $preloadIds;
-
-    public function __construct(array $migrationData = [], array $preloadIds = [])
-    {
-        $this->migrationData = $migrationData;
-        $this->preloadIds = $preloadIds;
+    public function __construct(
+        private readonly array $migrationData = [],
+        private readonly array $preloadIds = []
+    ) {
     }
 
     public function getMigrationData(): array

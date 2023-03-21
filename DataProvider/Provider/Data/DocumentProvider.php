@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -16,20 +16,10 @@ use Symfony\Component\Routing\RouterInterface;
 
 class DocumentProvider extends AbstractProvider
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $documentRepo;
-
-    /**
-     * @var RouterInterface
-     */
-    private $router;
-
-    public function __construct(EntityRepositoryInterface $documentRepo, RouterInterface $router)
-    {
-        $this->documentRepo = $documentRepo;
-        $this->router = $router;
+    public function __construct(
+        private readonly EntityRepository $documentRepo,
+        private readonly RouterInterface $router
+    ) {
     }
 
     public function getIdentifier(): string

@@ -8,8 +8,6 @@
 namespace SwagMigrationAssistant\Migration\Service;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
-use Doctrine\DBAL\FetchMode;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
@@ -23,38 +21,14 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
-    public const MESSAGE_SIZE = 5;
-
-    /**
-     * @var MessageBusInterface
-     */
-    private $messageBus;
-
-    /**
-     * @var DataSetRegistry
-     */
-    private $dataSetRegistry;
-
-    /**
-     * @var LoggingService
-     */
-    private $loggingService;
-
-    /**
-     * @var Connection
-     */
-    private $dbalConnection;
+    final public const MESSAGE_SIZE = 5;
 
     public function __construct(
-        MessageBusInterface $messageBus,
-        DataSetRegistry $dataSetRegistry,
-        LoggingService $loggingService,
-        Connection $dbalConnection
+        private readonly MessageBusInterface $messageBus,
+        private readonly DataSetRegistry $dataSetRegistry,
+        private readonly LoggingService $loggingService,
+        private readonly Connection $dbalConnection
     ) {
-        $this->messageBus = $messageBus;
-        $this->dataSetRegistry = $dataSetRegistry;
-        $this->loggingService = $loggingService;
-        $this->dbalConnection = $dbalConnection;
     }
 
     public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void
@@ -114,7 +88,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     private function getMediaFiles(MigrationContextInterface $migrationContext): array
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
-        $query = $queryBuilder
+
+        return $queryBuilder
             ->select('*')
             ->from('swag_migration_media_file')
             ->where('HEX(run_id) = :runId')
@@ -122,14 +97,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             ->orderBy('entity, file_size')
             ->setFirstResult($migrationContext->getOffset())
             ->setMaxResults($migrationContext->getLimit())
-            ->setParameter('runId', $migrationContext->getRunUuid());
-
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
-
-        return $query->fetchAll(FetchMode::ASSOCIATIVE);
+            ->setParameter('runId', $migrationContext->getRunUuid())
+            ->executeQuery()
+            ->fetchAllAssociative();
     }
 
     private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void

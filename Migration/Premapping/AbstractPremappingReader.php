@@ -11,10 +11,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AbstractPremappingReader implements PremappingReaderInterface
 {
-    /**
-     * @var array
-     */
-    protected $connectionPremappingDictionary = [];
+    protected array $connectionPremappingDictionary = [];
 
     protected function fillConnectionPremappingDictionary(MigrationContextInterface $migrationContext): void
     {

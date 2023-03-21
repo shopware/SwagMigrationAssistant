@@ -15,14 +15,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 class TableReader implements TableReaderInterface
 {
-    /**
-     * @var ConnectionFactory
-     */
-    private $connectionFactory;
-
-    public function __construct(ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ConnectionFactory $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

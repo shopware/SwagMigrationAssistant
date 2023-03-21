@@ -8,21 +8,15 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 class RuleProvider extends AbstractProvider
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $ruleRepo;
-
-    public function __construct(EntityRepositoryInterface $ruleRepo)
+    public function __construct(private readonly EntityRepository $ruleRepo)
     {
-        $this->ruleRepo = $ruleRepo;
     }
 
     public function getIdentifier(): string

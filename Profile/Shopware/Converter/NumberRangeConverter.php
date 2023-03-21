@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -34,29 +34,16 @@ abstract class NumberRangeConverter extends ShopwareConverter
         'doc_2' => 'document_credit_note',
     ];
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $numberRangeTypeRepo;
+    protected ?EntityCollection $numberRangeTypes;
 
-    /**
-     * @var EntityCollection|null
-     */
-    protected $numberRangeTypes;
-
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        EntityRepositoryInterface $numberRangeTypeRepo
+        protected EntityRepository $numberRangeTypeRepo
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->numberRangeTypeRepo = $numberRangeTypeRepo;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct

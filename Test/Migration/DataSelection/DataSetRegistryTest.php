@@ -26,20 +26,11 @@ class DataSetRegistryTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @var DataSetRegistryInterface
-     */
-    private $dataSetRegistry;
+    private DataSetRegistryInterface $dataSetRegistry;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
     protected function setUp(): void
     {

@@ -15,20 +15,11 @@ class GeneralSettingEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string|null
-     */
-    protected $selectedConnectionId;
+    protected ?string $selectedConnectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity|null
-     */
-    protected $selectedConnection;
+    protected ?SwagMigrationConnectionEntity $selectedConnection;
 
-    /**
-     * @var bool
-     */
-    protected $isReset;
+    protected bool $isReset;
 
     public function getSelectedConnectionId(): ?string
     {

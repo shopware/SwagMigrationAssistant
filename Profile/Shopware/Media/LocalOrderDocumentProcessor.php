@@ -13,7 +13,7 @@ use Shopware\Core\Content\Media\Exception\EmptyMediaFilenameException;
 use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -29,30 +29,12 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var MediaService
-     */
-    private $mediaService;
-
     public function __construct(
-        EntityRepositoryInterface $migrationMediaFileRepo,
-        MediaService $mediaService,
-        LoggingServiceInterface $loggingService,
+        private readonly EntityRepository $mediaFileRepo,
+        private readonly MediaService $mediaService,
+        private readonly LoggingServiceInterface $loggingService,
         Connection $dbalConnection
     ) {
-        $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->mediaService = $mediaService;
-        $this->loggingService = $loggingService;
         parent::__construct($dbalConnection);
     }
 

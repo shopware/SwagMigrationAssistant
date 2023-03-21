@@ -23,48 +23,26 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class CrossSellingConverterTest extends TestCase
 {
-    /**
-     * @var Shopware55CrossSellingConverter
-     */
-    private $crossSellingConverter;
+    private Shopware55CrossSellingConverter $crossSellingConverter;
 
-    /**
-     * @var DummyLoggingService
-     */
-    private $loggingService;
+    private DummyLoggingService $loggingService;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var string
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var MigrationContextInterface
-     */
-    private $migrationContext;
+    private MigrationContextInterface $migrationContext;
 
-    /**
-     * @var DummyMappingService
-     */
-    private $mappingService;
+    private DummyMappingService $mappingService;
 
-    /**
-     * @var array
-     */
-    private $products;
+    private array $products;
 
-    private $type = [
+    private array $type = [
         'Similar Items',
         'Accessory Items',
     ];
 
-    private $compareProduct
-    = [
+    private array $compareProduct = [
         'id' => null,
         'name' => 'Similar Items',
         'type' => 'productList',

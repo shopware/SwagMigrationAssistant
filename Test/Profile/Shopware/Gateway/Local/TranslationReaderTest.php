@@ -19,15 +19,9 @@ class TranslationReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var TranslationReader
-     */
-    private $translationReader;
+    private TranslationReader $translationReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

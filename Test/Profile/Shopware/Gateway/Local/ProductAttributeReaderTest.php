@@ -20,25 +20,13 @@ class ProductAttributeReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var ProductAttributeReader
-     */
-    private $productAttributeReader;
+    private ProductAttributeReader $productAttributeReader;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

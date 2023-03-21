@@ -11,20 +11,11 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class EntityProgress extends Struct
 {
-    /**
-     * @var string
-     */
-    protected $entityName;
+    protected string $entityName;
 
-    /**
-     * @var int
-     */
-    protected $currentCount;
+    protected int $currentCount;
 
-    /**
-     * @var int
-     */
-    protected $total;
+    protected int $total;
 
     public function getEntityName(): string
     {

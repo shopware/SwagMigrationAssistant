@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -17,10 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class OrderReader extends AbstractReader
 {
-    /**
-     * @var array
-     */
-    private $orderIds;
+    private array $orderIds;
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -57,16 +53,14 @@ class OrderReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order')
             ->where('status != -1')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::ORDER, $total);
     }
@@ -126,12 +120,9 @@ class OrderReader extends AbstractReader
         $query->setMaxResults($migrationContext->getLimit());
         $query->addOrderBy('ordering.id');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function appendAssociatedData(array $orders): array
@@ -175,12 +166,9 @@ class OrderReader extends AbstractReader
         $query->where('detail.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, Connection::PARAM_INT_ARRAY);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        $fetchedOrderDetails = $query->fetchAll(\PDO::FETCH_GROUP);
+        $fetchedOrderDetails = $query->fetchAllAssociative();
 
         return $this->mapData($fetchedOrderDetails, [], ['detail']);
     }
@@ -202,12 +190,9 @@ class OrderReader extends AbstractReader
         $query->where('document.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, Connection::PARAM_INT_ARRAY);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        $fetchedOrderDocuments = $query->fetchAll(\PDO::FETCH_GROUP);
+        $fetchedOrderDocuments = $query->fetchAllAssociative();
 
         return $this->mapData($fetchedOrderDocuments, [], ['document']);
     }

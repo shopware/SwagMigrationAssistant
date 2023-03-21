@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -48,85 +48,37 @@ class MigrationDataProcessingTest extends TestCase
     use MigrationServicesTrait;
     use IntegrationTestBehaviour;
 
-    /**
-     * @var MigrationDataFetcherInterface
-     */
-    private $migrationDataFetcher;
+    private MigrationDataFetcherInterface $migrationDataFetcher;
 
-    /**
-     * @var MigrationDataConverterInterface
-     */
-    private $migrationDataConverter;
+    private MigrationDataConverterInterface $migrationDataConverter;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $migrationDataRepo;
+    private EntityRepository $migrationDataRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salutationRepo;
+    private EntityRepository $salutationRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $loggingRepo;
+    private EntityRepository $loggingRepo;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $paymentRepo;
+    private EntityRepository $paymentRepo;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var MappingService
-     */
-    private $mappingService;
+    private MappingService $mappingService;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $shippingRepo;
+    private EntityRepository $shippingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $countryRepo;
+    private EntityRepository $countryRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $salesChannelRepo;
+    private EntityRepository $salesChannelRepo;
 
     protected function setUp(): void
     {

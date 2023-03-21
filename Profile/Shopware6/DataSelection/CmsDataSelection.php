@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 class CmsDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'cms';
+    final public const IDENTIFIER = 'cms';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {

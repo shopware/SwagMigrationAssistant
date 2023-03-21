@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 
 class SwagMigrationConnectionDefinition extends EntityDefinition
 {
-    public const ENTITY_NAME = 'swag_migration_connection';
+    final public const ENTITY_NAME = 'swag_migration_connection';
 
     public function getEntityName(): string
     {

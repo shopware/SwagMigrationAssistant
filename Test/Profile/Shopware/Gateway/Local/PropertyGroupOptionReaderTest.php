@@ -19,15 +19,9 @@ class PropertyGroupOptionReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var PropertyGroupOptionReader
-     */
-    private $propertyGroupOptionReader;
+    private PropertyGroupOptionReader $propertyGroupOptionReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

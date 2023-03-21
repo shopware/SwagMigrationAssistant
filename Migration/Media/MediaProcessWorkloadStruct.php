@@ -11,39 +11,21 @@ use Shopware\Core\Framework\Struct\Struct;
 
 class MediaProcessWorkloadStruct extends Struct
 {
-    public const IN_PROGRESS_STATE = 'inProgress';
-    public const FINISH_STATE = 'finished';
-    public const ERROR_STATE = 'error';
+    final public const IN_PROGRESS_STATE = 'inProgress';
+    final public const FINISH_STATE = 'finished';
+    final public const ERROR_STATE = 'error';
 
-    /**
-     * @var string
-     */
-    private $mediaId;
+    private string $mediaId;
 
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
-    /**
-     * @var string
-     */
-    private $state;
+    private string $state;
 
-    /**
-     * @var array
-     */
-    private $additionalData;
+    private array $additionalData;
 
-    /**
-     * @var int
-     */
-    private $errorCount;
+    private int $errorCount;
 
-    /**
-     * @var int
-     */
-    private $currentOffset;
+    private int $currentOffset;
 
     public function __construct(
         string $mediaId,

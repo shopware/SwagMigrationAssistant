@@ -19,7 +19,7 @@ Module.register('swag-migration', {
     version: '0.9.0',
     targetVersion: '0.9.0',
     color: '#9AA8B5',
-    icon: 'default-action-settings',
+    icon: 'regular-cog',
 
     routes: {
         emptyScreen: {

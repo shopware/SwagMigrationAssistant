@@ -15,15 +15,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class AttributeConverter extends Converter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
+    protected string $connectionName;
 
     public function getSourceIdentifier(array $data): string
     {
@@ -121,7 +115,7 @@ abstract class AttributeConverter extends Converter
 
     protected function getCustomFieldConfiguration(array $data): array
     {
-        $locale = \str_replace('_', '-', $data['_locale']);
+        $locale = (string) \str_replace('_', '-', $data['_locale']);
 
         if (isset($data['configuration'])) {
             return $this->getConfiguredCustomFieldData($data, $locale);

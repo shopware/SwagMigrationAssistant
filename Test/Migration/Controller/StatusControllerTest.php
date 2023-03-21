@@ -11,12 +11,12 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
-use Shopware\Core\Framework\Store\Services\StoreService;
+use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
@@ -75,50 +75,23 @@ class StatusControllerTest extends TestCase
     use IntegrationTestBehaviour;
     use LocalCredentialTrait;
 
-    /**
-     * @var StatusController
-     */
-    private $controller;
+    private StatusController $controller;
 
-    /**
-     * @var string
-     */
-    private $runUuid;
+    private string $runUuid;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $runRepo;
+    private EntityRepository $runRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $generalSettingRepo;
+    private EntityRepository $generalSettingRepo;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepo;
+    private EntityRepository $connectionRepo;
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var Context
-     */
-    private $context;
+    private Context $context;
 
-    /**
-     * @var string
-     */
-    private $invalidConnectionId;
+    private string $invalidConnectionId;
 
-    /**
-     * @var MigrationContextFactoryInterface
-     */
-    private $migrationContextFactory;
+    private MigrationContextFactoryInterface $migrationContextFactory;
 
     protected function setUp(): void
     {
@@ -216,7 +189,7 @@ class StatusControllerTest extends TestCase
                 $this->getContainer()->get(SwagMigrationDataDefinition::class),
                 $this->getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo),
-                $this->getContainer()->get(StoreService::class),
+                $this->getContainer()->get(TrackingEventClient::class),
                 $this->getContainer()->get('messenger.bus.shopware')
             ),
             new DataSelectionRegistry([

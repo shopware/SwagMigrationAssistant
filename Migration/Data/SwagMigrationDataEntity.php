@@ -15,60 +15,27 @@ class SwagMigrationDataEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
-    /**
-     * @var string|null
-     */
-    protected $entity;
+    protected ?string $entity;
 
-    /**
-     * @var int
-     */
-    protected $autoIncrement;
+    protected int $autoIncrement;
 
-    /**
-     * @var array|null
-     */
-    protected $raw;
+    protected ?array $raw;
 
-    /**
-     * @var array|null
-     */
-    protected $converted;
+    protected ?array $converted;
 
-    /**
-     * @var array|null
-     */
-    protected $unmapped;
+    protected ?array $unmapped;
 
-    /**
-     * @var string|null
-     */
-    protected $mappingUuid;
+    protected ?string $mappingUuid;
 
-    /**
-     * @var bool
-     */
-    protected $written;
+    protected bool $written;
 
-    /**
-     * @var bool
-     */
-    protected $convertFailure;
+    protected bool $convertFailure;
 
-    /**
-     * @var bool
-     */
-    protected $writeFailure;
+    protected bool $writeFailure;
 
-    /**
-     * @var SwagMigrationRunEntity
-     */
-    protected $run;
+    protected SwagMigrationRunEntity $run;
 
     public function getRunId(): string
     {

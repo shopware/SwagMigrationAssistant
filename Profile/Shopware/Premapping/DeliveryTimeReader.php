@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
@@ -24,24 +24,15 @@ class DeliveryTimeReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'delivery_time';
 
-    /**
-     * @var string
-     */
-    private $connectionPremappingValue = '';
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $deliveryTimeRepo;
+    private string $connectionPremappingValue = '';
 
     /**
      * @var string[]
      */
-    private $choiceUuids;
+    private array $choiceUuids;
 
-    public function __construct(EntityRepositoryInterface $deliveryTimeRepo)
+    public function __construct(private readonly EntityRepository $deliveryTimeRepo)
     {
-        $this->deliveryTimeRepo = $deliveryTimeRepo;
     }
 
     public static function getMappingName(): string

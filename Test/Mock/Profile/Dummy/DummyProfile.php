@@ -11,7 +11,7 @@ use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 class DummyProfile implements ProfileInterface
 {
-    public const PROFILE_NAME = 'dummy';
+    final public const PROFILE_NAME = 'dummy';
 
     public function getName(): string
     {

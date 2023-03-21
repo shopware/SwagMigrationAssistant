@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Driver\ResultStatement;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -55,15 +55,13 @@ class SalesChannelReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $total = $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_shops')
-            ->execute();
+            ->executeQuery()
+            ->fetchOne();
 
-        $total = 0;
-        if ($query instanceof ResultStatement) {
-            $total = (int) $query->fetchColumn();
-        }
+        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
     }
@@ -82,13 +80,12 @@ class SalesChannelReader extends AbstractReader
         $query->leftJoin('shop', 's_core_currencies', 'currency', 'shop.currency_id = currency.id');
         $query->addSelect('currency.currency');
 
-        $query->orderBy('shop.main_id');
+        $query->addGroupBy('config.column_name');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->orderBy('shop.id');
 
-        return $query->fetchAll(\PDO::FETCH_GROUP | \PDO::FETCH_UNIQUE);
+        $rows = $query->fetchAllAssociative();
+
+        return FetchModeHelper::groupUnique($rows);
     }
 }

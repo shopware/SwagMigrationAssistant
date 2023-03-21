@@ -25,20 +25,11 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationTy
 
 abstract class TranslationConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $runId;
+    protected string $runId;
 
     public function convert(
         array $data,
@@ -179,7 +170,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->checksum
         );
         $productTranslation['id'] = $this->mainMapping['entityUuid'];
-        unset($data['id'], $data['objectkey']);
+        unset($data['id']);
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
 
@@ -255,7 +246,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->checksum
         );
         $productTranslation['id'] = $this->mainMapping['entityUuid'];
-        unset($data['id'], $data['objectkey']);
+        unset($data['id']);
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
 
@@ -366,7 +357,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectkey'],
             $this->context
         );
-        unset($data['objectkey']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -453,7 +443,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectkey'],
             $this->context
         );
-        unset($data['objectkey']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -543,7 +532,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectkey'],
             $this->context
         );
-        unset($data['objectkey']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -621,7 +609,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectkey'],
             $this->context
         );
-        unset($data['objectkey']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -702,7 +689,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectkey'],
             $this->context
         );
-        unset($data['objectkey']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -778,7 +764,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectkey'],
             $this->context
         );
-        unset($data['objectkey']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -983,7 +968,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['objectdata'] = \serialize($objectData);
         }
 
-        unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
+        unset($data['id'], $data['objecttype'], $data['objectlanguage'], $data['dirty']);
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
 

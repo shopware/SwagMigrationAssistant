@@ -9,33 +9,15 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class CannotReadEntityCountLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $table;
-
-    /**
-     * @var string
-     */
-    private $condition;
-
-    /**
-     * @var string
-     */
-    private $exceptionCode;
-
-    /**
-     * @var string
-     */
-    private $exceptionMessage;
-
-    public function __construct(string $runUuid, string $entity, string $table, ?string $condition, string $exceptionCode, string $exceptionMessage)
-    {
+    public function __construct(
+        string $runUuid,
+        string $entity,
+        private readonly string $table,
+        private readonly ?string $condition,
+        private readonly string $exceptionCode,
+        private readonly string $exceptionMessage
+    ) {
         parent::__construct($runUuid, $entity);
-        $this->table = $table;
-        $this->condition = $condition ?? '';
-        $this->exceptionCode = $exceptionCode;
-        $this->exceptionMessage = $exceptionMessage;
     }
 
     public function getLevel(): string

@@ -9,19 +9,13 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 class ConnectionFactory implements ConnectionFactoryInterface
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $connectionRepositoy;
-
-    public function __construct(EntityRepositoryInterface $connectionRepositoy)
+    public function __construct(private readonly EntityRepository $connectionRepository)
     {
-        $this->connectionRepositoy = $connectionRepositoy;
     }
 
     public function createApiClient(MigrationContextInterface $migrationContext): ?AuthClient
@@ -46,7 +40,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
         return new AuthClient(
             new Client($options),
-            $this->connectionRepositoy,
+            $this->connectionRepository,
             $migrationContext,
             Context::createDefaultContext() // ToDo maybe replace this with the real context from the request, because this could cause caching issues (but it will only write data to DB).
         );

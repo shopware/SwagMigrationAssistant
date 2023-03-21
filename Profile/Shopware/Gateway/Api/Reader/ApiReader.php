@@ -17,14 +17,8 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 abstract class ApiReader implements ReaderInterface
 {
-    /**
-     * @var ConnectionFactoryInterface
-     */
-    private $connectionFactory;
-
-    public function __construct(ConnectionFactoryInterface $connectionFactory)
+    public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
-        $this->connectionFactory = $connectionFactory;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

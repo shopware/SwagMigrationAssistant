@@ -24,30 +24,15 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
 abstract class ShopwareConverterTest extends TestCase
 {
-    /**
-     * @var DummyLoggingService
-     */
-    protected $loggingService;
+    protected DummyLoggingService $loggingService;
 
-    /**
-     * @var Dummy6MappingService
-     */
-    protected $mappingService;
+    protected Dummy6MappingService $mappingService;
 
-    /**
-     * @var ConverterInterface
-     */
-    protected $converter;
+    protected ConverterInterface $converter;
 
-    /**
-     * @var MigrationContext
-     */
-    protected $migrationContext;
+    protected MigrationContext $migrationContext;
 
-    /**
-     * @var DummyMediaFileService
-     */
-    private $mediaService;
+    private DummyMediaFileService $mediaService;
 
     protected function setUp(): void
     {

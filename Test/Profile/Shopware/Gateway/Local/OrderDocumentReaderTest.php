@@ -19,15 +19,9 @@ class OrderDocumentReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var OrderDocumentReader
-     */
-    private $orderDocumentReader;
+    private OrderDocumentReader $orderDocumentReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

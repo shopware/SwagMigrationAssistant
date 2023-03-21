@@ -22,12 +22,12 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService;
 
 class Dummy6MappingService extends Shopware6MappingService
 {
-    public const DEFAULT_CMS_PAGE_UUID = '112155944d6e48aab56471f7df094d53';
-    public const DEFAULT_LANGUAGE_UUID = Defaults::LANGUAGE_SYSTEM;
-    public const DEFAULT_LOCAL_UUID = '976a257a2cc242988abfcd7e33e16b12';
-    public const DEFAULT_DELIVERY_TIME_UUID = 'c2b7cb2bc66a47b9a4e4cf60c9f071fb';
-    public const DEFAULT_AVAILABILITY_RULE_UUID = '32a884ed8e9e4c8b9d44a36e14d1a195';
-    public const FALLBACK_LOCALE_UUID_FOR_EVERY_CODE = '212ab9a95510421085d9d0009f969236';
+    final public const DEFAULT_CMS_PAGE_UUID = '112155944d6e48aab56471f7df094d53';
+    final public const DEFAULT_LANGUAGE_UUID = Defaults::LANGUAGE_SYSTEM;
+    final public const DEFAULT_LOCAL_UUID = '976a257a2cc242988abfcd7e33e16b12';
+    final public const DEFAULT_DELIVERY_TIME_UUID = 'c2b7cb2bc66a47b9a4e4cf60c9f071fb';
+    final public const DEFAULT_AVAILABILITY_RULE_UUID = '32a884ed8e9e4c8b9d44a36e14d1a195';
+    final public const FALLBACK_LOCALE_UUID_FOR_EVERY_CODE = '212ab9a95510421085d9d0009f969236';
 
     public function __construct()
     {

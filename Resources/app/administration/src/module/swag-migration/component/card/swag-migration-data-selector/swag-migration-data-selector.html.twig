@@ -12,8 +12,11 @@
             </div>
         {% endblock %}
 
-        <sw-card v-if="this.dataSelectionTableData.length > 0"
-                 :title="$tc('swag-migration.index.selectDataCard.cardTitle')">
+        <sw-card
+            v-if="this.dataSelectionTableData.length > 0"
+            :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
+            position-identifier="swag-migration-data-selector"
+        >
 
             {% block swag_migration_data_selector_grid %}
                 <template #grid>
@@ -51,7 +54,7 @@
             {% endblock %}
         </sw-card>
 
-        <sw-card v-else class="swag-migration-data-selector">
+        <sw-card v-else class="swag-migration-data-selector" position-identifier="swag-migration-data-selector-no-data">
 
             {% block swag_migration_data_selector_no_data %}
                 <div class="swag-migration-index-data-selector__no-data">

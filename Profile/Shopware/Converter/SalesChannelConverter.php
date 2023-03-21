@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -26,67 +26,24 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageL
 
 abstract class SalesChannelConverter extends ShopwareConverter
 {
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $countryRepository;
+    protected string $mainLocale;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $paymentRepository;
+    protected Context $context;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $shippingMethodRepo;
+    protected string $connectionId;
 
-    /**
-     * @var EntityRepositoryInterface
-     */
-    protected $salesChannelRepo;
-
-    /**
-     * @var EntityRepositoryInterface|null
-     */
-    protected $languagePackRepo;
-
-    /**
-     * @var string
-     */
-    protected $mainLocale;
-
-    /**
-     * @var Context
-     */
-    protected $context;
-
-    /**
-     * @var string
-     */
-    protected $connectionId;
-
-    /**
-     * @var string
-     */
-    protected $oldIdentifier;
+    protected string $oldIdentifier;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        EntityRepositoryInterface $paymentRepository,
-        EntityRepositoryInterface $shippingMethodRepo,
-        EntityRepositoryInterface $countryRepo,
-        EntityRepositoryInterface $salesChannelRepo,
-        ?EntityRepositoryInterface $languagePackRepo
+        protected EntityRepository $paymentRepository,
+        protected EntityRepository $shippingMethodRepo,
+        protected EntityRepository $countryRepository,
+        protected EntityRepository $salesChannelRepo,
+        protected ?EntityRepository $languagePackRepo
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->paymentRepository = $paymentRepository;
-        $this->shippingMethodRepo = $shippingMethodRepo;
-        $this->countryRepository = $countryRepo;
-        $this->salesChannelRepo = $salesChannelRepo;
-        $this->languagePackRepo = $languagePackRepo;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct

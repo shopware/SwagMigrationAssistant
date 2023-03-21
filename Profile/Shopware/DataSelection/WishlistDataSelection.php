@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class WishlistDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'customerWishlists';
+    final public const IDENTIFIER = 'customerWishlists';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {

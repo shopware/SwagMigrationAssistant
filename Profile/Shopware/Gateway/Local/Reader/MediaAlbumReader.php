@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -50,12 +49,9 @@ class MediaAlbumReader extends AbstractReader
 
         $query->orderBy('parentID');
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query = $query->executeQuery();
 
-        return $query->fetchAll();
+        return $query->fetchAllAssociative();
     }
 
     private function prepareMediaAlbums(array $mediaAlbums): array

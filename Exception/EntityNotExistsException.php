@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EntityNotExistsException extends ShopwareHttpException
 {
-    public function __construct(string $entityClassName, string $uuid)
-    {
+    public function __construct(
+        string $entityClassName,
+        string $uuid
+    ) {
         parent::__construct(
             'No {{ entityClassName }} with UUID {{ uuid }} found. Make sure the entity with the UUID exists.',
             [

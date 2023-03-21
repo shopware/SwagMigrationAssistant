@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ParentEntityForChildNotFoundException extends ShopwareHttpException
 {
-    public function __construct(string $entity, string $oldIdentifier)
-    {
+    public function __construct(
+        string $entity,
+        string $oldIdentifier
+    ) {
         parent::__construct(
             'Parent entity for "{{ entity }}: {{ oldIdentifier }}" child not found.',
             [

@@ -14,7 +14,7 @@ use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -32,39 +32,15 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**
-     * @var FileSaver
-     */
-    private $fileSaver;
-
-    /**
-     * @var EntityRepositoryInterface
-     */
-    private $mediaFileRepo;
-
-    /**
-     * @var LoggingServiceInterface
-     */
-    private $loggingService;
-
-    /**
-     * @var StrategyResolverInterface[]
-     */
-    private $resolver;
-
-    /**
      * @param StrategyResolverInterface[] $resolver
      */
     public function __construct(
-        EntityRepositoryInterface $migrationMediaFileRepo,
-        FileSaver $fileSaver,
-        LoggingServiceInterface $loggingService,
-        iterable $resolver,
+        private readonly EntityRepository $mediaFileRepo,
+        private readonly FileSaver $fileSaver,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly iterable $resolver,
         Connection $dbalConnection
     ) {
-        $this->mediaFileRepo = $migrationMediaFileRepo;
-        $this->fileSaver = $fileSaver;
-        $this->loggingService = $loggingService;
-        $this->resolver = $resolver;
         parent::__construct($dbalConnection);
     }
 
@@ -175,7 +151,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $filePath = \sprintf('_temp/%s.%s', $rowId, $fileExtension);
 
             if (\copy($sourcePath, $filePath)) {
-                $fileSize = \filesize($filePath);
+                $fileSize = (int) \filesize($filePath);
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
 
                 try {

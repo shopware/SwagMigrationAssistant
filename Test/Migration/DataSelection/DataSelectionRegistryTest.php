@@ -28,20 +28,11 @@ use SwagMigrationAssistant\Test\Mock\DummyCollection;
 
 class DataSelectionRegistryTest extends TestCase
 {
-    /**
-     * @var DataSelectionRegistry
-     */
-    private $dataSelectionRegistry;
+    private DataSelectionRegistry $dataSelectionRegistry;
 
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var EnvironmentInformation
-     */
-    private $environmentInformation;
+    private EnvironmentInformation $environmentInformation;
 
     protected function setUp(): void
     {

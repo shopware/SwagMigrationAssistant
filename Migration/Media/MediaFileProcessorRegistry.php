@@ -15,16 +15,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
 {
     /**
-     * @var MediaFileProcessorInterface[]
-     */
-    private $processors;
-
-    /**
      * @param MediaFileProcessorInterface[] $processors
      */
-    public function __construct(iterable $processors)
+    public function __construct(private readonly iterable $processors)
     {
-        $this->processors = $processors;
     }
 
     /**

@@ -14,16 +14,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class ReaderRegistry implements ReaderRegistryInterface
 {
     /**
-     * @var ReaderInterface[]
-     */
-    private $readers;
-
-    /**
      * @param ReaderInterface[] $readers
      */
-    public function __construct(iterable $readers)
+    public function __construct(private readonly iterable $readers)
     {
-        $this->readers = $readers;
     }
 
     /**

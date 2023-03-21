@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Premapping;
 
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -28,36 +28,24 @@ class PaymentMethodReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'payment_method';
 
     /**
-     * @var EntityRepositoryInterface
+     * @var string[]
      */
-    protected $paymentMethodRepo;
+    private array $destinationHandlerToIdDictionary = [];
 
     /**
      * @var string[]
      */
-    private $destinationHandlerToIdDictionary = [];
+    private array $sourceIdToHandlerDictionary = [];
 
     /**
      * @var string[]
      */
-    private $sourceIdToHandlerDictionary = [];
-
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
-
-    /**
-     * @var string[]
-     */
-    private $choiceUuids;
+    private array $choiceUuids;
 
     public function __construct(
-        EntityRepositoryInterface $paymentMethodRepo,
-        GatewayRegistryInterface $gatewayRegistry
+        protected EntityRepository $paymentMethodRepo,
+        private readonly GatewayRegistryInterface $gatewayRegistry
     ) {
-        $this->paymentMethodRepo = $paymentMethodRepo;
-        $this->gatewayRegistry = $gatewayRegistry;
     }
 
     public static function getMappingName(): string

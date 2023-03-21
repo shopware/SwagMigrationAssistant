@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway;
 use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Exception\ReaderNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -61,10 +61,10 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        /** @var EntityRepositoryInterface $currencyRepository */
+        /** @var EntityRepository $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
-        /** @var EntityRepositoryInterface $languageRepository */
+        /** @var EntityRepository $languageRepository */
         $languageRepository = $this->getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
@@ -114,10 +114,10 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        /** @var EntityRepositoryInterface $currencyRepository */
+        /** @var EntityRepository $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
-        /** @var EntityRepositoryInterface $languageRepository */
+        /** @var EntityRepository $languageRepository */
         $languageRepository = $this->getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
@@ -158,10 +158,10 @@ class LocalGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        /** @var EntityRepositoryInterface $currencyRepository */
+        /** @var EntityRepository $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
-        /** @var EntityRepositoryInterface $languageRepository */
+        /** @var EntityRepository $languageRepository */
         $languageRepository = $this->getContainer()->get('language.repository');
 
         $gateway = new ShopwareLocalGateway(
@@ -178,7 +178,7 @@ class LocalGatewayTest extends TestCase
         static::assertSame($response->getTotals(), []);
     }
 
-    public function profileProvider()
+    public function profileProvider(): array
     {
         return [
             [

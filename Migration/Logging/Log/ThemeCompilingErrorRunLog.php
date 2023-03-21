@@ -9,8 +9,10 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 class ThemeCompilingErrorRunLog extends BaseRunLogEntry
 {
-    public function __construct(string $runId, string $sourceId)
-    {
+    public function __construct(
+        string $runId,
+        string $sourceId
+    ) {
         parent::__construct($runId, null, $sourceId);
     }
 

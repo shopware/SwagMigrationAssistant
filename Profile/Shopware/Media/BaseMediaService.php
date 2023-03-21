@@ -8,19 +8,12 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\ResultStatement;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class BaseMediaService
 {
-    /**
-     * @var Connection
-     */
-    protected $dbalConnection;
-
-    public function __construct(Connection $dbalConnection)
+    public function __construct(protected Connection $dbalConnection)
     {
-        $this->dbalConnection = $dbalConnection;
     }
 
     protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
@@ -43,12 +36,9 @@ abstract class BaseMediaService
         $query->setParameter('ids', $mediaIds, Connection::PARAM_STR_ARRAY);
         $query->setParameter('runId', $runId);
 
-        $query = $query->execute();
-        if (!($query instanceof ResultStatement)) {
-            return [];
-        }
+        $query->executeQuery();
 
-        $result = $query->fetchAll();
+        $result = $query->fetchAllAssociative();
         foreach ($result as &$media) {
             $media['id'] = \mb_strtolower($media['id']);
             $media['run_id'] = \mb_strtolower($media['run_id']);

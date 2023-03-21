@@ -137,11 +137,13 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="validator"/>
+            <argument type="service" id="sales_channel.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
+            <argument type="service" id="sales_channel.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter"

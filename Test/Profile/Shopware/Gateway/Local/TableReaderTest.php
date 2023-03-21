@@ -19,15 +19,9 @@ class TableReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var TableReader
-     */
-    private $tableReader;
+    private TableReader $tableReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

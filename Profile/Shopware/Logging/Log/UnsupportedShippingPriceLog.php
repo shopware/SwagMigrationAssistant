@@ -11,15 +11,13 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class UnsupportedShippingPriceLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $shippingMethodId;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $shippingMethodId)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $shippingMethodId
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->shippingMethodId = $shippingMethodId;
     }
 
     public function getLevel(): string

@@ -17,10 +17,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class WriterRegistryTest extends TestCase
 {
-    /**
-     * @var WriterRegistryInterface
-     */
-    private $writerRegistry;
+    private WriterRegistryInterface $writerRegistry;
 
     protected function setUp(): void
     {

@@ -1,54 +1,9 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterRegistry\\:\\:\\$converters \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConverterInterface\\>\\.$#"
-			count: 1
-			path: Migration/Converter/ConverterRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionRegistry\\:\\:\\$dataSelections \\(array\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionInterface\\>\\.$#"
-			count: 1
-			path: Migration/DataSelection/DataSelectionRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSetRegistry\\:\\:\\$dataSets \\(array\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\>\\.$#"
-			count: 1
-			path: Migration/DataSelection/DataSet/DataSetRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayRegistry\\:\\:\\$gateways \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayInterface\\>\\.$#"
-			count: 1
-			path: Migration/Gateway/GatewayRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderRegistry\\:\\:\\$readers \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderInterface\\>\\.$#"
-			count: 1
-			path: Migration/Gateway/Reader/ReaderRegistry.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Logging\\\\Log\\\\DebugLog\\:\\:getDescription\\(\\) should return string but returns string\\|false\\.$#"
 			count: 1
 			path: Migration/Logging/Log/DebugLog.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileProcessorRegistry\\:\\:\\$processors \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileProcessorInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileProcessorInterface\\>\\.$#"
-			count: 1
-			path: Migration/Media/MediaFileProcessorRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingReaderRegistry\\:\\:\\$preMappingReaders \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingReaderInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Premapping\\\\PremappingReaderInterface\\>\\.$#"
-			count: 1
-			path: Migration/Premapping/PremappingReaderRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Profile\\\\ProfileRegistry\\:\\:\\$profiles \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Profile\\\\ProfileInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Profile\\\\ProfileInterface\\>\\.$#"
-			count: 1
-			path: Migration/Profile/ProfileRegistry.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterRegistry\\:\\:\\$writers \\(array\\<SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\>\\.$#"
-			count: 1
-			path: Migration/Writer/WriterRegistry.php
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
@@ -58,11 +13,6 @@ parameters:
 		-
 			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
 			count: 1
-			path: Profile/Shopware/Converter/AttributeConverter.php
-
-		-
-			message: "#^Possibly invalid array key type \\(array\\|string\\)\\.$#"
-			count: 3
 			path: Profile/Shopware/Converter/AttributeConverter.php
 
 		-
@@ -321,11 +271,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Api/Reader/TranslationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CategoryAttributeReader.php
@@ -364,11 +309,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CustomerReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$value with no typehint specified\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
@@ -506,17 +446,7 @@ parameters:
 			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:\\$resolver \\(array\\<SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\Strategy\\\\StrategyResolverInterface\\>\\) does not accept iterable\\<SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\Strategy\\\\StrategyResolverInterface\\>\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Parameter \\#3 \\$fileSize of method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:persistFileToMedia\\(\\) expects int, int\\|false given\\.$#"
 			count: 1
 			path: Profile/Shopware/Media/LocalMediaProcessor.php
 
@@ -1086,21 +1016,6 @@ parameters:
 			path: Test/Mock/Repositories/MigrationConnectionRepo.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$dataArray has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$body has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$error has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
-
-		-
 			message: "#^Parameter \\#3 \\$body of class GuzzleHttp\\\\Psr7\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, string\\|false given\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/ApiReaderTest.php
@@ -1326,11 +1241,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\LocalGatewayTest\\:\\:profileProvider\\(\\) has no return typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/LocalGatewayTest.php
-
-		-
 			message: "#^Cannot call method getCode\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
@@ -1346,233 +1256,18 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Premapping\\\\SalutationReaderTest\\:\\:\\$reader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\OrderStateReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\SalutationReader\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Premapping/SalutationReaderTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 8
-			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 4
-			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 15
-			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CategoryConverterTest\\:\\:\\$connection \\(string\\) does not accept SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CategoryConverterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$type has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$compareProduct has no typehint specified\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\CrossSellingConverterTest\\:\\:\\$connection \\(string\\) does not accept SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Offset 'productId' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Offset 'assignedProducts' does not exist on array\\|null\\.$#"
-			count: 7
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Cannot call method getId\\(\\) on string\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 12
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'salesChannelId' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'lastName' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'guest' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'customerNumber' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'addresses' does not exist on array\\|null\\.$#"
-			count: 9
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'defaultBillingAddre…' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Offset 'defaultShippingAddr…' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'displayGross' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'inputGross' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'hasGlobalDiscount' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'minimumOrderAmount' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'minimumOrderAmountS…' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
-
-		-
-			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
-			count: 2
 			path: Test/Profile/Shopware55/Converter/CustomerGroupConverterTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
-
-		-
-			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
-
-		-
-			message: "#^Offset 'localeId' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
-
-		-
-			message: "#^Offset 'translationCodeId' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/LanguageConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
 
 		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 4
-			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
-
-		-
-			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
-			count: 4
-			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
-
-		-
-			message: "#^Offset 'configuration' does not exist on array\\|null\\.$#"
-			count: 8
-			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
-
-		-
-			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
-
-		-
-			message: "#^Offset 'parentId' does not exist on array\\|null\\.$#"
-			count: 2
 			path: Test/Profile/Shopware55/Converter/MediaFolderConverterTest.php
 
 		-
@@ -1582,58 +1277,8 @@ parameters:
 
 		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 4
-			path: Test/Profile/Shopware55/Converter/NewsletterRecipientConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 5
 			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
-
-		-
-			message: "#^Offset 'global' does not exist on array\\|null\\.$#"
-			count: 5
-			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
-
-		-
-			message: "#^Offset 'pattern' does not exist on array\\|null\\.$#"
-			count: 5
-			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
-
-		-
-			message: "#^Offset 'start' does not exist on array\\|null\\.$#"
-			count: 5
-			path: Test/Profile/Shopware55/Converter/NumberRangeConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 14
-			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 7
-			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 31
-			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
 
 		-
 			message: "#^Offset 'deliveryTime' does not exist on array\\|null\\.$#"
@@ -1641,67 +1286,22 @@ parameters:
 			path: Test/Profile/Shopware55/Converter/ProductConverterTest.php
 
 		-
-			message: "#^Property Test\\\\Profile\\\\Shopware55\\\\Converter\\\\ProductOptionRelationConverterTest\\:\\:\\$converter \\(SwagMigrationAssistant\\\\Profile\\\\Shopware55\\\\Converter\\\\Shopware55ProductPropertyRelationConverter\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware55\\\\Converter\\\\Shopware55ProductOptionRelationConverter\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/ProductOptionRelationConverterTest.php
-
-		-
 			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
 			count: 4
 			path: Test/Profile/Shopware55/Converter/ProductOptionRelationConverterTest.php
 
 		-
-			message: "#^Offset 'configuratorSettings' does not exist on array\\|null\\.$#"
-			count: 5
-			path: Test/Profile/Shopware55/Converter/ProductOptionRelationConverterTest.php
-
-		-
-			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'relations' does not exist on array\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
-
-		-
-			message: "#^Offset 'customFields' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
-
-		-
 			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
 			count: 3
 			path: Test/Profile/Shopware55/Converter/ProductPropertyRelationConverterTest.php
 
 		-
-			message: "#^Offset 'properties' does not exist on array\\|null\\.$#"
-			count: 3
-			path: Test/Profile/Shopware55/Converter/ProductPropertyRelationConverterTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 2
 			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
 
 		-
-			message: "#^Offset 'languages' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
-
-		-
-			message: "#^Offset 'name' does not exist on array\\|null\\.$#"
-			count: 2
-			path: Test/Profile/Shopware55/Converter/SalesChannelConverterTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/ShippingMethodConverterTest.php
-
-		-
-			message: "#^Offset 'translations' does not exist on array\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/ShippingMethodConverterTest.php
 
@@ -1716,11 +1316,6 @@ parameters:
 			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
 
 		-
-			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
-			count: 4
-			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
-
-		-
 			message: "#^Offset 'manufacturer' does not exist on array\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
@@ -1729,3 +1324,63 @@ parameters:
 			message: "#^Offset 'unit' does not exist on array\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 4
+			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'assignedProducts' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 6
+			path: Test/Profile/Shopware55/Converter/CustomerConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/CustomerGroupAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ManufacturerAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/NewsletterRecipientConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/OrderAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 7
+			path: Test/Profile/Shopware55/Converter/ProductAttributeConverterTest.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/ProductPriceAttributeConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 1
+			path: Test/Profile/Shopware55/Converter/TranslationConverterTest.php
+
+		-
+			message: "#^Offset 'id' does not exist on array\\|null\\.$#"
+			count: 3
+			path: Test/Profile/Shopware55/Converter/CrossSellingConverterTest.php

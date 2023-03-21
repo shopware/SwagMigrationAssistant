@@ -8,32 +8,22 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Doctrine\DBAL\Connection;
-use Shopware\Core\Framework\MessageQueue\Handler\AbstractMessageHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
+use Symfony\Component\Messenger\Handler\MessageSubscriberInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-class CleanupMigrationHandler extends AbstractMessageHandler
+class CleanupMigrationHandler implements MessageSubscriberInterface
 {
-    /**
-     * @var Connection
-     */
-    private $connection;
-
-    /**
-     * @var MessageBusInterface
-     */
-    private $bus;
-
-    public function __construct(Connection $connection, MessageBusInterface $bus)
-    {
-        $this->connection = $connection;
-        $this->bus = $bus;
+    public function __construct(
+        private readonly Connection $connection,
+        private readonly MessageBusInterface $bus
+    ) {
     }
 
     /**
      * @param CleanupMigrationMessage $message
      */
-    public function handle($message): void
+    public function __invoke($message): void
     {
         $currentStep = 0;
         $tablesToReset = [

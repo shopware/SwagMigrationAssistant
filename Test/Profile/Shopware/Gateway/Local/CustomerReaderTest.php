@@ -19,15 +19,9 @@ class CustomerReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var CustomerReader
-     */
-    private $customerReader;
+    private CustomerReader $customerReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

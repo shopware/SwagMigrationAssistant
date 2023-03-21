@@ -13,10 +13,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 abstract class ProductConverter extends ShopwareMediaConverter
 {
-    /**
-     * @var string|null
-     */
-    private $sourceDefaultCurrencyUuid;
+    private ?string $sourceDefaultCurrencyUuid;
 
     public function getMediaUuids(array $converted): ?array
     {

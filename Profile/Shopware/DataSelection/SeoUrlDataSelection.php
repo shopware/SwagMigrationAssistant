@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class SeoUrlDataSelection implements DataSelectionInterface
 {
-    public const IDENTIFIER = 'seoUrls';
+    final public const IDENTIFIER = 'seoUrls';
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {

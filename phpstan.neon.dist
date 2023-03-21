@@ -7,12 +7,27 @@ parameters:
     inferPrivatePropertyTypeFromConstructor: true
     checkMissingIterableValueType: false
     checkGenericClassInNonGenericObjectType: false
+    bootstrapFiles:
+            - Test/TestBootstrap.php
+    # run `php Test/TestBootstrap.php` to create the container
     symfony:
-        constant_hassers: false
-        # the placeholder "%ShopwareHashedCacheDir%" will be replaced on execution by bin/phpstan-config-generator.php script
-        container_xml_path: '../../..%ShopwareHashedCacheDir%/Shopware_Development_KernelDevDebugContainer.xml'
-    featureToggles:
-        unusedClassElements: true
-    excludes_analyse:
+        constantHassers: false
+        containerXmlPath: '../../../var/cache/test/Shopware_Core_DevOps_StaticAnalyze_StaticAnalyzeKernelTestDebugContainer.xml'
+        consoleApplicationLoader: ../../../src/Core/DevOps/StaticAnalyze/PHPStan/console-application.php
+    excludePaths:
         - vendor
         - var
+        - ecs.php
+
+        # extends final class, which is ok for mocks
+        - Test/Mock/Repositories/GeneralSettingRepo.php
+        - Test/Mock/Repositories/MigrationConnectionRepo.php
+
+    ignoreErrors:
+        -
+            message: '#Service ".*" is private#'
+            paths:
+                - Test/**/*Test.php
+
+    paths:
+        - .

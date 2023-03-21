@@ -15,40 +15,9 @@ use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
 trait LocalCredentialTrait
 {
-    /**
-     * @var string
-     */
-    public $db_name = Shopware5DatabaseConnection::DB_NAME;
+    private SwagMigrationConnectionEntity $connection;
 
-    /**
-     * @var string
-     */
-    public $db_user = Shopware5DatabaseConnection::DB_USER;
-
-    /**
-     * @var string
-     */
-    public $db_password = Shopware5DatabaseConnection::DB_PASSWORD;
-
-    /**
-     * @var string
-     */
-    public $db_host = Shopware5DatabaseConnection::DB_HOST;
-
-    /**
-     * @var string
-     */
-    public $db_port = Shopware5DatabaseConnection::DB_PORT;
-
-    /**
-     * @var SwagMigrationConnectionEntity
-     */
-    private $connection;
-
-    /**
-     * @var string
-     */
-    private $runId;
+    private string $runId;
 
     public function connectionSetup(): void
     {
@@ -56,16 +25,19 @@ trait LocalCredentialTrait
             static::markTestSkipped('Shopware 5 test database not available. Skipping test');
         }
 
+        $dbUrlParts = parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
+        $dbUrlParts['path'] ??= 'root';
+
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setCredentialFields(
             [
-                'dbName' => $this->db_name,
-                'dbUser' => $this->db_user,
-                'dbPassword' => $this->db_password,
-                'dbHost' => $this->db_host,
-                'dbPort' => $this->db_port,
+                'dbName' => Shopware5DatabaseConnection::DB_NAME,
+                'dbUser' => $dbUrlParts['user'] ?? 'root',
+                'dbPassword' => $dbUrlParts['pass'] ?? '',
+                'dbHost' => $dbUrlParts['host'] ?? 'localhost',
+                'dbPort' => $dbUrlParts['port'] ?? 3306,
             ]
         );
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);

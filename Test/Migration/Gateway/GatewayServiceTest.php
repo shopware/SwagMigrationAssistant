@@ -22,10 +22,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 class GatewayServiceTest extends TestCase
 {
-    /**
-     * @var GatewayRegistryInterface
-     */
-    private $gatewayRegistry;
+    private GatewayRegistryInterface $gatewayRegistry;
 
     protected function setUp(): void
     {

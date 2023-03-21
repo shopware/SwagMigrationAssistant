@@ -14,7 +14,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepositoryInterface;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
@@ -61,11 +61,11 @@ trait MigrationServicesTrait
         EntityWriterInterface $entityWriter,
         MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
-        EntityRepositoryInterface $loggingRepo,
+        EntityRepository $loggingRepo,
         EntityDefinition $dataDefinition,
         DataSetRegistryInterface $dataSetRegistry,
-        EntityRepositoryInterface $currencyRepository,
-        EntityRepositoryInterface $languageRepository,
+        EntityRepository $currencyRepository,
+        EntityRepository $languageRepository,
         ReaderRegistryInterface $readerRegistry
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService($loggingRepo);
@@ -90,12 +90,12 @@ trait MigrationServicesTrait
         EntityWriterInterface $entityWriter,
         MappingService $mappingService,
         MediaFileServiceInterface $mediaFileService,
-        EntityRepositoryInterface $loggingRepo,
+        EntityRepository $loggingRepo,
         EntityDefinition $dataDefinition,
-        EntityRepositoryInterface $paymentRepo,
-        EntityRepositoryInterface $shippingRepo,
-        EntityRepositoryInterface $countryRepo,
-        EntityRepositoryInterface $salesChannelRepo
+        EntityRepository $paymentRepo,
+        EntityRepository $shippingRepo,
+        EntityRepository $countryRepo,
+        EntityRepository $salesChannelRepo
     ): MigrationDataConverterInterface {
         $loggingService = new LoggingService($loggingRepo);
         $validator = Validation::createValidator();
@@ -106,15 +106,16 @@ trait MigrationServicesTrait
                     new Shopware55TranslationConverter($mappingService, $loggingService),
                     new Shopware55CategoryConverter($mappingService, $loggingService, $mediaFileService),
                     new Shopware55MediaConverter($mappingService, $loggingService, $mediaFileService),
-                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator),
-                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator),
+                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator, $salesChannelRepo),
+                    new Shopware55CustomerConverter($mappingService, $loggingService, $validator, $salesChannelRepo),
                     new Shopware55OrderConverter(
                         $mappingService,
                         $loggingService,
-                        new TaxCalculator()
+                        new TaxCalculator(),
+                        $salesChannelRepo
                     ),
                     new Shopware55SalesChannelConverter($mappingService, $loggingService, $paymentRepo, $shippingRepo, $countryRepo, $salesChannelRepo, null),
-                    new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator),
+                    new DummyInvalidCustomerConverter($mappingService, $loggingService, $validator, $salesChannelRepo),
                 ]
             )
         );
@@ -132,8 +133,8 @@ trait MigrationServicesTrait
     }
 
     protected function getOrderStateUuid(
-        EntityRepositoryInterface $stateMachineRepository,
-        EntityRepositoryInterface $stateMachineStateRepository,
+        EntityRepository $stateMachineRepository,
+        EntityRepository $stateMachineStateRepository,
         int $oldStateId,
         Context $context
     ): ?string {
@@ -204,8 +205,8 @@ trait MigrationServicesTrait
     }
 
     protected function getTransactionStateUuid(
-        EntityRepositoryInterface $stateMachineRepository,
-        EntityRepositoryInterface $stateMachineStateRepository,
+        EntityRepository $stateMachineRepository,
+        EntityRepository $stateMachineStateRepository,
         int $oldStateId,
         Context $context
     ): ?string {
@@ -312,7 +313,7 @@ trait MigrationServicesTrait
         return null;
     }
 
-    private function getPaymentUuid(EntityRepositoryInterface $paymentRepo, string $technicalName, Context $context): ?string
+    private function getPaymentUuid(EntityRepository $paymentRepo, string $technicalName, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('handlerIdentifier', $technicalName));
@@ -329,7 +330,7 @@ trait MigrationServicesTrait
         return null;
     }
 
-    private function getSalutationUuid(EntityRepositoryInterface $salutationRepo, string $salutationKey, Context $context): ?string
+    private function getSalutationUuid(EntityRepository $salutationRepo, string $salutationKey, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
@@ -346,7 +347,7 @@ trait MigrationServicesTrait
         return null;
     }
 
-    private function getFirstDeliveryTimeUuid(EntityRepositoryInterface $deliveryTimeRepo, Context $context): ?string
+    private function getFirstDeliveryTimeUuid(EntityRepository $deliveryTimeRepo, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
@@ -363,7 +364,7 @@ trait MigrationServicesTrait
         return null;
     }
 
-    private function getCurrencyUuid(EntityRepositoryInterface $currencyRepo, string $isoCode, Context $context): ?string
+    private function getCurrencyUuid(EntityRepository $currencyRepo, string $isoCode, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('isoCode', $isoCode));
@@ -380,7 +381,7 @@ trait MigrationServicesTrait
         return null;
     }
 
-    private function getLanguageUuid(EntityRepositoryInterface $localeRepo, EntityRepositoryInterface $languageRepo, string $code, Context $context): ?string
+    private function getLanguageUuid(EntityRepository $localeRepo, EntityRepository $languageRepo, string $code, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('code', $code));
@@ -402,7 +403,7 @@ trait MigrationServicesTrait
         return null;
     }
 
-    private function getCategoryUuid(EntityRepositoryInterface $categoryRepo, Context $context): string
+    private function getCategoryUuid(EntityRepository $categoryRepo, Context $context): string
     {
         /** @var CategoryEntity $category */
         $category = $categoryRepo->search(new Criteria(), $context)->first();

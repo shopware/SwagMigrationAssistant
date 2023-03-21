@@ -19,15 +19,9 @@ class ShippingMethodReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    /**
-     * @var ShippingMethodReader
-     */
-    private $shippingMethodReader;
+    private ShippingMethodReader $shippingMethodReader;
 
-    /**
-     * @var MigrationContext
-     */
-    private $migrationContext;
+    private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {

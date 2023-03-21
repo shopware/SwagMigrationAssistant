@@ -25,85 +25,48 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFou
 
 abstract class ProductConverter extends ShopwareConverter
 {
-    public const MAIN_PRODUCT_TYPE = 1;
-    public const VARIANT_PRODUCT_TYPE = 2;
+    final public const MAIN_PRODUCT_TYPE = 1;
+    final public const VARIANT_PRODUCT_TYPE = 2;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $oldProductId;
+    protected string $oldProductId;
 
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var string
-     */
-    protected $runId;
-
-    /**
-     * @var MediaFileServiceInterface
-     */
-    protected $mediaFileService;
+    protected string $runId;
 
     /**
      * @var string[]
      */
-    protected $requiredDataFieldKeys = [
+    protected array $requiredDataFieldKeys = [
         'tax',
         'prices',
     ];
 
-    /**
-     * @var array
-     */
-    protected $defaultValues = [
+    protected array $defaultValues = [
         'minPurchase' => 1,
         'purchaseSteps' => 1,
         'shippingFree' => false,
         'restockTime' => 1,
     ];
 
-    /**
-     * @var string
-     */
-    protected $locale;
+    protected string $locale;
 
-    /**
-     * @var int
-     */
-    protected $productType;
+    protected int $productType;
 
-    /**
-     * @var string
-     */
-    protected $mainProductId;
+    protected string $mainProductId;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
+    protected string $connectionName;
 
-    /**
-     * @var string|null
-     */
-    protected $currencyUuid;
+    protected ?string $currencyUuid;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService
     ) {
         parent::__construct($mappingService, $loggingService);
-
-        $this->mediaFileService = $mediaFileService;
     }
 
     public function getSourceIdentifier(array $data): string

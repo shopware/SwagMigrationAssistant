@@ -19,20 +19,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
     /**
      * @var string[]
      */
-    protected $requiredDataFieldKeys = [
+    protected array $requiredDataFieldKeys = [
         '_locale',
         'articleID',
     ];
 
-    /**
-     * @var string
-     */
-    private $connectionId;
+    private string $connectionId;
 
-    /**
-     * @var string
-     */
-    private $mainLocale;
+    private string $mainLocale;
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {

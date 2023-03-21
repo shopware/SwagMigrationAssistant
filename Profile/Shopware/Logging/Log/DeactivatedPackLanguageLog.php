@@ -11,15 +11,13 @@ use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
 class DeactivatedPackLanguageLog extends BaseRunLogEntry
 {
-    /**
-     * @var string
-     */
-    private $languageId;
-
-    public function __construct(string $runId, string $entity, string $sourceId, string $languageId)
-    {
+    public function __construct(
+        string $runId,
+        string $entity,
+        string $sourceId,
+        private readonly string $languageId
+    ) {
         parent::__construct($runId, $entity, $sourceId);
-        $this->languageId = $languageId;
     }
 
     public function getLevel(): string

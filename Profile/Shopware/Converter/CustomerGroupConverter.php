@@ -14,25 +14,13 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 abstract class CustomerGroupConverter extends ShopwareConverter
 {
-    /**
-     * @var string
-     */
-    protected $connectionId;
+    protected string $connectionId;
 
-    /**
-     * @var Context
-     */
-    protected $context;
+    protected Context $context;
 
-    /**
-     * @var string
-     */
-    protected $locale;
+    protected string $locale;
 
-    /**
-     * @var string
-     */
-    protected $connectionName;
+    protected string $connectionName;
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {

@@ -12,8 +12,10 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ProcessorNotFoundException extends ShopwareHttpException
 {
-    public function __construct(string $profile, string $gateway)
-    {
+    public function __construct(
+        string $profile,
+        string $gateway
+    ) {
         parent::__construct(
             'Processor for profile "{{ profile }}" and gateway "{{ gateway }}" not found.',
             [
