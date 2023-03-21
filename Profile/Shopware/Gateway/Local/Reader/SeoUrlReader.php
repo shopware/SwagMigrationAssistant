@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -47,13 +47,11 @@ class SeoUrlReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_rewrite_urls')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::SEO_URL, $total);
     }
@@ -72,7 +70,7 @@ class SeoUrlReader extends AbstractReader
         $query->addSelect('locale.locale as _locale');
 
         $query->where('url.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->executeQuery();
 

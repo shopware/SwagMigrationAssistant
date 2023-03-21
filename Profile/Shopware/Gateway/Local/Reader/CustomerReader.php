@@ -7,7 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -51,7 +52,7 @@ class CustomerReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_user')
             ->executeQuery()
@@ -85,7 +86,7 @@ class CustomerReader extends AbstractReader
         $this->addTableSelection($query, 's_core_locales', 'customerlanguage');
 
         $query->where('customer.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->addOrderBy('customer.id');
 
@@ -140,11 +141,13 @@ class CustomerReader extends AbstractReader
         $this->addTableSelection($query, 's_core_countries_states', 'state');
 
         $query->where('address.user_id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 
     private function fetchPaymentData(array $ids): array
@@ -156,10 +159,12 @@ class CustomerReader extends AbstractReader
         $this->addTableSelection($query, 's_core_payment_data', 'paymentdata');
 
         $query->where('paymentdata.user_id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 }

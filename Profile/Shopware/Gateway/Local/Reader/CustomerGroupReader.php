@@ -7,7 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -58,7 +59,7 @@ class CustomerGroupReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_customergroups')
             ->executeQuery()
@@ -80,7 +81,7 @@ class CustomerGroupReader extends AbstractReader
         $this->addTableSelection($query, 's_core_customergroups_attributes', 'customerGroup_attributes');
 
         $query->where('customerGroup.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->addOrderBy('customerGroup.id');
 
@@ -98,10 +99,12 @@ class CustomerGroupReader extends AbstractReader
         $this->addTableSelection($query, 's_core_customergroups_discounts', 'discount');
 
         $query->where('groupID IN (:ids)');
-        $query->setParameter('ids', $groupIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $groupIds, ArrayParameterType::STRING);
 
         $query->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 }

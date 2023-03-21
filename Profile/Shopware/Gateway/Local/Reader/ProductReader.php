@@ -7,7 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -62,13 +63,11 @@ class ProductReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles_details')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::PRODUCT, $total);
     }
@@ -142,11 +141,13 @@ class ProductReader extends AbstractReader
         $this->addTableSelection($query, 's_article_configurator_groups', 'configurator_option_group');
 
         $query->where('option_relation.article_id IN (:ids)');
-        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
         $fetchedConfiguratorOptions = $query->fetchAllAssociative();
+
+        $fetchedConfiguratorOptions = FetchModeHelper::group($fetchedConfiguratorOptions);
 
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
@@ -182,7 +183,7 @@ class ProductReader extends AbstractReader
         $this->addTableSelection($query, 's_articles_supplier_attributes', 'product_manufacturer_attributes');
 
         $query->where('product_detail.id IN (:ids)');
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
         $query->addOrderBy('product_detail.kind');
         $query->addOrderBy('product_detail.id');
@@ -207,12 +208,13 @@ class ProductReader extends AbstractReader
         $query->addSelect(['product_category.articleID', 'product_category.categoryID as id, category.path']);
 
         $query->where('product_category.articleID IN (:ids)');
-        $query->addGroupBy('product_category.articleID');
-        $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $productIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 
     private function getPrices(): array
@@ -233,12 +235,13 @@ class ProductReader extends AbstractReader
         $query->addSelect('currency.currency as currencyShortName');
 
         $query->where('price.articledetailsID IN (:ids)');
-        $query->addGroupBy('price.articledetailsID');
-        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
         $fetchedPrices = $query->fetchAllAssociative();
+
+        $fetchedPrices = FetchModeHelper::group($fetchedPrices);
 
         return $this->mapData($fetchedPrices, [], ['price', 'currencyShortName']);
     }
@@ -269,11 +272,15 @@ class ProductReader extends AbstractReader
         $this->addTableSelection($query, 's_media_attributes', 'asset_media_attributes');
 
         $query->where('asset.articleID IN (:ids) AND variantAsset.id IS NULL');
-        $query->setParameter('ids', $productIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $productIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
-        $fetchedAssets = $this->mapData($query->fetchAllAssociative(), [], ['asset']);
+        $fetchedAssets = $query->fetchAllAssociative();
+
+        $fetchedAssets = FetchModeHelper::group($fetchedAssets);
+
+        $fetchedAssets = $this->mapData($fetchedAssets, [], ['asset']);
         $fetchedVariantAssets = $this->mapData($this->fetchVariantAssets(), [], ['asset', 'img', 'description', 'main', 'position']);
 
         $assets = [];
@@ -322,12 +329,13 @@ class ProductReader extends AbstractReader
         $this->addTableSelection($query, 's_media_attributes', 'asset_media_attributes');
 
         $query->where('asset.article_detail_id IN (:ids)');
-        $query->addGroupBy('parentasset.articleID');
-        $query->setParameter('ids', $variantIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 
     private function fetchMainCategoryShops(): array

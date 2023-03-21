@@ -55,13 +55,11 @@ class SalesChannelReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_shops')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
     }
@@ -80,9 +78,7 @@ class SalesChannelReader extends AbstractReader
         $query->leftJoin('shop', 's_core_currencies', 'currency', 'shop.currency_id = currency.id');
         $query->addSelect('currency.currency');
 
-        $query->addGroupBy('config.column_name');
-
-        $query->orderBy('shop.id');
+        $query->orderBy('shop.main_id');
 
         $rows = $query->fetchAllAssociative();
 

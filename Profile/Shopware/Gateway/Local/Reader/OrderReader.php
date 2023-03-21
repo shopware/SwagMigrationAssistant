@@ -7,7 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
+use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -53,14 +54,12 @@ class OrderReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order')
             ->where('status != -1')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::ORDER, $total);
     }
@@ -164,11 +163,13 @@ class OrderReader extends AbstractReader
         $this->addTableSelection($query, 's_core_tax', 'tax');
 
         $query->where('detail.orderID IN (:ids)');
-        $query->setParameter('ids', $this->orderIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
         $fetchedOrderDetails = $query->fetchAllAssociative();
+
+        $fetchedOrderDetails = FetchModeHelper::group($fetchedOrderDetails);
 
         return $this->mapData($fetchedOrderDetails, [], ['detail']);
     }
@@ -188,11 +189,13 @@ class OrderReader extends AbstractReader
         $this->addTableSelection($query, 's_core_documents', 'documenttype');
 
         $query->where('document.orderID IN (:ids)');
-        $query->setParameter('ids', $this->orderIds, Connection::PARAM_INT_ARRAY);
+        $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
 
         $query->executeQuery();
 
         $fetchedOrderDocuments = $query->fetchAllAssociative();
+
+        $fetchedOrderDocuments = FetchModeHelper::group($fetchedOrderDocuments);
 
         return $this->mapData($fetchedOrderDocuments, [], ['document']);
     }

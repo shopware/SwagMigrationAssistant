@@ -39,15 +39,13 @@ class MainVariantRelationReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles')
             ->where('main_detail_id IS NOT NULL')
             ->andWhere('configurator_set_id IS NOT NULL')
             ->executeQuery()
             ->fetchOne();
-
-        $total ??= 0;
 
         return new TotalStruct(DefaultEntities::MAIN_VARIANT_RELATION, $total);
     }

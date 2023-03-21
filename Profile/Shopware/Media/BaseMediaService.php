@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -33,7 +34,7 @@ abstract class BaseMediaService
         $query->from('swag_migration_media_file');
         $query->where('HEX(run_id) = :runId');
         $query->andWhere('HEX(media_id) IN (:ids)');
-        $query->setParameter('ids', $mediaIds, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $mediaIds, ArrayParameterType::STRING);
         $query->setParameter('runId', $runId);
 
         $query->executeQuery();

@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Media;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\Utils;
 use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
 use Shopware\Core\Content\Media\Exception\EmptyMediaFilenameException;
 use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
@@ -94,7 +95,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
 
         // Wait for the requests to complete, even if some of them fail
         /** @var array $results */
-        $results = Promise\settle($promises)->wait();
+        $results = Utils::settle($promises)->wait();
 
         //handle responses
         $failureUuids = [];

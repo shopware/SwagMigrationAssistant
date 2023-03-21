@@ -303,7 +303,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->dummyDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchOne();
+        $customerTotalAfter = $this->dbConnection->executeQuery('select count(*) from customer')->fetchOne();
 
         static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
@@ -345,7 +345,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $salesChannelTotalAfter = $this->dbConnection->query('select count(*) from sales_channel')->fetchOne();
+        $salesChannelTotalAfter = $this->dbConnection->executeQuery('select count(*) from sales_channel')->fetchOne();
 
         $this->runService->finishMigration($this->runUuid, $context);
 
@@ -371,9 +371,9 @@ class MigrationDataWriterTest extends TestCase
         });
         $this->runService->finishMigration($this->runUuid, $context);
 
-        $beforeThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchOne();
+        $beforeThemeSalesChannel = $this->dbConnection->executeQuery('select count(*) from theme_sales_channel')->fetchOne();
         $this->runService->assignThemeToSalesChannel($this->runUuid, $context);
-        $afterThemeSalesChannel = $this->dbConnection->query('select count(*) from theme_sales_channel')->fetchOne();
+        $afterThemeSalesChannel = $this->dbConnection->executeQuery('select count(*) from theme_sales_channel')->fetchOne();
 
         static::assertSame(2, $afterThemeSalesChannel - $beforeThemeSalesChannel);
     }
@@ -398,7 +398,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->dbConnection->query('select count(*) from customer')->fetchOne();
+        $customerTotalAfter = $this->dbConnection->executeQuery('select count(*) from customer')->fetchOne();
 
         static::assertSame(3, $customerTotalAfter - $customerTotalBefore);
     }
@@ -472,7 +472,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $totalAfter = $this->dbConnection->query('select count(*) from media')->fetchOne();
+        $totalAfter = $this->dbConnection->executeQuery('select count(*) from media')->fetchOne();
 
         static::assertSame(23, $totalAfter - $totalBefore);
     }
@@ -497,7 +497,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $totalAfter = $this->dbConnection->query('select count(*) from category')->fetchOne();
+        $totalAfter = $this->dbConnection->executeQuery('select count(*) from category')->fetchOne();
 
         static::assertSame(9, $totalAfter - $totalBefore);
     }
@@ -524,7 +524,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $productTotalAfter = (int) $this->dbConnection->query('select count(*) from product')->fetchOne();
+        $productTotalAfter = (int) $this->dbConnection->executeQuery('select count(*) from product')->fetchOne();
 
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
     }

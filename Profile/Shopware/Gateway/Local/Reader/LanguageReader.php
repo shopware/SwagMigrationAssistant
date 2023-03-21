@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -68,8 +68,7 @@ class LanguageReader extends AbstractReader
             ->addSelect('locale.locale as groupId, locale.id, locale.locale, locale.language')
             ->from('s_core_locales', 'locale')
             ->where('locale.id IN (:localeIds)')
-            ->addGroupBy('locale.locale')
-            ->setParameter('localeIds', $fetchedShopLocaleIds, Connection::PARAM_STR_ARRAY)
+            ->setParameter('localeIds', $fetchedShopLocaleIds, ArrayParameterType::STRING)
             ->executeQuery();
 
         $rows = $query->fetchAllAssociative();
@@ -84,10 +83,11 @@ class LanguageReader extends AbstractReader
             ->from('s_core_snippets', 'snippet')
             ->leftJoin('snippet', 's_core_locales', 'locale', 'snippet.localeID = locale.id')
             ->where('snippet.namespace = "backend/locale/language" AND snippet.name IN (:locales)')
-            ->addGroupBy('snippet.name')
-            ->setParameter('locales', $locales, Connection::PARAM_STR_ARRAY)
+            ->setParameter('locales', $locales, ArrayParameterType::STRING)
             ->executeQuery();
 
-        return $query->fetchAllAssociative();
+        $result = $query->fetchAllAssociative();
+
+        return FetchModeHelper::group($result);
     }
 }

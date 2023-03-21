@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
-use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ArrayParameterType;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -42,7 +42,7 @@ class CustomerWishlistReader extends AbstractReader
     {
         $this->setConnection($migrationContext);
 
-        $total = $this->connection->createQueryBuilder()
+        $total = (int) $this->connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_notes', 'note')
             ->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id')
@@ -63,7 +63,7 @@ class CustomerWishlistReader extends AbstractReader
         $query->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id');
         $query->addSelect('subshopID');
 
-        $query->setParameter('ids', $ids, Connection::PARAM_STR_ARRAY);
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
         $query->addOrderBy('note.id');
 
         $query->executeQuery();
