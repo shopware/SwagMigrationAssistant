@@ -8,18 +8,18 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue;
 
 use Shopware\Core\Checkout\Customer\CustomerEntity;
+use Shopware\Core\Checkout\Customer\DataAbstractionLayer\CustomerIndexer;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 
-class OrderCountIndexer extends EntityIndexer
+class OrderCountIndexer extends CustomerIndexer
 {
     public function __construct(
         private readonly EntityRepository $customerRepository,
-        private readonly EntityIndexer $inner
+        private readonly CustomerIndexer $inner
     ) {
     }
 
@@ -80,7 +80,7 @@ class OrderCountIndexer extends EntityIndexer
         return $this->inner->getTotal();
     }
 
-    public function getDecorated(): EntityIndexer
+    public function getDecorated(): CustomerIndexer
     {
         return $this->inner;
     }
