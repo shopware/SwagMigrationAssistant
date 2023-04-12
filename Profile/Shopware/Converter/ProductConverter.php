@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductDownload\ProductDownloadDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -21,6 +22,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 
 abstract class ProductConverter extends ShopwareConverter
@@ -78,6 +80,14 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $mediaUuids = [];
         foreach ($converted as $data) {
+            if (isset($data['downloads'])) {
+                foreach ($data['downloads'] as $download) {
+                    if (isset($download['media']['id'])) {
+                        $mediaUuids[] = $download['media']['id'];
+                    }
+                }
+            }
+
             if (isset($data['media'])) {
                 foreach ($data['media'] as $media) {
                     if (!isset($media['media'])) {
@@ -368,6 +378,12 @@ abstract class ProductConverter extends ShopwareConverter
             }
 
             unset($data['assets'], $convertedMedia);
+        }
+
+        if (isset($data['esdFiles'])) {
+            $esdMedia = $this->getEsdFiles($data['esdFiles'], $data['detail']['id'], $converted);
+            $converted['downloads'] = $esdMedia;
+            unset($data['esdFiles']);
         }
 
         $converted['translations'] = [];
@@ -753,6 +769,96 @@ abstract class ProductConverter extends ShopwareConverter
             $localeTranslation['languageId'] = $languageUuid;
             $unit['translations'][$languageUuid] = $localeTranslation;
         }
+    }
+
+    private function getEsdFiles(array $esdFiles, string $oldVariantId, array $converted): array
+    {
+        $mediaObjects = [];
+        foreach ($esdFiles as $esdFile) {
+            $newProductMedia = [];
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::PRODUCT_DOWNLOAD,
+                $oldVariantId . '_' . $esdFile['id'],
+                $this->context
+            );
+            $newProductMedia['id'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
+            $newProductMedia['productId'] = $converted['id'];
+
+            $newMedia = [];
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::MEDIA,
+                'esd_' . $esdFile['id'],
+                $this->context
+            );
+
+            $newMedia['id'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
+            if (empty($esdFile['name'])) {
+                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
+                    $this->runId,
+                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    DefaultEntities::PRODUCT,
+                    $this->oldProductId
+                ));
+
+                continue;
+            }
+
+            try {
+                $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
+            } catch (\Throwable $error) {
+                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
+                    $this->runId,
+                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    DefaultEntities::PRODUCT,
+                    $this->oldProductId
+                ));
+
+                continue;
+            }
+
+            $this->mediaFileService->saveMediaFile(
+                [
+                    'runId' => $this->runId,
+                    'entity' => ProductDownloadDataSet::getEntity(),
+                    'uri' => $path . '/' . $esdFile['name'],
+                    'fileName' => $esdFile['name'],
+                    'fileSize' => 0,
+                    'mediaId' => $newMedia['id'],
+                ]
+            );
+
+            $esdFile['name'] = pathinfo($esdFile['name'], \PATHINFO_FILENAME);
+            $this->convertValue($newMedia, 'title', $esdFile, 'name');
+
+            $albumId = $this->mappingService->getDefaultFolderIdByEntity(
+                ProductDownloadDefinition::ENTITY_NAME,
+                $this->migrationContext,
+                $this->context
+            );
+            $this->mappingIds[] = $albumId;
+
+            if ($albumId === null) {
+                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
+                    $this->runId,
+                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    DefaultEntities::PRODUCT,
+                    $this->oldProductId
+                ));
+
+                continue;
+            }
+
+            $newMedia['private'] = true;
+            $newMedia['mediaFolderId'] = $albumId;
+            $newProductMedia['media'] = $newMedia;
+            $mediaObjects[] = $newProductMedia;
+        }
+
+        return $mediaObjects;
     }
 
     private function getMedia(array $media, string $oldVariantId, array $converted): array

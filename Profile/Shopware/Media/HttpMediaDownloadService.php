@@ -21,7 +21,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -71,17 +70,6 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
             $mediaIds[] = $work->getMediaId();
-        }
-
-        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $runId,
-                DefaultEntities::MEDIA,
-                new NoFileSystemPermissionsException()
-            ));
-            $this->loggingService->saveLogging($context);
-
-            return $workload;
         }
 
         //Fetch media from database

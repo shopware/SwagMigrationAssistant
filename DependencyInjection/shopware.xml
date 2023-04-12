@@ -74,6 +74,23 @@
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\LocalProductDownloadProcessor" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\Media\HttpProductDownloadProcessor" parent="SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService">
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
         <!-- Shopware Converter Base classes -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter"
                  parent="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
@@ -615,6 +632,10 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 

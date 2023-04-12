@@ -21,11 +21,11 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
+class LocalProductDownloadProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     public function __construct(
         private readonly EntityRepository $mediaFileRepo,
@@ -38,9 +38,13 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
+        if ($migrationContext->getDataSet() === null) {
+            return false;
+        }
+
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === OrderDocumentDataSet::getEntity();
+            && $migrationContext->getDataSet()::getEntity() === ProductDownloadDataSet::getEntity();
     }
 
     public function process(
@@ -90,14 +94,14 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         $processedMedia = [];
 
         foreach ($media as $mediaFile) {
-            $sourcePath = $installationRoot . '/files/documents/' . $mediaFile['file_name'] . '.pdf';
+            $sourcePath = $installationRoot . '/files/' . $mediaFile['uri'];
             $mediaId = $mediaFile['media_id'];
 
             if (!\file_exists($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                     $mappedWorkload[$mediaId]->getRunId(),
-                    DefaultEntities::ORDER_DOCUMENT,
+                    DefaultEntities::PRODUCT_DOWNLOAD,
                     $mediaId,
                     $sourcePath
                 ));
@@ -132,7 +136,12 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                 ],
             ]);
             $fileBlob = \file_get_contents($sourcePath, false, $streamContext);
-            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($media['file_name']));
+            $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $media['file_name']);
+            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? Uuid::randomHex();
+
+            if ($fileBlob === false || $mimeType === false) {
+                throw new \RuntimeException(\sprintf('Could read file %s.', $sourcePath));
+            }
 
             try {
                 $this->mediaService->saveFile(
@@ -141,7 +150,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                     $mimeType,
                     $name,
                     $context,
-                    'document',
+                    'product_download',
                     $media['media_id']
                 );
             } catch (DuplicatedMediaFileNameException $e) {
@@ -151,7 +160,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                     $mimeType,
                     $name . \mb_substr(Uuid::randomHex(), 0, 5),
                     $context,
-                    'document',
+                    'product_download',
                     $media['media_id']
                 );
             } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
@@ -161,7 +170,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                     $mimeType,
                     $media['media_id'],
                     $context,
-                    'document',
+                    'product_download',
                     $media['media_id']
                 );
             }

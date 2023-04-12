@@ -3,6 +3,9 @@
 - MIG-827 - Migration von Versandarten mit Zeitkonfiguration behoben
 - MIG-829 - Fortschrittsbalken, der in einem bestimmten Ansichtsfenster falsch angezeigt wird, ist behoben
 
+# 4.3.0
+- NEXT-22545 - Migration von digitalen Produkten hinzugefügt
+
 # 4.2.5
 - MIG-293 - Performance der Migration von Bestelldokumenten verbessert
 

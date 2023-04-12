@@ -1,7 +1,7 @@
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.scss';
 import { MIGRATION_DISPLAY_STATUS } from
-    '../../../../../core/service/migration/swag-migration-worker-status-manager.service';
+'../../../../../core/service/migration/swag-migration-worker-status-manager.service';
 
 const { Component, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();

@@ -78,6 +78,8 @@ abstract class OrderConverter extends ShopwareConverter
         'salutation',
     ];
 
+    protected int $paymentStatusId;
+
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -142,6 +144,10 @@ abstract class OrderConverter extends ShopwareConverter
         $converted['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
         $this->uuid = $converted['id'];
+
+        if (isset($data['cleared'])) {
+            $this->paymentStatusId = (int) $data['cleared'];
+        }
 
         $this->convertValue($converted, 'orderNumber', $data, 'ordernumber');
         $this->convertValue($converted, 'customerComment', $data, 'customercomment');
@@ -872,6 +878,14 @@ abstract class OrderConverter extends ShopwareConverter
                 }
             }
 
+            if (isset($originalLineItem['esd'])) {
+                $download = $this->getOrderLineItemDownload($originalLineItem['esd']);
+
+                if ($download !== null) {
+                    $lineItem['downloads'][] = $download;
+                }
+            }
+
             $lineItems[] = $lineItem;
         }
 
@@ -927,5 +941,52 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingIds[] = $salutationMapping['id'];
 
         return $salutationMapping['entityUuid'];
+    }
+
+    private function getOrderLineItemDownload(array $originalEsdItem): ?array
+    {
+        $mediaMapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::MEDIA,
+            'esd_' . $originalEsdItem['esdID'],
+            $this->context
+        );
+
+        if (!\is_array($mediaMapping)) {
+            $this->loggingService->addLogEntry(new UnknownEntityLog(
+                $this->runId,
+                'product_download_media',
+                $originalEsdItem['esdID'],
+                DefaultEntities::ORDER,
+                $this->oldId
+            ));
+
+            return null;
+        }
+        $this->mappingIds[] = $mediaMapping['id'];
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::ORDER_LINE_ITEM_DOWNLOAD,
+            $originalEsdItem['id'],
+            $this->context
+        );
+        $this->mappingIds[] = $mapping['id'];
+
+        $accessGranted = false;
+        if (isset($originalEsdItem['downloadAvailablePaymentStatus'])) {
+            $paymentStatusArray = \unserialize($originalEsdItem['downloadAvailablePaymentStatus'], ['allowed_classes' => false]);
+
+            if (\is_array($paymentStatusArray) && isset($this->paymentStatusId)) {
+                $accessGranted = \in_array($this->paymentStatusId, $paymentStatusArray, true);
+            }
+        }
+
+        return [
+            'id' => $mapping['entityUuid'],
+            'mediaId' => $mediaMapping['entityUuid'],
+            'accessGranted' => $accessGranted,
+            'position' => 0,
+        ];
     }
 }

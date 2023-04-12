@@ -121,6 +121,8 @@ final class DefaultEntities
 
     final public const ORDER_LINE_ITEM = 'order_line_item';
 
+    final public const ORDER_LINE_ITEM_DOWNLOAD = 'order_line_item_download';
+
     final public const ORDER_TRANSACTION = 'order_transaction';
 
     final public const ORDER_CUSTOM_FIELD = 'order_custom_field';
@@ -146,6 +148,8 @@ final class DefaultEntities
     final public const PRODUCT_MANUFACTURER_CUSTOM_FIELD = 'product_manufacturer_custom_field';
 
     final public const PRODUCT_MEDIA = 'product_media';
+
+    final public const PRODUCT_DOWNLOAD = 'product_download';
 
     final public const PRODUCT_PRICE = 'product_price';
 

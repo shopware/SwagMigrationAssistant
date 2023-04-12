@@ -58,6 +58,10 @@ class OrderReaderTest extends TestCase
         static::assertSame('1', $data[1]['subshopID']);
         static::assertSame('1', $data[1]['customer']['id']);
         static::assertSame('de-DE', $data[1]['_locale']);
+
+        static::assertArrayHasKey('esd', $data[0]['details']['0']);
+        static::assertArrayHasKey('downloadAvailablePaymentStatus', $data[0]['details']['0']['esd']);
+        static::assertSame('1', $data[0]['details']['0']['esd']['esdID']);
     }
 
     public function testReadWithoutCanceledOrders(): void

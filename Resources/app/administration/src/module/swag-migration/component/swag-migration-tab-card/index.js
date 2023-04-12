@@ -25,8 +25,8 @@ Component.register('swag-migration-tab-card', {
         },
         items: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
     },
 
     data() {

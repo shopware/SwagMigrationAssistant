@@ -16,7 +16,6 @@ use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -54,21 +53,8 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
         $mappedWorkload = [];
-        $runId = $migrationContext->getRunUuid();
-
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
-        }
-
-        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $runId,
-                DefaultEntities::MEDIA,
-                new NoFileSystemPermissionsException()
-            ));
-            $this->loggingService->saveLogging($context);
-
-            return $workload;
         }
 
         $media = $this->getMediaFiles(\array_keys($mappedWorkload), $migrationContext->getRunUuid());

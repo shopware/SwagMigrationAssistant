@@ -11,8 +11,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
+use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
@@ -60,6 +62,17 @@ class ProcessMediaHandler
 
         if ($migrationContext === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
+        }
+
+        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $message->getRunId(),
+                $message->getDataSet()::getEntity(),
+                new NoFileSystemPermissionsException()
+            ));
+            $this->loggingService->saveLogging($context);
+
+            return;
         }
 
         $workload = [];

@@ -41,6 +41,25 @@ class ProductReaderTest extends TestCase
         $this->migrationContext->setGateway(new DummyLocalGateway());
     }
 
+    public function testReadEsdProduct(): void
+    {
+        $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runId,
+            new ProductDataSet(),
+            224,
+            1
+        );
+        $this->migrationContext->setGateway(new DummyLocalGateway());
+
+        static::assertTrue($this->productReader->supports($this->migrationContext));
+
+        $data = $this->productReader->read($this->migrationContext);
+        static::assertArrayHasKey('esdFiles', $data[0]);
+        static::assertSame(['id', 'name', 'path'], array_keys($data[0]['esdFiles'][0]));
+    }
+
     public function testRead(): void
     {
         static::assertTrue($this->productReader->supports($this->migrationContext));

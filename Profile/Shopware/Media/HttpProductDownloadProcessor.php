@@ -28,13 +28,17 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
+class HttpProductDownloadProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
+    private const STATE_FULFILLED = 'fulfilled';
+
+    private const API_ENDPOINT = 'SwagMigrationEsdFiles/';
+
     public function __construct(
         private readonly EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
@@ -47,9 +51,13 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
+        if ($migrationContext->getDataSet() === null) {
+            return false;
+        }
+
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === OrderDocumentDataSet::getEntity();
+            && $migrationContext->getDataSet()::getEntity() === ProductDownloadDataSet::getEntity();
     }
 
     /**
@@ -62,107 +70,18 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
      */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
-        //Map workload with uuids as keys
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $runId = $migrationContext->getRunUuid();
 
+        //Map workload with uuids as keys
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
         }
 
-        //Fetch media from database
-        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $migrationContext->getRunUuid());
-
-        //Do download requests and store the promises
-        $client = $this->connectionFactory->createApiClient($migrationContext);
-
-        if ($client === null) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $runId,
-                DefaultEntities::ORDER_DOCUMENT,
-                new \Exception('Http client can not connect to server.')
-            ));
-            $this->loggingService->saveLogging($context);
-
-            return $workload;
-        }
-
-        $promises = $this->doMediaDownloadRequests($media, $mappedWorkload, $client);
-
-        // Wait for the requests to complete, even if some of them fail
-        /** @var array $results */
-        $results = Utils::settle($promises)->wait();
-
-        //handle responses
-        $failureUuids = [];
-        $finishedUuids = [];
-        foreach ($results as $uuid => $result) {
-            $state = $result['state'];
-            $additionalData = $mappedWorkload[$uuid]->getAdditionalData();
-
-            $oldWorkloadSearchResult = \array_filter(
-                $workload,
-                function (MediaProcessWorkloadStruct $work) use ($uuid) {
-                    return $work->getMediaId() === $uuid;
-                }
-            );
-
-            /** @var MediaProcessWorkloadStruct $oldWorkload */
-            $oldWorkload = \array_pop($oldWorkloadSearchResult);
-
-            if ($state !== 'fulfilled') {
-                $mappedWorkload[$uuid] = $oldWorkload;
-                $mappedWorkload[$uuid]->setAdditionalData($additionalData);
-                $mappedWorkload[$uuid]->setErrorCount($mappedWorkload[$uuid]->getErrorCount() + 1);
-
-                if ($mappedWorkload[$uuid]->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
-                    $failureUuids[] = $uuid;
-                    $mappedWorkload[$uuid]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addLogEntry(new CannotGetFileRunLog(
-                        $mappedWorkload[$uuid]->getRunId(),
-                        DefaultEntities::ORDER_DOCUMENT,
-                        $mappedWorkload[$uuid]->getMediaId(),
-                        $mappedWorkload[$uuid]->getAdditionalData()['uri']
-                    ));
-                }
-
-                continue;
-            }
-
-            $response = $result['value'];
-            $filePath = \sprintf('_temp/%s.%s', $uuid, 'pdf');
-
-            $streamContext = \stream_context_create([
-                'http' => [
-                    'follow_location' => 0,
-                    'max_redirects' => 0,
-                ],
-            ]);
-            $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
-
-            if (!\is_resource($fileHandle)) {
-                throw new \RuntimeException(\sprintf('Could not open file %s in mode %s.', $filePath, 'ab'));
-            }
-
-            \fwrite($fileHandle, $response->getBody()->getContents());
-            \fclose($fileHandle);
-
-            if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
-                //move media to media system
-                $filename = $this->getMediaName($media, $uuid);
-                $this->persistFileToMedia($filePath, $uuid, $filename, $context);
-                \unlink($filePath);
-                $finishedUuids[] = $uuid;
-            }
-
-            if ($oldWorkload->getErrorCount() === $mappedWorkload[$uuid]->getErrorCount()) {
-                $mappedWorkload[$uuid]->setErrorCount(0);
-            }
-        }
-
-        $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
-        $this->loggingService->saveLogging($context);
+        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $runId);
+        $results = $this->startDownloadProcess($migrationContext, $mappedWorkload, $media, $context);
+        $mappedWorkload = $this->processResults($results, $mappedWorkload, $workload, $media, $context, $runId);
 
         return \array_values($mappedWorkload);
     }
@@ -182,7 +101,12 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                 ],
             ]);
             $fileBlob = \file_get_contents($filePath, false, $streamContext);
-            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name));
+            $name = pathinfo($name, \PATHINFO_FILENAME);
+            $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? Uuid::randomHex();
+
+            if ($fileBlob === false || $mimeType === false) {
+                throw new \RuntimeException(\sprintf('Could read file %s.', $filePath));
+            }
 
             try {
                 $this->mediaService->saveFile(
@@ -191,7 +115,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                     $mimeType,
                     $name,
                     $context,
-                    'document',
+                    DefaultEntities::PRODUCT_DOWNLOAD,
                     $uuid
                 );
             } catch (DuplicatedMediaFileNameException $e) {
@@ -201,7 +125,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                     $mimeType,
                     $name . \mb_substr(Uuid::randomHex(), 0, 5),
                     $context,
-                    'document',
+                    DefaultEntities::PRODUCT_DOWNLOAD,
                     $uuid
                 );
             } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
@@ -211,7 +135,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                     $mimeType,
                     $uuid,
                     $context,
-                    'document',
+                    DefaultEntities::PRODUCT_DOWNLOAD,
                     $uuid
                 );
             }
@@ -223,7 +147,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
      *
      * @param MediaProcessWorkloadStruct[] $mappedWorkload
      */
-    private function doMediaDownloadRequests(array $media, array &$mappedWorkload, Client $client): array
+    private function createParallelDownloadMediaRequests(array $media, array &$mappedWorkload, Client $client): array
     {
         $promises = [];
         foreach ($media as $mediaFile) {
@@ -249,7 +173,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
 
         try {
             $promise = $client->getAsync(
-                'SwagMigrationOrderDocuments/' . $additionalData['uri']
+                self::API_ENDPOINT . base64_encode($additionalData['uri']),
             );
 
             $workload->setCurrentOffset((int) $additionalData['file_size']);
@@ -300,5 +224,110 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         }
 
         $this->mediaFileRepo->update($updateProcessedMediaFiles, $context);
+    }
+
+    private function startDownloadProcess(MigrationContextInterface $migrationContext, array $mappedWorkload, array $media, Context $context): ?array
+    {
+        $client = $this->connectionFactory->createApiClient($migrationContext);
+
+        if ($client === null) {
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $migrationContext->getRunUuid(),
+                DefaultEntities::PRODUCT_DOWNLOAD,
+                new \Exception('Http client can not connect to server.')
+            ));
+            $this->loggingService->saveLogging($context);
+
+            return [];
+        }
+
+        $promises = $this->createParallelDownloadMediaRequests($media, $mappedWorkload, $client);
+
+        return Utils::settle($promises)->wait();
+    }
+
+    private function processResults(
+        ?array $results,
+        array $mappedWorkload,
+        array $workload,
+        array $media,
+        Context $context,
+        string $runId
+    ): array {
+        if (!\is_array($results)) {
+            return [];
+        }
+
+        $failureUuids = [];
+        $finishedUuids = [];
+        foreach ($results as $uuid => $result) {
+            $state = $result['state'];
+            $additionalData = $mappedWorkload[$uuid]->getAdditionalData();
+
+            $oldWorkloadSearchResult = \array_filter(
+                $workload,
+                function (MediaProcessWorkloadStruct $work) use ($uuid) {
+                    return $work->getMediaId() === $uuid;
+                }
+            );
+
+            /** @var MediaProcessWorkloadStruct $oldWorkload */
+            $oldWorkload = \array_pop($oldWorkloadSearchResult);
+
+            if ($state !== self::STATE_FULFILLED) {
+                $mappedWorkload[$uuid] = $oldWorkload;
+                $mappedWorkload[$uuid]->setAdditionalData($additionalData);
+                $mappedWorkload[$uuid]->setErrorCount($mappedWorkload[$uuid]->getErrorCount() + 1);
+
+                if ($mappedWorkload[$uuid]->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
+                    $failureUuids[] = $uuid;
+                    $mappedWorkload[$uuid]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+                    $this->loggingService->addLogEntry(new CannotGetFileRunLog(
+                        $mappedWorkload[$uuid]->getRunId(),
+                        DefaultEntities::PRODUCT_DOWNLOAD,
+                        $mappedWorkload[$uuid]->getMediaId(),
+                        $mappedWorkload[$uuid]->getAdditionalData()['uri']
+                    ));
+                }
+
+                continue;
+            }
+
+            $response = $result['value'];
+            $fileExtension = $additionalData['file_extension'] ?? \pathinfo($additionalData['uri'], \PATHINFO_EXTENSION);
+            $filePath = \sprintf('_temp/%s.%s', $uuid, $fileExtension);
+
+            $streamContext = \stream_context_create([
+                'http' => [
+                    'follow_location' => 0,
+                    'max_redirects' => 0,
+                ],
+            ]);
+            $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
+
+            if (!\is_resource($fileHandle)) {
+                throw new \RuntimeException(\sprintf('Could not open file %s in mode %s.', $filePath, 'ab'));
+            }
+
+            \fwrite($fileHandle, $response->getBody()->getContents());
+            \fclose($fileHandle);
+
+            if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
+                //move media to media system
+                $filename = $this->getMediaName($media, $uuid);
+                $this->persistFileToMedia($filePath, $uuid, $filename, $context);
+                \unlink($filePath);
+                $finishedUuids[] = $uuid;
+            }
+
+            if ($oldWorkload->getErrorCount() === $mappedWorkload[$uuid]->getErrorCount()) {
+                $mappedWorkload[$uuid]->setErrorCount(0);
+            }
+        }
+
+        $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
+        $this->loggingService->saveLogging($context);
+
+        return $mappedWorkload;
     }
 }
