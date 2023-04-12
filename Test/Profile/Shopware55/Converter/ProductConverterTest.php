@@ -113,6 +113,35 @@ class ProductConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    public function testConvertWithEsd(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData[0], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
+        static::assertNotNull($converted['downloads']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        $keys = array_keys($converted['downloads'][0]);
+        static::assertSame(['id', 'productId', 'media'], $keys);
+        $keys = array_keys($converted['downloads'][0]['media']);
+        static::assertSame(['id', 'title', 'private', 'mediaFolderId'], $keys);
+        static::assertTrue($converted['downloads'][0]['media']['private']);
+
+        $downloadId = $this->mappingService->getMapping('', DefaultEntities::PRODUCT_DOWNLOAD, '6_5', $context);
+        static::assertNotNull($downloadId);
+        static::assertSame($downloadId['entityUuid'], $converted['downloads'][0]['id']);
+        $esdMediaId = $this->mappingService->getMapping('', DefaultEntities::MEDIA, 'esd_5', $context);
+        static::assertNotNull($esdMediaId);
+        static::assertSame($esdMediaId['entityUuid'], $converted['downloads'][0]['media']['id']);
+    }
+
     public function testConvertWithCategory(): void
     {
         $mediaFileService = new DummyMediaFileService();

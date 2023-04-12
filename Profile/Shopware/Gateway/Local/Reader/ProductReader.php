@@ -72,6 +72,21 @@ class ProductReader extends AbstractReader
         return new TotalStruct(DefaultEntities::PRODUCT, $total);
     }
 
+    public function getEsdConfig(): ?string
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->select('ifnull(currentConfig.value, defaultConfig.value) as configValue');
+        $query->from('s_core_config_elements', 'defaultConfig');
+
+        $query->leftJoin('defaultConfig', 's_core_config_values', 'currentConfig', 'defaultConfig.id =  currentConfig.element_id');
+
+        $query->where('defaultConfig.name = :configName');
+        $query->setParameter('configName', 'esdKey');
+
+        return (string) $query->executeQuery()->fetchOne();
+    }
+
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
@@ -81,6 +96,8 @@ class ProductReader extends AbstractReader
         $prices = $this->getPrices();
         $media = $this->getMedia();
         $options = $this->getConfiguratorOptions();
+        $esdPath = $this->getEsdConfig();
+        $esdFiles = $this->getEsdFiles();
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
@@ -108,10 +125,16 @@ class ProductReader extends AbstractReader
             if (isset($productVisibility[$product['id']])) {
                 $product['shops'] = \array_values($productVisibility[$product['id']]);
             }
+            if (isset($esdFiles[$product['detail']['id']])) {
+                $product['esdFiles'] = \array_values($esdFiles[$product['detail']['id']]);
+                foreach ($product['esdFiles'] as &$esdFile) {
+                    $esdFile['path'] = $esdPath;
+                }
+            }
         }
         unset(
             $product, $categories,
-            $prices, $media, $options
+            $prices, $media, $options, $esdFile
         );
 
         $this->productMapping->replace([]);
@@ -191,6 +214,20 @@ class ProductReader extends AbstractReader
         $query->executeQuery();
 
         return $query->fetchAllAssociative();
+    }
+
+    private function getEsdFiles(): array
+    {
+        $variantIds = $this->productMapping->keys();
+        $query = $this->connection->createQueryBuilder();
+
+        $query->addSelect('esd.articledetailsID, esd.id, esd.file as name');
+        $query->from('s_articles_esd', 'esd');
+
+        $query->where('esd.articledetailsID IN (:ids)');
+        $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
+
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     private function getCategories(): array

@@ -126,6 +126,7 @@ class OrderReader extends AbstractReader
 
     private function appendAssociatedData(array $orders): array
     {
+        $orderEsd = $this->getOrderEsd();
         $orderDetails = $this->getOrderDetails();
         $orderDocuments = $this->getOrderDocuments();
 
@@ -136,6 +137,10 @@ class OrderReader extends AbstractReader
             $order['_locale'] = \str_replace('_', '-', $locale);
             if (isset($orderDetails[$order['id']])) {
                 $order['details'] = $orderDetails[$order['id']];
+
+                if (isset($orderEsd[$order['id']])) {
+                    $this->setEsd($order, $orderEsd);
+                }
             }
             if (isset($orderDocuments[$order['id']])) {
                 $order['documents'] = $orderDocuments[$order['id']];
@@ -174,6 +179,52 @@ class OrderReader extends AbstractReader
         return $this->mapData($fetchedOrderDetails, [], ['detail']);
     }
 
+    private function getOrderEsd(): array
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->select('esd.orderID, esd.orderdetailsID');
+        $query->from('s_order_esd', 'esd');
+        $this->addTableSelection($query, 's_order_esd', 'esd');
+
+        $query->where('esd.orderID IN (:ids)');
+        $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
+
+        $query = $query->executeQuery();
+        $fetchedEsd = $query->fetchAllAssociative();
+
+        $result = [];
+        $esdArray = $this->mapData($fetchedEsd, [], ['esd']);
+        $esdConfig = $this->getEsdConfig();
+
+        foreach ($esdArray as $key => $esdOrder) {
+            foreach ($esdOrder as $esd) {
+                if (isset($esd['orderdetailsID']) && !isset($result[$key][$esd['orderdetailsID']])) {
+                    $esd['downloadAvailablePaymentStatus'] = $esdConfig;
+                    $result[$key][$esd['orderdetailsID']] = $esd;
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    private function getEsdConfig(): ?string
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->select('ifnull(currentConfig.value, defaultConfig.value) as configValue');
+        $query->from('s_core_config_elements', 'defaultConfig');
+
+        $query->leftJoin('defaultConfig', 's_core_config_values', 'currentConfig', 'defaultConfig.id =  currentConfig.element_id');
+
+        $query->where('defaultConfig.name = :esdConfigName');
+        $query->setParameter('esdConfigName', 'downloadAvailablePaymentStatus');
+
+
+        return $query->executeQuery()->fetchOne();
+    }
+
     private function getOrderDocuments(): array
     {
         $query = $this->connection->createQueryBuilder();
@@ -198,5 +249,24 @@ class OrderReader extends AbstractReader
         $fetchedOrderDocuments = FetchModeHelper::group($fetchedOrderDocuments);
 
         return $this->mapData($fetchedOrderDocuments, [], ['document']);
+    }
+
+    private function setEsd(array &$order, array $esdArray): void
+    {
+        if (!isset($order['id'])) {
+            return;
+        }
+
+        $orderId = $order['id'];
+        foreach ($order['details'] as &$detail) {
+            if (!isset($detail['id'])) {
+                continue;
+            }
+
+            $orderDetailId = $detail['id'];
+            if (isset($esdArray[$orderId][$orderDetailId])) {
+                $detail['esd'] = $esdArray[$orderId][$orderDetailId];
+            }
+        }
     }
 }

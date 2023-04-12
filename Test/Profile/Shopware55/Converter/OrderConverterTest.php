@@ -125,6 +125,8 @@ class OrderConverterTest extends TestCase
         $mappingService->getOrCreateMapping($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, null, [], Uuid::randomHex());
 
         $mappingService->getOrCreateMapping($connectionId, OrderDeliveryStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
+
+        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::MEDIA, 'esd_4', $context, null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -179,6 +181,20 @@ class OrderConverterTest extends TestCase
         $creditPriceDefinition = $converted['lineItems'][1]['priceDefinition'];
         static::assertInstanceOf(AbsolutePriceDefinition::class, $creditPriceDefinition);
         static::assertSame(-2.0, $creditPriceDefinition->getPrice());
+
+        static::assertTrue(isset($converted['lineItems'][0]['downloads'][0]['mediaId']));
+        static::assertFalse($converted['lineItems'][0]['downloads'][0]['accessGranted']);
+
+        // Change payment status to grant the access
+        $orderData[0]['cleared'] = '12';
+        $convertResult = $this->orderConverter->convert(
+            $orderData[0],
+            $context,
+            $this->migrationContext
+        );
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertTrue($converted['lineItems'][0]['downloads'][0]['accessGranted']);
     }
 
     public function testConvertWithoutCustomer(): void

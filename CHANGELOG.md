@@ -3,7 +3,10 @@
 - MIG-827 - Fix migration of shipping methods with time configuration
 - MIG-829 - Fixed the progress bar is displayed incorrectly at a specific viewport
 
-- # 4.2.5
+# 4.3.0
+- NEXT-22545 - Add migration of digital products
+
+# 4.2.5
 - MIG-293 - Improve performance of order documents migration
 
 # 4.2.4
