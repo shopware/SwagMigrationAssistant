@@ -81,7 +81,7 @@ abstract class AttributeReader extends AbstractReader
         $columns = $this->cleanupColumns($columns, $foreignKeys);
 
         $query = $this->connection->createQueryBuilder()
-            ->select('config.column_name, config.*')
+            ->select('config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
             ->setParameter('table', $table)
