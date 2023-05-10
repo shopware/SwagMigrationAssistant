@@ -2,6 +2,7 @@
 - MIG-847 - Kompatibilität für Shopware 6.5
 - MIG-827 - Migration von Versandarten mit Zeitkonfiguration behoben
 - MIG-829 - Fortschrittsbalken, der in einem bestimmten Ansichtsfenster falsch angezeigt wird, ist behoben
+- NTR - Migration von Custom Products
 
 # 4.3.0
 - NEXT-22545 - Migration von digitalen Produkten hinzugefügt
