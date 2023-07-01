@@ -60,6 +60,9 @@ class ConnectionFactory implements ConnectionFactoryInterface
             'host' => (string) ($credentials['dbHost'] ?? ''),
             'driver' => 'pdo_mysql',
             'charset' => 'utf8mb4',
+            'driverOptions' => [
+                \PDO::ATTR_STRINGIFY_FETCHES => true,
+            ],
         ];
 
         if (isset($credentials['dbPort'])) {
