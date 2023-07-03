@@ -1,11 +1,11 @@
+# 5.1.0
+- NEXT-22545 - Add migration of digital products
+
 # 5.0.0
 - MIG-847 - Shopware 6.5 compatibility
 - MIG-827 - Fix migration of shipping methods with time configuration
 - MIG-829 - Fixed the progress bar is displayed incorrectly at a specific viewport
 - NTR - Migration Custom Product processing
-
-# 4.3.0
-- NEXT-22545 - Add migration of digital products
 
 # 4.2.5
 - MIG-293 - Improve performance of order documents migration
