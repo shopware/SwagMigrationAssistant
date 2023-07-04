@@ -112,10 +112,9 @@ class SwagMigrationAccessTokenService
     {
         $runCriteria = new Criteria();
         $runCriteria->addFilter(new EqualsFilter('id', $runId));
-        /* @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search($runCriteria, $context)->first();
 
-        if ($run === null) {
+        if (!$run instanceof SwagMigrationRunEntity) {
             return null;
         }
 

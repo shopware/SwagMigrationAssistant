@@ -57,7 +57,7 @@ class ProductReaderTest extends TestCase
 
         $data = $this->productReader->read($this->migrationContext);
         static::assertArrayHasKey('esdFiles', $data[0]);
-        static::assertSame(['id', 'name', 'path'], array_keys($data[0]['esdFiles'][0]));
+        static::assertSame(['id', 'name', 'path'], \array_keys($data[0]['esdFiles'][0]));
     }
 
     public function testRead(): void

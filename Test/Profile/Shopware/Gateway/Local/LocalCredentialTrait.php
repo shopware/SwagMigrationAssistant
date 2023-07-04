@@ -25,7 +25,7 @@ trait LocalCredentialTrait
             static::markTestSkipped('Shopware 5 test database not available. Skipping test');
         }
 
-        $dbUrlParts = parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
+        $dbUrlParts = \parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
         $dbUrlParts['path'] ??= 'root';
 
         $this->runId = Uuid::randomHex();

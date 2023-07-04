@@ -42,7 +42,7 @@ class TransactionStateReaderTest extends TestCase
 
     private StateMachineStateEntity $stateClosed;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $smRepoMock = $this->createMock(EntityRepository::class);

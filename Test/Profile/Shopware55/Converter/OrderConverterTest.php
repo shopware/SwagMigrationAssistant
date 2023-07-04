@@ -41,8 +41,8 @@ use Symfony\Component\Validator\Validation;
 
 class OrderConverterTest extends TestCase
 {
-    use MigrationServicesTrait;
     use KernelTestBehaviour;
+    use MigrationServicesTrait;
 
     private Shopware55OrderConverter $orderConverter;
 

@@ -47,9 +47,9 @@ use Symfony\Component\HttpFoundation\Request;
 
 class MigrationProgressServiceTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
     use LocalCredentialTrait;
+    use MigrationServicesTrait;
 
     private EntityRepository $runRepo;
 
@@ -125,7 +125,11 @@ class MigrationProgressServiceTest extends TestCase
                 $context
             );
         });
-        $this->connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
+
+        static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
+
+        $this->connection = $connection;
 
         $this->runRepo->create(
             [

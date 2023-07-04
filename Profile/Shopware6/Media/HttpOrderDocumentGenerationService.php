@@ -89,7 +89,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
         $documents = $this->getMediaFiles($documentIds, $runId);
 
-        //Do download requests and store the promises
+        // Do download requests and store the promises
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         if ($client === null) {
@@ -109,7 +109,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         /** @var array $results */
         $results = Utils::settle($promises)->wait();
 
-        //handle responses
+        // handle responses
         $failureUuids = [];
         $finishedUuids = [];
         foreach ($results as $uuid => $result) {

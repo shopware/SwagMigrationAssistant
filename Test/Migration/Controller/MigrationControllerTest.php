@@ -49,8 +49,8 @@ use Symfony\Component\HttpFoundation\Response;
 
 class MigrationControllerTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use MigrationServicesTrait;
 
     private MigrationController $controller;
 

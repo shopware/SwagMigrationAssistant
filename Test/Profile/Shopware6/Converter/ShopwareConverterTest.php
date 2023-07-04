@@ -176,7 +176,7 @@ abstract class ShopwareConverterTest extends TestCase
     {
         $childClassName = static::class;
 
-        $message = "Child class: ${childClassName}";
+        $message = "Child class: {$childClassName}";
         if ($notes !== '') {
             $message .= \PHP_EOL . $notes;
         }

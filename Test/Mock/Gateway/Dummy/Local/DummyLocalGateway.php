@@ -56,7 +56,7 @@ class DummyLocalGateway implements GatewayInterface
                 return require __DIR__ . '/../../../../_fixtures/order_data.php';
             case SalesChannelDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/sales_channel_data.php';
-                //Invalid data
+                // Invalid data
             case InvalidCustomerDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/invalid/customer_data.php';
             default:

@@ -47,8 +47,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher
 
 class RunServiceTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use MigrationServicesTrait;
 
     private EntityRepository $runRepo;
 
@@ -102,10 +102,9 @@ class RunServiceTest extends TestCase
             $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
         $loggingService = new LoggingService($loggingRepo);
-        $mediaFileService = new DummyMediaFileService();
 
         $connectionId = Uuid::randomHex();
-        $context = $context = Context::createDefaultContext();
+        $context = Context::createDefaultContext();
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId): void {
             $this->connectionRepo->create(
                 [
@@ -123,7 +122,11 @@ class RunServiceTest extends TestCase
                 $context
             );
         });
-        $this->connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->first();
+
+        static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
+
+        $this->connection = $connection;
 
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([

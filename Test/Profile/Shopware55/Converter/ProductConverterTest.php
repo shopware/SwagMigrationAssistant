@@ -128,9 +128,9 @@ class ProductConverterTest extends TestCase
         static::assertNotNull($converted['downloads']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
 
-        $keys = array_keys($converted['downloads'][0]);
+        $keys = \array_keys($converted['downloads'][0]);
         static::assertSame(['id', 'productId', 'media'], $keys);
-        $keys = array_keys($converted['downloads'][0]['media']);
+        $keys = \array_keys($converted['downloads'][0]['media']);
         static::assertSame(['id', 'title', 'private', 'mediaFolderId'], $keys);
         static::assertTrue($converted['downloads'][0]['media']['private']);
 
