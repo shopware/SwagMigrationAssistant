@@ -40,7 +40,7 @@ class SalutationReaderTest extends TestCase
 
     private SalutationEntity $salutationOne;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
 

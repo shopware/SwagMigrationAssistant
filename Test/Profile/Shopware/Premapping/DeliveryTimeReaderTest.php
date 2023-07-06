@@ -37,7 +37,7 @@ class DeliveryTimeReaderTest extends TestCase
 
     private DeliveryTimeEntity $timeOne;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $connection = new SwagMigrationConnectionEntity();

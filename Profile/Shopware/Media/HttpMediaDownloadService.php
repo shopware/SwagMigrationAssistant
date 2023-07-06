@@ -61,7 +61,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
      */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
-        //Map workload with uuids as keys
+        // Map workload with uuids as keys
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $mediaIds = [];
@@ -72,10 +72,10 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             $mediaIds[] = $work->getMediaId();
         }
 
-        //Fetch media from database
+        // Fetch media from database
         $media = $this->getMediaFiles($mediaIds, $runId);
 
-        //Do download requests and store the promises
+        // Do download requests and store the promises
         $client = new Client([
             'verify' => false,
         ]);
@@ -85,7 +85,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         /** @var array $results */
         $results = Utils::settle($promises)->wait();
 
-        //handle responses
+        // handle responses
         $failureUuids = [];
         $finishedUuids = [];
         foreach ($results as $uuid => $result) {
@@ -141,7 +141,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             \fclose($fileHandle);
 
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
-                //move media to media system
+                // move media to media system
                 $filename = $this->getMediaName($media, $uuid);
 
                 try {
@@ -222,7 +222,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
                 $uuid,
                 $context
             );
-        } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+        } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
             $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
         }
     }

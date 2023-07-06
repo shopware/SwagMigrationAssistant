@@ -74,7 +74,7 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
         $mappedWorkload = [];
         $runId = $migrationContext->getRunUuid();
 
-        //Map workload with uuids as keys
+        // Map workload with uuids as keys
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
         }
@@ -101,7 +101,7 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
                 ],
             ]);
             $fileBlob = \file_get_contents($filePath, false, $streamContext);
-            $name = pathinfo($name, \PATHINFO_FILENAME);
+            $name = \pathinfo($name, \PATHINFO_FILENAME);
             $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? Uuid::randomHex();
 
             if ($fileBlob === false || $mimeType === false) {
@@ -128,7 +128,7 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
                     DefaultEntities::PRODUCT_DOWNLOAD,
                     $uuid
                 );
-            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+            } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
                 $this->mediaService->saveFile(
                     $fileBlob,
                     $fileExtension,
@@ -173,7 +173,7 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
 
         try {
             $promise = $client->getAsync(
-                self::API_ENDPOINT . base64_encode($additionalData['uri']),
+                self::API_ENDPOINT . \base64_encode($additionalData['uri']),
             );
 
             $workload->setCurrentOffset((int) $additionalData['file_size']);
@@ -313,7 +313,7 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
             \fclose($fileHandle);
 
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
-                //move media to media system
+                // move media to media system
                 $filename = $this->getMediaName($media, $uuid);
                 $this->persistFileToMedia($filePath, $uuid, $filename, $context);
                 \unlink($filePath);

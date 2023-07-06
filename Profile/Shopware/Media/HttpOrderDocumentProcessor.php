@@ -62,7 +62,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
      */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
     {
-        //Map workload with uuids as keys
+        // Map workload with uuids as keys
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $runId = $migrationContext->getRunUuid();
@@ -71,10 +71,10 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             $mappedWorkload[$work->getMediaId()] = $work;
         }
 
-        //Fetch media from database
+        // Fetch media from database
         $media = $this->getMediaFiles(\array_keys($mappedWorkload), $migrationContext->getRunUuid());
 
-        //Do download requests and store the promises
+        // Do download requests and store the promises
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         if ($client === null) {
@@ -94,7 +94,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         /** @var array $results */
         $results = Utils::settle($promises)->wait();
 
-        //handle responses
+        // handle responses
         $failureUuids = [];
         $finishedUuids = [];
         foreach ($results as $uuid => $result) {
@@ -149,7 +149,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
             \fclose($fileHandle);
 
             if ($mappedWorkload[$uuid]->getState() === MediaProcessWorkloadStruct::FINISH_STATE) {
-                //move media to media system
+                // move media to media system
                 $filename = $this->getMediaName($media, $uuid);
                 $this->persistFileToMedia($filePath, $uuid, $filename, $context);
                 \unlink($filePath);
@@ -204,7 +204,7 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                     'document',
                     $uuid
                 );
-            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+            } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
                 $this->mediaService->saveFile(
                     $fileBlob,
                     $fileExtension,

@@ -45,8 +45,8 @@ use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
  */
 class MigrationDataProcessingTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use MigrationServicesTrait;
 
     private MigrationDataFetcherInterface $migrationDataFetcher;
 
@@ -373,7 +373,11 @@ class MigrationDataProcessingTest extends TestCase
                 $context
             );
         });
-        $this->connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+
+        static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
+
+        $this->connection = $connection;
 
         $this->runRepo->create(
             [

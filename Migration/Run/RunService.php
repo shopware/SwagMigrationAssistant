@@ -60,7 +60,7 @@ class RunService implements RunServiceInterface
         private readonly EntityRepository $themeRepository,
         private readonly EntityIndexerRegistry $indexer,
         private readonly ThemeService $themeService,
-        private readonly  MappingServiceInterface $mappingService,
+        private readonly MappingServiceInterface $mappingService,
         private readonly TagAwareAdapterInterface $cache,
         private readonly EntityDefinition $migrationDataDefinition,
         private readonly Connection $dbalConnection,

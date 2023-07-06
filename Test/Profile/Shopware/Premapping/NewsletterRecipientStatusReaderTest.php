@@ -29,7 +29,7 @@ class NewsletterRecipientStatusReaderTest extends TestCase
 
     private Context $context;
 
-    public function setUp(): void
+    protected function setUp(): void
     {
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());

@@ -66,10 +66,9 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        /* @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
 
-        if ($run === null) {
+        if (!$run instanceof SwagMigrationRunEntity) {
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 
@@ -144,10 +143,9 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        /* @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
 
-        if ($run === null) {
+        if (!$run instanceof SwagMigrationRunEntity) {
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 
@@ -210,10 +208,9 @@ class MigrationController extends AbstractController
             ]);
         }
 
-        /* @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
 
-        if ($run === null) {
+        if (!$run instanceof SwagMigrationRunEntity) {
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $runUuid);
         }
 

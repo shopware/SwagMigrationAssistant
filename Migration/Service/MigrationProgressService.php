@@ -157,14 +157,13 @@ class MigrationProgressService implements MigrationProgressServiceInterface
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::DESCENDING));
         $criteria->setLimit(1);
-        $result = $this->migrationRunRepository->search($criteria, $this->context);
+        $run = $this->migrationRunRepository->search($criteria, $this->context)->first();
 
-        if ($result->getTotal() === 0) {
+        if (!$run instanceof SwagMigrationRunEntity) {
             return null;
         }
 
-        /* @var SwagMigrationRunEntity $run */
-        return $result->first();
+        return $run;
     }
 
     private function getMediaFileCounts(string $runId, bool $onlyProcessed = true): int

@@ -154,7 +154,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                     'document',
                     $media['media_id']
                 );
-            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+            } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
                 $this->mediaService->saveFile(
                     $fileBlob,
                     $fileExtension,

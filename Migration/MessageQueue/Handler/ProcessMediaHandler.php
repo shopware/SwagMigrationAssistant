@@ -46,10 +46,9 @@ class ProcessMediaHandler
     {
         $context = $message->readContext();
 
-        /* @var SwagMigrationRunEntity $run */
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunId()]), $context)->first();
 
-        if ($run === null) {
+        if (!$run instanceof SwagMigrationRunEntity) {
             throw new EntityNotExistsException(SwagMigrationRunEntity::class, $message->getRunId());
         }
 

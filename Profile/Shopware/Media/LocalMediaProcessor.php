@@ -192,7 +192,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 $mediaId,
                 $context
             );
-        } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+        } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
             $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
         }
     }

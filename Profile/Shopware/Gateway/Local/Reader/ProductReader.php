@@ -227,7 +227,14 @@ class ProductReader extends AbstractReader
         $query->where('esd.articledetailsID IN (:ids)');
         $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
-        return $query->executeQuery()->fetchAllAssociative();
+        $fetchedEsd = $query->executeQuery()->fetchAllAssociative();
+        $result = [];
+
+        foreach ($fetchedEsd as $esdFile) {
+            $result[$esdFile['articledetailsID']][] = $esdFile;
+        }
+
+        return $result;
     }
 
     private function getCategories(): array

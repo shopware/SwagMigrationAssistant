@@ -34,8 +34,8 @@ use Symfony\Component\HttpFoundation\Request;
 
 class PremappingControllerTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use MigrationServicesTrait;
 
     private EntityRepository $runRepo;
 

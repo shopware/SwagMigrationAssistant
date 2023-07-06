@@ -221,7 +221,6 @@ class OrderReader extends AbstractReader
         $query->where('defaultConfig.name = :esdConfigName');
         $query->setParameter('esdConfigName', 'downloadAvailablePaymentStatus');
 
-
         return $query->executeQuery()->fetchOne();
     }
 

@@ -68,8 +68,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher
 
 class MigrationDataWriterTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
+    use MigrationServicesTrait;
 
     private EntityRepository $productRepo;
 
@@ -553,7 +553,7 @@ class MigrationDataWriterTest extends TestCase
 
     private function invokeMethod(object $object, string $methodName, array $parameters = []): ?object
     {
-        $method = (new \ReflectionClass(\get_class($object)))->getMethod($methodName);
+        $method = (new \ReflectionClass($object::class))->getMethod($methodName);
         $method->setAccessible(true);
 
         return $method->invokeArgs($object, $parameters);
@@ -611,7 +611,11 @@ class MigrationDataWriterTest extends TestCase
                 $context
             );
         });
-        $this->connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->first();
+
+        static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
+
+        $this->connection = $connection;
 
         $this->runRepo->create(
             [

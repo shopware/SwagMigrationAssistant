@@ -13,6 +13,7 @@ use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
+use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -488,7 +489,7 @@ class MappingService implements MappingServiceInterface
 
         $language = $this->languageRepository->search($criteria, $context)->first();
 
-        if ($language === null) {
+        if (!$language instanceof LanguageEntity) {
             return null;
         }
 
@@ -814,7 +815,7 @@ class MappingService implements MappingServiceInterface
 
         $result = $this->ruleRepo->search($criteria, $context)->first();
 
-        if ($result !== null) {
+        if ($result instanceof RuleEntity) {
             $this->defaultAvailabilityRule = $result->getId();
         }
 

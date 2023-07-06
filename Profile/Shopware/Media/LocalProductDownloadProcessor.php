@@ -136,7 +136,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                 ],
             ]);
             $fileBlob = \file_get_contents($sourcePath, false, $streamContext);
-            $name = preg_replace('/\\.[^.\\s]{3,4}$/', '', $media['file_name']);
+            $name = \preg_replace('/\\.[^.\\s]{3,4}$/', '', $media['file_name']);
             $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? Uuid::randomHex();
 
             if ($fileBlob === false || $mimeType === false) {
@@ -163,7 +163,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                     'product_download',
                     $media['media_id']
                 );
-            } catch (IllegalFileNameException | EmptyMediaFilenameException $e) {
+            } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
                 $this->mediaService->saveFile(
                     $fileBlob,
                     $fileExtension,

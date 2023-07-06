@@ -71,9 +71,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class StatusControllerTest extends TestCase
 {
-    use MigrationServicesTrait;
     use IntegrationTestBehaviour;
     use LocalCredentialTrait;
+    use MigrationServicesTrait;
 
     private StatusController $controller;
 
@@ -597,7 +597,7 @@ class StatusControllerTest extends TestCase
         static::assertSame(Response::HTTP_OK, $response->getStatusCode());
 
         $jsonResponse = $this->jsonResponseToArray($response);
-        //this is not the actual expected response because of the DummyMigrationDataFetcher
+        // this is not the actual expected response because of the DummyMigrationDataFetcher
         static::assertSame('Shopware', $jsonResponse['sourceSystemName']);
         static::assertSame('', $jsonResponse['requestStatus']['code']);
         static::assertSame('No error.', $jsonResponse['requestStatus']['message']);
