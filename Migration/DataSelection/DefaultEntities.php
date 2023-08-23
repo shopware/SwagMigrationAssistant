@@ -51,9 +51,9 @@ final class DefaultEntities
 
     final public const CROSS_SELLING = 'product_cross_selling';
 
-    final public const CROSS_SELLING_ACCESSORY = 'cross_selling_accessory_item';
+    final public const CROSS_SELLING_ACCESSORY = 'product_cross_selling_accessory';
 
-    final public const CROSS_SELLING_SIMILAR = 'cross_selling_similar_item';
+    final public const CROSS_SELLING_SIMILAR = 'product_cross_selling_similar';
 
     final public const CUSTOMER_WISHLIST = 'customer_wishlist';
 
