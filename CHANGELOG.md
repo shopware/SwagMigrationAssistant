@@ -1,3 +1,6 @@
+# 5.1.1
+- MIG-870 - Migration of products does not work
+
 # 5.1.0
 - NEXT-22545 - Add migration of digital products
 
