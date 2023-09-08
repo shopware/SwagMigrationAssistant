@@ -62,6 +62,10 @@ class SwagMigrationAssistant extends Plugin
      */
     public function postInstall(InstallContext $installContext): void
     {
+        if ($this->container === null) {
+            return;
+        }
+
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $now = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
@@ -90,6 +94,10 @@ class SwagMigrationAssistant extends Plugin
         if ($context->keepUserData()) {
             parent::uninstall($context);
 
+            return;
+        }
+
+        if ($this->container === null) {
             return;
         }
 

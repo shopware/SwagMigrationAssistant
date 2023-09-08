@@ -61,6 +61,9 @@ class ProductProvider extends AbstractProvider
             'optionIds',
             'tagIds',
             'categoryIds',
+            'streamIds',
+            'states',
+            'categoriesRo',
 
             // media
             'mimeType',
