@@ -81,10 +81,19 @@
             "pluginLink": "More information about the plugin"
           },
           "shopware6Api": {
-            "contentTitle": "Integration required",
-            "contentInformation": "It is required to create an integration in the source system via Settings > System > Integrations.",
-            "pluginLink": "More information about integrations",
-            "link": "https://docs.shopware.com/en/shopware-6-en/settings/system/integrationen"
+            "contentTitle": "Requirements",
+            "plugin": {
+              "title": "Extension",
+              "description": "Install the Migration Assistant extension in the source system.",
+              "linkText": "More about the Migration Assistant extension",
+              "link": "https://store.shopware.com/en/swag257162657297f/migration-assistant.html"
+            },
+            "integration": {
+              "title": "Integration",
+              "description": "Create an integration in the source system via Settings > System > Integrations. You will need the generated access key ID and secret access key in the next step.",
+              "linkText": "More about integrations",
+              "link": "https://docs.shopware.com/en/shopware-6-en/settings/system/integrationen"
+            }
           }
         },
         "credentials": {

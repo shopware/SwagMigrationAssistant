@@ -81,10 +81,19 @@
             "pluginLink": "Mehr Informationen zum Plugin"
           },
           "shopware6Api": {
-            "contentTitle": "Integration benötigt",
-            "contentInformation": "Es ist erforderlich, eine Integration im Quellsystem unter Einstellungen > System > Integrationen anzulegen.",
-            "pluginLink": "Weitere Informationen über Integrationen",
-            "link": "https://docs.shopware.com/de/shopware-6-de/settings/system/integrationen"
+            "contentTitle": "Anforderungen",
+            "plugin": {
+              "title": "Erweiterung",
+              "description": "Installiere die Migrations-Assistent-Erweiterung im Quellsystem.",
+              "linkText": "Mehr zur Migrations-Assistent-Erweiterung",
+              "link": "https://store.shopware.com/swag257162657297f/migrations-assistent.html"
+            },
+            "integration": {
+              "title": "Integration",
+              "description": "Lege eine Integration im Quellsystem unter Einstellungen > System > Integrationen an. Im nächsten Schritt benötigst Du die dort erzeugte Zugangs-ID und den Sicherheitsschlüssel.",
+              "linkText": "Mehr zu Integrationen",
+              "link": "https://docs.shopware.com/de/shopware-6-de/settings/system/integrationen"
+            }
           }
         },
         "credentials": {
