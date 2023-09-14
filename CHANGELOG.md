@@ -1,3 +1,6 @@
+# 5.1.2
+- MIG-871 - Fix bug for order convert
+
 # 5.1.1
 - MIG-870 - Migration of products does not work
 

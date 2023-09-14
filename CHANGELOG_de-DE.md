@@ -1,3 +1,6 @@
+# 5.1.2
+- MIG-871 - Fehler im Reihenfolge-Konverter behoben
+
 # 5.1.1
 - MIG-870 - Die Produktmigration funktioniert nicht
 
