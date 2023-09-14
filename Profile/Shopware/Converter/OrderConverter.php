@@ -910,7 +910,7 @@ abstract class OrderConverter extends ShopwareConverter
         if (isset($originalData['net']) && (bool) $originalData['net']) {
             $taxStatus = CartPrice::TAX_STATE_NET;
         }
-        if (isset($originalData['isTaxFree']) && (bool) $originalData['isTaxFree']) {
+        if (isset($originalData['taxfree']) && (bool) $originalData['taxfree']) {
             $taxStatus = CartPrice::TAX_STATE_FREE;
         }
 
