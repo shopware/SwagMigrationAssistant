@@ -12,6 +12,7 @@ use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTaxCollection;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRuleCollection;
@@ -245,8 +246,8 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (isset($data['details'])) {
-            $taxRules = $this->getTaxRules($data);
             $taxStatus = $this->getTaxStatus($data);
+            $taxRules = $this->getTaxRules($data, $taxStatus);
 
             $converted['lineItems'] = $this->getLineItems($data['details'], $converted, $taxRules, $taxStatus, $context);
 
@@ -856,6 +857,12 @@ abstract class OrderConverter extends ShopwareConverter
                 $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $taxRules);
             }
 
+            if ($taxStatus === CartPrice::TAX_STATE_FREE) {
+                $calculatedTax = new CalculatedTaxCollection([
+                    new CalculatedTax(0, 0, 0)
+                ]);
+            }
+
             if ($calculatedTax !== null) {
                 $lineItem['price'] = new CalculatedPrice(
                     (float) $originalLineItem['price'],
@@ -892,8 +899,12 @@ abstract class OrderConverter extends ShopwareConverter
         return $lineItems;
     }
 
-    protected function getTaxRules(array $originalData): TaxRuleCollection
+    protected function getTaxRules(array $originalData, string $taxStatus): TaxRuleCollection
     {
+        if ($taxStatus === CartPrice::TAX_STATE_FREE) {
+            return new TaxRuleCollection([ new TaxRule(0.0) ]);
+        }
+
         $taxRates = \array_unique(\array_column($originalData['details'], 'tax_rate'));
 
         $taxRules = [];
