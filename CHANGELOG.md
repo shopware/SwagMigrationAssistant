@@ -1,5 +1,5 @@
 # 5.1.2
-- MIG-871 - Fix bug for order convert
+- MIG-871 - Fix bug for converting tax free orders
 
 # 5.1.1
 - MIG-870 - Migration of products does not work
