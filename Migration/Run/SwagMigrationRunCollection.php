@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\Log\Package;
 
 /**
  * @method void                        add(SwagMigrationRunEntity $entity)
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method SwagMigrationRunEntity|null first()
  * @method SwagMigrationRunEntity|null last()
  */
+#[Package('services-settings')]
 class SwagMigrationRunCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

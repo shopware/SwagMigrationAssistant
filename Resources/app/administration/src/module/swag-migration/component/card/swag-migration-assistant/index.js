@@ -3,6 +3,9 @@ import './swag-migration-assistant.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-assistant', {
     template,
 });

@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Service;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -19,6 +20,7 @@ use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[Package('services-settings')]
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
     final public const MESSAGE_SIZE = 5;

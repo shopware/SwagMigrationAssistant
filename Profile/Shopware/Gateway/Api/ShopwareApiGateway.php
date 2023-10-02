@@ -11,6 +11,7 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
@@ -24,6 +25,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class ShopwareApiGateway implements ShopwareGatewayInterface
 {
     final public const GATEWAY_NAME = 'api';

@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -17,6 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDa
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63NumberRangeConverter;
 
+#[Package('services-settings')]
 class NumberRangeConverterTest extends ShopwareConverterTest
 {
     use KernelTestBehaviour;

@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
@@ -21,6 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
     private ?AuthClient $client;

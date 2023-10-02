@@ -1,5 +1,8 @@
 const utils = Shopware.Utils;
 
+/**
+ * @package services-settings
+ */
 export default class StorageBroadcastService {
     constructor(receiveCallback = () => {}, channelKey) {
         this._clientId = utils.createId();

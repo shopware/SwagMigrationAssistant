@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Collection;
 
 /**
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\Struct\Collection;
  * @method DataSelectionStruct|null first()
  * @method DataSelectionStruct|null last()
  */
+#[Package('services-settings')]
 class DataSelectionCollection extends Collection
 {
     public function sortByPosition(): void

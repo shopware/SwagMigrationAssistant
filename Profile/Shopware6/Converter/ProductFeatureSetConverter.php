@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 abstract class ProductFeatureSetConverter extends ShopwareConverter
 {
     public function convertData(array $data): ConvertStruct

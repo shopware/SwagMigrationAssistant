@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 
+#[Package('services-settings')]
 class EnvironmentDummyReader extends EnvironmentReader
 {
     public function read(MigrationContextInterface $migrationContext, array $params = []): array

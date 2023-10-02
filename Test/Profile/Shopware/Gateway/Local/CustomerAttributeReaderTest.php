@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
@@ -16,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerAttribu
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
+#[Package('services-settings')]
 class CustomerAttributeReaderTest extends TestCase
 {
     use LocalCredentialTrait;

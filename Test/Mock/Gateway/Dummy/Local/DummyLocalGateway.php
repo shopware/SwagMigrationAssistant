@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
@@ -23,6 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDat
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
+#[Package('services-settings')]
 class DummyLocalGateway implements GatewayInterface
 {
     final public const GATEWAY_NAME = 'local';

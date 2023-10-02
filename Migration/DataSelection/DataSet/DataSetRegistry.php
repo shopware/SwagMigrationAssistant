@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class DataSetRegistry implements DataSetRegistryInterface
 {
     /**

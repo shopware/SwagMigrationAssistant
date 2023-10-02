@@ -7,12 +7,14 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 class TableReader implements TableReaderInterface
 {
     public function __construct(private readonly ConnectionFactory $connectionFactory)

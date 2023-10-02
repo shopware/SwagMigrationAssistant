@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class Shopware55Profile implements ShopwareProfileInterface
 {
     final public const PROFILE_NAME = 'shopware55';

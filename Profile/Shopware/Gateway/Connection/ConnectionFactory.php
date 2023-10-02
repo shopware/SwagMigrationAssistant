@@ -11,8 +11,10 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\ConnectionException;
 use GuzzleHttp\Client;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class ConnectionFactory implements ConnectionFactoryInterface
 {
     public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?Client

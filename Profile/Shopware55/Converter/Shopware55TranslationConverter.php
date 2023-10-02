@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware55\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
+#[Package('services-settings')]
 class Shopware55TranslationConverter extends TranslationConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -8,9 +8,11 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 abstract class ProductConverter extends ShopwareMediaConverter
 {
     private ?string $sourceDefaultCurrencyUuid;

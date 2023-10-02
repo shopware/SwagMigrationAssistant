@@ -4,6 +4,8 @@ const { debug } = Shopware.Utils;
 /**
  * Mixin for the navigation logic inside a wizard.
  * See swag-migration-wizard as an example.
+ *
+ * @package services-settings
  */
 Mixin.register('swag-wizard', {
     data() {

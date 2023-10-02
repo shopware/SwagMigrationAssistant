@@ -8,8 +8,10 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 
+#[Package('services-settings')]
 class BasicSettingsMappingService extends DummyMappingService
 {
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string

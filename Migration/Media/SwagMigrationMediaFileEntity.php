@@ -9,8 +9,10 @@ namespace SwagMigrationAssistant\Migration\Media;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
+#[Package('services-settings')]
 class SwagMigrationMediaFileEntity extends Entity
 {
     use EntityIdTrait;

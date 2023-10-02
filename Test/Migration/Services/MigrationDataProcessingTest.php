@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -43,6 +44,7 @@ use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 /**
  * Combines tests for data fetching and converting
  */
+#[Package('services-settings')]
 class MigrationDataProcessingTest extends TestCase
 {
     use IntegrationTestBehaviour;

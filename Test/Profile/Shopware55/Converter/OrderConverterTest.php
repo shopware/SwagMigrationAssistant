@@ -14,6 +14,7 @@ use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
@@ -39,6 +40,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validation;
 
+#[Package('services-settings')]
 class OrderConverterTest extends TestCase
 {
     use KernelTestBehaviour;

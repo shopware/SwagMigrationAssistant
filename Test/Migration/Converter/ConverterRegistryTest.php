@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
@@ -130,6 +131,7 @@ use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class ConverterRegistryTest extends TestCase
 {
     use KernelTestBehaviour;

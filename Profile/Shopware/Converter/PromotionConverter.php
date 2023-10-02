@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Promotion\Aggregate\PromotionDiscount\PromotionDiscou
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -20,6 +21,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class PromotionConverter extends ShopwareConverter
 {
     protected Context $context;

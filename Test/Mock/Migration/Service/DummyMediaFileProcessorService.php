@@ -8,9 +8,11 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 
+#[Package('services-settings')]
 class DummyMediaFileProcessorService extends MediaFileProcessorService
 {
     public function processMediaFiles(

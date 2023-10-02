@@ -8,8 +8,10 @@
 namespace SwagMigrationAssistant\Migration\Premapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface PremappingReaderInterface
 {
     public static function getMappingName(): string;

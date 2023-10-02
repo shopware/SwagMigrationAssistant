@@ -5,6 +5,7 @@
  * file that was distributed with this source code.
  */
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -14,6 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SnippetConverter;
 use SwagMigrationAssistant\Test\Profile\Shopware63\Converter\ShopwareConverterTest;
 
+#[Package('services-settings')]
 class SnippetConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface

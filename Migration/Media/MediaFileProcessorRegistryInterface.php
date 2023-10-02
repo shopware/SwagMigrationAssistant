@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration\Media;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface MediaFileProcessorRegistryInterface
 {
     /**

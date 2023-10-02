@@ -4,6 +4,9 @@ const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
 const API_KEY_INVALID_ERROR_CODE = 'SWAG_MIGRATION_INVALID_API_KEY';
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-profile-shopware-api-credential-form', {
     template,
 

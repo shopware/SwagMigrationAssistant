@@ -12,6 +12,7 @@ use GuzzleHttp\Promise\Utils;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -29,6 +30,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class HttpOrderDocumentGenerationService extends BaseMediaService implements MediaFileProcessorInterface
 {
     private SwagMigrationConnectionEntity $connection;

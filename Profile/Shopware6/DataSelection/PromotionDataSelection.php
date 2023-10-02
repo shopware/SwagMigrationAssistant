@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -14,6 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomerDataS
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PromotionDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class PromotionDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'promotions';

@@ -8,12 +8,14 @@
 namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class MigrationDataFetcher implements MigrationDataFetcherInterface
 {
     public function __construct(

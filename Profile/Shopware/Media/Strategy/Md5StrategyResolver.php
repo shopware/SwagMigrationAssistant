@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Media\Strategy;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class Md5StrategyResolver implements StrategyResolverInterface
 {
     private const BLACKLIST = [

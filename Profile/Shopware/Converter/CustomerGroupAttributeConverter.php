@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 abstract class CustomerGroupAttributeConverter extends AttributeConverter
 {
     protected function getCustomFieldEntityName(): string

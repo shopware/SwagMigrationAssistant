@@ -13,9 +13,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\DataProvider\Exception\ProviderHasNoTableAccessException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderInterface;
 
+#[Package('services-settings')]
 abstract class AbstractProvider implements ProviderInterface
 {
     protected const FORBIDDEN_EXACT_KEYS = ['createdAt', 'updatedAt', 'extensions', 'versionId', '_uniqueIdentifier', 'translated'];

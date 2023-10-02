@@ -9,8 +9,10 @@ namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class BaseMediaService
 {
     public function __construct(protected Connection $dbalConnection)

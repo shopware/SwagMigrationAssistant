@@ -10,9 +10,11 @@ namespace SwagMigrationAssistant\Migration\Writer;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Serializer\StructNormalizer;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 class OrderWriter extends AbstractWriter
 {
     public function __construct(

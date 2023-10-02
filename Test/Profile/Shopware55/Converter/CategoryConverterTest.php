@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -23,6 +24,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class CategoryConverterTest extends TestCase
 {
     private Shopware55CategoryConverter $categoryConverter;

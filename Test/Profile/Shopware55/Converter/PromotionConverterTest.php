@@ -14,6 +14,7 @@ use Shopware\Core\Checkout\Cart\Rule\LineItemRule;
 use Shopware\Core\Checkout\Customer\Rule\CustomerGroupRule;
 use Shopware\Core\Checkout\Promotion\Aggregate\PromotionDiscount\PromotionDiscountEntity;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -27,6 +28,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
+#[Package('services-settings')]
 class PromotionConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;

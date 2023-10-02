@@ -4,8 +4,14 @@ import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-s
 
 const { Application, State } = Shopware;
 
+/**
+ * @package services-settings
+ */
 export const MIGRATION_ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';
 
+/**
+ * @package services-settings
+ */
 export const WORKER_INTERRUPT_TYPE = Object.freeze({
     TAKEOVER: 'takeover',
     STOP: 'stop',
@@ -13,6 +19,9 @@ export const WORKER_INTERRUPT_TYPE = Object.freeze({
     CONNECTION_LOST: 'connectionLost',
 });
 
+/**
+ * @package services-settings
+ */
 class MigrationWorkerService {
     /**
      * @param {MigrationApiService} migrationService

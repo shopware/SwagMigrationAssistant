@@ -8,11 +8,13 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
+#[Package('services-settings')]
 class CleanupMigrationHandler
 {
     public function __construct(

@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration\Service;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\Migration\Run\RunProgress;
 
+#[Package('services-settings')]
 class ProgressState extends Struct
 {
     final public const STATUS_WAITING = -1;

@@ -7,12 +7,14 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService as BaseHttpMediaDownloadService;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class HttpMediaDownloadService extends BaseHttpMediaDownloadService
 {
     public function supports(MigrationContextInterface $migrationContext): bool

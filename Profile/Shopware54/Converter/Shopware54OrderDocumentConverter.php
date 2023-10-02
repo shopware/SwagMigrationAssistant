@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware54\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 
+#[Package('services-settings')]
 class Shopware54OrderDocumentConverter extends OrderDocumentConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

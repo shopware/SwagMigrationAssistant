@@ -6,6 +6,9 @@ import { MIGRATION_DISPLAY_STATUS } from
 const { Component, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-loading-screen', {
     template,
 

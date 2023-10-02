@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
@@ -18,6 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 class TableCountReader implements TableCountReaderInterface
 {
     public function __construct(

@@ -9,7 +9,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 interface AuthClientInterface
 {
     public function getRequest(string $endpoint, array $config): ResponseInterface;

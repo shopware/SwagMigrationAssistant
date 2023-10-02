@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Premapping;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class AbstractPremappingReader implements PremappingReaderInterface
 {
     protected array $connectionPremappingDictionary = [];

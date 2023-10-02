@@ -3,6 +3,7 @@ const { State } = Shopware;
 /**
  * Describes the current step in the migration (status).
  *
+ * @package services-settings
  * @type {Readonly<{
  *                  WAITING: number,
  *                  PREMAPPING:number,
@@ -10,7 +11,7 @@ const { State } = Shopware;
  *                  WRITE_DATA: number,
  *                  PROCESS_MEDIA_FILES: number,
  *                  FINISHED: number
-*                  }>}
+ *                 }>}
  */
 export const MIGRATION_STATUS = Object.freeze({
     WAITING: -1,

@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 class ApiDummyReader
 {
     public function supports(): string

@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Setting;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\Log\Package;
 
 /**
  * @method void                      add(GeneralSettingEntity $entity)
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method GeneralSettingEntity|null first()
  * @method GeneralSettingEntity|null last()
  */
+#[Package('services-settings')]
 class GeneralSettingCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

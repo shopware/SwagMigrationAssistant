@@ -9,9 +9,11 @@ namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface MappingServiceInterface
 {
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array;

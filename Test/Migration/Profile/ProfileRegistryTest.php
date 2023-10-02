@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Profile;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\ProfileNotFoundException;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class ProfileRegistryTest extends TestCase
 {
     private ProfileRegistryInterface $profileRegistry;

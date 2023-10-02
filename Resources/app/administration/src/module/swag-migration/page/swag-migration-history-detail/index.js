@@ -4,6 +4,9 @@ import './swag-migration-history-detail.scss';
 const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-history-detail', {
     template,
 

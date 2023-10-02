@@ -3,6 +3,9 @@ import './swag-migration-progress-bar.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-progress-bar', {
     template,
 

@@ -4,6 +4,9 @@ import './swag-migration-data-selector.scss';
 const { Component, State } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-data-selector', {
     template,
 

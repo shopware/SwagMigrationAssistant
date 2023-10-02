@@ -4,7 +4,7 @@ import './swag-migration-tab-card.scss';
 const { Component } = Shopware;
 
 /**
- * Example:
+ * @example
  * <swag-migration-tab-card>
  *  <swag-migration-tab-card-item title="Item 1">
  *      My item content 1
@@ -13,6 +13,8 @@ const { Component } = Shopware;
  *      My item content 2
  *  </swag-migration-tab-card-item>
  * </swag-migration-tab-card>
+ *
+ * @package services-settings
  */
 Component.register('swag-migration-tab-card', {
     template,

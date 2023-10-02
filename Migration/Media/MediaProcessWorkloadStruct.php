@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Media;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
+#[Package('services-settings')]
 class MediaProcessWorkloadStruct extends Struct
 {
     final public const IN_PROGRESS_STATE = 'inProgress';

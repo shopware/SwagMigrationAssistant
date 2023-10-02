@@ -9,8 +9,10 @@ namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 
+#[Package('services-settings')]
 class SwagMigrationMappingEntity extends Entity
 {
     use EntityIdTrait;

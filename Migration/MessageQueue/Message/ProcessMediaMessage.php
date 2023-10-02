@@ -8,8 +8,10 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
+#[Package('services-settings')]
 class ProcessMediaMessage
 {
     /**

@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class DataSet
 {
     abstract public static function getEntity(): string;

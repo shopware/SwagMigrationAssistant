@@ -8,7 +8,9 @@
 namespace SwagMigrationAssistant\DataProvider\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 interface EnvironmentServiceInterface
 {
     public function getEnvironmentData(Context $context): array;

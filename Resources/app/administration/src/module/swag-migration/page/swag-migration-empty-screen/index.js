@@ -3,6 +3,9 @@ import './swag-migration-empty-screen.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-empty-screen', {
     template,
 

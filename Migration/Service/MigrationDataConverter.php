@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -22,6 +23,7 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class MigrationDataConverter implements MigrationDataConverterInterface
 {
     public function __construct(

@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedMailTemplateType;
 
+#[Package('services-settings')]
 abstract class MailTemplateConverter extends ShopwareMediaConverter
 {
     public function getMediaUuids(array $converted): ?array

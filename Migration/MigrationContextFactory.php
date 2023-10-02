@@ -7,12 +7,14 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
+#[Package('services-settings')]
 class MigrationContextFactory implements MigrationContextFactoryInterface
 {
     public function __construct(

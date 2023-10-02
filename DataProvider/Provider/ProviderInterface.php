@@ -8,7 +8,9 @@
 namespace SwagMigrationAssistant\DataProvider\Provider;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 interface ProviderInterface
 {
     public function getIdentifier(): string;

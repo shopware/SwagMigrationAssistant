@@ -4,6 +4,9 @@ import './swag-migration-wizard-page-connection-create.scss';
 const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-wizard-page-connection-create', {
     template,
 

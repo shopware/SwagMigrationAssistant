@@ -3,6 +3,9 @@ import template from './swag-migration-index.html.twig';
 const { Component } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-index', {
     template,
 

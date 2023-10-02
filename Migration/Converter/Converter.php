@@ -8,10 +8,12 @@
 namespace SwagMigrationAssistant\Migration\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class Converter implements ConverterInterface
 {
     protected MappingServiceInterface $mappingService;

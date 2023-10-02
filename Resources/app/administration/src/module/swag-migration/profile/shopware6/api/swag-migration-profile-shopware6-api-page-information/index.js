@@ -3,6 +3,9 @@ import './swag-migration-profile-shopware6-api-page-information.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-profile-shopware6-api-page-information', {
     template,
 });

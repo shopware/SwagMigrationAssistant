@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 
+#[Package('services-settings')]
 class ExceptionRunLog extends BaseRunLogEntry
 {
     public function __construct(

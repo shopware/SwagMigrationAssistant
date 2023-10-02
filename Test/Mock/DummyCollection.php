@@ -7,6 +7,9 @@
 
 namespace SwagMigrationAssistant\Test\Mock;
 
+use Shopware\Core\Framework\Log\Package;
+
+#[Package('services-settings')]
 class DummyCollection implements \IteratorAggregate
 {
     public function __construct(private readonly array $data)

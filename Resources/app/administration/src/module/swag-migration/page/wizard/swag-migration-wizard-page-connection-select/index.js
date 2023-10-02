@@ -3,6 +3,9 @@ import template from './swag-migration-wizard-page-connection-select.html.twig';
 const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-wizard-page-connection-select', {
     template,
 

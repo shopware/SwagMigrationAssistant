@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Media;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\Log\Package;
 
 /**
  * @method void                              add(SwagMigrationMediaFileEntity $entity)
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method SwagMigrationMediaFileEntity|null first()
  * @method SwagMigrationMediaFileEntity|null last()
  */
+#[Package('services-settings')]
 class SwagMigrationMediaFileCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

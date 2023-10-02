@@ -11,6 +11,7 @@ use Doctrine\DBAL\Exception\ConnectionException;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Exception\ReaderNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -28,6 +29,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
+#[Package('services-settings')]
 class LocalGatewayTest extends TestCase
 {
     use KernelTestBehaviour;

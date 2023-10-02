@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
@@ -28,6 +29,7 @@ use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
+#[Package('services-settings')]
 class HistoryService implements HistoryServiceInterface
 {
     private const LOG_FETCH_LIMIT = 50;

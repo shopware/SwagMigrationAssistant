@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface ConnectionFactoryInterface
 {
     public function createApiClient(MigrationContextInterface $migrationContext): ?AuthClient;

@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use Shopware\Core\System\Language\LanguageEntity;
@@ -55,6 +56,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 use Symfony\Component\Validator\Validation;
 
+#[Package('services-settings')]
 trait MigrationServicesTrait
 {
     protected function getMigrationDataFetcher(

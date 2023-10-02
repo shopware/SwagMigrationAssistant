@@ -8,8 +8,10 @@
 namespace SwagMigrationAssistant\Core\Migration;
 
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
+#[Package('services-settings')]
 class Migration1544535797GeneralSetting extends MigrationStep
 {
     public function getCreationTimestamp(): int

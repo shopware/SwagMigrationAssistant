@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class MediaFolderInheritanceDataSet extends DataSet
 {
     public static function getEntity(): string

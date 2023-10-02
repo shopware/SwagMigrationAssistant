@@ -1,5 +1,8 @@
 const ApiService = Shopware.Classes.ApiService;
 
+/**
+ * @package services-settings
+ */
 class MigrationApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);

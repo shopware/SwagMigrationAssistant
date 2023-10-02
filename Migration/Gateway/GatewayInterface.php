@@ -8,9 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Gateway;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface GatewayInterface
 {
     public function getName(): string;

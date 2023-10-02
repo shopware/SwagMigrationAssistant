@@ -3,6 +3,9 @@ import './swag-migration-result-screen.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-result-screen', {
     template,
 

@@ -10,10 +10,12 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 
+#[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
     protected Connection $connection;

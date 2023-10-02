@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class ProductAttributeReader extends AttributeReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool

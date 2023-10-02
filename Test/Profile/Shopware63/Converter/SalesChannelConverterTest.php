@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -16,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelD
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63SalesChannelConverter;
 
+#[Package('services-settings')]
 class SalesChannelConverterTest extends ShopwareConverterTest
 {
     /**

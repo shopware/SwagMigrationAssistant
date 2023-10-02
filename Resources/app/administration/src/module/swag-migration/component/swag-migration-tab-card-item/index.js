@@ -2,6 +2,9 @@ import template from './swag-migration-tab-card-item.html.twig';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-tab-card-item', {
     template,
 

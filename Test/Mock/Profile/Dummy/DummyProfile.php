@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Profile\Dummy;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
+#[Package('services-settings')]
 class DummyProfile implements ProfileInterface
 {
     final public const PROFILE_NAME = 'dummy';

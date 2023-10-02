@@ -8,9 +8,11 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface Shopware6MappingServiceInterface extends MappingServiceInterface
 {
     public function getMailTemplateTypeUuid(string $type, string $oldIdentifier, MigrationContextInterface $migrationContext, Context $context): ?string;

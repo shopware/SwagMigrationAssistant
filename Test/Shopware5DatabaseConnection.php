@@ -7,6 +7,9 @@
 
 namespace SwagMigrationAssistant\Test;
 
+use Shopware\Core\Framework\Log\Package;
+
+#[Package('services-settings')]
 final class Shopware5DatabaseConnection
 {
     final public const DB_NAME = 'sw55';

@@ -2,6 +2,9 @@ import template from './swag-migration-profile-shopware-api-page-information.htm
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-profile-shopware-api-page-information', {
     template,
 });

@@ -19,8 +19,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 
+#[Package('services-settings')]
 class SwagMigrationLoggingDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'swag_migration_logging';

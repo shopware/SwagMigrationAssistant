@@ -3,6 +3,9 @@ import './swag-migration-shop-avatar.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-shop-avatar', {
     template,
 

@@ -7,6 +7,9 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
+use Shopware\Core\Framework\Log\Package;
+
+#[Package('services-settings')]
 class CleanupMigrationMessage
 {
     public function __construct(private readonly ?string $tableName = null)

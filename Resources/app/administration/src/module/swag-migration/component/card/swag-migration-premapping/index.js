@@ -5,6 +5,9 @@ import './swag-migration-premapping.scss';
 const { Component, State } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-premapping', {
     template,
 

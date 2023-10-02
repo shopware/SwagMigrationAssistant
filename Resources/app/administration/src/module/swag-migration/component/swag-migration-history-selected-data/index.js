@@ -2,6 +2,9 @@ import template from './swag-migration-history-selected-data.html.twig';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-history-selected-data', {
     template,
 

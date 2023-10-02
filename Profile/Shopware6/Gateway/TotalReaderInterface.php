@@ -8,9 +8,11 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 
+#[Package('services-settings')]
 interface TotalReaderInterface
 {
     /**

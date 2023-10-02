@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class MainVariantRelationReader extends ApiReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -11,6 +11,9 @@ const { Module, State } = Shopware;
 State.registerModule('swagMigration/process', MigrationProcessStore);
 State.registerModule('swagMigration/ui', MigrationUIStore);
 
+/**
+ * @package services-settings
+ */
 Module.register('swag-migration', {
     type: 'plugin',
     name: 'swag-migration',

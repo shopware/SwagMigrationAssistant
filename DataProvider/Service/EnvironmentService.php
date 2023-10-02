@@ -11,9 +11,11 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 
+#[Package('services-settings')]
 class EnvironmentService implements EnvironmentServiceInterface
 {
     public function __construct(
