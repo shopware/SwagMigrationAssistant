@@ -133,6 +133,7 @@ class MappingService implements MappingServiceInterface
                 'entityUuid' => $element->getEntityUuid(),
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
+                'entityValue' => $element->getEntityValue(),
             ];
             $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
 
