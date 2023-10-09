@@ -336,7 +336,7 @@ class MappingService implements MappingServiceInterface
         }
 
         foreach ($this->mappings as $hash => $mapping) {
-            if ($mapping['entityUuid'] === $entityUuid) {
+            if (isset($mapping['entityUuid']) && $mapping['entityUuid'] === $entityUuid) {
                 unset($this->mappings[$hash]);
             }
         }
