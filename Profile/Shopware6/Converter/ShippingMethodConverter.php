@@ -7,13 +7,41 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
-abstract class ShippingMethodConverter extends ShopwareMediaConverter
+class ShippingMethodConverter extends ShopwareMediaConverter
 {
+    /**
+     * @param EntityRepository<ShippingMethodCollection> $shippingMethodRepository
+     */
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        protected EntityRepository $shippingMethodRepository,
+    ) {
+        parent::__construct($mappingService, $loggingService, $mediaFileService);
+    }
+
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
+            && $this->getDataSetEntity($migrationContext) === ShippingMethodDataSet::getEntity();
+    }
+
     public function getMediaUuids(array $converted): ?array
     {
         $mediaIds = [];
@@ -67,6 +95,32 @@ abstract class ShippingMethodConverter extends ShopwareMediaConverter
             $this->updateMediaAssociation($converted['media']);
         }
 
+        if (isset($converted['technicalName'])) {
+            $this->updateTechnicalNameIfNecessary($converted);
+        }
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
+    }
+
+    private function updateTechnicalNameIfNecessary(array &$converted): void
+    {
+        if (!$this->hasTechnicalNameColumn()) {
+            return;
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('technicalName', $converted['technicalName']));
+        $existingCount = $this->shippingMethodRepository->searchIds($criteria, $this->context)->getTotal();
+
+        if ($existingCount === 0) {
+            return;
+        }
+
+        $converted['technicalName'] = $converted['technicalName'] . '_migrated';
+    }
+
+    private function hasTechnicalNameColumn(): bool
+    {
+        return $this->shippingMethodRepository->getDefinition()->getField('technicalName') !== null;
     }
 }

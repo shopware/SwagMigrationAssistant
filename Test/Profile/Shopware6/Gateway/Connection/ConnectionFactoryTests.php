@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 class ConnectionFactoryTests extends TestCase
 {
@@ -29,7 +29,7 @@ class ConnectionFactoryTests extends TestCase
         }
 
         $migrationContext = new MigrationContext(
-            new Shopware63Profile(),
+            new Shopware6MajorProfile('6.5.6.1'),
             $connection,
         );
 

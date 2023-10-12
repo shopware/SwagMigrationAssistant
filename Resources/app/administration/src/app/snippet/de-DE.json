@@ -183,6 +183,7 @@
       "backButton": "Zur Übersicht",
       "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
+      "shopwareMajorVersionText": "Wir haben festgestellt, dass die Version deines Quellsystems {sourceSystem} nicht der Version des Zielsystems {targetSystem} entspricht. Bitte stelle sicher, dass beide Systeme in der gleichen Major-Version vorliegen, bevor Du mit der Migration startest.",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Verbindung bearbeiten",
@@ -298,6 +299,7 @@
           "language": "Sprachen:",
           "category_association": "Kategorie-Verbindungen:",
           "category_cms_page_association": "Kategorie-Layout-Verbindungen:",
+          "category_product_stream_association": "Kategorie-Dynamische-Produktgruppe-Verbindungen:",
           "tax": "Steuersätze:",
           "tax_rule": "Steuerregeln:",
           "property_group": "Produkteigenschaften-Gruppen:",

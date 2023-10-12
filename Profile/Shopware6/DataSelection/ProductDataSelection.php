@@ -11,10 +11,10 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryProductStreamAssociationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CrossSellingDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductFeatureSetDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductMainVariantRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductManufacturerDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamFilterInheritanceDataSet;
@@ -54,9 +54,9 @@ class ProductDataSelection implements DataSelectionInterface
             new ProductFeatureSetDataSet(),
             new ProductManufacturerDataSet(),
             new ProductDataSet(),
-            new ProductMainVariantRelationDataSet(),
             new ProductStreamDataSet(),
             new ProductStreamFilterInheritanceDataSet(),
+            new CategoryProductStreamAssociationDataSet(),
             new CrossSellingDataSet(),
         ];
     }

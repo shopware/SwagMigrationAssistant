@@ -18,6 +18,7 @@
             <argument type="service" id="language.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\TotalReader"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\TableReader"/>
+            <argument>%kernel.shopware_version%</argument>
             <tag name="shopware.migration.gateway"/>
         </service>
 
@@ -38,162 +39,266 @@
             <argument type="service" id="tax_rule_type.repository"/>
         </service>
 
-        <!-- Shopware Converter Base classes -->
+        <!-- Shopware 6 major profile -->
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile">
+            <argument>%kernel.shopware_version%</argument>
+            <tag name="shopware.migration.profile"/>
+        </service>
+
+        <!-- Shopware Converter classes -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryProductStreamAssociationConverter"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderInheritanceConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelDomainConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <argument type="service" id="shipping_method.repository"/>
+
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
             <argument type="service" id="number_range_state.repository" />
+
+            <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetSetConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductMainVariantRelationConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\NewsletterRecipientConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerWishlistConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductReviewConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentInheritanceConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PromotionConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <tag name="shopware.migration.converter"/>
+        </service>
 
         <!-- Shopware Reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader">
@@ -274,6 +379,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryProductStreamAssociationDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
@@ -283,10 +392,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet">
-            <tag name="shopware.migration.data_set"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductMainVariantRelationDataSet">
             <tag name="shopware.migration.data_set"/>
         </service>
 
@@ -463,6 +568,11 @@
             <tag name="shopware.migration.reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryProductStreamAssociationReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
+            <tag name="shopware.migration.reader"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryCmsPageAssociationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
@@ -489,11 +599,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
-            <tag name="shopware.migration.reader"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ProductMainVariantRelationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">
             <tag name="shopware.migration.reader"/>
         </service>
@@ -707,6 +812,13 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\CategoryAssociationWriter"
+                 parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
+            <argument type="service" id="Shopware\Core\Content\Category\CategoryDefinition"/>
+            <tag name="shopware.migration.writer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Writer\CategoryProductStreamAssociationWriter"
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Category\CategoryDefinition"/>

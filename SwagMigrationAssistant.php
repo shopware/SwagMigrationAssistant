@@ -38,7 +38,6 @@ class SwagMigrationAssistant extends Plugin
         $loader->load('shopware56.xml');
         $loader->load('shopware57.xml');
         $loader->load('shopware6.xml');
-        $loader->load('shopware63.xml');
         $loader->load('subscriber.xml');
         $loader->load('writer.xml');
         $loader->load('dataProvider.xml');

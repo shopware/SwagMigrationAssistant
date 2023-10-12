@@ -5,7 +5,7 @@ const { Component } = Shopware;
 /**
  * @package services-settings
  */
-Component.register('swag-migration-profile-shopware6-api-credential-form', {
+Component.register('swag-migration-profile-shopware6major-api-credential-form', {
     template,
 
     props: {

@@ -108,7 +108,7 @@ class MainVariantRelationConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
         static::assertSame($this->productContainer1['entityUuid'], $converted['id']);
-        static::assertSame($this->productVariant1['entityUuid'], $converted['mainVariantId']);
+        static::assertSame($this->productVariant1['entityUuid'], $converted['variantListingConfig']['mainVariantId']);
 
         $convertResult = $this->converter->convert($data[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
@@ -117,7 +117,7 @@ class MainVariantRelationConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
         static::assertSame($this->productContainer2['entityUuid'], $converted['id']);
-        static::assertSame($this->productVariant2['entityUuid'], $converted['mainVariantId']);
+        static::assertSame($this->productVariant2['entityUuid'], $converted['variantListingConfig']['mainVariantId']);
     }
 
     public function testConvertWithoutMapping(): void

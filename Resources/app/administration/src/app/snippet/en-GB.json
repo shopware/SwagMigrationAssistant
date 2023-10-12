@@ -183,6 +183,7 @@
       "backButton": "Overview",
       "migrationAlreadyRunning": "Migration already started.",
       "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
+      "shopwareMajorVersionText": "We have noticed that your source system {sourceSystem} version does not match your target system {targetSystem} version. Please ensure to use the same major version for both systems before you start the migration.",
       "shopInfoCard": {
         "cardTitle": "Shop system",
         "buttonEditSettings": "Edit connection",
@@ -298,6 +299,7 @@
           "language": "Languages:",
           "category_association": "Category associations:",
           "category_cms_page_association": "Category layout associations:",
+          "category_product_stream_association": "Category dynamic product group associations:",
           "tax": "Tax rates:",
           "tax_rule": "Tax rules:",
           "property_group": "Property groups:",

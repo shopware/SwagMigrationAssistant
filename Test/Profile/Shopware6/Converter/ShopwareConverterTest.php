@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
@@ -140,13 +141,19 @@ abstract class ShopwareConverterTest extends TestCase
 
     abstract protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface;
 
-    abstract protected function createProfile(): Shopware6ProfileInterface;
-
-    abstract protected function getProfileName(): string;
-
     abstract protected function createDataSet(): DataSet;
 
     abstract protected function getFixtureBasePath(): string;
+
+    protected function createProfile(): Shopware6ProfileInterface
+    {
+        return new Shopware6MajorProfile('6.5');
+    }
+
+    protected function getProfileName(): string
+    {
+        return Shopware6MajorProfile::PROFILE_NAME;
+    }
 
     protected function loadMapping(array $mappingArray): void
     {

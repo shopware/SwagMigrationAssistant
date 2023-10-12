@@ -10,10 +10,19 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
-abstract class MediaConverter extends ShopwareMediaConverter
+class MediaConverter extends ShopwareMediaConverter
 {
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
+            && $this->getDataSetEntity($migrationContext) === MediaDataSet::getEntity();
+    }
+
     public function getMediaUuids(array $converted): ?array
     {
         return \array_column($converted, 'id');

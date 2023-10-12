@@ -18,6 +18,8 @@ final class DefaultEntities
 
     final public const CATEGORY_CMS_PAGE_ASSOCIATION = 'category_cms_page_association';
 
+    final public const CATEGORY_PRODUCT_STREAM_ASSOCIATION = 'category_product_stream_association';
+
     final public const CATEGORY_TRANSLATION = 'category_translation';
 
     final public const CATEGORY_CUSTOM_FIELD = 'category_custom_field';

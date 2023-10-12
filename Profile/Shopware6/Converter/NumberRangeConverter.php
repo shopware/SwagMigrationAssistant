@@ -14,11 +14,14 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
-abstract class NumberRangeConverter extends ShopwareConverter
+class NumberRangeConverter extends ShopwareConverter
 {
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
@@ -26,6 +29,12 @@ abstract class NumberRangeConverter extends ShopwareConverter
         protected EntityRepository $numberRangeStateRepository
     ) {
         parent::__construct($mappingService, $loggingService);
+    }
+
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
+            && $this->getDataSetEntity($migrationContext) === NumberRangeDataSet::getEntity();
     }
 
     protected function convertData(array $data): ConvertStruct

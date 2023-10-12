@@ -12,7 +12,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductMainVariantRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductManufacturerDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PropertyGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
@@ -51,7 +50,6 @@ class SeoUrlDataSelection implements DataSelectionInterface
             new PropertyGroupDataSet(),
             new ProductManufacturerDataSet(),
             new ProductDataSet(),
-            new ProductMainVariantRelationDataSet(),
             new SeoUrlTemplateDataSet(),
             new SeoUrlDataSet(),
         ];

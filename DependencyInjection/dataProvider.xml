@@ -35,6 +35,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CategoryProductStreamAssociationProvider">
+            <argument type="service" id="category.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\CategoryCmsPageAssociationProvider">
             <argument type="service" id="category.repository"/>
             <tag name="shopware.dataProvider.provider"/>
@@ -61,11 +66,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider">
-            <argument type="service" id="product.repository"/>
-            <tag name="shopware.dataProvider.provider"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductMainVariantRelationProvider">
             <argument type="service" id="product.repository"/>
             <tag name="shopware.dataProvider.provider"/>
         </service>
@@ -267,6 +267,8 @@
             <argument type="service" id="language.repository"/>
             <argument>%kernel.shopware_version%</argument>
             <argument>%kernel.shopware_version_revision%</argument>
+            <argument type="service" id="Shopware\Core\Framework\Store\Services\StoreClient"/>
+            <argument type="service" id="Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider"/>
         </service>
 
     </services>

@@ -59,6 +59,9 @@ class CategoryProvider extends AbstractProvider
             'thumbnailsRo',
             'hasFile',
             'userId', // maybe put back in, if we migrate users
+
+            // association that is updated later
+            'productStreamId',
         ]);
     }
 

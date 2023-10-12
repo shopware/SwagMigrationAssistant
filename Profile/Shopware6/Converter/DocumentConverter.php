@@ -10,12 +10,20 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedDocumentTypeLog;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
-abstract class DocumentConverter extends ShopwareMediaConverter
+class DocumentConverter extends ShopwareMediaConverter
 {
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
+            && $this->getDataSetEntity($migrationContext) === DocumentDataSet::getEntity();
+    }
+
     public function getMediaUuids(array $converted): ?array
     {
         $mediaIds = [];
