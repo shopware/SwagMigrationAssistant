@@ -9,8 +9,11 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
+use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\CartPrice;
 use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
+use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
+use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -248,6 +251,45 @@ class OrderConverterTest extends TestCase
         static::assertSame('mustermann@b2b.de', $converted['orderCustomer']['email']);
         static::assertSame($cartPrice->getTaxStatus(), CartPrice::TAX_STATE_NET);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
+    public function testConvertTaxFreeOrder(): void
+    {
+        list($customerData, $orderData) = $this->getFixtureData();
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[1],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData[2],
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        /** @var CartPrice $cartPrice */
+        $cartPrice = $converted['price'];
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('orderCustomer', $converted);
+        static::assertArrayHasKey('deliveries', $converted);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame('mustermann@b2b.de', $converted['orderCustomer']['email']);
+
+        static::assertSame($cartPrice->getTaxStatus(), CartPrice::TAX_STATE_FREE);
+        static::assertEquals($cartPrice->getTaxRules()->first(), new TaxRule(0.0));
+
+        /** @var CalculatedPrice $lineItem0Price */
+        $lineItem0Price = $converted['lineItems'][0]['price'];
+        static::assertEquals($lineItem0Price->getCalculatedTaxes()->first(), new CalculatedTax(0.0, 0.0, 0.0));
     }
 
     /**
