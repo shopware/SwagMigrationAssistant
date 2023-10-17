@@ -470,13 +470,8 @@ abstract class TranslationConverter extends ShopwareConverter
         // no equivalent in category translation definition
         unset(
             $objectData['streamId'],
-            $objectData['external'],
             $objectData['externalTarget'],
             $objectData['cmsheadline'],
-            $objectData['cmstext'],
-            $objectData['metatitle'],
-            $objectData['metadescription'],
-            $objectData['metakeywords']
         );
 
         $categoryTranslation = [];
@@ -490,6 +485,11 @@ abstract class TranslationConverter extends ShopwareConverter
         $categoryTranslation['id'] = $this->mainMapping['entityUuid'];
 
         $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
+        $this->convertValue($categoryTranslation, 'description', $objectData, 'cmstext');
+        $this->convertValue($categoryTranslation, 'externalLink', $objectData, 'external');
+        $this->convertValue($categoryTranslation, 'metaTitle', $objectData, 'metatitle');
+        $this->convertValue($categoryTranslation, 'metaDescription', $objectData, 'metadescription');
+        $this->convertValue($categoryTranslation, 'keywords', $objectData, 'metakeywords');
 
         foreach ($objectData as $key => $value) {
             if ($key === 'description') {
