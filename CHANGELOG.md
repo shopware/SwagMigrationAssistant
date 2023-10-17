@@ -1,3 +1,6 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+- MIG-879 - Fix tax free order migration from SW5
+
 # 5.1.2
 - MIG-871 - Fix bug for converting tax free orders
 

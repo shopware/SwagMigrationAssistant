@@ -1,3 +1,6 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+- MIG-879 - Fehler beim Migrieren von steuerfreien Bestellungen aus SW5 behoben
+
 # 5.1.2
 - MIG-871 - Fehler beim Migrieren von steuerfreien Bestellungen behoben
 
