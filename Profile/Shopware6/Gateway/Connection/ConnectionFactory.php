@@ -10,8 +10,10 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection;
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class ConnectionFactory implements ConnectionFactoryInterface
 {
     public function __construct(private readonly EntityRepository $connectionRepository)

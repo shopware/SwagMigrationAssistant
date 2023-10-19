@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -17,6 +18,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
 
+#[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
 {
     protected const CALCULATION_TYPE_MAPPING = [

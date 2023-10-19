@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Checkout\Document\Service\DocumentGenerator;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
@@ -18,6 +19,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
+#[Package('services-settings')]
 class DataProviderController
 {
     public function __construct(

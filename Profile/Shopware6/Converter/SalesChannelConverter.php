@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 abstract class SalesChannelConverter extends ShopwareConverter
 {
     protected function convertData(array $data): ConvertStruct

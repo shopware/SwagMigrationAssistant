@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -26,6 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[Package('services-settings')]
 abstract class CustomerConverter extends ShopwareConverter
 {
     protected string $connectionId;

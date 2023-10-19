@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile;
 
+#[Package('services-settings')]
 class Shopware63ShippingMethodConverter extends ShippingMethodConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

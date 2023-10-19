@@ -14,9 +14,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Request;
 
+#[Package('services-settings')]
 class SwagMigrationAccessTokenService
 {
     final public const ACCESS_TOKEN_NAME = 'swagMigrationAccessToken';

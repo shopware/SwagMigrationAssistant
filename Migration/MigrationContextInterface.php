@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
+#[Package('services-settings')]
 interface MigrationContextInterface
 {
     public function getProfile(): ProfileInterface;

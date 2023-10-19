@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -24,6 +25,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
+#[Package('services-settings')]
 class ProductConverterTest extends TestCase
 {
     private Shopware55ProductConverter $productConverter;

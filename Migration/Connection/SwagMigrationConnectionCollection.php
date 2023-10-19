@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Connection;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\Log\Package;
 
 /**
  * @method void                               add(SwagMigrationConnectionEntity $entity)
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
  * @method SwagMigrationConnectionEntity|null first()
  * @method SwagMigrationConnectionEntity|null last()
  */
+#[Package('services-settings')]
 class SwagMigrationConnectionCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

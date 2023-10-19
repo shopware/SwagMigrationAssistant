@@ -11,6 +11,9 @@ const BADGE_TYPE = Object.freeze({
     DANGER: 'danger',
 });
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-shop-information', {
     template,
     inject: {

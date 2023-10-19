@@ -11,6 +11,7 @@ use Shopware\Core\Content\Product\Aggregate\ProductDownload\ProductDownloadDefin
 use Shopware\Core\Content\Product\Aggregate\ProductVisibility\ProductVisibilityDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -25,6 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 
+#[Package('services-settings')]
 abstract class ProductConverter extends ShopwareConverter
 {
     final public const MAIN_PRODUCT_TYPE = 1;

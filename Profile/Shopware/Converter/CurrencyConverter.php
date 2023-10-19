@@ -8,10 +8,12 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class CurrencyConverter extends ShopwareConverter
 {
     protected string $mainLocale;

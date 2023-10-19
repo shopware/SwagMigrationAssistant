@@ -5,6 +5,9 @@ Shopware.WorkerNotification.register('newsletterRecipientTask', {
     fn: onMediaProcessingMessageFound,
 });
 
+/**
+ * @package services-settings
+ */
 function onMediaProcessingMessageFound(next, { $root, entry, notification }) {
     const mediaFileCount = entry.size * 5;
 

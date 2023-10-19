@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Profile;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\ProfileNotFoundException;
 
+#[Package('services-settings')]
 class ProfileRegistry implements ProfileRegistryInterface
 {
     /**

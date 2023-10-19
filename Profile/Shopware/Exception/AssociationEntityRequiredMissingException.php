@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Exception;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class AssociationEntityRequiredMissingException extends ShopwareHttpException
 {
     public function __construct(

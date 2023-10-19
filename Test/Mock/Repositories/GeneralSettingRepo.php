@@ -17,9 +17,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\CloneBehavior;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 
+#[Package('services-settings')]
 class GeneralSettingRepo extends EntityRepository
 {
     public function __construct(private readonly string $entityUuid)

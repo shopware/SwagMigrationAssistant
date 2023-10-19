@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
+#[Package('services-settings')]
 class DeactivatedPackLanguageLog extends BaseRunLogEntry
 {
     public function __construct(

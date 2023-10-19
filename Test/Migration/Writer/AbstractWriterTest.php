@@ -13,8 +13,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
+#[Package('services-settings')]
 class AbstractWriterTest extends TestCase
 {
     private AbstractWriter $abstractWriter;

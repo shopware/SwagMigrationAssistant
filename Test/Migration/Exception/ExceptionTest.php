@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Exception;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
@@ -28,6 +29,7 @@ use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class ExceptionTest extends TestCase
 {
     /**

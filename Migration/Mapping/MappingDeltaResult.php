@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
+#[Package('services-settings')]
 class MappingDeltaResult extends Struct
 {
     public function __construct(

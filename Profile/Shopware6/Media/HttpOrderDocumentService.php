@@ -10,12 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 use Doctrine\DBAL\ArrayParameterType;
 use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Media\HttpMediaDownloadService as BaseHttpMediaDownloadService;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class HttpOrderDocumentService extends BaseHttpMediaDownloadService
 {
     public function supports(MigrationContextInterface $migrationContext): bool

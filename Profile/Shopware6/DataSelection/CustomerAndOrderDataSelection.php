@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -16,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentInher
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class CustomerAndOrderDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'customersOrders';

@@ -14,6 +14,7 @@ use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
@@ -25,6 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentD
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     public function __construct(

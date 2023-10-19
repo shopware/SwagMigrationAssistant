@@ -19,11 +19,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Request;
 
+#[Package('services-settings')]
 class MigrationProgressService implements MigrationProgressServiceInterface
 {
     private Context $context;

@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
@@ -27,6 +28,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
+#[Package('services-settings')]
 class CustomerConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;

@@ -3,6 +3,9 @@ import './swag-migration-settings-icon.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-settings-icon', {
     template,
 });

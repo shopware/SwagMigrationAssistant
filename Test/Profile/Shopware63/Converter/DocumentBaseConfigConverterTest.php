@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseC
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Converter\Shopware63DocumentBaseConfigConverter;
 
+#[Package('services-settings')]
 class DocumentBaseConfigConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface

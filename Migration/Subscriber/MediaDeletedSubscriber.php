@@ -13,8 +13,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityDeletedEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
+use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
+#[Package('services-settings')]
 class MediaDeletedSubscriber implements EventSubscriberInterface
 {
     public function __construct(private readonly EntityRepository $mediaFileRepository)

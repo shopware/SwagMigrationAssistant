@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 
+#[Package('services-settings')]
 class DataSelectionStruct extends Struct
 {
     final public const BASIC_DATA_TYPE = 'basicData';

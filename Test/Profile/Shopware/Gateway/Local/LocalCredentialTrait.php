@@ -7,12 +7,14 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
+#[Package('services-settings')]
 trait LocalCredentialTrait
 {
     private SwagMigrationConnectionEntity $connection;

@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -47,6 +48,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMediaFileProcessorSe
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class MigrationControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;

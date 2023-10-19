@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
+#[Package('services-settings')]
 interface Shopware6ProfileInterface extends ProfileInterface
 {
 }

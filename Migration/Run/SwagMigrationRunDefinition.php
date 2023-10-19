@@ -19,11 +19,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 
+#[Package('services-settings')]
 class SwagMigrationRunDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'swag_migration_run';

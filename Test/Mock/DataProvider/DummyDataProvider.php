@@ -9,8 +9,10 @@ namespace SwagMigrationAssistant\Test\Mock\DataProvider;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider;
 
+#[Package('services-settings')]
 class DummyDataProvider extends AbstractProvider
 {
     public function getIdentifier(): string

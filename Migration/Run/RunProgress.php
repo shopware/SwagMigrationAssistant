@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Run;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
+#[Package('services-settings')]
 class RunProgress extends Struct
 {
     protected string $id;

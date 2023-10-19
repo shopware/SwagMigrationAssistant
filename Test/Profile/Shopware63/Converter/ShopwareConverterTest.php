@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware6\Converter\ShopwareConverterTest as ShopwareConverterTestBase;
 
+#[Package('services-settings')]
 abstract class ShopwareConverterTest extends ShopwareConverterTestBase
 {
     protected function createProfile(): Shopware6ProfileInterface

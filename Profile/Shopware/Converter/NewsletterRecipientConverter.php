@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -17,6 +18,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 
+#[Package('services-settings')]
 abstract class NewsletterRecipientConverter extends ShopwareConverter
 {
     protected Context $context;

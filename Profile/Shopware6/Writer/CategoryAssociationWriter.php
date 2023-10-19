@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Writer;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
+#[Package('services-settings')]
 class CategoryAssociationWriter extends AbstractWriter
 {
     public function supports(): string

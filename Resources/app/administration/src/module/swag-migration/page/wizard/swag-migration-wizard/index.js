@@ -10,6 +10,9 @@ const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_ALREADY_EXISTS: 'SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS',
 });
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-wizard', {
     template,
 

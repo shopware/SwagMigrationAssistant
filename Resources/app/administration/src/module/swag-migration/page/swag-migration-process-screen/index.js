@@ -10,6 +10,9 @@ import {
 const { Component, State, Mixin } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-process-screen', {
     template,
 

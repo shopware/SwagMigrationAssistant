@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Migration\Gateway;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class GatewayRegistry implements GatewayRegistryInterface
 {
     /**

@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Logging\Log;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
 
+#[Package('services-settings')]
 class UnsupportedMediaDefaultFolderLog extends BaseRunLogEntry
 {
     public function __construct(

@@ -3,6 +3,9 @@ import './swag-migration-expand-div.scss';
 
 const { Component } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-expand-div', {
     template,
 

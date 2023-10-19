@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 abstract class ApiReader implements ReaderInterface
 {
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)

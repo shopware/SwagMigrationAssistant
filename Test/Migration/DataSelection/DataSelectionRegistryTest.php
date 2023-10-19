@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\DataSelection;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
@@ -26,6 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 
+#[Package('services-settings')]
 class DataSelectionRegistryTest extends TestCase
 {
     private DataSelectionRegistry $dataSelectionRegistry;

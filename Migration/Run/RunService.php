@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeService;
@@ -42,6 +43,7 @@ use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
+#[Package('services-settings')]
 class RunService implements RunServiceInterface
 {
     private const TRACKING_EVENT_MIGRATION_STARTED = 'Migration started';

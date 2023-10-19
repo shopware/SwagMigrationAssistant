@@ -8,7 +8,9 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 class CurrencyMappingService extends BasicSettingsMappingService
 {
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string

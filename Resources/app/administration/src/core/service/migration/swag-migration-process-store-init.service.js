@@ -1,6 +1,9 @@
 const { State } = Shopware;
 const { Criteria } = Shopware.Data;
 
+/**
+ * @package services-settings
+ */
 class ProcessStoreInitService {
     constructor(migrationService, repositoryFactory, context) {
         this._migrationService = migrationService;

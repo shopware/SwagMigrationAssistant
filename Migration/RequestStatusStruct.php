@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
+#[Package('services-settings')]
 class RequestStatusStruct extends Struct
 {
     public function __construct(

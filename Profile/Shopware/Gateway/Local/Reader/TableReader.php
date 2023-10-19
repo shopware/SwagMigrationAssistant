@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 
+#[Package('services-settings')]
 class TableReader implements TableReaderInterface
 {
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)

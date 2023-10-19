@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface DataSelectionRegistryInterface
 {
     public function getDataSelections(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation): DataSelectionCollection;

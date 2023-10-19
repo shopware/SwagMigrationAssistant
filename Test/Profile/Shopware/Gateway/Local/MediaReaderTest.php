@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -16,6 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
+#[Package('services-settings')]
 class MediaReaderTest extends TestCase
 {
     use LocalCredentialTrait;

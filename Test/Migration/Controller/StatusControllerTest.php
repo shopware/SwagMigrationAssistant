@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -69,6 +70,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class StatusControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;

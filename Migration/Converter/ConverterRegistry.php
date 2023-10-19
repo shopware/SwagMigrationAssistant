@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Migration\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class ConverterRegistry implements ConverterRegistryInterface
 {
     /**

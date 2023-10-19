@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeDefinitio
 use Shopware\Core\Checkout\Document\DocumentDefinition;
 use Shopware\Core\Checkout\Document\FileGenerator\FileTypes;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -23,6 +24,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 
+#[Package('services-settings')]
 abstract class OrderDocumentConverter extends ShopwareConverter
 {
     protected string $oldId;

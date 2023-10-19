@@ -8,11 +8,13 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class AttributeConverter extends Converter
 {
     protected string $connectionId;

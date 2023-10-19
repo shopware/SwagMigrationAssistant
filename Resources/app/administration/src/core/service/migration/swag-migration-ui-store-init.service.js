@@ -1,5 +1,8 @@
 const { State } = Shopware;
 
+/**
+ * @package services-settings
+ */
 class UiStoreInitService {
     constructor(migrationService) {
         this._migrationService = migrationService;

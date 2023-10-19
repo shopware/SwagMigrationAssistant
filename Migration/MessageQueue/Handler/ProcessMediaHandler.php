@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
@@ -27,6 +28,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
+#[Package('services-settings')]
 class ProcessMediaHandler
 {
     final public const MEDIA_ERROR_THRESHOLD = 3;

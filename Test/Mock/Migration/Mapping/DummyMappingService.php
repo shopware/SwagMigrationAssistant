@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
@@ -19,6 +20,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class DummyMappingService extends MappingService
 {
     final public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';

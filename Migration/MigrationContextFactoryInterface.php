@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
+#[Package('services-settings')]
 interface MigrationContextFactoryInterface
 {
     public function create(SwagMigrationRunEntity $run, int $offset = 0, int $limit = 0, string $entity = ''): ?MigrationContextInterface;

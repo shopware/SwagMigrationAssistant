@@ -3,6 +3,9 @@ import './swag-migration-history-detail-data.scss';
 
 const { Component, Mixin } = Shopware;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-history-detail-data', {
     template,
 

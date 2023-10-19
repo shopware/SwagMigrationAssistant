@@ -11,7 +11,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 abstract class AbstractWriter implements WriterInterface
 {
     public function __construct(

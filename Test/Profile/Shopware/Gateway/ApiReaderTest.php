@@ -12,6 +12,7 @@ use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
@@ -20,6 +21,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 class ApiReaderTest extends TestCase
 {
     public function testRead(): void

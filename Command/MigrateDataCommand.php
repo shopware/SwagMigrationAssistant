@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Command;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
@@ -30,6 +31,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[Package('services-settings')]
 class MigrateDataCommand extends Command
 {
     /**

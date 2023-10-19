@@ -14,6 +14,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -23,6 +24,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationType;
 
+#[Package('services-settings')]
 abstract class TranslationConverter extends ShopwareConverter
 {
     protected string $connectionId;

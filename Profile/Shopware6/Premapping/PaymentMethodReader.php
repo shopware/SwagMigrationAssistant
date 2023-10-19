@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -23,6 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\BasicSettingsDataSele
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
+#[Package('services-settings')]
 class PaymentMethodReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'payment_method';

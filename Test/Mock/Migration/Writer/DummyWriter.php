@@ -8,8 +8,10 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Writer\WriterInterface;
 
+#[Package('services-settings')]
 class DummyWriter implements WriterInterface
 {
     public function supports(): string

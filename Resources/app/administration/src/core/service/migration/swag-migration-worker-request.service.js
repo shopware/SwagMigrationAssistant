@@ -10,6 +10,7 @@ const { Application, State } = Shopware;
  * WORKER_API_OPERATION[MIGRATION_STATUS.FETCH_DATA]
  *
  * @type {Readonly<{"0": string, "1": string, "2": string}>}
+ * @package services-settings
  */
 export const WORKER_API_OPERATION = Object.freeze({
     1: 'fetchData',
@@ -17,6 +18,9 @@ export const WORKER_API_OPERATION = Object.freeze({
     3: 'processMedia',
 });
 
+/**
+ * @package services-settings
+ */
 export class WorkerRequest {
     /**
      * @param {Object} requestParams

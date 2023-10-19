@@ -12,11 +12,13 @@ use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTransla
 use Shopware\Core\Content\Category\Aggregate\CategoryTranslation\CategoryTranslationEntity;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Category\CategoryEntity;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use Shopware\Core\System\Tax\TaxCollection;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Test\Mock\DataProvider\DummyDataProvider;
 
+#[Package('services-settings')]
 class AbstractDataProviderTest extends TestCase
 {
     private DummyDataProvider $dataProvider;

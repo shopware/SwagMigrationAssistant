@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 class MediaFolderReader extends ApiReader
 {
     protected function getIdentifier(): string

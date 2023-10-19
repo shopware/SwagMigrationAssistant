@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Gateway\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 interface EnvironmentReaderInterface
 {
     public function read(MigrationContextInterface $migrationContext): array;

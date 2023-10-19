@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductFeatureSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile;
 
+#[Package('services-settings')]
 class Shopware63ProductFeatureSetConverter extends ProductFeatureSetConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -9,6 +9,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -19,6 +20,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
+#[Package('services-settings')]
 class NumberRangeConverterTest extends TestCase
 {
     use IntegrationTestBehaviour;

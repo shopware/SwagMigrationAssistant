@@ -34,8 +34,10 @@ use Doctrine\DBAL\Types\TimeImmutableType;
 use Doctrine\DBAL\Types\TimeType;
 use Doctrine\DBAL\Types\Types;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 abstract class AttributeReader extends AbstractReader
 {
     private const BUILTIN_TYPES_MAP = [

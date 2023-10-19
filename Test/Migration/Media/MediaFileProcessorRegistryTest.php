@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Media;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry;
@@ -21,6 +22,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyHttpMediaDownloadServi
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class MediaFileProcessorRegistryTest extends TestCase
 {
     private MediaFileProcessorRegistryInterface $processorRegistry;

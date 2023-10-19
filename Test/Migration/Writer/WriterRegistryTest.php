@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Writer;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Migration\Writer\DummyWriter;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class WriterRegistryTest extends TestCase
 {
     private WriterRegistryInterface $writerRegistry;

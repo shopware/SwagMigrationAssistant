@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -16,6 +17,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
+#[Package('services-settings')]
 abstract class ShopwareConverter extends Converter
 {
     /**

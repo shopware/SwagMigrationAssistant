@@ -8,12 +8,14 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Media;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class DummyHttpMediaDownloadService implements MediaFileProcessorInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool

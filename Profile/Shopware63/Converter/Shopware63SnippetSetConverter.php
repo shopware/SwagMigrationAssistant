@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetSetConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SnippetSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile;
 
+#[Package('services-settings')]
 class Shopware63SnippetSetConverter extends SnippetSetConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

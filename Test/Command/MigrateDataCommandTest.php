@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -45,6 +46,7 @@ use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
 
+#[Package('services-settings')]
 class MigrateDataCommandTest extends TestCase
 {
     use IntegrationTestBehaviour;

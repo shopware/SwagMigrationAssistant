@@ -14,6 +14,7 @@ use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
@@ -22,6 +23,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
+#[Package('services-settings')]
 class ApiEnvironmentReaderTest extends TestCase
 {
     private array $dataArray = [

@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware56\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\ProductPriceAttributeConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 
+#[Package('services-settings')]
 class Shopware56ProductPriceAttributeConverter extends ProductPriceAttributeConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

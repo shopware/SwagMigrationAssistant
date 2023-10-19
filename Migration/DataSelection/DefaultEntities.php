@@ -7,6 +7,9 @@
 
 namespace SwagMigrationAssistant\Migration\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
+
+#[Package('services-settings')]
 final class DefaultEntities
 {
     final public const CATEGORY = 'category';

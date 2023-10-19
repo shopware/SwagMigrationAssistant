@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Premapping;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -19,6 +20,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
+#[Package('services-settings')]
 class NewsletterRecipientStatusReaderTest extends TestCase
 {
     use KernelTestBehaviour;

@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware56\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 
+#[Package('services-settings')]
 class Shopware56LanguageConverter extends LanguageConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

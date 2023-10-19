@@ -3,6 +3,9 @@ import template from './sw-dashboard-index.html.twig';
 const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
+/**
+ * @package services-settings
+ */
 Component.override('sw-dashboard-index', {
     template,
 

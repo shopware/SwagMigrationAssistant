@@ -9,8 +9,10 @@ namespace SwagMigrationAssistant\Test\Mock;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Storefront\Theme\ThemeService;
 
+#[Package('services-settings')]
 class DummyThemeService extends ThemeService
 {
     public function __construct(private readonly EntityRepository $themeSalesChannelRepository)

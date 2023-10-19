@@ -9,7 +9,9 @@ namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexer;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 class EntityPartialIndexerService
 {
     /**

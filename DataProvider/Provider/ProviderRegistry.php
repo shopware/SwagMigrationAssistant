@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\DataProvider\Exception\ProviderNotFoundException;
 
+#[Package('services-settings')]
 class ProviderRegistry implements ProviderRegistryInterface
 {
     /**

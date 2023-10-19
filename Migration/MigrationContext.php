@@ -7,12 +7,14 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
+#[Package('services-settings')]
 class MigrationContext extends Struct implements MigrationContextInterface
 {
     final public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';

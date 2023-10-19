@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class CategoryAttributeDataSet extends DataSet
 {
     public static function getEntity(): string

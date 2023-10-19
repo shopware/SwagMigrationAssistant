@@ -9,6 +9,7 @@ namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -20,6 +21,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\BasicSettingsMappingServi
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\CurrencyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
+#[Package('services-settings')]
 class CurrencyConverterTest extends TestCase
 {
     private DummyLoggingService $loggingService;

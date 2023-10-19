@@ -4,6 +4,9 @@ import './swag-migration-wizard-page-profile-installation.scss';
 const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
+/**
+ * @package services-settings
+ */
 Component.register('swag-migration-wizard-page-profile-installation', {
     template,
 

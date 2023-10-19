@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\DataSelection;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
@@ -22,6 +23,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
+#[Package('services-settings')]
 class DataSetRegistryTest extends TestCase
 {
     use KernelTestBehaviour;

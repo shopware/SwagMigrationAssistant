@@ -1,3 +1,6 @@
+/**
+ * @package services-settings
+ */
 export const UI_COMPONENT_INDEX = Object.freeze({
     WARNING_CONFIRM: -1,
     DATA_SELECTOR: 0,
@@ -15,6 +18,7 @@ export const UI_COMPONENT_INDEX = Object.freeze({
  * These are used for preparing and supporting the migration process (which is running in the background)
  * and to display the correct things to the user.
  * @module
+ * @package services-settings
  */
 export default {
     namespaced: true,

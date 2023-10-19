@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\DataSelection;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionStruct;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -26,6 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupO
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
+#[Package('services-settings')]
 class WishlistDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'customerWishlists';

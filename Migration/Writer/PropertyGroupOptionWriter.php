@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Writer;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 class PropertyGroupOptionWriter extends AbstractWriter
 {
     public function supports(): string

@@ -7,6 +7,9 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use Shopware\Core\Framework\Log\Package;
+
+#[Package('services-settings')]
 class ThemeCompilingErrorRunLog extends BaseRunLogEntry
 {
     public function __construct(

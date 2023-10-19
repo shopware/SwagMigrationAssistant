@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
@@ -16,6 +17,7 @@ use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 
+#[Package('services-settings')]
 class SwagMigrationRunEntity extends Entity
 {
     use EntityIdTrait;

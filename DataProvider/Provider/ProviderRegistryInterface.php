@@ -7,6 +7,9 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider;
 
+use Shopware\Core\Framework\Log\Package;
+
+#[Package('services-settings')]
 interface ProviderRegistryInterface
 {
     public function getDataProvider(string $identifier): ProviderInterface;

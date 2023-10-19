@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware63\Converter;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryDataSet;
 use SwagMigrationAssistant\Profile\Shopware63\Shopware63Profile;
 
+#[Package('services-settings')]
 class Shopware63CountryConverter extends CountryConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

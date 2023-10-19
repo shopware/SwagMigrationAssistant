@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -19,6 +20,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 
+#[Package('services-settings')]
 class LoggingServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;

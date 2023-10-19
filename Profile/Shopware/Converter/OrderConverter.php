@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -36,6 +37,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 
+#[Package('services-settings')]
 abstract class OrderConverter extends ShopwareConverter
 {
     private const BILLING_ADDRESS = 'billing';

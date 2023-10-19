@@ -13,10 +13,12 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class AuthClient implements AuthClientInterface
 {
     private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';

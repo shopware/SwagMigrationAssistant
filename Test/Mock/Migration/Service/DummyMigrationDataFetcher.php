@@ -8,10 +8,12 @@
 namespace SwagMigrationAssistant\Test\Mock\Migration\Service;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 
+#[Package('services-settings')]
 class DummyMigrationDataFetcher extends MigrationDataFetcher
 {
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation

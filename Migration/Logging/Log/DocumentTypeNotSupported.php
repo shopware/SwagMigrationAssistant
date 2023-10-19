@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
+#[Package('services-settings')]
 class DocumentTypeNotSupported extends BaseRunLogEntry
 {
     public function __construct(

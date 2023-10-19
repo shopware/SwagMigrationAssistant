@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
@@ -21,6 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
+#[Package('services-settings')]
 class HistoryController extends AbstractController
 {
     public function __construct(private readonly HistoryServiceInterface $historyService)

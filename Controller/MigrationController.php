@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -29,6 +30,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
+#[Package('services-settings')]
 class MigrationController extends AbstractController
 {
     public function __construct(

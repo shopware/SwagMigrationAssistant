@@ -13,6 +13,7 @@ use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -30,6 +31,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
+#[Package('services-settings')]
 class TranslationConverterTest extends TestCase
 {
     private Shopware55TranslationConverter $translationConverter;

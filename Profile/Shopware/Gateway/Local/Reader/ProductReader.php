@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -17,6 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
+#[Package('services-settings')]
 class ProductReader extends AbstractReader
 {
     private ParameterBag $productMapping;

@@ -7,10 +7,12 @@
 
 namespace SwagMigrationAssistant\Migration\Gateway\Reader;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\ReaderNotFoundException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+#[Package('services-settings')]
 class ReaderRegistry implements ReaderRegistryInterface
 {
     /**

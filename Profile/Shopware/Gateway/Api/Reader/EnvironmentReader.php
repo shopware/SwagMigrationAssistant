@@ -12,6 +12,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
@@ -24,6 +25,7 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledExceptio
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
     private ?Client $client;

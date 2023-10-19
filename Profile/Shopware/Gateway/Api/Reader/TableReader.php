@@ -8,12 +8,14 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+#[Package('services-settings')]
 class TableReader implements TableReaderInterface
 {
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)

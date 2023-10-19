@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Gateway;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -20,6 +21,7 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 use Symfony\Component\HttpFoundation\Response;
 
+#[Package('services-settings')]
 class GatewayServiceTest extends TestCase
 {
     private GatewayRegistryInterface $gatewayRegistry;

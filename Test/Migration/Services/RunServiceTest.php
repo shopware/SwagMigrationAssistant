@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -45,6 +46,7 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
+#[Package('services-settings')]
 class RunServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;

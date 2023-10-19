@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -25,6 +26,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 
+#[Package('services-settings')]
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
     public function __construct(

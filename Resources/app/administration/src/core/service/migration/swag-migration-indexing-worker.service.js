@@ -1,3 +1,6 @@
+/**
+ * @package services-settings
+ */
 class MigrationIndexingWorker {
     /**
      * @param {MigrationIndexingApiService} indexingApiService
