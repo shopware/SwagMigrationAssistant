@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -93,7 +94,7 @@ class MigrationDataProcessingTest extends TestCase
 
     public function initServices(): void
     {
-        $this->mappingService = $this->getContainer()->get(MappingService::class);
+        $this->createMappingService();
         $this->migrationDataFetcher = $this->getMigrationDataFetcher(
             $this->getContainer()->get(EntityWriter::class),
             $this->mappingService,
@@ -115,6 +116,28 @@ class MigrationDataProcessingTest extends TestCase
             $this->shippingRepo,
             $this->countryRepo,
             $this->salesChannelRepo
+        );
+    }
+
+    private function createMappingService(): void
+    {
+        $this->mappingService = new MappingService(
+            $this->getContainer()->get('swag_migration_mapping.repository'),
+            $this->getContainer()->get('locale.repository'),
+            $this->getContainer()->get('language.repository'),
+            $this->countryRepo,
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('tax.repository'),
+            $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
+            $this->getContainer()->get('media_thumbnail_size.repository'),
+            $this->getContainer()->get('media_default_folder.repository'),
+            $this->getContainer()->get('category.repository'),
+            $this->getContainer()->get('cms_page.repository'),
+            $this->getContainer()->get('delivery_time.repository'),
+            $this->getContainer()->get('document_type.repository'),
+            $this->getContainer()->get(EntityWriter::class),
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
         );
     }
 

@@ -37,7 +37,6 @@ class Dummy6MappingService extends Shopware6MappingService
 
     public function resetMappingService(): void
     {
-        $this->values = [];
         $this->migratedSalesChannels = [];
         $this->writeArray = [];
         $this->languageData = [];
@@ -66,7 +65,11 @@ class Dummy6MappingService extends Shopware6MappingService
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        return $this->values[$entityName][$oldIdentifier] ?? null;
+        if (!isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+            return null;
+        }
+
+        return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
@@ -92,10 +95,6 @@ class Dummy6MappingService extends Shopware6MappingService
                 unset($this->mappings[$hash]);
             }
         }
-    }
-
-    public function bulkDeleteMapping(array $mappingUuids, Context $context): void
-    {
     }
 
     public function writeMapping(Context $context): void

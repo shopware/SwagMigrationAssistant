@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -18,6 +19,7 @@ use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
@@ -41,6 +43,8 @@ class PremappingControllerTest extends TestCase
 
     private EntityRepository $runRepo;
 
+    private EntityRepository $mappingRepo;
+
     private PremappingController $controller;
 
     private PremappingStruct $premapping;
@@ -60,16 +64,15 @@ class PremappingControllerTest extends TestCase
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
-        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $stateMachineRepo = $this->getContainer()->get('state_machine.repository');
         $stateMachineStateRepo = $this->getContainer()->get('state_machine_state.repository');
-        $this->mappingService = $this->getContainer()->get(MappingService::class);
-        $mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
+        $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
         $migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
 
         $gatewayRegistry = $this->getContainer()->get(GatewayRegistry::class);
+        $this->createMappingService();
 
         $this->controller = new PremappingController(
             new PremappingService(
@@ -80,8 +83,8 @@ class PremappingControllerTest extends TestCase
                     ]
                 ),
                 $this->mappingService,
-                $mappingRepo,
-                $runRepo,
+                $this->mappingRepo,
+                $this->runRepo,
                 $connectionRepo
             ),
             $this->runRepo,
@@ -129,6 +132,28 @@ class PremappingControllerTest extends TestCase
         $this->secondState = new PremappingEntityStruct('1', 'Second State', $secondStateUuid);
 
         $this->premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$this->firstState, $this->secondState]);
+    }
+
+    private function createMappingService(): void
+    {
+        $this->mappingService = new MappingService(
+            $this->mappingRepo,
+            $this->getContainer()->get('locale.repository'),
+            $this->getContainer()->get('language.repository'),
+            $this->getContainer()->get('country.repository'),
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('tax.repository'),
+            $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
+            $this->getContainer()->get('media_thumbnail_size.repository'),
+            $this->getContainer()->get('media_default_folder.repository'),
+            $this->getContainer()->get('category.repository'),
+            $this->getContainer()->get('cms_page.repository'),
+            $this->getContainer()->get('delivery_time.repository'),
+            $this->getContainer()->get('document_type.repository'),
+            $this->getContainer()->get(EntityWriter::class),
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
+        );
     }
 
     public function testGeneratePremappingWithoutRunUuid(): void
@@ -264,7 +289,10 @@ class PremappingControllerTest extends TestCase
             'runUuid' => $this->runUuid,
             'premapping' => \json_decode((string) (new JsonResponse([$premapping]))->getContent(), true),
         ]);
+
+        // reset mapping and DB cache
         $this->clearCacheData();
+        $this->createMappingService();
 
         $this->controller->writePremapping(
             $request,

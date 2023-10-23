@@ -921,11 +921,6 @@ parameters:
 			path: Test/Mock/Gateway/Dummy/Local/DummyLocalGateway.php
 
 		-
-			message: "#^Access to an undefined property SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:\\$uuids\\.$#"
-			count: 1
-			path: Test/Mock/Migration/Mapping/DummyMappingService.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Mock/Migration/Media/DummyHttpMediaDownloadService.php

@@ -1,5 +1,10 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-879 - Fix tax free order migration from SW5
+- MIG-859 - [BREAKING] Removed method `pushMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.
+- MIG-859 - [BREAKING] Removed method `pushValueMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.
+- MIG-859 - [BREAKING] Removed method `bulkDeleteMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors.
+- MIG-859 - [BREAKING] Added default parameter `$entityValue` to `getOrCreateMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Update implementors.
+- MIG-859 - [BREAKING] Added default parameter `$entityValue` to `createMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Update implementors.
 
 # 5.1.2
 - MIG-871 - Fix bug for converting tax free orders

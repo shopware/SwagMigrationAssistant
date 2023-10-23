@@ -10,6 +10,8 @@ namespace SwagMigrationAssistant\Test\Migration\Mapping;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
@@ -38,12 +40,15 @@ class MappingServiceTest extends TestCase
 
     private EntityWriterInterface $entityWriter;
 
+    private EntityRepository $mappingRepo;
+
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
         $this->entityWriter = $this->getContainer()->get(EntityWriter::class);
         $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
         $this->localeRepo = $this->getContainer()->get('locale.repository');
+        $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo): void {
             $this->connectionId = Uuid::randomHex();
@@ -65,8 +70,13 @@ class MappingServiceTest extends TestCase
             );
         });
 
+        $this->createMappingService();
+    }
+
+    private function createMappingService(): void
+    {
         $this->mappingService = new MappingService(
-            $this->getContainer()->get('swag_migration_mapping.repository'),
+            $this->mappingRepo,
             $this->localeRepo,
             $this->getContainer()->get('language.repository'),
             $this->getContainer()->get('country.repository'),
@@ -89,11 +99,12 @@ class MappingServiceTest extends TestCase
     {
         $context = Context::createDefaultContext();
 
-        $mapping1 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context);
+        $mapping1 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context);
         static::assertNotNull($mapping1['id']);
         static::assertNotNull($mapping1['entityUuid']);
+        static::assertNull($mapping1['entityValue']);
 
-        $mapping2 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context);
+        $mapping2 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context);
         static::assertSame($mapping1, $mapping2);
 
         $uuid = Uuid::randomHex();
@@ -103,39 +114,23 @@ class MappingServiceTest extends TestCase
         $expectedData = $mapping2;
         $expectedData['entityUuid'] = $uuid;
         $expectedData['additionalData'] = $additionalData;
-        $mapping3 = $this->mappingService->getOrCreateMapping(Uuid::randomHex(), 'product', '123', $context, null, ['key' => 'value'], $uuid);
+        $mapping3 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context, null, ['key' => 'value'], $uuid);
         static::assertSame($expectedData, $mapping3);
+
+        $this->mappingService->writeMapping($context);
     }
 
     public function testReadExistingMappings(): void
     {
         $context = Context::createDefaultContext();
         $mapping1 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', 'abc', $context);
-
         $this->mappingService->writeMapping($context);
+
+        // reset mapping and DB cache
         $this->clearCacheData();
+        $this->createMappingService();
 
-        $newMappingService = new MappingService(
-            $this->getContainer()->get('swag_migration_mapping.repository'),
-            $this->localeRepo,
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
-            $this->getContainer()->get('media_thumbnail_size.repository'),
-            $this->getContainer()->get('media_default_folder.repository'),
-            $this->getContainer()->get('category.repository'),
-            $this->getContainer()->get('cms_page.repository'),
-            $this->getContainer()->get('delivery_time.repository'),
-            $this->getContainer()->get('document_type.repository'),
-            $this->entityWriter,
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
-        );
-
-        $mapping2 = $newMappingService->getOrCreateMapping($this->connectionId, 'product', 'abc', $context);
-
+        $mapping2 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', 'abc', $context);
         static::assertSame($mapping1['id'], $mapping2['id']);
     }
 
@@ -186,6 +181,7 @@ class MappingServiceTest extends TestCase
         $languageMapping = $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         $this->mappingService->writeMapping($context);
         $this->clearCacheData();
+        $this->createMappingService();
 
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
         static::assertNotNull($mapping);
@@ -198,5 +194,93 @@ class MappingServiceTest extends TestCase
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
         static::assertNull($mapping);
+    }
+
+    public function testValueMapping(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $value = 'unspecified';
+        $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            'newsletter_status',
+            'default_newsletter_recipient_status',
+            $context,
+            null,
+            null,
+            null,
+            $value
+        );
+        $this->mappingService->writeMapping($context);
+
+        $retrieved1 = $this->mappingService->getValue(
+            $this->connectionId,
+            'newsletter_status',
+            'default_newsletter_recipient_status',
+            $context
+        );
+        self::assertSame($value, $retrieved1);
+
+        // reset the mapping and DB cache
+        $this->clearCacheData();
+        $this->createMappingService();
+
+        $retrieved2 = $this->mappingService->getValue(
+            $this->connectionId,
+            'newsletter_status',
+            'default_newsletter_recipient_status',
+            $context
+        );
+        self::assertSame($value, $retrieved2);
+    }
+
+    public function testPreloadMapping(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $mapping = $this->mappingService->createMapping(
+            $this->connectionId,
+            DefaultEntities::PRODUCT,
+            '1',
+        );
+        $value = 'unspecified';
+        $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            'newsletter_status',
+            'default_newsletter_recipient_status',
+            $context,
+            null,
+            null,
+            null,
+            $value
+        );
+        $this->mappingService->writeMapping($context);
+
+        // fetch mapping ids
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('connectionId', $this->connectionId));
+        $mappingIds = $this->mappingRepo->searchIds($criteria, $context)->getIds();
+        static::assertCount(2, $mappingIds);
+
+        // reset mapping and DB cache
+        $this->clearCacheData();
+        $this->createMappingService();
+        // populate mapping cache by preloading mappings
+        $this->mappingService->preloadMappings($mappingIds, $context);
+
+        $mapping2 = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::PRODUCT,
+            '1',
+            $context
+        );
+        static::assertSame($mapping, $mapping2);
+        $value2 = $this->mappingService->getValue(
+            $this->connectionId,
+            'newsletter_status',
+            'default_newsletter_recipient_status',
+            $context
+        );
+        static::assertSame($value, $value2);
     }
 }

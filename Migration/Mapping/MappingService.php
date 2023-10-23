@@ -37,8 +37,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('services-settings')]
 class MappingService implements MappingServiceInterface
 {
-    protected array $values = [];
-
     protected array $migratedSalesChannels = [];
 
     protected array $writeArray = [];
@@ -80,12 +78,13 @@ class MappingService implements MappingServiceInterface
         Context $context,
         ?string $checksum = null,
         ?array $additionalData = null,
-        ?string $uuid = null
+        ?string $uuid = null,
+        ?string $entityValue = null,
     ): array {
         $mapping = $this->getMapping($connectionId, $entityName, $oldIdentifier, $context);
 
         if (!isset($mapping)) {
-            return $this->createMapping($connectionId, $entityName, $oldIdentifier, $checksum, $additionalData, $uuid);
+            return $this->createMapping($connectionId, $entityName, $oldIdentifier, $checksum, $additionalData, $uuid, $entityValue);
         }
 
         if ($additionalData !== null) {
@@ -96,7 +95,15 @@ class MappingService implements MappingServiceInterface
             $mapping['entityUuid'] = $uuid;
         }
 
-        if ($uuid !== null || $additionalData !== null) {
+        if ($entityValue !== null) {
+            $mapping['entityValue'] = $entityValue;
+        }
+
+        if (
+            $uuid !== null ||
+            $additionalData !== null ||
+            $entityValue !== null
+        ) {
             $this->saveMapping($mapping);
         }
 
@@ -131,9 +138,9 @@ class MappingService implements MappingServiceInterface
                 'entity' => $element->getEntity(),
                 'oldIdentifier' => $element->getOldIdentifier(),
                 'entityUuid' => $element->getEntityUuid(),
+                'entityValue' => $element->getEntityValue(),
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
-                'entityValue' => $element->getEntityValue(),
             ];
             $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
 
@@ -149,14 +156,18 @@ class MappingService implements MappingServiceInterface
         string $oldIdentifier,
         ?string $checksum = null,
         ?array $additionalData = null,
-        ?string $uuid = null
+        ?string $uuid = null,
+        ?string $entityValue = null,
     ): array {
+        $fallbackEntityUuid = $entityValue !== null ? null: Uuid::randomHex();
+
         $mapping = [
             'id' => Uuid::randomHex(),
             'connectionId' => $connectionId,
             'entity' => $entityName,
             'oldIdentifier' => $oldIdentifier,
-            'entityUuid' => $uuid ?? Uuid::randomHex(),
+            'entityUuid' => $uuid ?? $fallbackEntityUuid,
+            'entityValue' => $entityValue,
             'checksum' => $checksum,
             'additionalData' => $additionalData,
         ];
@@ -203,6 +214,10 @@ class MappingService implements MappingServiceInterface
 
     public function preloadMappings(array $mappingIds, Context $context): void
     {
+        if (empty($mappingIds)) {
+            return;
+        }
+
         $result = $this->migrationMappingRepo->search(new Criteria($mappingIds), $context);
 
         if ($result->count() > 0) {
@@ -217,6 +232,7 @@ class MappingService implements MappingServiceInterface
                     'entity' => $entityName,
                     'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $mapping->getEntityUuid(),
+                    'entityValue' => $mapping->getEntityValue(),
                     'checksum' => $mapping->getChecksum(),
                     'additionalData' => $mapping->getAdditionalData(),
                 ];
@@ -244,8 +260,8 @@ class MappingService implements MappingServiceInterface
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        if (isset($this->values[$entityName][$oldIdentifier])) {
-            return $this->values[$entityName][$oldIdentifier];
+        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+            return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
         }
 
         $criteria = new Criteria();
@@ -261,7 +277,17 @@ class MappingService implements MappingServiceInterface
             $element = $result->getEntities()->first();
             $value = $element->getEntityValue();
 
-            $this->values[$entityName][$oldIdentifier] = $value;
+            $mapping = [
+                'id' => $element->getId(),
+                'connectionId' => $element->getConnectionId(),
+                'entity' => $element->getEntity(),
+                'oldIdentifier' => $element->getOldIdentifier(),
+                'entityUuid' => $element->getEntityUuid(),
+                'entityValue' => $value,
+                'checksum' => $element->getChecksum(),
+                'additionalData' => $element->getAdditionalData(),
+            ];
+            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
 
             return $value;
         }
@@ -293,6 +319,8 @@ class MappingService implements MappingServiceInterface
                 'entity' => $entityName,
                 'oldIdentifier' => $oldIdentifier,
                 'entityUuid' => $uuid,
+                'entityValue' => null,
+                'checksum' => null,
                 'additionalData' => $additionalData,
             ]
         );
@@ -353,20 +381,6 @@ class MappingService implements MappingServiceInterface
         }
     }
 
-    public function bulkDeleteMapping(array $mappingUuids, Context $context): void
-    {
-        if (!empty($mappingUuids)) {
-            $deleteArray = [];
-            foreach ($mappingUuids as $uuid) {
-                $deleteArray[] = [
-                    'id' => $uuid,
-                ];
-            }
-
-            $this->migrationMappingRepo->delete($deleteArray, $context);
-        }
-    }
-
     public function writeMapping(Context $context): void
     {
         if (empty($this->writeArray)) {
@@ -380,27 +394,9 @@ class MappingService implements MappingServiceInterface
         );
 
         $this->writeArray = [];
+        // This should not really be necessary
+        // but removing it could increase memory usage / needs profiling
         $this->mappings = [];
-    }
-
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void
-    {
-        $this->saveMapping([
-            'connectionId' => $connectionId,
-            'entity' => $entity,
-            'oldIdentifier' => $oldIdentifier,
-            'entityUuid' => $uuid,
-        ]);
-    }
-
-    public function pushValueMapping(string $connectionId, string $entity, string $oldIdentifier, string $value): void
-    {
-        $this->saveMapping([
-            'connectionId' => $connectionId,
-            'entity' => $entity,
-            'oldIdentifier' => $oldIdentifier,
-            'entityValue' => $value,
-        ]);
     }
 
     public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
@@ -430,6 +426,9 @@ class MappingService implements MappingServiceInterface
                 'entity' => CmsPageDefinition::ENTITY_NAME,
                 'oldIdentifier' => 'default_cms_page',
                 'entityUuid' => $uuid,
+                'entityValue' => null,
+                'checksum' => null,
+                'additionalData' => null,
             ]
         );
 
@@ -530,6 +529,9 @@ class MappingService implements MappingServiceInterface
                 'entity' => DefaultEntities::DELIVERY_TIME,
                 'oldIdentifier' => $name,
                 'entityUuid' => $deliveryTimeUuid,
+                'entityValue' => null,
+                'checksum' => null,
+                'additionalData' => null,
             ]
         );
 
@@ -563,6 +565,9 @@ class MappingService implements MappingServiceInterface
                     'entity' => DefaultEntities::COUNTRY,
                     'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $countryUuid,
+                    'entityValue' => null,
+                    'checksum' => null,
+                    'additionalData' => null,
                 ]
             );
 
@@ -589,6 +594,9 @@ class MappingService implements MappingServiceInterface
                     'entity' => DefaultEntities::CURRENCY,
                     'oldIdentifier' => $oldIsoCode,
                     'entityUuid' => $currencyUuid,
+                    'entityValue' => null,
+                    'checksum' => null,
+                    'additionalData' => null,
                 ]
             );
         }
@@ -640,6 +648,9 @@ class MappingService implements MappingServiceInterface
                     'entity' => DefaultEntities::TAX,
                     'oldIdentifier' => (string) $taxRate,
                     'entityUuid' => $taxUuid,
+                    'entityValue' => null,
+                    'checksum' => null,
+                    'additionalData' => null,
                 ]
             );
 
@@ -680,6 +691,8 @@ class MappingService implements MappingServiceInterface
                     'oldIdentifier' => $oldIdentifier,
                     'entityUuid' => $numberRangeId,
                     'checksum' => $checksum,
+                    'entityValue' => null,
+                    'additionalData' => null,
                 ]
             );
 
@@ -727,6 +740,9 @@ class MappingService implements MappingServiceInterface
                     'entity' => DefaultEntities::MEDIA_DEFAULT_FOLDER,
                     'oldIdentifier' => $entityName,
                     'entityUuid' => $mediaDefaultFolder->getId(),
+                    'entityValue' => null,
+                    'checksum' => null,
+                    'additionalData' => null,
                 ]
             );
 
@@ -768,6 +784,9 @@ class MappingService implements MappingServiceInterface
                     'entity' => DefaultEntities::MEDIA_THUMBNAIL_SIZE,
                     'oldIdentifier' => $sizeString,
                     'entityUuid' => $thumbnailSize->getId(),
+                    'entityValue' => null,
+                    'checksum' => null,
+                    'additionalData' => null,
                 ]
             );
 
@@ -855,6 +874,9 @@ class MappingService implements MappingServiceInterface
                     'entity' => DefaultEntities::ORDER_DOCUMENT_TYPE,
                     'oldIdentifier' => $technicalName,
                     'entityUuid' => $documentType->getId(),
+                    'entityValue' => null,
+                    'checksum' => null,
+                    'additionalData' => null,
                 ]
             );
 

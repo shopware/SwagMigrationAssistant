@@ -53,7 +53,7 @@ class PremappingService implements PremappingServiceInterface
 
     public function writePremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
-        $this->mappingService->bulkDeleteMapping($this->getExistingMapping($context, $premapping), $context);
+        $this->mappingService->preloadMappings($this->getExistingMapping($context, $premapping), $context);
         $this->addPremappingToRun($context, $migrationContext, $premapping);
         $this->updateConnectionPremapping($context, $migrationContext, $premapping);
 
@@ -71,20 +71,27 @@ class PremappingService implements PremappingServiceInterface
                 $identifier = $mapping['destinationUuid'];
 
                 if (Uuid::isValid($identifier)) {
-                    $this->mappingService->pushMapping(
+                    $this->mappingService->getOrCreateMapping(
                         $connection->getId(),
                         $entity,
                         $id,
+                        $context,
+                        null,
+                        null,
                         $identifier
                     );
 
                     continue;
                 }
 
-                $this->mappingService->pushValueMapping(
+                $this->mappingService->getOrCreateMapping(
                     $connection->getId(),
                     $entity,
                     $id,
+                    $context,
+                    null,
+                    null,
+                    null,
                     $identifier
                 );
             }
