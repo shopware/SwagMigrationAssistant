@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
+# 6.0.0
 - MIG-879 - Fehler beim Migrieren von steuerfreien Bestellungen aus SW5 behoben
 - MIG-859 - [BREAKING] Methode `pushMapping` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen `getOrCreateMapping`.
 - MIG-859 - [BREAKING] Methode `pushValueMapping` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen `getOrCreateMapping`.
@@ -10,7 +10,7 @@
 - MIG-871 - Fehler beim Migrieren von steuerfreien Bestellungen behoben
 
 # 5.1.1
-- MIG-870 - Die Produktmigration funktioniert nicht
+- MIG-870 - Fehler bei der Produktmigration behoben
 
 # 5.1.0
 - NEXT-22545 - Migration von digitalen Produkten hinzugefügt
