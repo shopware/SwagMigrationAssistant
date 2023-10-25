@@ -1,5 +1,10 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-879 - Fehler beim Migrieren von steuerfreien Bestellungen aus SW5 behoben
+- MIG-859 - [BREAKING] Methode `pushMapping` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen `getOrCreateMapping`.
+- MIG-859 - [BREAKING] Methode `pushValueMapping` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen `getOrCreateMapping`.
+- MIG-859 - [BREAKING] Methode `bulkDeleteMapping` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst.
+- MIG-859 - [BREAKING] Default Parameter `$entityValue` zu `getOrCreateMapping` vom `Migration/Mapping/MappingServiceInterface.php` hinzugefügt und alle Implementierungen angepasst. Passe Implementierungen an.
+- MIG-859 - [BREAKING] Default Parameter `$entityValue` zu `createMapping` vom `Migration/Mapping/MappingServiceInterface.php` hinzugefügt und alle Implementierungen angepasst. Passe Implementierungen an.
 
 # 5.1.2
 - MIG-871 - Fehler beim Migrieren von steuerfreien Bestellungen behoben

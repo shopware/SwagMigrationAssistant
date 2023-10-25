@@ -27,7 +27,8 @@ interface MappingServiceInterface
         Context $context,
         ?string $checksum = null,
         ?array $additionalData = null,
-        ?string $uuid = null
+        ?string $uuid = null,
+        ?string $entityValue = null,
     ): array;
 
     public function getMapping(
@@ -43,7 +44,8 @@ interface MappingServiceInterface
         string $oldIdentifier,
         ?string $checksum = null,
         ?array $additionalData = null,
-        ?string $uuid = null
+        ?string $uuid = null,
+        ?string $entityValue = null,
     ): array;
 
     public function updateMapping(
@@ -95,12 +97,6 @@ interface MappingServiceInterface
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array;
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void;
-
-    public function bulkDeleteMapping(array $mappingUuids, Context $context): void;
-
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void;
-
-    public function pushValueMapping(string $connectionId, string $entity, string $oldIdentifier, string $value): void;
 
     public function writeMapping(Context $context): void;
 

@@ -101,7 +101,11 @@ class DummyMappingService extends MappingService
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        return $this->values[$entityName][$oldIdentifier] ?? null;
+        if (!isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+            return null;
+        }
+
+        return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
@@ -120,15 +124,6 @@ class DummyMappingService extends MappingService
                 break;
             }
         }
-    }
-
-    public function pushMapping(string $connectionId, string $entity, string $oldIdentifier, string $uuid): void
-    {
-        $this->uuids[$entity][$oldIdentifier] = $uuid;
-    }
-
-    public function bulkDeleteMapping(array $mappingUuids, Context $context): void
-    {
     }
 
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
