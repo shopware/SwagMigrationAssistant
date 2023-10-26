@@ -222,28 +222,6 @@ class MigrationDataWriterTest extends TestCase
         );
     }
 
-    private function createMappingService(): void
-    {
-        $this->mappingService = new MappingService(
-            $this->migrationMappingRepo,
-            $this->localeRepo,
-            $this->languageRepo,
-            $this->countryRepo,
-            $this->currencyRepo,
-            $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
-            $this->getContainer()->get('media_thumbnail_size.repository'),
-            $this->getContainer()->get('media_default_folder.repository'),
-            $this->categoryRepo,
-            $this->getContainer()->get('cms_page.repository'),
-            $this->deliveryTimeRepo,
-            $this->getContainer()->get('document_type.repository'),
-            $this->entityWriter,
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
-        );
-    }
-
     public function requiredProperties(): array
     {
         return [
@@ -574,6 +552,28 @@ class MigrationDataWriterTest extends TestCase
         static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
         static::assertSame('SWAG_MIGRATION__WRITER_NOT_FOUND', $logs[0]['parameters']['exceptionCode']);
         static::assertCount(1, $logs);
+    }
+
+    private function createMappingService(): void
+    {
+        $this->mappingService = new MappingService(
+            $this->migrationMappingRepo,
+            $this->localeRepo,
+            $this->languageRepo,
+            $this->countryRepo,
+            $this->currencyRepo,
+            $this->getContainer()->get('tax.repository'),
+            $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
+            $this->getContainer()->get('media_thumbnail_size.repository'),
+            $this->getContainer()->get('media_default_folder.repository'),
+            $this->categoryRepo,
+            $this->getContainer()->get('cms_page.repository'),
+            $this->deliveryTimeRepo,
+            $this->getContainer()->get('document_type.repository'),
+            $this->entityWriter,
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
+        );
     }
 
     private function invokeMethod(object $object, string $methodName, array $parameters = []): ?object
