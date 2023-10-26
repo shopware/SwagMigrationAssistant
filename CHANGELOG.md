@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
+# 6.0.0
 - MIG-879 - Fix tax free order migration from SW5
 - MIG-859 - [BREAKING] Removed method `pushMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.
 - MIG-859 - [BREAKING] Removed method `pushValueMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.
@@ -10,7 +10,7 @@
 - MIG-871 - Fix bug for converting tax free orders
 
 # 5.1.1
-- MIG-870 - Migration of products does not work
+- MIG-870 - Fix bug during migration of products
 
 # 5.1.0
 - NEXT-22545 - Add migration of digital products
