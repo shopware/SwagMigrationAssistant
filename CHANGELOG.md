@@ -8,6 +8,7 @@
 
 # 5.1.2
 - MIG-871 - Fix bug for converting tax free orders
+- MIG-869 - Add additional information to SW6 profile page
 
 # 5.1.1
 - MIG-870 - Fix bug during migration of products

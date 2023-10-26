@@ -8,6 +8,7 @@
 
 # 5.1.2
 - MIG-871 - Fehler beim Migrieren von steuerfreien Bestellungen behoben
+- MIG-869 - Zusätzliche Informationen zur SW6 Profilseite hinzugefügt
 
 # 5.1.1
 - MIG-870 - Fehler bei der Produktmigration behoben
