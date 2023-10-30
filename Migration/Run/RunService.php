@@ -457,7 +457,7 @@ SQL;
             ->select('entity, COUNT(id) AS total')
             ->from('swag_migration_data')
             ->where('HEX(run_id) = :runId')
-            ->andWhere('convert_failure = 0 AND converted IS NOT NULL')
+            ->andWhere('convert_failure = 0')
             ->groupBy('entity')
             ->setParameter('runId', $runId)
             ->executeQuery()
