@@ -1,3 +1,6 @@
+# 6.0.1
+- MIG-887 - Improve performance of the endpoint, which captures all data to be written afterwards
+
 # 6.0.0
 - MIG-879 - Fix tax free order migration from SW5
 - MIG-859 - [BREAKING] Removed method `pushMapping` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use `getOrCreateMapping` instead.

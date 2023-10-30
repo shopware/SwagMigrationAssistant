@@ -1,3 +1,6 @@
+# 6.0.1
+- MIG-887 - Verbesserung der Performance des Endpunktes, welcher alle Daten erfasst, die anschließend geschrieben werden sollen
+
 # 6.0.0
 - MIG-879 - Fehler beim Migrieren von steuerfreien Bestellungen aus SW5 behoben
 - MIG-859 - [BREAKING] Methode `pushMapping` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen `getOrCreateMapping`.
