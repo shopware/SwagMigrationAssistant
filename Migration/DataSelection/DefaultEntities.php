@@ -98,6 +98,7 @@ final class DefaultEntities
 
     final public const ORDER = 'order';
 
+    final public const ORDER_CUSTOMER = 'order_customer';
     final public const ORDER_ADDRESS = 'order_address';
 
     final public const ORDER_DELIVERY = 'order_delivery';
