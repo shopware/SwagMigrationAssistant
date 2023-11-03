@@ -134,28 +134,6 @@ class PremappingControllerTest extends TestCase
         $this->premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$this->firstState, $this->secondState]);
     }
 
-    private function createMappingService(): void
-    {
-        $this->mappingService = new MappingService(
-            $this->mappingRepo,
-            $this->getContainer()->get('locale.repository'),
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
-            $this->getContainer()->get('media_thumbnail_size.repository'),
-            $this->getContainer()->get('media_default_folder.repository'),
-            $this->getContainer()->get('category.repository'),
-            $this->getContainer()->get('cms_page.repository'),
-            $this->getContainer()->get('delivery_time.repository'),
-            $this->getContainer()->get('document_type.repository'),
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
-        );
-    }
-
     public function testGeneratePremappingWithoutRunUuid(): void
     {
         $this->expectException(MigrationContextPropertyMissingException::class);
@@ -317,5 +295,27 @@ class PremappingControllerTest extends TestCase
         static::assertNotNull($secondMapping);
         static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityUuid']);
         static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+    }
+
+    private function createMappingService(): void
+    {
+        $this->mappingService = new MappingService(
+            $this->mappingRepo,
+            $this->getContainer()->get('locale.repository'),
+            $this->getContainer()->get('language.repository'),
+            $this->getContainer()->get('country.repository'),
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('tax.repository'),
+            $this->getContainer()->get('number_range.repository'),
+            $this->getContainer()->get('rule.repository'),
+            $this->getContainer()->get('media_thumbnail_size.repository'),
+            $this->getContainer()->get('media_default_folder.repository'),
+            $this->getContainer()->get('category.repository'),
+            $this->getContainer()->get('cms_page.repository'),
+            $this->getContainer()->get('delivery_time.repository'),
+            $this->getContainer()->get('document_type.repository'),
+            $this->getContainer()->get(EntityWriter::class),
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
+        );
     }
 }

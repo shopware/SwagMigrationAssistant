@@ -861,7 +861,7 @@ abstract class OrderConverter extends ShopwareConverter
 
             if ($taxStatus === CartPrice::TAX_STATE_FREE) {
                 $calculatedTax = new CalculatedTaxCollection([
-                    new CalculatedTax(0, 0, 0)
+                    new CalculatedTax(0, 0, 0),
                 ]);
             }
 
@@ -904,7 +904,7 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getTaxRules(array $originalData, string $taxStatus): TaxRuleCollection
     {
         if ($taxStatus === CartPrice::TAX_STATE_FREE) {
-            return new TaxRuleCollection([ new TaxRule(0.0) ]);
+            return new TaxRuleCollection([new TaxRule(0.0)]);
         }
 
         $taxRates = \array_unique(\array_column($originalData['details'], 'tax_rate'));

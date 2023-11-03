@@ -100,9 +100,9 @@ class MappingService implements MappingServiceInterface
         }
 
         if (
-            $uuid !== null ||
-            $additionalData !== null ||
-            $entityValue !== null
+            $uuid !== null
+            || $additionalData !== null
+            || $entityValue !== null
         ) {
             $this->saveMapping($mapping);
         }
@@ -159,7 +159,7 @@ class MappingService implements MappingServiceInterface
         ?string $uuid = null,
         ?string $entityValue = null,
     ): array {
-        $fallbackEntityUuid = $entityValue !== null ? null: Uuid::randomHex();
+        $fallbackEntityUuid = $entityValue !== null ? null : Uuid::randomHex();
 
         $mapping = [
             'id' => Uuid::randomHex(),

@@ -8,8 +8,10 @@ include:
     ref: 'trunk'
     file: '.gitlab/templates/plugin.yml'
 
-
-
+ecs:
+  stage: test
+  script:
+    - composer ecs
 
 phpunit:
   script:

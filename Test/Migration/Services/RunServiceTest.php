@@ -43,7 +43,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
-use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 use SwagMigrationAssistant\Test\Mock\Migration\Service\DummyMigrationDataFetcher;
 
 #[Package('services-settings')]
