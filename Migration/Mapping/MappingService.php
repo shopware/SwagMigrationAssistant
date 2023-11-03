@@ -13,7 +13,6 @@ use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
-use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -835,10 +834,10 @@ class MappingService implements MappingServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
 
-        $result = $this->ruleRepo->search($criteria, $context)->first();
+        $this->defaultAvailabilityRule = $this->ruleRepo->searchIds($criteria, $context)->firstId();
 
-        if ($result instanceof RuleEntity) {
-            $this->defaultAvailabilityRule = $result->getId();
+        if ($this->defaultAvailabilityRule === null) {
+            $this->defaultAvailabilityRule = $this->ruleRepo->searchIds(new Criteria(), $context)->firstId();
         }
 
         return $this->defaultAvailabilityRule;

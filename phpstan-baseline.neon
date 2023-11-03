@@ -6,6 +6,11 @@ parameters:
 			path: Migration/Logging/Log/DebugLog.php
 
 		-
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\MessageQueue\\\\OrderCountIndexer\\:\\:\\$customerRepository is never read, only written\\.$#"
+			count: 1
+			path: Migration/MessageQueue/OrderCountIndexer.php
+
+		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/AttributeConverter.php

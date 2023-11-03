@@ -43,7 +43,7 @@ class OrderCountIndexer extends CustomerIndexer
             return;
         }
 
-       $this->updateCustomer($ids);
+        $this->updateCustomer($ids);
     }
 
     public function getName(): string

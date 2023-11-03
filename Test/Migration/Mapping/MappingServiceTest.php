@@ -8,15 +8,18 @@
 namespace SwagMigrationAssistant\Test\Migration\Mapping;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -151,6 +154,31 @@ class MappingServiceTest extends TestCase
         static::assertNull($response);
     }
 
+    public function testGetDefaultAvailabilityRule(): void
+    {
+        $context = Context::createDefaultContext();
+        $ruleRepository = new StaticEntityRepository(
+            [new IdSearchResult(1, [['primaryKey' => Uuid::randomHex(), 'data' => []]], new Criteria(), $context)],
+            new RuleDefinition()
+        );
+        $this->createMappingService($ruleRepository);
+
+        $defaultRuleId = $this->mappingService->getDefaultAvailabilityRule($context);
+        static::assertNotNull($defaultRuleId);
+
+        $ruleRepository = new StaticEntityRepository(
+            [
+                new IdSearchResult(0, [], new Criteria(), $context),
+                new IdSearchResult(0, [], new Criteria(), $context),
+            ],
+            new RuleDefinition()
+        );
+        $this->createMappingService($ruleRepository);
+
+        $defaultRuleId = $this->mappingService->getDefaultAvailabilityRule($context);
+        static::assertNull($defaultRuleId);
+    }
+
     public function testDeleteMapping(): void
     {
         $context = Context::createDefaultContext();
@@ -262,7 +290,7 @@ class MappingServiceTest extends TestCase
         static::assertSame($value, $value2);
     }
 
-    private function createMappingService(): void
+    private function createMappingService(?StaticEntityRepository $ruleRepository = null): void
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
@@ -272,7 +300,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
+            $ruleRepository ?? $this->getContainer()->get('rule.repository'),
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
             $this->getContainer()->get('category.repository'),
