@@ -1,3 +1,6 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+- NEXT-31367 - Improve the ConnectionFactory to work more stable
+
 # 6.0.1
 - MIG-887 - Improve performance of the endpoint, which captures all data to be written afterwards
 
