@@ -25,6 +25,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         0 => 3, // Weight
         1 => 2, // Price
         2 => 1, // Quantity
+        3 => null // Custom Rule - creation only/no data migration possible
     ];
 
     protected array $relevantForAvailabilityRule = [
@@ -555,7 +556,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $rule;
     }
 
-    protected function getShippingCosts(array $shippingCosts, int $calculationType, ?array $rule): array
+    protected function getShippingCosts(array $shippingCosts, ?int $calculationType, ?array $rule): array
     {
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
