@@ -206,10 +206,7 @@
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"
-        >
-            <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
-        </service>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductReviewConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
@@ -793,7 +790,7 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRule">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader">
             <argument type="service" id="rule.repository"/>
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>

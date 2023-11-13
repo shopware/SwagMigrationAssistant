@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class DefaultShippingAvailabilityRule
+class DefaultShippingAvailabilityRuleReader
 {
     private const MAPPING_NAME = 'shipping_availability_rule';
 
@@ -97,7 +97,7 @@ class DefaultShippingAvailabilityRule
         /** @var RuleEntity $rule */
         foreach ($rules as $rule) {
             $id = $rule->getId();
-            $name = $rule->getName() ?? '';
+            $name = $rule->getName();
             $choices[] = new PremappingChoiceStruct($id, $name);
             $this->choiceUuids[$id] = $id;
         }

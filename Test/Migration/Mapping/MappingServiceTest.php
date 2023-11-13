@@ -8,12 +8,10 @@
 namespace SwagMigrationAssistant\Test\Migration\Mapping;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Rule\RuleDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
@@ -152,31 +150,6 @@ class MappingServiceTest extends TestCase
         $context = Context::createDefaultContext();
         $response = $this->mappingService->getCountryUuid('testId', 'testIso', 'testIso3', Uuid::randomHex(), $context);
         static::assertNull($response);
-    }
-
-    public function testGetDefaultAvailabilityRule(): void
-    {
-        $context = Context::createDefaultContext();
-        $ruleRepository = new StaticEntityRepository(
-            [new IdSearchResult(1, [['primaryKey' => Uuid::randomHex(), 'data' => []]], new Criteria(), $context)],
-            new RuleDefinition()
-        );
-        $this->createMappingService($ruleRepository);
-
-        $defaultRuleId = $this->mappingService->getDefaultAvailabilityRule($context);
-        static::assertNotNull($defaultRuleId);
-
-        $ruleRepository = new StaticEntityRepository(
-            [
-                new IdSearchResult(0, [], new Criteria(), $context),
-                new IdSearchResult(0, [], new Criteria(), $context),
-            ],
-            new RuleDefinition()
-        );
-        $this->createMappingService($ruleRepository);
-
-        $defaultRuleId = $this->mappingService->getDefaultAvailabilityRule($context);
-        static::assertNull($defaultRuleId);
     }
 
     public function testDeleteMapping(): void

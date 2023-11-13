@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
-use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
@@ -20,7 +19,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
-use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRule;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 
 #[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
@@ -65,15 +64,11 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         'availabilityRuleId' => 'availability_rule_id',
     ];
 
-    private TaxCalculator $taxCalculator;
-
     public function __construct(
         MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService,
-        TaxCalculator $taxCalculator
+        LoggingServiceInterface $loggingService
     ) {
         parent::__construct($mappingService, $loggingService);
-        $this->taxCalculator = $taxCalculator;
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
@@ -114,7 +109,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $defaultAvailabilityRuleUuid = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultShippingAvailabilityRule::getMappingName(),
+            DefaultShippingAvailabilityRuleReader::getMappingName(),
             'default_shipping_availability_rule',
             $this->context
         );
