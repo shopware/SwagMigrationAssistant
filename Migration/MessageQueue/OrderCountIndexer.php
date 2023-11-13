@@ -12,7 +12,6 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Checkout\Customer\DataAbstractionLayer\CustomerIndexer;
 use Shopware\Core\Checkout\Order\OrderStates;
 use Shopware\Core\Defaults;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityWrittenContainerEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\Log\Package;
@@ -22,10 +21,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 class OrderCountIndexer extends CustomerIndexer
 {
     public function __construct(
-        /**
-         * @decrecated tag:v7.0.0 - Parameter will be deleted without replacement
-         */
-        private readonly EntityRepository $customerRepository,
         private readonly CustomerIndexer $inner,
         private readonly Connection $connection,
     ) {

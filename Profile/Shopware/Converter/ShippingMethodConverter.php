@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
 #[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
@@ -97,8 +98,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $defaultDeliveryTimeMapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
+            DeliveryTimeReader::getMappingName(),
+            DeliveryTimeReader::SOURCE_ID,
             $this->context
         );
 
@@ -110,7 +111,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $defaultAvailabilityRuleUuid = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultShippingAvailabilityRuleReader::getMappingName(),
-            'default_shipping_availability_rule',
+            DefaultShippingAvailabilityRuleReader::SOURCE_ID,
             $this->context
         );
         if ($defaultAvailabilityRuleUuid !== null) {

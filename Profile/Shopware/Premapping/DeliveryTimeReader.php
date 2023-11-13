@@ -26,6 +26,8 @@ class DeliveryTimeReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'delivery_time';
 
+    public const SOURCE_ID = 'default_delivery_time';
+
     private string $connectionPremappingValue = '';
 
     /**
@@ -87,7 +89,7 @@ class DeliveryTimeReader extends AbstractPremappingReader
     private function getMapping(): array
     {
         $entityData = [];
-        $entityData[] = new PremappingEntityStruct('default_delivery_time', 'Standard delivery time', $this->connectionPremappingValue);
+        $entityData[] = new PremappingEntityStruct(self::SOURCE_ID, 'Standard delivery time', $this->connectionPremappingValue);
 
         return $entityData;
     }

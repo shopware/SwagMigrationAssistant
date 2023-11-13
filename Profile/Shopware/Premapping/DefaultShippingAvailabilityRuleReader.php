@@ -18,6 +18,8 @@ class DefaultShippingAvailabilityRuleReader
 {
     private const MAPPING_NAME = 'shipping_availability_rule';
 
+    public const SOURCE_ID = 'default_shipping_availability_rule';
+
     private string $connectionPremappingValue = '';
 
     /**
@@ -79,7 +81,7 @@ class DefaultShippingAvailabilityRuleReader
     private function getMapping(): array
     {
         $entityData = [];
-        $entityData[] = new PremappingEntityStruct('default_shipping_availability_rule', 'Standard shipping availability rule', $this->connectionPremappingValue);
+        $entityData[] = new PremappingEntityStruct(self::SOURCE_ID, 'Standard shipping availability rule', $this->connectionPremappingValue);
 
         return $entityData;
     }

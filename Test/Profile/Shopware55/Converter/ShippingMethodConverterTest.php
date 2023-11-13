@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethod
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -64,18 +65,8 @@ class ShippingMethodConverterTest extends TestCase
 
         $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
-            $this->context,
-            null,
-            null,
-            Uuid::randomHex()
-        );
-
-        $this->mappingService->getOrCreateMapping(
-            $this->connection->getId(),
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
+            DeliveryTimeReader::getMappingName(),
+            DeliveryTimeReader::SOURCE_ID,
             $this->context,
             null,
             null,
@@ -95,7 +86,7 @@ class ShippingMethodConverterTest extends TestCase
         $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
             DefaultShippingAvailabilityRuleReader::getMappingName(),
-            'default_shipping_availability_rule',
+            DefaultShippingAvailabilityRuleReader::SOURCE_ID,
             $this->context,
             null,
             null,

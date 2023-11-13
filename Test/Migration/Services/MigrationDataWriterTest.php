@@ -692,7 +692,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, SalutationReader::getMappingName(), 'ms', $this->context, Uuid::randomHex(), [], $salutationUuid);
 
         $deliveryTimeUuid = $this->getFirstDeliveryTimeUuid($this->deliveryTimeRepo, $this->context);
-        $this->mappingService->getOrCreateMapping($this->connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $this->context, null, [], $deliveryTimeUuid);
+        $this->mappingService->getOrCreateMapping($this->connectionId, DeliveryTimeReader::getMappingName(), DeliveryTimeReader::SOURCE_ID, $this->context, null, [], $deliveryTimeUuid);
 
         $currencyUuid = $this->getCurrencyUuid(
             $this->currencyRepo,

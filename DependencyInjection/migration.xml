@@ -238,7 +238,6 @@
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer"
                  decorates="Shopware\Core\Checkout\Customer\DataAbstractionLayer\CustomerIndexer">
-            <argument type="service" id="customer.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer.inner"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
