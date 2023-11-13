@@ -25,6 +25,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -182,8 +183,8 @@ class MappingServiceTest extends TestCase
         $value = 'unspecified';
         $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context,
             null,
             null,
@@ -194,8 +195,8 @@ class MappingServiceTest extends TestCase
 
         $retrieved1 = $this->mappingService->getValue(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context
         );
         static::assertSame($value, $retrieved1);
@@ -206,8 +207,8 @@ class MappingServiceTest extends TestCase
 
         $retrieved2 = $this->mappingService->getValue(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context
         );
         static::assertSame($value, $retrieved2);
@@ -225,8 +226,8 @@ class MappingServiceTest extends TestCase
         $value = 'unspecified';
         $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context,
             null,
             null,
@@ -256,8 +257,8 @@ class MappingServiceTest extends TestCase
         static::assertSame($mapping, $mapping2);
         $value2 = $this->mappingService->getValue(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context
         );
         static::assertSame($value, $value2);

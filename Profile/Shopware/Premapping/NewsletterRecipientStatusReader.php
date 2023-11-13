@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class NewsletterRecipientStatusReader extends AbstractPremappingReader
 {
+    public const SOURCE_ID = 'default_newsletter_recipient_status';
     private const MAPPING_NAME = 'newsletter_status';
 
     private string $connectionPremappingValue = '';
@@ -74,7 +75,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
     private function getMapping(): array
     {
         $entityData = [];
-        $entityData[] = new PremappingEntityStruct('default_newsletter_recipient_status', 'Standard newsletter status', $this->connectionPremappingValue);
+        $entityData[] = new PremappingEntityStruct(self::SOURCE_ID, 'Standard newsletter status', $this->connectionPremappingValue);
 
         return $entityData;
     }

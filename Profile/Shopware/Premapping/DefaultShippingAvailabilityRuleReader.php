@@ -16,9 +16,8 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 class DefaultShippingAvailabilityRuleReader
 {
-    private const MAPPING_NAME = 'shipping_availability_rule';
-
     public const SOURCE_ID = 'default_shipping_availability_rule';
+    private const MAPPING_NAME = 'shipping_availability_rule';
 
     private string $connectionPremappingValue = '';
 

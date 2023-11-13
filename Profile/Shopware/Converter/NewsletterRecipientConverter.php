@@ -196,7 +196,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $status = $this->mappingService->getValue(
             $this->connectionId,
             NewsletterRecipientStatusReader::getMappingName(),
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $this->context
         );
 

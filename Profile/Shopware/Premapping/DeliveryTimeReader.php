@@ -24,9 +24,8 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class DeliveryTimeReader extends AbstractPremappingReader
 {
-    private const MAPPING_NAME = 'delivery_time';
-
     public const SOURCE_ID = 'default_delivery_time';
+    private const MAPPING_NAME = 'delivery_time';
 
     private string $connectionPremappingValue = '';
 

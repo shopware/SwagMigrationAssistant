@@ -57,7 +57,7 @@ class NewsletterRecipientStatusReaderTest extends TestCase
         static::assertInstanceOf(PremappingStruct::class, $result);
         $mapping = $result->getMapping();
         static::assertCount(1, $mapping);
-        static::assertSame('default_newsletter_recipient_status', $mapping[0]->getSourceId());
+        static::assertSame(NewsletterRecipientStatusReader::SOURCE_ID, $mapping[0]->getSourceId());
 
         $choices = $result->getChoices();
         static::assertCount(4, $choices);

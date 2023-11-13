@@ -241,7 +241,7 @@ class CustomerConverterTest extends TestCase
         unset($customerData['defaultpayment']);
 
         $context = Context::createDefaultContext();
-        $mapping = $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), 'default_payment_method', $context, null, [], Uuid::randomHex());
+        $mapping = $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), PaymentMethodReader::SOURCE_ID, $context, null, [], Uuid::randomHex());
         $convertResult = $this->customerConverter->convert(
             $customerData,
             $context,

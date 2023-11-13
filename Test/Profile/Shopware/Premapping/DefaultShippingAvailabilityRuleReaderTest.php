@@ -65,10 +65,10 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
     public function testGetValidPremapping(): void
     {
         $premapping = [[
-            'entity' => $this->reader::getMappingName(),
+            'entity' => DefaultShippingAvailabilityRuleReader::getMappingName(),
             'mapping' => [
                 0 => [
-                    'sourceId' => $this->reader::SOURCE_ID,
+                    'sourceId' => DefaultShippingAvailabilityRuleReader::SOURCE_ID,
                     'description' => 'Description of the default rule',
                     'destinationUuid' => $this->ruleEntity->getId(),
                 ],
@@ -101,10 +101,10 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
     public function testGetInvalidPremapping(): void
     {
         $premapping = [[
-            'entity' => $this->reader::getMappingName(),
+            'entity' => DefaultShippingAvailabilityRuleReader::getMappingName(),
             'mapping' => [
                 0 => [
-                    'sourceId' => $this->reader::SOURCE_ID,
+                    'sourceId' => DefaultShippingAvailabilityRuleReader::SOURCE_ID,
                     'description' => 'Description of the default rule',
                     'destinationUuid' => Uuid::randomHex(),
                 ],

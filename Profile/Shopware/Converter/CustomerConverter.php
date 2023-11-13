@@ -216,7 +216,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 PaymentMethodReader::getMappingName(),
-                'default_payment_method',
+                PaymentMethodReader::SOURCE_ID,
                 $this->context
             );
 
