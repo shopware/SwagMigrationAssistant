@@ -1,5 +1,7 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION
 - NEXT-31367 - Improve the ConnectionFactory to work more stable
+- MIG-881 - Fix bug for converting shipping methods and shipping costs and also migrate shipping methods with a unknown calculation type.
+- MIG-881 - [BREAKING] Removed method `getDefaultAvailabilityRule` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use the premapping of `default_shipping_availability_rule` instead.
 
 # 6.0.1
 - MIG-887 - Improve performance of the endpoint, which captures all data to be written afterwards

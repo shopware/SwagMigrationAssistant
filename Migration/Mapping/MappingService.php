@@ -825,24 +825,6 @@ class MappingService implements MappingServiceInterface
         return $uuids;
     }
 
-    public function getDefaultAvailabilityRule(Context $context): ?string
-    {
-        if (isset($this->defaultAvailabilityRule)) {
-            return $this->defaultAvailabilityRule;
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
-
-        $this->defaultAvailabilityRule = $this->ruleRepo->searchIds($criteria, $context)->firstId();
-
-        if ($this->defaultAvailabilityRule === null) {
-            $this->defaultAvailabilityRule = $this->ruleRepo->searchIds(new Criteria(), $context)->firstId();
-        }
-
-        return $this->defaultAvailabilityRule;
-    }
-
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
     {
         $connection = $migrationContext->getConnection();

@@ -100,8 +100,6 @@ interface MappingServiceInterface
 
     public function writeMapping(Context $context): void;
 
-    public function getDefaultAvailabilityRule(Context $context): ?string;
-
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string;
 
     public function getLowestRootCategoryUuid(Context $context): ?string;

@@ -363,7 +363,8 @@
           "salutation": "Salutation",
           "delivery_time": "Delivery time",
           "salesChannel": "Newsletter saleschannel",
-          "newsletter_status": "Newsletter status"
+          "newsletter_status": "Newsletter status",
+          "shipping_availability_rule": "Shipping availability rule"
         }
       },
       "loadingScreenCard": {

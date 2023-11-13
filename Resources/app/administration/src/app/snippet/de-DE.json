@@ -364,7 +364,8 @@
           "salutation": "Anrede",
           "delivery_time": "Lieferzeit",
           "salesChannel": "Newsletter-Verkaufskanäle",
-          "newsletter_status": "Newsletter-Status"
+          "newsletter_status": "Newsletter-Status",
+          "shipping_availability_rule": "Versandkostenverfügbarkeitsregel"
         }
       },
       "loadingScreenCard": {

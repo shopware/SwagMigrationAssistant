@@ -1,5 +1,6 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION
 - NEXT-31367 - Verbesserung der ConnectionFactory, damit sie stabiler funktioniert
+- MIG-881 - [BREAKING] Methode `getDefaultAvailabilityRule` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen das Premapping von `default_shipping_availability_rule`.
 
 # 6.0.1
 - MIG-887 - Verbesserung der Performance des Endpunktes, welcher alle Daten erfasst, die anschließend geschrieben werden sollen
