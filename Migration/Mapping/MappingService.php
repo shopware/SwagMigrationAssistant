@@ -13,7 +13,6 @@ use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
-use Shopware\Core\Content\Rule\RuleEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -824,24 +823,6 @@ class MappingService implements MappingServiceInterface
         }
 
         return $uuids;
-    }
-
-    public function getDefaultAvailabilityRule(Context $context): ?string
-    {
-        if (isset($this->defaultAvailabilityRule)) {
-            return $this->defaultAvailabilityRule;
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('name', 'Cart >= 0'));
-
-        $result = $this->ruleRepo->search($criteria, $context)->first();
-
-        if ($result instanceof RuleEntity) {
-            $this->defaultAvailabilityRule = $result->getId();
-        }
-
-        return $this->defaultAvailabilityRule;
     }
 
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string

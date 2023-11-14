@@ -58,10 +58,10 @@ class DeliveryTimeReaderTest extends TestCase
         $timeTwo->setName('2-5 days');
 
         $premapping = [[
-            'entity' => 'delivery_time',
+            'entity' => DeliveryTimeReader::getMappingName(),
             'mapping' => [
                 0 => [
-                    'sourceId' => 'default_delivery_time',
+                    'sourceId' => DeliveryTimeReader::SOURCE_ID,
                     'description' => 'Default delivery time',
                     'destinationUuid' => $this->timeOne->getId(),
                 ],

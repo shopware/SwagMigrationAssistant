@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -131,7 +132,7 @@ class SalesChannelConverterTest extends TestCase
 
         $defaultPaymentId = Uuid::randomHex();
         $defaultShippingId = Uuid::randomHex();
-        $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::PAYMENT_METHOD, 'default_payment_method', $context, null, null, $defaultPaymentId);
+        $this->mappingService->getOrCreateMapping($connection->getId(), PaymentMethodReader::getMappingName(), PaymentMethodReader::SOURCE_ID, $context, null, null, $defaultPaymentId);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::SHIPPING_METHOD, 'default_shipping_method', $context, null, null, $defaultShippingId);
 
         $convertResult = $this->converter->convert($salesChannelData[0], $context, $this->migrationContext);

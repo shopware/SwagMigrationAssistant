@@ -122,7 +122,7 @@ class OrderConverterTest extends TestCase
         $mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'mr', $context, null, [], Uuid::randomHex());
         $mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'ms', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, DeliveryTimeReader::getMappingName(), 'default_delivery_time', $context, null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($connectionId, DeliveryTimeReader::getMappingName(), DeliveryTimeReader::SOURCE_ID, $context, null, [], Uuid::randomHex());
 
         $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
         $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');

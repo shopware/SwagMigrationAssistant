@@ -1,5 +1,8 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION
+# REPLACE-GLOBALLY-WITH-NEXT-MAJOR-VERSION
 - NEXT-31367 - Verbesserung der ConnectionFactory, damit sie stabiler funktioniert
+- MIG-881 - Behebt einen Fehler bei der Konvertierung von Versandarten und Versandkosten und migriert auch Versandarten mit unbekanntem Berechnungstyp.
+- MIG-881 - [BREAKING] Methode `getDefaultAvailabilityRule` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen das Premapping von `default_shipping_availability_rule`.
+- MIG-881 - [BREAKING] Parameter `customerRepository` von `Migration/MessageQueue/OrderCountIndexer.php` wurde entfernt.
 
 # 6.0.1
 - MIG-887 - Verbesserung der Performance des Endpunktes, welcher alle Daten erfasst, die anschließend geschrieben werden sollen

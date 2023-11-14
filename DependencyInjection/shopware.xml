@@ -790,6 +790,11 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader">
+            <argument type="service" id="rule.repository"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader">
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>

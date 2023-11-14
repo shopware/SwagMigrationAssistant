@@ -14,9 +14,13 @@ use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
 #[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
@@ -61,6 +65,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         'availabilityRuleId' => 'availability_rule_id',
     ];
 
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
@@ -75,19 +86,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->connectionId = $connection->getId();
         }
 
-        if (!isset($data['calculation'])
-            || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
-        ) {
-            $this->loggingService->addLogEntry(new UnsupportedShippingCalculationType(
-                $this->runId,
-                DefaultEntities::SHIPPING_METHOD,
-                $this->oldShippingMethod,
-                $data['calculation']
-            ));
-
-            return new ConvertStruct(null, $data);
-        }
-
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -100,8 +98,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $defaultDeliveryTimeMapping = $this->mappingService->getMapping(
             $this->connectionId,
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
+            DeliveryTimeReader::getMappingName(),
+            DeliveryTimeReader::SOURCE_ID,
             $this->context
         );
 
@@ -110,9 +108,15 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->mappingIds[] = $defaultDeliveryTimeMapping['id'];
         }
 
-        $defaultAvailabilityRuleUuid = $this->mappingService->getDefaultAvailabilityRule($this->context);
+        $defaultAvailabilityRuleUuid = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultShippingAvailabilityRuleReader::getMappingName(),
+            DefaultShippingAvailabilityRuleReader::SOURCE_ID,
+            $this->context
+        );
         if ($defaultAvailabilityRuleUuid !== null) {
-            $converted['availabilityRuleId'] = $defaultAvailabilityRuleUuid;
+            $converted['availabilityRuleId'] = $defaultAvailabilityRuleUuid['entityUuid'];
+            $this->mappingIds[] = $defaultAvailabilityRuleUuid['id'];
         }
 
         $fields = $this->checkForEmptyRequiredConvertedFields($converted, $this->requiredDataFields);
@@ -149,8 +153,19 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
 
         if (isset($data['shippingCosts'])) {
-            $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
-            $converted['prices'] = $this->getShippingCosts($data['shippingCosts'], $calculationType, $priceRule);
+            if (!isset($data['calculation'])
+                || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
+            ) {
+                $this->loggingService->addLogEntry(new UnsupportedShippingCalculationType(
+                    $this->runId,
+                    DefaultEntities::SHIPPING_METHOD,
+                    $this->oldShippingMethod,
+                    $data['calculation']
+                ));
+            } else {
+                $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
+                $converted['prices'] = $this->getShippingCosts($data, $calculationType, $priceRule);
+            }
         }
 
         $this->setCustomAvailabilityRule($data, $converted);
@@ -555,8 +570,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $rule;
     }
 
-    protected function getShippingCosts(array $shippingCosts, int $calculationType, ?array $rule): array
+    protected function getShippingCosts(array $data, int $calculationType, ?array $rule): array
     {
+        $shippingCosts = $data['shippingCosts'];
+        $taxRate = 0.0;
+        if (isset($data['tax']['tax'])) {
+            $taxRate = (float) $data['tax']['tax'];
+        }
+
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
             $key = (int) $key;
@@ -612,7 +633,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             $this->convertValue($cost, 'quantityStart', $shippingCost, 'from', self::TYPE_FLOAT);
-            $this->convertValue($cost, 'price', $shippingCost, 'value', self::TYPE_FLOAT);
+
+            $priceNet = \round(((float) $shippingCost['value'] * 100) / (100 + $taxRate), $this->context->getRounding()->getDecimals());
+            $cost['currencyPrice'] = [[
+                'currencyId' => $currencyUuid,
+                'gross' => (float) $shippingCost['value'],
+                'net' => $priceNet,
+                'linked' => true,
+            ]];
 
             if ($rule !== null) {
                 $cost['rule'] = $rule;

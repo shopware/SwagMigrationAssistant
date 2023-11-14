@@ -33,6 +33,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class PaymentMethodReader extends AbstractPremappingReader
 {
+    public const SOURCE_ID = 'default_payment_method';
     private const MAPPING_NAME = 'payment_method';
 
     /**
@@ -116,15 +117,15 @@ class PaymentMethodReader extends AbstractPremappingReader
         }
 
         $uuid = '';
-        if (isset($this->connectionPremappingDictionary['default_payment_method'])) {
-            $uuid = $this->connectionPremappingDictionary['default_payment_method']['destinationUuid'];
+        if (isset($this->connectionPremappingDictionary[self::SOURCE_ID])) {
+            $uuid = $this->connectionPremappingDictionary[self::SOURCE_ID]['destinationUuid'];
 
             if (!isset($this->choiceUuids[$uuid])) {
                 $uuid = '';
             }
         }
 
-        $entityData[] = new PremappingEntityStruct('default_payment_method', 'Standard Payment Method', $uuid);
+        $entityData[] = new PremappingEntityStruct(self::SOURCE_ID, 'Standard Payment Method', $uuid);
         \usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
             return \strcmp($item1->getDescription(), $item2->getDescription());
         });

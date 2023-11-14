@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageLog;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 
 #[Package('services-settings')]
 abstract class SalesChannelConverter extends ShopwareConverter
@@ -309,8 +310,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if ($id === '') {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
-                DefaultEntities::PAYMENT_METHOD,
-                'default_payment_method',
+                PaymentMethodReader::getMappingName(),
+                PaymentMethodReader::SOURCE_ID,
                 $this->context
             );
 

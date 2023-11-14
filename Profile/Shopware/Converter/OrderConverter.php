@@ -169,10 +169,19 @@ abstract class OrderConverter extends ShopwareConverter
             );
         }
 
+        $orderCustomerMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::ORDER_CUSTOMER,
+            $this->oldId,
+            $this->context
+        );
+
         $converted['orderCustomer'] = [
+            'id' => $orderCustomerMapping['entityUuid'],
             'customerId' => $customerMapping['entityUuid'],
         ];
         $this->mappingIds[] = $customerMapping['id'];
+        $this->mappingIds[] = $orderCustomerMapping['id'];
         unset($customerMapping);
 
         $salutationUuid = $this->getSalutation($data['customer']['salutation']);

@@ -18,6 +18,8 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -63,18 +65,8 @@ class ShippingMethodConverterTest extends TestCase
 
         $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
-            $this->context,
-            null,
-            null,
-            Uuid::randomHex()
-        );
-
-        $this->mappingService->getOrCreateMapping(
-            $this->connection->getId(),
-            DefaultEntities::DELIVERY_TIME,
-            'default_delivery_time',
+            DeliveryTimeReader::getMappingName(),
+            DeliveryTimeReader::SOURCE_ID,
             $this->context,
             null,
             null,
@@ -85,6 +77,16 @@ class ShippingMethodConverterTest extends TestCase
             $this->connection->getId(),
             DefaultEntities::CURRENCY,
             'EUR',
+            $this->context,
+            null,
+            null,
+            Uuid::randomHex()
+        );
+
+        $this->mappingService->getOrCreateMapping(
+            $this->connection->getId(),
+            DefaultShippingAvailabilityRuleReader::getMappingName(),
+            DefaultShippingAvailabilityRuleReader::SOURCE_ID,
             $this->context,
             null,
             null,
@@ -121,8 +123,8 @@ class ShippingMethodConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         $error = new UnsupportedShippingCalculationType('', DefaultEntities::SHIPPING_METHOD, '15', '5');
 
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getConverted());
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
         static::assertSame($error->getSourceId(), $logs[0]['sourceId']);

@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -24,6 +25,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -181,8 +183,8 @@ class MappingServiceTest extends TestCase
         $value = 'unspecified';
         $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context,
             null,
             null,
@@ -193,8 +195,8 @@ class MappingServiceTest extends TestCase
 
         $retrieved1 = $this->mappingService->getValue(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context
         );
         static::assertSame($value, $retrieved1);
@@ -205,8 +207,8 @@ class MappingServiceTest extends TestCase
 
         $retrieved2 = $this->mappingService->getValue(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context
         );
         static::assertSame($value, $retrieved2);
@@ -224,8 +226,8 @@ class MappingServiceTest extends TestCase
         $value = 'unspecified';
         $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context,
             null,
             null,
@@ -255,14 +257,14 @@ class MappingServiceTest extends TestCase
         static::assertSame($mapping, $mapping2);
         $value2 = $this->mappingService->getValue(
             $this->connectionId,
-            'newsletter_status',
-            'default_newsletter_recipient_status',
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
             $context
         );
         static::assertSame($value, $value2);
     }
 
-    private function createMappingService(): void
+    private function createMappingService(?StaticEntityRepository $ruleRepository = null): void
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
@@ -272,7 +274,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
+            $ruleRepository ?? $this->getContainer()->get('rule.repository'),
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
             $this->getContainer()->get('category.repository'),
