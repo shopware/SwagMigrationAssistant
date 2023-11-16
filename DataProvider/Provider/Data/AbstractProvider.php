@@ -125,4 +125,19 @@ abstract class AbstractProvider implements ProviderInterface
 
         return $cleanResult;
     }
+
+    protected function cleanupAssociationToOnlyContainIds(array &$mainEntity, string $associationName): void
+    {
+        if (!isset($mainEntity[$associationName])) {
+            return;
+        }
+
+        $ids = [];
+        foreach ($mainEntity[$associationName] as $entity) {
+            $ids[] = [
+                'id' => $entity['id'],
+            ];
+        }
+        $mainEntity[$associationName] = $ids;
+    }
 }

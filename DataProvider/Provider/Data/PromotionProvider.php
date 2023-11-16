@@ -54,36 +54,10 @@ class PromotionProvider extends AbstractProvider
 
     private function cleanupAssociations(array &$cleanResult): void
     {
-        foreach ($cleanResult as $key => $promotion) {
-            if (isset($promotion['personaRules'])) {
-                $cleanPromotion = [];
-                foreach ($promotion['personaRules'] as $rule) {
-                    $cleanPromotion[] = [
-                        'id' => $rule['id'],
-                    ];
-                }
-                $cleanResult[$key]['personaRules'] = $cleanPromotion;
-            }
-
-            if (isset($promotion['cartRules'])) {
-                $cleanPromotion = [];
-                foreach ($promotion['cartRules'] as $rule) {
-                    $cleanPromotion[] = [
-                        'id' => $rule['id'],
-                    ];
-                }
-                $cleanResult[$key]['cartRules'] = $cleanPromotion;
-            }
-
-            if (isset($promotion['personaCustomers'])) {
-                $cleanPromotion = [];
-                foreach ($promotion['personaCustomers'] as $customer) {
-                    $cleanPromotion[] = [
-                        'id' => $customer['id'],
-                    ];
-                }
-                $cleanResult[$key]['personaCustomers'] = $cleanPromotion;
-            }
+        foreach ($cleanResult as &$promotion) {
+            $this->cleanupAssociationToOnlyContainIds($promotion, 'personaRules');
+            $this->cleanupAssociationToOnlyContainIds($promotion, 'cartRules');
+            $this->cleanupAssociationToOnlyContainIds($promotion, 'personaCustomers');
         }
     }
 }

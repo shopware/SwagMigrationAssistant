@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
+use SwagMigrationAssistant\Migration\DisplayWarning;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
@@ -35,7 +36,8 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         private readonly EntityRepository $currencyRepository,
         private readonly EntityRepository $languageRepository,
         private readonly TotalReaderInterface $totalReader,
-        private readonly TableReaderInterface $tableReader
+        private readonly TableReaderInterface $tableReader,
+        private readonly string $shopwareVersion,
     ) {
     }
 
@@ -104,18 +106,25 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             );
         }
 
-        $updateAvailable = false;
-        if (isset($environmentData['environmentInformation']['updateAvailable'])) {
-            $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
+        $migrationDisabled = false;
+        $displayWarnings = [];
+        if (!$this->isMajorVersionMatching($environmentDataArray['shopwareVersion'])) {
+            $migrationDisabled = true;
+            $displayWarnings[] = new DisplayWarning('swag-migration.index.shopwareMajorVersionText', [
+                'sourceSystem' => 'Shopware ' . $this->reduceVersionTextToMajorOnly($environmentDataArray['shopwareVersion']),
+                'targetSystem' => 'Shopware ' . $this->reduceVersionTextToMajorOnly($this->shopwareVersion),
+            ]);
         }
 
-        $displayWarnings = [];
-        /*
-        if ($updateAvailable) {
-            ToDo@MJ implement proper version validation to make sure the other shopware instance is compatible with this one.
-            ToDo@MJ show the user an appropriate error message
+        if (isset($environmentDataArray['updateAvailable'])) {
+            // only show a warning, migration is still allowed
+            if ($environmentDataArray['updateAvailable']) {
+                $displayWarnings[] = new DisplayWarning('swag-migration.index.pluginVersionText', [
+                    'sourceSystem' => 'Shopware ' . $this->reduceVersionTextToMajorOnly($environmentDataArray['shopwareVersion']),
+                    'pluginName' => 'Migration Assistant',
+                ]);
+            }
         }
-        */
 
         /** @var CurrencyEntity $targetSystemCurrency */
         $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
@@ -140,7 +149,7 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             $totals,
             $environmentDataArray['additionalData'],
             $environmentData['requestStatus'],
-            $updateAvailable,
+            $migrationDisabled,
             $displayWarnings,
             $targetSystemCurrency->getIsoCode(),
             $environmentDataArray['defaultCurrency'],
@@ -157,5 +166,32 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
         return $this->tableReader->read($migrationContext, $tableName, $filter);
+    }
+
+    private function isMajorVersionMatching(string $otherVersion): bool
+    {
+        // like 6.5.9999999.9999999-dev
+        $selfVersionParts = explode('.', $this->shopwareVersion);
+        // like 6.4.1
+        $otherVersionParts = explode('.', $otherVersion);
+        if (\count($selfVersionParts) < 2 || \count($otherVersionParts) < 2) {
+            return false;
+        }
+
+        // check that other major version is equal to self major version
+        return $otherVersionParts[1] === $selfVersionParts[1];
+    }
+
+    private function reduceVersionTextToMajorOnly(string $versionText): string
+    {
+        $versionParts = explode('.', $versionText);
+        if (\count($versionParts) < 2) {
+            return $versionText;
+        }
+
+        return implode('.', [
+            $versionParts[0],
+            $versionParts[1],
+        ]);
     }
 }

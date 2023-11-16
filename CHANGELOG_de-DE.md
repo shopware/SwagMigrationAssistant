@@ -1,8 +1,22 @@
 # REPLACE-GLOBALLY-WITH-NEXT-MAJOR-VERSION
 - NEXT-31367 - Verbesserung der ConnectionFactory, damit sie stabiler funktioniert
 - MIG-881 - Behebt einen Fehler bei der Konvertierung von Versandarten und Versandkosten und migriert auch Versandarten mit unbekanntem Berechnungstyp.
+- MIG-878 - Korrektur der Migration von SW6.5 zu SW6.5. Nur gleiche Major-Versionen werden unterstützt.
 - MIG-881 - [BREAKING] Methode `getDefaultAvailabilityRule` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen das Premapping von `default_shipping_availability_rule`.
 - MIG-881 - [BREAKING] Parameter `customerRepository` von `Migration/MessageQueue/OrderCountIndexer.php` wurde entfernt.
+- MIG-878 - [BREAKING] Alle Klassen unter `Profile/Shopware63` wurden entfernt. Verwenden Sie stattdessen die Klassen unter `Profile/Shopware6`.
+- MIG-878 - [BREAKING] Alle Konverter unter `Profile/Shopware6/Converter` wurden so geändert, dass sie nicht `abstrakt` sind und die entsprechenden `supports` Methoden implementieren. Diese ersetzen nun die alten Konverter unter `Profile/Shopware63/Converter`.
+- MIG-878 - [BREAKING] Umbenennung von `Profile/Shopware63/Shopware63Profile.php` in `Profile/Shopware6/Shopware6MajorProfile`.
+- MIG-878 - [BREAKING] `Profile/Shopware6/Shopware6MajorProfile` wurde geändert, um nur noch die aktuelle SW6 Major-Version zu unterstützen.
+- MIG-878 - [BREAKING] `Profile/Shopware6/Shopware6MajorProfile` liefert nun `shopware6major` bei `getName`.
+- MIG-878 - [BREAKING] Umbenennung der Vue-Komponente `swag-migration-profile-shopware6-api-credential-form` in `swag-migration-profile-shopware6major-api-credential-form`.
+- MIG-878 - [BREAKING] Umbenennung der Vue-Komponente `swag-migration-profile-shopware6-api-page-information` in `swag-migration-profile-shopware6major-api-page-information`.
+- MIG-878 - [BREAKING] Die Vue-Komponente `swag-migrationsprofil-shopware63-api-credential-form` wurde entfernt.
+- MIG-878 - [BREAKING] Die Vue-Komponente `swag-migration-profile-shopware63-api-page-information` wurde entfernt.
+- MIG-878 - [BREAKING] Die Datei `Profile/Shopware6/DataSelection/DataSet/ProductMainVariantRelationDataSet.php` wurde entfernt, da sie bereits mit der Entität `Product` in SW6 migriert wurde.
+- MIG-878 - [BREAKING] Die Datei `DataProvider/Provider/Data/ProductMainVariantRelationProvider.php` wurde entfernt, da sie bereits mit der Entität `Product` in SW6 migriert wurde.
+- MIG-878 - [BREAKING] Die Datei `Profile/Shopware6/Gateway/Api/Reader/ProductMainVariantRelationReader.php` wurde entfernt, da sie bereits mit der Entität `Product` in SW6 migriert wurde.
+- MIG-878 - [BREAKING] Die Datei `Profile/Shopware6/Converter/ProductMainVariantRelationConverter.php` wurde entfernt, da sie bereits mit der Entität `Product` in SW6 migriert wurde.
 
 # 6.0.1
 - MIG-887 - Verbesserung der Performance des Endpunktes, welcher alle Daten erfasst, die anschließend geschrieben werden sollen

@@ -1,8 +1,22 @@
 # REPLACE-GLOBALLY-WITH-NEXT-MAJOR-VERSION
 - NEXT-31367 - Improve the ConnectionFactory to work more stable
 - MIG-881 - Fix bug for converting shipping methods and shipping costs and also migrate shipping methods with a unknown calculation type.
+- MIG-878 - Fix migration from SW6.5 to SW6.5. Only same major migrations are supported.
 - MIG-881 - [BREAKING] Removed method `getDefaultAvailabilityRule` of `Migration/Mapping/MappingServiceInterface.php` and all implementors. Use the premapping of `default_shipping_availability_rule` instead.
 - MIG-881 - [BREAKING] Removed parameter `customerRepository` of `Migration/MessageQueue/OrderCountIndexer.php`.
+- MIG-878 - [BREAKING] Removed all classes under `Profile/Shopware63`. Use classes under `Profile/Shopware6` instead.
+- MIG-878 - [BREAKING] Changed all converters under `Profile/Shopware6/Converter` to be not `abstract` and implement the corresponding `supports` methods. These now replace the old converters under `Profile/Shopware63/Converter`.
+- MIG-878 - [BREAKING] Renamed `Profile/Shopware63/Shopware63Profile.php` to `Profile/Shopware6/Shopware6MajorProfile`.
+- MIG-878 - [BREAKING] Changed `Profile/Shopware6/Shopware6MajorProfile` to support only the current SW6 major version.
+- MIG-878 - [BREAKING] Changed `Profile/Shopware6/Shopware6MajorProfile` to now return `shopware6major` on `getName`.
+- MIG-878 - [BREAKING] Renamed `swag-migration-profile-shopware6-api-credential-form` vue component to `swag-migration-profile-shopware6major-api-credential-form`.
+- MIG-878 - [BREAKING] Renamed `swag-migration-profile-shopware6-api-page-information` vue component to `swag-migration-profile-shopware6major-api-page-information`.
+- MIG-878 - [BREAKING] Removed `swag-migration-profile-shopware63-api-credential-form` vue component.
+- MIG-878 - [BREAKING] Removed `swag-migration-profile-shopware63-api-page-information` vue component.
+- MIG-878 - [BREAKING] Removed `Profile/Shopware6/DataSelection/DataSet/ProductMainVariantRelationDataSet.php` because it is already migrated with the `product` entity in SW6.
+- MIG-878 - [BREAKING] Removed `DataProvider/Provider/Data/ProductMainVariantRelationProvider.php` because it is already migrated with the `product` entity in SW6.
+- MIG-878 - [BREAKING] Removed `Profile/Shopware6/Gateway/Api/Reader/ProductMainVariantRelationReader.php` because it is already migrated with the `product` entity in SW6.
+- MIG-878 - [BREAKING] Removed `Profile/Shopware6/Converter/ProductMainVariantRelationConverter.php` because it is already migrated with the `product` entity in SW6.
 
 # 6.0.1
 - MIG-887 - Improve performance of the endpoint, which captures all data to be written afterwards

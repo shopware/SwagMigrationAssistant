@@ -11,11 +11,20 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
-abstract class ProductConverter extends ShopwareMediaConverter
+class ProductConverter extends ShopwareMediaConverter
 {
     private ?string $sourceDefaultCurrencyUuid;
+
+    public function supports(MigrationContextInterface $migrationContext): bool
+    {
+        return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
+            && $this->getDataSetEntity($migrationContext) === ProductDataSet::getEntity();
+    }
 
     public function getMediaUuids(array $converted): ?array
     {

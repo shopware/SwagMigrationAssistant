@@ -81,7 +81,11 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
 
         $converted = [];
         $converted['id'] = $mainProductMapping['entityUuid'];
-        $converted['mainVariantId'] = $variantProductMapping['entityUuid'];
+
+        $converted['variantListingConfig'] = [
+            'displayParent' => true,
+            'mainVariantId' => $variantProductMapping['entityUuid'],
+        ];
         unset($data['id'], $data['ordernumber']);
 
         $returnData = $data;

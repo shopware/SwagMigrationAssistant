@@ -33,6 +33,8 @@ class ProductProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addAssociation('translations');
         $criteria->addAssociation('categories');
+        $criteria->addAssociation('properties');
+        $criteria->addAssociation('options');
         $criteria->addAssociation('prices');
         $criteria->addAssociation('media.media.tags');
         $criteria->addAssociation('media.media.translations');
@@ -58,9 +60,6 @@ class ProductProvider extends AbstractProvider
             'tax', // taxId is already provided
             'productId',
             'cheapestPrice',
-            'mainVariantId',
-            'propertyIds',
-            'optionIds',
             'tagIds',
             'categoryIds',
             'streamIds',
@@ -80,17 +79,11 @@ class ProductProvider extends AbstractProvider
             'userId', // maybe put back in, if we migrate users
         ]);
 
-        // cleanup categories - only ids are needed
-        foreach ($cleanResult as $key => $product) {
-            if (isset($product['categories'])) {
-                $cleanCategories = [];
-                foreach ($product['categories'] as $category) {
-                    $cleanCategories[] = [
-                        'id' => $category['id'],
-                    ];
-                }
-                $cleanResult[$key]['categories'] = $cleanCategories;
-            }
+        // cleanup association entities - only ids are needed
+        foreach ($cleanResult as &$product) {
+            $this->cleanupAssociationToOnlyContainIds($product, 'categories');
+            $this->cleanupAssociationToOnlyContainIds($product, 'properties');
+            $this->cleanupAssociationToOnlyContainIds($product, 'options');
         }
 
         return $cleanResult;

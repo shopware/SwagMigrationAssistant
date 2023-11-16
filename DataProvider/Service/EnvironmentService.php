@@ -8,10 +8,14 @@
 namespace SwagMigrationAssistant\DataProvider\Service;
 
 use Shopware\Core\Defaults;
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider;
+use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageEntity;
 
@@ -22,7 +26,9 @@ class EnvironmentService implements EnvironmentServiceInterface
         private readonly EntityRepository $currencyRepository,
         private readonly EntityRepository $languageRepository,
         private readonly string $shopwareVersion,
-        private readonly string $shopwareRevision
+        private readonly string $shopwareRevision,
+        private readonly StoreClient $storeClient,
+        private readonly AbstractExtensionDataProvider $extensionDataProvider,
     ) {
     }
 
@@ -41,6 +47,7 @@ class EnvironmentService implements EnvironmentServiceInterface
         if ($defaultLanguageLocale !== null) {
             $defaultLanguageLocaleCode = $defaultLanguageLocale->getCode();
         }
+        $updateAvailable = $this->isPluginUpdateAvailable($context);
 
         return [
             'defaultShopLanguage' => $defaultLanguageLocaleCode,
@@ -49,7 +56,36 @@ class EnvironmentService implements EnvironmentServiceInterface
             'versionText' => $this->shopwareVersion,
             'revision' => $this->shopwareRevision,
             'additionalData' => [],
-            'updateAvailable' => false,
+            'updateAvailable' => $updateAvailable,
         ];
+    }
+
+    private function isPluginUpdateAvailable(Context $context): bool
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('name', 'SwagMigrationAssistant'));
+        $extensions = $this->extensionDataProvider->getInstalledExtensions($context, false, $criteria);
+
+        try {
+            $systemContext = new Context(
+                new SystemSource(),
+                $context->getRuleIds(),
+                $context->getCurrencyId(),
+                $context->getLanguageIdChain(),
+                $context->getVersionId(),
+                $context->getCurrencyFactor(),
+                $context->considerInheritance(),
+                $context->getTaxState(),
+                $context->getRounding()
+            );
+
+            $updatesList = $this->storeClient->getExtensionUpdateList($extensions, $systemContext);
+        } catch (\Exception) {
+            // ignore failures here => so it is unknown if an update is available,
+            // but it is still possible to connect to this shop
+            return false;
+        }
+
+        return \count($updatesList) === 1;
     }
 }

@@ -47,16 +47,8 @@ class ProductStreamProvider extends AbstractProvider
         ]);
 
         // cleanup categories - only ids are needed
-        foreach ($cleanResult as $key => $stream) {
-            if (isset($stream['categories'])) {
-                $cleanCategories = [];
-                foreach ($stream['categories'] as $category) {
-                    $cleanCategories[] = [
-                        'id' => $category['id'],
-                    ];
-                }
-                $cleanResult[$key]['categories'] = $cleanCategories;
-            }
+        foreach ($cleanResult as &$stream) {
+            $this->cleanupAssociationToOnlyContainIds($stream, 'categories');
         }
 
         return $cleanResult;

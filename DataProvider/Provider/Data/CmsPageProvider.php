@@ -68,16 +68,8 @@ class CmsPageProvider extends AbstractProvider
         ], ['config']);
 
         // cleanup categories - only ids are needed
-        foreach ($cleanResult as $key => $page) {
-            if (isset($page['categories'])) {
-                $cleanCategories = [];
-                foreach ($page['categories'] as $category) {
-                    $cleanCategories[] = [
-                        'id' => $category['id'],
-                    ];
-                }
-                $cleanResult[$key]['categories'] = $cleanCategories;
-            }
+        foreach ($cleanResult as &$page) {
+            $this->cleanupAssociationToOnlyContainIds($page, 'categories');
         }
 
         return $cleanResult;
