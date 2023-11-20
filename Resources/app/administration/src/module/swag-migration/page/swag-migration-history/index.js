@@ -1,7 +1,7 @@
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin, State } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
@@ -164,7 +164,8 @@ Component.register('swag-migration-history', {
         },
 
         onMigrateButtonClick() {
-            this.$router.push({ name: 'swag.migration.index.main', params: { startMigration: true } });
+            State.commit('swagMigration/ui/setStartMigration', true);
+            this.$router.push({ name: 'swag.migration.index.main' });
         },
 
         onContextDownloadLogFile(runId) {

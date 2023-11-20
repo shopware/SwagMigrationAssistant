@@ -12,7 +12,28 @@
             {% endblock %}
 
             {% block swag_migration_router_view %}
-                <router-view
+                {% if VUE3 %}
+                    <router-view v-slot="{ Component }">
+                        <component
+                            :is="Component"
+                            v-show="!isLoading && !childIsLoading"
+                            :currentConnectionId="connection.id"
+                            :profileInformationComponent="profileInformationComponent"
+                            :credentialsComponent="credentialsComponent"
+                            :credentials="connection.credentialFields"
+                            :errorMessageSnippet="errorMessageSnippet"
+                            :connectionNameErrorCode="connectionNameErrorCode"
+                            @onChildRouteReadyChanged="onChildRouteReadyChanged"
+                            @onTriggerPrimaryClick="triggerPrimaryClick"
+                            @onProfileSelected="onProfileSelected"
+                            @onChangeConnectionName="onChangeConnectionName"
+                            @onConnectionSelected="onConnectionSelected"
+                            @onCredentialsChanged="onCredentialsChanged"
+                            @onIsLoadingChanged="onChildIsLoadingChanged"
+                        ></component>
+                    </router-view>
+                {% else %}
+                    <router-view
                         v-show="!isLoading && !childIsLoading"
                         :currentConnectionId="connection.id"
                         :profileInformationComponent="profileInformationComponent"
@@ -26,14 +47,13 @@
                         @onChangeConnectionName="onChangeConnectionName"
                         @onConnectionSelected="onConnectionSelected"
                         @onCredentialsChanged="onCredentialsChanged"
-                        @onIsLoadingChanged="onChildIsLoadingChanged">
-                </router-view>
+                        @onIsLoadingChanged="onChildIsLoadingChanged"
+                    ></router-view>
+                {% endif %}
             {% endblock %}
 
-            <template #modal-footer class="swag-migration-wizard__footer">
-
+            <template class="swag-migration-wizard__footer" #modal-footer>
                 {% block swag_migration_wizard_footer %}
-
                     {% block swag_migration_wizard_arrow %}
                         <div class="swag-migration-wizard__left-actions">
                             <sw-button v-show="buttonBackVisible"
@@ -60,7 +80,6 @@
                                 <sw-button size="small"
                                            variant="primary"
                                            :disabled="buttonPrimaryDisabled"
-                                           ref="primaryButton"
                                            @click="onButtonPrimaryClick">
                                     {{ $tc(buttonPrimarySnippet) }}
                                 </sw-button>
@@ -69,7 +88,6 @@
                     {% endblock %}
                 {% endblock %}
             </template>
-
         </sw-modal>
     </div>
 {% endblock %}

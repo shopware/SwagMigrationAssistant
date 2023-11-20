@@ -74,11 +74,7 @@
                 {% endblock %}
 
                 {% block swag_migration_assistant_migrationOverview_content %}
-                    <i18n class="swag-migration-assistant__content"
-                          path="swag-migration.index.assistantCard.migrationOverview.content"
-                          tag="p">
-                        <br place="linebreak">
-                    </i18n>
+                <p class="swag-migration-assistant__content">{{ $tc('swag-migration.index.assistantCard.migrationOverview.content') }}</p>
                 {% endblock %}
             </div>
         {% endblock %}

@@ -57,7 +57,9 @@ Component.register('swag-migration-tab-card', {
                 // select first tab
                 if (this.tabItems !== undefined && this.tabItems.length > 0) {
                     this.selectedNumber = this.tabItems[0].name;
-                    this.$refs.tabs.setActiveItem(this.tabItems[0]);
+                    setTimeout(() => {
+                        this.$refs.tabs.setActiveItem(this.tabItems[0]);
+                    });
                 }
             });
         },

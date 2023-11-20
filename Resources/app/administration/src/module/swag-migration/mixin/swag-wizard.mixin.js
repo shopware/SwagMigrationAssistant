@@ -8,6 +8,9 @@ const { debug } = Shopware.Utils;
  * @package services-settings
  */
 Mixin.register('swag-wizard', {
+    inject: [
+        'feature'
+    ],
     data() {
         return {
             routes: {},
@@ -77,6 +80,7 @@ Mixin.register('swag-wizard', {
          */
         routePrevious() {
             let previousRoute;
+
             Object.keys(this.routes).forEach((route) => {
                 if (this.routes[route].index < this.currentRoute.index) {
                     if (previousRoute === undefined ||
@@ -149,10 +153,12 @@ Mixin.register('swag-wizard', {
          * It searches for the route inside this.routes.
          */
         matchCurrentRoute(notifyCallback = true) {
+            const routerCurrentRoute = this.feature.isActive('VUE3') ? this.$router.currentRoute.value : this.$router.currentRoute;
+
             // check for current child route
             let currentRoute;
             const currentRouteFound = Object.keys(this.routes).some((routeIndex) => {
-                if (this.routes[routeIndex].name === this.$router.currentRoute.name) {
+                if (this.routes[routeIndex].name === routerCurrentRoute.name) {
                     currentRoute = this.routes[routeIndex];
                     return true;
                 }

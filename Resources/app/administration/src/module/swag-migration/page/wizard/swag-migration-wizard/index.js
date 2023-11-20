@@ -356,16 +356,6 @@ Component.register('swag-migration-wizard', {
 
         onChildRouteChanged() {
             this.checkForDisabledRoute();
-            if ([
-                this.routes.credentialsSuccess,
-                this.routes.credentialsError,
-            ].includes(this.currentRoute)) {
-                this.$nextTick(() => {
-                    this.$refs.primaryButton.$el.focus();
-                });
-            } else {
-                this.$refs.primaryButton.$el.focus();
-            }
         },
 
         checkForDisabledRoute() {

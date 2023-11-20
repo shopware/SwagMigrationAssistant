@@ -1,6 +1,11 @@
 {% block swag_migration_tab_card %}
     <div class="swag-migration-tab-card">
-        <sw-card class="sw-card--grid" ref="card" :title="title" position-identifier="swag-migration-tab-card">
+        <sw-card
+            class="sw-card--grid"
+            ref="card"
+            :title="title"
+            position-identifier="swag-migration-tab-card"
+        >
             <template #tabs>
 
                 {% block swag_migration_tab_card_item_tab %}
@@ -10,7 +15,12 @@
                         @new-item-active="onNewActiveItem"
                         position-identifier="swag-migration-tab-card-item-tab"
                     >
-                        <sw-tabs-item v-for="(item, key) in items" :name="key.toString()" :key="key.toString()" ref="swTabsItems">
+                        <sw-tabs-item
+                            v-for="(item, key) in items"
+                            :name="key.toString()"
+                            :key="key.toString() + '-tab'"
+                            ref="swTabsItems"
+                        >
 
                             {% block swag_migration_tab_card_item_tab_content %}
                                 <span class="swag-migration-tab-card__title">
@@ -27,11 +37,17 @@
                     </sw-tabs>
                 {% endblock %}
             </template>
-            <template v-for="item in items">
-                    <swag-migration-tab-card-item ref="contentContainer">
-                        <slot name="items" :item="item">
-                        </slot>
-                    </swag-migration-tab-card-item>
+
+            <template
+                v-for="(item, key) in items"
+                :key="key.toString() + '-content'"
+            >
+                <swag-migration-tab-card-item ref="contentContainer">
+                    <slot
+                        name="items"
+                        :item="item"
+                    ></slot>
+                </swag-migration-tab-card-item>
             </template>
 
             <slot>

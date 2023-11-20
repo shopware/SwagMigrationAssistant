@@ -8,4 +8,9 @@ const { Component } = Shopware;
  */
 Component.register('swag-migration-settings-icon', {
     template,
+    computed: {
+        assetFilter() {
+            return Shopware.Filter.getByName('asset');
+        },
+    },
 });

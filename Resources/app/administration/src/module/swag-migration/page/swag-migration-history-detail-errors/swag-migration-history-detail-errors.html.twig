@@ -60,16 +60,15 @@
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_description %}
-                <i18n class="swag-migration-history-detail-errors__description"
-                      path="swag-migration.history.detailPage.logDescription"
-                      tag="p">
+                <p class="swag-migration-history-detail-errors__description">
+                    {{ $tc('swag-migration.history.detailPage.logDescription') }}
+
                     <a class="link"
-                       place="link"
                        href="#"
                        @click.prevent="submitDownload">
                         {{ $tc('swag-migration.history.detailPage.logDownload') }}
                     </a>
-                </i18n>
+                </p>
             {% endblock %}
 
         </div>

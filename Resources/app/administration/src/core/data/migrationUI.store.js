@@ -36,6 +36,11 @@ export default {
         isLoading: false,
 
         /**
+         * Flag to start the migration process when redirecting from different pages.
+         */
+        startMigration: false,
+
+        /**
          * Flag to set the migration ui into a pause state
          */
         isPaused: false,
@@ -78,6 +83,10 @@ export default {
 
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
+        },
+
+        setStartMigration(state, startMigration) {
+            state.startMigration = startMigration;
         },
 
         setIsPaused(state, isPaused) {
