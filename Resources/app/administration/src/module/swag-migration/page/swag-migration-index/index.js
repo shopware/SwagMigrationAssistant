@@ -1,6 +1,6 @@
 import template from './swag-migration-index.html.twig';
 
-const { Component } = Shopware;
+const { Component, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 /**
@@ -92,7 +92,8 @@ Component.register('swag-migration-index', {
                 this.$refs.contentComponent.onMigrate();
             } else {
                 this.$nextTick(() => {
-                    this.$router.push({ name: 'swag.migration.index.main', params: { startMigration: true } });
+                    State.commit('swagMigration/ui/setStartMigration', true);
+                    this.$router.push({ name: 'swag.migration.index.main' });
                 });
             }
         },

@@ -6,12 +6,23 @@
 
                 {% block swag_migration_index_main_page_warnings %}
                     <div class="swag-migration-index-main-page__warnings">
-                        <sw-alert v-for="warning in displayWarnings"
-                                  class="swag-migration-index-main-page__warning"
-                                  :key="warning.snippetKey"
-                                  variant="warning">
-                            {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
-                        </sw-alert>
+                        <template
+                            v-for="warning in displayWarnings"
+                            {% if VUE3 %}
+                            :key="warning.snippetKey"
+                            {% endif %}
+                        >
+
+                            <sw-alert
+                                class="swag-migration-index-main-page__warning"
+                                variant="warning"
+                                {% if VUE2 %}
+                                :key="warning.snippetKey"
+                                {% endif %}
+                            >
+                                {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
+                            </sw-alert>
+                        </template>
                     </div>
                 {% endblock %}
 

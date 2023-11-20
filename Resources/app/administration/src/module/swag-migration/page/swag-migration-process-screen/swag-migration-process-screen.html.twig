@@ -60,23 +60,26 @@
 
                         {% block swag_migration_index_smart_bar_context_button %}
                             <sw-context-button :disabled="isLoading">
-                                <template slot="button">
-
+                                <template #button>
                                     {% block swag_migration_index_smart_bar_context_button_content %}
-                                        <sw-button square
+                                        <sw-button
+                                            square
                                             variant="primary"
-                                            :disabled="isLoading">
+                                            :disabled="isLoading"
+                                        >
                                             <sw-icon name="regular-chevron-down-xs"></sw-icon>
                                         </sw-button>
                                     {% endblock %}
                                 </template>
 
                                 {% block swag_migration_index_smart_bar_premapping_save_button %}
-                                    <sw-context-menu-item @click="onSaveButtonClick"
-                                                          :disabled="isLoading">
+                                    <sw-context-menu-item
+                                        @click="onSaveButtonClick"
+                                        :disabled="isLoading"
+                                    >
                                         {{ $tc('swag-migration.index.savePremapping.saveButton') }}
                                     </sw-context-menu-item>
-                                {% endblock %}
+                            {% endblock %}
                             </sw-context-button>
                         {% endblock %}
 

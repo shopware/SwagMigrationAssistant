@@ -22,21 +22,29 @@
         {% block swag_migration_index_content %}
             <template #content>
                 <sw-empty-state :title="$tc('swag-migration.emptyScreen.title')">
-                    <i18n class="swag-migration-empty-screen__description"
-                          path="swag-migration.emptyScreen.description"
-                          tag="p">
-                        <br place="linebreak">
-                        <a class="link"
-                           place="link"
-                           href="https://docs.shopware.com/en/migration-en"
-                           target="_blank">
-                            {{ $tc('swag-migration.emptyScreen.link') }}
-                        </a>
-                    </i18n>
-                    <sw-button variant="primary"
-                               @click="onConnectClick">
-                        {{ $tc('swag-migration.emptyScreen.connectButton') }}
-                    </sw-button>
+                    <template>
+                        <i18n-t class="swag-migration-empty-screen__description"
+                                keypath="swag-migration.emptyScreen.description"
+                                tag="p">
+                            <template #linebreak>
+                                <br>
+                            </template>
+                            <template #link>
+                                <a class="link"
+                                   href="https://docs.shopware.com/en/migration-en"
+                                   target="_blank">
+                                    {{ $tc('swag-migration.emptyScreen.link') }}
+                                </a>
+                            </template>
+                        </i18n-t>
+                    </template>
+
+                    <template #actions>
+                        <sw-button variant="primary"
+                                   @click="onConnectClick">
+                            {{ $tc('swag-migration.emptyScreen.connectButton') }}
+                        </sw-button>
+                    </template>
                 </sw-empty-state>
             </template>
         {% endblock %}

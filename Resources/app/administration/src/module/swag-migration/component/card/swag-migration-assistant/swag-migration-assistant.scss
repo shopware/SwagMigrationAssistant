@@ -34,6 +34,10 @@
         margin-bottom: 8px;
     }
 
+    .swag-migration-assistant__content {
+        white-space: pre-line;
+    }
+
     .swag-migration-assistant__content,
     .swag-migration-assistant__link a.link {
         font-size: $font-size-xxs;

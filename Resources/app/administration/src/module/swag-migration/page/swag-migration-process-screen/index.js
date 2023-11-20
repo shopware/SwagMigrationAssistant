@@ -71,6 +71,7 @@ Component.register('swag-migration-process-screen', {
             'unfilledPremapping',
             'premapping',
             'dataSelectionIds',
+            'startMigration',
         ]),
 
         /**
@@ -264,6 +265,9 @@ Component.register('swag-migration-process-screen', {
         async createdComponent() {
             State.commit('swagMigration/ui/setIsLoading', true);
 
+            const shouldStartMigration = this.startMigration;
+            State.commit('swagMigration/ui/setStartMigration', false);
+
             let otherInstanceMigrating = this.isMigrating;
             if (this.isMigrating === false) {
                 await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
@@ -315,7 +319,7 @@ Component.register('swag-migration-process-screen', {
                             connectionCheckResponse.requestStatus.isWarning === false &&
                             connectionCheckResponse.requestStatus.code !== ''
                         ) ||
-                        (!otherInstanceMigrating && !this.$route.params.startMigration)
+                        (!otherInstanceMigrating && !shouldStartMigration)
                     ) {
                         this.$router.push({ name: 'swag.migration.index.main' });
                         return Promise.resolve();
@@ -326,12 +330,12 @@ Component.register('swag-migration-process-screen', {
                     if (
                         (this.isMigrating ||
                         this.migrationWorkerService.status === MIGRATION_STATUS.FINISHED) &&
-                        !this.$route.params.startMigration
+                        !shouldStartMigration
                     ) {
                         this.restoreRunningMigration();
                     }
 
-                    if (this.$route.params.startMigration) {
+                    if (shouldStartMigration) {
                         await this.onMigrate();
                     }
 
@@ -573,7 +577,6 @@ Component.register('swag-migration-process-screen', {
         onFinishWithoutErrors() {
             State.commit('swagMigration/ui/setComponentIndex', UI_COMPONENT_INDEX.RESULT_SUCCESS);
             this.$root.$emit('sales-channel-change');
-            this.$root.$emit('on-change-notification-center-visibility', true);
         },
 
         onCloseAbortMigrationConfirmDialog() {

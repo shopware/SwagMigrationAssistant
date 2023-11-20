@@ -243,7 +243,7 @@
         },
         "migrationOverview": {
           "title": "Die Migration im Überblick",
-          "content": "1. Ein Datencheck prüft Deine Daten. Gegebenfalls wird eine Zuordnung benötigt.{linebreak}2. Die Daten werden von Deinem System gelesen und zugeordnet.{linebreak}3. Die Daten werden in Shopware 6 geschrieben.{linebreak}4. Die Medien werden heruntergeladen."
+          "content": "1. Ein Datencheck prüft Deine Daten. Gegebenfalls wird eine Zuordnung benötigt.\n2. Die Daten werden von Deinem System gelesen und zugeordnet.\n3. Die Daten werden in Shopware 6 geschrieben.\n4. Die Medien werden heruntergeladen."
         }
       },
       "selectDataCard": {

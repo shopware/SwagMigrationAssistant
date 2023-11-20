@@ -36,6 +36,7 @@ Component.register('swag-migration-main-page', {
 
         ...mapState('swagMigration/ui', [
             'isLoading',
+            'startMigration',
         ]),
 
         displayWarnings() {
@@ -94,7 +95,7 @@ Component.register('swag-migration-main-page', {
                 return;
             }
 
-            if (this.$route.params.startMigration) {
+            if (this.startMigration) {
                 await this.onMigrate();
             }
 
@@ -112,7 +113,7 @@ Component.register('swag-migration-main-page', {
 
                 // navigate to process screen
                 State.commit('swagMigration/ui/setIsLoading', true);
-                this.$router.push({ name: 'swag.migration.processScreen', params: { startMigration: true } });
+                this.$router.push({ name: 'swag.migration.processScreen' });
             });
         },
     },

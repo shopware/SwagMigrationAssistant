@@ -243,7 +243,7 @@
         },
         "migrationOverview": {
           "title": "Migration steps",
-          "content": "1. An automatic process checks the selected data for missing assignments. Prepare to complete the automatic process by adding manual assignments.{linebreak}2. Your shop‘s data is read and assigned.{linebreak}3. All selected and properly assigned data gets transferred to Shopware 6.{linebreak}4. Media items are downloaded."
+          "content": "1. An automatic process checks the selected data for missing assignments. Prepare to complete the automatic process by adding manual assignments.\n2. Your shop‘s data is read and assigned.\n3. All selected and properly assigned data gets transferred to Shopware 6.\n4. Media items are downloaded."
         }
       },
       "selectDataCard": {
