@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-MAJOR-VERSION
+# 7.0.0
 - NEXT-31367 - Verbesserung der ConnectionFactory, damit sie stabiler funktioniert
 - MIG-881 - Behebt einen Fehler bei der Konvertierung von Versandarten und Versandkosten und migriert auch Versandarten mit unbekanntem Berechnungstyp.
 - MIG-878 - Korrektur der Migration von SW6.5 zu SW6.5. Nur gleiche Major-Versionen werden unterstützt.
