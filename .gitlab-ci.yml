@@ -1,11 +1,11 @@
 variables:
     PLUGIN_NAME: SwagMigrationAssistant
-    PLATFORM_BRANCH: 'trunk'
+    PLATFORM_BRANCH: '6.5.x'
     DEV_IMAGE: shopware/development:8.1-composer-2
 
 include:
     project: 'shopware/6/product/platform'
-    ref: 'trunk'
+    ref: '6.5.x'
     file: '.gitlab/templates/plugin.yml'
 
 ecs:
