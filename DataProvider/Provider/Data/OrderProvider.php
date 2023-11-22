@@ -57,6 +57,13 @@ class OrderProvider extends AbstractProvider
                 $row['taxStatus'],
                 $row['positionPrice']
             );
+
+            // ToDo MIG-902: properly migrate this association
+            if (!empty($row['lineItems'])) {
+                foreach ($row['lineItems'] as &$lineItem) {
+                    unset($lineItem['promotionId']);
+                }
+            }
         }
 
         return $result;

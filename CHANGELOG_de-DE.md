@@ -2,6 +2,9 @@
 - NEXT-31367 - Verbesserung der ConnectionFactory, damit sie stabiler funktioniert
 - MIG-881 - Behebt einen Fehler bei der Konvertierung von Versandarten und Versandkosten und migriert auch Versandarten mit unbekanntem Berechnungstyp.
 - MIG-878 - Korrektur der Migration von SW6.5 zu SW6.5. Nur gleiche Major-Versionen werden unterstützt.
+- MIG-905 - Hotfix / bekanntes Problem für SW6->SW6: `canonicalProductId` von `product` wird nicht migriert, verhindert aber vorerst nicht die Migration von Produkten.
+- MIG-905 - Hotfix / bekanntes Problem für SW6->SW6: `cmsPageId` von `product` wird nicht migriert, verhindert aber vorerst nicht die Migration von Produkten.
+- MIG-905 - Hotfix / bekanntes Problem für SW6->SW6: `promotionId` von Einzelposten einer Bestellung wird nicht migriert, verhindert aber nicht die Migration von Bestellungen.
 - MIG-881 - [BREAKING] Methode `getDefaultAvailabilityRule` vom `Migration/Mapping/MappingServiceInterface.php` wurde entfernt und alle Implementierung angepasst. Nutze stattdessen das Premapping von `default_shipping_availability_rule`.
 - MIG-881 - [BREAKING] Parameter `customerRepository` von `Migration/MessageQueue/OrderCountIndexer.php` wurde entfernt.
 - MIG-878 - [BREAKING] Alle Klassen unter `Profile/Shopware63` wurden entfernt. Verwenden Sie stattdessen die Klassen unter `Profile/Shopware6`.

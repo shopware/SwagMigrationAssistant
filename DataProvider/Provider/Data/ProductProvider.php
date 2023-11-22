@@ -77,6 +77,9 @@ class ProductProvider extends AbstractProvider
             'thumbnailsRo',
             'hasFile',
             'userId', // maybe put back in, if we migrate users
+
+            'canonicalProductId', // ToDo MIG-900: properly migrate this association in a separate DataSet
+            'cmsPageId', // ToDo MIG-901: properly migrate this association in a separate DataSet
         ]);
 
         // cleanup association entities - only ids are needed
