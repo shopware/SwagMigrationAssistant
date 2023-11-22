@@ -29,11 +29,11 @@ parameters:
             paths:
                 - Test/**/*Test.php
 
-        # @deprecated tag:v7.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
+        # @deprecated tag:v8.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
         -
             message: '#Instantiation of deprecated class Shopware\\#'
 
-        # @deprecated tag:v7.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
+        # @deprecated tag:v8.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
         -
             message: '#Fetching class constant class of deprecated class Shopware\\#'
 
