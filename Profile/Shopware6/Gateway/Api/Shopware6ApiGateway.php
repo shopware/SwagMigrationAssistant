@@ -171,9 +171,9 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
     private function isMajorVersionMatching(string $otherVersion): bool
     {
         // like 6.5.9999999.9999999-dev
-        $selfVersionParts = explode('.', $this->shopwareVersion);
+        $selfVersionParts = \explode('.', $this->shopwareVersion);
         // like 6.4.1
-        $otherVersionParts = explode('.', $otherVersion);
+        $otherVersionParts = \explode('.', $otherVersion);
         if (\count($selfVersionParts) < 2 || \count($otherVersionParts) < 2) {
             return false;
         }
@@ -184,12 +184,12 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
 
     private function reduceVersionTextToMajorOnly(string $versionText): string
     {
-        $versionParts = explode('.', $versionText);
+        $versionParts = \explode('.', $versionText);
         if (\count($versionParts) < 2) {
             return $versionText;
         }
 
-        return implode('.', [
+        return \implode('.', [
             $versionParts[0],
             $versionParts[1],
         ]);

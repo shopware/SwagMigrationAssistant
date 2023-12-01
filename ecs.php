@@ -33,16 +33,17 @@ file that was distributed with this source code.', 'separate' => 'bottom', 'loca
     $parameters->set('cache_namespace', 'SwagMigrationAssistant');
 
     $parameters->set('paths', [
-        __DIR__ . '/bin',
         __DIR__ . '/Command',
         __DIR__ . '/Controller',
         __DIR__ . '/Core',
+        __DIR__ . '/DataProvider',
         __DIR__ . '/DependencyInjection',
         __DIR__ . '/Exception',
         __DIR__ . '/Migration',
         __DIR__ . '/Profile',
         __DIR__ . '/Resources',
         __DIR__ . '/Test',
+        __DIR__ . '/ecs.php',
         __DIR__ . '/SwagMigrationAssistant.php',
     ]);
 };

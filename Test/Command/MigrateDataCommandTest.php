@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Command;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -17,6 +18,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Command\MigrateDataCommand;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
@@ -35,13 +37,14 @@ use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
-use SwagMigrationAssistant\Test\Mock\Repositories\GeneralSettingRepo;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -144,8 +147,15 @@ class MigrateDataCommandTest extends TestCase
             $this->getContainer()->get(ReaderRegistry::class)
         );
 
+        $setting = new GeneralSettingEntity();
+        $setting->setSelectedConnectionId($this->connectionId);
+        $setting->setUniqueIdentifier($this->connectionId);
+        $generalSettingsRepo = new StaticEntityRepository([
+            new EntityCollection([$setting]),
+            new GeneralSettingDefinition(),
+        ]);
         $this->application->add(new MigrateDataCommand(
-            new GeneralSettingRepo($this->connectionId),
+            $generalSettingsRepo,
             $this->getContainer()->get('swag_migration_connection.repository'),
             $this->getContainer()->get('swag_migration_run.repository'),
             $this->getContainer()->get(DataSetRegistry::class),
