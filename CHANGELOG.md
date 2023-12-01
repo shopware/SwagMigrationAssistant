@@ -1,3 +1,6 @@
+# 7.0.1
+- MIG-907 - Fix Shopware 6 profile name in connections
+
 # 7.0.0
 - NEXT-31367 - Improve the ConnectionFactory to work more stable
 - MIG-881 - Fix bug for converting shipping methods and shipping costs and also migrate shipping methods with a unknown calculation type.

@@ -1,3 +1,6 @@
+# 7.0.1
+- MIG-907 - Shopware 6 Profilenamen in Verbindungen korrigiert
+
 # 7.0.0
 - NEXT-31367 - Verbesserung der ConnectionFactory, damit sie stabiler funktioniert
 - MIG-881 - Behebt einen Fehler bei der Konvertierung von Versandarten und Versandkosten und migriert auch Versandarten mit unbekanntem Berechnungstyp.
