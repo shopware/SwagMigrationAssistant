@@ -15,6 +15,10 @@ interface TableReaderInterface
 {
     /**
      * Reads data from source table via the given gateway based on implementation
+     *
+     * @param array<string, mixed> $filter
+     *
+     * @return array<string, mixed>
      */
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array;
 }

@@ -12,9 +12,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\Language\LanguageEntity;
-use Shopware\Core\System\Locale\LocaleEntity;
+use Shopware\Core\System\Currency\CurrencyCollection;
+use Shopware\Core\System\Language\LanguageCollection;
 use SwagMigrationAssistant\Migration\DisplayWarning;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
@@ -30,6 +29,10 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
 {
     final public const GATEWAY_NAME = 'api';
 
+    /**
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
     public function __construct(
         private readonly ReaderRegistryInterface $readerRegistry,
         private readonly EnvironmentReaderInterface $environmentReader,
@@ -126,19 +129,19 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             }
         }
 
-        /** @var CurrencyEntity $targetSystemCurrency */
-        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
+        $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->getEntities()->get(Defaults::CURRENCY);
+        \assert($targetSystemCurrency !== null);
         if (!isset($environmentDataArray['defaultCurrency'])) {
             $environmentDataArray['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
         }
 
         $criteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
         $criteria->addAssociation('locale');
-        /** @var LanguageEntity $targetSystemLanguage */
-        $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->get(Defaults::LANGUAGE_SYSTEM);
+        $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->getEntities()->get(Defaults::LANGUAGE_SYSTEM);
+        \assert($targetSystemLanguage !== null);
 
-        /** @var LocaleEntity $targetSystemLocale */
         $targetSystemLocale = $targetSystemLanguage->getLocale();
+        \assert($targetSystemLocale !== null);
 
         $totals = $this->readTotals($migrationContext, $context);
 

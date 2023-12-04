@@ -14,7 +14,8 @@ use Shopware\Core\Framework\Struct\Struct;
 class EnvironmentInformation extends Struct
 {
     /**
-     * @param TotalStruct[]    $totals
+     * @param array<string, TotalStruct> $totals
+     * @param array<string, mixed> $additionalData
      * @param DisplayWarning[] $displayWarnings
      */
     public function __construct(
@@ -49,13 +50,16 @@ class EnvironmentInformation extends Struct
     }
 
     /**
-     * @return TotalStruct[]
+     * @return array<string, TotalStruct>
      */
     public function getTotals(): array
     {
         return $this->totals;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getAdditionalData(): array
     {
         return $this->additionalData;

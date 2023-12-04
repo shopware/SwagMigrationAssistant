@@ -20,6 +20,8 @@ interface ReaderInterface
 
     /**
      * Reads data from source via the given gateway based on implementation
+     *
+     * @return array<array<string, mixed>>
      */
     public function read(MigrationContextInterface $migrationContext): array;
 

@@ -32,9 +32,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         }
 
         try {
-            $gateway = $this->gatewayRegistry->getGateway($migrationContext);
-
-            return $gateway->read($migrationContext);
+            return $this->gatewayRegistry->getGateway($migrationContext)->read($migrationContext);
         } catch (\Throwable $exception) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
@@ -49,15 +47,11 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
 
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
-        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
-
-        return $gateway->readEnvironmentInformation($migrationContext, $context);
+        return $this->gatewayRegistry->getGateway($migrationContext)->readEnvironmentInformation($migrationContext, $context);
     }
 
     public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array
     {
-        $gateway = $this->gatewayRegistry->getGateway($migrationContext);
-
-        return $gateway->readTotals($migrationContext, $context);
+        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext, $context);
     }
 }

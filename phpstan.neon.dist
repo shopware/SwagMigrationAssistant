@@ -36,6 +36,14 @@ parameters:
         # @deprecated tag:v8.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
         - '#Fetching class constant class of deprecated class Shopware\\#'
 
+        - # PHPStan does not recognize correctly that the properties are initialized in a private method called in the setUp method
+            message: '#Access to an uninitialized property SwagMigrationAssistant\\Test.*(mappingService|connection|runId)#'
+            paths:
+                - Test/Migration/Controller/StatusControllerTest.php
+                - Test/Migration/Services/MigrationDataWriterTest.php
+                - Test/Migration/Services/MigrationProgressServiceTest.php
+                - Test/Profile/Shopware/Gateway/Local/
+
 services:
     -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
         class: Symplify\PHPStanRules\Rules\NoReturnSetterMethodRule

@@ -10,8 +10,9 @@ namespace SwagMigrationAssistant\Test;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
-use Shopware\Core\Content\Category\CategoryEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -20,18 +21,20 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\Currency\CurrencyEntity;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
-use Shopware\Core\System\Language\LanguageEntity;
-use Shopware\Core\System\Locale\LocaleEntity;
-use Shopware\Core\System\Salutation\SalutationEntity;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
-use Shopware\Core\System\StateMachine\StateMachineEntity;
+use Shopware\Core\System\Country\CountryCollection;
+use Shopware\Core\System\Currency\CurrencyCollection;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
+use Shopware\Core\System\Language\LanguageCollection;
+use Shopware\Core\System\Locale\LocaleCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
+use Shopware\Core\System\Salutation\SalutationCollection;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
+use Shopware\Core\System\StateMachine\StateMachineCollection;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
@@ -59,13 +62,13 @@ use Symfony\Component\Validator\Validation;
 #[Package('services-settings')]
 trait MigrationServicesTrait
 {
+    /**
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
     protected function getMigrationDataFetcher(
-        EntityWriterInterface $entityWriter,
-        MappingService $mappingService,
-        MediaFileServiceInterface $mediaFileService,
         EntityRepository $loggingRepo,
-        EntityDefinition $dataDefinition,
-        DataSetRegistryInterface $dataSetRegistry,
         EntityRepository $currencyRepository,
         EntityRepository $languageRepository,
         ReaderRegistryInterface $readerRegistry
@@ -88,6 +91,13 @@ trait MigrationServicesTrait
         return new MigrationDataFetcher($gatewayRegistry, $loggingService);
     }
 
+    /**
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     * @param EntityRepository<PaymentMethodCollection> $paymentRepo
+     * @param EntityRepository<ShippingMethodCollection> $shippingRepo
+     * @param EntityRepository<CountryCollection> $countryRepo
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepo
+     */
     protected function getMigrationDataConverter(
         EntityWriterInterface $entityWriter,
         MappingService $mappingService,
@@ -122,7 +132,7 @@ trait MigrationServicesTrait
             )
         );
 
-        $migrationDataConverter = new MigrationDataConverter(
+        return new MigrationDataConverter(
             $entityWriter,
             $converterRegistry,
             $mediaFileService,
@@ -130,10 +140,12 @@ trait MigrationServicesTrait
             $dataDefinition,
             new DummyMappingService()
         );
-
-        return $migrationDataConverter;
     }
 
+    /**
+     * @param EntityRepository<StateMachineCollection> $stateMachineRepository
+     * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepository
+     */
     protected function getOrderStateUuid(
         EntityRepository $stateMachineRepository,
         EntityRepository $stateMachineStateRepository,
@@ -143,8 +155,8 @@ trait MigrationServicesTrait
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_MACHINE));
 
-        /** @var StateMachineEntity $stateMachine */
-        $stateMachine = $stateMachineRepository->search($criteria, $context)->first();
+        $stateMachine = $stateMachineRepository->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($stateMachine);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
@@ -194,18 +206,13 @@ trait MigrationServicesTrait
                 return null;
         }
 
-        $result = $stateMachineStateRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            /** @var StateMachineStateEntity $element */
-            $element = $result->getEntities()->first();
-
-            return $element->getId();
-        }
-
-        return null;
+        return $stateMachineStateRepository->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<StateMachineCollection> $stateMachineRepository
+     * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepository
+     */
     protected function getTransactionStateUuid(
         EntityRepository $stateMachineRepository,
         EntityRepository $stateMachineStateRepository,
@@ -215,8 +222,8 @@ trait MigrationServicesTrait
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_MACHINE));
 
-        /** @var StateMachineEntity $stateMachine */
-        $stateMachine = $stateMachineRepository->search($criteria, $context)->first();
+        $stateMachine = $stateMachineRepository->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($stateMachine);
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
@@ -303,113 +310,82 @@ trait MigrationServicesTrait
                 return null;
         }
 
-        $result = $stateMachineStateRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            /** @var StateMachineStateEntity $element */
-            $element = $result->getEntities()->first();
-
-            return $element->getId();
-        }
-
-        return null;
+        return $stateMachineStateRepository->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<PaymentMethodCollection> $paymentRepo
+     */
     private function getPaymentUuid(EntityRepository $paymentRepo, string $technicalName, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('handlerIdentifier', $technicalName));
         $criteria->setLimit(1);
-        $result = $paymentRepo->search($criteria, $context);
 
-        if ($result->getTotal() > 0) {
-            /** @var PaymentMethodEntity $element */
-            $element = $result->getEntities()->first();
-
-            return $element->getId();
-        }
-
-        return null;
+        return $paymentRepo->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<SalutationCollection> $salutationRepo
+     */
     private function getSalutationUuid(EntityRepository $salutationRepo, string $salutationKey, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('salutationKey', $salutationKey));
         $criteria->setLimit(1);
-        $result = $salutationRepo->search($criteria, $context);
 
-        if ($result->getTotal() > 0) {
-            /** @var SalutationEntity $salutation */
-            $salutation = $result->getEntities()->first();
-
-            return $salutation->getId();
-        }
-
-        return null;
+        return $salutationRepo->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
+     */
     private function getFirstDeliveryTimeUuid(EntityRepository $deliveryTimeRepo, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
         $criteria->setLimit(1);
-        $result = $deliveryTimeRepo->search($criteria, $context);
 
-        if ($result->getTotal() > 0) {
-            /** @var DeliveryTimeEntity $deliveryTime */
-            $deliveryTime = $result->getEntities()->first();
-
-            return $deliveryTime->getId();
-        }
-
-        return null;
+        return $deliveryTimeRepo->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<CurrencyCollection> $currencyRepo
+     */
     private function getCurrencyUuid(EntityRepository $currencyRepo, string $isoCode, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('isoCode', $isoCode));
         $criteria->setLimit(1);
-        $result = $currencyRepo->search($criteria, $context);
 
-        if ($result->getTotal() > 0) {
-            /** @var CurrencyEntity $currency */
-            $currency = $result->getEntities()->first();
-
-            return $currency->getId();
-        }
-
-        return null;
+        return $currencyRepo->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<LocaleCollection> $localeRepo
+     * @param EntityRepository<LanguageCollection> $languageRepo
+     */
     private function getLanguageUuid(EntityRepository $localeRepo, EntityRepository $languageRepo, string $code, Context $context): ?string
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('code', $code));
         $criteria->setLimit(1);
-        /** @var LocaleEntity $result */
-        $result = $localeRepo->search($criteria, $context)->first();
+        $localeId = $localeRepo->searchIds($criteria, $context)->firstId();
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('localeId', $result->getId()));
-        $result = $languageRepo->search($criteria, $context);
+        $criteria->addFilter(new EqualsFilter('localeId', $localeId));
 
-        if ($result->getTotal() > 0) {
-            /** @var LanguageEntity $language */
-            $language = $result->getEntities()->first();
-
-            return $language->getId();
-        }
-
-        return null;
+        return $languageRepo->searchIds($criteria, $context)->firstId();
     }
 
+    /**
+     * @param EntityRepository<CategoryCollection> $categoryRepo
+     */
     private function getCategoryUuid(EntityRepository $categoryRepo, Context $context): string
     {
-        /** @var CategoryEntity $category */
-        $category = $categoryRepo->search(new Criteria(), $context)->first();
+        $categoryId = $categoryRepo->searchIds(new Criteria(), $context)->firstId();
+        static::assertIsString($categoryId);
 
-        return $category->getId();
+        return $categoryId;
     }
 }

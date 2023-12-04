@@ -17,7 +17,7 @@ interface PremappingReaderInterface
     public static function getMappingName(): string;
 
     /**
-     * @param string[] $entityGroupNames
+     * @param list<string> $entityGroupNames
      */
     public function supports(MigrationContextInterface $migrationContext, array $entityGroupNames): bool;
 

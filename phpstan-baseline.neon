@@ -76,11 +76,6 @@ parameters:
 			path: Controller/StatusController.php
 
 		-
-			message: "#^This class is missing the \"\\#\\[Package\\(\\.\\.\\.\\)\\]\" attribute \\(recommendation\\: unknown\\)$#"
-			count: 1
-			path: Core/Migration/Migration1701426268RenameProfileInConnections.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\AbstractProvider\\:\\:cleanupAssociationToOnlyContainIds\\(\\) has parameter \\$mainEntity with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: DataProvider/Provider/Data/AbstractProvider.php
@@ -961,26 +956,6 @@ parameters:
 			path: Migration/DataSelection/DataSet/DataSetRegistry.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\EnvironmentInformation\\:\\:__construct\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/EnvironmentInformation.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\EnvironmentInformation\\:\\:getAdditionalData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/EnvironmentInformation.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Gateway/GatewayInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\GatewayInterface\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Gateway/GatewayInterface.php
-
-		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 2
 			path: Migration/Gateway/GatewayRegistry.php
@@ -989,11 +964,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\EnvironmentReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Migration/Gateway/Reader/EnvironmentReaderInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\ReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Gateway/Reader/ReaderInterface.php
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
@@ -2084,26 +2054,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverterInterface\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Migration/Service/MigrationDataConverterInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataFetcher\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MigrationDataFetcher.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataFetcher\\:\\:fetchTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MigrationDataFetcher.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataFetcherInterface\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MigrationDataFetcherInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataFetcherInterface\\:\\:fetchTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MigrationDataFetcherInterface.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:__construct\\(\\) has parameter \\$mappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
@@ -4426,11 +4376,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Api/Reader/ApiReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\ApiReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Api/Reader/ApiReader.php
-
-		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Api/Reader/ApiReader.php
@@ -4666,22 +4611,12 @@ parameters:
 			path: Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
@@ -4766,11 +4701,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CategoryAttributeReader.php
@@ -4792,11 +4722,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:getIgnoredCategories\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
@@ -4836,22 +4761,12 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CrossSellingReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CurrencyReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CurrencyReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
 
@@ -4882,11 +4797,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroups\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
 
@@ -4936,17 +4846,7 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/CustomerReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/CustomerReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerWishlistReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/CustomerWishlistReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerWishlistReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/CustomerWishlistReader.php
 
@@ -5036,17 +4936,7 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MainVariantRelationReader\\:\\:fetchMainVariantRelations\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/MainVariantRelationReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MainVariantRelationReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/MainVariantRelationReader.php
 
@@ -5086,11 +4976,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/MediaReader.php
@@ -5107,11 +4992,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:prepareMedia\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/MediaReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/MediaReader.php
 
@@ -5186,22 +5066,12 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NumberRangeReader\\:\\:fetchNumberRanges\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NumberRangeReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
 
@@ -5222,11 +5092,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderDocumentReader\\:\\:fetchDocuments\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderDocumentReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
 
@@ -5271,11 +5136,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:setEsd\\(\\) has parameter \\$esdArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
@@ -5306,11 +5166,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductOptionRelationReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/ProductPriceAttributeReader.php
@@ -5322,11 +5177,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductPropertyRelationReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductPropertyRelationReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php
 
@@ -5406,22 +5256,12 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReviewReader\\:\\:fetchReviews\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReviewReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
 
@@ -5446,11 +5286,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PromotionReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
@@ -5461,22 +5296,12 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PropertyGroupOptionReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SalesChannelReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SalesChannelReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
 
@@ -5497,11 +5322,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SeoUrlReader\\:\\:fetchSeoUrls\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SeoUrlReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
 
@@ -5561,11 +5381,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\TableReader\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/TableReader.php
@@ -5586,11 +5401,6 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\TranslationReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
@@ -5601,22 +5411,12 @@ parameters:
 			path: Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
 
@@ -6039,26 +5839,6 @@ parameters:
 			message: "#^PHPDoc tag @var with type array\\|bool is not subtype of native type list\\<string\\>\\.$#"
 			count: 1
 			path: Profile/Shopware/Media/Strategy/Md5StrategyResolver.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\DefaultShippingAvailabilityRuleReader has an uninitialized property \\$choiceUuids\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Premapping/DefaultShippingAvailabilityRuleReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\DefaultShippingAvailabilityRuleReader\\:\\:__construct\\(\\) has parameter \\$ruleRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Profile/Shopware/Premapping/DefaultShippingAvailabilityRuleReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\DefaultShippingAvailabilityRuleReader\\:\\:supports\\(\\) has parameter \\$entityGroupNames with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Premapping/DefaultShippingAvailabilityRuleReader.php
-
-		-
-			message: "#^This class is missing the \"\\#\\[Package\\(\\.\\.\\.\\)\\]\" attribute \\(recommendation\\: unknown\\)$#"
-			count: 1
-			path: Profile/Shopware/Premapping/DefaultShippingAvailabilityRuleReader.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Premapping\\\\DeliveryTimeReader has an uninitialized property \\$choiceUuids\\. Give it default value or assign it in the constructor\\.$#"
@@ -7081,11 +6861,6 @@ parameters:
 			path: Profile/Shopware6/Converter/UnitConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\ApiReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Reader/ApiReader.php
-
-		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 1
 			path: Profile/Shopware6/Gateway/Api/Reader/ApiReader.php
@@ -7121,59 +6896,9 @@ parameters:
 			path: Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Reader/TableReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Reader/TableReader.php
-
-		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 1
 			path: Profile/Shopware6/Gateway/Api/Reader/TableReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\TotalReader\\:\\:prepareTotals\\(\\) has parameter \\$rawTotals with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Reader/TotalReader.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Reader/TotalReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Shopware6ApiGateway\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Shopware6ApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Shopware6ApiGateway\\:\\:__construct\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Shopware6ApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Shopware6ApiGateway\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Shopware6ApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Shopware6ApiGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Shopware6ApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Shopware6ApiGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Shopware6ApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Shopware6ApiGateway\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Api/Shopware6ApiGateway.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient\\:\\:__construct\\(\\) has parameter \\$connectionRepositoy with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
@@ -7204,26 +6929,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\ConnectionFactory\\:\\:__construct\\(\\) has parameter \\$connectionRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Profile/Shopware6/Gateway/Connection/ConnectionFactory.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\ShopwareGatewayInterface\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/ShopwareGatewayInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\ShopwareGatewayInterface\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/ShopwareGatewayInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\TableReaderInterface\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/TableReaderInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\TableReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/TableReaderInterface.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Logging\\\\Log\\\\UnsupportedDocumentTypeLog\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -7501,131 +7206,6 @@ parameters:
 			path: SwagMigrationAssistant.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:\\$connectionId\\.$#"
-			count: 9
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:\\$dataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:\\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Command\\\\MigrateDataCommandTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Command/MigrateDataCommandTest.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest has an uninitialized property \\$environmentService\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: Test/DataProvider/Service/EnvironmentServiceTest.php
@@ -7671,252 +7251,12 @@ parameters:
 			path: Test/Migration/Controller/HistoryControllerTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:\\$connectionId\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^DataProvider method requiredFetchDataProperties should be static\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^DataProvider method requiredWriteDataProperties should be static\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:requiredFetchDataProperties\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:requiredWriteDataProperties\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:\\$dataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:\\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\MigrationControllerTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/MigrationControllerTest.php
-
-		-
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:\\$connectionId\\.$#"
 			count: 1
 			path: Test/Migration/Controller/PremappingControllerTest.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Test/Migration/Controller/PremappingControllerTest.php
 
@@ -7929,161 +7269,6 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\PremappingControllerTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Test/Migration/Controller/PremappingControllerTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:\\$connection\\.$#"
-			count: 3
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:\\$connectionId\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Call to method PHPUnit\\\\Framework\\\\Assert\\:\\:assertJson\\(\\) with incorrect case\\: assertJSON$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest has an uninitialized property \\$invalidConnectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^DataProvider method connectionProvider should be static\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:connectionProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:isJsonArrayTypeOfProgressState\\(\\) has parameter \\$state with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:jsonResponseToArray\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:\\$generalSettingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Controller\\\\StatusControllerTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Controller/StatusControllerTest.php
 
 		-
 			message: "#^DataProvider method converterProvider should be static\\.$#"
@@ -8129,686 +7314,6 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest\\:\\:\\$mappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Test/Migration/Mapping/MappingServiceTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$mappingService\\.$#"
-			count: 8
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$migrationDataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataProcessingTest\\:\\:\\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataProcessingTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$mappingService\\.$#"
-			count: 20
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Anonymous variable in a `\\$loggingService\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^DataProvider method requiredProperties should be static\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:invokeMethod\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:requiredProperties\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$customerRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$mediaRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$migrationDataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$migrationMappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$orderRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$productRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$themeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationDataWriterTest\\:\\:\\$themeSalesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationDataWriterTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$connection\\.$#"
-			count: 4
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$connectionId\\.$#"
-			count: 2
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest has an uninitialized property \\$writeArray\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:initEntity\\(\\) has parameter \\$entities with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:serializeRunProgressForCompare\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$credentialFields type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$dataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$themeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$toBeFetched type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\MigrationProgressServiceTest\\:\\:\\$writeArray type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Migration/Services/MigrationProgressServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:\\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:\\$dataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:\\$mappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:\\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:\\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Services\\\\RunServiceTest\\:\\:\\$themeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Migration/Services/RunServiceTest.php
 
 		-
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Writer\\\\AbstractWriterTest\\:\\:\\$dataToWrite type has no value type specified in iterable type array\\.$#"
@@ -8882,16 +7387,6 @@ parameters:
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Mock/Gateway/Dummy/Local/DummyLocalGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Local\\\\DummyLocalGateway\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Mock/Gateway/Dummy/Local/DummyLocalGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Local\\\\DummyLocalGateway\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Test/Mock/Gateway/Dummy/Local/DummyLocalGateway.php
 
@@ -9041,101 +7536,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/ApiReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CategoryReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CategoryReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CurrencyReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CurrencyReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerGroupReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerGroupReaderTest.php
-
-		-
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$connection\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
@@ -9161,26 +7561,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\EnvironmentReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/EnvironmentReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\LanguageReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/LanguageReaderTest.php
-
-		-
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MainVariantRelationReaderTest\\:\\:\\$connection\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/MainVariantRelationReaderTest.php
@@ -9189,26 +7569,6 @@ parameters:
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MainVariantRelationReaderTest\\:\\:\\$runId\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/MainVariantRelationReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ManufacturerAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ManufacturerAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaAlbumReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaAlbumReaderTest.php
 
 		-
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$connection\\.$#"
@@ -9291,26 +7651,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentAttributeReaderTest.php
-
-		-
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$connection\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
@@ -9359,26 +7699,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductPriceAttributeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductPriceAttributeReaderTest.php
 
 		-
 			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$connection\\.$#"
@@ -9636,101 +7956,6 @@ parameters:
 			path: Test/Profile/Shopware/Premapping/TransactionStateReaderTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware54\\\\Converter\\\\OrderDocumentConverterTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware54/Converter/OrderDocumentConverterTest.php
-
-		-
 			message: "#^Parameter \\#2 \\$array of static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertArrayHasKey\\(\\) expects array\\|ArrayAccess, array\\|null given\\.$#"
 			count: 4
 			path: Test/Profile/Shopware55/Converter/CategoryAttributeConverterTest.php
@@ -9881,103 +8106,8 @@ parameters:
 			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getCategoryUuid\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getCurrencyUuid\\(\\) has parameter \\$currencyRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getFirstDeliveryTimeUuid\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getFixtureData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 2
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getLanguageUuid\\(\\) has parameter \\$languageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getLanguageUuid\\(\\) has parameter \\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$countryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataConverter\\(\\) has parameter \\$shippingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getMigrationDataFetcher\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getOrderStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getPaymentUuid\\(\\) has parameter \\$paymentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getSalutationUuid\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware55\\\\Converter\\\\OrderConverterTest\\:\\:getTransactionStateUuid\\(\\) has parameter \\$stateMachineStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
 			path: Test/Profile/Shopware55/Converter/OrderConverterTest.php
 
 		-
@@ -10174,41 +8304,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:loadMapping\\(\\) has parameter \\$mappingArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Test/Profile/Shopware6/Converter/ShopwareConverterTest.php
-
-		-
-			message: "#^Class Shopware6ApiGatewayTest has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
-
-		-
-			message: "#^Class Shopware6ApiGatewayTest has an uninitialized property \\$shopware6ApiGateway\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
-
-		-
-			message: "#^DataProvider method provideEnvironments should be static\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
-
-		-
-			message: "#^Method Shopware6ApiGatewayTest\\:\\:provideEnvironments\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
-
-		-
-			message: "#^Method Shopware6ApiGatewayTest\\:\\:testReadEnvironmentInformation\\(\\) has parameter \\$expectation with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
-
-		-
-			message: "#^Method Shopware6ApiGatewayTest\\:\\:testReadEnvironmentInformation\\(\\) has parameter \\$self with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
-
-		-
-			message: "#^Method Shopware6ApiGatewayTest\\:\\:testReadEnvironmentInformation\\(\\) has parameter \\$source with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Api/Shopware6ApiGatewayTest.php
 
 		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'SwagMigrationAssistant\\\\\\\\Profile\\\\\\\\Shopware6\\\\\\\\Gateway\\\\\\\\Connection\\\\\\\\AuthClient' and SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient will always evaluate to true\\.$#"

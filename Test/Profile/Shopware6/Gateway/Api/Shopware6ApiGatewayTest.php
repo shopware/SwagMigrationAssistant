@@ -5,6 +5,8 @@
  * file that was distributed with this source code.
  */
 
+namespace SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Api;
+
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -12,8 +14,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageDefinition;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
@@ -32,19 +36,19 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 class Shopware6ApiGatewayTest extends TestCase
 {
-    private Shopware6ApiGateway $shopware6ApiGateway;
-
-    private MigrationContext $migrationContext;
-
     /**
      * @dataProvider provideEnvironments
+     *
+     * @param array{shopwareVersion: string, defaultLocale: string, defaultCurrency: string, updateAvailable: bool} $source
+     * @param array{shopwareVersion: string, defaultLocale: string, defaultCurrency: string} $self
+     * @param array{migrationDisabled: bool, displayWarnings: list<DisplayWarning>} $expectation
      */
     public function testReadEnvironmentInformation(array $source, array $self, array $expectation): void
     {
-        $this->createShopware6ApiGateway($self['shopwareVersion'], $source['shopwareVersion'], $source['updateAvailable'], $self['defaultCurrency'], $source['defaultCurrency'], $self['defaultLocale'], $source['defaultLocale']);
-        $this->createMigrationContext($self['shopwareVersion']);
+        $shopware6ApiGateway = $this->createShopware6ApiGateway($self['shopwareVersion'], $source['shopwareVersion'], $source['updateAvailable'], $self['defaultCurrency'], $source['defaultCurrency'], $self['defaultLocale'], $source['defaultLocale']);
+        $migrationContext = $this->createMigrationContext($self['shopwareVersion']);
 
-        $result = $this->shopware6ApiGateway->readEnvironmentInformation($this->migrationContext, Context::createDefaultContext());
+        $result = $shopware6ApiGateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
         $expectedEnvironmentInfo = new EnvironmentInformation(
             'Shopware',
             $source['shopwareVersion'],
@@ -63,7 +67,28 @@ class Shopware6ApiGatewayTest extends TestCase
         static::assertEquals($expectedEnvironmentInfo, $result);
     }
 
-    public function provideEnvironments(): array
+    /**
+     * @return list<
+     *      array{
+     *          source: array{
+     *              shopwareVersion: string,
+     *              defaultLocale: string,
+     *              defaultCurrency: string,
+     *              updateAvailable: bool
+     *          },
+     *          self: array{
+     *              shopwareVersion: string,
+     *              defaultLocale: string,
+     *              defaultCurrency: string
+     *          },
+     *          expectation: array{
+     *              migrationDisabled: bool,
+     *              displayWarnings: list<DisplayWarning>
+     *          }
+     *      }
+     * >
+     */
+    public static function provideEnvironments(): array
     {
         return [
             [ // old major to new major
@@ -239,10 +264,17 @@ class Shopware6ApiGatewayTest extends TestCase
         ];
     }
 
-    protected function createShopware6ApiGateway(string $selfShopwareVersion, string $sourceShopwareVersion, bool $sourceUpdateAvailable, string $selfDefaultCurrency, string $sourceDefaultCurrency, string $selfDefaultLocale, string $sourceDefaultLocale): void
-    {
+    protected function createShopware6ApiGateway(
+        string $selfShopwareVersion,
+        string $sourceShopwareVersion,
+        bool $sourceUpdateAvailable,
+        string $selfDefaultCurrency,
+        string $sourceDefaultCurrency,
+        string $selfDefaultLocale,
+        string $sourceDefaultLocale
+    ): Shopware6ApiGateway {
         $readerRegistry = new ReaderRegistry([]);
-        $environmentReader = static::createStub(EnvironmentReader::class);
+        $environmentReader = $this->createStub(EnvironmentReader::class);
         $environmentReader->method('read')->willReturn([
             'environmentInformation' => [
                 'defaultShopLanguage' => $sourceDefaultLocale,
@@ -258,6 +290,7 @@ class Shopware6ApiGatewayTest extends TestCase
         $currencyEntity = new CurrencyEntity();
         $currencyEntity->setId(Defaults::CURRENCY);
         $currencyEntity->setIsoCode($selfDefaultCurrency);
+        /** @var StaticEntityRepository<CurrencyCollection> $currencyRepo */
         $currencyRepo = new StaticEntityRepository(
             [
                 new EntitySearchResult(
@@ -278,6 +311,7 @@ class Shopware6ApiGatewayTest extends TestCase
         $localeEntity->setId(Uuid::randomHex());
         $localeEntity->setCode($selfDefaultLocale);
         $languageEntity->setLocale($localeEntity);
+        /** @var StaticEntityRepository<LanguageCollection> $languageRepo */
         $languageRepo = new StaticEntityRepository(
             [
                 new EntitySearchResult(
@@ -292,13 +326,13 @@ class Shopware6ApiGatewayTest extends TestCase
             new LanguageDefinition(),
         );
 
-        $totalReader = static::createStub(TotalReaderInterface::class);
+        $totalReader = $this->createStub(TotalReaderInterface::class);
         $totalReader->method('readTotals')->willReturn([]);
 
-        $tableReader = static::createStub(TableReaderInterface::class);
+        $tableReader = $this->createStub(TableReaderInterface::class);
         $tableReader->method('read')->willReturn([]);
 
-        $this->shopware6ApiGateway = new \SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Shopware6ApiGateway(
+        return new Shopware6ApiGateway(
             $readerRegistry,
             $environmentReader,
             $currencyRepo,
@@ -309,7 +343,7 @@ class Shopware6ApiGatewayTest extends TestCase
         );
     }
 
-    protected function createMigrationContext(string $selfShopwareVersion): void
+    protected function createMigrationContext(string $selfShopwareVersion): MigrationContext
     {
         $profile = new Shopware6MajorProfile($selfShopwareVersion);
         $connection = new SwagMigrationConnectionEntity();
@@ -321,7 +355,7 @@ class Shopware6ApiGatewayTest extends TestCase
             'bearer_token' => 'dummyToken',
         ]);
 
-        $this->migrationContext = new MigrationContext(
+        return new MigrationContext(
             $profile,
             $connection,
             Uuid::randomHex(),

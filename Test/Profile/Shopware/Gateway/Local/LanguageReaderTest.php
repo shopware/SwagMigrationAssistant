@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -23,10 +22,6 @@ class LanguageReaderTest extends TestCase
     use LocalCredentialTrait;
 
     private LanguageReader $languageReader;
-
-    private SwagMigrationConnectionEntity $connection;
-
-    private string $runId;
 
     private MigrationContext $migrationContext;
 

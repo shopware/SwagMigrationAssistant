@@ -21,6 +21,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Command\MigrateDataCommand;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
@@ -28,7 +29,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
-use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
@@ -59,35 +59,25 @@ class MigrateDataCommandTest extends TestCase
 
     private Command $command;
 
-    private Application $application;
-
-    private EntityRepository $runRepo;
-
+    /**
+     * @var EntityRepository<SwagMigrationConnectionCollection>
+     */
     private EntityRepository $connectionRepo;
 
-    private string $connectionId;
-
-    private EntityRepository $dataRepo;
+    private string $connectionId = '';
 
     private Context $context;
-
-    private EntityRepository $mediaFileRepo;
 
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
-        $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
-        $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $themeRepo = $this->getContainer()->get('theme.repository');
-        $mappingService = $this->getContainer()->get(MappingService::class);
-        $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $languageRepo = $this->getContainer()->get('language.repository');
+        $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $mappingService = static::getContainer()->get(MappingService::class);
+        $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
 
         $kernel = self::getKernel();
-        $this->application = new Application($kernel);
+        $application = new Application($kernel);
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (): void {
             $this->connectionId = Uuid::randomHex();
             $this->connectionRepo->create(
@@ -108,7 +98,7 @@ class MigrateDataCommandTest extends TestCase
             );
         });
 
-        $generalSettingsRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
+        $generalSettingsRepo = static::getContainer()->get('swag_migration_general_setting.repository');
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($generalSettingsRepo): void {
             $generalSettingsRepo->create(
                 [
@@ -122,8 +112,8 @@ class MigrateDataCommandTest extends TestCase
         });
 
         $languageUuid = $this->getLanguageUuid(
-            $this->getContainer()->get('locale.repository'),
-            $languageRepo,
+            static::getContainer()->get('locale.repository'),
+            static::getContainer()->get('language.repository'),
             'de-DE',
             $this->context
         );
@@ -136,15 +126,10 @@ class MigrateDataCommandTest extends TestCase
         $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', Context::createDefaultContext(), null, [], $languageUuid);
 
         $dataFetcher = $this->getMigrationDataFetcher(
-            $this->getContainer()->get(EntityWriter::class),
-            $mappingService,
-            $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get('swag_migration_logging.repository'),
-            $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get(ReaderRegistry::class)
+            static::getContainer()->get('swag_migration_logging.repository'),
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository'),
+            static::getContainer()->get(ReaderRegistry::class)
         );
 
         $setting = new GeneralSettingEntity();
@@ -154,67 +139,67 @@ class MigrateDataCommandTest extends TestCase
             new EntityCollection([$setting]),
             new GeneralSettingDefinition(),
         ]);
-        $this->application->add(new MigrateDataCommand(
+        $application->add(new MigrateDataCommand(
             $generalSettingsRepo,
-            $this->getContainer()->get('swag_migration_connection.repository'),
-            $this->getContainer()->get('swag_migration_run.repository'),
-            $this->getContainer()->get(DataSetRegistry::class),
+            static::getContainer()->get('swag_migration_connection.repository'),
+            static::getContainer()->get('swag_migration_run.repository'),
+            static::getContainer()->get(DataSetRegistry::class),
             new RunService(
-                $this->runRepo,
+                $runRepo,
                 $this->connectionRepo,
                 $dataFetcher,
                 new SwagMigrationAccessTokenService(
-                    $this->runRepo
+                    $runRepo
                 ),
                 new DataSelectionRegistry([
                     new ProductDataSelection(),
                     new CustomerAndOrderDataSelection(),
                 ]),
-                $this->dataRepo,
-                $this->mediaFileRepo,
-                $salesChannelRepo,
-                $themeRepo,
-                $this->getContainer()->get(EntityIndexerRegistry::class),
-                $this->getContainer()->get(ThemeService::class),
+                static::getContainer()->get('swag_migration_data.repository'),
+                static::getContainer()->get('swag_migration_media_file.repository'),
+                static::getContainer()->get('sales_channel.repository'),
+                static::getContainer()->get('theme.repository'),
+                static::getContainer()->get(EntityIndexerRegistry::class),
+                static::getContainer()->get(ThemeService::class),
                 $mappingService,
-                $this->getContainer()->get('cache.object'),
-                $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->getContainer()->get(Connection::class),
+                static::getContainer()->get('cache.object'),
+                static::getContainer()->get(SwagMigrationDataDefinition::class),
+                static::getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo),
-                $this->getContainer()->get(TrackingEventClient::class),
-                $this->getContainer()->get('messenger.bus.shopware')
+                static::getContainer()->get(TrackingEventClient::class),
+                static::getContainer()->get('messenger.bus.shopware')
             ),
             new PremappingService(
                 new PremappingReaderRegistry([]),
                 $mappingService,
-                $this->getContainer()->get('swag_migration_mapping.repository'),
-                $this->runRepo,
+                static::getContainer()->get('swag_migration_mapping.repository'),
+                $runRepo,
                 $this->connectionRepo
             ),
             $dataFetcher,
             $this->getMigrationDataConverter(
-                $this->getContainer()->get(EntityWriter::class),
+                static::getContainer()->get(EntityWriter::class),
                 $mappingService,
                 new DummyMediaFileService(),
                 $loggingRepo,
-                $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->getContainer()->get('payment_method.repository'),
-                $this->getContainer()->get('shipping_method.repository'),
-                $this->getContainer()->get('country.repository'),
-                $this->getContainer()->get('sales_channel.repository')
+                static::getContainer()->get(SwagMigrationDataDefinition::class),
+                static::getContainer()->get('payment_method.repository'),
+                static::getContainer()->get('shipping_method.repository'),
+                static::getContainer()->get('country.repository'),
+                static::getContainer()->get('sales_channel.repository')
             ),
-            $this->getContainer()->get(MigrationDataWriter::class),
-            $this->getContainer()->get(MediaFileProcessorService::class),
-            $this->getContainer()->get(MigrationContextFactory::class),
+            static::getContainer()->get(MigrationDataWriter::class),
+            static::getContainer()->get(MediaFileProcessorService::class),
+            static::getContainer()->get(MigrationContextFactory::class),
             'migration:migrate'
         ));
-        $this->command = $this->application->find('migration:migrate');
+        $this->command = $application->find('migration:migrate');
         $this->commandTester = new CommandTester($this->command);
     }
 
     public function testExecution(): void
     {
-        $dbConnection = $this->getContainer()->get(Connection::class);
+        $dbConnection = static::getContainer()->get(Connection::class);
         $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         $this->commandTester->execute([
             'command' => $this->command->getName(),

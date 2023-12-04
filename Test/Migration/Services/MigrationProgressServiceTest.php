@@ -14,28 +14,27 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
-use SwagMigrationAssistant\Migration\Media\MediaFileService;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
-use SwagMigrationAssistant\Migration\Run\EntityProgress;
 use SwagMigrationAssistant\Migration\Run\RunProgress;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
@@ -53,25 +52,33 @@ class MigrationProgressServiceTest extends TestCase
     use LocalCredentialTrait;
     use MigrationServicesTrait;
 
+    /**
+     * @var EntityRepository<SwagMigrationRunCollection>
+     */
     private EntityRepository $runRepo;
 
+    /**
+     * @var EntityRepository<SwagMigrationDataCollection>
+     */
     private EntityRepository $dataRepo;
 
-    private EntityRepository $loggingRepo;
-
+    /**
+     * @var EntityRepository<SwagMigrationMediaFileCollection>
+     */
     private EntityRepository $mediaFileRepo;
 
     private string $runUuid;
 
     private MigrationProgressServiceInterface $progressService;
 
-    private MigrationDataFetcherInterface $migrationDataFetcher;
-
     /**
-     * @var RunProgress[]
+     * @var list<RunProgress>
      */
     private array $runProgress;
 
+    /**
+     * @var array<string, int>
+     */
     private array $toBeFetched = [
         'category' => 8,
         'product' => 37,
@@ -80,32 +87,35 @@ class MigrationProgressServiceTest extends TestCase
         'media' => 23,
     ];
 
-    private array $writeArray;
+    /**
+     * @var array<string, array<string, int>>
+     */
+    private array $writeArray = [];
 
+    /**
+     * @var array<string, mixed>|null
+     */
     private ?array $credentialFields;
 
-    private string $connectionId;
+    private string $connectionId = '';
 
-    private SwagMigrationConnectionEntity $connection;
-
+    /**
+     * @var EntityRepository<SwagMigrationConnectionCollection>
+     */
     private EntityRepository $connectionRepo;
-
-    private EntityRepository $salesChannelRepo;
-
-    private EntityRepository $themeRepo;
 
     protected function setUp(): void
     {
         $this->connectionSetup();
 
         $context = Context::createDefaultContext();
-        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
-        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $this->themeRepo = $this->getContainer()->get('theme.repository');
+        $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $this->dataRepo = static::getContainer()->get('swag_migration_data.repository');
+        $this->mediaFileRepo = static::getContainer()->get('swag_migration_media_file.repository');
+        $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
+        $themeRepo = static::getContainer()->get('theme.repository');
 
         $this->runUuid = Uuid::randomHex();
         $this->runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
@@ -146,16 +156,11 @@ class MigrationProgressServiceTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $this->migrationDataFetcher = $this->getMigrationDataFetcher(
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(MappingService::class),
-            $this->getContainer()->get(MediaFileService::class),
-            $this->loggingRepo,
-            $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get(ReaderRegistry::class)
+        $migrationDataFetcher = $this->getMigrationDataFetcher(
+            $loggingRepo,
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository'),
+            static::getContainer()->get(ReaderRegistry::class)
         );
 
         $this->progressService = new MigrationProgressService(
@@ -168,25 +173,25 @@ class MigrationProgressServiceTest extends TestCase
             new RunService(
                 $this->runRepo,
                 $this->connectionRepo,
-                $this->migrationDataFetcher,
-                $this->getContainer()->get(SwagMigrationAccessTokenService::class),
+                $migrationDataFetcher,
+                static::getContainer()->get(SwagMigrationAccessTokenService::class),
                 new DataSelectionRegistry([]),
                 $this->dataRepo,
                 $this->mediaFileRepo,
-                $this->salesChannelRepo,
-                $this->themeRepo,
-                $this->getContainer()->get(EntityIndexerRegistry::class),
-                $this->getContainer()->get(ThemeService::class),
-                $this->getContainer()->get(MappingService::class),
-                $this->getContainer()->get('cache.object'),
-                $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->getContainer()->get(Connection::class),
-                new LoggingService($this->loggingRepo),
-                $this->getContainer()->get(TrackingEventClient::class),
-                $this->getContainer()->get('messenger.bus.shopware')
+                $salesChannelRepo,
+                $themeRepo,
+                static::getContainer()->get(EntityIndexerRegistry::class),
+                static::getContainer()->get(ThemeService::class),
+                static::getContainer()->get(MappingService::class),
+                static::getContainer()->get('cache.object'),
+                static::getContainer()->get(SwagMigrationDataDefinition::class),
+                static::getContainer()->get(Connection::class),
+                new LoggingService($loggingRepo),
+                static::getContainer()->get(TrackingEventClient::class),
+                static::getContainer()->get('messenger.bus.shopware')
             ),
-            $this->getContainer()->get(PremappingService::class),
-            $this->getContainer()->get(MigrationContextFactory::class)
+            static::getContainer()->get(PremappingService::class),
+            static::getContainer()->get(MigrationContextFactory::class)
         );
     }
 
@@ -201,8 +206,8 @@ class MigrationProgressServiceTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
+        $run = $this->runRepo->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($run);
         static::assertSame(SwagMigrationRunEntity::STATUS_ABORTED, $run->getStatus());
 
         $expectedProgress = [
@@ -246,8 +251,8 @@ class MigrationProgressServiceTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
+        $run = $this->runRepo->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($run);
         static::assertSame(SwagMigrationRunEntity::STATUS_RUNNING, $run->getStatus());
 
         $expectedProgress = [
@@ -286,8 +291,8 @@ class MigrationProgressServiceTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('id', $this->runUuid));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
+        $run = $this->runRepo->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($run);
 
         static::assertTrue($progress->isMigrationRunning());
         static::assertSame($this->credentialFields, $credentialFields);
@@ -604,10 +609,8 @@ class MigrationProgressServiceTest extends TestCase
             ],
         ];
 
-        /** @var RunProgress $progress */
         foreach ($this->runProgress as $progress) {
             if ($progress->getId() === 'customersOrders') {
-                /** @var EntityProgress $entityProgress */
                 foreach ($progress->getEntities() as $entityProgress) {
                     if ($entityProgress->getEntityName() === 'customer') {
                         $entityProgress->setTotal(0);
@@ -674,12 +677,12 @@ class MigrationProgressServiceTest extends TestCase
             $this->initEntity($entities, $entityName, $fetchCount, $writeCount);
         }
 
-        $this->dataRepo->create(
-            $entities,
-            $context
-        );
+        $this->dataRepo->create($entities, $context);
     }
 
+    /**
+     * @param array<array{runId: string, entity: string, converted: array{value: string}, raw: array{}, written: bool}> $entities
+     */
     private function initEntity(array &$entities, string $entityName, int $fetchCount, int $writeCount): void
     {
         $currentWriteCount = 0;
@@ -746,6 +749,9 @@ class MigrationProgressServiceTest extends TestCase
         );
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     private function serializeRunProgressForCompare(): array
     {
         $runProgress = [];

@@ -15,7 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -25,25 +24,24 @@ use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
-use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
-use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
@@ -81,34 +79,41 @@ class StatusControllerTest extends TestCase
 
     private string $runUuid;
 
+    /**
+     * @var EntityRepository<SwagMigrationRunCollection>
+     */
     private EntityRepository $runRepo;
 
+    /**
+     * @var EntityRepository<GeneralSettingCollection>
+     */
     private EntityRepository $generalSettingRepo;
 
+    /**
+     * @var EntityRepository<SwagMigrationConnectionCollection>
+     */
     private EntityRepository $connectionRepo;
 
-    private string $connectionId;
+    private string $connectionId = '';
 
     private Context $context;
 
-    private string $invalidConnectionId;
-
-    private MigrationContextFactoryInterface $migrationContextFactory;
+    private string $invalidConnectionId = '';
 
     protected function setUp(): void
     {
         $this->connectionSetup();
 
         $this->context = Context::createDefaultContext();
-        $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
-        $dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
-        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $themeRepo = $this->getContainer()->get('theme.repository');
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
-        $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $mediaFileRepo = static::getContainer()->get('swag_migration_media_file.repository');
+        $dataRepo = static::getContainer()->get('swag_migration_data.repository');
+        $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $this->generalSettingRepo = static::getContainer()->get('swag_migration_general_setting.repository');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
+        $themeRepo = static::getContainer()->get('theme.repository');
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $migrationContextFactory = static::getContainer()->get(MigrationContextFactory::class);
+        $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context): void {
             $this->connectionId = Uuid::randomHex();
@@ -153,24 +158,19 @@ class StatusControllerTest extends TestCase
             Context::createDefaultContext()
         );
 
-        $mappingService = $this->getContainer()->get(MappingService::class);
+        $mappingService = static::getContainer()->get(MappingService::class);
         $accessTokenService = new SwagMigrationAccessTokenService(
             $this->runRepo
         );
         $dataFetcher = $this->getMigrationDataFetcher(
-            $this->getContainer()->get(EntityWriter::class),
-            $mappingService,
-            $this->getContainer()->get(MediaFileService::class),
-            $this->getContainer()->get('swag_migration_logging.repository'),
-            $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(DataSetRegistry::class),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get(ReaderRegistry::class)
+            static::getContainer()->get('swag_migration_logging.repository'),
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository'),
+            static::getContainer()->get(ReaderRegistry::class)
         );
         $this->controller = new StatusController(
             $dataFetcher,
-            $this->getContainer()->get(MigrationProgressService::class),
+            static::getContainer()->get(MigrationProgressService::class),
             new RunService(
                 $this->runRepo,
                 $this->connectionRepo,
@@ -184,29 +184,32 @@ class StatusControllerTest extends TestCase
                 $mediaFileRepo,
                 $salesChannelRepo,
                 $themeRepo,
-                $this->getContainer()->get(EntityIndexerRegistry::class),
-                $this->getContainer()->get(ThemeService::class),
+                static::getContainer()->get(EntityIndexerRegistry::class),
+                static::getContainer()->get(ThemeService::class),
                 $mappingService,
-                $this->getContainer()->get('cache.object'),
-                $this->getContainer()->get(SwagMigrationDataDefinition::class),
-                $this->getContainer()->get(Connection::class),
+                static::getContainer()->get('cache.object'),
+                static::getContainer()->get(SwagMigrationDataDefinition::class),
+                static::getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo),
-                $this->getContainer()->get(TrackingEventClient::class),
-                $this->getContainer()->get('messenger.bus.shopware')
+                static::getContainer()->get(TrackingEventClient::class),
+                static::getContainer()->get('messenger.bus.shopware')
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),
                 new CustomerAndOrderDataSelection(),
             ]),
             $this->connectionRepo,
-            $this->getContainer()->get(ProfileRegistry::class),
-            $this->getContainer()->get(GatewayRegistry::class),
-            $this->migrationContextFactory,
+            static::getContainer()->get(ProfileRegistry::class),
+            static::getContainer()->get(GatewayRegistry::class),
+            $migrationContextFactory,
             $this->generalSettingRepo
         );
     }
 
-    public function connectionProvider(): array
+    /**
+     * @return list<list<string>>
+     */
+    public static function connectionProvider(): array
     {
         return [
             [
@@ -290,8 +293,8 @@ class StatusControllerTest extends TestCase
         $request = new Request([], $params);
         $this->controller->updateConnectionCredentials($request, $context);
 
-        /** @var SwagMigrationConnectionEntity $connection */
-        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->getEntities()->first();
+        static::assertNotNull($connection);
         static::assertSame($connection->getCredentialFields(), $params['credentialFields']);
     }
 
@@ -477,10 +480,9 @@ class StatusControllerTest extends TestCase
         static::assertSame(1, $totalProcessing);
 
         // Get current accessToken and refresh token in request
-        /** @var SwagMigrationRunEntity $currentRun */
-        $currentRun = $this->runRepo->search($runningCriteria, $context)->first();
-        $accessToken = $currentRun->getAccessToken();
-        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = $accessToken;
+        $currentRun = $this->runRepo->search($runningCriteria, $context)->getEntities()->first();
+        static::assertNotNull($currentRun);
+        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = $currentRun->getAccessToken();
         $requestWithToken = new Request([], $params);
 
         // Call createMigration with accessToken and with abort running migration
@@ -543,8 +545,8 @@ class StatusControllerTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search($criteria, $context)->first();
+        $run = $this->runRepo->search($criteria, $context)->getEntities()->first();
+        static::assertNotNull($run);
         static::assertSame($run->getUserId(), \mb_strtoupper($userId));
 
         $this->expectException(MigrationContextPropertyMissingException::class);
@@ -577,7 +579,6 @@ class StatusControllerTest extends TestCase
         try {
             $this->controller->checkConnection($request, $context);
         } catch (\Exception $e) {
-            /* @var MigrationContextPropertyMissingException $e */
             static::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
             static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
             static::assertArrayHasKey('property', $e->getParameters());
@@ -616,8 +617,8 @@ class StatusControllerTest extends TestCase
         $request = new Request([], ['runUuid' => $this->runUuid]);
         $this->controller->abortMigration($request, $this->context);
 
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->first();
+        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
+        static::assertNotNull($run);
         static::assertSame('aborted', $run->getStatus());
     }
 
@@ -632,8 +633,8 @@ class StatusControllerTest extends TestCase
         $request = new Request([], ['runUuid' => $this->runUuid]);
         $this->controller->finishMigration($request, $this->context);
 
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->first();
+        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
+        static::assertNotNull($run);
         static::assertSame('finished', $run->getStatus());
     }
 
@@ -651,6 +652,9 @@ class StatusControllerTest extends TestCase
         static::assertSame('true', $result);
     }
 
+    /**
+     * @param array<string, mixed>|list<array<string, mixed>> $state
+     */
     private function isJsonArrayTypeOfProgressState(array $state): bool
     {
         return \array_key_exists('migrationRunning', $state)
@@ -681,13 +685,16 @@ class StatusControllerTest extends TestCase
         });
     }
 
+    /**
+     * @return array<string, mixed>|list<array<string, mixed>>
+     */
     private function jsonResponseToArray(?Response $response): array
     {
         static::assertNotNull($response);
         static::assertInstanceOf(JsonResponse::class, $response);
         $content = $response->getContent();
         static::assertIsNotBool($content);
-        $this->assertJSON($content);
+        static::assertJson($content);
         $array = \json_decode($content, true);
         static::assertIsArray($array);
 
