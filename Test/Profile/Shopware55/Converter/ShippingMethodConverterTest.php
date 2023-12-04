@@ -36,8 +36,6 @@ class ShippingMethodConverterTest extends TestCase
 
     private MigrationContext $migrationContext;
 
-    private string $runId;
-
     private Context $context;
 
     private DummyMappingService $mappingService;
@@ -48,7 +46,7 @@ class ShippingMethodConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->shippingMethodConverter = new Shopware55ShippingMethodConverter($this->mappingService, $this->loggingService);
 
-        $this->runId = Uuid::randomHex();
+        $runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
@@ -57,7 +55,7 @@ class ShippingMethodConverterTest extends TestCase
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            $runId,
             new ShippingMethodDataSet(),
             0,
             250
@@ -107,6 +105,7 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -150,7 +149,10 @@ class ShippingMethodConverterTest extends TestCase
         static::assertSame($error->getParameters()['shippingMethodId'], $logs[0]['parameters']['shippingMethodId']);
     }
 
-    public function conditionDataProvider(): array
+    /**
+     * @return array<string, array{bindValues: array<string, mixed>, expectedConditions: list<array<string, mixed>>}>
+     */
+    public static function conditionDataProvider(): array
     {
         return [
             'fromAndToTimeRange' => [
@@ -662,6 +664,9 @@ class ShippingMethodConverterTest extends TestCase
 
     /**
      * @dataProvider conditionDataProvider
+     *
+     * @param array<string, mixed> $bindValues
+     * @param list<array<string, mixed>> $excpetedConditions
      */
     public function testConvertCondition(array $bindValues, array $excpetedConditions): void
     {

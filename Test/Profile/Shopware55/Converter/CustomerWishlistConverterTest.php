@@ -27,22 +27,18 @@ class CustomerWishlistConverterTest extends TestCase
 
     private Shopware55CustomerWishlistConverter $converter;
 
-    private string $connectionId;
-
-    private DummyMappingService $mappingService;
-
     private Context $context;
 
     protected function setUp(): void
     {
-        $this->mappingService = new DummyMappingService();
-        $this->converter = new Shopware55CustomerWishlistConverter($this->mappingService, new DummyLoggingService());
+        $mappingService = new DummyMappingService();
+        $this->converter = new Shopware55CustomerWishlistConverter($mappingService, new DummyLoggingService());
         $this->context = Context::createDefaultContext();
 
         $runId = Uuid::randomHex();
-        $this->connectionId = Uuid::randomHex();
+        $connectionId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setId($this->connectionId);
+        $connection->setId($connectionId);
         $connection->setName('ConnectionName');
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
@@ -55,8 +51,8 @@ class CustomerWishlistConverterTest extends TestCase
             250
         );
 
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::CUSTOMER,
             '3',
             $this->context,
@@ -65,8 +61,8 @@ class CustomerWishlistConverterTest extends TestCase
             Uuid::randomHex()
         );
 
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::PRODUCT,
             'SW10002.3',
             $this->context,
@@ -75,8 +71,8 @@ class CustomerWishlistConverterTest extends TestCase
             Uuid::randomHex()
         );
 
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::SALES_CHANNEL,
             '1',
             $this->context,

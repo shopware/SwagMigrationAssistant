@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -22,32 +22,26 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class ProductAttributeConverterTest extends TestCase
 {
-    private DummyLoggingService $loggingService;
-
     private Shopware55ProductAttributeConverter $converter;
-
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
 
     private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
-        $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55ProductAttributeConverter($mappingService, $this->loggingService);
+        $loggingService = new DummyLoggingService();
+        $this->converter = new Shopware55ProductAttributeConverter($mappingService, $loggingService);
 
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::randomHex());
-        $this->connection->setName('ConnectionName');
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+        $connection->setName('ConnectionName');
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new ProductAttributeDataSet(),
             0,
             250
@@ -69,6 +63,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($categoryData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -90,6 +85,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($integerAttribute[4], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -109,6 +105,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($floatAttribute[5], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -128,6 +125,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($htmlAttribute[6], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -146,6 +144,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($comboboxAttribute[7], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -168,6 +167,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($integerAttribute[8], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -187,6 +187,7 @@ class ProductAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($floatAttribute[9], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);

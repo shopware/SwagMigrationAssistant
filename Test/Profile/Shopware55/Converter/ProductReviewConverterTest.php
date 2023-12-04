@@ -23,28 +23,31 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class ProductReviewConverterTest extends TestCase
 {
-    private Context $context;
-
-    private DummyMappingService $mappingService;
-
-    private DummyLoggingService $loggingService;
-
     private Shopware55ProductReviewConverter $converter;
 
     private MigrationContext $migrationContext;
 
+    /**
+     * @var array<array<string, string>>
+     */
     private array $products;
 
+    /**
+     * @var array<array<string, string>>
+     */
     private array $salesChannel;
 
+    /**
+     * @var array<array<string, string>>
+     */
     private array $customer;
 
     protected function setUp(): void
     {
-        $this->context = Context::createDefaultContext();
-        $this->mappingService = new DummyMappingService();
-        $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55ProductReviewConverter($this->mappingService, $this->loggingService);
+        $context = Context::createDefaultContext();
+        $mappingService = new DummyMappingService();
+        $loggingService = new DummyLoggingService();
+        $this->converter = new Shopware55ProductReviewConverter($mappingService, $loggingService);
 
         $connectionId = Uuid::randomHex();
         $runId = Uuid::randomHex();
@@ -62,32 +65,32 @@ class ProductReviewConverterTest extends TestCase
             250
         );
 
-        $this->products['198'] = $this->mappingService->getOrCreateMapping(
+        $this->products['198'] = $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::PRODUCT_MAIN,
             '198',
-            $this->context
+            $context
         );
 
-        $this->products['145'] = $this->mappingService->getOrCreateMapping(
+        $this->products['145'] = $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::PRODUCT_MAIN,
             '145',
-            $this->context
+            $context
         );
 
-        $this->salesChannel['1'] = $this->mappingService->getOrCreateMapping(
+        $this->salesChannel['1'] = $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::SALES_CHANNEL,
             '1',
-            $this->context
+            $context
         );
 
-        $this->customer['max@mustermann.de'] = $this->mappingService->getOrCreateMapping(
+        $this->customer['max@mustermann.de'] = $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::CUSTOMER,
             'max@mustermann.de',
-            $this->context
+            $context
         );
     }
 

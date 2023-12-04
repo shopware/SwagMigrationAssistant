@@ -25,45 +25,37 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class NewsletterRecipientConverterTest extends TestCase
 {
-    private DummyMappingService $mappingService;
-
     private DummyLoggingService $loggingService;
 
     private Shopware55NewsletterRecipientConverter $newsletterReceiverConverter;
-
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
-
-    private string $connectionId;
 
     private MigrationContext $context;
 
     protected function setUp(): void
     {
-        $this->mappingService = new DummyMappingService();
+        $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter($this->mappingService, $this->loggingService);
+        $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter($mappingService, $this->loggingService);
 
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connectionId = Uuid::randomHex();
-        $this->connection->setId($this->connectionId);
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connectionId = Uuid::randomHex();
+        $connection->setId($connectionId);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->context = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new NewsletterRecipientDataSet(),
             0,
             250
         );
 
         $context = Context::createDefaultContext();
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             SalutationReader::getMappingName(),
             'mr',
             $context,
@@ -71,8 +63,8 @@ class NewsletterRecipientConverterTest extends TestCase
             [],
             Uuid::randomHex()
         );
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             SalutationReader::getMappingName(),
             'ms',
             $context,
@@ -80,8 +72,8 @@ class NewsletterRecipientConverterTest extends TestCase
             [],
             Uuid::randomHex()
         );
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             SalesChannelDefinition::ENTITY_NAME,
             '1',
             $context,
@@ -130,7 +122,9 @@ class NewsletterRecipientConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
-        static::assertArrayNotHasKey('salutationId', $convertResult->getConverted());
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertArrayNotHasKey('salutationId', $converted);
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
@@ -151,6 +145,7 @@ class NewsletterRecipientConverterTest extends TestCase
             $this->context
         );
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('email', $converted);

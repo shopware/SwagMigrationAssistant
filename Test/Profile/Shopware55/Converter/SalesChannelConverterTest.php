@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
@@ -32,25 +32,23 @@ class SalesChannelConverterTest extends TestCase
 
     private Shopware55SalesChannelConverter $converter;
 
-    private DummyLoggingService $loggingService;
-
     private DummyMappingService $mappingService;
 
     private Connection $dbalConnection;
 
     protected function setUp(): void
     {
-        $paymentMethodRepo = $this->getContainer()->get('payment_method.repository');
-        $shippingMethodRepo = $this->getContainer()->get('shipping_method.repository');
-        $countryRepo = $this->getContainer()->get('country.repository');
-        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $this->dbalConnection = $this->getContainer()->get('Doctrine\DBAL\Connection');
+        $paymentMethodRepo = static::getContainer()->get('payment_method.repository');
+        $shippingMethodRepo = static::getContainer()->get('shipping_method.repository');
+        $countryRepo = static::getContainer()->get('country.repository');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
+        $this->dbalConnection = static::getContainer()->get(Connection::class);
 
         $this->mappingService = new DummyMappingService();
-        $this->loggingService = new DummyLoggingService();
+        $loggingService = new DummyLoggingService();
         $this->converter = new Shopware55SalesChannelConverter(
             $this->mappingService,
-            $this->loggingService,
+            $loggingService,
             $paymentMethodRepo,
             $shippingMethodRepo,
             $countryRepo,
@@ -67,7 +65,7 @@ class SalesChannelConverterTest extends TestCase
             new Shopware55Profile(),
             $connection,
             $runId,
-            new SaleschannelDataSet(),
+            new SalesChannelDataSet(),
             0,
             250
         );
@@ -85,8 +83,8 @@ class SalesChannelConverterTest extends TestCase
         $salesChannelData = require __DIR__ . '/../../../_fixtures/sales_channel_data.php';
 
         $context = Context::createDefaultContext();
-        /** @var SwagMigrationConnectionEntity $connection */
         $connection = $this->migrationContext->getConnection();
+        static::assertNotNull($connection);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '3', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '39', $context);
@@ -94,6 +92,7 @@ class SalesChannelConverterTest extends TestCase
         $convertResult = $this->converter->convert($salesChannelData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -104,6 +103,7 @@ class SalesChannelConverterTest extends TestCase
         $convertResult = $this->converter->convert($salesChannelData[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -124,8 +124,8 @@ class SalesChannelConverterTest extends TestCase
         $salesChannelData = require __DIR__ . '/../../../_fixtures/sales_channel_data.php';
 
         $context = Context::createDefaultContext();
-        /** @var SwagMigrationConnectionEntity $connection */
         $connection = $this->migrationContext->getConnection();
+        static::assertNotNull($connection);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '3', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '39', $context);
@@ -137,8 +137,8 @@ class SalesChannelConverterTest extends TestCase
 
         $convertResult = $this->converter->convert($salesChannelData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
-        /** @var array $converted */
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertArrayHasKey('paymentMethodId', $converted);
         static::assertSame($defaultPaymentId, $converted['paymentMethodId']);

@@ -39,14 +39,11 @@ class PromotionConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private DummyMappingService $mappingService;
-
-    private Context $context;
-
-    private string $connectionId;
-
     private string $manufacturerId;
 
+    /**
+     * @var array<string, string>
+     */
     private array $restrictedProducts;
 
     private string $customerGroup;
@@ -57,17 +54,17 @@ class PromotionConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->context = Context::createDefaultContext();
-        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $this->mappingService = new DummyMappingService();
+        $context = Context::createDefaultContext();
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
+        $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55PromotionConverter($this->mappingService, $this->loggingService, $salesChannelRepo);
+        $this->converter = new Shopware55PromotionConverter($mappingService, $this->loggingService, $salesChannelRepo);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connectionId = $connection->getId();
+        $connectionId = $connection->getId();
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
@@ -79,11 +76,11 @@ class PromotionConverterTest extends TestCase
         );
 
         $this->manufacturerId = Uuid::randomHex();
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::PRODUCT_MANUFACTURER,
             '7',
-            $this->context,
+            $context,
             null,
             null,
             $this->manufacturerId
@@ -94,64 +91,64 @@ class PromotionConverterTest extends TestCase
             'SW10002.2' => Uuid::randomHex(),
             'SW10002.3' => Uuid::randomHex(),
         ];
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::PRODUCT,
             'SW10002.1',
-            $this->context,
+            $context,
             null,
             null,
             $this->restrictedProducts['SW10002.1']
         );
 
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::PRODUCT,
             'SW10002.2',
-            $this->context,
+            $context,
             null,
             null,
             $this->restrictedProducts['SW10002.2']
         );
 
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::PRODUCT,
             'SW10002.3',
-            $this->context,
+            $context,
             null,
             null,
             $this->restrictedProducts['SW10002.3']
         );
 
         $this->customerGroup = Uuid::randomHex();
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::CUSTOMER_GROUP,
             '5',
-            $this->context,
+            $context,
             null,
             null,
             $this->customerGroup
         );
 
         $this->salesChannel = Uuid::randomHex();
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::SALES_CHANNEL,
             '8',
-            $this->context,
+            $context,
             null,
             null,
             $this->salesChannel
         );
 
         $this->customer = Uuid::randomHex();
-        $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+        $mappingService->getOrCreateMapping(
+            $connectionId,
             DefaultEntities::CUSTOMER,
             '8',
-            $this->context,
+            $context,
             null,
             null,
             $this->customer
@@ -807,6 +804,10 @@ class PromotionConverterTest extends TestCase
         $this->assertSameTwiceMigration($promotionData[1], $context, $converted);
     }
 
+    /**
+     * @param array<string, mixed> $promotionData
+     * @param array<string, mixed>|null $converted
+     */
     private function assertSameTwiceMigration(array $promotionData, Context $context, ?array $converted): void
     {
         $convertResult = $this->converter->convert($promotionData, $context, $this->migrationContext);

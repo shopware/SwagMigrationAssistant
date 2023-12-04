@@ -34,10 +34,6 @@ class ProductConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
-
     private MigrationContextInterface $migrationContext;
 
     protected function setUp(): void
@@ -47,23 +43,23 @@ class ProductConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, $mediaFileService);
 
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::randomHex());
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
-        $this->connection->setName('shopware');
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new ProductDataSet(),
             0,
             250
         );
 
-        $this->mappingService->getOrCreateMapping($this->connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -310,6 +306,7 @@ class ProductConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertSame(10, $converted['deliveryTime']['min']);
         static::assertSame(0, $converted['deliveryTime']['max']);
@@ -321,6 +318,7 @@ class ProductConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertSame(10, $converted['deliveryTime']['min']);
         static::assertSame(20, $converted['deliveryTime']['max']);
@@ -332,6 +330,7 @@ class ProductConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $convertResult = $this->productConverter->convert($productData, $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertSame(10, $converted['deliveryTime']['min']);
         static::assertSame(20, $converted['deliveryTime']['max']);

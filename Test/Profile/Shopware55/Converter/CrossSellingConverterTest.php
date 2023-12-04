@@ -29,21 +29,28 @@ class CrossSellingConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private string $runId;
-
     private SwagMigrationConnectionEntity $connection;
 
     private MigrationContextInterface $migrationContext;
 
     private DummyMappingService $mappingService;
 
-    private array $products;
+    /**
+     * @var list<array<string, mixed>>
+     */
+    private array $products = [];
 
+    /**
+     * @var list<string>
+     */
     private array $type = [
         'Similar Items',
         'Accessory Items',
     ];
 
+    /**
+     * @var array<string, mixed>
+     */
     private array $compareProduct = [
         'id' => null,
         'name' => 'Similar Items',
@@ -65,7 +72,7 @@ class CrossSellingConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->crossSellingConverter = new Shopware55CrossSellingConverter($this->mappingService, $this->loggingService);
 
-        $this->runId = Uuid::randomHex();
+        $runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
@@ -74,13 +81,13 @@ class CrossSellingConverterTest extends TestCase
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            $runId,
             new CrossSellingDataSet(),
             0,
             250
         );
 
-        $this->createMapping(['123', '117', '114', '113']);
+        $this->createMapping();
     }
 
     public function testSupports(): void
@@ -121,9 +128,11 @@ class CrossSellingConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $convertResult1 = $this->crossSellingConverter->convert($data[1], $context, $this->migrationContext);
         $converted1 = $convertResult1->getConverted();
+        static::assertNotNull($converted1);
 
         $convertResult2 = $this->crossSellingConverter->convert($data[1], $context, $this->migrationContext);
         $converted2 = $convertResult2->getConverted();
+        static::assertNotNull($converted2);
 
         static::assertSame($converted1['id'], $converted2['id']);
         static::assertSame($converted1['productId'], $converted2['productId']);
@@ -162,16 +171,25 @@ class CrossSellingConverterTest extends TestCase
         static::assertSame('80', $logs[0]['parameters']['sourceId']);
     }
 
-    private function createMapping(array $identifiers): void
+    private function createMapping(): void
     {
-        foreach ($identifiers as $identifier) {
-            $this->products[] = $this->mappingService->getOrCreateMapping($this->connection->getId(), DefaultEntities::PRODUCT_CONTAINER, $identifier, Context::createDefaultContext(), null, [], Uuid::randomHex());
+        foreach (['123', '117', '114', '113'] as $identifier) {
+            $this->products[] = $this->mappingService->getOrCreateMapping(
+                $this->connection->getId(),
+                DefaultEntities::PRODUCT_CONTAINER,
+                $identifier,
+                Context::createDefaultContext(),
+                null,
+                [],
+                Uuid::randomHex()
+            );
         }
     }
 
     private function checkProduct(int $fromIndex, int $toIndex, ConvertStruct $convertStruct, string $type, string $position): void
     {
         $converted = $convertStruct->getConverted();
+        static::assertNotNull($converted);
         $this->compareProduct['id'] = $converted['id'];
         $this->compareProduct['name'] = $type;
         $this->compareProduct['productId'] = $this->products[$fromIndex]['entityUuid'];

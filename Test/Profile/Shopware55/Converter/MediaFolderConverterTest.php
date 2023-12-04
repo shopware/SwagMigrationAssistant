@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -26,12 +26,10 @@ class MediaFolderConverterTest extends TestCase
 
     private Shopware55MediaFolderConverter $converter;
 
-    private DummyLoggingService $loggingService;
-
     protected function setUp(): void
     {
-        $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55MediaFolderConverter(new DummyMappingService(), $this->loggingService);
+        $loggingService = new DummyLoggingService();
+        $this->converter = new Shopware55MediaFolderConverter(new DummyMappingService(), $loggingService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -63,6 +61,7 @@ class MediaFolderConverterTest extends TestCase
         $convertResult = $this->converter->convert($mediaFolderData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -90,6 +89,7 @@ class MediaFolderConverterTest extends TestCase
         $convertResult = $this->converter->convert($mediaFolderData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -99,6 +99,7 @@ class MediaFolderConverterTest extends TestCase
 
         $convertResult = $this->converter->convert($mediaFolderData[1], $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -109,6 +110,7 @@ class MediaFolderConverterTest extends TestCase
 
         $convertResult = $this->converter->convert($mediaFolderData[2], $context, $this->migrationContext);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);

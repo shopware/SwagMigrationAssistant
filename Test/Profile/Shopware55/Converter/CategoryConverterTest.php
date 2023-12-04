@@ -31,10 +31,6 @@ class CategoryConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
-
     private MigrationContextInterface $migrationContext;
 
     protected function setUp(): void
@@ -44,16 +40,16 @@ class CategoryConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->categoryConverter = new Shopware55CategoryConverter($mappingService, $this->loggingService, $mediaFileService);
 
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::randomHex());
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setName('shopware');
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new CategoryDataSet(),
             0,
             250

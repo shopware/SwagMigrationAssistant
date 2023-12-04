@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationNext\Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -31,7 +31,7 @@ class NumberRangeConverterTest extends TestCase
 
     protected function setUp(): void
     {
-        $numberRangeRepo = $this->getContainer()->get('number_range_type.repository');
+        $numberRangeRepo = static::getContainer()->get('number_range_type.repository');
         $mappingService = new DummyMappingService();
         $loggingService = new DummyLoggingService();
         $this->converter = new Shopware55NumberRangeConverter($mappingService, $loggingService, $numberRangeRepo);
@@ -67,6 +67,7 @@ class NumberRangeConverterTest extends TestCase
         $convertResult = $this->converter->convert($numberRangeData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -80,6 +81,7 @@ class NumberRangeConverterTest extends TestCase
         $convertResult = $this->converter->convert($numberRangeData[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -92,6 +94,7 @@ class NumberRangeConverterTest extends TestCase
         $convertResult = $this->converter->convert($numberRangeData[3], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -104,6 +107,7 @@ class NumberRangeConverterTest extends TestCase
         $convertResult = $this->converter->convert($numberRangeData[4], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -116,6 +120,7 @@ class NumberRangeConverterTest extends TestCase
         $convertResult = $this->converter->convert($numberRangeData[5], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
