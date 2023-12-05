@@ -17,9 +17,9 @@ use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 #[Package('services-settings')]
 trait LocalCredentialTrait
 {
-    private SwagMigrationConnectionEntity $connection;
+    protected SwagMigrationConnectionEntity $connection;
 
-    private string $runId;
+    protected string $runId;
 
     public function connectionSetup(): void
     {

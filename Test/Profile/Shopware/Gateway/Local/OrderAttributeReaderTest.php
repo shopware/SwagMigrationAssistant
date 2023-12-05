@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -23,10 +22,6 @@ class OrderAttributeReaderTest extends TestCase
     use LocalCredentialTrait;
 
     private OrderAttributeReader $orderAttributeReader;
-
-    private SwagMigrationConnectionEntity $connection;
-
-    private string $runId;
 
     private MigrationContext $migrationContext;
 

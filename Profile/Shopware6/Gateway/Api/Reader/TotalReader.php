@@ -9,17 +9,17 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
-use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TotalReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 #[Package('services-settings')]
 class TotalReader implements TotalReaderInterface
 {
-    public function __construct(private readonly ConnectionFactory $connectionFactory)
+    public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
     }
 
@@ -37,7 +37,7 @@ class TotalReader implements TotalReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 6 Api total', 466);
+            throw MigrationException::gatewayRead('Shopware 6 Api total');
         }
 
         $decoded = \json_decode($result->getBody()->getContents(), true);
@@ -46,7 +46,9 @@ class TotalReader implements TotalReaderInterface
     }
 
     /**
-     * @return TotalStruct[]
+     * @param array<string, int> $rawTotals
+     *
+     * @return array<string, TotalStruct>
      */
     protected function prepareTotals(array $rawTotals): array
     {

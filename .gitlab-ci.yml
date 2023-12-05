@@ -8,6 +8,17 @@ include:
     ref: '6.5.x'
     file: '.gitlab/templates/plugin.yml'
 
+Danger:
+  stage: test
+  image:
+    name: ghcr.io/shyim/danger-php:latest
+    entrypoint: ["/bin/sh", "-c"]
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+  before_script: []
+  script:
+    - danger ci
+
 ecs:
   stage: test
   script:
@@ -26,6 +37,5 @@ phpunit:
 
 phpstan:
   script:
-    - composer dump-autoload
     - php Test/TestBootstrap.php
     - ${PROJECT_ROOT}/vendor/bin/phpstan analyze --error-format=gitlab --no-progress | tee ${CI_PROJECT_DIR}/phpstan-report.json

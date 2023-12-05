@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -26,7 +25,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConver
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Package('services-settings')]
 class CustomerConverterTest extends TestCase
@@ -36,10 +34,6 @@ class CustomerConverterTest extends TestCase
     private Shopware55CustomerConverter $customerConverter;
 
     private DummyLoggingService $loggingService;
-
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
 
     private MigrationContextInterface $migrationContext;
 
@@ -52,26 +46,24 @@ class CustomerConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new DummyMappingService();
 
-        /** @var ValidatorInterface $validator */
-        $validator = $this->getContainer()->get('validator');
+        $validator = static::getContainer()->get('validator');
 
-        /** @var EntityRepository $salesChannelRepo */
-        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
 
         $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService, $validator, $salesChannelRepo);
 
         $this->connectionId = Uuid::randomHex();
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId($this->connectionId);
-        $this->connection->setName('shopware');
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId($this->connectionId);
+        $connection->setName('shopware');
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new CustomerDataSet(),
             0,
             250
@@ -79,7 +71,7 @@ class CustomerConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $this->mappingService->getOrCreateMapping(
-            $this->connection->getId(),
+            $connection->getId(),
             DefaultEntities::SALES_CHANNEL,
             '1',
             $context,
@@ -118,6 +110,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -173,7 +166,10 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[0]['parameters']['emptyField'], $property);
     }
 
-    public function requiredProperties(): array
+    /**
+     * @return list<array{0: string, 1: string|null}>
+     */
+    public static function requiredProperties(): array
     {
         return [
             ['email', null],
@@ -200,6 +196,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -224,6 +221,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -318,7 +316,10 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[2]['parameters']['emptyField'], 'address data');
     }
 
-    public function requiredAddressProperties(): array
+    /**
+     * @return list<array{0: string, 1: string|null}>
+     */
+    public static function requiredAddressProperties(): array
     {
         return [
             ['firstname', null],
@@ -351,6 +352,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -389,6 +391,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -428,6 +431,7 @@ class CustomerConverterTest extends TestCase
         );
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);

@@ -16,7 +16,6 @@ use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -55,10 +54,6 @@ class OrderConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
-
     private MigrationContext $migrationContext;
 
     private MigrationContext $customerMigrationContext;
@@ -69,24 +64,23 @@ class OrderConverterTest extends TestCase
         $mappingService = new DummyMappingService();
         $taxCalculator = new TaxCalculator();
 
-        /** @var EntityRepository $salesChannelRepo */
-        $salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
 
         $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator, $salesChannelRepo);
         $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService, Validation::createValidator(), $salesChannelRepo);
 
         $connectionId = Uuid::randomHex();
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId($connectionId);
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
-        $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
-        $this->connection->setName('shopware');
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId($connectionId);
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
+        $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new OrderDataSet(),
             0,
             250
@@ -94,8 +88,8 @@ class OrderConverterTest extends TestCase
 
         $this->customerMigrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new CustomerDataSet(),
             0,
             250
@@ -103,7 +97,7 @@ class OrderConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $mappingService->getOrCreateMapping(
-            $this->connection->getId(),
+            $connection->getId(),
             DefaultEntities::SALES_CHANNEL,
             '1',
             $context,
@@ -143,7 +137,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvert(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -175,14 +169,12 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($converted['itemRounding']);
         static::assertNotNull($converted['totalRounding']);
 
-        /** @var QuantityPriceDefinition $priceDefinition */
         $priceDefinition = $converted['lineItems'][0]['priceDefinition'];
         static::assertInstanceOf(QuantityPriceDefinition::class, $priceDefinition);
         static::assertTrue($priceDefinition->isCalculated());
         static::assertSame(459.95, $priceDefinition->getPrice());
         static::assertSame(2, $priceDefinition->getQuantity());
 
-        /** @var AbsolutePriceDefinition $creditPriceDefinition */
         $creditPriceDefinition = $converted['lineItems'][1]['priceDefinition'];
         static::assertInstanceOf(AbsolutePriceDefinition::class, $creditPriceDefinition);
         static::assertSame(-2.0, $creditPriceDefinition->getPrice());
@@ -224,7 +216,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertNetOrder(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -242,8 +234,8 @@ class OrderConverterTest extends TestCase
         $converted = $convertResult->getConverted();
         static::assertNotNull($converted);
 
-        /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
+        static::assertInstanceOf(CartPrice::class, $cartPrice);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -257,7 +249,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertTaxFreeOrder(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -276,8 +268,8 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertCount(0, $this->loggingService->getLoggingArray());
 
-        /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
+        static::assertInstanceOf(CartPrice::class, $cartPrice);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -289,8 +281,8 @@ class OrderConverterTest extends TestCase
         static::assertSame($cartPrice->getTaxStatus(), CartPrice::TAX_STATE_FREE);
         static::assertEquals($cartPrice->getTaxRules()->first(), new TaxRule(0.0));
 
-        /** @var CalculatedPrice $lineItem0Price */
         $lineItem0Price = $converted['lineItems'][0]['price'];
+        static::assertInstanceOf(CalculatedPrice::class, $lineItem0Price);
         static::assertEquals($lineItem0Price->getCalculatedTaxes()->first(), new CalculatedTax(0.0, 0.0, 0.0));
     }
 
@@ -299,7 +291,7 @@ class OrderConverterTest extends TestCase
      */
     public function testConvertWithoutRequiredProperties(string $missingProperty): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData[$missingProperty]);
         $context = Context::createDefaultContext();
@@ -326,7 +318,10 @@ class OrderConverterTest extends TestCase
         static::assertSame($logs[0]['parameters']['emptyField'], $missingProperty);
     }
 
-    public function requiredProperties(): array
+    /**
+     * @return list<list<string>>
+     */
+    public static function requiredProperties(): array
     {
         return [
             ['billingaddress'],
@@ -340,7 +335,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutOrderDetails(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['details']);
         $context = Context::createDefaultContext();
@@ -371,7 +366,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutShippingMethod(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['dispatchID']);
         $context = Context::createDefaultContext();
@@ -401,7 +396,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutShippingAddress(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['shippingaddress']);
         $context = Context::createDefaultContext();
@@ -431,7 +426,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithDifferentAdresses(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         $context = Context::createDefaultContext();
 
@@ -463,7 +458,10 @@ class OrderConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
-    public function requiredAddressProperties(): array
+    /**
+     * @return list<list<string>>
+     */
+    public static function requiredAddressProperties(): array
     {
         return [
             ['firstname'],
@@ -479,7 +477,7 @@ class OrderConverterTest extends TestCase
      */
     public function testConvertWithoutValidBillingAddress(string $missingAddressProperty): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['billingaddress'][$missingAddressProperty]);
         $context = Context::createDefaultContext();
@@ -516,7 +514,7 @@ class OrderConverterTest extends TestCase
      */
     public function testConvertWithoutValidShippingAddress(string $missingProperty): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['shippingaddress'][$missingProperty]);
         $context = Context::createDefaultContext();
@@ -549,7 +547,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutPaymentName(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         unset($orderData['payment']['name']);
         $context = Context::createDefaultContext();
@@ -579,7 +577,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithoutKnownOrderState(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $orderData = $orderData[0];
         $orderData['status'] = 100;
         $context = Context::createDefaultContext();
@@ -608,7 +606,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithOrderLanguage(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         $this->customerConverter->convert(
@@ -636,7 +634,7 @@ class OrderConverterTest extends TestCase
 
     public function testConvertWithDuplicatedEMails(): void
     {
-        list($customerData, $orderData) = $this->getFixtureData();
+        [$customerData, $orderData] = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
         foreach ([0, 1] as $index) {
@@ -685,7 +683,7 @@ class OrderConverterTest extends TestCase
     }
 
     /**
-     * @return array{0: array<int, array>, 1: array<int, array>}
+     * @return array{0: list<array<string, mixed>>, 1: list<array<string, mixed>>}
      */
     private function getFixtureData(): array
     {

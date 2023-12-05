@@ -1,20 +1,28 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Profile\Shopware\Premapping;
 
-use Shopware\Core\Content\Rule\RuleEntity;
+use Shopware\Core\Content\Rule\RuleCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
+use SwagMigrationAssistant\Migration\Premapping\PremappingReaderInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-class DefaultShippingAvailabilityRuleReader
+#[Package('services-settings')]
+class DefaultShippingAvailabilityRuleReader implements PremappingReaderInterface
 {
     public const SOURCE_ID = 'default_shipping_availability_rule';
     private const MAPPING_NAME = 'shipping_availability_rule';
@@ -22,10 +30,13 @@ class DefaultShippingAvailabilityRuleReader
     private string $connectionPremappingValue = '';
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<RuleCollection> $ruleRepo
+     */
     public function __construct(private readonly EntityRepository $ruleRepo)
     {
     }
@@ -92,10 +103,9 @@ class DefaultShippingAvailabilityRuleReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
-        $rules = $this->ruleRepo->search($criteria, $context);
+        $rules = $this->ruleRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var RuleEntity $rule */
         foreach ($rules as $rule) {
             $id = $rule->getId();
             $name = $rule->getName();

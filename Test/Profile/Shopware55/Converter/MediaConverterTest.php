@@ -25,10 +25,6 @@ class MediaConverterTest extends TestCase
 {
     private Shopware55MediaConverter $mediaConverter;
 
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
-
     private MigrationContext $migrationContext;
 
     protected function setUp(): void
@@ -37,15 +33,15 @@ class MediaConverterTest extends TestCase
         $mappingService = new DummyMappingService();
         $this->mediaConverter = new Shopware55MediaConverter($mappingService, new DummyLoggingService(), $mediaFileService);
 
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::randomHex());
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new MediaDataSet(),
             0,
             250

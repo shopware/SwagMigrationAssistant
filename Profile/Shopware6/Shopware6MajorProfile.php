@@ -24,8 +24,8 @@ class Shopware6MajorProfile implements Shopware6ProfileInterface
 
     public function __construct(string $shopwareVersion)
     {
-        $selfVersionParts = explode('.', $shopwareVersion);
-        $this->supportedVersion = implode('.', [
+        $selfVersionParts = \explode('.', $shopwareVersion);
+        $this->supportedVersion = \implode('.', [
             $selfVersionParts[0], // 6
             $selfVersionParts[1], // major
         ]);

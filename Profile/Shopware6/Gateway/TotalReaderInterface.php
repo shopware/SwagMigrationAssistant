@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 interface TotalReaderInterface
 {
     /**
-     * @return TotalStruct[]
+     * @return array<string, TotalStruct>
      */
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array;
 }

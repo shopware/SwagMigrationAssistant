@@ -12,7 +12,7 @@ return [
         'name' => 'Kekse',
         'standard' => '0',
         'factor' => '100.0',
-        'templatechar' => 'COOCIES',
+        'templatechar' => 'COOKIES',
         'symbol_position' => '0',
         'position' => '0',
         '_locale' => 'de-DE',

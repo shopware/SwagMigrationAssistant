@@ -22,32 +22,26 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class CategoryAttributeConverterTest extends TestCase
 {
-    private DummyLoggingService $loggingService;
-
     private Shopware55CategoryAttributeConverter $converter;
-
-    private string $runId;
-
-    private SwagMigrationConnectionEntity $connection;
 
     private MigrationContext $migrationContext;
 
     protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
-        $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55CategoryAttributeConverter($mappingService, $this->loggingService);
+        $loggingService = new DummyLoggingService();
+        $this->converter = new Shopware55CategoryAttributeConverter($mappingService, $loggingService);
 
-        $this->runId = Uuid::randomHex();
-        $this->connection = new SwagMigrationConnectionEntity();
-        $this->connection->setId(Uuid::randomHex());
-        $this->connection->setName('ConnectionName');
-        $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
+        $runId = Uuid::randomHex();
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+        $connection->setName('ConnectionName');
+        $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
+            $connection,
+            $runId,
             new CategoryAttributeDataSet(),
             0,
             250
@@ -69,6 +63,7 @@ class CategoryAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($categoryData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -90,6 +85,7 @@ class CategoryAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($categoryData[1], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -108,6 +104,7 @@ class CategoryAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($categoryData[2], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);
@@ -127,6 +124,7 @@ class CategoryAttributeConverterTest extends TestCase
         $convertResult = $this->converter->convert($categoryData[3], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);

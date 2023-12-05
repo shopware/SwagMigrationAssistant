@@ -40,8 +40,6 @@ class TranslationConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private string $runId;
-
     private MigrationContextInterface $migrationContext;
 
     private MigrationContextInterface $productMigrationContext;
@@ -65,14 +63,14 @@ class TranslationConverterTest extends TestCase
         $connection->setName('Shopware 5.5');
         $connection->setCredentialFields([]);
 
-        $this->runId = Uuid::randomHex();
+        $runId = Uuid::randomHex();
 
         $profile = new Shopware55Profile();
 
         $this->migrationContext = new MigrationContext(
             $profile,
             $connection,
-            $this->runId,
+            $runId,
             new TranslationDataSet(),
             0,
             250
@@ -81,7 +79,7 @@ class TranslationConverterTest extends TestCase
         $this->productMigrationContext = new MigrationContext(
             $profile,
             $connection,
-            $this->runId,
+            $runId,
             new ProductDataSet(),
             0,
             250
@@ -90,7 +88,7 @@ class TranslationConverterTest extends TestCase
         $this->categoryMigrationContext = new MigrationContext(
             $profile,
             $connection,
-            $this->runId,
+            $runId,
             new CategoryDataSet(),
             0,
             250
@@ -154,7 +152,7 @@ class TranslationConverterTest extends TestCase
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertCount(0, $this->loggingService->getLoggingArray());
 
-        $customFields = $converted['translations'][$this->mappingService::DEFAULT_LANGUAGE_UUID]['customFields'];
+        $customFields = $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['customFields'];
         $expected = [
             'migration_Shopware55_product_checkboxTrue' => true,
             'migration_Shopware55_product_checkboxFalse' => false,
@@ -177,11 +175,15 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData['manufacturer'], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
         $convertedProduct = $productConvertResult->getConverted();
+        static::assertIsArray($convertedProduct);
 
-        static::assertCount(1, $convertResult->getUnmapped());
+        $unmapped = $convertResult->getUnmapped();
+        static::assertIsArray($unmapped);
+        static::assertCount(1, $unmapped);
         static::assertNotNull($convertResult->getMappingUuid());
-        static::assertArrayHasKey('objectdata', $convertResult->getUnmapped());
+        static::assertArrayHasKey('objectdata', $unmapped);
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedProduct['manufacturer']['id'], $converted['id']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -232,7 +234,9 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData['unit'], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
         $convertedProduct = $productConvertResult->getConverted();
+        static::assertIsArray($convertedProduct);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -293,7 +297,9 @@ class TranslationConverterTest extends TestCase
         $convertResult = $this->translationConverter->convert($translationData['category'], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
         $convertedCategory = $categoryConvertResult->getConverted();
+        static::assertIsArray($convertedCategory);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -462,8 +468,8 @@ class TranslationConverterTest extends TestCase
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['variant'], $context, $this->migrationContext);
-        /** @var array $converted */
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         $expected = [
             'id' => $productMapping['entityUuid'],

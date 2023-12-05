@@ -29,22 +29,32 @@ class MainVariantRelationConverterTest extends TestCase
 
     private DummyLoggingService $loggingService;
 
-    private DummyMappingService $mappingService;
-
+    /**
+     * @var array<string, string>
+     */
     private array $productContainer1;
 
+    /**
+     * @var array<string, string>
+     */
     private array $productContainer2;
 
+    /**
+     * @var array<string, string>
+     */
     private array $productVariant1;
 
+    /**
+     * @var array<string, string>
+     */
     private array $productVariant2;
 
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
         $this->loggingService = new DummyLoggingService();
-        $this->mappingService = new DummyMappingService();
-        $this->converter = new Shopware55MainVariantRelationConverter($this->mappingService, $this->loggingService);
+        $mappingService = new DummyMappingService();
+        $this->converter = new Shopware55MainVariantRelationConverter($mappingService, $this->loggingService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -60,28 +70,28 @@ class MainVariantRelationConverterTest extends TestCase
             250
         );
 
-        $this->productContainer1 = $this->mappingService->getOrCreateMapping(
+        $this->productContainer1 = $mappingService->getOrCreateMapping(
             $connection->getId(),
             DefaultEntities::PRODUCT_CONTAINER,
             '223',
             $context
         );
 
-        $this->productContainer2 = $this->mappingService->getOrCreateMapping(
+        $this->productContainer2 = $mappingService->getOrCreateMapping(
             $connection->getId(),
             DefaultEntities::PRODUCT_CONTAINER,
             '273',
             $context
         );
 
-        $this->productVariant1 = $this->mappingService->getOrCreateMapping(
+        $this->productVariant1 = $mappingService->getOrCreateMapping(
             $connection->getId(),
             DefaultEntities::PRODUCT,
             'SW100718.1',
             $context
         );
 
-        $this->productVariant2 = $this->mappingService->getOrCreateMapping(
+        $this->productVariant2 = $mappingService->getOrCreateMapping(
             $connection->getId(),
             DefaultEntities::PRODUCT,
             'SW10002',

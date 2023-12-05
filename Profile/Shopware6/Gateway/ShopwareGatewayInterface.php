@@ -14,5 +14,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('services-settings')]
 interface ShopwareGatewayInterface extends GatewayInterface
 {
+    /**
+     * @param array<string, mixed> $filter
+     *
+     * @return array<string, mixed>
+     */
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array;
 }

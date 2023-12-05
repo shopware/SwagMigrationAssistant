@@ -20,6 +20,7 @@ use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
@@ -27,11 +28,13 @@ use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
@@ -51,15 +54,20 @@ class RunServiceTest extends TestCase
     use IntegrationTestBehaviour;
     use MigrationServicesTrait;
 
+    /**
+     * @var EntityRepository<SwagMigrationRunCollection>
+     */
     private EntityRepository $runRepo;
 
-    private EntityRepository $dataRepo;
-
+    /**
+     * @var EntityRepository<SwagMigrationConnectionCollection>
+     */
     private EntityRepository $connectionRepo;
 
+    /**
+     * @var EntityRepository<SwagMigrationMappingCollection>
+     */
     private EntityRepository $mappingRepo;
-
-    private MappingService $mappingService;
 
     private RunService $runServiceWithoutStructure;
 
@@ -67,40 +75,36 @@ class RunServiceTest extends TestCase
 
     private MigrationContextFactoryInterface $migrationContextFactory;
 
-    private EntityRepository $salesChannelRepo;
-
-    private EntityRepository $themeRepo;
-
     protected function setUp(): void
     {
-        $entityWriter = $this->getContainer()->get(EntityWriter::class);
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->dataRepo = $this->getContainer()->get('swag_migration_data.repository');
-        $this->connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
-        $loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $mediaFileRepo = $this->getContainer()->get('swag_migration_media_file.repository');
-        $this->salesChannelRepo = $this->getContainer()->get('sales_channel.repository');
-        $this->themeRepo = $this->getContainer()->get('theme.repository');
-        $this->migrationContextFactory = $this->getContainer()->get(MigrationContextFactory::class);
+        $entityWriter = static::getContainer()->get(EntityWriter::class);
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $dataRepo = static::getContainer()->get('swag_migration_data.repository');
+        $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $this->mappingRepo = static::getContainer()->get('swag_migration_mapping.repository');
+        $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
+        $mediaFileRepo = static::getContainer()->get('swag_migration_media_file.repository');
+        $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
+        $themeRepo = static::getContainer()->get('theme.repository');
+        $this->migrationContextFactory = static::getContainer()->get(MigrationContextFactory::class);
 
-        $this->mappingService = new MappingService(
+        $mappingService = new MappingService(
             $this->mappingRepo,
-            $this->getContainer()->get('locale.repository'),
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
-            $this->getContainer()->get('media_thumbnail_size.repository'),
-            $this->getContainer()->get('media_default_folder.repository'),
-            $this->getContainer()->get('category.repository'),
-            $this->getContainer()->get('cms_page.repository'),
-            $this->getContainer()->get('delivery_time.repository'),
-            $this->getContainer()->get('document_type.repository'),
+            static::getContainer()->get('locale.repository'),
+            static::getContainer()->get('language.repository'),
+            static::getContainer()->get('country.repository'),
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('tax.repository'),
+            static::getContainer()->get('number_range.repository'),
+            static::getContainer()->get('rule.repository'),
+            static::getContainer()->get('media_thumbnail_size.repository'),
+            static::getContainer()->get('media_default_folder.repository'),
+            static::getContainer()->get('category.repository'),
+            static::getContainer()->get('cms_page.repository'),
+            static::getContainer()->get('delivery_time.repository'),
+            static::getContainer()->get('document_type.repository'),
             $entityWriter,
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
+            static::getContainer()->get(SwagMigrationMappingDefinition::class)
         );
         $loggingService = new LoggingService($loggingRepo);
 
@@ -132,12 +136,12 @@ class RunServiceTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
             new ShopwareApiGateway(
-                $this->getContainer()->get(ReaderRegistry::class),
+                static::getContainer()->get(ReaderRegistry::class),
                 new EnvironmentReader($connectionFactory),
                 new TableReader($connectionFactory),
                 new TableCountReader($connectionFactory, $loggingService),
-                $this->getContainer()->get('currency.repository'),
-                $this->getContainer()->get('language.repository')
+                static::getContainer()->get('currency.repository'),
+                static::getContainer()->get('language.repository')
             ),
             new DummyLocalGateway(),
         ]));
@@ -151,19 +155,19 @@ class RunServiceTest extends TestCase
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
-            $this->dataRepo,
+            $dataRepo,
             $mediaFileRepo,
-            $this->salesChannelRepo,
-            $this->themeRepo,
-            $this->getContainer()->get(EntityIndexerRegistry::class),
-            $this->getContainer()->get(ThemeService::class),
-            $this->mappingService,
-            $this->getContainer()->get('cache.object'),
-            $this->getContainer()->get(SwagMigrationDataDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            $salesChannelRepo,
+            $themeRepo,
+            static::getContainer()->get(EntityIndexerRegistry::class),
+            static::getContainer()->get(ThemeService::class),
+            $mappingService,
+            static::getContainer()->get('cache.object'),
+            static::getContainer()->get(SwagMigrationDataDefinition::class),
+            static::getContainer()->get(Connection::class),
             $loggingService,
-            $this->getContainer()->get(TrackingEventClient::class),
-            $this->getContainer()->get('messenger.bus.shopware')
+            static::getContainer()->get(TrackingEventClient::class),
+            static::getContainer()->get('messenger.bus.shopware')
         );
     }
 

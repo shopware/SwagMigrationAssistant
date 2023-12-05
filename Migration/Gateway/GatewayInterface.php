@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 
 #[Package('services-settings')]
 interface GatewayInterface
@@ -26,10 +27,15 @@ interface GatewayInterface
 
     /**
      * Reads the given entity type from via context from its connection and returns the data
+     *
+     * @return array<array<string, mixed>>
      */
     public function read(MigrationContextInterface $migrationContext): array;
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation;
 
+    /**
+     * @return array<string, TotalStruct>
+     */
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array;
 }

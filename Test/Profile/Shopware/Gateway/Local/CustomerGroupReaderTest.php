@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -23,10 +22,6 @@ class CustomerGroupReaderTest extends TestCase
     use LocalCredentialTrait;
 
     private CustomerGroupReader $customerGroupReader;
-
-    private SwagMigrationConnectionEntity $connection;
-
-    private string $runId;
 
     private MigrationContext $migrationContext;
 
@@ -73,8 +68,11 @@ class CustomerGroupReaderTest extends TestCase
         static::assertTrue($this->customerGroupReader->supportsTotal($this->migrationContext));
 
         $totalStruct = $this->customerGroupReader->readTotal($this->migrationContext);
+        static::assertNotNull($totalStruct);
+        $dataSet = $this->migrationContext->getDataSet();
+        static::assertNotNull($dataSet);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        static::assertSame($dataSet::getEntity(), $totalStruct->getEntityName());
         static::assertSame(2, $totalStruct->getTotal());
     }
 }

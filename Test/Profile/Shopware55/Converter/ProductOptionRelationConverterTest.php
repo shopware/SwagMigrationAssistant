@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Test\Profile\Shopware55\Converter;
+namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
@@ -23,10 +23,6 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class ProductOptionRelationConverterTest extends TestCase
 {
-    private Context $context;
-
-    private DummyMappingService $mappingService;
-
     private DummyLoggingService $loggingService;
 
     private Shopware55ProductOptionRelationConverter $converter;
@@ -36,18 +32,18 @@ class ProductOptionRelationConverterTest extends TestCase
     private string $productUuid;
 
     /**
-     * @var string[]
+     * @var array<string>
      */
-    private array $propertyUuids;
+    private array $propertyUuids = [];
 
     private string $oldMappingId;
 
     protected function setUp(): void
     {
-        $this->context = Context::createDefaultContext();
-        $this->mappingService = new DummyMappingService();
+        $context = Context::createDefaultContext();
+        $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55ProductOptionRelationConverter($this->mappingService, $this->loggingService);
+        $this->converter = new Shopware55ProductOptionRelationConverter($mappingService, $this->loggingService);
 
         $connectionId = Uuid::randomHex();
         $runId = Uuid::randomHex();
@@ -65,42 +61,42 @@ class ProductOptionRelationConverterTest extends TestCase
             250
         );
 
-        $productMapping = $this->mappingService->getOrCreateMapping(
+        $productMapping = $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::PRODUCT_CONTAINER,
             '2',
-            $this->context
+            $context
         );
         $this->productUuid = $productMapping['entityUuid'];
 
         $relationData = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
 
         foreach ($relationData as $key => $data) {
-            $mapping = $this->mappingService->getOrCreateMapping(
+            $mapping = $mappingService->getOrCreateMapping(
                 $connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
                 \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
-                $this->context
+                $context
             );
             $this->propertyUuids[$key] = $mapping['entityUuid'];
         }
 
         $this->oldMappingId = Uuid::randomHex();
-        $this->mappingService->getOrCreateMapping(
+        $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::PRODUCT_OPTION_RELATION,
             $relationData[0]['identifier'],
-            $this->context,
+            $context,
             null,
             null,
             $this->oldMappingId
         );
 
-        $mapping = $this->mappingService->getOrCreateMapping(
+        $mapping = $mappingService->getOrCreateMapping(
             $connectionId,
             DefaultEntities::PRODUCT_PROPERTY,
             $relationData[0]['id'] . '_' . $this->productUuid,
-            $this->context
+            $context
         );
         $this->oldMappingId = $mapping['entityUuid'];
     }
@@ -113,6 +109,7 @@ class ProductOptionRelationConverterTest extends TestCase
         $convertResult = $this->converter->convert($data[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -122,6 +119,7 @@ class ProductOptionRelationConverterTest extends TestCase
         $convertResult = $this->converter->convert($data[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -131,6 +129,7 @@ class ProductOptionRelationConverterTest extends TestCase
         $convertResult = $this->converter->convert($data[2], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
@@ -146,6 +145,7 @@ class ProductOptionRelationConverterTest extends TestCase
         $convertResult = $this->converter->convert($data[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());

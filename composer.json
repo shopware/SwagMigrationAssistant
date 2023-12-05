@@ -40,13 +40,16 @@
             "@phpstan",
             "@phpunit"
         ],
-        "ecs": "../../../vendor/bin/ecs check --config ../../../ecs.php Command Controller Core DataProvider DependencyInjection Exception Migration Profile Resources Test",
-        "ecs-fix": "../../../vendor/bin/ecs check --config ../../../ecs.php --fix Command Controller Core DataProvider DependencyInjection Exception Migration Profile Resources Test",
+        "ecs": [
+            "../../../vendor/bin/ecs check --config ../../../ecs.php Command Controller Core DataProvider DependencyInjection Exception Migration Profile Resources Test",
+            "../../../vendor/bin/ecs check --config ecs.php"
+        ],
+        "ecs-fix": [
+            "../../../vendor/bin/ecs check --config ../../../ecs.php --fix Command Controller Core DataProvider DependencyInjection Exception Migration Profile Resources Test",
+            "../../../vendor/bin/ecs check --config ecs.php --fix"
+        ],
         "phpunit": "../../../vendor/bin/phpunit",
-        "phpstan": [
-            "php bin/phpstan-config-generator.php",
-            "../../../vendor/bin/phpstan analyze"
-        ]
+        "phpstan": "../../../vendor/bin/phpstan analyze ."
     },
     "autoload": {
         "psr-4": {

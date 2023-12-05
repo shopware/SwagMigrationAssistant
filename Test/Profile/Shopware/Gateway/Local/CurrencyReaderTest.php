@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -23,10 +22,6 @@ class CurrencyReaderTest extends TestCase
     use LocalCredentialTrait;
 
     private CurrencyReader $currencyReader;
-
-    private SwagMigrationConnectionEntity $connection;
-
-    private string $runId;
 
     private MigrationContext $migrationContext;
 
@@ -71,8 +66,11 @@ class CurrencyReaderTest extends TestCase
         static::assertTrue($this->currencyReader->supportsTotal($this->migrationContext));
 
         $totalStruct = $this->currencyReader->readTotal($this->migrationContext);
+        static::assertNotNull($totalStruct);
+        $dataSet = $this->migrationContext->getDataSet();
+        static::assertNotNull($dataSet);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        static::assertSame($dataSet::getEntity(), $totalStruct->getEntityName());
         static::assertSame(2, $totalStruct->getTotal());
     }
 }

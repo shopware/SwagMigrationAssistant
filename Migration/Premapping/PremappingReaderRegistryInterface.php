@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 interface PremappingReaderRegistryInterface
 {
     /**
-     * @param string[] $dataSelectionIds
+     * @param list<string> $dataSelectionIds
      *
      * @return PremappingReaderInterface[]
      */
