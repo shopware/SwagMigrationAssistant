@@ -1,3 +1,6 @@
+# 7.0.2
+- MIG-908 - Behebung der Shopware 6 Migration von `system_config` Entitäten, die nicht zwischen verschiedenen Shops migriert werden sollten
+
 # 7.0.1
 - MIG-907 - Shopware 6 Profilenamen in Verbindungen korrigiert
 

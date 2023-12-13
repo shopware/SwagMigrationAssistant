@@ -596,16 +596,6 @@ parameters:
 			path: DataProvider/Provider/Data/SnippetSetProvider.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\SystemConfigProvider\\:\\:__construct\\(\\) has parameter \\$systemConfigRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: DataProvider/Provider/Data/SystemConfigProvider.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\SystemConfigProvider\\:\\:getProvidedData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: DataProvider/Provider/Data/SystemConfigProvider.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\TaxProvider\\:\\:__construct\\(\\) has parameter \\$taxRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: DataProvider/Provider/Data/TaxProvider.php
