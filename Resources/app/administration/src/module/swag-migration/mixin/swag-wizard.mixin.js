@@ -153,7 +153,7 @@ Mixin.register('swag-wizard', {
          * It searches for the route inside this.routes.
          */
         matchCurrentRoute(notifyCallback = true) {
-            const routerCurrentRoute = this.$router.currentRoute.value;
+            const routerCurrentRoute = this.feature.isActive('VUE3') ? this.$router.currentRoute.value : this.$router.currentRoute;
 
             // check for current child route
             let currentRoute;

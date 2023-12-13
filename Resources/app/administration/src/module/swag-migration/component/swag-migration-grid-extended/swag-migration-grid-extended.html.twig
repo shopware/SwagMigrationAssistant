@@ -12,7 +12,11 @@
                 <div class="sw-grid__cell-content">
                     <sw-checkbox-field :value="isSelected(item.id)"
                                        :disabled="isDisabled(item)"
+                                       {% if VUE3 %}
                                        @update:value="selectItem($event, item)"
+                                       {% else %}
+                                       @change="selectItem($event, item)"
+                                       {% endif %}>
                     </sw-checkbox-field>
                 </div>
             </div>

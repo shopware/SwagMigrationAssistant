@@ -39,8 +39,16 @@
                 {% block swag_migration_confirm_warning_checkbox %}
                     <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                       {% if VUE3 %}
                                        v-model:value="isCurrencyChecked"
+                                       {% else %}
+                                       v-model="isCurrencyChecked"
+                                       {% endif %}
+                                       {% if VUE3 %}
                                        @update:value="onCheckboxValueChanged"
+                                       {% else %}
+                                       @change="onCheckboxValueChanged"
+                                       {% endif %}>
                     </sw-checkbox-field>
                 {% endblock %}
             </sw-card>
@@ -84,8 +92,16 @@
                 {% block swag_migration_confirm_language_warning_checkbox %}
                     <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                       {% if VUE3 %}
                                        v-model:value="isLanguageChecked"
+                                       {% else %}
+                                       v-model="isLanguageChecked"
+                                       {% endif %}
+                                       {% if VUE3 %}
                                        @update:value="onCheckboxValueChanged"
+                                       {% else %}
+                                       @change="onCheckboxValueChanged"
+                                       {% endif %}>
                     </sw-checkbox-field>
                 {% endblock %}
             </sw-card>

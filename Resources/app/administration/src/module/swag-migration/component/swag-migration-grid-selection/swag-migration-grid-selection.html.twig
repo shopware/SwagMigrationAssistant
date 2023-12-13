@@ -20,10 +20,18 @@
 
                             {% block swag_migration_grid_selection_grid_column_choice_field %}
                                 <sw-select-field
+                                    {% if VUE3 %}
                                     v-model:value="item.destinationUuid"
+                                    {% else %}
+                                    v-model="item.destinationUuid"
+                                    {% endif %}
                                     class="swag-migration-grid-selection__choice-field"
                                     :class="getClassesAfterValidation(item)"
+                                    {% if VUE3 %}
                                     @update:value="onInput"
+                                    {% else %}
+                                    @change="onInput"
+                                    {% endif %}
                                 >
                                     <option
                                         class="sw-field--select__placeholder-option"
