@@ -12,7 +12,6 @@
             {% endblock %}
 
             {% block swag_migration_router_view %}
-                {% if VUE3 %}
                     <router-view v-slot="{ Component }">
                         <component
                             :is="Component"
@@ -32,24 +31,6 @@
                             @onIsLoadingChanged="onChildIsLoadingChanged"
                         ></component>
                     </router-view>
-                {% else %}
-                    <router-view
-                        v-show="!isLoading && !childIsLoading"
-                        :currentConnectionId="connection.id"
-                        :profileInformationComponent="profileInformationComponent"
-                        :credentialsComponent="credentialsComponent"
-                        :credentials="connection.credentialFields"
-                        :errorMessageSnippet="errorMessageSnippet"
-                        :connectionNameErrorCode="connectionNameErrorCode"
-                        @onChildRouteReadyChanged="onChildRouteReadyChanged"
-                        @onTriggerPrimaryClick="triggerPrimaryClick"
-                        @onProfileSelected="onProfileSelected"
-                        @onChangeConnectionName="onChangeConnectionName"
-                        @onConnectionSelected="onConnectionSelected"
-                        @onCredentialsChanged="onCredentialsChanged"
-                        @onIsLoadingChanged="onChildIsLoadingChanged"
-                    ></router-view>
-                {% endif %}
             {% endblock %}
 
             <template class="swag-migration-wizard__footer" #modal-footer>
