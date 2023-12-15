@@ -57,6 +57,10 @@ Component.register('swag-migration-history', {
         migrationColumns() {
             return this.getMigrationColumns();
         },
+
+        dateFilter() {
+            return Shopware.Filter.getByName('date');
+        },
     },
 
     created() {

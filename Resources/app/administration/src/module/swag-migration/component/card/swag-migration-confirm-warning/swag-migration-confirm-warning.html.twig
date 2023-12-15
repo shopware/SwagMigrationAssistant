@@ -40,7 +40,7 @@
                     <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
                                        v-model:value="isCurrencyChecked"
-                                       @update:value="onCheckboxValueChanged"
+                                       @update:value="onCheckboxValueChanged">
                     </sw-checkbox-field>
                 {% endblock %}
             </sw-card>
@@ -85,7 +85,7 @@
                     <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
                                        v-model:value="isLanguageChecked"
-                                       @update:value="onCheckboxValueChanged"
+                                       @update:value="onCheckboxValueChanged">
                     </sw-checkbox-field>
                 {% endblock %}
             </sw-card>

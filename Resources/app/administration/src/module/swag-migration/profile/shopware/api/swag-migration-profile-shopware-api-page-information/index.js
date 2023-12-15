@@ -7,4 +7,10 @@ const { Component } = Shopware;
  */
 Component.register('swag-migration-profile-shopware-api-page-information', {
     template,
+
+    computed: {
+        assetFilter() {
+            return Shopware.Filter.getByName('asset');
+        },
+    },
 });

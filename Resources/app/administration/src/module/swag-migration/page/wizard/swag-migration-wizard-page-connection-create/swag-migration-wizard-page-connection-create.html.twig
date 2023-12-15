@@ -70,7 +70,7 @@
                                           valueProperty="name"
                                           :searchFunction="gatewaySearch"
                                           validation="required"
-                                          @update:value="onSelectGateway"
+                                          @update:value="onSelectGateway">
 
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
                                 <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">

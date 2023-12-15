@@ -46,7 +46,7 @@
 
                     {% block swag_migration_history_grid_column_createdAt %}
                         <template #column-createdAt="{ item }">
-                            {{ item.createdAt | date(migrationDateOptions) }}
+                            {{ dateFilter(item.createdAt, migrationDateOptions) }}
                         </template>
                     {% endblock %}
 

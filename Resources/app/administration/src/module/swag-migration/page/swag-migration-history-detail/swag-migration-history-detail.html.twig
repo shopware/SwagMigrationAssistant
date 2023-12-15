@@ -28,7 +28,7 @@
 
                                 <template v-else>
                                     <img class="swag-migration-shop-information__profile-avatar"
-                                         :src="profileIcon | asset"
+                                         :src="assetFilter(profileIcon)"
                                          size="80px">
                                 </template>
                             {% endblock %}
@@ -74,7 +74,7 @@
                                         {{ $tc('swag-migration.history.detailPage.timestamp') }}
                                     </div>
                                     <div class="swag-migration-history-detail__run-timestamp-value">
-                                        {{ migrationRun.createdAt | date(migrationDateOptions) }}
+                                        {{ dateFilter(migrationRun.createdAt, migrationDateOptions) }}
                                     </div>
 
                                     <div class="swag-migration-history-detail__run-status-label">

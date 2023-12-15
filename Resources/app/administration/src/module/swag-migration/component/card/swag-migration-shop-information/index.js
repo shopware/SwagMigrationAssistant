@@ -166,6 +166,10 @@ Component.register('swag-migration-shop-information', {
                 time: this.getTimeString(this.lastMigrationDate),
             };
         },
+
+        assetFilter() {
+            return Shopware.Filter.getByName('asset');
+        },
     },
 
     watch: {

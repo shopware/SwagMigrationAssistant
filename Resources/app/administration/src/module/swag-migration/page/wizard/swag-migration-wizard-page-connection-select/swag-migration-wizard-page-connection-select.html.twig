@@ -17,6 +17,7 @@
 
                 {% block swag_migration_wizard_page_select_profile_selection %}
                     <div class="swag-migration-wizard__form">
+                        <sw-select-field
                                          v-model:value="selectedConnectionId"
                                          :options="connections"
                                          :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
