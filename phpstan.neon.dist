@@ -18,7 +18,7 @@ parameters:
         - Test/TestBootstrap.php
     symfony:
         constantHassers: false
-        containerXmlPath: '../../../var/cache/test/Shopware_Core_DevOps_StaticAnalyze_StaticAnalyzeKernelTestDebugContainer.xml'
+        containerXmlPath: '../../../var/cache/swag_migration_assistant_phpstan/Shopware_Core_DevOps_StaticAnalyze_StaticAnalyzeKernelSwag_migration_assistant_phpstanDebugContainer.xml'
         consoleApplicationLoader: ../../../src/Core/DevOps/StaticAnalyze/console-application.php
     excludePaths:
         - vendor
@@ -51,7 +51,7 @@ services:
 rules:
     # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAnnotationRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\MockingSimpleObjectsNotAllowedRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\FinalClassRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DecorationPatternRule
