@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
@@ -144,10 +145,9 @@ class ConverterRegistryTest extends TestCase
     }
 
     /**
-     * @dataProvider converterProvider
-     *
      * @param class-string<object> $converterClass
      */
+    #[DataProvider('converterProvider')]
     public function testConverterCollection(ProfileInterface $profile, DataSet $dataSet, string $converterClass): void
     {
         $connection = new SwagMigrationConnectionEntity();
@@ -189,7 +189,7 @@ class ConverterRegistryTest extends TestCase
         }
     }
 
-    public function converterProvider(): array
+    public static function converterProvider(): array
     {
         return [
             [

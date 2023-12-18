@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Connection;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -17,9 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 class ConnectionFactoryTests extends TestCase
 {
-    /**
-     * @dataProvider getCreateApiClientTestData
-     */
+    #[DataProvider('getCreateApiClientTestData')]
     public function testCreateApiClient(?array $credentials, bool $expectedToBeNull): void
     {
         $connection = new SwagMigrationConnectionEntity();
@@ -44,7 +43,7 @@ class ConnectionFactoryTests extends TestCase
         }
     }
 
-    public function getCreateApiClientTestData(): \Generator
+    public static function getCreateApiClientTestData(): \Generator
     {
         yield 'Empty credentials should return null' => [
             'credentials' => [],

@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -292,9 +293,7 @@ class MigrationControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requiredFetchDataProperties
-     */
+    #[DataProvider('requiredFetchDataProperties')]
     public function testFetchDataWithMissingProperty(string $missingProperty): void
     {
         $context = Context::createDefaultContext();
@@ -421,9 +420,7 @@ class MigrationControllerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requiredWriteDataProperties
-     */
+    #[DataProvider('requiredWriteDataProperties')]
     public function testWriteDataWithMissingProperty(string $missingProperty): void
     {
         $properties = [

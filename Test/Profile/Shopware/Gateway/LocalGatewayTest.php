@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway;
 
 use Doctrine\DBAL\Exception\ConnectionException;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -34,9 +35,7 @@ class LocalGatewayTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    /**
-     * @dataProvider profileProvider
-     */
+    #[DataProvider('profileProvider')]
     public function testReadFailedNoCredentials(string $profileName, ProfileInterface $profile): void
     {
         $connection = new SwagMigrationConnectionEntity();
@@ -87,9 +86,7 @@ class LocalGatewayTest extends TestCase
         $gateway->read($migrationContext);
     }
 
-    /**
-     * @dataProvider profileProvider
-     */
+    #[DataProvider('profileProvider')]
     public function testReadWithUnknownEntityThrowsException(string $profileName, ProfileInterface $profile): void
     {
         $connection = new SwagMigrationConnectionEntity();
@@ -141,9 +138,7 @@ class LocalGatewayTest extends TestCase
         $gateway->read($migrationContext);
     }
 
-    /**
-     * @dataProvider profileProvider
-     */
+    #[DataProvider('profileProvider')]
     public function testReadEnvironmentInformationHasEmptyResult(string $profileName, ProfileInterface $profile): void
     {
         $connection = new SwagMigrationConnectionEntity();
@@ -180,7 +175,7 @@ class LocalGatewayTest extends TestCase
         static::assertSame($response->getTotals(), []);
     }
 
-    public function profileProvider(): array
+    public static function profileProvider(): array
     {
         return [
             [

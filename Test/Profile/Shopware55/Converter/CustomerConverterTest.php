@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
@@ -142,9 +143,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[0]['parameters']['email'], '42');
     }
 
-    /**
-     * @dataProvider requiredProperties
-     */
+    #[DataProvider('requiredProperties')]
     public function testConvertWithoutRequiredProperties(string $property, ?string $value): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
@@ -335,9 +334,7 @@ class CustomerConverterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requiredAddressProperties
-     */
+    #[DataProvider('requiredAddressProperties')]
     public function testConvertWithoutRequiredAddressPropertiesForBillingDefault(string $property, ?string $value): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
@@ -374,9 +371,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[1]['parameters']['replacementField'], 'default shipping address');
     }
 
-    /**
-     * @dataProvider requiredAddressProperties
-     */
+    #[DataProvider('requiredAddressProperties')]
     public function testConvertWithoutRequiredAddressPropertiesForShippingDefault(string $property, ?string $value): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
@@ -413,9 +408,7 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[1]['parameters']['replacementField'], 'default billing address');
     }
 
-    /**
-     * @dataProvider requiredAddressProperties
-     */
+    #[DataProvider('requiredAddressProperties')]
     public function testConvertWithoutRequiredAddressPropertiesForDefaultBillingAndShipping(string $property, ?string $value): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';

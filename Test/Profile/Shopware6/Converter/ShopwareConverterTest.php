@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
@@ -79,9 +80,7 @@ abstract class ShopwareConverterTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider dataProviderConvert
-     */
+    #[DataProvider('dataProviderConvert')]
     public function testConvert(string $fixtureFolderPath): void
     {
         $input = require $fixtureFolderPath . '/input.php';

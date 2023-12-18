@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
@@ -20,9 +21,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 #[Package('services-settings')]
 class SalesChannelConverterTest extends ShopwareConverterTest
 {
-    /**
-     * @dataProvider dataProviderConvert
-     */
+    #[DataProvider('dataProviderConvert')]
     public function testConvert(string $fixtureFolderPath): void
     {
         if (!\str_contains($fixtureFolderPath, '02-DefaultSalesChannel')) {

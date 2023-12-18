@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
@@ -663,12 +664,11 @@ class ShippingMethodConverterTest extends TestCase
     }
 
     /**
-     * @dataProvider conditionDataProvider
-     *
      * @param array<string, mixed> $bindValues
-     * @param list<array<string, mixed>> $excpetedConditions
+     * @param list<array<string, mixed>> $expectedConditions
      */
-    public function testConvertCondition(array $bindValues, array $excpetedConditions): void
+    #[DataProvider('conditionDataProvider')]
+    public function testConvertCondition(array $bindValues, array $expectedConditions): void
     {
         $shippingMethodData = require __DIR__ . '/../../../_fixtures/shipping_method_data.php';
 
@@ -676,7 +676,7 @@ class ShippingMethodConverterTest extends TestCase
             $shippingMethodData[0][$key] = $bindValue;
         }
 
-        if (isset($excpetedConditions[0]['type'], $excpetedConditions[0]['value']['paymentMethodIds']) && $excpetedConditions[0]['type'] === 'paymentMethod') {
+        if (isset($expectedConditions[0]['type'], $expectedConditions[0]['value']['paymentMethodIds']) && $expectedConditions[0]['type'] === 'paymentMethod') {
             $this->mappingService->getOrCreateMapping(
                 $this->connection->getId(),
                 DefaultEntities::PAYMENT_METHOD,
@@ -684,7 +684,7 @@ class ShippingMethodConverterTest extends TestCase
                 $this->context,
                 null,
                 null,
-                $excpetedConditions[0]['value']['paymentMethodIds'][0]
+                $expectedConditions[0]['value']['paymentMethodIds'][0]
             );
 
             $this->mappingService->getOrCreateMapping(
@@ -694,7 +694,7 @@ class ShippingMethodConverterTest extends TestCase
                 $this->context,
                 null,
                 null,
-                $excpetedConditions[0]['value']['paymentMethodIds'][1]
+                $expectedConditions[0]['value']['paymentMethodIds'][1]
             );
 
             $this->mappingService->getOrCreateMapping(
@@ -704,11 +704,11 @@ class ShippingMethodConverterTest extends TestCase
                 $this->context,
                 null,
                 null,
-                $excpetedConditions[0]['value']['paymentMethodIds'][2]
+                $expectedConditions[0]['value']['paymentMethodIds'][2]
             );
         }
 
-        if (isset($excpetedConditions[0]['type'], $excpetedConditions[0]['value']['categoryIds']) && $excpetedConditions[0]['type'] === 'cartLineItemInCategory') {
+        if (isset($expectedConditions[0]['type'], $expectedConditions[0]['value']['categoryIds']) && $expectedConditions[0]['type'] === 'cartLineItemInCategory') {
             $this->mappingService->getOrCreateMapping(
                 $this->connection->getId(),
                 DefaultEntities::CATEGORY,
@@ -716,7 +716,7 @@ class ShippingMethodConverterTest extends TestCase
                 $this->context,
                 null,
                 null,
-                $excpetedConditions[0]['value']['categoryIds'][0]
+                $expectedConditions[0]['value']['categoryIds'][0]
             );
 
             $this->mappingService->getOrCreateMapping(
@@ -726,7 +726,7 @@ class ShippingMethodConverterTest extends TestCase
                 $this->context,
                 null,
                 null,
-                $excpetedConditions[0]['value']['categoryIds'][1]
+                $expectedConditions[0]['value']['categoryIds'][1]
             );
 
             $this->mappingService->getOrCreateMapping(
@@ -736,7 +736,7 @@ class ShippingMethodConverterTest extends TestCase
                 $this->context,
                 null,
                 null,
-                $excpetedConditions[0]['value']['categoryIds'][2]
+                $expectedConditions[0]['value']['categoryIds'][2]
             );
         }
 
@@ -774,6 +774,6 @@ class ShippingMethodConverterTest extends TestCase
             }
         }
 
-        static::assertSame($excpetedConditions, $conditions);
+        static::assertSame($expectedConditions, $conditions);
     }
 }

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Api;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -37,12 +38,11 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 class Shopware6ApiGatewayTest extends TestCase
 {
     /**
-     * @dataProvider provideEnvironments
-     *
      * @param array{shopwareVersion: string, defaultLocale: string, defaultCurrency: string, updateAvailable: bool} $source
      * @param array{shopwareVersion: string, defaultLocale: string, defaultCurrency: string} $self
      * @param array{migrationDisabled: bool, displayWarnings: list<DisplayWarning>} $expectation
      */
+    #[DataProvider('provideEnvironments')]
     public function testReadEnvironmentInformation(array $source, array $self, array $expectation): void
     {
         $shopware6ApiGateway = $this->createShopware6ApiGateway($self['shopwareVersion'], $source['shopwareVersion'], $source['updateAvailable'], $self['defaultCurrency'], $source['defaultCurrency'], $self['defaultLocale'], $source['defaultLocale']);

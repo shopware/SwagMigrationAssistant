@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Checkout\Document\Service\DocumentGenerator;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -45,7 +45,7 @@ class DataProviderController
         $offset = (int) $request->query->get('offset', '0');
 
         if ($identifier === '') {
-            throw new MissingRequestParameterException('identifier');
+            throw RoutingException::missingRequestParameter('identifier');
         }
 
         $provider = $this->providerRegistry->getDataProvider($identifier);
@@ -73,7 +73,7 @@ class DataProviderController
         $identifier = (string) $request->query->get('identifier');
 
         if ($identifier === '') {
-            throw new MissingRequestParameterException('identifier');
+            throw RoutingException::missingRequestParameter('identifier');
         }
 
         $provider = $this->providerRegistry->getDataProvider($identifier);
@@ -88,7 +88,7 @@ class DataProviderController
         $identifier = (string) $request->query->get('identifier');
 
         if ($identifier === '') {
-            throw new MissingRequestParameterException('identifier');
+            throw RoutingException::missingRequestParameter('identifier');
         }
 
         $generatedDocument = $this->documentGenerator->readDocument($identifier, $context);

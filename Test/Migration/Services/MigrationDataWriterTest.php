@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
@@ -358,9 +359,7 @@ class MigrationDataWriterTest extends TestCase
         static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $log->getCode());
     }
 
-    /**
-     * @dataProvider requiredProperties
-     */
+    #[DataProvider('requiredProperties')]
     public function testWriteInvalidData(string $missingProperty, bool $mappingExists): void
     {
         $context = Context::createDefaultContext();
