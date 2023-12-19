@@ -7791,19 +7791,9 @@ parameters:
 			path: Test/Profile/Shopware6/Converter/ProductSortingConverterTest.php
 
 		-
-			message: "#^@dataProvider dataProviderConvert related method must be static in PHPUnit 10 and newer\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Converter/SalesChannelConverterTest.php
-
-		-
 			message: "#^PHPDoc tag @var with type Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository\\<Shopware\\\\Core\\\\Checkout\\\\Shipping\\\\ShippingMethodCollection\\> is not subtype of native type Shopware\\\\Core\\\\Test\\\\Stub\\\\DataAbstractionLayer\\\\StaticEntityRepository\\<Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection\\>\\.$#"
 			count: 1
 			path: Test/Profile/Shopware6/Converter/ShippingMethodConverterTest.php
-
-		-
-			message: "#^@dataProvider dataProviderConvert related method must be static in PHPUnit 10 and newer\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Converter/ShopwareConverterTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:dataProviderConvert\\(\\) return type has no value type specified in iterable type iterable\\.$#"

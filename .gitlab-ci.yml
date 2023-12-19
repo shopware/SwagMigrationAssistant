@@ -27,7 +27,7 @@ ecs:
 phpunit:
   script:
     - php
-      -d pcov.enabled=0 -d pcov.directory=$PWD -d pcov.exclude='~(vendor|tests|node_modules)~'
+      -d pcov.enabled=1 -d pcov.directory=$PWD -d pcov.exclude='~(vendor|tests|node_modules)~'
       ${PROJECT_ROOT}/vendor/bin/phpunit
       --configuration phpunit.xml.dist
       --log-junit ${CI_PROJECT_DIR}/phpunit.junit.xml

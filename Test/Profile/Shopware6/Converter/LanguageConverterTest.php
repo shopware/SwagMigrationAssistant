@@ -29,7 +29,7 @@ class LanguageConverterTest extends ShopwareConverterTest
         return new LanguageDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/Language/';
     }

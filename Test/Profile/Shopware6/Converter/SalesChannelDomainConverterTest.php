@@ -29,7 +29,7 @@ class SalesChannelDomainConverterTest extends ShopwareConverterTest
         return new SalesChannelDomainDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/SalesChannelDomain/';
     }
