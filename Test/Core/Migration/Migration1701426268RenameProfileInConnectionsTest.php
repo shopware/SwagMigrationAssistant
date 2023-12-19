@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Core\Migration;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Test\TestCaseBase\DatabaseTransactionBehaviour;
@@ -15,9 +16,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Core\Migration\Migration1701426268RenameProfileInConnections;
 
-/**
- * @covers \SwagMigrationAssistant\Core\Migration\Migration1701426268RenameProfileInConnections
- */
+#[CoversClass(Migration1701426268RenameProfileInConnections::class)]
 class Migration1701426268RenameProfileInConnectionsTest extends TestCase
 {
     use DatabaseTransactionBehaviour;

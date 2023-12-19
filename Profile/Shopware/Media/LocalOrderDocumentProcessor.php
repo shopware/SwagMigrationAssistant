@@ -8,9 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\Connection;
-use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
-use Shopware\Core\Content\Media\Exception\EmptyMediaFilenameException;
-use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
+use Shopware\Core\Content\Media\MediaException;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -146,26 +144,28 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                     'document',
                     $media['media_id']
                 );
-            } catch (DuplicatedMediaFileNameException $e) {
-                $this->mediaService->saveFile(
-                    $fileBlob,
-                    $fileExtension,
-                    $mimeType,
-                    $name . \mb_substr(Uuid::randomHex(), 0, 5),
-                    $context,
-                    'document',
-                    $media['media_id']
-                );
-            } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
-                $this->mediaService->saveFile(
-                    $fileBlob,
-                    $fileExtension,
-                    $mimeType,
-                    $media['media_id'],
-                    $context,
-                    'document',
-                    $media['media_id']
-                );
+            } catch (MediaException $mediaException) {
+                if ($mediaException->getErrorCode() === MediaException::MEDIA_DUPLICATED_FILE_NAME) {
+                    $this->mediaService->saveFile(
+                        $fileBlob,
+                        $fileExtension,
+                        $mimeType,
+                        $name . \mb_substr(Uuid::randomHex(), 0, 5),
+                        $context,
+                        'document',
+                        $media['media_id']
+                    );
+                } elseif (\in_array($mediaException->getErrorCode(), [MediaException::MEDIA_ILLEGAL_FILE_NAME, MediaException::MEDIA_EMPTY_FILE_NAME], true)) {
+                    $this->mediaService->saveFile(
+                        $fileBlob,
+                        $fileExtension,
+                        $mimeType,
+                        $media['media_id'],
+                        $context,
+                        'document',
+                        $media['media_id']
+                    );
+                }
             }
         });
     }
