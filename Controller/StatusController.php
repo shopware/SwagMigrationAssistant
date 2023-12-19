@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterfac
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
+use SwagMigrationAssistant\Migration\Run\RunOptions;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
@@ -247,7 +248,12 @@ class StatusController extends AbstractController
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $state = $this->runService->createMigrationRun($migrationContext, $dataSelectionIds, $context);
+        $state = $this->runService->createMigrationRun(
+            $migrationContext,
+            $dataSelectionIds,
+            new RunOptions(keepData: false, resumeExistingRun: false),
+            $context
+        );
 
         if ($state === null) {
             return $this->getState($request, $context);
