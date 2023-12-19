@@ -33,6 +33,7 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
+use SwagMigrationAssistant\Migration\Run\RunOptions;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
@@ -185,6 +186,7 @@ class RunServiceTest extends TestCase
         $this->runServiceWithoutStructure->createMigrationRun(
             $migrationContext,
             [],
+            new RunOptions(),
             $context
         );
         $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
