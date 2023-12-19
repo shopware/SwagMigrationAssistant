@@ -8,11 +8,9 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\Connection;
-use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
-use Shopware\Core\Content\Media\Exception\EmptyMediaFilenameException;
-use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
+use Shopware\Core\Content\Media\MediaException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
@@ -187,15 +185,17 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
         try {
             $this->fileSaver->persistFileToMedia($mediaFile, $fileName, $mediaId, $context);
-        } catch (DuplicatedMediaFileNameException $e) {
-            $this->fileSaver->persistFileToMedia(
-                $mediaFile,
-                $fileName . \mb_substr(Uuid::randomHex(), 0, 5),
-                $mediaId,
-                $context
-            );
-        } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
-            $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
+        } catch (MediaException $mediaException) {
+            if ($mediaException->getErrorCode() === MediaException::MEDIA_DUPLICATED_FILE_NAME) {
+                $this->fileSaver->persistFileToMedia(
+                    $mediaFile,
+                    $fileName . \mb_substr(Uuid::randomHex(), 0, 5),
+                    $mediaId,
+                    $context
+                );
+            } elseif (\in_array($mediaException->getErrorCode(), [MediaException::MEDIA_ILLEGAL_FILE_NAME, MediaException::MEDIA_EMPTY_FILE_NAME], true)) {
+                $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
+            }
         }
     }
 

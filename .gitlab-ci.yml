@@ -1,11 +1,11 @@
 variables:
     PLUGIN_NAME: SwagMigrationAssistant
-    PLATFORM_BRANCH: '6.5.x'
-    DEV_IMAGE: shopware/development:8.1-composer-2
+    PLATFORM_BRANCH: 'trunk'
+    DEV_IMAGE: shopware/development:8.2-composer-2
 
 include:
     project: 'shopware/6/product/platform'
-    ref: '6.5.x'
+    ref: 'trunk'
     file: '.gitlab/templates/plugin.yml'
 
 Danger:
@@ -27,7 +27,7 @@ ecs:
 phpunit:
   script:
     - php
-      -d pcov.enabled=0 -d pcov.directory=$PWD -d pcov.exclude='~(vendor|tests|node_modules)~'
+      -d pcov.enabled=1 -d pcov.directory=$PWD -d pcov.exclude='~(vendor|tests|node_modules)~'
       ${PROJECT_ROOT}/vendor/bin/phpunit
       --configuration phpunit.xml.dist
       --log-junit ${CI_PROJECT_DIR}/phpunit.junit.xml

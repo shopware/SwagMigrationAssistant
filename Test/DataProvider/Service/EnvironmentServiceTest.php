@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\DataProvider\Service;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -31,9 +32,7 @@ class EnvironmentServiceTest extends TestCase
 {
     private EnvironmentServiceInterface $environmentService;
 
-    /**
-     * @dataProvider provideEnvironments
-     */
+    #[DataProvider('provideEnvironments')]
     public function testGetEnvironmentData(string $shopwareVersion, string $defaultCurrency, string $defaultLocale, bool $updateAvailable): void
     {
         $this->createEnvironmentService($shopwareVersion, $defaultCurrency, $defaultLocale, $updateAvailable);
@@ -50,7 +49,7 @@ class EnvironmentServiceTest extends TestCase
         ]);
     }
 
-    public function provideEnvironments(): array
+    public static function provideEnvironments(): array
     {
         return [
             ['6.5.6.1', 'EUR', 'de-DE', false],

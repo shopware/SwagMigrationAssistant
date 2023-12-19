@@ -8,4 +8,10 @@ const { Component } = Shopware;
  */
 Component.register('swag-migration-dashboard-card', {
     template,
+
+    computed: {
+        assetFilter() {
+            return Shopware.Filter.getByName('asset');
+        },
+    },
 });

@@ -29,7 +29,7 @@ class SnippetSetConverterTest extends ShopwareConverterTest
         return new SnippetSetDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/SnippetSet/';
     }

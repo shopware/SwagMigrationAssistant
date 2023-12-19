@@ -29,7 +29,7 @@ class CategoryAssociationConverterTest extends ShopwareConverterTest
         return new CategoryAssociationDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/CategoryAssociation/';
     }

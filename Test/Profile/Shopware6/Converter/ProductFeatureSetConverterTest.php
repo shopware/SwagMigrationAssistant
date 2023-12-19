@@ -29,7 +29,7 @@ class ProductFeatureSetConverterTest extends ShopwareConverterTest
         return new ProductFeatureSetDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/ProductFeatureSet/';
     }

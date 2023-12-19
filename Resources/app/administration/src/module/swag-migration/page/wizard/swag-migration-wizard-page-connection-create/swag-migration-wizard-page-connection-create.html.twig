@@ -19,21 +19,13 @@
                 {% block swag_migration_wizard_page_create_profile_selection %}
                     <div class="swag-migration-wizard__form">
                         <sw-text-field v-autofocus
-                                       {% if VUE3 %}
                                        v-model:value="selection.connectionName"
-                                       {% else %}
-                                       v-model="selection.connectionName"
-                                       {% endif %}
                                        :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
                                        :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
                                        validation="required"
                                        :helpText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
                                        :error="connectionNameError"
-                                       {% if VUE3 %}
                                        @update:value="onChangeConnectionName"
-                                       {% else %}
-                                       @input="onChangeConnectionName"
-                                       {% endif %}
                         >
                         </sw-text-field>
 
@@ -42,19 +34,11 @@
                                           :popoverClasses="['swag-migration-wizard-page-create-profile']"
                                           :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                                           :options="profiles"
-                                          {% if VUE3 %}
                                           v-model:value="selection.profile"
-                                          {% else %}
-                                          :value="selection.profile"
-                                          {% endif %}
                                           valueProperty="name"
                                           :searchFunction="profileSearch"
                                           validation="required"
-                                          {% if VUE3 %}
                                           @update:value="onSelectProfile"
-                                          {% else %}
-                                          @change="onSelectProfile"
-                                          {% endif %}
                         >
 
                             {% block swag_migration_wizard_page_create_profile_form_profile_field_options %}
@@ -82,19 +66,11 @@
                                           :popoverClasses="['swag-migration-wizard-page-create-profile']"
                                           :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                                           :options="gateways"
-                                          {% if VUE3 %}
                                           v-model:value="selection.gateway"
-                                          {% else %}
-                                          :value="selection.gateway"
-                                          {% endif %}
                                           valueProperty="name"
                                           :searchFunction="gatewaySearch"
                                           validation="required"
-                                          {% if VUE3 %}
-                                          @update:value="onSelectGateway"
-                                          {% else %}
-                                          @change="onSelectGateway"
-                                          {% endif %}>
+                                          @update:value="onSelectGateway">
 
                             {% block swag_migration_wizard_page_create_profile_form_gateway_field_options %}
                                 <template #selection-label-property="{ item: singleSelection, labelProperty, valueProperty, searchTerm, getKey }">

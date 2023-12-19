@@ -104,6 +104,14 @@ Component.register('swag-migration-history-detail', {
             return this.migrationRun.status === null ? '' :
                 `swag-migration-history-detail__run-status-value--${this.migrationRun.status}`;
         },
+
+        assetFilter() {
+            return Shopware.Filter.getByName('asset');
+        },
+
+        dateFilter() {
+            return Shopware.Filter.getByName('date');
+        }
     },
 
     created() {

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Cart\Price\Struct\AbsolutePriceDefinition;
 use Shopware\Core\Checkout\Cart\Price\Struct\CalculatedPrice;
@@ -286,9 +287,7 @@ class OrderConverterTest extends TestCase
         static::assertEquals($lineItem0Price->getCalculatedTaxes()->first(), new CalculatedTax(0.0, 0.0, 0.0));
     }
 
-    /**
-     * @dataProvider requiredProperties
-     */
+    #[DataProvider('requiredProperties')]
     public function testConvertWithoutRequiredProperties(string $missingProperty): void
     {
         [$customerData, $orderData] = $this->getFixtureData();
@@ -472,9 +471,7 @@ class OrderConverterTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider requiredAddressProperties
-     */
+    #[DataProvider('requiredAddressProperties')]
     public function testConvertWithoutValidBillingAddress(string $missingAddressProperty): void
     {
         [$customerData, $orderData] = $this->getFixtureData();
@@ -509,9 +506,7 @@ class OrderConverterTest extends TestCase
         static::assertSame(2, $validLog);
     }
 
-    /**
-     * @dataProvider requiredAddressProperties
-     */
+    #[DataProvider('requiredAddressProperties')]
     public function testConvertWithoutValidShippingAddress(string $missingProperty): void
     {
         [$customerData, $orderData] = $this->getFixtureData();

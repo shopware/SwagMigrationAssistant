@@ -29,7 +29,7 @@ class CustomerWishlistConverterTest extends ShopwareConverterTest
         return new CustomerWishlistDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/CustomerWishlist/';
     }

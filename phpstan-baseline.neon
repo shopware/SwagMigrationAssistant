@@ -32,12 +32,12 @@ parameters:
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 4
+			count: 1
 			path: Controller/DataProviderController.php
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 4
+			count: 1
 			path: Controller/HistoryController.php
 
 		-
@@ -7201,11 +7201,6 @@ parameters:
 			path: Test/DataProvider/Service/EnvironmentServiceTest.php
 
 		-
-			message: "#^DataProvider method provideEnvironments should be static\\.$#"
-			count: 1
-			path: Test/DataProvider/Service/EnvironmentServiceTest.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest\\:\\:provideEnvironments\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Test/DataProvider/Service/EnvironmentServiceTest.php
@@ -7261,19 +7256,9 @@ parameters:
 			path: Test/Migration/Controller/PremappingControllerTest.php
 
 		-
-			message: "#^DataProvider method converterProvider should be static\\.$#"
-			count: 1
-			path: Test/Migration/Converter/ConverterRegistryTest.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Converter\\\\ConverterRegistryTest\\:\\:converterProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Test/Migration/Converter/ConverterRegistryTest.php
-
-		-
-			message: "#^DataProvider method exceptionProvider should be static\\.$#"
-			count: 1
-			path: Test/Migration/Exception/ExceptionTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Exception\\\\ExceptionTest\\:\\:exceptionProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -7304,6 +7289,11 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest\\:\\:\\$mappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Test/Migration/Mapping/MappingServiceTest.php
+
+		-
+			message: "#^Call to deprecated method getMockForAbstractClass\\(\\) of class PHPUnit\\\\Framework\\\\TestCase\\.$#"
+			count: 1
+			path: Test/Migration/Writer/AbstractWriterTest.php
 
 		-
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Writer\\\\AbstractWriterTest\\:\\:\\$dataToWrite type has no value type specified in iterable type array\\.$#"
@@ -7526,16 +7516,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/ApiReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\CustomerReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
@@ -7549,26 +7529,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MainVariantRelationReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MainVariantRelationReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MainVariantRelationReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MainVariantRelationReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -7591,16 +7551,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NewsletterRecipientReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
@@ -7614,16 +7564,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\NumberRangeReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -7641,16 +7581,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderDocumentReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
@@ -7664,16 +7594,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\OrderReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -7691,16 +7611,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
@@ -7714,16 +7624,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ProductReviewReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -7741,26 +7641,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupOptionReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\PropertyGroupOptionReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/PropertyGroupOptionReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SalesChannelReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
@@ -7774,16 +7654,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\SeoUrlReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
@@ -7801,16 +7671,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShippingMethodReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
@@ -7826,26 +7686,6 @@ parameters:
 			path: Test/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
 
 		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TableReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TableReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$connection\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Access to an uninitialized property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\TranslationReaderTest\\:\\:\\$runId\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
@@ -7859,11 +7699,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^DataProvider method profileProvider should be static\\.$#"
-			count: 3
-			path: Test/Profile/Shopware/Gateway/LocalGatewayTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\LocalGatewayTest\\:\\:profileProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -7956,19 +7791,9 @@ parameters:
 			path: Test/Profile/Shopware6/Converter/ProductSortingConverterTest.php
 
 		-
-			message: "#^DataProvider method dataProviderConvert should be static\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Converter/SalesChannelConverterTest.php
-
-		-
 			message: "#^PHPDoc tag @var with type Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository\\<Shopware\\\\Core\\\\Checkout\\\\Shipping\\\\ShippingMethodCollection\\> is not subtype of native type Shopware\\\\Core\\\\Test\\\\Stub\\\\DataAbstractionLayer\\\\StaticEntityRepository\\<Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection\\>\\.$#"
 			count: 1
 			path: Test/Profile/Shopware6/Converter/ShippingMethodConverterTest.php
-
-		-
-			message: "#^DataProvider method dataProviderConvert should be static\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Converter/ShopwareConverterTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:dataProviderConvert\\(\\) return type has no value type specified in iterable type iterable\\.$#"
@@ -7982,11 +7807,6 @@ parameters:
 
 		-
 			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'SwagMigrationAssistant\\\\\\\\Profile\\\\\\\\Shopware6\\\\\\\\Gateway\\\\\\\\Connection\\\\\\\\AuthClient' and SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient will always evaluate to true\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Connection/ConnectionFactoryTests.php
-
-		-
-			message: "#^DataProvider method getCreateApiClientTestData should be static\\.$#"
 			count: 1
 			path: Test/Profile/Shopware6/Gateway/Connection/ConnectionFactoryTests.php
 

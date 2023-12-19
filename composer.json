@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "shopware/core": "~6.5.0"
+        "shopware/core": "~6.5.0 || ~6.6.0"
     },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
@@ -54,6 +54,11 @@
     "autoload": {
         "psr-4": {
             "SwagMigrationAssistant\\": ""
+        }
+    },
+    "config": {
+        "allow-plugins": {
+            "symfony/runtime": true
         }
     }
 }
