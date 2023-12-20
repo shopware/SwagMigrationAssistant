@@ -132,7 +132,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
         },
 
         onSelectProfile(value) {
-            if (this.selection.profile === value || value === null || value === undefined) {
+            if (value === null || value === undefined) {
                 return Promise.resolve();
             }
 
