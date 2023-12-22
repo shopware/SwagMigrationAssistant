@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
 #[Package('services-settings')]
@@ -238,11 +238,15 @@ class MigrationController extends AbstractController
     {
         $lastIndexer = $request->get('lastIndexer');
 
-        /** @var array{offset: int|null}|null $offset */
-        $offset = $request->request->all('offset');
+        if ($request->request->has('offset')) {
+            /** @var array{offset: int|null} $offset */
+            $offset = $request->request->all('offset');
+        } else {
+            $offset = null;
+        }
         $result = $this->entityPartialIndexerService->partial(
             \is_string($lastIndexer) ? $lastIndexer : null,
-            !empty($offset) ? $offset : null
+            $offset
         );
 
         if (!$result) {
