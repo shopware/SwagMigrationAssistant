@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
@@ -65,9 +66,9 @@ abstract class ShopwareConverterTest extends TestCase
         static::assertTrue($supportsDefinition, $this->getAssertMessage('Converter does not support migration context.'));
     }
 
-    public function dataProviderConvert(): iterable
+    public static function dataProviderConvert(): iterable
     {
-        $basePath = \rtrim($this->getFixtureBasePath(), '/') . '/';
+        $basePath = \rtrim(static::getFixtureBasePath(), '/') . '/';
         $glob = \glob($basePath . '*');
 
         if ($glob === false) {
@@ -79,9 +80,7 @@ abstract class ShopwareConverterTest extends TestCase
         }
     }
 
-    /**
-     * @dataProvider dataProviderConvert
-     */
+    #[DataProvider('dataProviderConvert')]
     public function testConvert(string $fixtureFolderPath): void
     {
         $input = require $fixtureFolderPath . '/input.php';
@@ -143,7 +142,10 @@ abstract class ShopwareConverterTest extends TestCase
 
     abstract protected function createDataSet(): DataSet;
 
-    abstract protected function getFixtureBasePath(): string;
+    protected static function getFixtureBasePath(): string
+    {
+        throw new \RuntimeException('No fixture base path defined in child class: ' . static::class);
+    }
 
     protected function createProfile(): Shopware6ProfileInterface
     {

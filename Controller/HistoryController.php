@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -18,7 +18,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
@@ -35,7 +35,7 @@ class HistoryController extends AbstractController
         $runUuid = $request->query->getAlnum('runUuid');
 
         if ($runUuid === '') {
-            throw new MissingRequestParameterException('runUuid');
+            throw RoutingException::missingRequestParameter('runUuid');
         }
 
         $cleanResult = $this->historyService->getGroupedLogsOfRun(
@@ -60,7 +60,7 @@ class HistoryController extends AbstractController
         $runUuid = $request->request->getAlnum('runUuid');
 
         if ($runUuid === '') {
-            throw new MissingRequestParameterException('runUuid');
+            throw RoutingException::missingRequestParameter('runUuid');
         }
 
         $response = new StreamedResponse();
@@ -86,7 +86,7 @@ class HistoryController extends AbstractController
         $runUuid = $request->request->getAlnum('runUuid');
 
         if ($runUuid === '') {
-            throw new MissingRequestParameterException('runUuid');
+            throw RoutingException::missingRequestParameter('runUuid');
         }
 
         if ($this->historyService->isMediaProcessing()) {

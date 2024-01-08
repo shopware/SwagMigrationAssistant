@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Routing\Exception\MissingRequestParameterException;
+use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
@@ -113,7 +113,8 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(MissingRequestParameterException::class);
+        $this->expectException(RoutingException::class);
+        $this->expectExceptionMessage('Parameter "runUuid" is missing.');
         $this->controller->getGroupedLogsOfRun($request, $this->context);
     }
 
@@ -138,7 +139,8 @@ class HistoryControllerTest extends TestCase
     {
         $request = new Request();
 
-        $this->expectException(MissingRequestParameterException::class);
+        $this->expectException(RoutingException::class);
+        $this->expectExceptionMessage('Parameter "runUuid" is missing.');
         $this->controller->downloadLogsOfRun($request, $this->context);
     }
 

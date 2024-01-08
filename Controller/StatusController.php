@@ -27,7 +27,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
 #[Package('services-settings')]
@@ -154,7 +154,6 @@ class StatusController extends AbstractController
     {
         $connectionId = $request->request->getAlnum('connectionId');
 
-        /** @var array|mixed $credentialFields */
         $credentialFields = $request->request->all('credentialFields');
 
         if ($connectionId === '') {
@@ -231,7 +230,6 @@ class StatusController extends AbstractController
     {
         $connectionId = $request->request->getAlnum('connectionId');
 
-        /** @var array|mixed $dataSelectionIds */
         $dataSelectionIds = $request->request->all('dataSelectionIds');
 
         if ($connectionId === '') {

@@ -11,10 +11,7 @@ use Doctrine\DBAL\Connection;
 use GuzzleHttp\Client;
 use GuzzleHttp\Promise;
 use GuzzleHttp\Promise\Utils;
-use Shopware\Core\Content\Media\Exception\DuplicatedMediaFileNameException;
-use Shopware\Core\Content\Media\Exception\EmptyMediaFilenameException;
-use Shopware\Core\Content\Media\Exception\IllegalFileNameException;
-use Shopware\Core\Content\Media\Exception\MediaNotFoundException;
+use Shopware\Core\Content\Media\MediaException;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -57,7 +54,6 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
     /**
      * @param MediaProcessWorkloadStruct[] $workload
      *
-     * @throws MediaNotFoundException
      * @throws InconsistentCriteriaIdsException
      *
      * @return MediaProcessWorkloadStruct[]
@@ -169,9 +165,6 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
         return \array_values($mappedWorkload);
     }
 
-    /**
-     * @throws MediaNotFoundException
-     */
     private function persistFileToMedia(string $filePath, string $uuid, string $name, Context $context): void
     {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($filePath, $uuid, $name): void {
@@ -196,26 +189,28 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                     'document',
                     $uuid
                 );
-            } catch (DuplicatedMediaFileNameException $e) {
-                $this->mediaService->saveFile(
-                    $fileBlob,
-                    $fileExtension,
-                    $mimeType,
-                    $name . \mb_substr(Uuid::randomHex(), 0, 5),
-                    $context,
-                    'document',
-                    $uuid
-                );
-            } catch (IllegalFileNameException|EmptyMediaFilenameException $e) {
-                $this->mediaService->saveFile(
-                    $fileBlob,
-                    $fileExtension,
-                    $mimeType,
-                    $uuid,
-                    $context,
-                    'document',
-                    $uuid
-                );
+            } catch (MediaException $mediaException) {
+                if ($mediaException->getErrorCode() === MediaException::MEDIA_DUPLICATED_FILE_NAME) {
+                    $this->mediaService->saveFile(
+                        $fileBlob,
+                        $fileExtension,
+                        $mimeType,
+                        $name . \mb_substr(Uuid::randomHex(), 0, 5),
+                        $context,
+                        'document',
+                        $uuid
+                    );
+                } elseif (\in_array($mediaException->getErrorCode(), [MediaException::MEDIA_ILLEGAL_FILE_NAME, MediaException::MEDIA_EMPTY_FILE_NAME], true)) {
+                    $this->mediaService->saveFile(
+                        $fileBlob,
+                        $fileExtension,
+                        $mimeType,
+                        $uuid,
+                        $context,
+                        'document',
+                        $uuid
+                    );
+                }
             }
         });
     }

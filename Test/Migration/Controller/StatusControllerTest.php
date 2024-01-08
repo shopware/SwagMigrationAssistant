@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Api\Context\AdminApiSource;
 use Shopware\Core\Framework\Context;
@@ -343,9 +344,7 @@ class StatusControllerTest extends TestCase
         $this->controller->updateConnectionCredentials($request, $context);
     }
 
-    /**
-     * @dataProvider connectionProvider
-     */
+    #[DataProvider('connectionProvider')]
     public function testGetDataSelection(string $connectionId, string $profileName, string $connectionName): void
     {
         $this->createConnection($connectionId, $profileName, $connectionName);

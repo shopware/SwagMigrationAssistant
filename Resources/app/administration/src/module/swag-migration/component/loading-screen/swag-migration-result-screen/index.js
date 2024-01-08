@@ -9,6 +9,12 @@ const { Component } = Shopware;
 Component.register('swag-migration-result-screen', {
     template,
 
+    computed: {
+        assetFilter() {
+            return Shopware.Filter.getByName('asset');
+        },
+    },
+
     props: {
         runId: {
             type: String,

@@ -17,20 +17,13 @@
 
                 {% block swag_migration_wizard_page_select_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <sw-select-field {% if VUE3 %}
+                        <sw-select-field
                                          v-model:value="selectedConnectionId"
-                                         {% else %}
-                                         v-model="selectedConnectionId"
-                                         {% endif %}
                                          :options="connections"
                                          :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
                                          :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')"
                                          @change="onConnectionSelected"
-                                         {% if VUE3 %}
                                          @update:value="onConnectionSelected"
-                                         {% else %}
-                                         @change="onConnectionSelected"
-                                         {% endif %}
                         ></sw-select-field>
                     </div>
                 {% endblock %}

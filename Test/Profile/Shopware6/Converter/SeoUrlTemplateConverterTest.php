@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlTemplat
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
-class SeoUrlTemplateConverterTest
+class SeoUrlTemplateConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
     {
@@ -29,7 +29,7 @@ class SeoUrlTemplateConverterTest
         return new SeoUrlTemplateDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/SeoUrlTemplate/';
     }

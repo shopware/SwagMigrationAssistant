@@ -7,6 +7,7 @@
 
 use Doctrine\DBAL\DriverManager;
 use Shopware\Core\DevOps\StaticAnalyze\StaticAnalyzeKernel;
+use Shopware\Core\Framework\Adapter\Kernel\KernelFactory;
 use Shopware\Core\Framework\Plugin\KernelPluginLoader\StaticKernelPluginLoader;
 use Shopware\Core\TestBootstrapper;
 use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
@@ -44,7 +45,12 @@ try {
 }
 
 $pluginLoader = new StaticKernelPluginLoader($classLoader, null, $plugins);
-$kernel = new StaticAnalyzeKernel('test', true, $pluginLoader, 'phpstan-test-cache-id');
+
+KernelFactory::$kernelClass = StaticAnalyzeKernel::class;
+
+/** @var StaticAnalyzeKernel $kernel */
+$kernel = KernelFactory::create('swag_migration_assistant_phpstan', true, $classLoader, $pluginLoader);
+
 $kernel->boot();
 
 $connectionParams = [

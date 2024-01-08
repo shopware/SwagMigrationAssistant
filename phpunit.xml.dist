@@ -1,57 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/8.5/phpunit.xsd"
-         bootstrap="Test/TestBootstrap.php"
-         executionOrder="random">
-
-    <php>
-        <ini name="error_reporting" value="-1"/>
-        <env name="APP_ENV" value="test"/>
-        <env name="APP_DEBUG" value="1"/>
-        <env name="APP_SECRET" value="s$cretf0rt3st"/>
-        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
-    </php>
-
-    <testsuites>
-        <testsuite name="SwagMigrationAssistant Testsuite">
-            <directory suffix="MigrationServicesTrait.php">Test</directory>
-            <directory>Test</directory>
-        </testsuite>
-    </testsuites>
-
-    <filter>
-        <whitelist>
-            <directory suffix=".php">./</directory>
-            <exclude>
-                <directory suffix=".php">./bin</directory>
-                <directory suffix=".php">./Test</directory>
-                <directory suffix=".php">./Profile/Shopware/Gateway/Api/Reader</directory>
-                <directory suffix=".php">./vendor</directory>
-                <directory suffix=".php">./Core/Migration</directory>
-
-                <!-- Structs and Collections -->
-                <directory suffix="Collection.php">./Migration</directory>
-                <directory suffix="Entity.php">./Migration</directory>
-                <directory suffix="Struct.php">./Migration</directory>
-                <directory suffix="DataSet.php">./Profile</directory>
-
-                <!-- Can only thrown, if permissions denied -->
-                <file>./Exception/NoFileSystemPermissionsException.php</file>
-                <file>./Migration/EnvironmentInformation.php</file>
-                <file>SwagMigrationAssistant.php</file>
-            </exclude>
-        </whitelist>
-    </filter>
-
-    <listeners>
-        <listener class="Symfony\Bridge\PhpUnit\SymfonyTestsListener">
-            <arguments>
-                <array>
-                    <!-- set this option to 0 to disable the DebugClassLoader integration -->
-                    <element key="debug-class-loader"><integer>0</integer></element>
-                </array>
-            </arguments>
-        </listener>
-    </listeners>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="Test/TestBootstrap.php" executionOrder="random" cacheDirectory=".phpunit.cache">
+  <coverage/>
+  <php>
+    <ini name="error_reporting" value="-1"/>
+    <env name="APP_ENV" value="test"/>
+    <env name="APP_DEBUG" value="1"/>
+    <env name="APP_SECRET" value="s$cretf0rt3st"/>
+    <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+  </php>
+  <testsuites>
+    <testsuite name="SwagMigrationAssistant Testsuite">
+      <directory suffix="MigrationServicesTrait.php">Test</directory>
+      <directory>Test</directory>
+      <exclude>Test/Profile/Shopware6/Converter/ShopwareConverterTest.php</exclude>
+      <exclude>Test/MigrationServicesTrait.php</exclude>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">./</directory>
+    </include>
+    <exclude>
+      <directory suffix=".php">./bin</directory>
+      <directory suffix=".php">./Test</directory>
+      <directory suffix=".php">./Profile/Shopware/Gateway/Api/Reader</directory>
+      <directory suffix=".php">./vendor</directory>
+      <directory suffix=".php">./Core/Migration</directory>
+      <directory suffix="Collection.php">./Migration</directory>
+      <directory suffix="Entity.php">./Migration</directory>
+      <directory suffix="Struct.php">./Migration</directory>
+      <directory suffix="DataSet.php">./Profile</directory>
+      <file>./Exception/NoFileSystemPermissionsException.php</file>
+      <file>./Migration/EnvironmentInformation.php</file>
+      <file>SwagMigrationAssistant.php</file>
+    </exclude>
+  </source>
 </phpunit>

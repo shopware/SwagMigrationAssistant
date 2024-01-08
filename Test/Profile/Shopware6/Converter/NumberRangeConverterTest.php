@@ -36,7 +36,7 @@ class NumberRangeConverterTest extends ShopwareConverterTest
         return new NumberRangeDataSet();
     }
 
-    protected function getFixtureBasePath(): string
+    protected static function getFixtureBasePath(): string
     {
         return __DIR__ . '/../../../_fixtures/Shopware6/NumberRange/';
     }

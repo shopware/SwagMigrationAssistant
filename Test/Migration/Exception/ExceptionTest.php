@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Exception;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
@@ -33,10 +34,9 @@ use Symfony\Component\HttpFoundation\Response;
 class ExceptionTest extends TestCase
 {
     /**
-     * @dataProvider exceptionProvider
-     *
      * @param class-string<object> $exceptionClass
      */
+    #[DataProvider('exceptionProvider')]
     public function testExceptions(ShopwareHttpException $exceptionInstance, string $exceptionClass, int $expectedStatusCode, string $expectedErrorCode): void
     {
         try {
@@ -48,7 +48,7 @@ class ExceptionTest extends TestCase
         }
     }
 
-    public function exceptionProvider(): array
+    public static function exceptionProvider(): array
     {
         return [
             [new ConverterNotFoundException('foo'), ConverterNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__CONVERTER_NOT_FOUND'],
