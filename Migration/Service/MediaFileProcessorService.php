@@ -109,7 +109,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $message = new ProcessMediaMessage();
         $message->setMediaFileIds($mediaUuids);
         $message->setRunId($runUuid);
-        $message->setDataSet($dataSet);
+        $message->setEntityName($dataSet::getEntity());
         $message->setFileChunkByteSize($fileChunkByteSize);
         $message->withContext($context);
         $this->messageBus->dispatch($message);
