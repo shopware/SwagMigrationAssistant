@@ -9,10 +9,10 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 
 #[Package('services-settings')]
-class ProcessMediaMessage
+class ProcessMediaMessage implements AsyncMessageInterface
 {
     /**
      * @var string[]
@@ -23,7 +23,7 @@ class ProcessMediaMessage
 
     private string $contextData;
 
-    private DataSet $dataSet;
+    private string $entityName;
 
     private int $fileChunkByteSize;
 
@@ -67,16 +67,6 @@ class ProcessMediaMessage
         return $this->contextData;
     }
 
-    public function getDataSet(): DataSet
-    {
-        return $this->dataSet;
-    }
-
-    public function setDataSet(DataSet $dataSet): void
-    {
-        $this->dataSet = $dataSet;
-    }
-
     /**
      * @return string[]
      */
@@ -93,5 +83,15 @@ class ProcessMediaMessage
     public function getFileChunkByteSize(): int
     {
         return $this->fileChunkByteSize;
+    }
+
+    public function getEntityName(): string
+    {
+        return $this->entityName;
+    }
+
+    public function setEntityName(string $entityName): void
+    {
+        $this->entityName = $entityName;
     }
 }

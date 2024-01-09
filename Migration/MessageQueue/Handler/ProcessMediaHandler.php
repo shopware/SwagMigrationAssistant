@@ -59,7 +59,7 @@ class ProcessMediaHandler
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
         }
 
-        $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getDataSet()::getEntity());
+        $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getEntityName());
 
         if ($migrationContext === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
@@ -68,7 +68,7 @@ class ProcessMediaHandler
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $message->getRunId(),
-                $message->getDataSet()::getEntity(),
+                $message->getEntityName(),
                 new NoFileSystemPermissionsException()
             ));
             $this->loggingService->saveLogging($context);
@@ -92,7 +92,7 @@ class ProcessMediaHandler
         } catch (ProcessorNotFoundException $e) {
             $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
                 $message->getRunId(),
-                $message->getDataSet()::getEntity(),
+                $message->getEntityName(),
                 $connection->getProfileName(),
                 $connection->getGatewayName()
             ));
