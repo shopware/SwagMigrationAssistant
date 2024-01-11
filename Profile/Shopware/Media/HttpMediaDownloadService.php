@@ -34,6 +34,8 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class HttpMediaDownloadService extends BaseMediaService implements MediaFileProcessorInterface
 {
+    private string $runId = '';
+
     public function __construct(
         private readonly EntityRepository $mediaFileRepo,
         private readonly FileSaver $fileSaver,
@@ -63,7 +65,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $mediaIds = [];
-        $runId = $migrationContext->getRunUuid();
+        $this->runId = $migrationContext->getRunUuid();
 
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
@@ -71,7 +73,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
         }
 
         // Fetch media from database
-        $media = $this->getMediaFiles($mediaIds, $runId);
+        $media = $this->getMediaFiles($mediaIds, $this->runId);
 
         // Do download requests and store the promises
         $client = new Client([
@@ -112,7 +114,8 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
                         $mappedWorkload[$uuid]->getRunId(),
                         DefaultEntities::MEDIA,
                         $mappedWorkload[$uuid]->getMediaId(),
-                        $mappedWorkload[$uuid]->getAdditionalData()['uri']
+                        $mappedWorkload[$uuid]->getAdditionalData()['uri'],
+                        $result['reason'] ?? null
                     ));
                 }
 
@@ -120,7 +123,8 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             }
 
             $response = $result['value'];
-            $fileExtension = $additionalData['file_extension'] ?? \pathinfo($additionalData['uri'], \PATHINFO_EXTENSION);
+            $uriFileExtension = $additionalData['file_extension'] ?? \pathinfo($additionalData['uri'], \PATHINFO_EXTENSION);
+            $fileExtension = \explode('?', $uriFileExtension)[0]; // fix for URI query params after extension
             $filePath = \sprintf('_temp/%s.%s', $uuid, $fileExtension);
 
             $streamContext = \stream_context_create([
@@ -171,7 +175,7 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
             }
         }
 
-        $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
+        $this->setProcessedFlag($this->runId, $context, $finishedUuids, $failureUuids);
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
@@ -220,6 +224,13 @@ class HttpMediaDownloadService extends BaseMediaService implements MediaFileProc
                 );
             } elseif (\in_array($mediaException->getErrorCode(), [MediaException::MEDIA_ILLEGAL_FILE_NAME, MediaException::MEDIA_EMPTY_FILE_NAME], true)) {
                 $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
+            } else {
+                $this->loggingService->addLogEntry(new ExceptionRunLog(
+                    $this->runId,
+                    DefaultEntities::MEDIA,
+                    $mediaException,
+                    $uuid
+                ));
             }
         }
     }

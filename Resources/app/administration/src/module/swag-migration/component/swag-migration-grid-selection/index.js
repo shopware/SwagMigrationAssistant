@@ -49,7 +49,7 @@ Component.register('swag-migration-grid-selection', {
         },
 
         onInput() {
-            this.$emit('input');
+            this.$emit('update:value');
         },
 
         getClassesAfterValidation(item) {

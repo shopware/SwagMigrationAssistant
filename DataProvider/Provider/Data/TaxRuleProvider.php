@@ -31,6 +31,7 @@ class TaxRuleProvider extends AbstractProvider
         $criteria = new Criteria();
         $criteria->setLimit($limit);
         $criteria->setOffset($offset);
+        $criteria->addAssociation('type');
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->taxRuleRepo->search($criteria, $context);
 

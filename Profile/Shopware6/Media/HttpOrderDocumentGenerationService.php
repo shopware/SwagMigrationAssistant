@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
 use Doctrine\DBAL\Connection;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Promise\Utils;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
@@ -129,7 +130,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $oldWorkload = \array_pop($oldWorkloadSearchResult);
 
             if ($state !== 'fulfilled') {
-                $this->handleFailedRequest($oldWorkload, $mappedWorkload[$uuid], $uuid, $additionalData, $failureUuids);
+                $this->handleFailedRequest($oldWorkload, $mappedWorkload[$uuid], $uuid, $additionalData, $failureUuids, $result['reason'] ?? null);
 
                 continue;
             }
@@ -282,7 +283,8 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         MediaProcessWorkloadStruct &$mappedWorkload,
         string $uuid,
         array $additionalData,
-        array &$failureUuids
+        array &$failureUuids,
+        ?ClientException $clientException = null
     ): void {
         $mappedWorkload = $oldWorkload;
         $mappedWorkload->setAdditionalData($additionalData);
@@ -295,7 +297,8 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                 $mappedWorkload->getRunId(),
                 DefaultEntities::ORDER_DOCUMENT,
                 $mappedWorkload->getMediaId(),
-                $mappedWorkload->getAdditionalData()['uri']
+                $mappedWorkload->getAdditionalData()['uri'],
+                $clientException
             ));
         }
     }

@@ -38,6 +38,8 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
 
     private const API_ENDPOINT = 'SwagMigrationEsdFiles/';
 
+    private string $runId = '';
+
     public function __construct(
         private readonly EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
@@ -70,16 +72,16 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
     {
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
-        $runId = $migrationContext->getRunUuid();
+        $this->runId = $migrationContext->getRunUuid();
 
         // Map workload with uuids as keys
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
         }
 
-        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $runId);
+        $media = $this->getMediaFiles(\array_keys($mappedWorkload), $this->runId);
         $results = $this->startDownloadProcess($migrationContext, $mappedWorkload, $media, $context);
-        $mappedWorkload = $this->processResults($results, $mappedWorkload, $workload, $media, $context, $runId);
+        $mappedWorkload = $this->processResults($results, $mappedWorkload, $workload, $media, $context, $this->runId);
 
         return \array_values($mappedWorkload);
     }
@@ -134,6 +136,13 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
                         DefaultEntities::PRODUCT_DOWNLOAD,
                         $uuid
                     );
+                } else {
+                    $this->loggingService->addLogEntry(new ExceptionRunLog(
+                        $this->runId,
+                        DefaultEntities::PRODUCT_DOWNLOAD,
+                        $mediaException,
+                        $uuid
+                    ));
                 }
             }
         });
@@ -283,7 +292,8 @@ class HttpProductDownloadProcessor extends BaseMediaService implements MediaFile
                         $mappedWorkload[$uuid]->getRunId(),
                         DefaultEntities::PRODUCT_DOWNLOAD,
                         $mappedWorkload[$uuid]->getMediaId(),
-                        $mappedWorkload[$uuid]->getAdditionalData()['uri']
+                        $mappedWorkload[$uuid]->getAdditionalData()['uri'],
+                        $result['reason'] ?? null
                     ));
                 }
 

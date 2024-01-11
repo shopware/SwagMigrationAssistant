@@ -121,7 +121,8 @@ class HttpOrderDocumentProcessor extends BaseMediaService implements MediaFilePr
                         $mappedWorkload[$uuid]->getRunId(),
                         DefaultEntities::ORDER_DOCUMENT,
                         $mappedWorkload[$uuid]->getMediaId(),
-                        $mappedWorkload[$uuid]->getAdditionalData()['uri']
+                        $mappedWorkload[$uuid]->getAdditionalData()['uri'],
+                        $result['reason'] ?? null
                     ));
                 }
 
