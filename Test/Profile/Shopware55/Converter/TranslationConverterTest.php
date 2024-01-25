@@ -306,6 +306,17 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertSame($convertedCategory['id'], $converted['id']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        static::assertArrayHasKey('translations', $converted);
+        static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
+
+        $originalData = \unserialize($translationData['category']['objectdata'], ['allowed_classes' => false]);
+        $translations = $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID];
+
+        static::assertSame($originalData['description'], $translations['name']);
+        static::assertSame($originalData['cmstext'], $translations['description']);
+        static::assertSame($originalData['external'], $translations['externalLink']);
+        static::assertSame($originalData['metatitle'], $translations['metaTitle']);
     }
 
     public function testConvertCategoryTranslationWithoutParent(): void
