@@ -1,5 +1,6 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MINOR NEEDED
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
+- MIG-838 - Hinzufügen der Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen
 
 # 7.0.2
 - MIG-908 - Behebung der Shopware 6 Migration von `system_config` Entitäten, die nicht zwischen verschiedenen Shops migriert werden sollten

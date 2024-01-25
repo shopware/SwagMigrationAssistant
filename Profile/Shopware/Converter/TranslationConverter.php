@@ -27,12 +27,15 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationTy
 #[Package('services-settings')]
 abstract class TranslationConverter extends ShopwareConverter
 {
-    protected string $connectionId;
+    protected string $connectionId = '';
 
     protected Context $context;
 
-    protected string $runId;
+    protected string $runId = '';
 
+    /**
+     * @param array<mixed> $data
+     */
     public function convert(
         array $data,
         Context $context,
@@ -95,6 +98,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct(null, $data);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
@@ -192,6 +198,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($product, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createProductVariantTranslation(array &$data): ConvertStruct
     {
         if (!isset($data['ordernumber'])) {
@@ -259,7 +268,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        /** @var array $returnData */
+        /** @var array<mixed> $returnData */
         $returnData = $data;
         if (empty($returnData)) {
             $returnData = null;
@@ -269,6 +278,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($product, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createManufacturerProductTranslation(array &$data): ConvertStruct
     {
         $sourceData = $data;
@@ -348,6 +360,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($manufacturer, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createUnitTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
@@ -391,7 +406,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
         $unitTranslation['id'] = $this->mainMapping['entityUuid'];
 
-        /** @var array $objectData */
+        /** @var array<mixed> $objectData */
         $objectData = \array_pop($objectData);
 
         foreach ($objectData as $key => $value) {
@@ -434,6 +449,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($unit, $data, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createCategoryTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
@@ -523,6 +541,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($category, $data, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createConfiguratorOptionTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
@@ -600,6 +621,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($configuratorOption, $data, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createConfiguratorOptionGroupTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
@@ -680,6 +704,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($configuratorOptionGroup, $data, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createPropertyValueTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
@@ -755,6 +782,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($propertyValue, $data, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createPropertyOptionTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
@@ -831,6 +861,10 @@ abstract class TranslationConverter extends ShopwareConverter
         return new ConvertStruct($propertyOption, $data, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $translation
+     * @param array<mixed> $objectData
+     */
     protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
         $connection = $this->migrationContext->getConnection();
@@ -883,6 +917,11 @@ abstract class TranslationConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>|null
+     */
     protected function unserializeTranslation(array $data, string $entity): ?array
     {
         $objectDataSerialized = $data['objectdata'];
@@ -910,6 +949,9 @@ abstract class TranslationConverter extends ShopwareConverter
         return $objectData;
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function createProductMediaTranslation(array $data): ConvertStruct
     {
         if (!isset($data['mediaId'])) {
