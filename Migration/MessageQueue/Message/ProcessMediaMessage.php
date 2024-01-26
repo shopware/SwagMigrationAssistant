@@ -23,8 +23,7 @@ class ProcessMediaMessage implements AsyncMessageInterface
         private string $entityName,
         private int $fileChunkByteSize,
         private Context $context
-    )
-    {
+    ) {
     }
 
     public function getContext(): Context

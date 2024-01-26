@@ -87,6 +87,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $this->loggingService->saveLogging($context);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function getMediaFiles(MigrationContextInterface $migrationContext): array
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
@@ -104,6 +107,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             ->fetchAllAssociative();
     }
 
+    /**
+     * @param string[] $mediaUuids
+     */
     private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void
     {
         $message = new ProcessMediaMessage(
@@ -117,6 +123,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $this->messageBus->dispatch($message);
     }
 
+    /**
+     * @param array<string, mixed> $mediaFile
+     */
     private function logDataSetNotFoundException(
         MigrationContextInterface $migrationContext,
         array $mediaFile

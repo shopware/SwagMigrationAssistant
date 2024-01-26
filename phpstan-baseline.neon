@@ -1971,21 +1971,6 @@ parameters:
 			path: Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MediaFileProcessorService\\:\\:addMessageToBus\\(\\) has parameter \\$mediaUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MediaFileProcessorService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MediaFileProcessorService\\:\\:getMediaFiles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MediaFileProcessorService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MediaFileProcessorService\\:\\:logDataSetNotFoundException\\(\\) has parameter \\$mediaFile with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Service/MediaFileProcessorService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Migration/Service/MigrationDataConverter.php
