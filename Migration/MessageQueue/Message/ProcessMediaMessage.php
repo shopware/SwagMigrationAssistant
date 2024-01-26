@@ -15,33 +15,26 @@ use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 class ProcessMediaMessage implements AsyncMessageInterface
 {
     /**
-     * @var string[]
+     * @param string[] $mediaFileIds
      */
-    private array $mediaFileIds;
-
-    private string $runId;
-
-    private string $contextData;
-
-    private string $entityName;
-
-    private int $fileChunkByteSize;
-
-    public function withContext(Context $context): ProcessMediaMessage
+    public function __construct(
+        private array $mediaFileIds,
+        private string $runId,
+        private string $entityName,
+        private int $fileChunkByteSize,
+        private Context $context
+    )
     {
-        $this->contextData = \serialize($context);
-
-        return $this;
     }
 
-    public function readContext(): Context
+    public function getContext(): Context
     {
-        return \unserialize($this->contextData);
+        return $this->context;
     }
 
-    public function setContextData(string $contextData): void
+    public function setContext(Context $context): void
     {
-        $this->contextData = $contextData;
+        $this->context = $context;
     }
 
     /**
@@ -60,11 +53,6 @@ class ProcessMediaMessage implements AsyncMessageInterface
     public function setFileChunkByteSize(int $fileChunkByteSize): void
     {
         $this->fileChunkByteSize = $fileChunkByteSize;
-    }
-
-    public function getContextData(): string
-    {
-        return $this->contextData;
     }
 
     /**
