@@ -106,12 +106,14 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
     private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void
     {
-        $message = new ProcessMediaMessage();
-        $message->setMediaFileIds($mediaUuids);
-        $message->setRunId($runUuid);
-        $message->setEntityName($dataSet::getEntity());
-        $message->setFileChunkByteSize($fileChunkByteSize);
-        $message->withContext($context);
+        $message = new ProcessMediaMessage(
+            $mediaUuids,
+            $runUuid,
+            $dataSet::getEntity(),
+            $fileChunkByteSize,
+            $context
+        );
+
         $this->messageBus->dispatch($message);
     }
 

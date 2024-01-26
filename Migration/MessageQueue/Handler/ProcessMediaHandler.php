@@ -24,15 +24,19 @@ use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 #[Package('services-settings')]
-class ProcessMediaHandler
+final class ProcessMediaHandler
 {
     final public const MEDIA_ERROR_THRESHOLD = 3;
 
+    /**
+     * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
+     */
     public function __construct(
         private readonly EntityRepository $migrationRunRepo,
         private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
@@ -46,7 +50,7 @@ class ProcessMediaHandler
      */
     public function __invoke(ProcessMediaMessage $message): void
     {
-        $context = $message->readContext();
+        $context = $message->getContext();
 
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunId()]), $context)->first();
 
