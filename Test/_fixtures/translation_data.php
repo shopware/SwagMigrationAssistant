@@ -129,4 +129,14 @@ return [
         'ordernumber' => null,
         'mediaId' => '769',
     ],
+    's_categories_attributes' => [
+        'id' => '288',
+        'objecttype' => 's_categories_attributes',
+        'objectdata' => 'a:3:{s:22:"__attribute_attribute1";s:15:"DE: Attribute 1";s:22:"__attribute_attribute2";s:15:"DE: Attribute 2";s:22:"__attribute_attribute3";s:15:"DE: Attribute 3";}',
+        'objectkey' => '6',
+        'objectlanguage' => '2',
+        'dirty' => '1',
+        'locale' => 'en-US',
+        'name' => null,
+    ],
 ];
