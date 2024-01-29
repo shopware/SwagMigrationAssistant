@@ -108,7 +108,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     }
 
     /**
-     * @param string[] $mediaUuids
+     * @param array<int, string> $mediaUuids
      */
     private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void
     {

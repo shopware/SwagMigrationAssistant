@@ -15,7 +15,7 @@ use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 class ProcessMediaMessage implements AsyncMessageInterface
 {
     /**
-     * @param string[] $mediaFileIds
+     * @param array<int, string> $mediaFileIds
      */
     public function __construct(
         private array $mediaFileIds,
@@ -37,7 +37,7 @@ class ProcessMediaMessage implements AsyncMessageInterface
     }
 
     /**
-     * @param string[] $mediaFileIds
+     * @param array<int, string> $mediaFileIds
      */
     public function setMediaFileIds(array $mediaFileIds): void
     {
