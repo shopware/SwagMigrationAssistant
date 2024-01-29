@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\Aggregate\ProductManufacturer\ProductManufacturerDefinition;
@@ -72,6 +73,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createManufacturerProductTranslation($data);
             case 'config_units':
                 return $this->createUnitTranslation($data);
+            case 's_categories_attributes':
             case 'category':
                 return $this->createCategoryTranslation($data);
             case 'configuratoroption':
