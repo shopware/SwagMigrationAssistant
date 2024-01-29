@@ -1,6 +1,7 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MINOR NEEDED
 - MIG-274 - Fix migration of cross selling
 - MIG-838 - Add the meta information fields to the migration of category translations
+- MIG-839 - Add custom fields to the migration of category translations
 
 # 7.0.2
 - MIG-908 - Fix Shopware 6 migration of `system_config` entities which should not be migrated between different shops
