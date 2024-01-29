@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
@@ -317,6 +318,57 @@ class TranslationConverterTest extends TestCase
         static::assertSame($originalData['cmstext'], $translations['description']);
         static::assertSame($originalData['external'], $translations['externalLink']);
         static::assertSame($originalData['metatitle'], $translations['metaTitle']);
+    }
+
+    public function testConvertCategoryAttributeTranslation(): void
+    {
+        $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
+        $context = Context::createDefaultContext();
+        $mediaFileService = new DummyMediaFileService();
+
+        $categoryMapping = $this->mappingService->createMapping($this->connectionId, CategoryDataSet::getEntity(), '6', null, null, Uuid::randomHex());
+        $translationMapping = $this->mappingService->createMapping($this->connectionId, TranslationDataSet::getEntity(), '288', null, null, Uuid::randomHex());
+
+        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $this->loggingService, $mediaFileService);
+        $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $convertResult = $this->translationConverter->convert($translationData['s_categories_attributes'], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
+        $convertedCategory = $categoryConvertResult->getConverted();
+        static::assertIsArray($convertedCategory);
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertArrayHasKey('id', $converted);
+        static::assertSame($convertedCategory['id'], $converted['id']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        static::assertArrayHasKey('translations', $converted);
+        static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
+
+        $expected = [
+            'id' => $categoryMapping['entityUuid'],
+            'entityDefinitionClass' => CategoryDefinition::class,
+            'translations' => [
+                DummyMappingService::DEFAULT_LANGUAGE_UUID => [
+                    'id' => $translationMapping['entityUuid'],
+                    'customFields' => [
+                        'migration_Shopware55_category_attribute1' => 'DE: Attribute 1',
+                        'migration_Shopware55_category_attribute2' => 'DE: Attribute 2',
+                        'migration_Shopware55_category_attribute3' => 'DE: Attribute 3',
+                    ],
+                    'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
+                ],
+            ],
+        ];
+
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+        static::assertArrayHasKey('translations', $converted);
+        static::assertSame($expected, $converted);
     }
 
     public function testConvertCategoryTranslationWithoutParent(): void
