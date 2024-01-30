@@ -9,43 +9,35 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 
 #[Package('services-settings')]
-class ProcessMediaMessage
+class ProcessMediaMessage implements AsyncMessageInterface
 {
     /**
-     * @var string[]
+     * @param array<int, string> $mediaFileIds
      */
-    private array $mediaFileIds;
-
-    private string $runId;
-
-    private string $contextData;
-
-    private DataSet $dataSet;
-
-    private int $fileChunkByteSize;
-
-    public function withContext(Context $context): ProcessMediaMessage
-    {
-        $this->contextData = \serialize($context);
-
-        return $this;
+    public function __construct(
+        private array $mediaFileIds,
+        private string $runId,
+        private string $entityName,
+        private int $fileChunkByteSize,
+        private Context $context
+    ) {
     }
 
-    public function readContext(): Context
+    public function getContext(): Context
     {
-        return \unserialize($this->contextData);
+        return $this->context;
     }
 
-    public function setContextData(string $contextData): void
+    public function setContext(Context $context): void
     {
-        $this->contextData = $contextData;
+        $this->context = $context;
     }
 
     /**
-     * @param string[] $mediaFileIds
+     * @param array<int, string> $mediaFileIds
      */
     public function setMediaFileIds(array $mediaFileIds): void
     {
@@ -60,21 +52,6 @@ class ProcessMediaMessage
     public function setFileChunkByteSize(int $fileChunkByteSize): void
     {
         $this->fileChunkByteSize = $fileChunkByteSize;
-    }
-
-    public function getContextData(): string
-    {
-        return $this->contextData;
-    }
-
-    public function getDataSet(): DataSet
-    {
-        return $this->dataSet;
-    }
-
-    public function setDataSet(DataSet $dataSet): void
-    {
-        $this->dataSet = $dataSet;
     }
 
     /**
@@ -93,5 +70,15 @@ class ProcessMediaMessage
     public function getFileChunkByteSize(): int
     {
         return $this->fileChunkByteSize;
+    }
+
+    public function getEntityName(): string
+    {
+        return $this->entityName;
+    }
+
+    public function setEntityName(string $entityName): void
+    {
+        $this->entityName = $entityName;
     }
 }

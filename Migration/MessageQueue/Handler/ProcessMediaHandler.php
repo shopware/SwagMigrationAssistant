@@ -24,15 +24,19 @@ use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 #[Package('services-settings')]
-class ProcessMediaHandler
+final class ProcessMediaHandler
 {
     final public const MEDIA_ERROR_THRESHOLD = 3;
 
+    /**
+     * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
+     */
     public function __construct(
         private readonly EntityRepository $migrationRunRepo,
         private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
@@ -46,7 +50,7 @@ class ProcessMediaHandler
      */
     public function __invoke(ProcessMediaMessage $message): void
     {
-        $context = $message->readContext();
+        $context = $message->getContext();
 
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunId()]), $context)->first();
 
@@ -59,7 +63,7 @@ class ProcessMediaHandler
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
         }
 
-        $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getDataSet()::getEntity());
+        $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getEntityName());
 
         if ($migrationContext === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
@@ -68,7 +72,7 @@ class ProcessMediaHandler
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $message->getRunId(),
-                $message->getDataSet()::getEntity(),
+                $message->getEntityName(),
                 new NoFileSystemPermissionsException()
             ));
             $this->loggingService->saveLogging($context);
@@ -92,7 +96,7 @@ class ProcessMediaHandler
         } catch (ProcessorNotFoundException $e) {
             $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
                 $message->getRunId(),
-                $message->getDataSet()::getEntity(),
+                $message->getEntityName(),
                 $connection->getProfileName(),
                 $connection->getGatewayName()
             ));
