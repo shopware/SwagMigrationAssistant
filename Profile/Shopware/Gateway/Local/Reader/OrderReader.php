@@ -68,6 +68,14 @@ class OrderReader extends AbstractReader
 
     private function fetchOrders(MigrationContextInterface $migrationContext): array
     {
+        $ids = $this->fetchIdentifiers(
+            's_order',
+            $migrationContext->getOffset(),
+            $migrationContext->getLimit(),
+            [ 'id' ],
+            [ 'status != -1' ]
+        );
+
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_order', 'ordering');
@@ -116,9 +124,9 @@ class OrderReader extends AbstractReader
         $query->leftJoin('languageshop', 's_core_locales', 'language', 'language.id = languageshop.locale_id');
         $query->addSelect('language.locale AS \'ordering.locale\'');
 
-        $query->where('ordering.status != -1');
-        $query->setFirstResult($migrationContext->getOffset());
-        $query->setMaxResults($migrationContext->getLimit());
+        $query->where('ordering.id IN (:ids)');
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
+
         $query->addOrderBy('ordering.id');
 
         $query->executeQuery();

@@ -112,7 +112,13 @@ abstract class AbstractReader implements ReaderInterface
         return $data;
     }
 
-    protected function fetchIdentifiers(string $table, int $offset = 0, int $limit = 250, array $orderBy = []): array
+    protected function fetchIdentifiers(
+        string $table,
+        int $offset = 0,
+        int $limit = 250,
+        array $orderBy = [],
+        array $where = []
+    ): array
     {
         $query = $this->connection->createQueryBuilder();
 
@@ -124,6 +130,10 @@ abstract class AbstractReader implements ReaderInterface
 
         foreach ($orderBy as $order) {
             $query->addOrderBy($order);
+        }
+
+        foreach ($where as $clause) {
+            $query->andWhere($clause);
         }
 
         $query = $query->executeQuery();

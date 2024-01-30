@@ -15,6 +15,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\RunOptions;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
@@ -29,6 +30,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[Package('services-settings')]
@@ -38,6 +40,10 @@ class MigrateDataCommand extends Command
      * @var string[]
      */
     private array $dataSelectionNames;
+
+    private int $stepSize;
+
+    private bool $keepData = false;
 
     private OutputInterface $output;
 
@@ -64,6 +70,8 @@ class MigrateDataCommand extends Command
             ->setDescription('Migrate the data of your selected source to Shopware 6. Before you execute this command
             you have to  configure the migration in the Shopware 6 administration.')
             ->addArgument('dataSelections', InputArgument::IS_ARRAY | InputArgument::REQUIRED)
+            ->addOption('step-size', null, InputOption::VALUE_REQUIRED, 'Step size for all paginated actions', 100)
+            ->addOption('keep-data', 'k', InputOption::VALUE_NONE, 'Do not delete already read data from the swag_migration_* tables')
         ;
     }
 
@@ -91,7 +99,12 @@ class MigrateDataCommand extends Command
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $progressState = $this->runService->createMigrationRun($migrationContext, $this->dataSelectionNames, $context);
+        $progressState = $this->runService->createMigrationRun(
+            $migrationContext,
+            $this->dataSelectionNames,
+            new RunOptions($this->keepData, resumeExistingRun: true),
+            $context
+        );
 
         if ($progressState === null) {
             throw new \InvalidArgumentException('Another migration is currently running.');
@@ -137,6 +150,9 @@ class MigrateDataCommand extends Command
         }
         $this->dataSelectionNames[] = BasicSettingsDataSelection::IDENTIFIER;
         $this->dataSelectionNames = \array_merge($this->dataSelectionNames, $dataSelections);
+
+        $this->stepSize = (int) $input->getOption('step-size');
+        $this->keepData = $input->getOption('keep-data');
     }
 
     private function fetchData(ProgressState $progressState, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run, Context $context): void
