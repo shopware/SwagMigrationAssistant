@@ -72,6 +72,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createManufacturerProductTranslation($data);
             case 'config_units':
                 return $this->createUnitTranslation($data);
+            case 's_categories_attributes':
             case 'category':
                 return $this->createCategoryTranslation($data);
             case 'configuratoroption':
