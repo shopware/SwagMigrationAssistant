@@ -8,9 +8,10 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 
 #[Package('services-settings')]
-class CleanupMigrationMessage
+class CleanupMigrationMessage implements AsyncMessageInterface
 {
     public function __construct(private readonly ?string $tableName = null)
     {

@@ -1,7 +1,18 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION MINOR NEEDED
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
 - MIG-838 - Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen hinzugefügt
 - MIG-839 - Zustatzfelder zu der Migration von Kategorieübersetzungen hinzugefügt
+- MIG-931 - [BREAKING] `Migration/MessageQueue/Handler/ProcessMediaHandler.php` zu final geändert
+- MIG-931 - [BREAKING] `AsyncMessageInterface` zu `Migration/MessageQueue/Message/CleanupMigrationMessage.php` hinzugefügt
+- MIG-931 - [BREAKING] `AsyncMessageInterface` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
+- MIG-931 - [BREAKING] Methoden in `Migration/MessageQueue/Message/ProcessMediaMessage.php` entfernt:
+    - `readContext`
+    - `withContext`
+    - `getDataSet`
+    - `setDataSet`
+- MIG-931 - [BREAKING] Rückgabeparameter von `getContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
+- MIG-931 - [BREAKING] Parameter von `setContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
+- MIG-931 - Methode `getEntityName` und `setEntityName` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
 
 # 7.0.2
 - MIG-908 - Behebung der Shopware 6 Migration von `system_config` Entitäten, die nicht zwischen verschiedenen Shops migriert werden sollten
