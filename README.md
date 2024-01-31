@@ -42,4 +42,4 @@ The Migration Connector provides API endpoints that allow Shopware 6 to establis
 
 ## Documentation
 
-If you need further information. You can have a look at our [user documentation](https://docs.shopware.com/en/migration-en/Migrationprocess?category=migration-en) and our [developer documentation](https://docs.shopware.com/en/shopware-platform-dev-en/internals/plugins/shopware-migration-assistant)
+If you need further information. You can have a look at our [user documentation](https://docs.shopware.com/en/migration-en/Migrationprocess?category=migration-en) and our [developer documentation](https://developer.shopware.com/docs/products/plugins/migration-assistant)
