@@ -28,6 +28,14 @@ Component.register('swag-migration-wizard-page-profile-installation', {
     },
 
     computed: {
+        version() {
+            const version = Shopware.Context.app.config.version;
+
+            const match = version.split('.');
+
+            return [match[0], match[1]].join('.');
+        },
+
         pluginRepository() {
             return this.repositoryFactory.create('plugin');
         },
