@@ -28,6 +28,12 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class ShippingMethodConverterTest extends TestCase
 {
+    private const SW5_CALCULATION_TYPE_QUANTITY = 2;
+
+    private const SW5_CALCULATION_TYPE_PRICE = 1;
+
+    private const SW5_CALCULATION_TYPE_WEIGHT = 0;
+
     private DummyLoggingService $loggingService;
 
     private ShippingMethodConverter $shippingMethodConverter;
@@ -775,5 +781,146 @@ class ShippingMethodConverterTest extends TestCase
         }
 
         static::assertSame($excpetedConditions, $conditions);
+    }
+
+    /**
+     * @dataProvider provideShippingCostData
+     *
+     * @param array<int, array<string, string>> $shippingCosts
+     * @param array<int, array<string, float>> $expected
+     * */
+    public function testConvertCalculationOfQuantityEndValueByType(int $calculationType, array $shippingCosts, array $expected): void
+    {
+        $shippingMethodData = require __DIR__ . '/../../../_fixtures/shipping_method_data.php';
+        $shippingMethodData[0]['calculation'] = $calculationType;
+        $shippingMethodData[0]['shippingCosts'] = $shippingCosts;
+
+        $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertIsArray($converted);
+        $convertedPrices = $converted['prices'];
+        static::assertIsArray($convertedPrices);
+        for ($i = 0, $iMax = \count($expected); $i < $iMax; ++$i) {
+            static::assertSame($expected[$i]['quantityEnd'], $convertedPrices[$i]['quantityEnd']);
+        }
+        static::assertArrayNotHasKey('quantityEnd', $convertedPrices[2]);
+    }
+
+    public static function provideShippingCostData(): \Generator
+    {
+        yield 'test calculation type quantity' => [
+            'calculation' => self::SW5_CALCULATION_TYPE_QUANTITY,
+            'shippingCosts' => [
+                [
+                    'id' => '305',
+                    'from' => '0.000',
+                    'value' => '10.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+                [
+                    'id' => '306',
+                    'from' => '3.000',
+                    'value' => '5.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+                [
+                    'id' => '307',
+                    'from' => '5.000',
+                    'value' => '0.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+            ],
+            'expectedResult' => [
+                [
+                    'quantityEnd' => 2.0,
+                ],
+                [
+                    'quantityEnd' => 4.0,
+                ],
+            ],
+        ];
+
+        yield 'test calculation type price' => [
+            'calculation' => self::SW5_CALCULATION_TYPE_PRICE,
+            'shippingCosts' => [
+                [
+                    'id' => '305',
+                    'from' => '0.000',
+                    'value' => '10.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+                [
+                    'id' => '306',
+                    'from' => '5.010',
+                    'value' => '5.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+                [
+                    'id' => '307',
+                    'from' => '20.010',
+                    'value' => '0.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+            ],
+            'expectedResult' => [
+                [
+                    'quantityEnd' => 5.00,
+                ],
+                [
+                    'quantityEnd' => 20.00,
+                ],
+            ],
+        ];
+
+        yield 'test calculation type weight' => [
+            'calculation' => self::SW5_CALCULATION_TYPE_WEIGHT,
+            'shippingCosts' => [
+                [
+                    'id' => '305',
+                    'from' => '0.000',
+                    'value' => '10.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+                [
+                    'id' => '306',
+                    'from' => '10.001',
+                    'value' => '5.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+                [
+                    'id' => '307',
+                    'from' => '20.001',
+                    'value' => '0.00',
+                    'factor' => '0.00',
+                    'dispatchID' => '11',
+                    'currencyShortName' => 'EUR',
+                ],
+            ],
+            'expectedResult' => [
+                [
+                    'quantityEnd' => 10.000,
+                ],
+                [
+                    'quantityEnd' => 20.000,
+                ],
+            ],
+        ];
     }
 }
