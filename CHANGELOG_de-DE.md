@@ -15,6 +15,7 @@
 - MIG-931 - [BREAKING] Rückgabeparameter von `getContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
 - MIG-931 - [BREAKING] Parameter von `setContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
 - MIG-931 - Methode `getEntityName` und `setEntityName` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
+- MIG-938 - Behebt Berechnungsfehler bei der Migration von Versandkostenpreisen
 
 # 7.0.2
 - MIG-908 - Behebung der Shopware 6 Migration von `system_config` Entitäten, die nicht zwischen verschiedenen Shops migriert werden sollten

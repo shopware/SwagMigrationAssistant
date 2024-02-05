@@ -22,15 +22,26 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPrice
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
+/**
+ * @phpstan-type Sw5Data array<string, mixed>
+ * @phpstan-type Rules array{id: string, name: string, priority: int, moduleTypes: array<string, array<string>>, conditions: array<mixed>}|array{}
+ */
 #[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
 {
+    public const CALCULATION_TYPE_QUANTITY = 1;
+    public const CALCULATION_TYPE_PRICE = 2;
+    public const CALCULATION_TYPE_WEIGHT = 3;
+
     protected const CALCULATION_TYPE_MAPPING = [
-        0 => 3, // Weight
-        1 => 2, // Price
-        2 => 1, // Quantity
+        0 => self::CALCULATION_TYPE_WEIGHT,
+        1 => self::CALCULATION_TYPE_PRICE,
+        2 => self::CALCULATION_TYPE_QUANTITY,
     ];
 
+    /**
+     * @var array<int, string>
+     */
     protected array $relevantForAvailabilityRule = [
         'bind_time_from',
         'bind_time_to',
@@ -72,8 +83,22 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         parent::__construct($mappingService, $loggingService);
     }
 
+    /**
+     * @param Sw5Data $data
+     */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        if (empty($data['id'])) {
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                $this->runId,
+                DefaultEntities::SHIPPING_METHOD,
+                '',
+                'id',
+            ));
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->generateChecksum($data);
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
@@ -94,6 +119,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
+
         $converted['id'] = $this->mainMapping['entityUuid'];
 
         $defaultDeliveryTimeMapping = $this->mappingService->getMapping(
@@ -212,9 +238,24 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
+        if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
+            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                $this->runId,
+                DefaultEntities::SHIPPING_METHOD,
+                $this->oldShippingMethod,
+                'id',
+            ));
+
+            return new ConvertStruct(null, $data);
+        }
+
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
+    /**
+     * @param array<string, mixed> $shippingMethod
+     * @param Sw5Data $data
+     */
     protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
@@ -251,6 +292,11 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param Sw5Data $data
+     *
+     * @return array<string, mixed>
+     */
     protected function getCustomerGroupCalculationRule(array $data): array
     {
         $customerGroupId = $data['customergroupID'];
@@ -345,6 +391,11 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $rule;
     }
 
+    /**
+     * @param Sw5Data $data
+     *
+     * @return Rules
+     */
     protected function getSalesChannelCalculationRule(array $data): array
     {
         $shopId = $data['multishopID'];
@@ -441,6 +492,11 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $rule;
     }
 
+    /**
+     * @param Sw5Data $data
+     *
+     * @return Rules
+     */
     protected function getSalesChannelAndCustomerGroupCalculationRule(array $data): array
     {
         $shopId = $data['multishopID'];
@@ -570,6 +626,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $rule;
     }
 
+    /**
+     * @param Sw5Data $data
+     * @param Rules $rule
+     *
+     * @return array<array{id: string, calculation: int, shippingMethodId: string, currencyId: string, quantityStart: float, quantityEnd: float, currencyPrice: array<array<string, float|string|bool>>, rule?: array<mixed>}>
+     */
     protected function getShippingCosts(array $data, int $calculationType, ?array $rule): array
     {
         $shippingCosts = $data['shippingCosts'];
@@ -580,6 +642,17 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
+            if (empty($shippingCost['id'])) {
+                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
+                    $this->runId,
+                    DefaultEntities::SHIPPING_METHOD_PRICE,
+                    $this->oldShippingMethod,
+                    'id'
+                ));
+
+                continue;
+            }
+
             $key = (int) $key;
             $cost = [];
 
@@ -618,7 +691,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->mappingIds[] = $currencyMapping['id'];
             $cost['currencyId'] = $currencyUuid;
             if (isset($shippingCosts[$key + 1])) {
-                $cost['quantityEnd'] = $shippingCosts[$key + 1]['from'] - 0.01;
+                $cost['quantityEnd'] = $shippingCosts[$key + 1]['from'] - $this->assignValueByType($calculationType);
             }
 
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
@@ -652,12 +725,15 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $convertedCosts;
     }
 
+    /**
+     * @param Sw5Data $data
+     * @param array<string, mixed> $converted
+     */
     private function setCustomAvailabilityRule(array $data, array &$converted): void
     {
         $ruleData = $this->getRelevantDataForAvailabilityRule($data);
 
-        /** @var string $jsonRuleData */
-        $jsonRuleData = \json_encode($ruleData);
+        $jsonRuleData = \json_encode($ruleData, \JSON_THROW_ON_ERROR);
         $hash = \md5($jsonRuleData);
 
         $mainRuleMapping = $this->mappingService->getOrCreateMapping(
@@ -731,6 +807,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($converted['availabilityRuleId']);
     }
 
+    /**
+     * @return array<array<string, string|array<string, string|int>>>
+     */
     private function getDayOfWeekChildren(int $from, int $to, string $ruleId, string $parentId): array
     {
         $values = [];
@@ -749,6 +828,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $values;
     }
 
+    /**
+     * @param array<int, mixed> $values
+     */
     private function setDayOfWeekValues(array &$values, int $from, int $to, string $ruleId, string $parentId): void
     {
         $days = \range($from, $to);
@@ -775,11 +857,16 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<string, string|array<string|array<string, string>>>
+     */
     private function getRelevantDataForAvailabilityRule(array $data): array
     {
         $relevantData = [];
         foreach ($this->relevantForAvailabilityRule as $key) {
-            if (isset($data[$key]) && $data[$key] !== null) {
+            if (isset($data[$key])) {
                 $relevantData[$key] = $data[$key];
             }
         }
@@ -787,6 +874,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         return $relevantData;
     }
 
+    /**
+     * @param array<string, string|bool|int> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setWeekdayCondition(
         array &$ruleData,
         string $hash,
@@ -832,6 +923,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($ruleData['bind_weekday_from'], $ruleData['bind_weekday_to']);
     }
 
+    /**
+     * @param array{bind_laststock: string, bind_shippingfree: string, excludedCategories?: array<string>, bind_weight_to?: string, bind_price_from?: string, bind_price_to?: string, bind_weight_from?: string, bind_weight_to?: string, bind_time_from?: string, bind_time_to?: string, shippingCountries?: array<array<string, string>>, paymentMethods?: array<string>} $ruleData
+     * @param array{id: string, ruleId: string, type: string, position: int, children: array<array<mixed>>} $mainOrContainer
+     */
     private function setBindTimeCondition(
         array &$ruleData,
         string $hash,
@@ -883,6 +978,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($ruleData['bind_time_from'], $ruleData['bind_time_to']);
     }
 
+    /**
+     * @param array<string, mixed> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setLastStockCondition(
         array &$ruleData,
         string $hash,
@@ -917,6 +1016,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($ruleData['bind_laststock']);
     }
 
+    /**
+     * @param array<string, mixed> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setOtherConditions(
         array $ruleData,
         string $hash,
@@ -960,6 +1063,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setShippingCountries(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
         if (!isset($ruleData['shippingCountries']) || empty($ruleData['shippingCountries'])) {
@@ -1006,6 +1113,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($ruleData['shippingCountries']);
     }
 
+    /**
+     * @param array<string, mixed> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setPaymentMethods(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
         if (!isset($ruleData['paymentMethods']) || empty($ruleData['paymentMethods'])) {
@@ -1058,6 +1169,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($ruleData['paymentMethods']);
     }
 
+    /**
+     * @param array<string, mixed> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setExcludedCategories(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
         if (!isset($ruleData['excludedCategories']) || empty($ruleData['excludedCategories'])) {
@@ -1110,6 +1225,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         unset($ruleData['excludedCategories']);
     }
 
+    /**
+     * @param array<string, mixed> $ruleData
+     * @param array<string, mixed> $mainOrContainer
+     */
     private function setFreeShipping(
         array &$ruleData,
         string $hash,
@@ -1139,5 +1258,18 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $mainOrContainer['children'][0]['children'][] = $condition;
         unset($ruleData['bind_shippingfree']);
+    }
+
+    private function assignValueByType(int $calculationType): float
+    {
+        switch ($calculationType) {
+            case self::CALCULATION_TYPE_QUANTITY:
+                return 1;
+            case self::CALCULATION_TYPE_WEIGHT:
+                return 0.001;
+            case self::CALCULATION_TYPE_PRICE:
+            default:
+                return 0.01;
+        }
     }
 }
