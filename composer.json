@@ -32,7 +32,6 @@
             "de-DE": "https://issues.shopware.com/",
             "en-GB": "https://issues.shopware.com/"
         }
-
     },
     "scripts": {
         "lint": [
@@ -49,7 +48,11 @@
             "../../../vendor/bin/ecs check --config ecs.php --fix"
         ],
         "phpunit": "../../../vendor/bin/phpunit",
-        "phpstan": "../../../vendor/bin/phpstan analyze ."
+        "phpstan": [
+            "@php Test/TestBootstrap.php",
+            "../../../vendor/bin/phpstan analyze ."
+        ],
+        "install5db": "./bin/install-5-test-data.sh"
     },
     "autoload": {
         "psr-4": {
