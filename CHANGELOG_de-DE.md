@@ -1,5 +1,6 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-937 - Zeigt von jetzt an immer die aktuelle Shopware 6 Version als kompatibel an, anstatt ältere Versionen
+- MIG-899 -Geändertes Verhalten der Migration von SEO URLs. Die URL Groß-/Kleinschreibung von Shopware 5 wird nun berücksichtigt
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
 - MIG-838 - Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen hinzugefügt
 - MIG-839 - Zustatzfelder zu der Migration von Kategorieübersetzungen hinzugefügt

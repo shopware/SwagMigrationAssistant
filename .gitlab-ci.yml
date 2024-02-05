@@ -26,6 +26,11 @@ ecs:
 
 phpunit:
   script:
+    - apt-get update && apt-get --assume-yes install default-mysql-client
+    - cd Test
+    - git clone https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/services/testdata.git testData
+    - cd -
+    - mysql -uroot -p"$MYSQL_ROOT_PASSWORD" --host mysql < Test/testData/Migration/sw55.sql
     - php
       -d pcov.enabled=0 -d pcov.directory=$PWD -d pcov.exclude='~(vendor|tests|node_modules)~'
       ${PROJECT_ROOT}/vendor/bin/phpunit
