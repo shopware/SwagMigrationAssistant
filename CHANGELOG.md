@@ -1,4 +1,5 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
+- MIG-937 - Always show current shop version used as compatible 6.x instance instead of older instances
 - MIG-274 - Fix migration of cross selling
 - MIG-838 - Add the meta information fields to the migration of category translations
 - MIG-839 - Add custom fields to the migration of category translations
