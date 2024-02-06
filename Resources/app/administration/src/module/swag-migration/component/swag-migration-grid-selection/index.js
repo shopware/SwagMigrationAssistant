@@ -4,6 +4,7 @@ import './swag-migration-grid-selection.scss';
 const { Component, Mixin } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-grid-selection', {

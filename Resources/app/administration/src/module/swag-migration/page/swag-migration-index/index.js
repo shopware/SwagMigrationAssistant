@@ -4,6 +4,7 @@ const { Component, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-index', {

@@ -6,6 +6,7 @@ Shopware.WorkerNotification.register('newsletterRecipientTask', {
 });
 
 /**
+ * @private
  * @package services-settings
  */
 function onMediaProcessingMessageFound(next, { $root, entry, notification }) {

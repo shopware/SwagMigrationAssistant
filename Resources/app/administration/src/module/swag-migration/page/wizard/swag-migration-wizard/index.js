@@ -11,6 +11,7 @@ const CONNECTION_NAME_ERRORS = Object.freeze({
 });
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-wizard', {

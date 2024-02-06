@@ -1,6 +1,7 @@
 const { State } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 class UiStoreInitService {

@@ -23,6 +23,7 @@ export const WORKER_INTERRUPT_TYPE = Object.freeze({
 });
 
 /**
+ * @private
  * @package services-settings
  */
 class MigrationWorkerService {

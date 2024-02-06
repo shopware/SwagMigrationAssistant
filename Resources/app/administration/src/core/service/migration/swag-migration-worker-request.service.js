@@ -21,6 +21,7 @@ export const WORKER_API_OPERATION = Object.freeze({
 });
 
 /**
+ * @private
  * @package services-settings
  */
 export class WorkerRequest {

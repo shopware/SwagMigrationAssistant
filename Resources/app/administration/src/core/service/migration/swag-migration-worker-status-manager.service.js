@@ -34,7 +34,10 @@ Object.keys(MIGRATION_STATUS).forEach((key) => {
 
 export { MIGRATION_DISPLAY_STATUS };
 
-
+/**
+ * @private
+ * @package services-settings
+ */
 export class WorkerStatusManager {
     /**
      * @param {MigrationApiService} migrationService

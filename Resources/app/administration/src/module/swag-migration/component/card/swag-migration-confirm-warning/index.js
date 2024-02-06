@@ -5,6 +5,7 @@ const { Component } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-confirm-warning', {

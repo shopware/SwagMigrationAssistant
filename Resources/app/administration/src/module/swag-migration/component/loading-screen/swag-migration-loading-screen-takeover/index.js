@@ -12,6 +12,7 @@ const TAKEOVER_STATE = Object.freeze({
 
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-loading-screen-takeover', {

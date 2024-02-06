@@ -1,6 +1,7 @@
 const ApiService = Shopware.Classes.ApiService;
 
 /**
+ * @private
  * @package services-settings
  */
 class MigrationIndexingApiService extends ApiService {

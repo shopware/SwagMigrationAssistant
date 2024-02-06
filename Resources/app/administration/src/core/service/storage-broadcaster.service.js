@@ -1,6 +1,7 @@
 const utils = Shopware.Utils;
 
 /**
+ * @private
  * @package services-settings
  */
 export default class StorageBroadcastService {

@@ -1,6 +1,7 @@
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.extend(

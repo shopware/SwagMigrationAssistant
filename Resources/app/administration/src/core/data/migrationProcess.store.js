@@ -6,6 +6,7 @@ import { MIGRATION_STATUS } from '../service/migration/swag-migration-worker-sta
 /**
  * The vuex store for handling all global data that is needed for the migration process.
  * @module
+ * @private
  * @package services-settings
  */
 export default {

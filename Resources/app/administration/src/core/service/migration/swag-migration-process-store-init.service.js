@@ -2,6 +2,7 @@ const { State } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
+ * @private
  * @package services-settings
  */
 class ProcessStoreInitService {

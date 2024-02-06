@@ -5,6 +5,7 @@ const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-wizard-page-connection-create', {

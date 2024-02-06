@@ -1,6 +1,7 @@
 // ToDo: MIG-895 - This file should be refactored / removed, so no need to fix eslint issues here.
 /* eslint-disable */
 /**
+ * @private
  * @package services-settings
  */
 class MigrationIndexingWorker {

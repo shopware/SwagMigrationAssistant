@@ -4,6 +4,7 @@ import './swag-migration-loading-screen-connection-lost.scss';
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-loading-screen-connection-lost', {

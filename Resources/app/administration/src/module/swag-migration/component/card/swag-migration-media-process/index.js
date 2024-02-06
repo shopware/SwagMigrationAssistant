@@ -4,6 +4,7 @@ import './swag-migration-media-process.scss';
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-media-process', {

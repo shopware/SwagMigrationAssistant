@@ -4,6 +4,7 @@ const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-wizard-page-connection-select', {

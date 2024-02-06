@@ -5,6 +5,7 @@ const { Component, Mixin, State } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-history', {

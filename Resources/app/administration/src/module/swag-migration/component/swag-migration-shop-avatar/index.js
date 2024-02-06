@@ -4,6 +4,7 @@ import './swag-migration-shop-avatar.scss';
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-shop-avatar', {
