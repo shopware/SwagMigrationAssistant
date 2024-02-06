@@ -15,17 +15,17 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Exception\SslRequiredException;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
-use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 #[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
-    private ?AuthClient $client;
+    private ?HttpClientInterface $client;
 
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
@@ -100,7 +100,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
 
         try {
-            $result = $this->client->getRequest(
+            $result = $this->client->get(
                 'get-environment',
                 [
                     'verify' => $verified,

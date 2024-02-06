@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
@@ -18,6 +17,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
+use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
@@ -78,7 +78,7 @@ class ApiEnvironmentReaderTest extends TestCase
             'handler' => $handler,
         ];
 
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
             new Shopware55Profile()
@@ -113,7 +113,7 @@ class ApiEnvironmentReaderTest extends TestCase
             'handler' => $handler,
         ];
 
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
         $migrationContext = new MigrationContext(
             new Shopware55Profile()
         );
@@ -147,7 +147,7 @@ class ApiEnvironmentReaderTest extends TestCase
             'handler' => $handler,
         ];
 
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
             new Shopware55Profile()
@@ -179,7 +179,7 @@ class ApiEnvironmentReaderTest extends TestCase
             'handler' => $handler,
         ];
 
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
         $migrationContext = new MigrationContext(
             new Shopware55Profile()
         );
@@ -210,7 +210,7 @@ class ApiEnvironmentReaderTest extends TestCase
             'handler' => $handler,
         ];
 
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
             new Shopware55Profile()

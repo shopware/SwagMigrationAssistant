@@ -29,7 +29,7 @@ class TableReader implements TableReaderInterface
             return [];
         }
 
-        $result = $client->getRequest(
+        $result = $client->get(
             'get-table',
             [
                 'query' => [

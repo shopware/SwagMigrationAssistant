@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
 use Doctrine\DBAL\Connection;
-use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Utils;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -27,7 +28,6 @@ use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService;
-use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
@@ -173,7 +173,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
     /**
      * @param MediaProcessWorkloadStruct[] $mappedWorkload
      */
-    private function downloadDocument(array $documents, array $mappedWorkload, AuthClient $client): array
+    private function downloadDocument(array $documents, array $mappedWorkload, HttpClientInterface $client): array
     {
         $promises = [];
         foreach ($documents as $document) {
@@ -284,7 +284,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         string $uuid,
         array $additionalData,
         array &$failureUuids,
-        ?ClientException $clientException = null
+        ?RequestException $clientException = null
     ): void {
         $mappedWorkload = $oldWorkload;
         $mappedWorkload->setAdditionalData($additionalData);

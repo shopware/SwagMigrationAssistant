@@ -10,14 +10,15 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Connection;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\ConnectionException;
-use GuzzleHttp\Client;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
+use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
 class ConnectionFactory implements ConnectionFactoryInterface
 {
-    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?Client
+    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?HttpClientInterface
     {
         $connection = $migrationContext->getConnection();
 
@@ -34,11 +35,9 @@ class ConnectionFactory implements ConnectionFactoryInterface
         $options = [
             'base_uri' => $credentials['endpoint'] . '/api/',
             'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
-            'connect_timeout' => 5.0,
-            'verify' => $verify,
         ];
 
-        return new Client($options);
+        return new HttpSimpleClient($options);
     }
 
     public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection

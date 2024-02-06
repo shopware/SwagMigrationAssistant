@@ -30,7 +30,7 @@ class OrderProvider extends AbstractProvider
         return DefaultEntities::ORDER;
     }
 
-    /***
+    /**
      * @return array<string, mixed>
      */
     public function getProvidedData(int $limit, int $offset, Context $context): array
