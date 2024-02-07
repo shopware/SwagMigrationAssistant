@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -20,9 +21,14 @@ class SeoUrlReader extends AbstractReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
+        $dataset = $migrationContext->getDataSet();
+        if (!$dataset instanceof DataSet) {
+            return false;
+        }
+
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SEO_URL;
+            && $dataset::getEntity() === DefaultEntities::SEO_URL;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -58,6 +64,9 @@ class SeoUrlReader extends AbstractReader
         return new TotalStruct(DefaultEntities::SEO_URL, $total);
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     private function fetchSeoUrls(MigrationContextInterface $migrationContext): array
     {
         $ids = $this->fetchIdentifiers('s_core_rewrite_urls', $migrationContext->getOffset(), $migrationContext->getLimit());
@@ -76,9 +85,53 @@ class SeoUrlReader extends AbstractReader
 
         $query->executeQuery();
 
+        if ($this->isRouterToLower()) {
+            return $this->prepareSeoUrl($query->fetchAllAssociative());
+        }
+
         return $query->fetchAllAssociative();
     }
 
+    /**
+     * @param array<int, array<string, string>> $seoUrls #
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function prepareSeoUrl(array $seoUrls): array
+    {
+        foreach ($seoUrls as &$seoUrl) {
+            $seoUrl['url.path'] = \mb_strtolower($seoUrl['url.path']);
+        }
+        unset($seoUrl);
+
+        return $seoUrls;
+    }
+
+    /**
+     * @return bool
+     */
+    private function isRouterToLower()
+    {
+        $useUrlToLower = $this->connection->createQueryBuilder()
+            ->select(['cv.value'])
+            ->from('s_core_config_values', 'cv')
+            ->innerJoin('cv', 's_core_config_elements', 'ce', 'cv.element_id = ce.id')
+            ->where('ce.name = "routerToLower"')
+            ->executeQuery()
+            ->fetchOne();
+
+        if (!\is_string($useUrlToLower)) {
+            return true;
+        }
+
+        return (bool) \unserialize($useUrlToLower);
+    }
+
+    /**
+     * @param array<int, array<string, string>> $seoUrls
+     *
+     * @return array<int, array<string, string>>
+     */
     private function extractTypeInformation(array $seoUrls): array
     {
         foreach ($seoUrls as &$seoUrl) {
