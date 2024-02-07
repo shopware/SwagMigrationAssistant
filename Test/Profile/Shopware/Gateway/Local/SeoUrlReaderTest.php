@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\SeoUrlReader;
@@ -24,6 +26,8 @@ class SeoUrlReaderTest extends TestCase
     private SeoUrlReader $seoUrlReader;
 
     private MigrationContext $migrationContext;
+
+    private Connection $externalConnection;
 
     protected function setUp(): void
     {
@@ -41,10 +45,18 @@ class SeoUrlReaderTest extends TestCase
         );
 
         $this->migrationContext->setGateway(new DummyLocalGateway());
+
+        $externalConnection = (new ConnectionFactory())->createDatabaseConnection($this->migrationContext);
+        if (!$externalConnection instanceof Connection) {
+            static::markTestSkipped('External connection could not be established in: ' . self::class . ' ' . __METHOD__ . ' ' . __LINE__);
+        }
+
+        $this->externalConnection = $externalConnection;
     }
 
     public function testRead(): void
     {
+        $this->setRouterToLowerValue(false);
         static::assertTrue($this->seoUrlReader->supports($this->migrationContext));
 
         $data = $this->seoUrlReader->read($this->migrationContext);
@@ -78,13 +90,68 @@ class SeoUrlReaderTest extends TestCase
         static::assertSame('162', $data[0]['typeId']);
     }
 
+    public function testReadWithLowerUrl(): void
+    {
+        $this->setRouterToLowerValue(true);
+        static::assertTrue($this->seoUrlReader->supports($this->migrationContext));
+
+        $data = $this->seoUrlReader->read($this->migrationContext);
+
+        static::assertCount(10, $data);
+        static::assertSame('genusswelten-en/', $data[0]['path']);
+
+        $this->migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runId,
+            new SeoUrlDataSet(),
+            200,
+            10
+        );
+        $data = $this->seoUrlReader->read($this->migrationContext);
+
+        static::assertSame('sommerwelten/162/sommer-sandale-pink', $data[0]['path']);
+    }
+
     public function testReadTotal(): void
     {
         static::assertTrue($this->seoUrlReader->supportsTotal($this->migrationContext));
 
         $totalStruct = $this->seoUrlReader->readTotal($this->migrationContext);
+        static::assertInstanceOf(TotalStruct::class, $totalStruct);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        $dataset = $this->migrationContext->getDataSet();
+        static::assertInstanceOf(SeoUrlDataSet::class, $dataset);
+
+        static::assertSame($dataset::getEntity(), $totalStruct->getEntityName());
         static::assertSame(495, $totalStruct->getTotal());
+    }
+
+    private function setRouterToLowerValue(bool $value): void
+    {
+        $serializedValue = \serialize($value);
+
+        $elementId = $this->externalConnection->executeQuery(
+            'SELECT `id` FROM `s_core_config_elements` WHERE `name` = "routerToLower";'
+        )->fetchOne();
+
+        $value = $this->externalConnection->executeQuery(
+            'SELECT `value` FROM `s_core_config_values` WHERE `element_id` = :elementId;',
+            ['elementId' => (int) $elementId]
+        )->fetchOne();
+
+        if (!\is_string($value)) {
+            $this->externalConnection->executeQuery(
+                'INSERT INTO `s_core_config_values` (`element_id`, `shop_id`, `value`) VALUES (:elementId, :shopId, :value)',
+                ['elementId' => $elementId, 'shopId' => 1, 'value' => $serializedValue]
+            );
+
+            return;
+        }
+
+        $this->externalConnection->executeQuery(
+            'UPDATE `s_core_config_values` SET `value` = :value WHERE `element_id` = :elementId AND `shop_id` = 1;',
+            ['elementId' => $elementId, 'value' => $serializedValue]
+        );
     }
 }

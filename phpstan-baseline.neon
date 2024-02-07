@@ -5153,26 +5153,6 @@ parameters:
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SeoUrlReader\\:\\:extractTypeInformation\\(\\) has parameter \\$seoUrls with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SeoUrlReader\\:\\:extractTypeInformation\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SeoUrlReader\\:\\:fetchSeoUrls\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/SeoUrlReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
@@ -7519,21 +7499,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/SeoUrlReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
