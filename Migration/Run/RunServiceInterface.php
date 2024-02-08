@@ -22,7 +22,7 @@ interface RunServiceInterface
     public function cleanupMappingChecksums(string $connectionUuid, Context $context): void;
 
     /**
-     * @param string[] $dataSelectionIds
+     * @param array<int, string> $dataSelectionIds
      */
     public function createMigrationRun(
         MigrationContextInterface $migrationContext,
@@ -31,13 +31,25 @@ interface RunServiceInterface
         Context $context
     ): ?ProgressState;
 
+    /**
+     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
+     */
     public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array;
 
+    /**
+     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
+     */
     public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array;
 
+    /**
+     * @return array<int>
+     */
     public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array;
 
-    public function updateConnectionCredentials(Context $context, string $connectionUuid, array $credentialFields): void;
+    /**
+     * @param array<int, string>|null $credentialFields
+     */
+    public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void;
 
     public function finishMigration(string $runUuid, Context $context): void;
 

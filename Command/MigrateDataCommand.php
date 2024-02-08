@@ -11,12 +11,14 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\RunOptions;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
@@ -24,6 +26,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
 use SwagMigrationAssistant\Migration\Service\ProgressState;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection;
 use Symfony\Component\Console\Command\Command;
@@ -39,14 +42,19 @@ class MigrateDataCommand extends Command
     /**
      * @var string[]
      */
-    private array $dataSelectionNames;
+    private array $dataSelectionNames = [];
 
-    private int $stepSize;
+    private int $stepSize = 100;
 
     private bool $keepData = false;
 
     private OutputInterface $output;
 
+    /**
+     * @param EntityRepository<GeneralSettingCollection> $generalSettingRepo
+     * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepo
+     * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
+     */
     public function __construct(
         private readonly EntityRepository $generalSettingRepo,
         private readonly EntityRepository $migrationConnectionRepo,
@@ -180,7 +188,7 @@ class MigrateDataCommand extends Command
                     $migrationContext = $this->migrationContextFactory->create(
                         $run,
                         $entityProgress->getCurrentCount(),
-                        100,
+                        $this->stepSize,
                         $dataSet::getEntity()
                     );
 
@@ -194,11 +202,11 @@ class MigrateDataCommand extends Command
                         $this->migrationDataConverter->convert($data, $migrationContext, $context);
                     }
 
-                    $entityProgress->setCurrentCount($entityProgress->getCurrentCount() + 100);
+                    $entityProgress->setCurrentCount($entityProgress->getCurrentCount() + $this->stepSize);
                     if ($entityProgress->getCurrentCount() >= $entityProgress->getTotal()) {
                         $progressBar->setProgress($progressBar->getMaxSteps());
                     } else {
-                        $progressBar->advance(100);
+                        $progressBar->advance($this->stepSize);
                     }
                 }
 

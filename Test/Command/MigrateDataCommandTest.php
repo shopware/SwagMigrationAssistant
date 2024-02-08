@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Test\Command;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -37,6 +36,7 @@ use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
@@ -135,8 +135,10 @@ class MigrateDataCommandTest extends TestCase
         $setting = new GeneralSettingEntity();
         $setting->setSelectedConnectionId($this->connectionId);
         $setting->setUniqueIdentifier($this->connectionId);
+
+        /** @var StaticEntityRepository<GeneralSettingCollection> $generalSettingsRepo */
         $generalSettingsRepo = new StaticEntityRepository([
-            new EntityCollection([$setting]),
+            new GeneralSettingCollection([$setting]),
             new GeneralSettingDefinition(),
         ]);
         $application->add(new MigrateDataCommand(

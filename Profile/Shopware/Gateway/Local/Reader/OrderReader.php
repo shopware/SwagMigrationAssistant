@@ -19,13 +19,21 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class OrderReader extends AbstractReader
 {
-    private array $orderIds;
+    /**
+     * @var array<int, string>
+     */
+    private array $orderIds = [];
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
+        $dataSet = $migrationContext->getDataSet();
+        if ($dataSet === null) {
+            return false;
+        }
+
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::ORDER;
+            && $dataSet::getEntity() === DefaultEntities::ORDER;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -66,14 +74,17 @@ class OrderReader extends AbstractReader
         return new TotalStruct(DefaultEntities::ORDER, $total);
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function fetchOrders(MigrationContextInterface $migrationContext): array
     {
         $ids = $this->fetchIdentifiers(
             's_order',
             $migrationContext->getOffset(),
             $migrationContext->getLimit(),
-            [ 'id' ],
-            [ 'status != -1' ]
+            ['id'],
+            ['status != -1']
         );
 
         $query = $this->connection->createQueryBuilder();
@@ -129,11 +140,14 @@ class OrderReader extends AbstractReader
 
         $query->addOrderBy('ordering.id');
 
-        $query->executeQuery();
-
-        return $query->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
+    /**
+     * @param array<mixed> $orders
+     *
+     * @return array<mixed>
+     */
     private function appendAssociatedData(array $orders): array
     {
         $orderEsd = $this->getOrderEsd();
@@ -163,6 +177,9 @@ class OrderReader extends AbstractReader
         return $orders;
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getOrderDetails(): array
     {
         $query = $this->connection->createQueryBuilder();
@@ -189,6 +206,9 @@ class OrderReader extends AbstractReader
         return $this->mapData($fetchedOrderDetails, [], ['detail']);
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getOrderEsd(): array
     {
         $query = $this->connection->createQueryBuilder();
@@ -234,6 +254,9 @@ class OrderReader extends AbstractReader
         return $query->executeQuery()->fetchOne();
     }
 
+    /**
+     * @return array<mixed>
+     */
     private function getOrderDocuments(): array
     {
         $query = $this->connection->createQueryBuilder();
@@ -260,6 +283,10 @@ class OrderReader extends AbstractReader
         return $this->mapData($fetchedOrderDocuments, [], ['document']);
     }
 
+    /**
+     * @param array<mixed> $order
+     * @param array<mixed> $esdArray
+     */
     private function setEsd(array &$order, array $esdArray): void
     {
         if (!isset($order['id'])) {
