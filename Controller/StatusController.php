@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
@@ -22,6 +23,7 @@ use SwagMigrationAssistant\Migration\Run\RunOptions;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,6 +35,10 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Package('services-settings')]
 class StatusController extends AbstractController
 {
+    /**
+     * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepo
+     * @param EntityRepository<GeneralSettingCollection> $generalSettingRepo
+     */
     public function __construct(
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
         private readonly MigrationProgressServiceInterface $migrationProgressService,

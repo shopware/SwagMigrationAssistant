@@ -24,9 +24,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
+use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -34,6 +38,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -50,6 +55,14 @@ class RunService implements RunServiceInterface
     private const TRACKING_EVENT_MIGRATION_FINISHED = 'Migration finished';
     private const TRACKING_EVENT_MIGRATION_ABORTED = 'Migration aborted';
 
+    /**
+     * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
+     * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepo
+     * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepository
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepository
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepository
+     * @param EntityRepository<ThemeCollection> $themeRepository
+     */
     public function __construct(
         private readonly EntityRepository $migrationRunRepo,
         private readonly EntityRepository $connectionRepo,
@@ -82,14 +95,11 @@ class RunService implements RunServiceInterface
         array $dataSelectionIds,
         RunOptions $runOptions,
         Context $context
-    ): ?ProgressState
-    {
-        $runUuid = null;
-
-        if ($runOptions->resumeExistingRun && $this->isMigrationRunning($context)) {
+    ): ?ProgressState {
+        if ($runOptions->shouldResumeExistingRun() && $this->isMigrationRunning($context)) {
             $runUuid = $this->resumeRunningMigration($context);
         } else {
-            if (!$runOptions->keepData) {
+            if (!$runOptions->shouldKeepData()) {
                 $this->cleanupUnwrittenRunData($migrationContext, $context);
             }
 
@@ -114,6 +124,9 @@ class RunService implements RunServiceInterface
         return new ProgressState(false, true, $runUuid, $accessToken, -1, null, 0, 0, $runProgress);
     }
 
+    /**
+     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
+     */
     public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array
     {
         $unsortedTotals = $this->calculateFetchedTotals($run->getId());
@@ -147,6 +160,9 @@ class RunService implements RunServiceInterface
         return $writeProgress;
     }
 
+    /**
+     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
+     */
     public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array
     {
         $currentProgress = $run->getProgress();
@@ -176,7 +192,7 @@ class RunService implements RunServiceInterface
     }
 
     /**
-     * @return int[]
+     * @return array<int>
      */
     public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array
     {
@@ -229,7 +245,7 @@ class RunService implements RunServiceInterface
     }
 
     /**
-     * @throws MigrationIsRunningException
+     * @param array<int, string>|null $credentialFields
      */
     public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void
     {
@@ -460,6 +476,9 @@ SQL;
         return $countResult->getCount();
     }
 
+    /**
+     * @return array<string, int>
+     */
     private function calculateFetchedTotals(string $runId): array
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
@@ -475,12 +494,15 @@ SQL;
 
         $mappedCounts = [];
         foreach ($results as $result) {
-            $mappedCounts[$result['entity']] = (int) $result['total'];
+            $mappedCounts[(string) $result['entity']] = (int) $result['total'];
         }
 
         return $mappedCounts;
     }
 
+    /**
+     * @param array<RunProgress> $runProgress
+     */
     private function updateMigrationRun(
         string $runUuid,
         MigrationContextInterface $migrationContext,
@@ -593,6 +615,7 @@ SQL;
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+
         return $this->migrationRunRepo->searchIds($criteria, $context)->firstId();
     }
 
@@ -630,6 +653,10 @@ SQL;
         return $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
     }
 
+    /**
+     * @param array<int, string> $credentials
+     * @param array<RunProgress> $runProgress
+     */
     private function updateRunWithProgress(
         string $runId,
         array $credentials,
@@ -650,11 +677,17 @@ SQL;
         );
     }
 
+    /**
+     * @param array<int, string> $dataSelectionIds
+     */
     private function getDataSelectionCollection(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation, array $dataSelectionIds): DataSelectionCollection
     {
         return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $environmentInformation, $dataSelectionIds);
     }
 
+    /**
+     * @return array<string, int>
+     */
     private function calculateToBeFetchedTotals(EnvironmentInformation $environmentInformation, DataSelectionCollection $dataSelectionCollection): array
     {
         $environmentInformationTotals = $environmentInformation->getTotals();
@@ -686,9 +719,12 @@ SQL;
             ->executeStatement();
     }
 
+    /**
+     * @return array<string>
+     */
     private function getSalesChannels(string $connectionId, Context $context): array
     {
-        /** @var array<array<string>|string>|null $salesChannelUuids */
+        /** @var array<int, string> $salesChannelUuids */
         $salesChannelUuids = $this->mappingService->getUuidsByEntity(
             $connectionId,
             SalesChannelDefinition::ENTITY_NAME,
