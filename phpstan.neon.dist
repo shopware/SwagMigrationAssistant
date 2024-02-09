@@ -44,6 +44,12 @@ parameters:
                 - Test/Migration/Services/MigrationProgressServiceTest.php
                 - Test/Profile/Shopware/Gateway/Local/
 
+        # The properties are never uninitialized. They are assigned in the convert method.
+        -
+            message: '#Class SwagMigrationAssistant\\Profile\\Shopware\\Converter\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
+            paths:
+                - Profile/Shopware/Converter
+
 services:
     -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
         class: Symplify\PHPStanRules\Rules\NoReturnSetterMethodRule
