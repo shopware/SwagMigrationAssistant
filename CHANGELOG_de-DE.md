@@ -4,6 +4,7 @@
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
 - MIG-838 - Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen hinzugefügt
 - MIG-839 - Zustatzfelder zu der Migration von Kategorieübersetzungen hinzugefügt
+- MIG-931 - Methode `getEntityName` und `setEntityName` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
 - MIG-931 - [BREAKING] `Migration/MessageQueue/Handler/ProcessMediaHandler.php` zu final geändert
 - MIG-931 - [BREAKING] `AsyncMessageInterface` zu `Migration/MessageQueue/Message/CleanupMigrationMessage.php` hinzugefügt
 - MIG-931 - [BREAKING] `AsyncMessageInterface` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
@@ -14,8 +15,27 @@
     - `setDataSet`
 - MIG-931 - [BREAKING] Rückgabeparameter von `getContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
 - MIG-931 - [BREAKING] Parameter von `setContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
-- MIG-931 - Methode `getEntityName` und `setEntityName` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
 - MIG-938 - Behebt Berechnungsfehler bei der Migration von Versandkostenpreisen
+- MIG-920 - Unterstützte Shopware 6 Version auf 6.6 geändert und Anpassungen an den Profilen vorgenommen
+- MIG-920 - `Migration/Gateway/HttpClientInterface` hinzugefügt, um die Verwendung von HTTP-Clients zu vereinheitlichen
+- MIG-920 - `Migration/Gateway/HttpSimpleClient.php` als einfacher Wrapper um den bisher verwendeten `GuzzleHttp/Client` hinzugefügt
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware6/Gateway/Verbindung/AuthClientInterface.php` wurde entfernt, verwende stattdessen `Migration/Gateway/HttpClientInterface`
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php` wurde geändert, um `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client` zu verwenden
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware/Gateway/Connection/ConnectionFactory.php` verwendet nun `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client`.
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware/Gateway/Verbindung/ConnectionFactoryInterface.php` wurde geändert und verwendet nun `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client`.
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php` verwendet nun `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client`.
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware6/Gateway/Verbindung/AuthClient.php` verwendet nun `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client`.
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware6/Gateway/Verbindung/ConnectionFactory.php` verwendet nun `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client`.
+- MIG-920 - [BREAKING] Die Datei `Profile/Shopware6/Gateway/Connection/ConnectionFactoryInterface.php` wurde geändert, um `Migration/Gateway/HttpClientInterface` anstelle von `GuzzleHttp/Client` zu verwenden
+- MIG-920 - `Migration/Media/Processor/HttpDownloadServiceBase.php` hinzugefügt, um das Herunterladen von Mediendateien zu vereinheitlichen
+- MIG-920 - [BREAKING] Übergeordnete Klasse und Implementierung von `Profile/Shopware/Media/HttpMediaDownloadService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php` geändert
+- MIG-920 - [BREAKING] Übergeordnete Klasse und Implementierung von `Profile/Shopware/Media/HttpOrderDocumentProcessor.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php` geändert
+- MIG-920 - [BREAKING] Umbenennung von `Profile/Shopware/Media/HttpOrderDocumentProcessor.php` in `Profile/Shopware/Media/HttpOrderDocumentDownloadService.php`.
+- MIG-920 - [BREAKING] Übergeordnete Klasse und Implementierung von `Profile/Shopware/Media/HttpProductDownloadProcessor.php` in `Migration/Media/Processor/HttpDownloadServiceBase.php` geändert
+- MIG-920 - [BREAKING] Umbenennung von `Profile/Shopware/Media/HttpProductDownloadProcessor.php` in `Profile/Shopware/Media/HttpEsdFileDownloadService.php`
+- MIG-920 - [BREAKING] Übergeordnete Klasse und Implementierung von `Profile/Shopware6/Media/HttpMediaDownloadService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php` geändert
+- MIG-920 - [BREAKING] Geänderte übergeordnete Klasse und Implementierung von `Profile/Shopware6/Media/HttpOrderDocumentService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php`.
+- MIG-920 - [BREAKING] Umbenennung von `Profile/Shopware6/Media/HttpOrderDocumentService.php` in `Profile/Shopware/Media/HttpOrderDocumentDownloadService.php`
 
 # 7.0.2
 - MIG-908 - Behebung der Shopware 6 Migration von `system_config` Entitäten, die nicht zwischen verschiedenen Shops migriert werden sollten

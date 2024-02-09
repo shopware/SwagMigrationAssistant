@@ -120,6 +120,13 @@
             <argument type="tagged" tag="shopware.migration.media_file_processor"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Service\MigrationProgressService"
                  class="SwagMigrationAssistant\Migration\Service\MigrationProgressService"
                  public="true">

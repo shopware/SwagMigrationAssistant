@@ -31,7 +31,7 @@ class TotalReader implements TotalReaderInterface
             return [];
         }
 
-        $result = $client->getRequest(
+        $result = $client->get(
             'get-total',
             []
         );

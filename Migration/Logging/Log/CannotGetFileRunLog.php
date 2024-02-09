@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
+use GuzzleHttp\Exception\RequestException;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('services-settings')]
@@ -16,7 +17,8 @@ class CannotGetFileRunLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $uri
+        private readonly string $uri,
+        private readonly ?RequestException $requestException = null,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }
@@ -59,12 +61,21 @@ class CannotGetFileRunLog extends BaseRunLogEntry
     {
         $args = $this->getParameters();
 
-        return \sprintf(
+        $description = \sprintf(
             'The %s file with the uri "%s" and media id "%s" cannot be downloaded / copied.',
             $args['entity'],
             $args['uri'],
             $args['sourceId']
         );
+
+        if ($this->requestException !== null) {
+            $description .= \sprintf(
+                ' The following request error occurred: %s',
+                $this->requestException->getMessage()
+            );
+        }
+
+        return $description;
     }
 
     public function getTitleSnippet(): string

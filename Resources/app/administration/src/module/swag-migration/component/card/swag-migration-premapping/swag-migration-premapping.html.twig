@@ -70,7 +70,7 @@
                     <swag-migration-grid-selection
                         :choices="item.choices"
                         :mapping="item.mapping"
-                        @input="validatePremapping"
+                        @update:value="validatePremapping"
                     ></swag-migration-grid-selection>
                 </template>
             </swag-migration-tab-card>
@@ -94,7 +94,7 @@
                             <swag-migration-grid-selection
                                 :choices="item.choices"
                                 :mapping="item.mapping"
-                                @input="validatePremapping"
+                                @update:value="validatePremapping"
                             ></swag-migration-grid-selection>
                         </template>
                     </swag-migration-tab-card>

@@ -73,7 +73,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      */
     protected array $requiredDataFields = [
         'deliveryTimeId' => 'delivery_time',
-        'availabilityRuleId' => 'availability_rule_id',
     ];
 
     public function __construct(

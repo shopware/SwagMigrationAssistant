@@ -8,14 +8,14 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Connection;
 
 use Doctrine\DBAL\Connection;
-use GuzzleHttp\Client;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
 interface ConnectionFactoryInterface
 {
-    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?Client;
+    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?HttpClientInterface;
 
     public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection;
 }

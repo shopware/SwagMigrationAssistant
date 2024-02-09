@@ -1008,11 +1008,12 @@
         </service>
 
         <!-- Shopware MediaHandler -->
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpMediaDownloadService" parent="SwagMigrationAssistant\Profile\Shopware\Media\HttpMediaDownloadService">
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpMediaDownloadService" parent="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase">
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentService" parent="SwagMigrationAssistant\Profile\Shopware6\Media\HttpMediaDownloadService">
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentDownloadService" parent="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
 

@@ -11,16 +11,19 @@ use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
 class ConnectionFactory implements ConnectionFactoryInterface
 {
+    private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';
+
     public function __construct(private readonly EntityRepository $connectionRepository)
     {
     }
 
-    public function createApiClient(MigrationContextInterface $migrationContext): ?AuthClient
+    public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
     {
         $connection = $migrationContext->getConnection();
 
@@ -35,8 +38,8 @@ class ConnectionFactory implements ConnectionFactoryInterface
         }
 
         $options = [
-            'base_uri' => \rtrim($credentials['endpoint'], '/') . '/',
-            'connect_timeout' => 5.0,
+            'base_uri' => \rtrim($credentials['endpoint'], '/') . '/' . self::DEFAULT_API_ENDPOINT,
+            'connect_timeout' => 15.0,
             'verify' => false,
         ];
 

@@ -376,16 +376,6 @@ parameters:
 			path: DataProvider/Provider/Data/NumberRangeProvider.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\OrderProvider\\:\\:__construct\\(\\) has parameter \\$orderRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: DataProvider/Provider/Data/OrderProvider.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\OrderProvider\\:\\:getProvidedData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: DataProvider/Provider/Data/OrderProvider.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\PageSystemConfigProvider\\:\\:__construct\\(\\) has parameter \\$systemConfigRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: DataProvider/Provider/Data/PageSystemConfigProvider.php
@@ -1614,6 +1604,11 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaProcessWorkloadStruct\\:\\:\\$additionalData type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Migration/Media/MediaProcessWorkloadStruct.php
+
+		-
+			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
+			count: 1
+			path: Migration/Media/Processor/HttpDownloadServiceBase.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
@@ -4656,236 +4651,6 @@ parameters:
 			path: Profile/Shopware/Media/BaseMediaService.php
 
 		-
-			message: "#^Anonymous variable in a `\\$mappedWorkload\\[\\$uuid\\]\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 6
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>getBody\\(\\)\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpMediaDownloadService\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpMediaDownloadService\\:\\:doMediaDownloadRequests\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpMediaDownloadService\\:\\:doMediaDownloadRequests\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpMediaDownloadService\\:\\:getMediaName\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpMediaDownloadService\\:\\:setProcessedFlag\\(\\) has parameter \\$failureUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpMediaDownloadService\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$results has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Parameter \\#2 \\$destination of method Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\FileSaver\\:\\:persistFileToMedia\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Parameter \\#2 \\$mimeType of class Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\MediaFile constructor expects string, string\\|false given\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpMediaDownloadService.php
-
-		-
-			message: "#^Anonymous variable in a `\\$mappedWorkload\\[\\$uuid\\]\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 4
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>getBody\\(\\)\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpOrderDocumentProcessor\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpOrderDocumentProcessor\\:\\:doMediaDownloadRequests\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpOrderDocumentProcessor\\:\\:doMediaDownloadRequests\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpOrderDocumentProcessor\\:\\:getMediaName\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpOrderDocumentProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$failureUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpOrderDocumentProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$results has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Parameter \\#1 \\$blob of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
-			count: 3
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Parameter \\#3 \\$contentType of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
-			count: 3
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Parameter \\#4 \\$filename of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpOrderDocumentProcessor.php
-
-		-
-			message: "#^Anonymous variable in a `\\$mappedWorkload\\[\\$uuid\\]\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 4
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>getBody\\(\\)\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:createParallelDownloadMediaRequests\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:createParallelDownloadMediaRequests\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:getMediaName\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:processResults\\(\\) has parameter \\$mappedWorkload with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:processResults\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:processResults\\(\\) has parameter \\$results with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:processResults\\(\\) has parameter \\$workload with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:processResults\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$failureUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:startDownloadProcess\\(\\) has parameter \\$mappedWorkload with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:startDownloadProcess\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\HttpProductDownloadProcessor\\:\\:startDownloadProcess\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 2
-			path: Profile/Shopware/Media/HttpProductDownloadProcessor.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Media/LocalMediaProcessor.php
@@ -6076,26 +5841,6 @@ parameters:
 			path: Profile/Shopware6/Gateway/Connection/AuthClient.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient\\:\\:getAsync\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Connection/AuthClient.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient\\:\\:getRequest\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Connection/AuthClient.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClientInterface\\:\\:getAsync\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Connection/AuthClientInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClientInterface\\:\\:getRequest\\(\\) has parameter \\$config with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Gateway/Connection/AuthClientInterface.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\ConnectionFactory\\:\\:__construct\\(\\) has parameter \\$connectionRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Profile/Shopware6/Gateway/Connection/ConnectionFactory.php
@@ -6339,26 +6084,6 @@ parameters:
 			message: "#^PHPDoc tag @var for variable \\$results has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentService\\:\\:doMediaDownloadRequests\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Media/HttpOrderDocumentService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentService\\:\\:doMediaDownloadRequests\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Media/HttpOrderDocumentService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentService\\:\\:getMediaFiles\\(\\) has parameter \\$mediaIds with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Media/HttpOrderDocumentService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentService\\:\\:getMediaFiles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware6/Media/HttpOrderDocumentService.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Premapping\\\\PaymentMethodReader has an uninitialized property \\$choiceUuids\\. Give it default value or assign it in the constructor\\.$#"
@@ -6969,11 +6694,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:loadMapping\\(\\) has parameter \\$mappingArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Test/Profile/Shopware6/Converter/ShopwareConverterTest.php
-
-		-
-			message: "#^Call to static method PHPUnit\\\\Framework\\\\Assert\\:\\:assertInstanceOf\\(\\) with 'SwagMigrationAssistant\\\\\\\\Profile\\\\\\\\Shopware6\\\\\\\\Gateway\\\\\\\\Connection\\\\\\\\AuthClient' and SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient will always evaluate to true\\.$#"
-			count: 1
-			path: Test/Profile/Shopware6/Gateway/Connection/ConnectionFactoryTests.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\ConnectionFactoryTests\\:\\:testCreateApiClient\\(\\) has parameter \\$credentials with no value type specified in iterable type array\\.$#"

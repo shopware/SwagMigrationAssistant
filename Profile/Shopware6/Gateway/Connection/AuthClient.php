@@ -14,15 +14,14 @@ use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
-class AuthClient implements AuthClientInterface
+class AuthClient implements HttpClientInterface
 {
-    private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';
-
     private string $bearerToken = '';
 
     public function __construct(
@@ -33,13 +32,12 @@ class AuthClient implements AuthClientInterface
     ) {
     }
 
-    public function getRequest(string $endpoint, array $config): ResponseInterface
+    public function get(string $uri, array $options = []): ResponseInterface
     {
-        $endpoint = self::DEFAULT_API_ENDPOINT . $endpoint;
         $this->setupBearerTokenIfNeeded();
 
         try {
-            return $this->apiClient->get($endpoint, \array_merge($config, [
+            return $this->apiClient->get($uri, \array_merge($options, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
@@ -51,7 +49,7 @@ class AuthClient implements AuthClientInterface
 
             $this->renewBearerToken();
 
-            return $this->apiClient->get($endpoint, \array_merge($config, [
+            return $this->apiClient->get($uri, \array_merge($options, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
@@ -59,13 +57,12 @@ class AuthClient implements AuthClientInterface
         }
     }
 
-    public function getAsync(string $endpoint, array $config): PromiseInterface
+    public function getAsync(string $uri, array $options = []): PromiseInterface
     {
-        $endpoint = self::DEFAULT_API_ENDPOINT . $endpoint;
         $this->setupBearerTokenIfNeeded();
 
         try {
-            return $this->apiClient->getAsync($endpoint, \array_merge($config, [
+            return $this->apiClient->getAsync($uri, \array_merge($options, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
@@ -77,7 +74,7 @@ class AuthClient implements AuthClientInterface
 
             $this->renewBearerToken();
 
-            return $this->apiClient->getAsync($endpoint, \array_merge($config, [
+            return $this->apiClient->getAsync($uri, \array_merge($options, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
@@ -106,7 +103,7 @@ class AuthClient implements AuthClientInterface
             return; // TODO: throw exception
         }
 
-        $response = $this->apiClient->post('api/oauth/token', [
+        $response = $this->apiClient->post('/api/oauth/token', [
             'json' => [
                 'grant_type' => 'client_credentials',
                 'client_id' => $credentials['apiUser'],

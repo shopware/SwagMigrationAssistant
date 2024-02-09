@@ -53,7 +53,7 @@ abstract class ApiReader implements ReaderInterface
         }
 
         /** @var GuzzleResponse $result */
-        $result = $client->getRequest(
+        $result = $client->get(
             'get-data',
             [
                 'query' => $queryParams,

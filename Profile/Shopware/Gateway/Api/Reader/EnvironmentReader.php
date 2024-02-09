@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
@@ -18,6 +17,7 @@ use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Exception\SslRequiredException;
+use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
@@ -28,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 #[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
-    private ?Client $client;
+    private ?HttpClientInterface $client;
 
     private MigrationContextInterface $migrationContext;
 
@@ -134,7 +134,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
      * @throws InvalidConnectionAuthenticationException
      * @throws SslRequiredException
      */
-    private function readData(Client $apiClient, bool $verified = false): array
+    private function readData(HttpClientInterface $apiClient, bool $verified = false): array
     {
         if ($verified) {
             $apiClient = $this->connectionFactory->createApiClient($this->migrationContext, $verified);
@@ -159,7 +159,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
         return $arrayResult['data'];
     }
 
-    private function checkForShopware(Client $apiClient): bool
+    private function checkForShopware(HttpClientInterface $apiClient): bool
     {
         $result = $this->doSecureRequest($apiClient, 'version');
 
@@ -188,7 +188,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
      * @throws RequestCertificateInvalidException
      * @throws SslRequiredException
      */
-    private function doSecureRequest(Client $apiClient, string $endpoint): GuzzleResponse
+    private function doSecureRequest(HttpClientInterface $apiClient, string $endpoint): GuzzleResponse
     {
         try {
             /** @var GuzzleResponse $result */

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +18,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class OrderProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<OrderCollection> $orderRepo
+     */
     public function __construct(private readonly EntityRepository $orderRepo)
     {
     }
@@ -26,6 +30,9 @@ class OrderProvider extends AbstractProvider
         return DefaultEntities::ORDER;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getProvidedData(int $limit, int $offset, Context $context): array
     {
         $criteria = new Criteria();
@@ -39,6 +46,7 @@ class OrderProvider extends AbstractProvider
         $criteria->addAssociation('tags');
         $criteria->addAssociation('stateMachineState.stateMachine');
         $criteria->addAssociation('deliveries.stateMachineState.stateMachine');
+        $criteria->addAssociation('deliveries.shippingOrderAddress');
         $criteria->addAssociation('transactions.stateMachineState.stateMachine');
         $criteria->addSorting(new FieldSorting('id'));
         $result = $this->orderRepo->search($criteria, $context);

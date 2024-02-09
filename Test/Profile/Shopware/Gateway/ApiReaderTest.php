@@ -7,13 +7,13 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway;
 
-use GuzzleHttp\Client;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\HandlerStack;
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ProductReader;
@@ -46,7 +46,7 @@ class ApiReaderTest extends TestCase
             'handler' => $handler,
         ];
 
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
             new Shopware55Profile(),
@@ -78,7 +78,7 @@ class ApiReaderTest extends TestCase
             'verify' => false,
             'handler' => $handler,
         ];
-        $client = new Client($options);
+        $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
             new Shopware55Profile(),
