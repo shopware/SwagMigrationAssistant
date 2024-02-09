@@ -2291,16 +2291,6 @@ parameters:
 			path: Profile/Shopware/Converter/AttributeConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\AttributeConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/AttributeConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\AttributeConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/AttributeConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\AttributeConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/AttributeConverter.php
@@ -2342,36 +2332,6 @@ parameters:
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CategoryConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CategoryConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CategoryConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CategoryConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CategoryConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CategoryConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CategoryConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CategoryConverter has an uninitialized property \\$locale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CategoryConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CategoryConverter has an uninitialized property \\$oldCategoryId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CategoryConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CategoryConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/CategoryConverter.php
 
@@ -2436,21 +2396,6 @@ parameters:
 			path: Profile/Shopware/Converter/CategoryConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CrossSellingConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CrossSellingConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CrossSellingConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CrossSellingConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CrossSellingConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CrossSellingConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CrossSellingConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/CrossSellingConverter.php
@@ -2469,21 +2414,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/CrossSellingConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CurrencyConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CurrencyConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CurrencyConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
@@ -2514,36 +2444,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/CurrencyConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter has an uninitialized property \\$oldCustomerId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
@@ -2681,26 +2581,6 @@ parameters:
 			path: Profile/Shopware/Converter/CustomerConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerGroupConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerGroupConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerGroupConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter has an uninitialized property \\$locale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerGroupConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 1
 			path: Profile/Shopware/Converter/CustomerGroupConverter.php
@@ -2726,29 +2606,9 @@ parameters:
 			path: Profile/Shopware/Converter/CustomerGroupConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerWishlistConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerWishlistConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerWishlistConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/CustomerWishlistConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerWishlistConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/CustomerWishlistConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\LanguageConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/LanguageConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\LanguageConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/LanguageConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\LanguageConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
@@ -2766,16 +2626,6 @@ parameters:
 			path: Profile/Shopware/Converter/LanguageConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MainVariantRelationConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MainVariantRelationConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MainVariantRelationConverter has an uninitialized property \\$runUuid\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MainVariantRelationConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MainVariantRelationConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/MainVariantRelationConverter.php
@@ -2784,21 +2634,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MainVariantRelationConverter\\:\\:getSourceIdentifier\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/MainVariantRelationConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaConverter has an uninitialized property \\$locale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
@@ -2836,26 +2671,6 @@ parameters:
 			path: Profile/Shopware/Converter/MediaConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaFolderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaFolderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaFolderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter has an uninitialized property \\$oldId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/MediaFolderConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/MediaFolderConverter.php
@@ -2876,31 +2691,6 @@ parameters:
 			path: Profile/Shopware/Converter/MediaFolderConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NewsletterRecipientConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NewsletterRecipientConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NewsletterRecipientConverter has an uninitialized property \\$locale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NewsletterRecipientConverter has an uninitialized property \\$oldNewsletterRecipientId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NewsletterRecipientConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NewsletterRecipientConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
@@ -2914,16 +2704,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/NewsletterRecipientConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter has an uninitialized property \\$numberRangeTypes\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/NumberRangeConverter.php
 
 		-
 			message: "#^Constant SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:TYPE_MAPPING type has no value type specified in iterable type array\\.$#"
@@ -2964,46 +2744,6 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:\\$numberRangeTypes with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection does not specify its types\\: TElement$#"
 			count: 1
 			path: Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$oldId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$paymentStatusId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter has an uninitialized property \\$uuid\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
@@ -3146,31 +2886,6 @@ parameters:
 			path: Profile/Shopware/Converter/OrderConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter has an uninitialized property \\$oldId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/OrderDocumentConverter.php
@@ -3209,51 +2924,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$connectionName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$currencyUuid\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$locale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$mainProductId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$oldProductId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$productType\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
@@ -3531,16 +3201,6 @@ parameters:
 			path: Profile/Shopware/Converter/ProductConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductOptionRelationConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductOptionRelationConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductOptionRelationConverter has an uninitialized property \\$originalData\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductOptionRelationConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductOptionRelationConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/ProductOptionRelationConverter.php
@@ -3559,21 +3219,6 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductOptionRelationConverter\\:\\:\\$originalData type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/ProductOptionRelationConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductPropertyRelationConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductPropertyRelationConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductPropertyRelationConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductPropertyRelationConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductPropertyRelationConverter has an uninitialized property \\$originalData\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductPropertyRelationConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductPropertyRelationConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
@@ -3596,16 +3241,6 @@ parameters:
 			path: Profile/Shopware/Converter/ProductPropertyRelationConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductReviewConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductReviewConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductReviewConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ProductReviewConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductReviewConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/ProductReviewConverter.php
@@ -3614,26 +3249,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/ProductReviewConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PromotionConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PromotionConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PromotionConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PromotionConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PromotionConverter has an uninitialized property \\$productUuids\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PromotionConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PromotionConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PromotionConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PromotionConverter\\:\\:__construct\\(\\) has parameter \\$salesChannelRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
@@ -3741,26 +3356,6 @@ parameters:
 			path: Profile/Shopware/Converter/PromotionConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PropertyGroupOptionConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PropertyGroupOptionConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PropertyGroupOptionConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PropertyGroupOptionConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PropertyGroupOptionConverter has an uninitialized property \\$locale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PropertyGroupOptionConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PropertyGroupOptionConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/PropertyGroupOptionConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 3
 			path: Profile/Shopware/Converter/PropertyGroupOptionConverter.php
@@ -3827,26 +3422,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Entity\\:\\:getLanguageId\\(\\)\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter has an uninitialized property \\$oldIdentifier\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/SalesChannelConverter.php
 
@@ -3926,11 +3501,6 @@ parameters:
 			path: Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SeoUrlConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/SeoUrlConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SeoUrlConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/SeoUrlConverter.php
@@ -3941,229 +3511,9 @@ parameters:
 			path: Profile/Shopware/Converter/SeoUrlConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter has an uninitialized property \\$mainLocale\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter has an uninitialized property \\$oldShippingMethod\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 1
 			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getCustomerGroupCalculationRule\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getCustomerGroupCalculationRule\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getDayOfWeekChildren\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getRelevantDataForAvailabilityRule\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getRelevantDataForAvailabilityRule\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getSalesChannelAndCustomerGroupCalculationRule\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getSalesChannelAndCustomerGroupCalculationRule\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getSalesChannelCalculationRule\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getSalesChannelCalculationRule\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getShippingCosts\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getShippingCosts\\(\\) has parameter \\$rule with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getShippingCosts\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getShippingMethodTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:getShippingMethodTranslation\\(\\) has parameter \\$shippingMethod with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setBindTimeCondition\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setBindTimeCondition\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setCustomAvailabilityRule\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setCustomAvailabilityRule\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setDayOfWeekValues\\(\\) has parameter \\$values with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setExcludedCategories\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setExcludedCategories\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setFreeShipping\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setFreeShipping\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setLastStockCondition\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setLastStockCondition\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setOtherConditions\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setOtherConditions\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setPaymentMethods\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setPaymentMethods\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setShippingCountries\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setShippingCountries\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setWeekdayCondition\\(\\) has parameter \\$mainOrContainer with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:setWeekdayCondition\\(\\) has parameter \\$ruleData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^PHPDoc tag @var with type string is not subtype of native type non\\-empty\\-string\\|false\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShippingMethodConverter\\:\\:\\$relevantForAvailabilityRule type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Strict comparison using \\!\\=\\= between mixed and null will always evaluate to true\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShippingMethodConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/ShopwareConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShopwareConverter\\:\\:checkForEmptyRequiredConvertedFields\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
@@ -4204,11 +3554,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ShopwareConverter\\:\\:getSourceIdentifier\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\TranslationConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Converter/TranslationConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
