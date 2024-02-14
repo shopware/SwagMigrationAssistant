@@ -36,6 +36,12 @@
 - MIG-920 - [BREAKING] Übergeordnete Klasse und Implementierung von `Profile/Shopware6/Media/HttpMediaDownloadService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php` geändert
 - MIG-920 - [BREAKING] Geänderte übergeordnete Klasse und Implementierung von `Profile/Shopware6/Media/HttpOrderDocumentService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php`.
 - MIG-920 - [BREAKING] Umbenennung von `Profile/Shopware6/Media/HttpOrderDocumentService.php` in `Profile/Shopware/Media/HttpOrderDocumentDownloadService.php`
+- MIG-934 - Neue Route `/api/_action/data-provider/download-private-file/{file}` zum Abrufen digitaler Produktdateien hinzugefügt
+- MIG-934 - Die Datei `DataProvider/Provider/Data/ProductProvider.php` wurde geändert, um Download-Medien für digitale Produkte einzubeziehen
+- MIG-934 - Die Datei `Profile/Shopware6/Converter/ProductConverter.php` wurde geändert, um Download-Medien für digitale Produkte einzubeziehen
+- MIG-934 - Datei `Profile/Shopware6/DataSelection/DataSet/ProductDownloadDataSet.php` hinzugefügt
+- MIG-934 - Datei `Profile/Shopware6/Media/HttpProductDownloadService.php` hinzugefügt
+- MIG-934 - [BREAKING] Die Datei `Controller/DataProviderController.php` wurde in final geändert.
 
 # 7.0.2
 - MIG-908 - Behebung der Shopware 6 Migration von `system_config` Entitäten, die nicht zwischen verschiedenen Shops migriert werden sollten

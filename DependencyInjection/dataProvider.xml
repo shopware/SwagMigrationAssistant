@@ -12,6 +12,8 @@
             <argument type="service" id="SwagMigrationAssistant\DataProvider\Provider\ProviderRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\DataProvider\Service\EnvironmentService"/>
             <argument type="service" id="Shopware\Core\Checkout\Document\Service\DocumentGenerator"/>
+            <argument type="service" id="media.repository"/>
+            <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
         </service>
 
         <!-- Data providers -->
@@ -67,6 +69,7 @@
 
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider">
             <argument type="service" id="product.repository"/>
+            <argument type="service" id="router"/>
             <tag name="shopware.dataProvider.provider"/>
         </service>
 

@@ -13,12 +13,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Routing\RouterInterface;
 
 #[Package('services-settings')]
 class ProductProvider extends AbstractProvider
 {
-    public function __construct(private readonly EntityRepository $productRepo)
-    {
+    public function __construct(
+        private readonly EntityRepository $productRepo,
+        private readonly RouterInterface $router
+    ) {
     }
 
     public function getIdentifier(): string
@@ -40,6 +44,8 @@ class ProductProvider extends AbstractProvider
         $criteria->addAssociation('media.media.translations');
         $criteria->addAssociation('visibilities');
         $criteria->addAssociation('configuratorSettings.media');
+        $criteria->addAssociation('downloads.media.tags');
+        $criteria->addAssociation('downloads.media.translations');
         $criteria->addSorting(
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')
@@ -68,7 +74,6 @@ class ProductProvider extends AbstractProvider
 
             // media
             'mimeType',
-            'fileExtension',
             'mediaTypeRaw',
             'metaData',
             'mediaType',
@@ -82,11 +87,20 @@ class ProductProvider extends AbstractProvider
             'cmsPageId', // ToDo MIG-901: properly migrate this association in a separate DataSet
         ]);
 
-        // cleanup association entities - only ids are needed
         foreach ($cleanResult as &$product) {
+            // cleanup association entities - only ids are needed
             $this->cleanupAssociationToOnlyContainIds($product, 'categories');
             $this->cleanupAssociationToOnlyContainIds($product, 'properties');
             $this->cleanupAssociationToOnlyContainIds($product, 'options');
+            // generate download file urls if needed
+            if (isset($product['downloads'])) {
+                foreach ($product['downloads'] as &$download) {
+                    $download['media']['url'] = $this->router->generate('api.admin.data-provider.download-private-file', [
+                        'file' => $download['media']['fileName'] . '.' . $download['media']['fileExtension'],
+                        'identifier' => $download['media']['id'],
+                    ], UrlGeneratorInterface::ABSOLUTE_URL);
+                }
+            }
         }
 
         return $cleanResult;

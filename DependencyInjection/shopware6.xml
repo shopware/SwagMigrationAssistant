@@ -555,6 +555,10 @@
             <tag name="shopware.migration.data_set"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductDownloadDataSet">
+            <tag name="shopware.migration.data_set"/>
+        </service>
+
         <!-- premapping -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Premapping\PaymentMethodReader">
             <argument type="service" id="payment_method.repository"/>
@@ -1013,6 +1017,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentDownloadService" parent="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase">
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
+            <tag name="shopware.migration.media_file_processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Media\HttpProductDownloadService" parent="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>

@@ -43,6 +43,12 @@ class ProductConverter extends ShopwareMediaConverter
                     }
                 }
             }
+
+            if (isset($product['downloads'])) {
+                foreach ($product['downloads'] as $download) {
+                    $mediaIds[] = $download['media']['id'];
+                }
+            }
         }
 
         return $mediaIds;
@@ -180,6 +186,13 @@ class ProductConverter extends ShopwareMediaConverter
                 $this->updateMediaAssociation($mediaAssociation['media']);
             }
             unset($mediaAssociation);
+        }
+
+        if (isset($converted['downloads'])) {
+            foreach ($converted['downloads'] as &$download) {
+                $this->updateMediaAssociation($download['media'], DefaultEntities::PRODUCT_DOWNLOAD);
+            }
+            unset($download);
         }
 
         if (isset($converted['visibilities'])) {

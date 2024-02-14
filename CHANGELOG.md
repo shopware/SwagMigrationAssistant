@@ -36,6 +36,12 @@
 - MIG-920 - [BREAKING] Changed parent class and implementation of `Profile/Shopware6/Media/HttpMediaDownloadService.php` to `Migration/Media/Processor/HttpDownloadServiceBase.php`
 - MIG-920 - [BREAKING] Changed parent class and implementation of `Profile/Shopware6/Media/HttpOrderDocumentService.php` to `Migration/Media/Processor/HttpDownloadServiceBase.php`
 - MIG-920 - [BREAKING] Renamed `Profile/Shopware6/Media/HttpOrderDocumentService.php` to `Profile/Shopware/Media/HttpOrderDocumentDownloadService.php`
+- MIG-934 - Added new route `/api/_action/data-provider/download-private-file/{file}` for retrieving digital product files
+- MIG-934 - Changed `DataProvider/Provider/Data/ProductProvider.php` to include download media of digital products
+- MIG-934 - Changed `Profile/Shopware6/Converter/ProductConverter.php` to include download media of digital products
+- MIG-934 - Added `Profile/Shopware6/DataSelection/DataSet/ProductDownloadDataSet.php`
+- MIG-934 - Added `Profile/Shopware6/Media/HttpProductDownloadService.php`
+- MIG-934 - [BREAKING] Changed `Controller/DataProviderController.php` to final
 
 # 7.0.2
 - MIG-908 - Fix Shopware 6 migration of `system_config` entities which should not be migrated between different shops

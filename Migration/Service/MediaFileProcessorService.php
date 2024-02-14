@@ -69,7 +69,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             }
 
             ++$currentCount;
-            $messageMediaUuids[] = Uuid::fromBytesToHex($mediaFile['media_id']);
+            $messageMediaUuids[] = $mediaFile['media_id'];
 
             if ($currentCount < self::MESSAGE_SIZE) {
                 continue;
@@ -94,17 +94,24 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     {
         $queryBuilder = $this->dbalConnection->createQueryBuilder();
 
-        return $queryBuilder
+        $result = $queryBuilder
             ->select('*')
             ->from('swag_migration_media_file')
-            ->where('HEX(run_id) = :runId')
+            ->where('run_id = :runId')
             ->andWhere('written = 1')
             ->orderBy('entity, file_size')
             ->setFirstResult($migrationContext->getOffset())
             ->setMaxResults($migrationContext->getLimit())
-            ->setParameter('runId', $migrationContext->getRunUuid())
+            ->setParameter('runId', Uuid::fromHexToBytes($migrationContext->getRunUuid()))
             ->executeQuery()
             ->fetchAllAssociative();
+        foreach ($result as &$media) {
+            $media['id'] = Uuid::fromBytesToHex($media['id']);
+            $media['run_id'] = Uuid::fromBytesToHex($media['run_id']);
+            $media['media_id'] = Uuid::fromBytesToHex($media['media_id']);
+        }
+
+        return $result;
     }
 
     /**
