@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -36,6 +37,8 @@ use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Run\RunOptions;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\ProgressState;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
@@ -70,6 +73,11 @@ class RunServiceTest extends TestCase
      */
     private EntityRepository $mappingRepo;
 
+    /**
+     * @var EntityRepository<SwagMigrationDataCollection>
+     */
+    private EntityRepository $dataRepo;
+
     private RunService $runServiceWithoutStructure;
 
     private SwagMigrationConnectionEntity $connection;
@@ -80,7 +88,7 @@ class RunServiceTest extends TestCase
     {
         $entityWriter = static::getContainer()->get(EntityWriter::class);
         $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
-        $dataRepo = static::getContainer()->get('swag_migration_data.repository');
+        $this->dataRepo = static::getContainer()->get('swag_migration_data.repository');
         $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
         $this->mappingRepo = static::getContainer()->get('swag_migration_mapping.repository');
         $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
@@ -156,7 +164,7 @@ class RunServiceTest extends TestCase
             ),
             new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
-            $dataRepo,
+            $this->dataRepo,
             $mediaFileRepo,
             $salesChannelRepo,
             $themeRepo,
@@ -179,6 +187,25 @@ class RunServiceTest extends TestCase
         $origin->setIsAdmin(true);
         $context = Context::createDefaultContext($origin);
 
+        $runId = Uuid::randomHex();
+        $this->runRepo->create([
+            [
+                'id' => $runId,
+                'connectionId' => $this->connection->getId(),
+                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+            ],
+        ], $context);
+
+        $this->dataRepo->create([
+            [
+                'id' => Uuid::randomHex(),
+                'runId' => $runId,
+                'entity' => 'product',
+                'raw' => ['id' => 'testId'],
+                'written' => false,
+            ],
+        ], $context);
+
         $migrationContext = $this->migrationContextFactory->createByConnection($this->connection);
 
         $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
@@ -194,5 +221,96 @@ class RunServiceTest extends TestCase
 
         static::assertSame(1, $afterRunTotal - $beforeRunTotal);
         static::assertSame(0, $afterMappingTotal - $beforeMappingTotal);
+
+        $data = $this->dataRepo->search(new Criteria(), $context)->getTotal();
+        static::assertSame(0, $data);
+    }
+
+    public function testCreateMigrationRunWithResumeRun(): void
+    {
+        $userId = Uuid::randomHex();
+        $origin = new AdminApiSource($userId);
+        $origin->setIsAdmin(true);
+        $context = Context::createDefaultContext($origin);
+
+        $runId = Uuid::randomHex();
+        $this->runRepo->create([
+            [
+                'id' => $runId,
+                'connectionId' => $this->connection->getId(),
+                'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+            ],
+        ], $context);
+
+        $migrationContext = $this->migrationContextFactory->createByConnection($this->connection);
+
+        $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
+
+        /** @var ProgressState $progressState */
+        $progressState = $this->runServiceWithoutStructure->createMigrationRun(
+            $migrationContext,
+            [],
+            new RunOptions(false, true),
+            $context
+        );
+        $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $afterMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
+
+        static::assertSame($runId, $progressState->getRunId());
+        static::assertSame(0, $afterRunTotal - $beforeRunTotal);
+        static::assertSame(0, $afterMappingTotal - $beforeMappingTotal);
+
+        $data = $this->dataRepo->search(new Criteria(), $context)->getTotal();
+        static::assertSame(0, $data);
+    }
+
+    public function testCreateMigrationRunWithKeepData(): void
+    {
+        $userId = Uuid::randomHex();
+        $origin = new AdminApiSource($userId);
+        $origin->setIsAdmin(true);
+        $context = Context::createDefaultContext($origin);
+
+        $runId = Uuid::randomHex();
+        $this->runRepo->create([
+            [
+                'id' => $runId,
+                'connectionId' => $this->connection->getId(),
+                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+            ],
+        ], $context);
+
+        $this->dataRepo->create([
+            [
+                'id' => Uuid::randomHex(),
+                'runId' => $runId,
+                'entity' => 'product',
+                'raw' => ['id' => 'testId'],
+                'written' => false,
+            ],
+        ], $context);
+
+        $migrationContext = $this->migrationContextFactory->createByConnection($this->connection);
+
+        $beforeRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $beforeMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
+
+        /** @var ProgressState $progressState */
+        $progressState = $this->runServiceWithoutStructure->createMigrationRun(
+            $migrationContext,
+            [],
+            new RunOptions(true),
+            $context
+        );
+        $afterRunTotal = $this->runRepo->search(new Criteria(), $context)->getTotal();
+        $afterMappingTotal = $this->mappingRepo->search(new Criteria(), $context)->getTotal();
+
+        static::assertNotSame($runId, $progressState->getRunId());
+        static::assertSame(1, $afterRunTotal - $beforeRunTotal);
+        static::assertSame(0, $afterMappingTotal - $beforeMappingTotal);
+
+        $data = $this->dataRepo->search(new Criteria(), $context)->getTotal();
+        static::assertSame(1, $data);
     }
 }
