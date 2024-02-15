@@ -1,9 +1,11 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
-- MIG-937 - Always show current shop version used as compatible 6.x instance instead of older instances
-- MIG-899 - Changed behavior of the migration of seo urls. It now considers the URL case setting of shopware 5
 - MIG-274 - Fix migration of cross selling
+- MIG-825 - Improve performance of the migration of orders
+- MIG-825 - Added options `step-size` and `keep-data` to the cli command `migration:migrate` of `Command/MigrationCommand.php`
+- MIG-825 - [BREAKING] Added parameter `runOptions` to `createMigrationRun` of `Migration/Run/RunService.php`
 - MIG-838 - Add the meta information fields to the migration of category translations
 - MIG-839 - Add custom fields to the migration of category translations
+- MIG-899 - Changed behavior of the migration of seo urls. It now considers the URL case setting of shopware 5
 - MIG-931 - [BREAKING] Changed `Migration/MessageQueue/Handler/ProcessMediaHandler.php` to final
 - MIG-931 - [BREAKING] Added `AsyncMessageInterface` to `Migration/MessageQueue/Message/CleanupMigrationMessage.php`
 - MIG-931 - [BREAKING] Added `AsyncMessageInterface` to `Migration/MessageQueue/Message/ProcessMediaMessage.php`
@@ -15,6 +17,7 @@
 - MIG-931 - [BREAKING] Changed return parameter of `getContext` from `string` to `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php`
 - MIG-931 - [BREAKING] Changed parameter of `setContext` from `string` to `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php`
 - MIG-931 - Added method `getEntityName` and `setEntityName` to `Migration/MessageQueue/Message/ProcessMediaMessage.php`
+- MIG-937 - Always show current shop version used as compatible 6.x instance instead of older instances
 - MIG-938 - Fixes wrong calculation when migrating shipping costs
 
 # 7.0.2
