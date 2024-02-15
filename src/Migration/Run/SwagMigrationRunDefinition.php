@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
@@ -41,7 +42,7 @@ class SwagMigrationRunDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class),
             new JsonField('environment_information', 'environmentInformation'),
-            new JsonField('progress', 'progress'),
+            new MigrationProgressField('progress', 'progress'),
             new JsonField('premapping', 'premapping'),
             new StringField('user_id', 'userId'),
             new StringField('access_token', 'accessToken'),

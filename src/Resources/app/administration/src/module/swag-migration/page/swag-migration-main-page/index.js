@@ -1,25 +1,15 @@
 import template from './swag-migration-main-page.html.twig';
 import './swag-migration-main-page.scss';
 
-const { Component, State } = Shopware;
+const { Component } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-main-page', {
     template,
-
-    inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
-        /** @var {MigrationWorkerService} migrationWorkerService */
-        migrationWorkerService: 'migrationWorkerService',
-        /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
-        migrationProcessStoreInitService: 'processStoreInitService',
-        /** @var {MigrationUiStoreInitService} migrationUiStoreInitService */
-        migrationUiStoreInitService: 'uiStoreInitService',
-    },
 
     metaInfo() {
         return {
@@ -28,15 +18,10 @@ Component.register('swag-migration-main-page', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'environmentInformation',
             'connectionId',
-            'isMigrating',
-        ]),
-
-        ...mapState('swagMigration/ui', [
             'isLoading',
-            'startMigration',
         ]),
 
         displayWarnings() {
@@ -45,6 +30,7 @@ Component.register('swag-migration-main-page', {
 
         connectionEstablished() {
             return this.environmentInformation !== undefined &&
+                this.environmentInformation.requestStatus &&
                 (
                     this.environmentInformation.requestStatus.isWarning === true ||
                     (
@@ -52,69 +38,6 @@ Component.register('swag-migration-main-page', {
                         this.environmentInformation.requestStatus.code === ''
                     )
                 );
-        },
-    },
-
-    created() {
-        this.createdComponent();
-    },
-
-    methods: {
-        async createdComponent() {
-            State.commit('swagMigration/ui/setIsLoading', true);
-
-            if (this.connectionId === null) {
-                this.$router.push({ name: 'swag.migration.wizard.introduction' });
-                return;
-            }
-
-            if (Object.keys(this.environmentInformation).length < 1) {
-                this.$router.push({ name: 'swag.migration.emptyScreen' });
-                return;
-            }
-
-            if (this.isMigrating) {
-                this.$router.push({ name: 'swag.migration.processScreen' });
-                return;
-            }
-
-            let isTakeoverForbidden = false;
-            await this.migrationWorkerService.isMigrationRunningInOtherTab().then((isRunning) => {
-                isTakeoverForbidden = isRunning;
-            });
-
-            let isMigrationRunning = isTakeoverForbidden;
-            if (!isTakeoverForbidden) {
-                await this.migrationWorkerService.checkForRunningMigration().then((runState) => {
-                    isMigrationRunning = runState.isMigrationRunning;
-                });
-            }
-
-            if (isMigrationRunning) {
-                this.$router.push({ name: 'swag.migration.processScreen' });
-                return;
-            }
-
-            if (this.startMigration) {
-                await this.onMigrate();
-            }
-
-            State.commit('swagMigration/ui/setIsLoading', false);
-        },
-
-        async onMigrate() {
-            this.$nextTick().then(() => {
-                State.commit('swagMigration/process/setIsMigrating', true);
-                /**
-                 * reset the premapping because it does not get fetched again if not empty
-                 * this will ensure that the user can navigate outside of the module and keep the premapping
-                 */
-                State.commit('swagMigration/ui/setPremapping', []);
-
-                // navigate to process screen
-                State.commit('swagMigration/ui/setIsLoading', true);
-                this.$router.push({ name: 'swag.migration.processScreen' });
-            });
         },
     },
 });

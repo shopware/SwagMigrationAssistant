@@ -4,6 +4,7 @@ import './swag-migration-history-detail-data.scss';
 const { Component, Mixin } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-history-detail-data', {
@@ -58,7 +59,9 @@ Component.register('swag-migration-history-detail-data', {
         },
 
         entityGroups() {
-            return this.migrationRun.progress.filter((group) => (group.id !== 'processMediaFiles'));
+            return Object.entries(this.migrationRun.progress.dataSets).map(([name, count]) => {
+                return { id: name, name, total: count };
+            });
         },
     },
 

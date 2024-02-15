@@ -18,17 +18,15 @@
                         <div class="swag-migration-history-detail__header">
 
                             {% block swag_migration_history_detail_connectin_avatar %}
-                                <template v-if="profileIcon === null || profileIcon === ''">
-                                    <swag-migration-shop-avatar class="swag-migration-shop-information__connection-avatar"
-                                                                color="#189EFF"
-                                                                size="80px">
-                                        {{ shopFirstLetter }}
-                                    </swag-migration-shop-avatar>
+                                <template v-if="profileIcon !== null && profileIcon !== ''">
+                                    <img class="swag-migration-shop-information__profile-avatar"
+                                         :src="assetFilter(profileIcon)"
+                                         size="80px">
                                 </template>
 
                                 <template v-else>
                                     <img class="swag-migration-shop-information__profile-avatar"
-                                         :src="assetFilter(profileIcon)"
+                                         :src="assetFilter('/swagmigrationassistant/static/img/migration-assistant-plugin.svg')"
                                          size="80px">
                                 </template>
                             {% endblock %}

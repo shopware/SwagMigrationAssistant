@@ -50,7 +50,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
     }
 
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array
     {
         $mappedWorkload = [];
         foreach ($workload as $work) {

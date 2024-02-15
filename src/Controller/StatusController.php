@@ -21,7 +21,6 @@ use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -40,7 +39,6 @@ class StatusController extends AbstractController
      */
     public function __construct(
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
-        private readonly MigrationProgressServiceInterface $migrationProgressService,
         private readonly RunServiceInterface $runService,
         private readonly DataSelectionRegistryInterface $dataSelectionRegistry,
         private readonly EntityRepository $migrationConnectionRepo,
@@ -222,105 +220,51 @@ class StatusController extends AbstractController
         return new JsonResponse($information);
     }
 
-    #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function getState(Request $request, Context $context): JsonResponse
+    #[Route(path: '/api/_action/migration/start-migration', name: 'api.admin.migration.start-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    public function startMigration(Request $request, Context $context): Response
     {
-        $state = $this->migrationProgressService->getProgress($request, $context);
+        $dataSelectionNames = $request->request->all('dataSelectionNames');
 
-        return new JsonResponse($state);
+        if (empty($dataSelectionNames)) {
+            throw new MigrationContextPropertyMissingException('dataSelectionNames');
+        }
+
+        $this->runService->startMigrationRun($dataSelectionNames, $context);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+
+        // in case there is already a migration running
+        // return new Response(null, Response::HTTP_BAD_REQUEST);
     }
 
-    #[Route(path: '/api/_action/migration/create-migration', name: 'api.admin.migration.create-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function createMigration(Request $request, Context $context): JsonResponse
+    #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    public function getState(Context $context): JsonResponse
     {
-        $connectionId = $request->request->getAlnum('connectionId');
-
-        $dataSelectionIds = $request->request->all('dataSelectionIds');
-
-        if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
-        }
-
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
-
-        if ($connection === null) {
-            throw new MigrationContextPropertyMissingException('connectionId');
-        }
-
-        if (empty($dataSelectionIds)) {
-            throw new MigrationContextPropertyMissingException('dataSelectionIds');
-        }
-
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $state = $this->runService->createMigrationRun(
-            $migrationContext,
-            $dataSelectionIds,
-            $context
-        );
-
-        if ($state === null) {
-            return $this->getState($request, $context);
-        }
-
-        return new JsonResponse($state);
+        return new JsonResponse($this->runService->getRunStatus($context));
     }
 
-    #[Route(path: '/api/_action/migration/takeover-migration', name: 'api.admin.migration.takeover-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function takeoverMigration(Request $request, Context $context): JsonResponse
+    #[Route(path: '/api/_action/migration/approve-finished', name: 'api.admin.migration.approveFinished', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    public function approveFinishedMigration(Context $context): Response
     {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
+        try {
+            $this->runService->finishMigration($context);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        $accessToken = $this->runService->takeoverMigration($runUuid, $context);
-
-        return new JsonResponse(['accessToken' => $accessToken]);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
-    // Aborts an already running migration remotely.
     #[Route(path: '/api/_action/migration/abort-migration', name: 'api.admin.migration.abort-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function abortMigration(Request $request, Context $context): Response
+    public function abortMigration(Context $context): Response
     {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
+        try {
+            $this->runService->abortMigration($context);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        $this->runService->abortMigration($runUuid, $context);
-
-        return new Response();
-    }
-
-    #[Route(path: '/api/_action/migration/finish-migration', name: 'api.admin.migration.finish-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function finishMigration(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->finishMigration($runUuid, $context);
-
-        return new Response();
-    }
-
-    #[Route(path: '/api/_action/migration/assign-themes', name: 'api.admin.migration.assign-themes', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function assignThemes(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->assignThemeToSalesChannel($runUuid, $context);
-
-        return new Response();
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route(path: '/api/_action/migration/reset-checksums', name: 'api.admin.migration.reset-checksums', methods: ['POST'], defaults: ['_acl' => ['admin']])]
@@ -339,6 +283,7 @@ class StatusController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
         }
 
+        // Todo: Put this into the MQ
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();

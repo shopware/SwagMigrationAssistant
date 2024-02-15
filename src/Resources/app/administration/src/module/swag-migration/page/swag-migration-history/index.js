@@ -1,10 +1,11 @@
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 
-const { Component, Mixin, State } = Shopware;
+const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-history', {
@@ -12,8 +13,8 @@ Component.register('swag-migration-history', {
 
     inject: {
         repositoryFactory: 'repositoryFactory',
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
     },
 
     mixins: [
@@ -64,11 +65,11 @@ Component.register('swag-migration-history', {
     },
 
     created() {
-        this.migrationService.isMediaProcessing().then((response) => {
+        this.migrationApiService.isMediaProcessing().then((response) => {
             this.isMediaProcessing = response.data;
         });
         this.logDownloadEndpoint = '/api/_action/' +
-            `${this.migrationService.getApiBasePath()}/download-logs-of-run`;
+            `${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
     },
 
     methods: {
@@ -167,11 +168,6 @@ Component.register('swag-migration-history', {
             return params;
         },
 
-        onMigrateButtonClick() {
-            State.commit('swagMigration/ui/setStartMigration', true);
-            this.$router.push({ name: 'swag.migration.index.main' });
-        },
-
         onContextDownloadLogFile(runId) {
             this.runIdForLogDownload = runId;
             this.$nextTick(() => {
@@ -181,13 +177,15 @@ Component.register('swag-migration-history', {
 
         clearDataOfRun(runId) {
             this.runClearConfirmModalIsLoading = true;
-            return this.migrationService.clearDataOfRun(runId).then(() => {
+            return this.migrationApiService.clearDataOfRun(runId).then(() => {
                 this.showRunClearConfirmModal = false;
                 this.runClearConfirmModalIsLoading = false;
                 this.$router.go();
             }).catch(() => {
                 this.createNotificationError({
-                    message: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message'),
+                    message: this.$t(
+                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
+                    ),
                     growl: true,
                 });
             });

@@ -4,6 +4,7 @@ import './swag-migration-result-screen.scss';
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-result-screen', {
@@ -12,13 +13,6 @@ Component.register('swag-migration-result-screen', {
     computed: {
         assetFilter() {
             return Shopware.Filter.getByName('asset');
-        },
-    },
-
-    props: {
-        runId: {
-            type: String,
-            required: true,
         },
     },
 });

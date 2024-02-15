@@ -16,7 +16,7 @@
 
                     {% block swag_migration_history_detail_data_grid_name %}
                         <template #column-name="{ item }">
-                            {{ $tc(item.snippet) }}
+                            {{ item.name }}
                         </template>
                     {% endblock %}
 

@@ -5,14 +5,15 @@ const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-history-detail', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
         repositoryFactory: 'repositoryFactory',
     },
 
@@ -111,7 +112,7 @@ Component.register('swag-migration-history-detail', {
 
         dateFilter() {
             return Shopware.Filter.getByName('date');
-        }
+        },
     },
 
     created() {
@@ -134,7 +135,10 @@ Component.register('swag-migration-history-detail', {
 
             this.migrationRun = runs.first();
 
-            return this.migrationService.getProfileInformation(this.migrationRun.connection.profileName, this.migrationRun.connection.gatewayName).then((profileInformation) => {
+            return this.migrationApiService.getProfileInformation(
+                this.migrationRun.connection.profileName,
+                this.migrationRun.connection.gatewayName,
+            ).then((profileInformation) => {
                 this.migrationRun.connection.profile = profileInformation.profile;
 
                 this.isLoading = false;

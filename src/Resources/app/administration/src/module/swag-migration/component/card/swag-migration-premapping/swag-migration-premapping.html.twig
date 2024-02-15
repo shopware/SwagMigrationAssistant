@@ -2,7 +2,7 @@
     <div class="swag-migration-premapping">
 
         {% block swag_migration_premapping_unfilled_alert %}
-            <sw-alert v-if="!isLoading && !isPremappingValid"
+            <sw-alert v-if="!isPremappingValid"
                       class="swag-migration-premapping__alert"
                       variant="error">
                 {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
@@ -11,7 +11,7 @@
 
         {% block swag_migration_premapping_unfilled_card %}
             <sw-card
-                v-if="!isLoading && !isPremappingValid"
+                v-if="!isPremappingValid"
                 class="swag-migration-premapping__unfilled-card"
                 position-identifier="swag-migration-premapping"
             >
@@ -70,7 +70,7 @@
                     <swag-migration-grid-selection
                         :choices="item.choices"
                         :mapping="item.mapping"
-                        @update:value="validatePremapping"
+                        @update:value="onPremappingChanged"
                     ></swag-migration-grid-selection>
                 </template>
             </swag-migration-tab-card>
@@ -94,7 +94,7 @@
                             <swag-migration-grid-selection
                                 :choices="item.choices"
                                 :mapping="item.mapping"
-                                @update:value="validatePremapping"
+                                @update:value="onPremappingChanged"
                             ></swag-migration-grid-selection>
                         </template>
                     </swag-migration-tab-card>

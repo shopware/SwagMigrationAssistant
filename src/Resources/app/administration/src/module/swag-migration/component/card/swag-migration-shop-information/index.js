@@ -1,7 +1,7 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
@@ -12,15 +12,14 @@ const BADGE_TYPE = Object.freeze({
 });
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-shop-information', {
     template,
     inject: {
-        /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
-        migrationProcessStoreInitService: 'processStoreInitService',
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
         repositoryFactory: 'repositoryFactory',
     },
 
@@ -45,12 +44,10 @@ Component.register('swag-migration-shop-information', {
 
     data() {
         return {
-            showMoreInformation: true,
             confirmModalIsLoading: false,
             showRemoveCredentialsConfirmModal: false,
             showResetChecksumsConfirmModal: false,
             showResetMigrationConfirmModal: false,
-            lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
             context: Shopware.Context.api,
@@ -58,9 +55,10 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'connectionId',
             'environmentInformation',
+            'lastConnectionCheck',
         ]),
 
         ...mapGetters([
@@ -82,8 +80,9 @@ Component.register('swag-migration-shop-information', {
         },
 
         connectionName() {
-            return this.connection === null ? '' :
-                this.connection.name;
+            return this.connection !== null ?
+                this.connection.name :
+                this.$tc('swag-migration.index.shopInfoCard.noConnection');
         },
 
         shopUrl() {
@@ -139,6 +138,7 @@ Component.register('swag-migration-shop-information', {
 
         profile() {
             return this.connection === null || this.connection.profile === undefined ? '' :
+                // eslint-disable-next-line max-len
                 `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
         },
 
@@ -153,22 +153,20 @@ Component.register('swag-migration-shop-information', {
                 this.connection.gateway.snippet;
         },
 
-        lastConnectionCheckDateTimeParams() {
-            return {
-                date: this.getDateString(this.lastConnectionCheck),
-                time: this.getTimeString(this.lastConnectionCheck),
-            };
+        formattedLastConnectionCheckDate() {
+            return format.date(this.lastConnectionCheck);
         },
 
-        lastMigrationDateTimeParams() {
-            return {
-                date: this.getDateString(this.lastMigrationDate),
-                time: this.getTimeString(this.lastMigrationDate),
-            };
+        formattedLastMigrationDateTime() {
+            return format.date(this.lastMigrationDate);
         },
 
         assetFilter() {
             return Shopware.Filter.getByName('asset');
+        },
+
+        showMoreInformation() {
+            return this.connection !== null && this.connection !== undefined;
         },
     },
 
@@ -232,32 +230,24 @@ Component.register('swag-migration-shop-information', {
          */
         fetchConnection(connectionId) {
             return this.migrationConnectionRepository.get(connectionId, this.context).then((connection) => {
+                if (!connection) {
+                    return null;
+                }
                 delete connection.credentialFields;
                 this.connection = connection;
-                this.lastConnectionCheck = new Date();
 
-                return this.migrationService.getProfileInformation(
+                return this.migrationApiService.getProfileInformation(
                     connection.profileName,
                     connection.gatewayName,
                 ).then((profileInformation) => {
+                    if (!profileInformation) {
+                        return;
+                    }
+
                     this.connection.profile = profileInformation.profile;
                     this.connection.gateway = profileInformation.gateway;
                 });
             });
-        },
-
-        getTimeString(date) {
-            return format.date(date, {
-                day: undefined,
-                month: undefined,
-                year: undefined,
-                hour: 'numeric',
-                minute: '2-digit',
-            });
-        },
-
-        getDateString(date) {
-            return format.date(date);
         },
 
         onClickEditConnectionCredentials() {
@@ -275,6 +265,12 @@ Component.register('swag-migration-shop-information', {
             });
         },
 
+        onClickCreateInitialConnection() {
+            this.$router.push({
+                name: 'swag.migration.wizard.introduction',
+            });
+        },
+
         onClickSelectConnection() {
             this.$router.push({
                 name: 'swag.migration.wizard.connectionSelect',
@@ -289,7 +285,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickRemoveConnectionCredentials() {
             this.confirmModalIsLoading = true;
-            return this.migrationService.updateConnectionCredentials(
+            return this.migrationApiService.updateConnectionCredentials(
                 this.connectionId,
                 { },
             ).then(() => {
@@ -299,7 +295,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickResetChecksums() {
             this.confirmModalIsLoading = true;
-            return this.migrationService.resetChecksums(this.connectionId).then(() => {
+            return this.migrationApiService.resetChecksums(this.connectionId).then(() => {
                 this.showResetChecksumsConfirmModal = false;
                 this.confirmModalIsLoading = false;
             });
@@ -307,25 +303,32 @@ Component.register('swag-migration-shop-information', {
 
         onClickResetMigration() {
             this.confirmModalIsLoading = true;
-            return this.migrationService.cleanupMigrationData().then(() => {
+            return this.migrationApiService.cleanupMigrationData().then(() => {
                 this.showResetMigrationConfirmModal = false;
                 this.confirmModalIsLoading = false;
-                this.migrationProcessStoreInitService.initProcessStore();
 
                 this.$nextTick(() => {
-                    this.$router.push({ name: 'swag.migration.emptyScreen' });
+                    this.$router.go(); // reload page
                 });
             }).catch(() => {
                 this.showResetMigrationConfirmModal = false;
                 this.confirmModalIsLoading = false;
 
                 this.createNotificationError({
-                    title: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title'),
-                    message: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message'),
+                    title: this.$t(
+                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title',
+                    ),
+                    message: this.$t(
+                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
+                    ),
                     variant: 'error',
                     growl: true,
                 });
             });
+        },
+
+        onClickRefreshConnection() {
+            return State.dispatch('swagMigration/init', true);
         },
     },
 });

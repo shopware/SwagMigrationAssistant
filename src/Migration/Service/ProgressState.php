@@ -20,11 +20,11 @@ class ProgressState extends Struct
     final public const STATUS_WRITE_DATA = 2;
     final public const STATUS_DOWNLOAD_DATA = 3;
 
+    final public const STATUS_FETCHING = 'fetching';
+
     public function __construct(
         protected bool $migrationRunning,
-        protected bool $validMigrationRunToken,
         protected ?string $runId = null,
-        protected ?string $accessToken = null,
         protected int $status = ProgressState::STATUS_WAITING,
         protected ?string $entity = null,
         protected int $finishedCount = 0,

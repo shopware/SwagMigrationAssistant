@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 /**
  * @method void                        add(SwagMigrationRunEntity $entity)

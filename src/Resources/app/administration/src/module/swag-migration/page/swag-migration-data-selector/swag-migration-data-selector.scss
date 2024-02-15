@@ -1,0 +1,48 @@
+@import "~scss/variables";
+
+.swag-migration-data-selector {
+    .swag-migration-data-selector__warning {
+        max-width: 800px;
+        margin: 0 auto 40px auto;
+        color: $color-darkgray-200;
+
+        @media screen and (max-width: 1360px) {
+            max-width: 770px;
+        }
+    }
+
+    .swag-migration-index-data-selector__tou {
+        font-size: $font-size-xxs;
+        display: block;
+        margin: 20px 38px 20px 38px;
+    }
+
+    .swag-migration-index-data-selector__no-data {
+        background-color: $color-gray-50;
+        height: 230px;
+        line-height: 230px;
+        text-align: center;
+        width: 100%;
+
+        .swag-migration-index-data-selector__no-data-label {
+            font-size: 18px;
+            font-weight: 600;
+            letter-spacing: 0.1px;
+        }
+    }
+
+    .sw-grid-row.is--disabled .sw-grid__cell-content {
+        color: $color-gray-500;
+    }
+
+    .swag-migration-data-selector__help-text {
+        margin-left: 5px;
+    }
+
+    .swag-migration-data-selector__help-text-placeholder {
+        width: 14px;
+        height: 14px;
+        margin-left: 5px;
+    }
+
+}

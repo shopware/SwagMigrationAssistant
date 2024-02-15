@@ -37,7 +37,8 @@
         "lint": [
             "@ecs-fix",
             "@phpstan",
-            "@phpunit"
+            "@phpunit",
+            "@admin:lint"
         ],
         "ecs": [
             "../../../vendor/bin/ecs check --config ../../../ecs.php src tests",
@@ -58,7 +59,23 @@
             "@composer install -o",
             "@composer install5db",
             "@php ../../../bin/console p:i -a -c SwagMigrationAssistant"
-        ]
+        ],
+        "admin:install": [
+            "@npm:admin install",
+            "@npm:jest install"
+        ],
+        "admin:lint": [
+            "@npm:jest run lint",
+            "@npm:admin run lint"
+        ],
+        "admin:lint:fix": [
+            "@npm:jest run lint-fix",
+            "@npm:admin run lint-fix"
+        ],
+        "admin:unit": "@npm:jest run unit",
+        "admin:unit:watch": "@npm:jest run unit-watch",
+        "npm:admin": "cd src/Resources/app/administration && npm",
+        "npm:jest": "cd tests/Jest && npm"
     },
     "autoload": {
         "psr-4": {

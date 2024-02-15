@@ -3,6 +3,7 @@ import template from './swag-migration-profile-shopware-local-credential-form.ht
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-profile-shopware-local-credential-form', {

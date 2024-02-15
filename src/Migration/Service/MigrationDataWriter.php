@@ -40,12 +40,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     ) {
     }
 
-    public function writeData(MigrationContextInterface $migrationContext, Context $context): void
+    public function writeData(MigrationContextInterface $migrationContext, Context $context): int
     {
         $dataSet = $migrationContext->getDataSet();
 
         if ($dataSet === null) {
-            return;
+            return 0;
         }
 
         $criteria = new Criteria();
@@ -58,7 +58,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $migrationData = $this->migrationDataRepo->search($criteria, $context);
 
         if ($migrationData->getTotal() === 0) {
-            return;
+            return 0;
         }
 
         $converted = [];
@@ -82,7 +82,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         if (empty($converted)) {
-            return;
+            return 0;
         }
 
         try {
@@ -102,7 +102,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             }
             unset($data);
 
-            return;
+            return $migrationData->getTotal();
         } catch (WriteException $exception) {
             $this->handleWriteException(
                 $exception,
@@ -128,6 +128,8 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         // Update written-Flag of the media file in the media file table
         $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
+
+        return $migrationData->getTotal();
     }
 
     private function handleWriteException(

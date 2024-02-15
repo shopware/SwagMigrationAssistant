@@ -150,7 +150,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
             $totals,
             $environmentDataArray['additionalData'],
             $environmentData['requestStatus'],
-            $updateAvailable,
+            false,
             $displayWarnings,
             $targetSystemCurrency->getIsoCode(),
             $environmentDataArray['defaultCurrency'],
