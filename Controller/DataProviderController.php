@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Controller;
 
+use League\Flysystem\FilesystemOperator;
+use League\Flysystem\UnableToGenerateTemporaryUrl;
 use Psr\Http\Message\StreamInterface;
 use Shopware\Core\Checkout\Document\Service\DocumentGenerator;
 use Shopware\Core\Content\Media\MediaCollection;
@@ -22,6 +24,7 @@ use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -39,7 +42,8 @@ final class DataProviderController
         private readonly EnvironmentServiceInterface $environmentService,
         private readonly DocumentGenerator $documentGenerator,
         private readonly EntityRepository $mediaRepository,
-        private readonly MediaService $mediaService
+        private readonly MediaService $mediaService,
+        private readonly FilesystemOperator $privateFilesystem,
     ) {
     }
 
@@ -119,7 +123,7 @@ final class DataProviderController
     }
 
     #[Route(path: '/api/_action/data-provider/download-private-file/{file}', name: 'api.admin.data-provider.download-private-file', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function downloadPrivateFile(Request $request, Context $context): StreamedResponse
+    public function downloadPrivateFile(Request $request, Context $context): Response
     {
         $identifier = (string) $request->query->get('identifier');
 
@@ -134,6 +138,13 @@ final class DataProviderController
 
         if ($media === null || !$media->isPrivate()) {
             throw RoutingException::invalidRequestParameter('identifier');
+        }
+
+        try {
+            $url = $this->privateFilesystem->temporaryUrl($media->getPath(), (new \DateTime())->modify('+120 minutes'));
+
+            return new RedirectResponse($url);
+        } catch (UnableToGenerateTemporaryUrl) {
         }
 
         $stream = $context->scope(
