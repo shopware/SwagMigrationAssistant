@@ -58,7 +58,6 @@ return [
     'static' => false,
     'deepLinkCode' => 'iFlpLFZam1KS8AAT4SV9Tn7nEsSnSQIY',
     'documentMediaFile' => [
-        'fileExtension' => 'pdf',
         'uploadedAt' => '2021-01-06T07:01:48.896+00:00',
         'fileName' => 'delivery_note_10001',
         'mediaFolderId' => 'e49eafe11fbe4396bf1102caeec1f67f',

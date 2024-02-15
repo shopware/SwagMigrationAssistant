@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
@@ -32,14 +31,14 @@ abstract class ShopwareMediaConverter extends ShopwareConverter
                 $mediaArray['translations'],
                 DefaultEntities::LANGUAGE,
                 'languageId',
-                DefaultEntities::MEDIA
+                $entity ?? DefaultEntities::MEDIA
             );
         }
 
         $this->mediaFileService->saveMediaFile(
             [
                 'runId' => $this->runId,
-                'entity' => $entity ?? MediaDataSet::getEntity(),
+                'entity' => $entity ?? DefaultEntities::MEDIA,
                 'uri' => $mediaArray['url'],
                 'fileName' => $mediaArray['fileName'],
                 'fileSize' => (int) $mediaArray['fileSize'],
@@ -50,7 +49,8 @@ abstract class ShopwareMediaConverter extends ShopwareConverter
         $mediaArray['hasFile'] = false;
         unset(
             $mediaArray['url'],
-            $mediaArray['fileSize']
+            $mediaArray['fileSize'],
+            $mediaArray['fileExtension']
         );
     }
 }
