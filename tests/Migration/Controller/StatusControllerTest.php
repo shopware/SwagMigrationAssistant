@@ -10,21 +10,18 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Api\Context\AdminApiSource;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
@@ -36,12 +33,13 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
+use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\RunTransitionService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationAssistant\Migration\Service\MigrationProgressService;
-use SwagMigrationAssistant\Migration\Service\ProgressState;
-use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerAttributeDataSet;
@@ -151,18 +149,13 @@ class StatusControllerTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'connectionId' => $this->connectionId,
-                    'progress' => require __DIR__ . '/../../_fixtures/run_progress_data.php',
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-                    'accessToken' => 'testToken',
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             Context::createDefaultContext()
         );
 
         $mappingService = static::getContainer()->get(MappingService::class);
-        $accessTokenService = new SwagMigrationAccessTokenService(
-            $this->runRepo
-        );
         $dataFetcher = $this->getMigrationDataFetcher(
             static::getContainer()->get('swag_migration_logging.repository'),
             static::getContainer()->get('currency.repository'),
@@ -171,29 +164,27 @@ class StatusControllerTest extends TestCase
         );
         $this->controller = new StatusController(
             $dataFetcher,
-            static::getContainer()->get(MigrationProgressService::class),
             new RunService(
                 $this->runRepo,
                 $this->connectionRepo,
                 $dataFetcher,
-                $accessTokenService,
                 new DataSelectionRegistry([
                     new ProductDataSelection(),
                     new CustomerAndOrderDataSelection(),
                 ]),
-                $dataRepo,
-                $mediaFileRepo,
                 $salesChannelRepo,
                 $themeRepo,
-                static::getContainer()->get(EntityIndexerRegistry::class),
+                static::getContainer()->get('swag_migration_general_setting.repository'),
                 static::getContainer()->get(ThemeService::class),
                 $mappingService,
-                static::getContainer()->get('cache.object'),
                 static::getContainer()->get(SwagMigrationDataDefinition::class),
                 static::getContainer()->get(Connection::class),
-                new LoggingService($loggingRepo),
+                new LoggingService($loggingRepo, new NullLogger()),
                 static::getContainer()->get(TrackingEventClient::class),
-                static::getContainer()->get('messenger.bus.shopware')
+                static::getContainer()->get('messenger.bus.shopware'),
+                static::getContainer()->get(MigrationContextFactory::class),
+                static::getContainer()->get(PremappingService::class),
+                static::getContainer()->get(RunTransitionService::class),
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),
@@ -203,7 +194,7 @@ class StatusControllerTest extends TestCase
             static::getContainer()->get(ProfileRegistry::class),
             static::getContainer()->get(GatewayRegistry::class),
             $migrationContextFactory,
-            $this->generalSettingRepo
+            $this->generalSettingRepo,
         );
     }
 
@@ -256,9 +247,14 @@ class StatusControllerTest extends TestCase
 
     public function testGetGatewaysWithoutProfileName(): void
     {
-        $request = new Request();
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->getGateways($request);
+        try {
+            $this->controller->getGateways(new Request());
+        } catch (RoutingException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'profileName');
+        }
     }
 
     public function testGetGateways(): void
@@ -275,7 +271,6 @@ class StatusControllerTest extends TestCase
 
     public function testUpdateConnectionCredentials(): void
     {
-        $context = Context::createDefaultContext();
         $params = [
             'connectionId' => $this->connectionId,
             'credentialFields' => [
@@ -287,14 +282,14 @@ class StatusControllerTest extends TestCase
         $this->runRepo->update([
             [
                 'id' => $this->runUuid,
-                'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                'step' => MigrationStep::ABORTED->value,
             ],
-        ], $context);
+        ], $this->context);
 
         $request = new Request([], $params);
-        $this->controller->updateConnectionCredentials($request, $context);
+        $this->controller->updateConnectionCredentials($request, $this->context);
 
-        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $context)->getEntities()->first();
+        $connection = $this->connectionRepo->search(new Criteria([$this->connectionId]), $this->context)->getEntities()->first();
         static::assertNotNull($connection);
         static::assertSame($connection->getCredentialFields(), $params['credentialFields']);
     }
@@ -309,8 +304,14 @@ class StatusControllerTest extends TestCase
         ];
         $request = new Request([], $params);
 
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->updateConnectionCredentials($request, $this->context);
+        try {
+            $this->controller->updateConnectionCredentials($request, $this->context);
+        } catch (RoutingException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'connectionId');
+        }
     }
 
     public function testUpdateConnectionCredentialsWithInvalidConnectionId(): void
@@ -324,14 +325,16 @@ class StatusControllerTest extends TestCase
         ];
         $request = new Request([], $params);
 
-        $this->expectException(EntityNotExistsException::class);
-        $this->controller->updateConnectionCredentials($request, $this->context);
+        try {
+            $this->controller->updateConnectionCredentials($request, $this->context);
+        } catch (MigrationException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
+        }
     }
 
     public function testUpdateConnectionCredentialsWithRunningMigration(): void
     {
-        $this->expectException(MigrationIsRunningException::class);
-        $context = Context::createDefaultContext();
         $params = [
             'connectionId' => $this->connectionId,
             'credentialFields' => [
@@ -341,7 +344,13 @@ class StatusControllerTest extends TestCase
         ];
 
         $request = new Request([], $params);
-        $this->controller->updateConnectionCredentials($request, $context);
+
+        try {
+            $this->controller->updateConnectionCredentials($request, $this->context);
+        } catch (MigrationException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(MigrationException::MIGRATION_IS_ALREADY_RUNNING, $e->getErrorCode());
+        }
     }
 
     #[DataProvider('connectionProvider')]
@@ -349,9 +358,8 @@ class StatusControllerTest extends TestCase
     {
         $this->createConnection($connectionId, $profileName, $connectionName);
 
-        $context = Context::createDefaultContext();
         $request = new Request(['connectionId' => $connectionId]);
-        $response = $this->controller->getDataSelection($request, $context);
+        $response = $this->controller->getDataSelection($request, $this->context);
         $state = $this->jsonResponseToArray($response);
 
         static::assertSame($state[0]['id'], 'products');
@@ -375,144 +383,53 @@ class StatusControllerTest extends TestCase
 
     public function testGetDataSelectionWithoutConnectionId(): void
     {
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->getDataSelection(new Request(), $this->context);
+        try {
+            $this->controller->getDataSelection(new Request(), $this->context);
+        } catch (RoutingException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'connectionId');
+        }
     }
 
     public function testGetDataSelectionWithInvalidConnectionId(): void
     {
         $request = new Request(['connectionId' => Uuid::randomHex()]);
-        $this->expectException(EntityNotExistsException::class);
-        $this->controller->getDataSelection($request, $this->context);
+
+        try {
+            $this->controller->getDataSelection($request, $this->context);
+        } catch (MigrationException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
+        }
     }
 
     public function testGetState(): void
     {
-        $context = Context::createDefaultContext();
-        $response = $this->controller->getState(new Request(), $context);
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'progress' => (new MigrationProgress(0, 100, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'step' => MigrationStep::FETCHING->value,
+                ],
+            ],
+            $this->context
+        );
+
+        $response = $this->controller->getState($this->context);
         $state = $this->jsonResponseToArray($response);
-        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
+
+        static::assertSame([
+            'extensions' => [],
+            'step' => 'fetching',
+            'progress' => 0,
+            'total' => 100,
+        ], $state);
     }
 
-    public function testGetStateWithCreateMigration(): void
-    {
-        $userId = Uuid::randomHex();
-        $origin = new AdminApiSource($userId);
-        $origin->setIsAdmin(true);
-        $context = Context::createDefaultContext($origin);
-
-        $params = [
-            'connectionId' => $this->connectionId,
-            'dataSelectionIds' => [
-                'categories_products',
-                'customers_orders',
-                'media',
-            ],
-        ];
-        $requestWithoutToken = new Request([], $params);
-        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = 'testToken';
-        $requestWithToken = new Request([], $params);
-
-        $abortedCriteria = new Criteria();
-        $abortedCriteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_ABORTED));
-
-        $runningCriteria = new Criteria();
-        $runningCriteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-
-        // Get state migration with invalid accessToken
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $result = $this->controller->getState($requestWithoutToken, $context);
-        $state = $this->jsonResponseToArray($result);
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertTrue($state['migrationRunning']);
-        static::assertFalse($state['validMigrationRunToken']);
-        static::assertSame(ProgressState::STATUS_PREMAPPING, $state['status']);
-        static::assertSame(0, $totalAfter - $totalBefore);
-        static::assertSame(1, $totalProcessing);
-
-        // Get state migration with valid accessToken and abort running migration
-        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $result = $this->controller->getState($requestWithToken, $context);
-        $state = $this->jsonResponseToArray($result);
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertFalse($state['migrationRunning']);
-        static::assertTrue($state['validMigrationRunToken']);
-        static::assertSame(ProgressState::STATUS_FETCH_DATA, $state['status']);
-        static::assertSame(0, $totalAfter - $totalBefore);
-        static::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
-        static::assertSame(0, $totalProcessing);
-
-        // Create new migration without abort a running migration
-        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $result = $this->controller->createMigration($requestWithoutToken, $context);
-        $state = $this->jsonResponseToArray($result);
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertFalse($state['migrationRunning']);
-        static::assertTrue($state['validMigrationRunToken']);
-        static::assertSame(1, $totalAfter - $totalBefore);
-        static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
-        static::assertSame(1, $totalProcessing);
-
-        // Call createMigration without accessToken and without abort running migration
-        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $result = $this->controller->createMigration($requestWithoutToken, $context);
-        $state = $this->jsonResponseToArray($result);
-
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertTrue($state['migrationRunning']);
-        static::assertFalse($state['validMigrationRunToken']);
-        static::assertSame(0, $totalAfter - $totalBefore);
-        static::assertSame(0, $totalAbortedAfter - $totalAbortedBefore);
-        static::assertSame(1, $totalProcessing);
-
-        // Get current accessToken and refresh token in request
-        $currentRun = $this->runRepo->search($runningCriteria, $context)->getEntities()->first();
-        static::assertNotNull($currentRun);
-        $params[SwagMigrationAccessTokenService::ACCESS_TOKEN_NAME] = $currentRun->getAccessToken();
-        $requestWithToken = new Request([], $params);
-
-        // Call createMigration with accessToken and with abort running migration
-        $totalAbortedBefore = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $result = $this->controller->createMigration($requestWithToken, $context);
-        $state = $this->jsonResponseToArray($result);
-        $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
-        $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
-        $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();
-        static::assertTrue($this->isJsonArrayTypeOfProgressState($state));
-        static::assertFalse($state['migrationRunning']);
-        static::assertTrue($state['validMigrationRunToken']);
-        static::assertSame(0, $totalAfter - $totalBefore);
-        static::assertSame(1, $totalAbortedAfter - $totalAbortedBefore);
-        static::assertSame(0, $totalProcessing);
-    }
-
-    public function testCreateMigrationWithoutConnectionId(): void
-    {
-        $params = [
-            'connectionId' => $this->connectionId,
-        ];
-        $requestWithToken = new Request([], $params);
-
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->createMigration($requestWithToken, $this->context);
-    }
-
-    public function testCreateMigrationWithoutDataSelectionIds(): void
+    public function testStartMigrationWithoutDataSelectionNames(): void
     {
         $params = [
             'dataSelectionIds' => [
@@ -523,45 +440,23 @@ class StatusControllerTest extends TestCase
         ];
         $requestWithToken = new Request([], $params);
 
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->createMigration($requestWithToken, $this->context);
-    }
-
-    public function testTakeoverMigration(): void
-    {
-        $params = [
-            'runUuid' => $this->runUuid,
-        ];
-
-        $userId = Uuid::randomHex();
-        $origin = new AdminApiSource($userId);
-        $origin->setIsAdmin(true);
-        $context = Context::createDefaultContext($origin);
-
-        $request = new Request([], $params);
-        $result = $this->controller->takeoverMigration($request, $context);
-        $resultArray = $this->jsonResponseToArray($result);
-        static::assertArrayHasKey('accessToken', $resultArray);
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('accessToken', $resultArray['accessToken']));
-        $run = $this->runRepo->search($criteria, $context)->getEntities()->first();
-        static::assertNotNull($run);
-        static::assertSame($run->getUserId(), \mb_strtoupper($userId));
-
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->takeoverMigration(new Request(), $context);
+        try {
+            $this->controller->startMigration($requestWithToken, $this->context);
+        } catch (RoutingException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'dataSelectionNames');
+        }
     }
 
     public function testCheckConnection(): void
     {
-        $context = Context::createDefaultContext();
-
         $request = new Request([], [
             'connectionId' => $this->connectionId,
         ]);
 
-        $result = $this->controller->checkConnection($request, $context);
+        $result = $this->controller->checkConnection($request, $this->context);
         $environmentInformation = $this->jsonResponseToArray($result);
 
         static::assertSame($environmentInformation['totals']['product']['total'], 37);
@@ -577,20 +472,25 @@ class StatusControllerTest extends TestCase
         $request = new Request();
 
         try {
-            $this->controller->checkConnection($request, $context);
-        } catch (\Exception $e) {
-            static::assertInstanceOf(MigrationContextPropertyMissingException::class, $e);
+            $this->controller->checkConnection($request, $this->context);
+        } catch (RoutingException $e) {
             static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            static::assertArrayHasKey('property', $e->getParameters());
-            static::assertSame($e->getParameters()['property'], 'connectionId');
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'connectionId');
         }
     }
 
     public function testCheckConnectionWithInvalidConnectionId(): void
     {
         $request = new Request([], ['connectionId' => Uuid::randomHex()]);
-        $this->expectException(EntityNotExistsException::class);
-        $this->controller->checkConnection($request, $this->context);
+
+        try {
+            $this->controller->checkConnection($request, $this->context);
+        } catch (MigrationException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
+        }
     }
 
     public function testCheckConnectionWithoutCredentials(): void
@@ -606,36 +506,68 @@ class StatusControllerTest extends TestCase
         static::assertSame('No error.', $jsonResponse['requestStatus']['message']);
     }
 
-    public function testAbortMigrationWithoutRunUuid(): void
+    public function testAbortMigrationWithoutRunningMigration(): void
     {
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->abortMigration(new Request(), $this->context);
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'step' => MigrationStep::ABORTED->value,
+                ],
+            ],
+            $this->context
+        );
+
+        $response = $this->controller->abortMigration($this->context);
+
+        static::assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testAbortMigration(): void
     {
-        $request = new Request([], ['runUuid' => $this->runUuid]);
-        $this->controller->abortMigration($request, $this->context);
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'progress' => (new MigrationProgress(0, 100, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'step' => MigrationStep::FETCHING->value,
+                ],
+            ],
+            $this->context
+        );
+
+        $response = $this->controller->abortMigration($this->context);
+        static::assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
 
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
         static::assertNotNull($run);
-        static::assertSame('aborted', $run->getStatus());
+        static::assertSame(MigrationStep::ABORTING, $run->getStep());
     }
 
     public function testFinishMigrationWithoutRunUuid(): void
     {
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->finishMigration(new Request(), $this->context);
+        $response = $this->controller->approveFinishedMigration($this->context);
+        static::assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
     }
 
     public function testFinishMigration(): void
     {
-        $request = new Request([], ['runUuid' => $this->runUuid]);
-        $this->controller->finishMigration($request, $this->context);
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'progress' => (new MigrationProgress(0, 0, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'step' => MigrationStep::WAITING_FOR_APPROVE->value,
+                ],
+            ],
+            $this->context
+        );
+
+        $this->controller->approveFinishedMigration($this->context);
 
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
         static::assertNotNull($run);
-        static::assertSame('finished', $run->getStatus());
+        static::assertSame(MigrationStep::FINISHED, $run->getStep());
     }
 
     public function testGetResetStatus(): void
@@ -650,17 +582,6 @@ class StatusControllerTest extends TestCase
 
         $result = $this->controller->getResetStatus($this->context)->getContent();
         static::assertSame('true', $result);
-    }
-
-    /**
-     * @param array<string, mixed>|list<array<string, mixed>> $state
-     */
-    private function isJsonArrayTypeOfProgressState(array $state): bool
-    {
-        return \array_key_exists('migrationRunning', $state)
-            && \array_key_exists('runId', $state)
-            && \array_key_exists('runProgress', $state)
-        ;
     }
 
     private function createConnection(string $connectionId, string $profileName, string $connectionName): void

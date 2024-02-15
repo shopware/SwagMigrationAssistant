@@ -21,7 +21,7 @@ class ProductOptionRelationReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_OPTION_RELATION;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT_OPTION_RELATION;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

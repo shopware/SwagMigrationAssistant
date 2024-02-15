@@ -20,6 +20,6 @@ class Shopware57NumberRangeConverter extends NumberRangeConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === NumberRangeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === NumberRangeDataSet::getEntity();
     }
 }

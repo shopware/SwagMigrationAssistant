@@ -36,6 +36,9 @@ class UnsupportedObjectType extends BaseRunLogEntry
         return 'Unsupported object type';
     }
 
+    /**
+     * @return array{objectType: string, entity: ?string, sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

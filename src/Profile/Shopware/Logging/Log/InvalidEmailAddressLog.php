@@ -37,6 +37,9 @@ class InvalidEmailAddressLog extends BaseRunLogEntry
         return 'Invalid Email address';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, email: string}
+     */
     public function getParameters(): array
     {
         return [

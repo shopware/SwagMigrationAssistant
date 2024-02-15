@@ -7,9 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -30,7 +29,6 @@ class TableReader implements TableReaderInterface
             return [];
         }
 
-        /** @var GuzzleResponse $result */
         $result = $client->get(
             'SwagMigrationDynamic',
             [
@@ -42,7 +40,7 @@ class TableReader implements TableReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware Api ' . $tableName);
+            throw MigrationException::gatewayRead('Shopware Api ' . $tableName);
         }
 
         $arrayResult = \json_decode($result->getBody()->getContents(), true);

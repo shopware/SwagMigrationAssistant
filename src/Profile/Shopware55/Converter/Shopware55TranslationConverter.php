@@ -19,6 +19,6 @@ class Shopware55TranslationConverter extends TranslationConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === TranslationDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === TranslationDataSet::getEntity();
     }
 }

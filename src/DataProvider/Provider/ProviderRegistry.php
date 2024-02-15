@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\DataProvider\Provider;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\DataProvider\Exception\ProviderNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('services-settings')]
 class ProviderRegistry implements ProviderRegistryInterface
@@ -28,7 +28,7 @@ class ProviderRegistry implements ProviderRegistryInterface
             }
         }
 
-        throw new ProviderNotFoundException($identifier);
+        throw MigrationException::providerNotFound($identifier);
     }
 
     public function getDataProviderArray(array $identifierArray): array

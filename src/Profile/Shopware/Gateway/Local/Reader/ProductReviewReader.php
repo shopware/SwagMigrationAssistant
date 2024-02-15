@@ -22,7 +22,7 @@ class ProductReviewReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_REVIEW;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT_REVIEW;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

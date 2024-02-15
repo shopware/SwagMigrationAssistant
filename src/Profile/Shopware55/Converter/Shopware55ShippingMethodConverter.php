@@ -19,6 +19,6 @@ class Shopware55ShippingMethodConverter extends ShippingMethodConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === ShippingMethodDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ShippingMethodDataSet::getEntity();
     }
 }

@@ -22,7 +22,7 @@ class SalesChannelReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SALES_CHANNEL;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::SALES_CHANNEL;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

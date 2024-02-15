@@ -1,0 +1,40 @@
+{% block swag_migration_base %}
+    <sw-page class="swag-migration-index">
+
+        {% block swag_migration_base_smart_bar_header %}
+            <template #smart-bar-header>
+                <h2>
+                    {{ $tc('sw-settings.index.title') }}
+                    <sw-icon name="regular-chevron-right-xs"
+                             small />
+                    {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
+                </h2>
+            </template>
+        {% endblock %}
+
+        {% block swag_migration_base_smart_bar_actions %}
+            <template v-if="!storesInitializing"
+                      #smart-bar-actions>
+                <sw-button variant="primary"
+                           :disabled="!isMigrationAllowed"
+                           :is-loading="isLoading"
+                           @click="onMigrate">
+                    {{ $tc('swag-migration.index.migrateButton') }}
+                </sw-button>
+            </template>
+        {% endblock %}
+
+        {% block swag_migration_base_content %}
+            <template #content>
+                <sw-card-view v-if="!storesInitializing">
+                    {% block swag_migration_base_content_view %}
+                    {% endblock %}
+                </sw-card-view>
+
+                {% block swag_migration_base_loader_content %}
+                    <sw-loader v-if="storesInitializing" />
+                {% endblock %}
+            </template>
+        {% endblock %}
+    </sw-page>
+{% endblock %}

@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
@@ -39,7 +39,7 @@ class TableReader implements TableReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware 6 Api table', 466);
+            throw MigrationException::gatewayRead('Shopware 6 Api table');
         }
 
         return \json_decode($result->getBody()->getContents(), true);

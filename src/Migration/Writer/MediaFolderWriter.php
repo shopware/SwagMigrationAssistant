@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Writer;
 
+use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -19,6 +20,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class MediaFolderWriter extends AbstractWriter
 {
+    /**
+     * @param EntityRepository<MediaFolderCollection> $mediaFolderRepo
+     */
     public function __construct(
         EntityWriterInterface $entityWriter,
         EntityDefinition $definition,

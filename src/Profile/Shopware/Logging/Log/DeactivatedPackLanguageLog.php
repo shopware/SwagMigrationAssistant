@@ -37,6 +37,9 @@ class DeactivatedPackLanguageLog extends BaseRunLogEntry
         return 'Deactivated pack language';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, packLanguage: string}
+     */
     public function getParameters(): array
     {
         return [

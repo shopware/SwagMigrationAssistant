@@ -148,7 +148,7 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         return new EnvironmentInformation(
             $profile->getSourceSystemName(),
             $environmentDataArray['shopwareVersion'],
-            $credentials['endpoint'],
+            (string) $credentials['endpoint'],
             $totals,
             $environmentDataArray['additionalData'],
             $environmentData['requestStatus'],

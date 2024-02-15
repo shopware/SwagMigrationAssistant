@@ -21,7 +21,7 @@ class CurrencyReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CURRENCY;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CURRENCY;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

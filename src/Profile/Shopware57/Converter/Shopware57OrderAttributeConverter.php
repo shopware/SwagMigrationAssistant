@@ -20,6 +20,6 @@ class Shopware57OrderAttributeConverter extends OrderAttributeConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === OrderAttributeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === OrderAttributeDataSet::getEntity();
     }
 }

@@ -20,7 +20,7 @@ class CurrencyReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CURRENCY;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CURRENCY;
     }
 
     protected function getApiRoute(): string

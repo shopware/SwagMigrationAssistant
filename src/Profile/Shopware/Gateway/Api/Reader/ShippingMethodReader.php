@@ -20,7 +20,7 @@ class ShippingMethodReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SHIPPING_METHOD;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::SHIPPING_METHOD;
     }
 
     protected function getApiRoute(): string

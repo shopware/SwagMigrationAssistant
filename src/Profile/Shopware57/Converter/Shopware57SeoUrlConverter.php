@@ -20,6 +20,6 @@ class Shopware57SeoUrlConverter extends SeoUrlConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === SeoUrlDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === SeoUrlDataSet::getEntity();
     }
 }

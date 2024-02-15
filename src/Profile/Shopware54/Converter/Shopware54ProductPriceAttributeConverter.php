@@ -19,6 +19,6 @@ class Shopware54ProductPriceAttributeConverter extends ProductPriceAttributeConv
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware54Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === ProductPriceAttributeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductPriceAttributeDataSet::getEntity();
     }
 }

@@ -37,6 +37,9 @@ class InvalidUnserializedData extends BaseRunLogEntry
         return 'Invalid unserialized data';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, unserializedEntity: string, serializedData: string}
+     */
     public function getParameters(): array
     {
         return [

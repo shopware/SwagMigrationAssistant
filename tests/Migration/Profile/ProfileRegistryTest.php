@@ -9,12 +9,11 @@ namespace SwagMigrationAssistant\Test\Migration\Profile;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\ProfileNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
-use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class ProfileRegistryTest extends TestCase
@@ -30,10 +29,12 @@ class ProfileRegistryTest extends TestCase
     {
         try {
             $this->profileRegistry->getProfile('foo');
-        } catch (\Exception $e) {
-            /* @var ProfileNotFoundException $e */
-            static::assertInstanceOf(ProfileNotFoundException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+        } catch (MigrationException $e) {
+            static::assertSame(MigrationException::PROFILE_NOT_FOUND, $e->getErrorCode());
+
+            return;
         }
+
+        static::fail('Exception not thrown');
     }
 }

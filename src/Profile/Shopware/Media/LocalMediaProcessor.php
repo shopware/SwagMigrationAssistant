@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -32,6 +33,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
      * @param StrategyResolverInterface[] $resolver
      */
     public function __construct(
@@ -48,10 +50,10 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === MediaDataSet::getEntity();
     }
 
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array
     {
         $mappedWorkload = [];
         foreach ($workload as $work) {
@@ -168,6 +170,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             }
         }
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
+        $this->setProcessFailureFlag($migrationContext->getRunUuid(), $context, $failedMedia);
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
@@ -199,5 +202,28 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
             }
         }
+    }
+
+    /**
+     * @param array<int, string> $failureUuids
+     */
+    private function setProcessFailureFlag(string $runId, Context $context, array $failureUuids): void
+    {
+        $failureMediaFiles = $this->getMediaFiles($failureUuids, $runId);
+        $updateableMediaEntities = [];
+        foreach ($failureMediaFiles as $mediaFile) {
+            $mediaFileId = $mediaFile['id'];
+
+            $updateableMediaEntities[] = [
+                'id' => $mediaFileId,
+                'processFailure' => true,
+            ];
+        }
+
+        if (empty($updateableMediaEntities)) {
+            return;
+        }
+
+        $this->mediaFileRepo->update($updateableMediaEntities, $context);
     }
 }

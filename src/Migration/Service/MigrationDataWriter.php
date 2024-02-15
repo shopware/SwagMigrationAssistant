@@ -18,10 +18,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
@@ -29,6 +30,10 @@ use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 #[Package('services-settings')]
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepo
+     * @param EntityRepository<SwagMigrationMappingCollection> $mappingRepo
+     */
     public function __construct(
         private readonly EntityWriterInterface $entityWriter,
         private readonly EntityRepository $migrationDataRepo,
@@ -40,12 +45,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     ) {
     }
 
-    public function writeData(MigrationContextInterface $migrationContext, Context $context): void
+    public function writeData(MigrationContextInterface $migrationContext, Context $context): int
     {
         $dataSet = $migrationContext->getDataSet();
 
         if ($dataSet === null) {
-            return;
+            return 0;
         }
 
         $criteria = new Criteria();
@@ -58,15 +63,14 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $migrationData = $this->migrationDataRepo->search($criteria, $context);
 
         if ($migrationData->getTotal() === 0) {
-            return;
+            return 0;
         }
 
         $converted = [];
         $mappingIds = [];
         $updateWrittenData = [];
 
-        /** @var SwagMigrationDataEntity $data */
-        foreach ($migrationData->getElements() as $data) {
+        foreach ($migrationData->getEntities() as $data) {
             $value = $data->getConverted();
             if ($value !== null) {
                 $converted[$data->getId()] = $value;
@@ -82,7 +86,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         if (empty($converted)) {
-            return;
+            return 0;
         }
 
         try {
@@ -102,7 +106,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             }
             unset($data);
 
-            return;
+            return $migrationData->getTotal();
         } catch (WriteException $exception) {
             $this->handleWriteException(
                 $exception,
@@ -132,6 +136,8 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $migrationContext,
             $context
         );
+
+        return $migrationData->getTotal();
     }
 
     private function handleWriteException(

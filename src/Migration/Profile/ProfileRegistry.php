@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Profile;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\ProfileNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('services-settings')]
 class ProfileRegistry implements ProfileRegistryInterface
@@ -28,9 +28,6 @@ class ProfileRegistry implements ProfileRegistryInterface
         return $this->profiles;
     }
 
-    /**
-     * @throws ProfileNotFoundException
-     */
     public function getProfile(string $profileName): ProfileInterface
     {
         foreach ($this->profiles as $profile) {
@@ -39,6 +36,6 @@ class ProfileRegistry implements ProfileRegistryInterface
             }
         }
 
-        throw new ProfileNotFoundException($profileName);
+        throw MigrationException::profileNotFound($profileName);
     }
 }

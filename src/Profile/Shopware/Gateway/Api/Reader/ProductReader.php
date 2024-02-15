@@ -20,7 +20,7 @@ class ProductReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT;
     }
 
     protected function getApiRoute(): string

@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
@@ -64,27 +65,13 @@ class PaymentMethodReaderTest extends TestCase
         $this->cashMock->setName('Cash');
         $this->cashMock->setHandlerIdentifier(CashPayment::class);
 
-        $premapping = [[
-            'entity' => 'payment_method',
-            'mapping' => [
-                0 => [
-                    'sourceId' => 'debit',
-                    'description' => 'debit',
-                    'destinationUuid' => $this->debitMock->getId(),
-                ],
-                1 => [
-                    'sourceId' => 'cash',
-                    'description' => 'cash',
-                    'destinationUuid' => $this->cashMock->getId(),
-                ],
-
-                2 => [
-                    'sourceId' => 'payment-invalid',
-                    'description' => 'payment-invalid',
-                    'destinationUuid' => Uuid::randomHex(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct('payment_method', [
+                new PremappingEntityStruct('debit', 'debit', $this->debitMock->getId()),
+                new PremappingEntityStruct('cash', 'cash', $this->cashMock->getId()),
+                new PremappingEntityStruct('payment-invalid', 'payment-invalid', Uuid::randomHex()),
+            ], []),
+        ];
         $connection->setPremapping($premapping);
 
         $mock = $this->createMock(EntityRepository::class);
@@ -113,7 +100,6 @@ class PaymentMethodReaderTest extends TestCase
     {
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(5, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
@@ -130,7 +116,6 @@ class PaymentMethodReaderTest extends TestCase
     {
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         $mapping = $result->getMapping();
         static::assertSame('no_description', $mapping[3]->getDescription());
     }

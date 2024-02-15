@@ -16,6 +16,8 @@ parameters:
         - tests
     excludePaths:
         - src/Resources
+        - tests/Jest
+        - tests/acceptance
     symfony:
         constant_hassers: false
         # the placeholder "%ShopwareHashedCacheDir%" will be replaced on execution by bin/phpstan-config-generator.php script
@@ -37,14 +39,24 @@ parameters:
             paths:
                 - tests/Migration/Controller/StatusControllerTest.php
                 - tests/Migration/Services/MigrationDataWriterTest.php
-                - tests/Migration/Services/MigrationProgressServiceTest.php
                 - tests/Profile/Shopware/Gateway/Local/
 
         -  # The properties are never uninitialized. They are assigned in the convert method.
             message: '#Class SwagMigrationAssistant\\Profile\\Shopware6{0,1}\\Converter\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
             paths:
                 - src/Profile/Shopware/Converter
-                - src/Profile/Shopware6/Converter/ShopwareConverter
+
+        - # Entity properties initialized and handled by our DAL.
+            message: "#^Class SwagMigrationAssistant\\\\.+ has an uninitialized property \\$.+\\. Give it default value or assign it in the constructor\\.$#"
+            paths:
+                - src/Migration/Logging/SwagMigrationLoggingEntity.php
+                - src/Migration/Run/EntityProgress.php
+                - src/Migration/Run/RunProgress.php
+                - src/Migration/Run/SwagMigrationRunEntity.php
+                - src/Migration/Setting/GeneralSettingEntity.php
+                - src/Migration/Data/SwagMigrationDataEntity.php
+                - src/Migration/Mapping/SwagMigrationMappingEntity.php
+                - src/Migration/Media/SwagMigrationMediaFileEntity.php
 
         - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
@@ -52,7 +64,10 @@ parameters:
 
         - # Can be removed once the min SW version is 6.6.1.0
             message: '#Method Context::createDefaultContext\(\) should not be used in CLI context. Use Context::createCLIContext\(\) instead#'
-            path: src/Command/MigrateDataCommand.php
+            paths:
+                - src/Command/AbortMigrationCommand.php
+                - src/Command/GetMigrationProgressCommand.php
+                - src/Command/StartMigrationCommand.php
 
         # ToDo: fix platform deprecations for v6.7.0.0
         - message: """

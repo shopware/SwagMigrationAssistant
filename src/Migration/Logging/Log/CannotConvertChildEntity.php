@@ -46,6 +46,9 @@ class CannotConvertChildEntity extends BaseRunLogEntry
         return \sprintf('The %s child entity could not be converted', $entity);
     }
 
+    /**
+     * @return array{entity: ?string, parentEntity: string, parentSourceId: string}
+     */
     public function getParameters(): array
     {
         return [

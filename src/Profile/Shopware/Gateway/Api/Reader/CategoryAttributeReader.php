@@ -20,7 +20,7 @@ class CategoryAttributeReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CATEGORY_CUSTOM_FIELD;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CATEGORY_CUSTOM_FIELD;
     }
 
     protected function getApiRoute(): string

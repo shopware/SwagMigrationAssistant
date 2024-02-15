@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient;
@@ -32,7 +33,9 @@ class ConnectionFactoryTests extends TestCase
             $connection,
         );
 
-        $connection = new ConnectionFactory(new StaticEntityRepository([]));
+        /** @var StaticEntityRepository<SwagMigrationConnectionCollection> $connectionRepository */
+        $connectionRepository = new StaticEntityRepository([]);
+        $connection = new ConnectionFactory($connectionRepository);
         $result = $connection->createApiClient($migrationContext);
 
         if ($expectedToBeNull) {

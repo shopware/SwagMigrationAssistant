@@ -269,7 +269,6 @@ class ProductReader extends AbstractReader
      */
     private function getCategories(): array
     {
-        /** @var \ArrayIterator<string, string> $iterator */
         $iterator = $this->productMapping->getIterator();
         $productIds = \array_values(
             $iterator->getArrayCopy()
@@ -320,7 +319,6 @@ class ProductReader extends AbstractReader
      */
     private function getMedia(): array
     {
-        /** @var \ArrayIterator<string, string> $iterator */
         $iterator = $this->productMapping->getIterator();
         $productIds = \array_values(
             $iterator->getArrayCopy()

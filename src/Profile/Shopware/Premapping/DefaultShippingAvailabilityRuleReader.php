@@ -75,10 +75,10 @@ class DefaultShippingAvailabilityRuleReader implements PremappingReaderInterface
         }
 
         foreach ($mappingArray as $premapping) {
-            if ($premapping['entity'] === self::MAPPING_NAME) {
-                foreach ($premapping['mapping'] as $mapping) {
-                    if (isset($this->choiceUuids[$mapping['destinationUuid']])) {
-                        $this->connectionPremappingValue = $mapping['destinationUuid'];
+            if ($premapping->getEntity() === self::MAPPING_NAME) {
+                foreach ($premapping->getMapping() as $mapping) {
+                    if (isset($this->choiceUuids[$mapping->getDestinationUuid()])) {
+                        $this->connectionPremappingValue = $mapping->getDestinationUuid();
                     }
                 }
             }

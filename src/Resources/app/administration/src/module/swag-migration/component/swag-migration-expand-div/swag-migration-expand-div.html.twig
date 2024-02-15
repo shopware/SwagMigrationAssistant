@@ -1,26 +1,25 @@
 {% block swag_migration_expand_div %}
     <div class="swag-migration-expand-div">
         <div class="swag-migration-expand-div__title">
-            <div class="swag-migration-expand-div__link"
-                 @click="onClick">
+            <button class="swag-migration-expand-div__link"
+               @click="onClick">
                 <div v-if="isExpanded">
                     {{ expandTitle }}
                     <sw-icon class="swag-migration-expand-div__icon"
                              name="regular-chevron-circle-up"
-                             size="16px">
-                    </sw-icon>
+                             size="16px" />
                 </div>
                 <div v-else>
                     {{ collapseTitle }}
                     <sw-icon class="swag-migration-expand-div__icon"
                              name="regular-chevron-circle-down"
-                             size="16px">
-                    </sw-icon>
+                             size="16px" />
                 </div>
-            </div>
+            </button>
         </div>
 
-        <div v-if="isExpanded" class="swag-migration-expand-div__slot">
+        <div v-if="isExpanded"
+             class="swag-migration-expand-div__slot">
             <slot>
 
                 {% block swag_migration_expand_div_slot %}

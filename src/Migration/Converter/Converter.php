@@ -20,11 +20,17 @@ abstract class Converter implements ConverterInterface
 
     protected LoggingServiceInterface $loggingService;
 
-    protected ?array $mainMapping;
+    /**
+     * @var ?array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     */
+    protected ?array $mainMapping = null;
 
+    /**
+     * @var array<string>
+     */
     protected array $mappingIds = [];
 
-    protected string $checksum;
+    protected string $checksum = '';
 
     public function __construct(
         MappingServiceInterface $mappingService,
@@ -47,6 +53,8 @@ abstract class Converter implements ConverterInterface
     /**
      * Generates a unique checksum for the data array to recognize changes
      * on repeated migrations.
+     *
+     * @param array<mixed> $data
      */
     protected function generateChecksum(array $data): void
     {
@@ -58,6 +66,10 @@ abstract class Converter implements ConverterInterface
      */
     protected function updateMainMapping(MigrationContextInterface $migrationContext, Context $context): void
     {
+        if (empty($this->mainMapping)) {
+            return;
+        }
+
         $this->mainMapping['checksum'] = $this->checksum;
         $this->mainMapping['additionalData']['relatedMappings'] = $this->mappingIds;
         $this->mappingIds = [];
@@ -71,7 +83,7 @@ abstract class Converter implements ConverterInterface
         $this->mappingService->updateMapping(
             $connection->getId(),
             $dataSet::getEntity(),
-            $this->mainMapping['oldIdentifier'],
+            (string) $this->mainMapping['oldIdentifier'],
             $this->mainMapping,
             $context
         );

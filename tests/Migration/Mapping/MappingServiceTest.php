@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Mapping;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,11 +18,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
+use Shopware\Core\System\Locale\LocaleCollection;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -36,12 +38,18 @@ class MappingServiceTest extends TestCase
 
     private MappingServiceInterface $mappingService;
 
+    /**
+     * @var EntityRepository<LocaleCollection>
+     */
     private EntityRepository $localeRepo;
 
     private string $connectionId;
 
     private EntityWriterInterface $entityWriter;
 
+    /**
+     * @var EntityRepository<SwagMigrationMappingCollection>
+     */
     private EntityRepository $mappingRepo;
 
     protected function setUp(): void
@@ -91,6 +99,7 @@ class MappingServiceTest extends TestCase
         $additionalData = [
             'key' => 'value',
         ];
+
         $expectedData = $mapping2;
         $expectedData['entityUuid'] = $uuid;
         $expectedData['additionalData'] = $additionalData;
@@ -170,7 +179,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
         $this->mappingService->writeMapping($context);
 
-        $this->mappingService->deleteMapping($languageMapping['entityUuid'], $this->connectionId, $context);
+        $this->mappingService->deleteMapping((string) $languageMapping['entityUuid'], $this->connectionId, $context);
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
         static::assertNull($mapping);
@@ -264,7 +273,7 @@ class MappingServiceTest extends TestCase
         static::assertSame($value, $value2);
     }
 
-    private function createMappingService(?StaticEntityRepository $ruleRepository = null): void
+    private function createMappingService(): void
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
@@ -274,7 +283,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
-            $ruleRepository ?? $this->getContainer()->get('rule.repository'),
+            $this->getContainer()->get('rule.repository'),
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
             $this->getContainer()->get('category.repository'),
@@ -282,7 +291,8 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('delivery_time.repository'),
             $this->getContainer()->get('document_type.repository'),
             $this->entityWriter,
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            new NullLogger()
         );
     }
 }

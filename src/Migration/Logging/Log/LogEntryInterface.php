@@ -23,6 +23,9 @@ interface LogEntryInterface
 
     public function getTitle(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getParameters(): array;
 
     public function getDescription(): string;

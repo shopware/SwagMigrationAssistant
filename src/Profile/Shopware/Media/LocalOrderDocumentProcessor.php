@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -29,6 +30,9 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
+     */
     public function __construct(
         EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
@@ -42,14 +46,13 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === OrderDocumentDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === OrderDocumentDataSet::getEntity();
     }
 
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): array {
         $mappedWorkload = [];
         foreach ($workload as $work) {
@@ -74,7 +77,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             return '';
         }
 
-        return $credentials['installationRoot'] ?? '';
+        return (string) ($credentials['installationRoot'] ?? '');
     }
 
     /**

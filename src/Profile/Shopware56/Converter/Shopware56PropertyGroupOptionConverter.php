@@ -19,6 +19,6 @@ class Shopware56PropertyGroupOptionConverter extends PropertyGroupOptionConverte
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === PropertyGroupOptionDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === PropertyGroupOptionDataSet::getEntity();
     }
 }

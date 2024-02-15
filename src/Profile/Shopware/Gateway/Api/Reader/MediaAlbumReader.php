@@ -20,7 +20,7 @@ class MediaAlbumReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA_FOLDER;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::MEDIA_FOLDER;
     }
 
     protected function getApiRoute(): string

@@ -224,6 +224,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['ordernumber'],
             $this->context
         );
+        unset($data['ordernumber']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -278,7 +279,6 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        /** @var array<string, mixed> $returnData */
         $returnData = $data;
         if (empty($returnData)) {
             $returnData = null;

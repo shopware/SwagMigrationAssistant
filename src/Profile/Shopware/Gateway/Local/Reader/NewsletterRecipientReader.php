@@ -23,7 +23,7 @@ class NewsletterRecipientReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::NEWSLETTER_RECIPIENT;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::NEWSLETTER_RECIPIENT;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "shopware/core": "~6.6.0"
+        "shopware/core": "~6.6.1"
     },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
@@ -37,7 +37,8 @@
         "lint": [
             "@ecs-fix",
             "@phpstan",
-            "@phpunit"
+            "@phpunit",
+            "@admin:lint"
         ],
         "ecs": [
             "../../../vendor/bin/ecs check --config ../../../ecs.php src tests",
@@ -58,7 +59,28 @@
             "@composer install -o",
             "@composer install5db",
             "@php ../../../bin/console p:i -a -c SwagMigrationAssistant"
-        ]
+        ],
+        "admin:install": [
+            "@npm:admin install",
+            "@npm:jest install",
+            "@npm:acceptance install"
+        ],
+        "admin:lint": [
+            "@npm:jest run lint",
+            "@npm:admin run lint",
+            "@npm:acceptance run lint"
+        ],
+        "admin:lint:fix": [
+            "@npm:jest run lint-fix",
+            "@npm:admin run lint-fix",
+            "@npm:acceptance run lint-fix"
+        ],
+        "admin:unit": "@npm:jest run unit",
+        "admin:unit:watch": "@npm:jest run unit-watch",
+        "admin:acceptance": "@npm:acceptance run test",
+        "npm:admin": "cd src/Resources/app/administration && npm",
+        "npm:jest": "cd tests/Jest && npm",
+        "npm:acceptance": "cd tests/acceptance && npm"
     },
     "autoload": {
         "psr-4": {

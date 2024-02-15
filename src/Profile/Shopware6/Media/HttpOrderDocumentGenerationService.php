@@ -11,11 +11,12 @@ use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Response;
+use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
@@ -26,6 +27,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
@@ -37,6 +39,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 {
     private SwagMigrationConnectionEntity $connection;
 
+    /**
+     * @param EntityRepository<DocumentCollection> $documentRepository
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $migrationMediaFileRepo
+     */
     public function __construct(
         private readonly EntityRepository $documentRepository,
         EntityRepository $migrationMediaFileRepo,
@@ -59,10 +65,8 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize = 0
+        array $workload
     ): array {
-        /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $documentIds = [];
         $runId = $migrationContext->getRunUuid();
@@ -83,7 +87,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::ORDER_DOCUMENT_GENERATED,
-                new NoFileSystemPermissionsException()
+                MigrationException::noFileSystemPermissions(),
             ));
             $this->loggingService->saveLogging($context);
 
@@ -109,7 +113,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $promises = $this->downloadDocument($documents, $mappedWorkload, $client);
 
         // Wait for the requests to complete, even if some of them fail
-        /** @var array $results */
         $results = Utils::settle($promises)->wait();
 
         // handle responses
@@ -126,8 +129,11 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                 }
             );
 
-            /** @var MediaProcessWorkloadStruct $oldWorkload */
             $oldWorkload = \array_pop($oldWorkloadSearchResult);
+
+            if ($oldWorkload === null) {
+                continue;
+            }
 
             if ($state !== 'fulfilled') {
                 $this->handleFailedRequest($oldWorkload, $mappedWorkload[$uuid], $uuid, $additionalData, $failureUuids, $result['reason'] ?? null);

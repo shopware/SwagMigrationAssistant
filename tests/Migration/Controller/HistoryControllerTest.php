@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
@@ -21,12 +22,11 @@ use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 #[Package('services-settings')]
 class HistoryControllerTest extends TestCase
@@ -39,10 +39,16 @@ class HistoryControllerTest extends TestCase
 
     private Context $context;
 
+    /**
+     * @var EntityRepository<SwagMigrationLoggingCollection>
+     */
     private EntityRepository $loggingRepo;
 
     private HistoryServiceInterface $historyService;
 
+    /**
+     * @var EntityRepository<SwagMigrationRunCollection>
+     */
     private EntityRepository $runRepo;
 
     protected function setUp(): void
@@ -60,7 +66,6 @@ class HistoryControllerTest extends TestCase
             'apiUser' => 'testUser',
             'apiKey' => 'testKey',
         ];
-        $runProgress = require __DIR__ . '/../../_fixtures/run_progress_data.php';
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($connectionRepo, $connectionId): void {
             $connectionRepo->create(
                 [
@@ -86,8 +91,7 @@ class HistoryControllerTest extends TestCase
                     'id' => $this->runUuid,
                     'connectionId' => $connectionId,
                     'credentialFields' => $credentialFields,
-                    'progress' => $runProgress,
-                    'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+                    'step' => MigrationStep::FINISHED->value,
                 ],
             ],
             $this->context
@@ -123,7 +127,6 @@ class HistoryControllerTest extends TestCase
         $request = new Request(['runUuid' => $this->runUuid], []);
         $response = $this->controller->getGroupedLogsOfRun($request, $this->context);
 
-        static::assertInstanceOf(JsonResponse::class, $response);
         static::assertIsString($response->getContent());
         static::assertJson($response->getContent());
 
@@ -149,7 +152,6 @@ class HistoryControllerTest extends TestCase
         $request = new Request([], ['runUuid' => $this->runUuid]);
         $response = $this->controller->downloadLogsOfRun($request, $this->context);
 
-        static::assertInstanceOf(StreamedResponse::class, $response);
         static::assertSame('text/plain', $response->headers->get('Content-type'));
     }
 
@@ -166,9 +168,9 @@ class HistoryControllerTest extends TestCase
     {
         $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
         $run = $result->first();
-        /** @var string $result */
         $result = $this->invokeMethod($this->historyService, 'getPrefixLogInformation', [$run]);
 
+        static::assertIsString($result);
         static::assertStringContainsString('Migration log generated at', $result);
         static::assertStringContainsString('Run id:', $result);
         static::assertStringContainsString('Connection name: myConnection', $result);
@@ -178,15 +180,17 @@ class HistoryControllerTest extends TestCase
     {
         $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
         $run = $result->first();
-        /** @var string $result */
         $result = $this->invokeMethod($this->historyService, 'getSuffixLogInformation', [$run]);
 
+        static::assertIsString($result);
         static::assertStringContainsString('--------------------Additional-metadata---------------------', $result);
         static::assertStringContainsString('Environment information {JSON}:', $result);
         static::assertStringContainsString('Premapping {JSON}: ----------------------------------------------------', $result);
     }
 
     /**
+     * @param array<Context|string|int|Entity|null> $parameters
+     *
      * @return HistoryService|string|SwagMigrationLoggingCollection
      */
     public function invokeMethod(object $object, string $methodName, array $parameters)

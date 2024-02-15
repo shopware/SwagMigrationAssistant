@@ -16,5 +16,8 @@ interface DataSelectionRegistryInterface
 {
     public function getDataSelections(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation): DataSelectionCollection;
 
+    /**
+     * @param array<string> $ids
+     */
     public function getDataSelectionsByIds(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation, array $ids): DataSelectionCollection;
 }

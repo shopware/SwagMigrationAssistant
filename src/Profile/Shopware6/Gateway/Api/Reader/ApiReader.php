@@ -7,9 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -37,6 +36,9 @@ abstract class ApiReader implements ReaderInterface
         return false;
     }
 
+    /**
+     * @throws MigrationException
+     */
     public function read(MigrationContextInterface $migrationContext): array
     {
         $queryParams = [
@@ -52,7 +54,6 @@ abstract class ApiReader implements ReaderInterface
             return [];
         }
 
-        /** @var GuzzleResponse $result */
         $result = $client->get(
             'get-data',
             [
@@ -61,7 +62,7 @@ abstract class ApiReader implements ReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware Api ' . $this->getDataSetEntity($migrationContext));
+            throw MigrationException::gatewayRead('Shopware Api ' . $this->getDataSetEntity($migrationContext));
         }
 
         return \json_decode($result->getBody()->getContents(), true);

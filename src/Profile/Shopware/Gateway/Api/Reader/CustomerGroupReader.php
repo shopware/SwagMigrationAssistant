@@ -20,7 +20,7 @@ class CustomerGroupReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CUSTOMER_GROUP;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CUSTOMER_GROUP;
     }
 
     protected function getApiRoute(): string

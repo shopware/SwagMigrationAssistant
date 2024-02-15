@@ -20,6 +20,6 @@ class Shopware57ProductOptionRelationConverter extends ProductOptionRelationConv
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === ProductOptionRelationDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductOptionRelationDataSet::getEntity();
     }
 }

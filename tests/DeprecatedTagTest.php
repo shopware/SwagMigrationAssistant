@@ -21,6 +21,7 @@ class DeprecatedTagTest extends TestCase
     private array $whiteList = [
         'tests/',
         'src/Resources/public/',
+        'src/Resources/app/administration/node_modules/',
         'var/',
         'vendor/',
     ];

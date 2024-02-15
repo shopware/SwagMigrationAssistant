@@ -255,8 +255,8 @@ class OrderConverterTest extends TestCase
             $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
         } catch (\Exception $e) {
             static::assertInstanceOf(MigrationException::class, $e);
-            static::assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getStatusCode());
-            static::assertSame(MigrationException::ASSOCIATION_MISSING, $e->getErrorCode());
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame(MigrationException::ASSOCIATION_ENTITY_REQUIRED_MISSING, $e->getErrorCode());
 
             static::assertArrayHasKey('missingEntity', $e->getParameters());
             static::assertArrayHasKey('entity', $e->getParameters());

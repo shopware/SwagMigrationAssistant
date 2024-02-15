@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
@@ -30,10 +30,13 @@ class DeliveryTimeReader extends AbstractPremappingReader
     private string $connectionPremappingValue = '';
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
+     */
     public function __construct(private readonly EntityRepository $deliveryTimeRepo)
     {
     }
@@ -72,10 +75,10 @@ class DeliveryTimeReader extends AbstractPremappingReader
         }
 
         foreach ($mappingArray as $premapping) {
-            if ($premapping['entity'] === self::MAPPING_NAME) {
-                foreach ($premapping['mapping'] as $mapping) {
-                    if (isset($this->choiceUuids[$mapping['destinationUuid']])) {
-                        $this->connectionPremappingValue = $mapping['destinationUuid'];
+            if ($premapping->getEntity() === self::MAPPING_NAME) {
+                foreach ($premapping->getMapping() as $mapping) {
+                    if (isset($this->choiceUuids[$mapping->getDestinationUuid()])) {
+                        $this->connectionPremappingValue = $mapping->getDestinationUuid();
                     }
                 }
             }
@@ -100,10 +103,9 @@ class DeliveryTimeReader extends AbstractPremappingReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
-        $deliveryTimes = $this->deliveryTimeRepo->search($criteria, $context);
+        $deliveryTimes = $this->deliveryTimeRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var DeliveryTimeEntity $deliveryTime */
         foreach ($deliveryTimes as $deliveryTime) {
             $id = $deliveryTime->getId();
             $name = $deliveryTime->getName() ?? '';

@@ -81,7 +81,7 @@ abstract class AttributeConverter extends Converter
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            $migrationContext->getDataSet()::getEntity(),
+            $this->getCustomFieldEntityName(),
             $data['name'],
             $context,
             $this->checksum,
@@ -110,7 +110,7 @@ abstract class AttributeConverter extends Converter
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id'] ?? null);
     }
 
     abstract protected function getCustomFieldEntityName(): string;

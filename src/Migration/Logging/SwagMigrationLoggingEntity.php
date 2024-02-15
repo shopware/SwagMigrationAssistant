@@ -39,6 +39,8 @@ class SwagMigrationLoggingEntity extends Entity
 
     protected ?SwagMigrationRunEntity $run;
 
+    protected int $autoIncrement;
+
     public function getLevel(): string
     {
         return $this->level;
@@ -147,5 +149,15 @@ class SwagMigrationLoggingEntity extends Entity
     public function setRun(?SwagMigrationRunEntity $run): void
     {
         $this->run = $run;
+    }
+
+    public function getAutoIncrement(): int
+    {
+        return $this->autoIncrement;
+    }
+
+    public function setAutoIncrement(int $autoIncrement): void
+    {
+        $this->autoIncrement = $autoIncrement;
     }
 }

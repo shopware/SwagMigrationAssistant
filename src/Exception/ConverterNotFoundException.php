@@ -8,27 +8,8 @@
 namespace SwagMigrationAssistant\Exception;
 
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\ShopwareHttpException;
-use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
-class ConverterNotFoundException extends ShopwareHttpException
+class ConverterNotFoundException extends MigrationException
 {
-    public function __construct(string $entity)
-    {
-        parent::__construct(
-            'Converter for "{{ entity }}" entity not found.',
-            ['entity' => $entity]
-        );
-    }
-
-    public function getStatusCode(): int
-    {
-        return Response::HTTP_NOT_FOUND;
-    }
-
-    public function getErrorCode(): string
-    {
-        return 'SWAG_MIGRATION__CONVERTER_NOT_FOUND';
-    }
 }

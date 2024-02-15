@@ -11,17 +11,15 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use Shopware\Core\Framework\Routing\RoutingException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -39,7 +37,6 @@ class StatusController extends AbstractController
      */
     public function __construct(
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
-        private readonly MigrationProgressServiceInterface $migrationProgressService,
         private readonly RunServiceInterface $runService,
         private readonly DataSelectionRegistryInterface $dataSelectionRegistry,
         private readonly EntityRepository $migrationConnectionRepo,
@@ -62,11 +59,11 @@ class StatusController extends AbstractController
         $gatewayName = (string) $request->query->get('gatewayName');
 
         if ($profileName === '') {
-            throw new MigrationContextPropertyMissingException('profileName');
+            throw RoutingException::missingRequestParameter('profileName');
         }
 
         if ($gatewayName === '') {
-            throw new MigrationContextPropertyMissingException('gatewayName');
+            throw RoutingException::missingRequestParameter('gatewayName');
         }
 
         $profiles = $this->profileRegistry->getProfiles();
@@ -151,7 +148,7 @@ class StatusController extends AbstractController
         $profileName = (string) $request->query->get('profileName');
 
         if ($profileName === '') {
-            throw new MigrationContextPropertyMissingException('profileName');
+            throw RoutingException::missingRequestParameter('profileName');
         }
 
         $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
@@ -181,13 +178,13 @@ class StatusController extends AbstractController
         $credentialFields = $request->request->all('credentialFields');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
         $this->runService->updateConnectionCredentials($context, $connectionId, $credentialFields);
@@ -206,13 +203,13 @@ class StatusController extends AbstractController
         $connectionId = $request->query->getAlnum('connectionId');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
@@ -233,13 +230,13 @@ class StatusController extends AbstractController
         $connectionId = $request->request->getAlnum('connectionId');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
@@ -249,133 +246,85 @@ class StatusController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/migration/start-migration',
+        name: 'api.admin.migration.start-migration',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function startMigration(Request $request, Context $context): Response
+    {
+        $dataSelectionNames = $request->request->all('dataSelectionNames');
+
+        if (empty($dataSelectionNames)) {
+            throw RoutingException::missingRequestParameter('dataSelectionNames');
+        }
+
+        try {
+            $this->runService->startMigrationRun($dataSelectionNames, $context);
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Returns the progress of the running migration run.
+     * If no migration run is running, it returns the progress with the step status IDLE.
+     *
+     * After starting the migration run, the steps are as follows, if the migration run is not aborted:
+     * IDLE -> FETCHING -> WRITING -> MEDIA_PROCESSING -> CLEANUP -> INDEXING -> WAITING_FOR_APPROVE -> IDLE
+     *
+     * If the migration run is aborted, the steps are as follows:
+     * IDLE -> [FETCHING || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
+     */
+    #[Route(
         path: '/api/_action/migration/get-state',
         name: 'api.admin.migration.get-state',
         defaults: ['_acl' => ['admin']],
-        methods: [Request::METHOD_POST]
+        methods: [Request::METHOD_GET]
     )]
-    public function getState(Request $request, Context $context): JsonResponse
+    public function getState(Context $context): JsonResponse
     {
-        $state = $this->migrationProgressService->getProgress($request, $context);
-
-        return new JsonResponse($state);
+        return new JsonResponse($this->runService->getRunStatus($context));
     }
 
     #[Route(
-        path: '/api/_action/migration/create-migration',
-        name: 'api.admin.migration.create-migration',
+        path: '/api/_action/migration/approve-finished',
+        name: 'api.admin.migration.approveFinished',
         defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_POST]
     )]
-    public function createMigration(Request $request, Context $context): JsonResponse
+    public function approveFinishedMigration(Context $context): Response
     {
-        $connectionId = $request->request->getAlnum('connectionId');
-
-        $dataSelectionIds = $request->request->all('dataSelectionIds');
-
-        if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+        try {
+            $this->runService->approveFinishingMigration($context);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
-
-        if ($connection === null) {
-            throw new MigrationContextPropertyMissingException('connectionId');
-        }
-
-        if (empty($dataSelectionIds)) {
-            throw new MigrationContextPropertyMissingException('dataSelectionIds');
-        }
-
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $state = $this->runService->createMigrationRun(
-            $migrationContext,
-            $dataSelectionIds,
-            $context
-        );
-
-        if ($state === null) {
-            return $this->getState($request, $context);
-        }
-
-        return new JsonResponse($state);
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
-    #[Route(
-        path: '/api/_action/migration/takeover-migration',
-        name: 'api.admin.migration.takeover-migration',
-        defaults: ['_acl' => ['admin']],
-        methods: [Request::METHOD_POST]
-    )]
-    public function takeoverMigration(Request $request, Context $context): JsonResponse
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $accessToken = $this->runService->takeoverMigration($runUuid, $context);
-
-        return new JsonResponse(['accessToken' => $accessToken]);
-    }
-
-    // Aborts an already running migration remotely.
+    /**
+     * Abort the running migration.
+     * If no migration run is running or the current migration is not in the FETCHING or WRITING or MEDIA_PROCESSING step, it returns a bad request response.
+     */
     #[Route(
         path: '/api/_action/migration/abort-migration',
         name: 'api.admin.migration.abort-migration',
         defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_POST]
     )]
-    public function abortMigration(Request $request, Context $context): Response
+    public function abortMigration(Context $context): Response
     {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
+        try {
+            $this->runService->abortMigration($context);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
-        $this->runService->abortMigration($runUuid, $context);
-
-        return new Response();
-    }
-
-    #[Route(
-        path: '/api/_action/migration/finish-migration',
-        name: 'api.admin.migration.finish-migration',
-        defaults: ['_acl' => ['admin']],
-        methods: [Request::METHOD_POST]
-    )]
-    public function finishMigration(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->finishMigration($runUuid, $context);
-
-        return new Response();
-    }
-
-    #[Route(
-        path: '/api/_action/migration/assign-themes',
-        name: 'api.admin.migration.assign-themes',
-        defaults: ['_acl' => ['admin']],
-        methods: [Request::METHOD_POST]
-    )]
-    public function assignThemes(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->assignThemeToSalesChannel($runUuid, $context);
-
-        return new Response();
+        return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
     #[Route(
@@ -389,15 +338,16 @@ class StatusController extends AbstractController
         $connectionId = $request->request->getAlnum('connectionId');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
+        // ToDo: MIG-965 - Check how we could put this into the MQ
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();
@@ -409,9 +359,9 @@ class StatusController extends AbstractController
         defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_POST]
     )]
-    public function cleanupMigrationData(): Response
+    public function cleanupMigrationData(Context $context): Response
     {
-        $this->runService->cleanupMigrationData();
+        $this->runService->cleanupMigrationData($context);
 
         return new Response();
     }

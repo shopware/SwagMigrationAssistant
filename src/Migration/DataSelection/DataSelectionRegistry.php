@@ -39,6 +39,9 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         return $resultDataSelections;
     }
 
+    /**
+     * @param array<string> $ids
+     */
     public function getDataSelectionsByIds(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation, array $ids): DataSelectionCollection
     {
         $resultDataSelections = new DataSelectionCollection();

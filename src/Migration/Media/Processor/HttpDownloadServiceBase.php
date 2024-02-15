@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -57,10 +58,9 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
      *
      * @return list<MediaProcessWorkloadStruct>
      */
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array
     {
         // Map workload with uuids as keys
-        /** @var array<string, MediaProcessWorkloadStruct> $mappedWorkload */
         $mappedWorkload = [];
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
@@ -144,7 +144,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
 
             if (!\is_resource($fileHandle)) {
-                throw new \RuntimeException(\sprintf('Could not open file %s in mode %s.', $filePath, 'ab'));
+                throw MigrationException::couldNotReadFile($filePath);
             }
 
             \fwrite($fileHandle, $response->getBody()->getContents());
@@ -229,7 +229,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
     /**
      * Start all the download requests for the media in parallel (async) and return the promise array.
      *
-     * @param Media $media
+     * @param array<int, array<string, string>> $media
      * @param array<string, MediaProcessWorkloadStruct> $mappedWorkload
      *
      * @return array<string, Promise\PromiseInterface>
@@ -331,7 +331,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
     }
 
     /**
-     * @param Media $media
+     * @param array<int, array<string, string>> $media
      */
     private function getMediaName(array $media, string $mediaId): string
     {

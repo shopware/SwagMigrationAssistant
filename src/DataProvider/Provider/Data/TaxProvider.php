@@ -12,11 +12,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Tax\TaxCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 #[Package('services-settings')]
 class TaxProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<TaxCollection> $taxRepo
+     */
     public function __construct(private readonly EntityRepository $taxRepo)
     {
     }

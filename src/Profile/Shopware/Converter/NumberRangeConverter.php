@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -36,10 +37,16 @@ abstract class NumberRangeConverter extends ShopwareConverter
         'doc_2' => 'document_credit_note',
     ];
 
+    /**
+     * @var EntityCollection<NumberRangeEntity>|null
+     */
     protected ?EntityCollection $numberRangeTypes;
 
     protected string $connectionId;
 
+    /**
+     * @param EntityRepository<NumberRangeCollection> $numberRangeTypeRepo
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -137,7 +144,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         if ($mapping !== null) {
             $this->mainMapping = $mapping;
 
-            return $mapping['entityUuid'];
+            return (string) $mapping['entityUuid'];
         }
 
         // use global number range uuid for products if available
@@ -153,7 +160,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->checksum
         );
 
-        return $this->mainMapping['entityUuid'];
+        return (string) $this->mainMapping['entityUuid'];
     }
 
     protected function getProductNumberRangeTypeUuid(string $type): ?string
@@ -164,13 +171,12 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         $collection = $this->numberRangeTypes->filterByProperty('technicalName', self::TYPE_MAPPING[$type]);
 
-        if (empty($collection->first())) {
+        $first = $collection->first();
+        if (empty($first)) {
             return null;
         }
-        /** @var NumberRangeEntity $numberRange */
-        $numberRange = $collection->first();
 
-        return $numberRange->getId();
+        return $first->getId();
     }
 
     protected function getGlobal(string $name): bool

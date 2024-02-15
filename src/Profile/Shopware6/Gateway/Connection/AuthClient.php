@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -24,9 +25,12 @@ class AuthClient implements HttpClientInterface
 {
     private string $bearerToken = '';
 
+    /**
+     * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepository
+     */
     public function __construct(
         private readonly Client $apiClient,
-        private readonly EntityRepository $connectionRepositoy,
+        private readonly EntityRepository $connectionRepository,
         private readonly MigrationContextInterface $migrationContext,
         private readonly Context $context
     ) {
@@ -137,7 +141,7 @@ class AuthClient implements HttpClientInterface
         $credentialFields['bearer_token'] = $this->bearerToken;
 
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields): void {
-            $this->connectionRepositoy->update([
+            $this->connectionRepository->update([
                 [
                     'id' => $connectionUuid,
                     'credentialFields' => $credentialFields,
@@ -170,6 +174,6 @@ class AuthClient implements HttpClientInterface
             return;
         }
 
-        $this->bearerToken = $credentials['bearer_token'];
+        $this->bearerToken = (string) $credentials['bearer_token'];
     }
 }

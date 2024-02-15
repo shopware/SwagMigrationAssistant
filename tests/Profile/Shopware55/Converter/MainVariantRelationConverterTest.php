@@ -30,22 +30,22 @@ class MainVariantRelationConverterTest extends TestCase
     private DummyLoggingService $loggingService;
 
     /**
-     * @var array<string, string>
+     * @var array<string, string|array<string>|null>
      */
     private array $productContainer1;
 
     /**
-     * @var array<string, string>
+     * @var array<string, string|array<string>|null>
      */
     private array $productContainer2;
 
     /**
-     * @var array<string, string>
+     * @var array<string, string|array<string>|null>
      */
     private array $productVariant1;
 
     /**
-     * @var array<string, string>
+     * @var array<string, string|array<string>|null>
      */
     private array $productVariant2;
 

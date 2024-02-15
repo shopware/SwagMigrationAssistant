@@ -37,6 +37,9 @@ class UnsupportedShippingCalculationType extends BaseRunLogEntry
         return 'Unsupported shipping calculation type';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, type: string}
+     */
     public function getParameters(): array
     {
         return [

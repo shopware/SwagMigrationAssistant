@@ -13,6 +13,10 @@ use Shopware\Core\Framework\Struct\Struct;
 #[Package('services-settings')]
 class PremappingStruct extends Struct
 {
+    /**
+     * @param array<PremappingEntityStruct> $mapping
+     * @param array<PremappingChoiceStruct> $choices
+     */
     public function __construct(
         protected string $entity,
         protected array $mapping,

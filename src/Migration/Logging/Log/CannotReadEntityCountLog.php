@@ -38,6 +38,9 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
         return 'Could not read entity count';
     }
 
+    /**
+     * @return array{entity: ?string, table: string, condition: ?string, exceptionCode: string, exceptionMessage: string}
+     */
     public function getParameters(): array
     {
         return [

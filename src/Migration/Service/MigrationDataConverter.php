@@ -19,7 +19,6 @@ use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -153,10 +152,8 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         $result = $this->mappingService->getMappings($connectionId, $entity, \array_keys($checksums), $context);
 
         if ($result->getTotal() > 0) {
-            $elements = $result->getEntities()->getElements();
             $relatedMappings = [];
-            /** @var SwagMigrationMappingEntity $mapping */
-            foreach ($elements as $mapping) {
+            foreach ($result->getEntities() as $mapping) {
                 $oldIdentifier = $mapping->getOldIdentifier();
                 if ($oldIdentifier === null) {
                     continue;

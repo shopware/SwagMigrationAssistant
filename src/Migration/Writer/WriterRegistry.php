@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Writer;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('services-settings')]
 class WriterRegistry implements WriterRegistryInterface
@@ -28,6 +28,6 @@ class WriterRegistry implements WriterRegistryInterface
             }
         }
 
-        throw new WriterNotFoundException($entityName);
+        throw MigrationException::writerNotFound($entityName);
     }
 }

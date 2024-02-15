@@ -12,6 +12,9 @@ use Shopware\Core\Framework\Log\Package;
 #[Package('services-settings')]
 class DebugLog implements LogEntryInterface
 {
+    /**
+     * @param array<mixed> $logData
+     */
     public function __construct(
         private readonly array $logData,
         private readonly ?string $runId
@@ -33,6 +36,9 @@ class DebugLog implements LogEntryInterface
         return 'Debug';
     }
 
+    /**
+     * @return array{logData: array<mixed>}
+     */
     public function getParameters(): array
     {
         return [
@@ -42,7 +48,7 @@ class DebugLog implements LogEntryInterface
 
     public function getDescription(): string
     {
-        return \json_encode($this->logData);
+        return (string) \json_encode($this->logData);
     }
 
     public function getSnippetRoot(): string

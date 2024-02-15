@@ -19,6 +19,6 @@ class Shopware55CrossSellingConverter extends CrossSellingConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === CrossSellingDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CrossSellingDataSet::getEntity();
     }
 }

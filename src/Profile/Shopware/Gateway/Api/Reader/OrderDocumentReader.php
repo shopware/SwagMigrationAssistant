@@ -20,7 +20,7 @@ class OrderDocumentReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::ORDER_DOCUMENT;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::ORDER_DOCUMENT;
     }
 
     protected function getApiRoute(): string

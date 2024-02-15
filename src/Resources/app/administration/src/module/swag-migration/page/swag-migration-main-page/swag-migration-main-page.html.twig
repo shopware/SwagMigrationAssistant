@@ -22,18 +22,17 @@
                 {% endblock %}
 
                 {% block swag_migration_index_main_page_card_shopInformation %}
-                    <swag-migration-shop-information :connected="connectionEstablished">
-                    </swag-migration-shop-information>
+                    <swag-migration-shop-information :connected="connectionEstablished" />
                 {% endblock %}
             </div>
         {% endblock %}
 
         {% block swag_migration_index_main_page_assistant %}
-            <swag-migration-assistant v-if="!isLoading"></swag-migration-assistant>
+            <swag-migration-assistant v-if="!isLoading" />
         {% endblock %}
 
         {% block swag_migration_index_main_page_loader %}
-            <sw-loader v-if="isLoading"></sw-loader>
+            <sw-loader v-if="isLoading" />
         {% endblock %}
     </div>
 {% endblock %}

@@ -4,6 +4,7 @@ const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.override('sw-dashboard-index', {

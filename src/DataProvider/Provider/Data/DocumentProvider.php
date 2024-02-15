@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,6 +19,9 @@ use Symfony\Component\Routing\RouterInterface;
 #[Package('services-settings')]
 class DocumentProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<DocumentCollection> $documentRepo
+     */
     public function __construct(
         private readonly EntityRepository $documentRepo,
         private readonly RouterInterface $router

@@ -88,7 +88,7 @@ class HttpDownloadServiceBaseTest extends TestCase
                 $this->runId,
             ),
         ];
-        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload, 1000 * 1000);
+        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload);
 
         static::assertEquals([
             new MediaProcessWorkloadStruct(
@@ -127,7 +127,7 @@ class HttpDownloadServiceBaseTest extends TestCase
             ),
         ];
 
-        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload, 1000 * 1000);
+        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload);
         static::assertEquals([
             new MediaProcessWorkloadStruct(
                 $mediaFiles[0]['mediaId'],
@@ -144,7 +144,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         static::assertEquals([], $this->loggingService->getLoggingArray());
 
         // second attempt
-        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $resultWorkload, 1000 * 1000);
+        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $resultWorkload);
         static::assertEquals([
             new MediaProcessWorkloadStruct(
                 $mediaFiles[0]['mediaId'],
@@ -161,7 +161,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         static::assertEquals([], $this->loggingService->getLoggingArray());
 
         // third attempt
-        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $resultWorkload, 1000 * 1000);
+        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $resultWorkload);
         static::assertEquals([
             new MediaProcessWorkloadStruct(
                 $mediaFiles[0]['mediaId'],
@@ -178,7 +178,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         static::assertEquals([], $this->loggingService->getLoggingArray());
 
         // fourth attempt
-        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $resultWorkload, 1000 * 1000);
+        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $resultWorkload);
         static::assertEquals([
             new MediaProcessWorkloadStruct(
                 $mediaFiles[0]['mediaId'],

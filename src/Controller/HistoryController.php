@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
-use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -90,7 +90,7 @@ class HistoryController extends AbstractController
         }
 
         if ($this->historyService->isMediaProcessing()) {
-            throw new MigrationIsRunningException();
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
         $this->historyService->clearDataOfRun($runUuid, $context);
@@ -98,7 +98,7 @@ class HistoryController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.clear-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.is-media-processing', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function isMediaProcessing(): JsonResponse
     {
         $result = $this->historyService->isMediaProcessing();

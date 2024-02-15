@@ -14,7 +14,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
+use Shopware\Core\System\StateMachine\StateMachineCollection;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -32,15 +33,19 @@ class OrderStateReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'order_state';
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     protected array $preselectionDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<StateMachineCollection> $stateMachineRepo
+     * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepo
+     */
     public function __construct(
         private readonly EntityRepository $stateMachineRepo,
         private readonly EntityRepository $stateMachineStateRepo,
@@ -74,8 +79,11 @@ class OrderStateReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareGatewayInterface $gateway */
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+
+        if (!$gateway instanceof ShopwareGatewayInterface) {
+            return [];
+        }
 
         $preMappingData = $gateway->readTable($migrationContext, 's_core_states');
 
@@ -84,7 +92,7 @@ class OrderStateReader extends AbstractPremappingReader
             if ($data['group'] === 'state') {
                 $uuid = '';
                 if (isset($this->connectionPremappingDictionary[$data['id']])) {
-                    $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+                    $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
 
                     if (!isset($this->choiceUuids[$uuid])) {
                         $uuid = '';
@@ -116,16 +124,18 @@ class OrderStateReader extends AbstractPremappingReader
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderStates::STATE_MACHINE));
 
-        /** @var StateMachineEntity $stateMachine */
         $stateMachine = $this->stateMachineRepo->search($criteria, $context)->first();
+
+        if (!$stateMachine instanceof StateMachineEntity) {
+            return [];
+        }
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('stateMachineId', $stateMachine->getId()));
         $criteria->addSorting(new FieldSorting('name'));
-        $states = $this->stateMachineStateRepo->search($criteria, $context);
+        $states = $this->stateMachineStateRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var StateMachineStateEntity $state */
         foreach ($states as $state) {
             $id = $state->getId();
             $this->preselectionDictionary[$state->getTechnicalName()] = $id;

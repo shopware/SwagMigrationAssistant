@@ -15,32 +15,39 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistryInterface;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 
+/**
+ * @phpstan-type PremappingArrayStructure array<array{entity: string, mapping: list<array{sourceId: string, description: string, destinationUuid: string}>}>
+ */
 #[Package('services-settings')]
 class PremappingService implements PremappingServiceInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMappingCollection> $mappingRepo
+     * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepo
+     */
     public function __construct(
         private readonly PremappingReaderRegistryInterface $mappingReaderRegistry,
         private readonly MappingServiceInterface $mappingService,
         private readonly EntityRepository $mappingRepo,
-        private readonly EntityRepository $runRepo,
         private readonly EntityRepository $connectionRepo
     ) {
     }
 
-    public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run): array
+    /**
+     * @param list<string> $dataSelectionIds
+     *
+     * @return array<int, PremappingStruct>
+     */
+    public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, array $dataSelectionIds): array
     {
-        $progress = $run->getProgress();
-
-        if ($progress === null) {
-            return [];
-        }
-
-        $dataSelectionIds = \array_column($progress, 'id');
         $readers = $this->mappingReaderRegistry->getPremappingReaders($migrationContext, $dataSelectionIds);
 
         $preMapping = [];
@@ -51,10 +58,12 @@ class PremappingService implements PremappingServiceInterface
         return $preMapping;
     }
 
+    /**
+     * @param PremappingArrayStructure $premapping
+     */
     public function writePremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
         $this->mappingService->preloadMappings($this->getExistingMapping($context, $premapping), $context);
-        $this->addPremappingToRun($context, $migrationContext, $premapping);
         $this->updateConnectionPremapping($context, $migrationContext, $premapping);
 
         $connection = $migrationContext->getConnection();
@@ -69,6 +78,10 @@ class PremappingService implements PremappingServiceInterface
             foreach ($item['mapping'] as $mapping) {
                 $id = $mapping['sourceId'];
                 $identifier = $mapping['destinationUuid'];
+
+                if (empty($identifier)) {
+                    continue;
+                }
 
                 if (Uuid::isValid($identifier)) {
                     $this->mappingService->getOrCreateMapping(
@@ -100,6 +113,9 @@ class PremappingService implements PremappingServiceInterface
         $this->mappingService->writeMapping($context);
     }
 
+    /**
+     * @param PremappingArrayStructure $premapping
+     */
     private function updateConnectionPremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
         $premapping = $this->updateConnectionPremappingStruct($migrationContext, $premapping);
@@ -121,6 +137,11 @@ class PremappingService implements PremappingServiceInterface
         );
     }
 
+    /**
+     * @param PremappingArrayStructure $premapping
+     *
+     * @return array<PremappingStruct>
+     */
     private function updateConnectionPremappingStruct(MigrationContextInterface $migrationContext, array $premapping): array
     {
         $connection = $migrationContext->getConnection();
@@ -132,39 +153,49 @@ class PremappingService implements PremappingServiceInterface
         $connectionPremapping = $connection->getPremapping();
 
         if ($connectionPremapping === null) {
-            return $premapping;
+            $connectionPremapping = [];
         }
 
         foreach ($premapping as $newPremappingItem) {
             $inConnection = false;
             foreach ($connectionPremapping as $key => $premappingItem) {
-                if ($premappingItem['entity'] === $newPremappingItem['entity']) {
+                if ($premappingItem->getEntity() === $newPremappingItem['entity']) {
+                    $mappings = [];
+                    foreach ($newPremappingItem['mapping'] as $mapping) {
+                        $mappings[] = new PremappingEntityStruct(
+                            $mapping['sourceId'],
+                            $mapping['description'],
+                            $mapping['destinationUuid']
+                        );
+                    }
+
                     $inConnection = true;
-                    $connectionPremapping[$key] = $newPremappingItem;
+                    $connectionPremapping[$key] = new PremappingStruct($newPremappingItem['entity'], $mappings);
                 }
             }
 
             if (!$inConnection) {
-                $connectionPremapping[] = $newPremappingItem;
+                $mappings = [];
+                foreach ($newPremappingItem['mapping'] as $mapping) {
+                    $mappings[] = new PremappingEntityStruct(
+                        $mapping['sourceId'],
+                        $mapping['description'],
+                        $mapping['destinationUuid']
+                    );
+                }
+
+                $connectionPremapping[] = new PremappingStruct($newPremappingItem['entity'], $mappings);
             }
         }
 
         return $connectionPremapping;
     }
 
-    private function addPremappingToRun(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
-    {
-        $this->runRepo->update(
-            [
-                [
-                    'id' => $migrationContext->getRunUuid(),
-                    'premapping' => $premapping,
-                ],
-            ],
-            $context
-        );
-    }
-
+    /**
+     * @param PremappingArrayStructure $premapping
+     *
+     * @return list<string>|list<array<string, string>>
+     */
     private function getExistingMapping(Context $context, array $premapping): array
     {
         $queries = [];

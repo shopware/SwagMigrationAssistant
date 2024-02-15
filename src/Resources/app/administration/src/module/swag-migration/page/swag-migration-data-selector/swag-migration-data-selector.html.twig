@@ -1,0 +1,81 @@
+{% block swag_migration_data_selector %}
+    <div class="swag-migration-data-selector">
+
+        {% block swag_migration_data_selector_warnings %}
+            <div class="swag-migration-data-selector__warnings">
+                <sw-alert v-for="warning in displayWarnings"
+                          :key="warning.snippetKey"
+                          class="swag-migration-data-selector__warning"
+                          variant="warning">
+                    {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
+                </sw-alert>
+            </div>
+        {% endblock %}
+
+        {% block swag_migration_index_main_page_card_confirm_warning %}
+            <swag-migration-confirm-warning class="swag-migration-process-screen__confirm-warning" />
+        {% endblock %}
+
+        <sw-card
+            v-if="dataSelectionTableData.length > 0"
+            :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
+            position-identifier="swag-migration-data-selector"
+        >
+
+            {% block swag_migration_data_selector_grid %}
+                <template #grid>
+                    <swag-migration-grid-extended
+                        ref="tableDataGrid"
+                        :items="dataSelectionTableData"
+                        disabled-attribute="requiredSelection"
+                        table
+                        @sw-grid-select-item="onGridSelectItem"
+                        @sw-grid-select-all="onGridSelectItem">
+                        <template #columns="{ item }">
+
+                            {% block swag_migration_data_selector_grid_column_data %}
+                                <sw-grid-column flex="1fr"
+                                                :label="$tc('swag-migration.index.selectDataCard.headers.name')">
+                                    {{ $tc(item.snippet) }}
+                                </sw-grid-column>
+
+                                <sw-grid-column flex="1fr"
+                                                :label="$tc('swag-migration.index.selectDataCard.headers.dataType')">
+                                    {{ $tc('swag-migration.index.selectDataCard.dataTypes.' + item.dataType) }}
+                                </sw-grid-column>
+
+                                <sw-grid-column flex="1fr"
+                                                :label="$tc('swag-migration.index.selectDataCard.headers.total')"
+                                                align="right">
+                                    {{ item.total }}
+
+                                    <sw-help-text v-if="showHelptext(item.entityTotals)"
+                                                  class="swag-migration-data-selector__help-text"
+                                                  :text="getHelptext(item)" />
+                                    <div v-else
+                                         class="swag-migration-data-selector__help-text-placeholder">
+                                    </div>
+                                </sw-grid-column>
+                            {% endblock %}
+                        </template>
+                    </swag-migration-grid-extended>
+                </template>
+            {% endblock %}
+        </sw-card>
+
+        <sw-card v-else
+                 class="swag-migration-data-selector"
+                 position-identifier="swag-migration-data-selector-no-data">
+
+            {% block swag_migration_data_selector_no_data %}
+                <div class="swag-migration-index-data-selector__no-data">
+                    <p class="swag-migration-index-data-selector__no-data-label">
+                        {{ $tc('swag-migration.index.selectDataCard.noData') }}
+                    </p>
+                </div>
+            {% endblock %}
+        </sw-card>
+
+        <swag-migration-premapping />
+    </div>
+{% endblock %}

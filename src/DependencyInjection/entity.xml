@@ -11,6 +11,21 @@
         <service id="SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_run"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\Run\MigrationProgressFieldSerializer">
+            <argument type="service" id="validator"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+
+            <tag name="shopware.field_serializer"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Run\PremappingFieldSerializer">
+            <argument type="service" id="validator"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+
+            <tag name="shopware.field_serializer"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_data"/>
         </service>

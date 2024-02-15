@@ -12,7 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\ConverterNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistry;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
@@ -130,7 +130,6 @@ use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57SalesChannelCo
 use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57TranslationConverter;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
-use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class ConverterRegistryTest extends TestCase
@@ -182,11 +181,13 @@ class ConverterRegistryTest extends TestCase
 
         try {
             $this->converterRegistry->getConverter($migrationContext);
-        } catch (\Exception $e) {
-            /* @var ConverterNotFoundException $e */
-            static::assertInstanceOf(ConverterNotFoundException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+        } catch (MigrationException $e) {
+            static::assertSame(MigrationException::CONVERTER_NOT_FOUND, $e->getErrorCode());
+
+            return;
         }
+
+        static::fail('Expected exception not thrown');
     }
 
     public static function converterProvider(): array

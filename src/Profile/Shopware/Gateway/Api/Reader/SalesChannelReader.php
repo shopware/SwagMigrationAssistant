@@ -20,7 +20,7 @@ class SalesChannelReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SALES_CHANNEL;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::SALES_CHANNEL;
     }
 
     protected function getApiRoute(): string

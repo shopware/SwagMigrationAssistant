@@ -19,7 +19,7 @@ class SwagMigrationMediaFileEntity extends Entity
 
     protected string $runId;
 
-    protected SwagMigrationRunEntity $run;
+    protected ?SwagMigrationRunEntity $run = null;
 
     protected string $entity;
 
@@ -47,12 +47,12 @@ class SwagMigrationMediaFileEntity extends Entity
         $this->runId = $runId;
     }
 
-    public function getRun(): SwagMigrationRunEntity
+    public function getRun(): ?SwagMigrationRunEntity
     {
         return $this->run;
     }
 
-    public function setRun(SwagMigrationRunEntity $run): void
+    public function setRun(?SwagMigrationRunEntity $run): void
     {
         $this->run = $run;
     }

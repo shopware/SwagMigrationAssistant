@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Converter;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -35,9 +35,9 @@ class ConverterRegistry implements ConverterRegistryInterface
 
         $connection = $migrationContext->getConnection();
         if ($connection === null) {
-            throw new MigrationContextPropertyMissingException('Connection');
+            throw MigrationException::migrationContextPropertyMissing('Connection');
         }
 
-        throw new ConverterNotFoundException($connection->getProfileName());
+        throw MigrationException::converterNotFound($connection->getProfileName());
     }
 }

@@ -24,6 +24,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
+use SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -32,7 +33,6 @@ use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
@@ -149,7 +149,7 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityUuid'];
         unset($data['id']);
         $this->uuid = $converted['id'];
 
@@ -168,7 +168,10 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($customerMapping === null) {
-            throw MigrationException::associationMissing(DefaultEntities::ORDER, DefaultEntities::CUSTOMER);
+            throw MigrationException::associationEntityRequiredMissing(
+                DefaultEntities::ORDER,
+                DefaultEntities::CUSTOMER
+            );
         }
 
         $orderCustomerMapping = $this->mappingService->getOrCreateMapping(
@@ -408,8 +411,11 @@ abstract class OrderConverter extends ShopwareConverter
             return;
         }
 
-        /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
+        if (!$cartPrice instanceof CartPrice) {
+            return;
+        }
+
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             TransactionStateReader::getMappingName(),

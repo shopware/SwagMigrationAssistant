@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Logging;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\AutoIncrementField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
@@ -32,7 +33,17 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }
 
-    public function defineFields(): FieldCollection
+    public function getCollectionClass(): string
+    {
+        return SwagMigrationLoggingCollection::class;
+    }
+
+    public function getEntityClass(): string
+    {
+        return SwagMigrationLoggingEntity::class;
+    }
+
+    protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
@@ -49,16 +60,7 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),
+            new AutoIncrementField(),
         ]);
-    }
-
-    public function getCollectionClass(): string
-    {
-        return SwagMigrationLoggingCollection::class;
-    }
-
-    public function getEntityClass(): string
-    {
-        return SwagMigrationLoggingEntity::class;
     }
 }
