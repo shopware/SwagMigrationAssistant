@@ -93,18 +93,15 @@ class RunService implements RunServiceInterface
     public function createMigrationRun(
         MigrationContextInterface $migrationContext,
         array $dataSelectionIds,
-        RunOptions $runOptions,
         Context $context
     ): ?ProgressState {
-        if ($runOptions->shouldResumeExistingRun() && $this->isMigrationRunning($context)) {
-            $runUuid = $this->resumeRunningMigration($context);
-        } else {
-            if (!$runOptions->shouldKeepData()) {
-                $this->cleanupUnwrittenRunData($migrationContext, $context);
-            }
-
-            $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
+        if ($this->isMigrationRunning($context)) {
+            return null;
         }
+
+        $this->cleanupUnwrittenRunData($migrationContext, $context);
+
+        $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
 
         if ($runUuid === null) {
             return null;
@@ -609,14 +606,6 @@ SQL;
         $total = $this->migrationRunRepo->searchIds($criteria, $context)->getTotal();
 
         return $total > 0;
-    }
-
-    private function resumeRunningMigration(Context $context): ?string
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-
-        return $this->migrationRunRepo->searchIds($criteria, $context)->firstId();
     }
 
     private function createPlainMigrationRun(MigrationContextInterface $migrationContext, Context $context): ?string

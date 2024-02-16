@@ -12,7 +12,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
@@ -35,7 +34,6 @@ use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
@@ -218,14 +216,6 @@ class MigrateDataCommandTest extends TestCase
     public function testExecutionWithResume(): void
     {
         $dbConnection = static::getContainer()->get(Connection::class);
-        $runId = Uuid::randomHex();
-        $this->runRepo->create([
-            [
-                'id' => $runId,
-                'connectionId' => $this->connectionId,
-                'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-            ],
-        ], $this->context);
 
         $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         $this->commandTester->execute([
@@ -234,85 +224,5 @@ class MigrateDataCommandTest extends TestCase
         ]);
         $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
-
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->runRepo->search(new Criteria([$runId]), $this->context)->getEntities()->first();
-        static::assertSame(SwagMigrationRunEntity::STATUS_FINISHED, $run->getStatus());
-
-        $runCount = $this->runRepo->search(new Criteria(), $this->context)->count();
-        static::assertSame(1, $runCount);
-    }
-
-    public function testExecutionWithKeepData(): void
-    {
-        $dbConnection = static::getContainer()->get(Connection::class);
-        $runId = Uuid::randomHex();
-        $this->runRepo->create([
-            [
-                'id' => $runId,
-                'connectionId' => $this->connectionId,
-                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
-            ],
-        ], $this->context);
-
-        $this->dataRepo->create([
-            [
-                'id' => Uuid::randomHex(),
-                'runId' => $runId,
-                'entity' => 'product',
-                'raw' => ['id' => 'testId'],
-                'written' => false,
-            ],
-        ], $this->context);
-
-        $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
-        $this->commandTester->execute(
-            [
-                'command' => $this->command->getName(),
-                'dataSelections' => ['products'],
-                '--keep-data' => true,
-            ]
-        );
-        $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
-        static::assertSame(42, $productTotalAfter - $productTotalBefore);
-
-        $dataCount = $this->dataRepo->search(new Criteria(), $this->context)->count();
-        static::assertSame(1, $dataCount);
-    }
-
-    public function testExecutionWithoutKeepData(): void
-    {
-        $dbConnection = static::getContainer()->get(Connection::class);
-        $runId = Uuid::randomHex();
-        $this->runRepo->create([
-            [
-                'id' => $runId,
-                'connectionId' => $this->connectionId,
-                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
-            ],
-        ], $this->context);
-
-        $this->dataRepo->create([
-            [
-                'id' => Uuid::randomHex(),
-                'runId' => $runId,
-                'entity' => 'product',
-                'raw' => ['id' => 'testId'],
-                'written' => false,
-            ],
-        ], $this->context);
-
-        $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
-        $this->commandTester->execute(
-            [
-                'command' => $this->command->getName(),
-                'dataSelections' => ['products'],
-            ]
-        );
-        $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
-        static::assertSame(42, $productTotalAfter - $productTotalBefore);
-
-        $dataCount = $this->dataRepo->search(new Criteria(), $this->context)->count();
-        static::assertSame(0, $dataCount);
     }
 }

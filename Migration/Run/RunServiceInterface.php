@@ -27,7 +27,6 @@ interface RunServiceInterface
     public function createMigrationRun(
         MigrationContextInterface $migrationContext,
         array $dataSelectionIds,
-        RunOptions $runOptions,
         Context $context
     ): ?ProgressState;
 
