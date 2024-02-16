@@ -1,5 +1,10 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
+- MIG-825 - Verbesserung der Performance bei der Migration von Bestellungen
+- MIG-825 - Hinzufügen der Optionen `step-size` und `keep-data` zum Cli-Befehl `migration:migrate` von `Command/MigrationCommand.php`
+- MIG-825 - [BREAKING] Hinzufügen des Parameters `runOptions` zu `createMigrationRun` von `Migration/Run/RunService.php`
+- MIG-825 - Hinzufügen der neue finalen Klasse `Migration/Run/RunOptions.php`, um der Migration Optionen zur Verfügung zu stellen
+- MIG-825 - [BREAKING] Hinzufügen des Parameters `where` zu `fetchIdentifiers` von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
 - MIG-838 - Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen hinzugefügt
 - MIG-839 - Zustatzfelder zu der Migration von Kategorieübersetzungen hinzugefügt
 - MIG-899 -Geändertes Verhalten der Migration von SEO URLs. Die URL Groß-/Kleinschreibung von Shopware 5 wird nun berücksichtigt

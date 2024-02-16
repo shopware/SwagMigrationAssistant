@@ -26,14 +26,9 @@ class OrderReader extends AbstractReader
 
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        $dataSet = $migrationContext->getDataSet();
-        if ($dataSet === null) {
-            return false;
-        }
-
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $dataSet::getEntity() === DefaultEntities::ORDER;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::ORDER;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

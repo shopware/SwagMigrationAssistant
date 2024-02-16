@@ -18,14 +18,9 @@ class OrderReader extends ApiReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        $dataSet = $migrationContext->getDataSet();
-        if ($dataSet === null) {
-            return false;
-        }
-
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $dataSet::getEntity() === DefaultEntities::ORDER;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::ORDER;
     }
 
     protected function getApiRoute(): string

@@ -12,7 +12,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('services-settings')]
-class RunOptions
+final class RunOptions
 {
     public function __construct(
         private readonly bool $keepData = false,

@@ -3,6 +3,8 @@
 - MIG-825 - Improve performance of the migration of orders
 - MIG-825 - Added options `step-size` and `keep-data` to the cli command `migration:migrate` of `Command/MigrationCommand.php`
 - MIG-825 - [BREAKING] Added parameter `runOptions` to `createMigrationRun` of `Migration/Run/RunService.php`
+- MIG-825 - Added the new final class `Migration/Run/RunOptions.php` to handle the options of a migration run
+- MIG-825 - [BREAKING] Added parameter `where` to `fetchIdentifiers` of `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
 - MIG-838 - Add the meta information fields to the migration of category translations
 - MIG-839 - Add custom fields to the migration of category translations
 - MIG-899 - Changed behavior of the migration of seo urls. It now considers the URL case setting of shopware 5
