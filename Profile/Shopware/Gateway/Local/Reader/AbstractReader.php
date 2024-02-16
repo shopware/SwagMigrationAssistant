@@ -40,7 +40,7 @@ abstract class AbstractReader implements ReaderInterface
     /**
      * @psalm-suppress RedundantConditionGivenDocblockType
      */
-    protected function setConnection(MigrationContextInterface $migrationContext): void
+    final protected function setConnection(MigrationContextInterface $migrationContext): void
     {
         if ($this->connection instanceof Connection && $this->connection->isConnected()) {
             return;
@@ -55,7 +55,7 @@ abstract class AbstractReader implements ReaderInterface
         $this->connection = $connection;
     }
 
-    protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
+    final protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
     {
         $columns = $this->connection->createSchemaManager()->listTableColumns($table);
 
@@ -74,7 +74,7 @@ abstract class AbstractReader implements ReaderInterface
      * @param array<mixed> $array
      * @param array<mixed> $path
      */
-    protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, mixed $value): void
+    final protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, mixed $value): void
     {
         $key = \array_shift($path);
 
@@ -95,7 +95,7 @@ abstract class AbstractReader implements ReaderInterface
      *
      * @return array<mixed>
      */
-    protected function cleanupResultSet(array &$data): array
+    final protected function cleanupResultSet(array &$data): array
     {
         foreach ($data as $key => &$value) {
             if (\is_array($value)) {
@@ -124,7 +124,7 @@ abstract class AbstractReader implements ReaderInterface
      *
      * @return array<int|string>
      */
-    protected function fetchIdentifiers(
+    final protected function fetchIdentifiers(
         string $table,
         int $offset = 0,
         int $limit = 250,
@@ -152,7 +152,7 @@ abstract class AbstractReader implements ReaderInterface
         return $query->fetchFirstColumn();
     }
 
-    protected function getDefaultShopLocale(): string
+    final protected function getDefaultShopLocale(): string
     {
         $result = $this->connection->createQueryBuilder()
             ->select('locale.locale')
@@ -173,7 +173,7 @@ abstract class AbstractReader implements ReaderInterface
      *
      * @return array<mixed>
      */
-    protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
+    final protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
     {
         foreach ($data as $key => $value) {
             if (\is_numeric($key)) {
@@ -193,7 +193,7 @@ abstract class AbstractReader implements ReaderInterface
         return $result;
     }
 
-    protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
+    final protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
     {
         $dataSet = $migrationContext->getDataSet();
         if ($dataSet === null) {
