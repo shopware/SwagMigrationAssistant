@@ -4,7 +4,11 @@ const utils = Shopware.Utils;
  * @package services-settings
  */
 export default class StorageBroadcastService {
-    constructor(receiveCallback = () => {}, channelKey) {
+    /**
+     * @param {string} channelKey
+     * @param {function} receiveCallback
+     */
+    constructor(channelKey, receiveCallback) {
         this._clientId = utils.createId();
         this._channelKey = channelKey; // To identify the messages of all StorageBroadcastServices
         this._receiveCallback = receiveCallback;

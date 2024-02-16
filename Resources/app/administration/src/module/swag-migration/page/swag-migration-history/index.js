@@ -187,7 +187,9 @@ Component.register('swag-migration-history', {
                 this.$router.go();
             }).catch(() => {
                 this.createNotificationError({
-                    message: this.$t('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message'),
+                    message: this.$t(
+                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
+                    ),
                     growl: true,
                 });
             });

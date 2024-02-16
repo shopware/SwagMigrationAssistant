@@ -52,8 +52,8 @@ module.exports = {
         'default',
         ['./Test/Jest/node_modules/jest-junit/index.js', {
             suiteName: 'SwagMigrationAssistant Administration Unit Tests',
-            outputDirectory: artifactsPath,
-            outputName: 'swag-migration-assistant-administration.junit.xml',
+            outputDirectory: join('../../', artifactsPath),
+            outputName: 'junit.xml',
         }],
     ],
 

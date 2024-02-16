@@ -424,7 +424,8 @@ Component.register('swag-migration-wizard', {
 
             if (this.currentRoute === this.routes.credentialsError) {
                 if (this.currentErrorCode === SSL_REQUIRED_ERROR_CODE) {
-                    this.connection.credentialFields.endpoint = this.connection.credentialFields.endpoint.replace('http:', 'https:');
+                    this.connection.credentialFields.endpoint =
+                        this.connection.credentialFields.endpoint.replace('http:', 'https:');
                     this.onConnect();
                     return;
                 }

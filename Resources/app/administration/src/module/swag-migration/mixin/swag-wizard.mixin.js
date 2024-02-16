@@ -9,7 +9,7 @@ const { debug } = Shopware.Utils;
  */
 Mixin.register('swag-wizard', {
     inject: [
-        'feature'
+        'feature',
     ],
     data() {
         return {
@@ -193,7 +193,7 @@ Mixin.register('swag-wizard', {
          */
         navigateToRoute(route) {
             this.$router.push({ name: route.name }).catch((error) => {
-                console.info(error.message)
+                console.error(error.message);
             });
         },
 

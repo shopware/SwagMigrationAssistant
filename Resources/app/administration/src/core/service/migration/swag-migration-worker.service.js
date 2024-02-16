@@ -1,3 +1,6 @@
+// ToDo: MIG-895 - This file should be refactored / removed, so no need to fix eslint issues here.
+/* eslint-disable */
+
 import StorageBroadcastService from '../storage-broadcaster.service';
 import { WorkerRequest } from './swag-migration-worker-request.service';
 import { MIGRATION_STATUS, WorkerStatusManager } from './swag-migration-worker-status-manager.service';
@@ -36,8 +39,8 @@ class MigrationWorkerService {
 
         // handles cross browser tab communication
         this._broadcastService = new StorageBroadcastService(
-            this._onBroadcastReceived.bind(this),
             'swag-migration-service',
+            this._onBroadcastReceived.bind(this),
         );
 
         this._migrationService = migrationService;

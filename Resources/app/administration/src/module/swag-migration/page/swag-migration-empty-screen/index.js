@@ -17,7 +17,7 @@ Component.register('swag-migration-empty-screen', {
 
     methods: {
         onConnectClick() {
-            this.$router.push({name: 'swag.migration.wizard.introduction'});
+            this.$router.push({ name: 'swag.migration.wizard.introduction' });
         },
     },
 });
