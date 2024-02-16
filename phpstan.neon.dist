@@ -24,6 +24,8 @@ parameters:
         - vendor
         - var
         - ecs.php
+        - Test/Jest/node_modules
+        - Resources/app/administration/node_modules
 
     ignoreErrors:
         - message: '#Service ".*" is private#'

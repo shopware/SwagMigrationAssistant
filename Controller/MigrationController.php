@@ -46,7 +46,8 @@ class MigrationController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/migration/fetch-data', name: 'api.admin.migration.fetch-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/fetch-data', name: 'api.admin.migration.fetch-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function fetchData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -95,7 +96,8 @@ class MigrationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/migration/update-write-progress', name: 'api.admin.migration.update-write-progress', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/update-write-progress', name: 'api.admin.migration.update-write-progress', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function updateWriteProgress(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -123,7 +125,8 @@ class MigrationController extends AbstractController
         return new JsonResponse($writeProgress);
     }
 
-    #[Route(path: '/api/_action/migration/write-data', name: 'api.admin.migration.write-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/write-data', name: 'api.admin.migration.write-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function writeData(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -164,7 +167,8 @@ class MigrationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/migration/update-media-files-progress', name: 'api.admin.migration.update-media-files-progress', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/update-media-files-progress', name: 'api.admin.migration.update-media-files-progress', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function updateMediaFilesProgress(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -192,7 +196,8 @@ class MigrationController extends AbstractController
         return new JsonResponse($mediaFilesProgress);
     }
 
-    #[Route(path: '/api/_action/migration/process-media', name: 'api.admin.migration.process-media', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/process-media', name: 'api.admin.migration.process-media', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function processMedia(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -233,7 +238,8 @@ class MigrationController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/migration/indexing', name: 'api.action.migration.indexing', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/indexing', name: 'api.action.migration.indexing', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function indexing(Request $request): JsonResponse
     {
         $lastIndexer = $request->get('lastIndexer');

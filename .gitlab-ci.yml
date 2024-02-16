@@ -2,6 +2,7 @@ variables:
   PLUGIN_NAME: SwagMigrationAssistant
   PLATFORM_BRANCH: 'trunk'
   DEV_IMAGE: shopware/development:8.2-composer-2
+  NODE_VERSION: 20
 
 include:
   project: 'shopware/6/product/platform'

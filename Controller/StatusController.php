@@ -222,15 +222,8 @@ class StatusController extends AbstractController
         return new JsonResponse($information);
     }
 
-    #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function getState(Request $request, Context $context): JsonResponse
-    {
-        $state = $this->migrationProgressService->getProgress($request, $context);
-
-        return new JsonResponse($state);
-    }
-
-    #[Route(path: '/api/_action/migration/create-migration', name: 'api.admin.migration.create-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Can be removed. The migration run should be created by "start-migration"
+    // #[Route(path: '/api/_action/migration/create-migration', name: 'api.admin.migration.create-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function createMigration(Request $request, Context $context): JsonResponse
     {
         $connectionId = $request->request->getAlnum('connectionId');
@@ -266,7 +259,77 @@ class StatusController extends AbstractController
         return new JsonResponse($state);
     }
 
-    #[Route(path: '/api/_action/migration/takeover-migration', name: 'api.admin.migration.takeover-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/start-migration', name: 'api.admin.migration.start-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    public function startMigration(Request $request, Context $context): Response
+    {
+        // ToDo: MIG-895 it should create a new migration run
+        // ToDo: MIG-895 implement me: this should submit the MQ job to start the migration
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+
+        // in case there is already a migration running
+        // return new Response(null, Response::HTTP_BAD_REQUEST);
+    }
+
+    // ToDo: MIG-895 - build this in a new way. MQ should store progress that is easy to retrieve. Don't do heavy calculations here (will be polled)!
+    #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    public function getState(Request $request, Context $context): JsonResponse
+    {
+        // ToDo: MIG-895 remove the old way:
+        $state = $this->migrationProgressService->getProgress($request, $context);
+
+        // determine active runUuid
+
+        $possibleStates = [
+            'idle', // no migration running
+            'fetching',
+            'writing',
+            'media-processing',
+            'finished', // the MQ job is done, just inform the user about it (needs approval, see endpoint below)
+        ];
+
+        return new JsonResponse([
+            'step' => $possibleStates[1],
+            'progress' => 50,
+            'total' => 1000,
+        ]);
+    }
+
+    // ToDo: MIG-895 - build this in a new way. MQ should store progress that is easy to retrieve. Don't do heavy calculations here (will be polled)!
+    #[Route(path: '/api/_action/migration/approve-finished', name: 'api.admin.migration.approveFinished', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    public function approveFinishedMigration(Request $request, Context $context): Response
+    {
+        // get state from above
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+
+        // in case there is no migration in 'finish' state
+        // return new Response(null, Response::HTTP_BAD_REQUEST);
+    }
+
+    // ToDo: MIG-895 - Refactor this to stop the message queue job
+    #[Route(path: '/api/_action/migration/abort-migration', name: 'api.admin.migration.abort-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    public function abortMigration(Request $request, Context $context): Response
+    {
+        // ToDo: MIG-895 - Get the uuid from the running migration or return an error if no migration is running
+        /*
+        $runUuid = $request->request->getAlnum('runUuid');
+
+        if ($runUuid === '') {
+            throw new MigrationContextPropertyMissingException('runUuid');
+        }
+        */
+
+        // $this->runService->abortMigration($runUuid, $context);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+
+        // in case there is no running migration
+        // return new Response(null, Response::HTTP_BAD_REQUEST);
+    }
+
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/takeover-migration', name: 'api.admin.migration.takeover-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function takeoverMigration(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -280,22 +343,8 @@ class StatusController extends AbstractController
         return new JsonResponse(['accessToken' => $accessToken]);
     }
 
-    // Aborts an already running migration remotely.
-    #[Route(path: '/api/_action/migration/abort-migration', name: 'api.admin.migration.abort-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function abortMigration(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->abortMigration($runUuid, $context);
-
-        return new Response();
-    }
-
-    #[Route(path: '/api/_action/migration/finish-migration', name: 'api.admin.migration.finish-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/finish-migration', name: 'api.admin.migration.finish-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function finishMigration(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -309,7 +358,8 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/assign-themes', name: 'api.admin.migration.assign-themes', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    // ToDo: MIG-895 - Remove this
+    // #[Route(path: '/api/_action/migration/assign-themes', name: 'api.admin.migration.assign-themes', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function assignThemes(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
