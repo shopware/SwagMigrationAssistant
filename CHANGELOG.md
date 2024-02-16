@@ -1,9 +1,7 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-274 - Fix migration of cross selling
 - MIG-825 - Improve performance of the migration of orders
-- MIG-825 - Added options `step-size` and `keep-data` to the cli command `migration:migrate` of `Command/MigrationCommand.php`
-- MIG-825 - [BREAKING] Added parameter `runOptions` to `createMigrationRun` of `Migration/Run/RunService.php`
-- MIG-825 - Added the new final class `Migration/Run/RunOptions.php` to handle the options of a migration run
+- MIG-825 - Added option `step-size` to the cli command `migration:migrate` of `Command/MigrationCommand.php`
 - MIG-825 - [BREAKING] Added parameter `where` to `fetchIdentifiers` of `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
 - MIG-825 - [BREAKING] Changed functions of `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php` to be final:
   - `setConnection`
