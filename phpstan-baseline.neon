@@ -1,27 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Command\\\\MigrateDataCommand has an uninitialized property \\$dataSelectionNames\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Command/MigrateDataCommand.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Command\\\\MigrateDataCommand has an uninitialized property \\$output\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Command/MigrateDataCommand.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Command\\\\MigrateDataCommand\\:\\:__construct\\(\\) has parameter \\$generalSettingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Command/MigrateDataCommand.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Command\\\\MigrateDataCommand\\:\\:__construct\\(\\) has parameter \\$migrationConnectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Command/MigrateDataCommand.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Command\\\\MigrateDataCommand\\:\\:__construct\\(\\) has parameter \\$migrationRunRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: Command/MigrateDataCommand.php
 
@@ -59,16 +39,6 @@ parameters:
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 7
 			path: Controller/PremappingController.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Controller\\\\StatusController\\:\\:__construct\\(\\) has parameter \\$generalSettingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Controller/StatusController.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Controller\\\\StatusController\\:\\:__construct\\(\\) has parameter \\$migrationConnectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Controller/StatusController.php
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
@@ -1761,114 +1731,9 @@ parameters:
 			path: Migration/Run/RunProgress.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:__construct\\(\\) has parameter \\$connectionRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:__construct\\(\\) has parameter \\$mediaFileRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:__construct\\(\\) has parameter \\$migrationDataRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:__construct\\(\\) has parameter \\$migrationRunRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:__construct\\(\\) has parameter \\$salesChannelRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:__construct\\(\\) has parameter \\$themeRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:calculateFetchedTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:calculateMediaFilesProgress\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:calculateToBeFetchedTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:calculateWriteProgress\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:getDataSelectionCollection\\(\\) has parameter \\$dataSelectionIds with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:getSalesChannels\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:updateConnectionCredentials\\(\\) has parameter \\$credentialFields with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:updateMigrationRun\\(\\) has parameter \\$runProgress with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:updateRunWithProgress\\(\\) has parameter \\$credentials with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunService\\:\\:updateRunWithProgress\\(\\) has parameter \\$runProgress with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
-			message: "#^PHPDoc tag @var with type array\\<array\\<string\\>\\|string\\>\\|null is not subtype of native type array\\.$#"
-			count: 1
-			path: Migration/Run/RunService.php
-
-		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 2
 			path: Migration/Run/RunService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunServiceInterface\\:\\:calculateCurrentTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunServiceInterface\\:\\:calculateMediaFilesProgress\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunServiceInterface\\:\\:calculateWriteProgress\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunServiceInterface\\:\\:updateConnectionCredentials\\(\\) has parameter \\$credentialFields with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Migration/Run/RunServiceInterface.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
@@ -3693,11 +3558,6 @@ parameters:
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
-			path: Profile/Shopware/Gateway/Api/Reader/OrderReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
 			path: Profile/Shopware/Gateway/Api/Reader/ProductAttributeReader.php
 
 		-
@@ -3804,56 +3664,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$array with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$path with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:cleanupResultSet\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:cleanupResultSet\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:fetchIdentifiers\\(\\) has parameter \\$orderBy with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:fetchIdentifiers\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:mapData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:mapData\\(\\) has parameter \\$pathsToRemove with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:mapData\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AbstractReader\\:\\:mapData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
 
 		-
 			message: "#^Anonymous variable in a `\\$column\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
@@ -4279,61 +4089,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderDocumentReader\\:\\:fetchDocuments\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader has an uninitialized property \\$orderIds\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:appendAssociatedData\\(\\) has parameter \\$orders with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:appendAssociatedData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:fetchOrders\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:getOrderDetails\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:getOrderDocuments\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:getOrderEsd\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:setEsd\\(\\) has parameter \\$esdArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:setEsd\\(\\) has parameter \\$order with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderReader\\:\\:\\$orderIds type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/OrderReader.php
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"

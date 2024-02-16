@@ -10,9 +10,9 @@ namespace SwagMigrationAssistant\Test\Command;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
@@ -22,6 +22,7 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Command\MigrateDataCommand;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
@@ -33,10 +34,13 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
@@ -68,11 +72,23 @@ class MigrateDataCommandTest extends TestCase
 
     private Context $context;
 
+    /**
+     * @var EntityRepository<SwagMigrationRunCollection>
+     */
+    private EntityRepository $runRepo;
+
+    /**
+     * @var EntityRepository<SwagMigrationDataCollection>
+     */
+    private EntityRepository $dataRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
         $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
-        $runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $this->dataRepo = static::getContainer()->get('swag_migration_data.repository');
+
         $mappingService = static::getContainer()->get(MappingService::class);
         $loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
 
@@ -118,12 +134,12 @@ class MigrateDataCommandTest extends TestCase
             $this->context
         );
 
-        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
-        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'de-DE', Context::createDefaultContext(), null, [], $languageUuid);
-        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', Context::createDefaultContext(), null, [], $languageUuid);
-        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', Context::createDefaultContext(), null, [], $languageUuid);
-        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', Context::createDefaultContext(), null, [], $languageUuid);
-        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', Context::createDefaultContext(), null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CURRENCY, 'EUR', $this->context, null, [], Uuid::randomHex());
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'de-DE', $this->context, null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $this->context, null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-US', $this->context, null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'nl-NL', $this->context, null, [], $languageUuid);
+        $mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'bn-IN', $this->context, null, [], $languageUuid);
 
         $dataFetcher = $this->getMigrationDataFetcher(
             static::getContainer()->get('swag_migration_logging.repository'),
@@ -135,8 +151,10 @@ class MigrateDataCommandTest extends TestCase
         $setting = new GeneralSettingEntity();
         $setting->setSelectedConnectionId($this->connectionId);
         $setting->setUniqueIdentifier($this->connectionId);
+
+        /** @var StaticEntityRepository<GeneralSettingCollection> $generalSettingsRepo */
         $generalSettingsRepo = new StaticEntityRepository([
-            new EntityCollection([$setting]),
+            new GeneralSettingCollection([$setting]),
             new GeneralSettingDefinition(),
         ]);
         $application->add(new MigrateDataCommand(
@@ -145,17 +163,17 @@ class MigrateDataCommandTest extends TestCase
             static::getContainer()->get('swag_migration_run.repository'),
             static::getContainer()->get(DataSetRegistry::class),
             new RunService(
-                $runRepo,
+                $this->runRepo,
                 $this->connectionRepo,
                 $dataFetcher,
                 new SwagMigrationAccessTokenService(
-                    $runRepo
+                    $this->runRepo
                 ),
                 new DataSelectionRegistry([
                     new ProductDataSelection(),
                     new CustomerAndOrderDataSelection(),
                 ]),
-                static::getContainer()->get('swag_migration_data.repository'),
+                $this->dataRepo,
                 static::getContainer()->get('swag_migration_media_file.repository'),
                 static::getContainer()->get('sales_channel.repository'),
                 static::getContainer()->get('theme.repository'),
@@ -173,7 +191,7 @@ class MigrateDataCommandTest extends TestCase
                 new PremappingReaderRegistry([]),
                 $mappingService,
                 static::getContainer()->get('swag_migration_mapping.repository'),
-                $runRepo,
+                $this->runRepo,
                 $this->connectionRepo
             ),
             $dataFetcher,
@@ -197,9 +215,18 @@ class MigrateDataCommandTest extends TestCase
         $this->commandTester = new CommandTester($this->command);
     }
 
-    public function testExecution(): void
+    public function testExecutionWithResume(): void
     {
         $dbConnection = static::getContainer()->get(Connection::class);
+        $runId = Uuid::randomHex();
+        $this->runRepo->create([
+            [
+                'id' => $runId,
+                'connectionId' => $this->connectionId,
+                'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+            ],
+        ], $this->context);
+
         $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         $this->commandTester->execute([
             'command' => $this->command->getName(),
@@ -207,5 +234,85 @@ class MigrateDataCommandTest extends TestCase
         ]);
         $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
         static::assertSame(42, $productTotalAfter - $productTotalBefore);
+
+        /** @var SwagMigrationRunEntity $run */
+        $run = $this->runRepo->search(new Criteria([$runId]), $this->context)->getEntities()->first();
+        static::assertSame(SwagMigrationRunEntity::STATUS_FINISHED, $run->getStatus());
+
+        $runCount = $this->runRepo->search(new Criteria(), $this->context)->count();
+        static::assertSame(1, $runCount);
+    }
+
+    public function testExecutionWithKeepData(): void
+    {
+        $dbConnection = static::getContainer()->get(Connection::class);
+        $runId = Uuid::randomHex();
+        $this->runRepo->create([
+            [
+                'id' => $runId,
+                'connectionId' => $this->connectionId,
+                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+            ],
+        ], $this->context);
+
+        $this->dataRepo->create([
+            [
+                'id' => Uuid::randomHex(),
+                'runId' => $runId,
+                'entity' => 'product',
+                'raw' => ['id' => 'testId'],
+                'written' => false,
+            ],
+        ], $this->context);
+
+        $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
+        $this->commandTester->execute(
+            [
+                'command' => $this->command->getName(),
+                'dataSelections' => ['products'],
+                '--keep-data' => true,
+            ]
+        );
+        $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
+        static::assertSame(42, $productTotalAfter - $productTotalBefore);
+
+        $dataCount = $this->dataRepo->search(new Criteria(), $this->context)->count();
+        static::assertSame(1, $dataCount);
+    }
+
+    public function testExecutionWithoutKeepData(): void
+    {
+        $dbConnection = static::getContainer()->get(Connection::class);
+        $runId = Uuid::randomHex();
+        $this->runRepo->create([
+            [
+                'id' => $runId,
+                'connectionId' => $this->connectionId,
+                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+            ],
+        ], $this->context);
+
+        $this->dataRepo->create([
+            [
+                'id' => Uuid::randomHex(),
+                'runId' => $runId,
+                'entity' => 'product',
+                'raw' => ['id' => 'testId'],
+                'written' => false,
+            ],
+        ], $this->context);
+
+        $productTotalBefore = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
+        $this->commandTester->execute(
+            [
+                'command' => $this->command->getName(),
+                'dataSelections' => ['products'],
+            ]
+        );
+        $productTotalAfter = (int) $dbConnection->executeQuery('select count(*) from product')->fetchOne();
+        static::assertSame(42, $productTotalAfter - $productTotalBefore);
+
+        $dataCount = $this->dataRepo->search(new Criteria(), $this->context)->count();
+        static::assertSame(0, $dataCount);
     }
 }

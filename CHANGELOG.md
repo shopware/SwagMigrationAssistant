@@ -1,21 +1,22 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
-- MIG-937 - Always show current shop version used as compatible 6.x instance instead of older instances
-- MIG-899 - Changed behavior of the migration of seo urls. It now considers the URL case setting of shopware 5
 - MIG-274 - Fix migration of cross selling
+- MIG-825 - Improve performance of the migration of orders
+- MIG-825 - Added options `step-size` and `keep-data` to the cli command `migration:migrate` of `Command/MigrationCommand.php`
+- MIG-825 - [BREAKING] Added parameter `runOptions` to `createMigrationRun` of `Migration/Run/RunService.php`
+- MIG-825 - Added the new final class `Migration/Run/RunOptions.php` to handle the options of a migration run
+- MIG-825 - [BREAKING] Added parameter `where` to `fetchIdentifiers` of `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
+- MIG-825 - [BREAKING] Changed functions of `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php` to be final:
+  - `setConnection`
+  - `addTableSelection`
+  - `buildArrayFromChunks`
+  - `cleanupResultSet`
+  - `fetchIdentifiers`
+  - `getDefaultShopLocale`
+  - `mapData`
+  - `getDataSetEntity`
 - MIG-838 - Add the meta information fields to the migration of category translations
 - MIG-839 - Add custom fields to the migration of category translations
-- MIG-931 - Added method `getEntityName` and `setEntityName` to `Migration/MessageQueue/Message/ProcessMediaMessage.php`
-- MIG-931 - [BREAKING] Changed `Migration/MessageQueue/Handler/ProcessMediaHandler.php` to final
-- MIG-931 - [BREAKING] Added `AsyncMessageInterface` to `Migration/MessageQueue/Message/CleanupMigrationMessage.php`
-- MIG-931 - [BREAKING] Added `AsyncMessageInterface` to `Migration/MessageQueue/Message/ProcessMediaMessage.php`
-- MIG-931 - [BREAKING] Removed methods in `Migration/MessageQueue/Message/ProcessMediaMessage.php`:
-  - `readContext`
-  - `withContext`
-  - `getDataSet`
-  - `setDataSet`
-- MIG-931 - [BREAKING] Changed return parameter of `getContext` from `string` to `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php`
-- MIG-931 - [BREAKING] Changed parameter of `setContext` from `string` to `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php`
-- MIG-938 - Fixes wrong calculation when migrating shipping costs
+- MIG-899 - Changed behavior of the migration of seo urls. It now considers the URL case setting of shopware 5
 - MIG-920 - Changed supported Shopware 6 version to 6.6 and made adjustments to the profiles
 - MIG-920 - Added `Migration/Gateway/HttpClientInterface` to unify the usage of HTTP clients
 - MIG-920 - Added `Migration/Gateway/HttpSimpleClient.php` as a simple wrapper around the previously used `GuzzleHttp/Client`
@@ -36,12 +37,25 @@
 - MIG-920 - [BREAKING] Changed parent class and implementation of `Profile/Shopware6/Media/HttpMediaDownloadService.php` to `Migration/Media/Processor/HttpDownloadServiceBase.php`
 - MIG-920 - [BREAKING] Changed parent class and implementation of `Profile/Shopware6/Media/HttpOrderDocumentService.php` to `Migration/Media/Processor/HttpDownloadServiceBase.php`
 - MIG-920 - [BREAKING] Renamed `Profile/Shopware6/Media/HttpOrderDocumentService.php` to `Profile/Shopware/Media/HttpOrderDocumentDownloadService.php`
+- MIG-931 - Added method `getEntityName` and `setEntityName` to `Migration/MessageQueue/Message/ProcessMediaMessage.php`
+- MIG-931 - [BREAKING] Changed `Migration/MessageQueue/Handler/ProcessMediaHandler.php` to final
+- MIG-931 - [BREAKING] Added `AsyncMessageInterface` to `Migration/MessageQueue/Message/CleanupMigrationMessage.php`
+- MIG-931 - [BREAKING] Added `AsyncMessageInterface` to `Migration/MessageQueue/Message/ProcessMediaMessage.php`
+- MIG-931 - [BREAKING] Removed methods in `Migration/MessageQueue/Message/ProcessMediaMessage.php`:
+  - `readContext`
+  - `withContext`
+  - `getDataSet`
+  - `setDataSet`
+- MIG-931 - [BREAKING] Changed return parameter of `getContext` from `string` to `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php`
+- MIG-931 - [BREAKING] Changed parameter of `setContext` from `string` to `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php`
 - MIG-934 - Added new route `/api/_action/data-provider/download-private-file/{file}` for retrieving digital product files
 - MIG-934 - Changed `DataProvider/Provider/Data/ProductProvider.php` to include download media of digital products
 - MIG-934 - Changed `Profile/Shopware6/Converter/ProductConverter.php` to include download media of digital products
 - MIG-934 - Added `Profile/Shopware6/DataSelection/DataSet/ProductDownloadDataSet.php`
 - MIG-934 - Added `Profile/Shopware6/Media/HttpProductDownloadService.php`
 - MIG-934 - [BREAKING] Changed `Controller/DataProviderController.php` to final
+- MIG-937 - Always show current shop version used as compatible 6.x instance instead of older instances
+- MIG-938 - Fixes wrong calculation when migrating shipping costs
 
 # 7.0.2
 - MIG-908 - Fix Shopware 6 migration of `system_config` entities which should not be migrated between different shops
