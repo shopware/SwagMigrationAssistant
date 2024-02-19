@@ -468,6 +468,7 @@ class StatusControllerTest extends TestCase
         $totalBefore = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $result = $this->controller->createMigration($requestWithoutToken, $context);
         $state = $this->jsonResponseToArray($result);
+
         $totalAfter = $this->runRepo->search(new Criteria(), $context)->getTotal();
         $totalAbortedAfter = $this->runRepo->search($abortedCriteria, $context)->getTotal();
         $totalProcessing = $this->runRepo->search($runningCriteria, $context)->getTotal();

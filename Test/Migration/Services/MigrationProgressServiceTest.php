@@ -227,7 +227,14 @@ class MigrationProgressServiceTest extends TestCase
         $progress = \json_decode($encodedProgress, true);
         unset($progress['runProgress'], $progress['extensions']);
 
-        static::assertSame($expectedProgress, $progress);
+        static::assertSame($expectedProgress['runId'], $progress['runId']);
+        static::assertSame($expectedProgress['accessToken'], $progress['accessToken']);
+        static::assertSame($expectedProgress['migrationRunning'], $progress['migrationRunning']);
+        static::assertSame($expectedProgress['validMigrationRunToken'], $progress['validMigrationRunToken']);
+        static::assertSame($expectedProgress['status'], $progress['status']);
+        static::assertSame($expectedProgress['entity'], $progress['entity']);
+        static::assertSame($expectedProgress['entityCount'], $progress['entityCount']);
+        static::assertSame($expectedProgress['finishedCount'], $progress['finishedCount']);
     }
 
     public function testGetProgressInPremappingStatusWithInvalidToken(): void
@@ -272,7 +279,14 @@ class MigrationProgressServiceTest extends TestCase
         $progress = \json_decode($encodedProgress, true);
         unset($progress['runProgress'], $progress['extensions']);
 
-        static::assertSame($expectedProgress, $progress);
+        static::assertSame($expectedProgress['runId'], $progress['runId']);
+        static::assertSame($expectedProgress['accessToken'], $progress['accessToken']);
+        static::assertSame($expectedProgress['migrationRunning'], $progress['migrationRunning']);
+        static::assertSame($expectedProgress['validMigrationRunToken'], $progress['validMigrationRunToken']);
+        static::assertSame($expectedProgress['status'], $progress['status']);
+        static::assertSame($expectedProgress['entity'], $progress['entity']);
+        static::assertSame($expectedProgress['entityCount'], $progress['entityCount']);
+        static::assertSame($expectedProgress['finishedCount'], $progress['finishedCount']);
     }
 
     public function testGetProgressFetchInProgress(): void

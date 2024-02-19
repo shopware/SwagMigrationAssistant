@@ -14,10 +14,13 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-class ConnectionFactory implements ConnectionFactoryInterface
+class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 {
+    private ?Connection $externalConnection = null;
+
     public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?HttpClientInterface
     {
         $connection = $migrationContext->getConnection();
@@ -42,6 +45,10 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
     public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection
     {
+        if ($this->externalConnection instanceof Connection) {
+            return $this->externalConnection;
+        }
+
         $connection = $migrationContext->getConnection();
 
         if ($connection === null) {
@@ -67,16 +74,21 @@ class ConnectionFactory implements ConnectionFactoryInterface
             $connectionParams['port'] = (int) $credentials['dbPort'];
         }
 
-        $connection = DriverManager::getConnection($connectionParams);
+        $this->externalConnection = DriverManager::getConnection($connectionParams);
 
         try {
-            if (\is_object($connection->getNativeConnection()) && \method_exists($connection->getNativeConnection(), 'setAttribute')) {
-                $connection->getNativeConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+            if (\is_object($this->externalConnection->getNativeConnection()) && \method_exists($this->externalConnection->getNativeConnection(), 'setAttribute')) {
+                $this->externalConnection->getNativeConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
             }
         } catch (ConnectionException $exception) {
             // nth
         }
 
-        return $connection;
+        return $this->externalConnection;
+    }
+
+    public function reset(): void
+    {
+        $this->externalConnection = null;
     }
 }

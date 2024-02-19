@@ -4123,81 +4123,6 @@ parameters:
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:appendAssociatedData\\(\\) has parameter \\$products with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:appendAssociatedData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:buildIdentifierMappings\\(\\) has parameter \\$fetchedProducts with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:fetchMainCategoryShops\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:fetchVariantAssets\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getCategories\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getConfiguratorOptions\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getEsdFiles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getMedia\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getPrices\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getProductVisibility\\(\\) has parameter \\$categories with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getProductVisibility\\(\\) has parameter \\$mainCategoryShops with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReader\\:\\:getProductVisibility\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: Profile/Shopware/Gateway/Local/Reader/ProductReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
 			path: Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
 
 		-
@@ -6193,26 +6118,6 @@ parameters:
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
 			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\MediaReaderTest\\:\\:\\$customerReader \\(SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerReader\\) does not accept SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/MediaReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
 
 		-
@@ -6269,21 +6174,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: Test/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: Test/Profile/Shopware/Gateway/Local/ProductReaderTest.php
 
 		-
 			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"

@@ -7,141 +7,110 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
-use Doctrine\DBAL\Connection;
-use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SeoUrlDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\SeoUrlReader;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
+use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 
 #[Package('services-settings')]
-class SeoUrlReaderTest extends TestCase
+class SeoUrlReaderTest extends LocalConnectionTestCase
 {
-    use LocalCredentialTrait;
-
-    private SeoUrlReader $seoUrlReader;
-
-    private MigrationContext $migrationContext;
-
-    private Connection $externalConnection;
-
-    protected function setUp(): void
-    {
-        $this->connectionSetup();
-
-        $this->seoUrlReader = new SeoUrlReader(new ConnectionFactory());
-
-        $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
-            new SeoUrlDataSet(),
-            50,
-            10
-        );
-
-        $this->migrationContext->setGateway(new DummyLocalGateway());
-
-        $externalConnection = (new ConnectionFactory())->createDatabaseConnection($this->migrationContext);
-        if (!$externalConnection instanceof Connection) {
-            static::markTestSkipped('External connection could not be established in: ' . self::class . ' ' . __METHOD__ . ' ' . __LINE__);
-        }
-
-        $this->externalConnection = $externalConnection;
-    }
-
     public function testRead(): void
     {
+        $seoUrlReader = $this->getSeoUrlReader();
+
         $this->setRouterToLowerValue(false);
-        static::assertTrue($this->seoUrlReader->supports($this->migrationContext));
+        static::assertTrue($seoUrlReader->supports($this->getMigrationContext()));
 
-        $data = $this->seoUrlReader->read($this->migrationContext);
+        $this->setLimitAndOffset(20, 40);
+        $data = $seoUrlReader->read($this->getMigrationContext());
 
-        static::assertCount(10, $data);
-        static::assertSame('1226', $data[0]['id']);
-        static::assertSame('Genusswelten-EN/', $data[0]['path']);
-        static::assertSame('0', $data[0]['main']);
-        static::assertSame('2', $data[0]['subshopID']);
-        static::assertSame('en-GB', $data[0]['_locale']);
-        static::assertSame('cat', $data[0]['type']);
-        static::assertSame('43', $data[0]['typeId']);
+        $seoUrl = $this->findSeoUrl('1226', $data);
 
-        $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
-            new SeoUrlDataSet(),
-            200,
-            10
-        );
-        $data = $this->seoUrlReader->read($this->migrationContext);
+        static::assertCount(20, $data);
+        static::assertSame('1226', $seoUrl['id']);
+        static::assertSame('Genusswelten-EN/', $seoUrl['path']);
+        static::assertSame('0', $seoUrl['main']);
+        static::assertSame('2', $seoUrl['subshopID']);
+        static::assertSame('en-GB', $seoUrl['_locale']);
+        static::assertSame('cat', $seoUrl['type']);
+        static::assertSame('43', $seoUrl['typeId']);
+
+        $this->setLimitAndOffset(10, 200);
+        $data = $seoUrlReader->read($this->getMigrationContext());
+
+        $seoUrl = $this->findSeoUrl('153', $data);
 
         static::assertCount(10, $data);
-        static::assertSame('153', $data[0]['id']);
-        static::assertSame('Sommerwelten/162/Sommer-Sandale-Pink', $data[0]['path']);
-        static::assertSame('1', $data[0]['main']);
-        static::assertSame('1', $data[0]['subshopID']);
-        static::assertSame('de-DE', $data[0]['_locale']);
-        static::assertSame('detail', $data[0]['type']);
-        static::assertSame('162', $data[0]['typeId']);
+        static::assertSame('153', $seoUrl['id']);
+        static::assertSame('Sommerwelten/162/Sommer-Sandale-Pink', $seoUrl['path']);
+        static::assertSame('1', $seoUrl['main']);
+        static::assertSame('1', $seoUrl['subshopID']);
+        static::assertSame('de-DE', $seoUrl['_locale']);
+        static::assertSame('detail', $seoUrl['type']);
+        static::assertSame('162', $seoUrl['typeId']);
     }
 
     public function testReadWithLowerUrl(): void
     {
+        $seoUrlReader = $this->getSeoUrlReader();
+
         $this->setRouterToLowerValue(true);
-        static::assertTrue($this->seoUrlReader->supports($this->migrationContext));
+        static::assertTrue($seoUrlReader->supports($this->getMigrationContext()));
 
-        $data = $this->seoUrlReader->read($this->migrationContext);
+        $this->setLimitAndOffset(20, 40);
+        $data = $seoUrlReader->read($this->getMigrationContext());
 
-        static::assertCount(10, $data);
-        static::assertSame('genusswelten-en/', $data[0]['path']);
+        $seoUrl = $this->findSeoUrl('1226', $data);
 
-        $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
-            new SeoUrlDataSet(),
-            200,
-            10
-        );
-        $data = $this->seoUrlReader->read($this->migrationContext);
+        static::assertCount(20, $data);
+        static::assertSame('genusswelten-en/', $seoUrl['path']);
+
+        $this->setLimitAndOffset(10, 200);
+        $data = $seoUrlReader->read($this->getMigrationContext());
 
         static::assertSame('sommerwelten/162/sommer-sandale-pink', $data[0]['path']);
     }
 
     public function testReadTotal(): void
     {
-        static::assertTrue($this->seoUrlReader->supportsTotal($this->migrationContext));
+        $seoUrlReader = $this->getSeoUrlReader();
 
-        $totalStruct = $this->seoUrlReader->readTotal($this->migrationContext);
+        static::assertTrue($seoUrlReader->supportsTotal($this->getMigrationContext()));
+
+        $totalStruct = $seoUrlReader->readTotal($this->getMigrationContext());
         static::assertInstanceOf(TotalStruct::class, $totalStruct);
 
-        $dataset = $this->migrationContext->getDataSet();
+        $dataset = $this->getMigrationContext()->getDataSet();
         static::assertInstanceOf(SeoUrlDataSet::class, $dataset);
 
         static::assertSame($dataset::getEntity(), $totalStruct->getEntityName());
         static::assertSame(495, $totalStruct->getTotal());
     }
 
+    protected function getDataSet(): DataSet
+    {
+        return new SeoUrlDataSet();
+    }
+
     private function setRouterToLowerValue(bool $value): void
     {
         $serializedValue = \serialize($value);
 
-        $elementId = $this->externalConnection->executeQuery(
+        $connection = $this->getExternalConnection();
+        $elementId = $connection->executeQuery(
             'SELECT `id` FROM `s_core_config_elements` WHERE `name` = "routerToLower";'
         )->fetchOne();
 
-        $value = $this->externalConnection->executeQuery(
+        $value = $connection->executeQuery(
             'SELECT `value` FROM `s_core_config_values` WHERE `element_id` = :elementId;',
             ['elementId' => (int) $elementId]
         )->fetchOne();
 
         if (!\is_string($value)) {
-            $this->externalConnection->executeQuery(
+            $connection->executeQuery(
                 'INSERT INTO `s_core_config_values` (`element_id`, `shop_id`, `value`) VALUES (:elementId, :shopId, :value)',
                 ['elementId' => $elementId, 'shopId' => 1, 'value' => $serializedValue]
             );
@@ -149,9 +118,30 @@ class SeoUrlReaderTest extends TestCase
             return;
         }
 
-        $this->externalConnection->executeQuery(
+        $connection->executeQuery(
             'UPDATE `s_core_config_values` SET `value` = :value WHERE `element_id` = :elementId AND `shop_id` = 1;',
             ['elementId' => $elementId, 'value' => $serializedValue]
         );
+    }
+
+    private function getSeoUrlReader(): SeoUrlReader
+    {
+        return new SeoUrlReader($this->getConnectionFactory());
+    }
+
+    /**
+     * @param array<int, array<string, mixed>>  $data
+     *
+     * @return array<string, mixed>
+     */
+    private function findSeoUrl(string $id, array $data): array
+    {
+        foreach ($data as $seoUrl) {
+            if ($seoUrl['id'] === $id) {
+                return $seoUrl;
+            }
+        }
+
+        return [];
     }
 }

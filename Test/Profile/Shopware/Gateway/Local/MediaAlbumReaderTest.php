@@ -50,12 +50,31 @@ class MediaAlbumReaderTest extends TestCase
         $data = $this->mediaAlbumReader->read($this->migrationContext);
 
         static::assertCount(13, $data);
-        static::assertSame('-1', $data[9]['id']);
-        static::assertSame('200x200;600x600;1280x1280;120x120', $data[9]['setting']['thumbnail_size']);
-        static::assertSame('de_DE', $data[9]['_locale']);
+        $album = $this->findAlbum('-1', $data);
 
-        static::assertSame('-9', $data[7]['id']);
-        static::assertSame('', $data[7]['setting']['thumbnail_size']);
-        static::assertSame('de_DE', $data[7]['_locale']);
+        static::assertSame('-1', $album['id']);
+        static::assertSame('200x200;600x600;1280x1280;120x120', $album['setting']['thumbnail_size']);
+        static::assertSame('de_DE', $album['_locale']);
+
+        $album = $this->findAlbum('-9', $data);
+        static::assertSame('-9', $album['id']);
+        static::assertSame('', $album['setting']['thumbnail_size']);
+        static::assertSame('de_DE', $album['_locale']);
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $data
+     *
+     * @return array<string, mixed>
+     */
+    private function findAlbum(string $id, array $data): array
+    {
+        foreach ($data as $album) {
+            if ($album['id'] === $id) {
+                return $album;
+            }
+        }
+
+        return [];
     }
 }

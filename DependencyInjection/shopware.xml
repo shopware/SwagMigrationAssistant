@@ -6,7 +6,9 @@
 
     <services>
         <!-- Shopware ConnectionFactory -->
-        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory">
+            <tag name="kernel.reset" method="reset"/>
+        </service>
 
         <!-- Shopware Profile Gateways -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway">
