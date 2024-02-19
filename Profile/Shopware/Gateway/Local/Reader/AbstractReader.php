@@ -71,7 +71,8 @@ abstract class AbstractReader implements ReaderInterface
     }
 
     /**
-     * @psalm-suppress MissingParamType
+     * @param array<mixed> $array
+     * @param array<mixed> $path
      */
     protected function buildArrayFromChunks(array &$array, array $path, string $fieldKey, mixed $value): void
     {
@@ -89,6 +90,11 @@ abstract class AbstractReader implements ReaderInterface
         }
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     protected function cleanupResultSet(array &$data): array
     {
         foreach ($data as $key => &$value) {
@@ -112,8 +118,19 @@ abstract class AbstractReader implements ReaderInterface
         return $data;
     }
 
-    protected function fetchIdentifiers(string $table, int $offset = 0, int $limit = 250, array $orderBy = []): array
-    {
+    /**
+     * @param array<int, string> $orderBy
+     * @param array<int, string> $where
+     *
+     * @return array<int|string>
+     */
+    protected function fetchIdentifiers(
+        string $table,
+        int $offset = 0,
+        int $limit = 250,
+        array $orderBy = [],
+        array $where = []
+    ): array {
         $query = $this->connection->createQueryBuilder();
 
         $query->select('id');
@@ -124,6 +141,10 @@ abstract class AbstractReader implements ReaderInterface
 
         foreach ($orderBy as $order) {
             $query->addOrderBy($order);
+        }
+
+        foreach ($where as $clause) {
+            $query->andWhere($clause);
         }
 
         $query = $query->executeQuery();
@@ -145,6 +166,13 @@ abstract class AbstractReader implements ReaderInterface
         return $result ?: '';
     }
 
+    /**
+     * @param array<mixed> $data
+     * @param array<mixed> $result
+     * @param array<string> $pathsToRemove
+     *
+     * @return array<mixed>
+     */
     protected function mapData(array $data, array $result = [], array $pathsToRemove = []): array
     {
         foreach ($data as $key => $value) {
