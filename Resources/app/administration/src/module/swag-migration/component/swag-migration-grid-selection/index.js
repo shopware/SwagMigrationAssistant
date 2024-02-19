@@ -34,6 +34,15 @@ Component.register('swag-migration-grid-selection', {
         };
     },
 
+    watch: {
+        choices() {
+            this.getList();
+        },
+        mapping() {
+            this.getList();
+        },
+    },
+
     methods: {
         getList() {
             this.total = this.mapping.length;

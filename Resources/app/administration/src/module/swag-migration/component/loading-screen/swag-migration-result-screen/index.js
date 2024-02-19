@@ -15,11 +15,4 @@ Component.register('swag-migration-result-screen', {
             return Shopware.Filter.getByName('asset');
         },
     },
-
-    props: {
-        runId: {
-            type: String,
-            required: true,
-        },
-    },
 });

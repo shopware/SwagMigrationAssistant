@@ -4,6 +4,7 @@ import './swag-migration-wizard.scss';
 const { Component, Mixin, State } = Shopware;
 const { Criteria } = Shopware.Data;
 const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
+const { mapState } = Shopware.Component.getComponentHelper();
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
@@ -14,12 +15,12 @@ const CONNECTION_NAME_ERRORS = Object.freeze({
  * @private
  * @package services-settings
  */
-Component.register('swag-migration-wizard', {
+Component.extend('swag-migration-wizard', 'swag-migration-base', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
         repositoryFactory: 'repositoryFactory',
     },
 
@@ -53,6 +54,10 @@ Component.register('swag-migration-wizard', {
     },
 
     computed: {
+        ...mapState('swagMigration/process', [
+            'connectionId',
+        ]),
+
         migrationConnectionRepository() {
             return this.repositoryFactory.create('swag_migration_connection');
         },
@@ -166,10 +171,6 @@ Component.register('swag-migration-wizard', {
         },
     },
 
-    created() {
-        this.createdComponent();
-    },
-
     /**
      * Close modal and after it is closed we redirect to next route.
      * (note: without closing it first the sw-modal will stay in the DOM)
@@ -187,9 +188,11 @@ Component.register('swag-migration-wizard', {
 
     methods: {
         createdComponent() {
-            return this.loadSelectedConnection(this.$route.params.connectionId).then(() => {
-                this.onChildRouteChanged(); // update strings for current child
-                this.isLoading = false;
+            return this.$super('createdComponent').then(() => {
+                return this.loadSelectedConnection(this.connectionId).then(() => {
+                    this.isLoading = false;
+                    this.onChildRouteChanged(); // update strings for current child
+                });
             });
         },
 
@@ -252,7 +255,7 @@ Component.register('swag-migration-wizard', {
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
-            return this.migrationService.updateConnectionCredentials(
+            return this.migrationApiService.updateConnectionCredentials(
                 this.connection.id,
                 this.connection.credentialFields,
             ).then((response) => {
@@ -270,9 +273,8 @@ Component.register('swag-migration-wizard', {
 
         doConnectionCheck() {
             this.isLoading = true;
-            return this.migrationService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
+            return this.migrationApiService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
                 State.commit('swagMigration/process/setConnectionId', this.connection.id);
-                State.commit('swagMigration/process/setEntityGroups', []);
                 this.isLoading = false;
 
                 if (!connectionCheckResponse) {
@@ -311,7 +313,6 @@ Component.register('swag-migration-wizard', {
             }).catch((error) => {
                 this.isLoading = false;
                 State.commit('swagMigration/process/setConnectionId', this.connection.id);
-                State.commit('swagMigration/process/setEntityGroups', []);
                 State.commit('swagMigration/process/setEnvironmentInformation', {});
                 State.commit('swagMigration/ui/setDataSelectionIds', []);
                 State.commit('swagMigration/ui/setPremapping', []);
@@ -338,24 +339,17 @@ Component.register('swag-migration-wizard', {
 
         onCloseModal() {
             this.showModal = false;
-
-            // navigate depending on the current state
-            if (Object.keys(this.connection).length) {
-                // navigate to module
-                this.$router.push({
-                    name: 'swag.migration.index',
-                    params: { connectionId: this.connection.id },
-                });
-
-                return;
-            }
-
+            // navigate to module
             this.$router.push({
-                name: 'swag.migration.emptyScreen',
+                name: 'swag.migration.index.main',
             });
         },
 
         onChildRouteChanged() {
+            if (this.isLoading) {
+                return;
+            }
+
             this.checkForDisabledRoute();
         },
 
@@ -547,7 +541,6 @@ Component.register('swag-migration-wizard', {
                 this.isLoading = true;
 
                 State.commit('swagMigration/process/setConnectionId', connection.id);
-                State.commit('swagMigration/process/setEntityGroups', []);
                 State.commit('swagMigration/process/setEnvironmentInformation', {});
                 State.commit('swagMigration/ui/setDataSelectionIds', []);
                 State.commit('swagMigration/ui/setPremapping', []);

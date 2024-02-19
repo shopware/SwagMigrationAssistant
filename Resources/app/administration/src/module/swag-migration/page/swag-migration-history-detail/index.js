@@ -12,8 +12,8 @@ Component.register('swag-migration-history-detail', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
         repositoryFactory: 'repositoryFactory',
     },
 
@@ -135,7 +135,7 @@ Component.register('swag-migration-history-detail', {
 
             this.migrationRun = runs.first();
 
-            return this.migrationService.getProfileInformation(
+            return this.migrationApiService.getProfileInformation(
                 this.migrationRun.connection.profileName,
                 this.migrationRun.connection.gatewayName,
             ).then((profileInformation) => {

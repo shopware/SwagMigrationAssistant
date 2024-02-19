@@ -1,5 +1,17 @@
 const ApiService = Shopware.Classes.ApiService;
 
+export const MIGRATION_STEP = Object.freeze({
+    IDLE: 'idle',
+    FETCHING: 'fetching',
+    WRITING: 'writing',
+    MEDIA_PROCESSING: 'media-processing',
+    FINISHED: 'finished',
+    // ToDo MIG-895: Rename finished to `waiting-for-approve`
+    // possible other states (important for display in the history):
+    // finished
+    // aborted
+});
+
 /**
  * @private
  * @package services-settings
@@ -52,14 +64,13 @@ class MigrationApiService extends ApiService {
         });
     }
 
-    createMigration(connectionId, dataSelectionIds) {
-        const params = {
-            connectionId,
-            dataSelectionIds,
-        };
+    /**
+     * @param {string[]} dataSelectionIds
+     */
+    generatePremapping(dataSelectionIds) {
         const headers = this.getBasicHeaders();
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/create-migration`, params, {
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/generate-premapping`, { dataSelectionIds }, {
             ...this.basicConfig,
             headers,
         }).then((response) => {
@@ -67,11 +78,10 @@ class MigrationApiService extends ApiService {
         });
     }
 
-    fetchData(additionalParams = {}, additionalHeaders = {}) {
-        const params = additionalParams;
-        const headers = this.getBasicHeaders(additionalHeaders);
+    writePremapping(premapping) {
+        const headers = this.getBasicHeaders();
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/fetch-data`, params, {
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/write-premapping`, { premapping }, {
             ...this.basicConfig,
             headers,
         }).then((response) => {
@@ -79,11 +89,14 @@ class MigrationApiService extends ApiService {
         });
     }
 
-    updateWriteProgress(runUuid, additionalHeaders = {}) {
-        const headers = this.getBasicHeaders(additionalHeaders);
+    /**
+     * @param {string[]} dataSelectionNames
+     */
+    startMigration(dataSelectionNames) {
+        const headers = this.getBasicHeaders();
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/update-write-progress`, {
-            runUuid,
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/start-migration`, {
+            dataSelectionNames,
         }, {
             ...this.basicConfig,
             headers,
@@ -92,59 +105,10 @@ class MigrationApiService extends ApiService {
         });
     }
 
-    updateMediaFilesProgress(runUuid, additionalHeaders = {}) {
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/update-media-files-progress`, {
-            runUuid,
-        }, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    writeData(additionalParams = {}, additionalHeaders = { }) {
-        const params = additionalParams;
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/write-data`, params, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    processMedia(additionalParams = {}, additionalHeaders = {}) {
-        const params = additionalParams;
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/process-media`, params, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    getState(additionalParams = {}, additionalHeaders = {}) {
-        const params = additionalParams;
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/get-state`, params, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    takeoverMigration(runUuid) {
+    getState() {
         const headers = this.getBasicHeaders();
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/takeover-migration`, { runUuid }, {
+        return this.httpClient.get(`_action/${this.getApiBasePath()}/get-state`, {
             ...this.basicConfig,
             headers,
         }).then((response) => {
@@ -152,10 +116,10 @@ class MigrationApiService extends ApiService {
         });
     }
 
-    abortMigration(runUuid) {
+    approveFinishedMigration() {
         const headers = this.getBasicHeaders();
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/abort-migration`, { runUuid }, {
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/approve-finished`, {}, {
             ...this.basicConfig,
             headers,
         }).then((response) => {
@@ -163,43 +127,10 @@ class MigrationApiService extends ApiService {
         });
     }
 
-    finishMigration(runUuid) {
+    abortMigration() {
         const headers = this.getBasicHeaders();
 
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/finish-migration`, { runUuid }, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    assignThemes(runUuid) {
-        const headers = this.getBasicHeaders();
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/assign-themes`, { runUuid }, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    generatePremapping(runUuid) {
-        const headers = this.getBasicHeaders();
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/generate-premapping`, { runUuid }, {
-            ...this.basicConfig,
-            headers,
-        }).then((response) => {
-            return ApiService.handleResponse(response);
-        });
-    }
-
-    writePremapping(runUuid, premapping) {
-        const headers = this.getBasicHeaders();
-
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/write-premapping`, { runUuid, premapping }, {
+        return this.httpClient.post(`_action/${this.getApiBasePath()}/abort-migration`, {}, {
             ...this.basicConfig,
             headers,
         }).then((response) => {
@@ -284,14 +215,6 @@ class MigrationApiService extends ApiService {
             headers,
         }).then((response) => {
             return ApiService.handleResponse(response);
-        });
-    }
-
-    indexing(additionalHeaders = {}) {
-        const headers = this.getBasicHeaders(additionalHeaders);
-        return this.httpClient.post('_action/index', {
-            ...this.basicConfig,
-            headers,
         });
     }
 

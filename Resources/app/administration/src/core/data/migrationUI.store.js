@@ -1,17 +1,6 @@
 /**
  * @package services-settings
  */
-export const UI_COMPONENT_INDEX = Object.freeze({
-    WARNING_CONFIRM: -1,
-    DATA_SELECTOR: 0,
-    PREMAPPING: 1,
-    LOADING_SCREEN: 2,
-    MEDIA_SCREEN: 3,
-    RESULT_SUCCESS: 4,
-    PAUSE_SCREEN: 5,
-    TAKEOVER: 6,
-    CONNECTION_LOST: 7,
-});
 
 /**
  * The vuex store for global data handling inside the UI components of the migration module.
@@ -26,30 +15,9 @@ export default {
 
     state: {
         /**
-         * The current component to display in the migration process. This is very similar to the migration status,
-         * but only represents which component to render at the moment.
-         */
-        componentIndex: UI_COMPONENT_INDEX.DATA_SELECTOR,
-
-        /**
          * Flag which sets the whole module into a loading state
          */
         isLoading: false,
-
-        /**
-         * Flag to start the migration process when redirecting from different pages.
-         */
-        startMigration: false,
-
-        /**
-         * Flag to set the migration ui into a pause state
-         */
-        isPaused: false,
-
-        /**
-         * Flag to specify that the premapping is valid
-         */
-        isPremappingValid: false,
 
         /**
          * The selected data ids that the user wants to migrate.
@@ -75,27 +43,16 @@ export default {
          * Only the filled part of the premapping.
          */
         filledPremapping: [],
+
+        /**
+         * Flag to specify that the premapping is valid
+         */
+        isPremappingValid: false,
     },
 
     mutations: {
-        setComponentIndex(state, newIndex) {
-            state.componentIndex = newIndex;
-        },
-
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading;
-        },
-
-        setStartMigration(state, startMigration) {
-            state.startMigration = startMigration;
-        },
-
-        setIsPaused(state, isPaused) {
-            state.isPaused = isPaused;
-        },
-
-        setIsPremappingValid(state, isValid) {
-            state.isPremappingValid = isValid;
         },
 
         setDataSelectionIds(state, newIds) {
@@ -150,6 +107,10 @@ export default {
             state.filledPremapping = filledMapping;
             state.premapping = newPremapping;
         },
+
+        setIsPremappingValid(state, isValid) {
+            state.isPremappingValid = isValid;
+        },
     },
 
     getters: {
@@ -161,7 +122,8 @@ export default {
 
                 return null;
             });
-            return state.dataSelectionIds.some(id => tableDataIds.includes(id));
+
+            return state.dataSelectionIds.some(id => tableDataIds.includes(id)) && state.isPremappingValid;
         },
     },
 };

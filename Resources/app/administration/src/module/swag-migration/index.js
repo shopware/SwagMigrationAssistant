@@ -1,7 +1,7 @@
 import './mixin';
 import './component';
 import './page';
-import './extension/sw-dashboard-index';
+import './extension';
 import './profile';
 import MigrationProcessStore from '../../core/data/migrationProcess.store';
 import MigrationUIStore from '../../core/data/migrationUI.store';
@@ -13,6 +13,7 @@ State.registerModule('swagMigration/ui', MigrationUIStore);
 
 /**
  * @package services-settings
+ * @private
  */
 Module.register('swag-migration', {
     type: 'plugin',
@@ -25,14 +26,6 @@ Module.register('swag-migration', {
     icon: 'regular-cog',
 
     routes: {
-        emptyScreen: {
-            component: 'swag-migration-empty-screen',
-            path: 'empty',
-            meta: {
-                parentPath: 'sw.settings.index',
-                privilege: 'admin',
-            },
-        },
         index: {
             component: 'swag-migration-index',
             path: 'index',

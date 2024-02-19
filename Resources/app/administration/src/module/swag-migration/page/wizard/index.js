@@ -1,3 +1,8 @@
+/**
+ * @package services-settings
+ * @private
+ */
+
 import './swag-migration-wizard';
 import './swag-migration-wizard-page-introduction';
 import './swag-migration-wizard-page-profile-installation';

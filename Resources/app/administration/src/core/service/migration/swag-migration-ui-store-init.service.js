@@ -5,8 +5,8 @@ const { State } = Shopware;
  * @package services-settings
  */
 class UiStoreInitService {
-    constructor(migrationService) {
-        this._migrationService = migrationService;
+    constructor(migrationApiService) {
+        this._migrationApiService = migrationApiService;
         this._migrationProcessState = State.get('swagMigration/process');
     }
 
@@ -19,7 +19,7 @@ class UiStoreInitService {
                 return;
             }
 
-            this._migrationService.getDataSelection(connectionId).then((dataSelection) => {
+            this._migrationApiService.getDataSelection(connectionId).then((dataSelection) => {
                 State.commit('swagMigration/ui/setPremapping', []);
                 State.commit('swagMigration/ui/setDataSelectionTableData', dataSelection);
                 const selectedIds = dataSelection.filter(selection => selection.requiredSelection)

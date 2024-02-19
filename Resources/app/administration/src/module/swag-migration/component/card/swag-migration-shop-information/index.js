@@ -20,8 +20,8 @@ Component.register('swag-migration-shop-information', {
     inject: {
         /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
         migrationProcessStoreInitService: 'processStoreInitService',
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
         repositoryFactory: 'repositoryFactory',
     },
 
@@ -46,7 +46,6 @@ Component.register('swag-migration-shop-information', {
 
     data() {
         return {
-            showMoreInformation: true,
             confirmModalIsLoading: false,
             showRemoveCredentialsConfirmModal: false,
             showResetChecksumsConfirmModal: false,
@@ -83,8 +82,9 @@ Component.register('swag-migration-shop-information', {
         },
 
         connectionName() {
-            return this.connection === null ? '' :
-                this.connection.name;
+            return this.connection !== null ?
+                this.connection.name :
+                this.$tc('swag-migration.index.shopInfoCard.noConnection');
         },
 
         shopUrl() {
@@ -172,6 +172,10 @@ Component.register('swag-migration-shop-information', {
         assetFilter() {
             return Shopware.Filter.getByName('asset');
         },
+
+        showMoreInformation() {
+            return this.connection !== null && this.connection !== undefined;
+        },
     },
 
     watch: {
@@ -234,14 +238,21 @@ Component.register('swag-migration-shop-information', {
          */
         fetchConnection(connectionId) {
             return this.migrationConnectionRepository.get(connectionId, this.context).then((connection) => {
+                if (!connection) {
+                    return null;
+                }
                 delete connection.credentialFields;
                 this.connection = connection;
                 this.lastConnectionCheck = new Date();
 
-                return this.migrationService.getProfileInformation(
+                return this.migrationApiService.getProfileInformation(
                     connection.profileName,
                     connection.gatewayName,
                 ).then((profileInformation) => {
+                    if (!profileInformation) {
+                        return;
+                    }
+
                     this.connection.profile = profileInformation.profile;
                     this.connection.gateway = profileInformation.gateway;
                 });
@@ -277,6 +288,12 @@ Component.register('swag-migration-shop-information', {
             });
         },
 
+        onClickCreateInitialConnection() {
+            this.$router.push({
+                name: 'swag.migration.wizard.introduction',
+            });
+        },
+
         onClickSelectConnection() {
             this.$router.push({
                 name: 'swag.migration.wizard.connectionSelect',
@@ -291,7 +308,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickRemoveConnectionCredentials() {
             this.confirmModalIsLoading = true;
-            return this.migrationService.updateConnectionCredentials(
+            return this.migrationApiService.updateConnectionCredentials(
                 this.connectionId,
                 { },
             ).then(() => {
@@ -301,7 +318,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickResetChecksums() {
             this.confirmModalIsLoading = true;
-            return this.migrationService.resetChecksums(this.connectionId).then(() => {
+            return this.migrationApiService.resetChecksums(this.connectionId).then(() => {
                 this.showResetChecksumsConfirmModal = false;
                 this.confirmModalIsLoading = false;
             });
@@ -309,13 +326,13 @@ Component.register('swag-migration-shop-information', {
 
         onClickResetMigration() {
             this.confirmModalIsLoading = true;
-            return this.migrationService.cleanupMigrationData().then(() => {
+            return this.migrationApiService.cleanupMigrationData().then(() => {
                 this.showResetMigrationConfirmModal = false;
                 this.confirmModalIsLoading = false;
                 this.migrationProcessStoreInitService.initProcessStore();
 
                 this.$nextTick(() => {
-                    this.$router.push({ name: 'swag.migration.emptyScreen' });
+                    this.$router.go(); // reload page
                 });
             }).catch(() => {
                 this.showResetMigrationConfirmModal = false;

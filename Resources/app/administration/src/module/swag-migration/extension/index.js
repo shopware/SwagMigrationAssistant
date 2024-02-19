@@ -3,4 +3,4 @@
  * @private
  */
 
-import './swag-wizard.mixin';
+import './sw-dashboard-index';

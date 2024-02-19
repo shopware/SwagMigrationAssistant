@@ -162,12 +162,6 @@
         }
       }
     },
-    "emptyScreen": {
-      "title": "Keine Verbindung ",
-      "description": "Stelle sicher, dass eine Verbindung zwischen den Systemen hergestellt ist. Erst dann ist eine Migration möglich. Mehr Informationen dazu findest Du hier:{linebreak}{link}",
-      "link": "Dokumentation: Migration zu Shopware 6",
-      "connectButton": "Verbindung anlegen"
-    },
     "index": {
       "title": "Übersicht",
       "migrateButton": "Migration starten",
@@ -188,6 +182,7 @@
         "cardTitle": "Shopsystem",
         "buttonEditSettings": "Verbindung bearbeiten",
         "buttonCreateConnection": "Neue Verbindung anlegen",
+        "buttonCreateInitialConnection": "Initiale Verbindung anlegen",
         "buttonSelectConnection": "Verbindung wechseln",
         "buttonRemoveCredentials": "Zugangsdaten löschen",
         "buttonProfileInstallation": "Weiteres Profil installieren",
@@ -195,6 +190,7 @@
         "buttonResetMigration": "Migration abschließen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
+        "noConnection": "Keine Verbindung",
         "profile": "System-Profil:",
         "gateway": "Schnittstelle:",
         "connectionCheck": "Verbindungscheck:",
@@ -379,23 +375,20 @@
           "finish": "Fertig"
         },
         "status": {
-          "FETCH_DATA": {
+          "fetching": {
             "long": "Die Daten werden von Deinem System gelesen",
             "caption": "Die neuen Zuordnungen werden verarbeitet.",
-            "short": "Lesen",
-            "hint": "Tipp: Die Migration läuft Schritt für Schritt im Hintergrund weiter, erkunde solange Shopware 6."
+            "short": "Lesen"
           },
-          "WRITE_DATA": {
+          "writing": {
             "long": "Die Daten werden in Shopware 6 geschrieben",
             "caption": "Je nach Shopgröße kann es etwas länger dauern.",
-            "short": "Schreiben",
-            "hint": "Tipp: Dieser Schritt kann pausiert und fortgesetzt werden."
+            "short": "Schreiben"
           },
-          "PROCESS_MEDIA_FILES": {
+          "media-processing": {
             "long": "Die Medien werden heruntergeladen",
             "caption": "Große Bilddaten können etwas Zeit in Anspurch nehmen.",
-            "short": "Medien laden",
-            "hint": "Tipp: Bei schlechter Verbindung den Download pausieren und später fortsetzen."
+            "short": "Medien laden"
           },
           "finish": "Fertig"
         },
@@ -424,58 +417,6 @@
               "message": "Die Indexierung wurde fertiggestellt."
             }
           }
-        },
-        "pauseScreen": {
-          "title": "Die Migration ist pausiert",
-          "message": "Du hast nicht pausiert? Bei fehlender Internetverbindung wechselt die Migration automatisch in den Pause-Modus um einen Datenverlust zu vermeiden."
-        },
-        "takeoverScreen": {
-          "buttonCheck": "Status prüfen",
-          "buttonRedirect": "Zur Übersicht",
-          "running": {
-            "title": "Die Migration wurde bereits gestartet",
-            "message": "Es ist bereits eine Migration in einem anderen Browser oder Browser-Tab gestartet. Dieser Prozess kann nun, je nach aktuellem Status der Migration, entweder übernommen oder beendet werden."
-          },
-          "interrupted": {
-            "title": "Die Migration wurde übernommen",
-            "message": "Der Migrationsprozess wurde von einem anderen Browser oder Browser-Tab übernommen. Dieser Prozess kann nun, je nach aktuellem Status der Migration, entweder übernommen oder beendet werden."
-          },
-          "aborted": {
-            "title": "Die Migration wurde beendet",
-            "message": "Der Migrationsprozess wurde in einem anderen Browser oder Browser-Tab beendet. Bitte überprüfe die Zuständigkeiten und starte eine neue Migration."
-          },
-          "forbidden": {
-            "title": "Die Migration wurde bereits gestartet",
-            "message": "Es ist bereits eine Migration in einem anderen Browser-Tab gestartet. Bitte wechsle in diesen Tab, um den Migrationsprozess einsehen zu können."
-          },
-          "takeoverModal": {
-            "title": "Migration übernehmen",
-            "message": "Eine Übernahme der aktiven Migration ist möglich. Wenn Du möchtest, kannst Du die Migration jetzt in diesem Browserfenster fortsetzen.",
-            "hint": "Möchtest Du die Migration übernehmen?",
-            "cancel": "Abbrechen",
-            "confirm": "Migration übernehmen"
-          },
-          "abortModal": {
-            "title": "Migration beenden",
-            "message": "Eine Übernahme der aktiven Migration ist derzeit nicht möglich. Wenn Du möchtest, kannst Du die laufende Migration beenden und danach in diesem Browserfenster eine neue Migration starten.",
-            "hint": "Möchtest Du die Migration beenden?",
-            "cancel": "Abbrechen",
-            "confirm": "Migration beenden"
-          },
-          "redirectModal": {
-            "title": "Migration abgeschlossen",
-            "message": "Die Migration wurde bereits in einem anderen Browser oder Browser-Tab durchgeführt.",
-            "confirm": "Zur Übersicht"
-          }
-        },
-        "connectionLostScreen": {
-          "title": "Die Verbindung wurde unterbrochen",
-          "message": "Die Migration hat den Prozess beendet um einen Datenverlust zu vermeiden. Prüfe die Internetverbindung und starte eine neue Migration.",
-          "buttonNavigateToMain": "Zur Übersicht"
-        },
-        "mediaProcessScreen": {
-          "title": "Der Download der Medien wird gestartet",
-          "message": "Der Prozess läuft im Hintergrund"
         }
       },
       "confirmAbortDialog": {

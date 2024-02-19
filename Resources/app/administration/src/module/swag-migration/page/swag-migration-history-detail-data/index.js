@@ -59,6 +59,8 @@ Component.register('swag-migration-history-detail-data', {
         },
 
         entityGroups() {
+            // ToDo MIG-895: This needs to be done differently now, because progress layout changed.
+            // we somehow need the groups again here, to display the totals of each group...
             return this.migrationRun.progress.filter((group) => (group.id !== 'processMediaFiles'));
         },
     },

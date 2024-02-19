@@ -11,8 +11,8 @@ Component.register('swag-migration-history-detail-errors', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
     },
 
     mixins: [
@@ -91,7 +91,7 @@ Component.register('swag-migration-history-detail-errors', {
         },
 
         loadAllMigrationErrors() {
-            return this.migrationService.getGroupedLogsOfRun(
+            return this.migrationApiService.getGroupedLogsOfRun(
                 this.migrationRun.id,
             ).then((response) => {
                 this.total = response.total;

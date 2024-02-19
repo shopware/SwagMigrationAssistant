@@ -12,8 +12,8 @@ Component.register('swag-migration-data-selector', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
     },
 
     computed: {

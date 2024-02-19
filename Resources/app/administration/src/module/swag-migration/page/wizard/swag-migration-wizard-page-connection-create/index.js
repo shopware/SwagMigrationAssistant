@@ -12,8 +12,8 @@ Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
     },
 
     props: {
@@ -86,7 +86,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.setIsLoading(true);
             this.emitOnChildRouteReadyChanged(false);
 
-            return this.migrationService.getProfiles().then((profiles) => {
+            return this.migrationApiService.getProfiles().then((profiles) => {
                 this.profiles = profiles;
                 this.pushLinkToProfiles();
 
@@ -150,7 +150,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 this.selection.gateway = null;
 
                 if (this.selection.profile !== null) {
-                    this.migrationService.getGateways(this.selection.profile).then((gateways) => {
+                    this.migrationApiService.getGateways(this.selection.profile).then((gateways) => {
                         this.gateways = gateways;
                         this.selection.gateway = null;
 

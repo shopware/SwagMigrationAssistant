@@ -6,15 +6,14 @@ const { Criteria } = Shopware.Data;
  * @package services-settings
  */
 class ProcessStoreInitService {
-    constructor(migrationService, repositoryFactory, context) {
-        this._migrationService = migrationService;
+    constructor(migrationApiService, repositoryFactory, context) {
+        this._migrationApiService = migrationApiService;
         this._migrationGeneralSettingRepository = repositoryFactory.create('swag_migration_general_setting');
         this._context = context;
     }
 
     initProcessStore() {
         return new Promise((resolve, reject) => {
-            State.commit('swagMigration/process/setEntityGroups', []);
             State.commit('swagMigration/process/setEnvironmentInformation', {});
             const criteria = new Criteria(1, 1);
 
@@ -39,7 +38,7 @@ class ProcessStoreInitService {
                     return;
                 }
 
-                this._migrationService.checkConnection(connectionId)
+                this._migrationApiService.checkConnection(connectionId)
                     .then((connectionCheckResponse) => {
                         State.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
                         resolve();

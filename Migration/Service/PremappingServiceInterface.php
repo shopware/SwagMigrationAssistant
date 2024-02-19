@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Controller\PremappingController;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -17,9 +18,11 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 interface PremappingServiceInterface
 {
     /**
-     * @return PremappingStruct[]
+     * @param array<int, string> $dataSelectionIds
+     *
+     * @return array<int, PremappingStruct>
      */
-    public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, SwagMigrationRunEntity $run): array;
+    public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, array $dataSelectionIds): array;
 
     public function writePremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void;
 }

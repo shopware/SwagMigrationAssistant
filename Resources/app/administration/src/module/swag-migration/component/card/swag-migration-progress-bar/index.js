@@ -6,7 +6,6 @@ const { Component } = Shopware;
 /**
  * @private
  * @package services-settings
- * @private
  */
 Component.register('swag-migration-progress-bar', {
     template,

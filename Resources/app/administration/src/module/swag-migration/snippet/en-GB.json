@@ -162,12 +162,6 @@
         }
       }
     },
-    "emptyScreen": {
-      "title": "No connection",
-      "description": "Make sure that a connection has been established between the systems. This is required for the migration. You can find more information here:{linebreak}{link}",
-      "link": "Documentation: Migration to Shopware 6",
-      "connectButton": "Create connection"
-    },
     "index": {
       "title": "General",
       "migrateButton": "Start migration",
@@ -188,6 +182,7 @@
         "cardTitle": "Shop system",
         "buttonEditSettings": "Edit connection",
         "buttonCreateConnection": "Create new connection",
+        "buttonCreateInitialConnection": "Create initial connection",
         "buttonSelectConnection": "Change the connection",
         "buttonRemoveCredentials": "Delete access data",
         "buttonProfileInstallation": "Install another profile",
@@ -195,6 +190,7 @@
         "buttonResetMigration": "Complete migration",
         "connected": "Connected",
         "notConnected": "Not connected",
+        "noConnection": "No connection",
         "profile": "System profile:",
         "gateway": "Gateway:",
         "connectionCheck": "Connection check:",
@@ -378,23 +374,20 @@
           "finish": "Done"
         },
         "status": {
-          "FETCH_DATA": {
+          "fetching": {
             "long": "The data will be read from your system",
             "caption": "The new assignments are processed.",
-            "short": "Reading",
-            "hint": "Tip: The migration continues step by step in the background, explore Shopware 6."
+            "short": "Reading"
           },
-          "WRITE_DATA": {
+          "writing": {
             "long": "The data is being written in Shopware 6",
             "caption": "Depending on the shop size it may take a few moments.",
-            "short": "Writing",
-            "hint": "Tip: You can pause and resume the migration process at any time."
+            "short": "Writing"
           },
-          "PROCESS_MEDIA_FILES": {
+          "media-processing": {
             "long": "The media is being downloaded",
             "caption": "Large image data can take some time to process.",
-            "short": "Downloading",
-            "hint": "Tip: If the connection is poor, pause the download and continue later."
+            "short": "Downloading"
           },
           "finish": "Done"
         },
@@ -423,58 +416,6 @@
               "message": "The indexing has been completed."
             }
           }
-        },
-        "pauseScreen": {
-          "title": "The migration is paused",
-          "message": "You didn't pause? If there is no internet connection, the migration automatically switches to pause mode to prevent data loss."
-        },
-        "takeoverScreen": {
-          "buttonCheck": "Check status",
-          "buttonRedirect": "General",
-          "running": {
-            "title": "Migration already started",
-            "message": "There is already a migration running in another browser or browser tab. You may now either take over the running migration or cancel it."
-          },
-          "interrupted": {
-            "title": "Migration has been taken over",
-            "message": "The migration process was taken over from another browser or browser tab. You can cancel or take over the process, depending on the current status of the migration."
-          },
-          "aborted": {
-            "title": "Migration was cancelled",
-            "message": "Another user has cancelled the migration process in a separate browser or browser tab. Please start a new migration."
-          },
-          "forbidden": {
-            "title": "Migration already started",
-            "message": "A migration has already been started in another browser or browser tab. Please switch to this tab to view the migration process."
-          },
-          "takeoverModal": {
-            "title": "Take over migration",
-            "message": "It is possible to take over the active migration. If you would like, you may continue the migration in this browser window.",
-            "hint": "Would you like to take over the migration?",
-            "cancel": "Cancel",
-            "confirm": "Take over migration"
-          },
-          "abortModal": {
-            "title": "Cancel migration",
-            "message": "It is not possible to take over the active migration at the moment. If you would like, you may now cancel the active migration and start a new one directly afterwards.",
-            "hint": "Would you like to cancel the migration?",
-            "cancel": "Cancel",
-            "confirm": "Cancel migration"
-          },
-          "redirectModal": {
-            "title": "Migration complete",
-            "message": "The migration has already been completed in another browser or browser tab.",
-            "confirm": "General"
-          }
-        },
-        "connectionLostScreen": {
-          "title": "The connection has been lost",
-          "message": "The migration ended the process to avoid data loss. Check the internet connection and start a new migration.",
-          "buttonNavigateToMain": "General"
-        },
-        "mediaProcessScreen": {
-          "title": "Starting media download",
-          "message": "The process is running in the background"
         }
       },
       "confirmAbortDialog": {
