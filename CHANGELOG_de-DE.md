@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
+# 8.0.0
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
 - MIG-825 - Verbesserung der Performance bei der Migration von Bestellungen
 - MIG-825 - Hinzufügen der Optionen `step-size` zum Cli-Befehl `migration:migrate` von `Command/MigrationCommand.php`

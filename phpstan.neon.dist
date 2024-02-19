@@ -30,10 +30,10 @@ parameters:
           paths:
               - Test/**/*Test.php
 
-        # @deprecated tag:v8.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
+        # @deprecated tag:v9.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
         - '#Instantiation of deprecated class Shopware\\#'
 
-        # @deprecated tag:v8.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
+        # @deprecated tag:v9.0.0 - Remove this ignoreErrors when doing compatible with platform v6.6.0.0
         - '#Fetching class constant class of deprecated class Shopware\\#'
 
         - # PHPStan does not recognize correctly that the properties are initialized in a private method called in the setUp method
