@@ -1,9 +1,7 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
 - MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
 - MIG-825 - Verbesserung der Performance bei der Migration von Bestellungen
-- MIG-825 - Hinzufügen der Optionen `step-size` und `keep-data` zum Cli-Befehl `migration:migrate` von `Command/MigrationCommand.php`
-- MIG-825 - [BREAKING] Hinzufügen des Parameters `runOptions` zu `createMigrationRun` von `Migration/Run/RunService.php`
-- MIG-825 - Hinzufügen der neue finalen Klasse `Migration/Run/RunOptions.php`, um der Migration Optionen zur Verfügung zu stellen
+- MIG-825 - Hinzufügen der Optionen `step-size` zum Cli-Befehl `migration:migrate` von `Command/MigrationCommand.php`
 - MIG-825 - [BREAKING] Hinzufügen des Parameters `where` zu `fetchIdentifiers` von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
 - MIG-825 - [BREAKING] Ändern der Funktionen von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php` auf final:
     - `setConnection`
