@@ -1,20 +1,4 @@
 # REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
-- MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
-- MIG-825 - Verbesserung der Performance bei der Migration von Bestellungen
-- MIG-825 - Hinzufügen der Optionen `step-size` zum Cli-Befehl `migration:migrate` von `Command/MigrationCommand.php`
-- MIG-825 - [BREAKING] Hinzufügen des Parameters `where` zu `fetchIdentifiers` von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
-- MIG-825 - [BREAKING] Ändern der Funktionen von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php` auf final:
-    - `setConnection`
-    - `addTableSelection`
-    - `buildArrayFromChunks`
-    - `cleanupResultSet`
-    - `fetchIdentifiers`
-    - `getDefaultShopLocale`
-    - `mapData`
-    - `getDataSetEntity`
-- MIG-838 - Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen hinzugefügt
-- MIG-839 - Zustatzfelder zu der Migration von Kategorieübersetzungen hinzugefügt
-- MIG-899 -Geändertes Verhalten der Migration von SEO URLs. Die URL Groß-/Kleinschreibung von Shopware 5 wird nun berücksichtigt
 - MIG-920 - Unterstützte Shopware 6 Version auf 6.6 geändert und Anpassungen an den Profilen vorgenommen
 - MIG-920 - `Migration/Gateway/HttpClientInterface` hinzugefügt, um die Verwendung von HTTP-Clients zu vereinheitlichen
 - MIG-920 - `Migration/Gateway/HttpSimpleClient.php` als einfacher Wrapper um den bisher verwendeten `GuzzleHttp/Client` hinzugefügt
@@ -35,7 +19,30 @@
 - MIG-920 - [BREAKING] Übergeordnete Klasse und Implementierung von `Profile/Shopware6/Media/HttpMediaDownloadService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php` geändert
 - MIG-920 - [BREAKING] Geänderte übergeordnete Klasse und Implementierung von `Profile/Shopware6/Media/HttpOrderDocumentService.php` zu `Migration/Media/Processor/HttpDownloadServiceBase.php`.
 - MIG-920 - [BREAKING] Umbenennung von `Profile/Shopware6/Media/HttpOrderDocumentService.php` in `Profile/Shopware/Media/HttpOrderDocumentDownloadService.php`
-- MIG-931 - Methode `getEntityName` und `setEntityName` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
+- MIG-934 - Neue Route `/api/_action/data-provider/download-private-file/{file}` zum Abrufen digitaler Produktdateien hinzugefügt
+- MIG-934 - Die Datei `DataProvider/Provider/Data/ProductProvider.php` wurde geändert, um Download-Medien für digitale Produkte einzubeziehen
+- MIG-934 - Die Datei `Profile/Shopware6/Converter/ProductConverter.php` wurde geändert, um Download-Medien für digitale Produkte einzubeziehen
+- MIG-934 - Datei `Profile/Shopware6/DataSelection/DataSet/ProductDownloadDataSet.php` hinzugefügt
+- MIG-934 - Datei `Profile/Shopware6/Media/HttpProductDownloadService.php` hinzugefügt
+- MIG-934 - [BREAKING] Die Datei `Controller/DataProviderController.php` wurde in final geändert.
+
+# 8.0.0
+- MIG-274 - Behebt einen Fehler in der Migration von Cross-Selling Produkten
+- MIG-825 - Verbesserung der Performance bei der Migration von Bestellungen
+- MIG-825 - Hinzufügen der Optionen `step-size` zum Cli-Befehl `migration:migrate` von `Command/MigrationCommand.php`
+- MIG-825 - [BREAKING] Hinzufügen des Parameters `where` zu `fetchIdentifiers` von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php`
+- MIG-825 - [BREAKING] Ändern der Funktionen von `Profile/Shopware/Gateway/Local/Reader/AbstractReader.php` auf final:
+    - `setConnection`
+    - `addTableSelection`
+    - `buildArrayFromChunks`
+    - `cleanupResultSet`
+    - `fetchIdentifiers`
+    - `getDefaultShopLocale`
+    - `mapData`
+    - `getDataSetEntity`
+- MIG-838 - Meta-Informationsfeldern zu der Migration von Kategorieübersetzungen hinzugefügt
+- MIG-839 - Zustatzfelder zu der Migration von Kategorieübersetzungen hinzugefügt
+- MIG-899 - Geändertes Verhalten der Migration von SEO URLs. Die URL Groß-/Kleinschreibung von Shopware 5 wird nun berücksichtigt
 - MIG-931 - [BREAKING] `Migration/MessageQueue/Handler/ProcessMediaHandler.php` zu final geändert
 - MIG-931 - [BREAKING] `AsyncMessageInterface` zu `Migration/MessageQueue/Message/CleanupMigrationMessage.php` hinzugefügt
 - MIG-931 - [BREAKING] `AsyncMessageInterface` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
@@ -46,12 +53,7 @@
     - `setDataSet`
 - MIG-931 - [BREAKING] Rückgabeparameter von `getContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
 - MIG-931 - [BREAKING] Parameter von `setContext` von `string` auf `Shopware\Core\Framework\Context` in `Migration/MessageQueue/Message/ProcessMediaMessage.php` geändert
-- MIG-934 - Neue Route `/api/_action/data-provider/download-private-file/{file}` zum Abrufen digitaler Produktdateien hinzugefügt
-- MIG-934 - Die Datei `DataProvider/Provider/Data/ProductProvider.php` wurde geändert, um Download-Medien für digitale Produkte einzubeziehen
-- MIG-934 - Die Datei `Profile/Shopware6/Converter/ProductConverter.php` wurde geändert, um Download-Medien für digitale Produkte einzubeziehen
-- MIG-934 - Datei `Profile/Shopware6/DataSelection/DataSet/ProductDownloadDataSet.php` hinzugefügt
-- MIG-934 - Datei `Profile/Shopware6/Media/HttpProductDownloadService.php` hinzugefügt
-- MIG-934 - [BREAKING] Die Datei `Controller/DataProviderController.php` wurde in final geändert.
+- MIG-931 - Methode `getEntityName` und `setEntityName` zu `Migration/MessageQueue/Message/ProcessMediaMessage.php` hinzugefügt
 - MIG-937 - Zeigt von jetzt an immer die aktuelle Shopware 6 Version als kompatibel an, anstatt ältere Versionen
 - MIG-938 - Behebt Berechnungsfehler bei der Migration von Versandkostenpreisen
 
