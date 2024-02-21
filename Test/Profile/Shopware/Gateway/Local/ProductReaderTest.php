@@ -7,66 +7,38 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
-use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
 #[Package('services-settings')]
-class ProductReaderTest extends TestCase
+class ProductReaderTest extends LocalConnectionTestCase
 {
-    use LocalCredentialTrait;
-
-    private ProductReader $productReader;
-
-    private MigrationContext $migrationContext;
-
-    protected function setUp(): void
-    {
-        $this->connectionSetup();
-
-        $this->productReader = new ProductReader(new ConnectionFactory());
-
-        $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
-            new ProductDataSet(),
-            0,
-            10
-        );
-
-        $this->migrationContext->setGateway(new DummyLocalGateway());
-    }
-
     public function testReadEsdProduct(): void
     {
-        $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection,
-            $this->runId,
-            new ProductDataSet(),
-            224,
-            1
-        );
-        $this->migrationContext->setGateway(new DummyLocalGateway());
+        $this->setLimitAndOffset(1, 224);
+        $this->getMigrationContext()->setGateway(new DummyLocalGateway());
 
-        static::assertTrue($this->productReader->supports($this->migrationContext));
+        $productReader = $this->getProductReader();
+        static::assertTrue($productReader->supports($this->getMigrationContext()));
 
-        $data = $this->productReader->read($this->migrationContext);
+        $data = $productReader->read($this->getMigrationContext());
+
         static::assertArrayHasKey('esdFiles', $data[0]);
-        static::assertSame(['id', 'name', 'path'], \array_keys($data[0]['esdFiles'][0]));
+        static::assertSame(['articledetailsID', 'id', 'name', 'path'], \array_keys($data[0]['esdFiles'][0]));
     }
 
     public function testRead(): void
     {
-        static::assertTrue($this->productReader->supports($this->migrationContext));
+        $productReader = $this->getProductReader();
+        static::assertTrue($productReader->supports($this->getMigrationContext()));
 
-        $data = $this->productReader->read($this->migrationContext);
+        $data = $productReader->read($this->getMigrationContext());
 
         static::assertCount(10, $data);
         static::assertSame('3', $data[0]['detail']['id']);
@@ -103,11 +75,75 @@ class ProductReaderTest extends TestCase
 
     public function testReadTotal(): void
     {
-        static::assertTrue($this->productReader->supportsTotal($this->migrationContext));
+        $productReader = $this->getProductReader();
+        static::assertTrue($productReader->supportsTotal($this->getMigrationContext()));
 
-        $totalStruct = $this->productReader->readTotal($this->migrationContext);
+        $totalStruct = $productReader->readTotal($this->getMigrationContext());
+        static::assertInstanceOf(TotalStruct::class, $totalStruct);
+        $dataSet = $this->getMigrationContext()->getDataSet();
+        static::assertInstanceOf(DataSet::class, $dataSet);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        static::assertSame($dataSet::getEntity(), $totalStruct->getEntityName());
         static::assertSame(401, $totalStruct->getTotal());
+    }
+
+    public function testGetProductsShouldAddShopsCorrectly(): void
+    {
+        $sql = \file_get_contents(__DIR__ . '/_fixtures/subshops.sql');
+        static::assertIsString($sql);
+
+        $this->getExternalConnection()->executeStatement($sql);
+
+        $this->setLimitAndOffset(1, 122);
+
+        $products = $this->getProductReader()->read($this->getMigrationContext());
+
+        static::assertCount(1, $products);
+        static::assertSame(['1', '3', '4'], $products[0]['shops']);
+    }
+
+    public function testGetProductsShouldAddMainShopOfLanguageShop(): void
+    {
+        $connection = $this->getExternalConnection();
+
+        $sql = \file_get_contents(__DIR__ . '/_fixtures/language_shop.sql');
+        static::assertIsString($sql);
+        $connection->executeStatement($sql);
+
+        $this->setLimitAndOffset(500, 0);
+
+        // Get product wich is only assigned to a language shop
+        $products = $this->getProductReader()->read($this->getMigrationContext());
+        $product = $this->getProductById(20273, $products);
+
+        static::assertSame('Some French cool name', $product['name']);
+        // Expect getting the main shop of the language shop
+        static::assertSame(['3'], $product['shops']);
+    }
+
+    protected function getDataSet(): DataSet
+    {
+        return new ProductDataSet();
+    }
+
+    private function getProductReader(): AbstractReader
+    {
+        return new ProductReader($this->getConnectionFactory());
+    }
+
+    /**
+     * @param array<int, mixed> $products
+     *
+     * @return array<string, mixed>
+     */
+    private function getProductById(int $id, array $products): array
+    {
+        foreach ($products as $product) {
+            if ((int) $product['id'] === $id) {
+                return $product;
+            }
+        }
+
+        return [];
     }
 }

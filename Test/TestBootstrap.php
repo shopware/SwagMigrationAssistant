@@ -5,12 +5,10 @@
  * file that was distributed with this source code.
  */
 
-use Doctrine\DBAL\DriverManager;
 use Shopware\Core\DevOps\StaticAnalyze\StaticAnalyzeKernel;
 use Shopware\Core\Framework\Adapter\Kernel\KernelFactory;
 use Shopware\Core\Framework\Plugin\KernelPluginLoader\StaticKernelPluginLoader;
 use Shopware\Core\TestBootstrapper;
-use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
 require __DIR__ . '/../../../../src/Core/TestBootstrapper.php';
 
@@ -52,30 +50,5 @@ KernelFactory::$kernelClass = StaticAnalyzeKernel::class;
 $kernel = KernelFactory::create('swag_migration_assistant_phpstan', true, $classLoader, $pluginLoader);
 
 $kernel->boot();
-
-$connectionParams = [
-    'dbname' => Shopware5DatabaseConnection::DB_NAME,
-    'user' => Shopware5DatabaseConnection::DB_USER,
-    'password' => Shopware5DatabaseConnection::DB_PASSWORD,
-    'host' => Shopware5DatabaseConnection::DB_HOST,
-    'port' => Shopware5DatabaseConnection::DB_PORT,
-    'driver' => 'pdo_mysql',
-    'charset' => 'utf8mb4',
-];
-
-$connection = DriverManager::getConnection($connectionParams);
-
-$ping = true;
-
-try {
-    $connection->executeStatement('SELECT 1');
-} catch (\Exception $e) {
-    $ping = false;
-}
-
-if ($ping === false) {
-    $_SERVER['SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS'] = 'true';
-    putenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS=true');
-}
 
 return $kernel;

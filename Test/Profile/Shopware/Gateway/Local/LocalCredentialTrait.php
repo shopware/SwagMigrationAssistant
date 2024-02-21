@@ -23,10 +23,6 @@ trait LocalCredentialTrait
 
     public function connectionSetup(): void
     {
-        if (\getenv('SWAG_MIGRATION_ASSISTANT_SKIP_SW5_TESTS') === 'true') {
-            static::markTestSkipped('Shopware 5 test database not available. Skipping test');
-        }
-
         $dbUrlParts = \parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];
         $dbUrlParts['path'] ??= 'root';
 

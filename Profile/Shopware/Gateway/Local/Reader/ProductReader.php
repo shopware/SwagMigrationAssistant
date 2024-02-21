@@ -14,6 +14,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\Result\ProductReader\MainCategoryShopRelationResult;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\Result\ProductReader\ProductVisibilityResult;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\Result\ProductReader\ShopCategoryRelation;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -34,7 +37,7 @@ class ProductReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -89,11 +92,28 @@ class ProductReader extends AbstractReader
         return (string) $query->executeQuery()->fetchOne();
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
+    public function fetchMainCategoryShops(): array
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->from('s_core_shops', 'shop');
+        $query->addSelect(['IFNULL(shop.main_id, shop.id) AS shopId', 'shop.category_id as categoryId']);
+
+        return $query->executeQuery()->fetchAllAssociative();
+    }
+
+    /**
+     * @param array<mixed> $products
+     *
+     * @return array<mixed>
+     */
     protected function appendAssociatedData(array $products): array
     {
         $categories = $this->getCategories();
-        $mainCategoryShops = $this->fetchMainCategoryShops();
-        $productVisibility = $this->getProductVisibility($categories, $mainCategoryShops);
+        $productVisibility = $this->getProductVisibility($categories, $this->getMainCategoryShops());
 
         $prices = $this->getPrices();
         $media = $this->getMedia();
@@ -124,15 +144,14 @@ class ProductReader extends AbstractReader
             if (isset($options[$product['detail']['id']])) {
                 $product['configuratorOptions'] = $options[$product['detail']['id']];
             }
-            if (isset($productVisibility[$product['id']])) {
-                $product['shops'] = \array_values($productVisibility[$product['id']]);
-            }
             if (isset($esdFiles[$product['detail']['id']])) {
                 $product['esdFiles'] = \array_values($esdFiles[$product['detail']['id']]);
                 foreach ($product['esdFiles'] as &$esdFile) {
                     $esdFile['path'] = $esdPath;
                 }
             }
+
+            $product['shops'] = $productVisibility->getShops($product['id']);
         }
         unset(
             $product, $categories,
@@ -144,6 +163,9 @@ class ProductReader extends AbstractReader
         return $products;
     }
 
+    /**
+     * @param array<mixed> $fetchedProducts
+     */
     protected function buildIdentifierMappings(array $fetchedProducts): void
     {
         foreach ($fetchedProducts as $product) {
@@ -151,6 +173,9 @@ class ProductReader extends AbstractReader
         }
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function getConfiguratorOptions(): array
     {
         $variantIds = $this->productMapping->keys();
@@ -177,6 +202,9 @@ class ProductReader extends AbstractReader
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
         $ids = $this->fetchIdentifiers('s_articles_details', $migrationContext->getOffset(), $migrationContext->getLimit(), ['kind']);
@@ -218,6 +246,9 @@ class ProductReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
+    /**
+     * @return array<int|string, array<int, array<string, mixed>>>
+     */
     private function getEsdFiles(): array
     {
         $variantIds = $this->productMapping->keys();
@@ -239,6 +270,9 @@ class ProductReader extends AbstractReader
         return $result;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function getCategories(): array
     {
         /** @var \ArrayIterator<string, string> $iterator */
@@ -263,6 +297,9 @@ class ProductReader extends AbstractReader
         return FetchModeHelper::group($result);
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function getPrices(): array
     {
         $variantIds = $this->productMapping->keys();
@@ -292,6 +329,9 @@ class ProductReader extends AbstractReader
         return $this->mapData($fetchedPrices, [], ['price', 'currencyShortName']);
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function getMedia(): array
     {
         /** @var \ArrayIterator<string, string> $iterator */
@@ -352,6 +392,9 @@ class ProductReader extends AbstractReader
         return $assets;
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function fetchVariantAssets(): array
     {
         $variantIds = $this->productMapping->keys();
@@ -384,37 +427,47 @@ class ProductReader extends AbstractReader
         return FetchModeHelper::group($result);
     }
 
-    private function fetchMainCategoryShops(): array
+    private function getMainCategoryShops(): MainCategoryShopRelationResult
     {
-        $query = $this->connection->createQueryBuilder();
+        $result = new MainCategoryShopRelationResult();
+        foreach ($this->fetchMainCategoryShops() as $shopCategoryRelation) {
+            $result->add(new ShopCategoryRelation($shopCategoryRelation));
+        }
 
-        $query->from('s_core_shops', 'shop');
-        $query->addSelect('shop.category_id, IFNULL(shop.main_id, shop.id)');
-
-        $query->executeQuery();
-
-        return $query->fetchAllKeyValue();
+        return $result;
     }
 
-    private function getProductVisibility(array $categories, array $mainCategoryShops): array
+    /**
+     * @param array<int, array<int, array<mixed>>> $categories
+     */
+    private function getProductVisibility(array $categories, MainCategoryShopRelationResult $mainCategoryShops): ProductVisibilityResult
     {
-        $productVisibility = [];
+        $productVisibility = new ProductVisibilityResult();
+
         foreach ($categories as $productId => $productCategories) {
             foreach ($productCategories as $category) {
-                if (empty($category['path'])) {
-                    continue;
-                }
-                $parentCategoryIds = \array_values(
-                    \array_filter(\explode('|', $category['path']))
-                );
-                foreach ($parentCategoryIds as $parentCategoryId) {
-                    if (isset($mainCategoryShops[$parentCategoryId])) {
-                        $productVisibility[$productId][$mainCategoryShops[$parentCategoryId]] = $mainCategoryShops[$parentCategoryId];
+                foreach ($this->getParentCategoryIds($category) as $parentCategoryId) {
+                    if ($mainCategoryShops->containsCategory($parentCategoryId)) {
+                        $productVisibility->add((string) $productId, $mainCategoryShops->getShopIds($parentCategoryId));
                     }
                 }
             }
         }
 
         return $productVisibility;
+    }
+
+    /**
+     * @param array<string, mixed> $category
+     *
+     * @return array<int, string>
+     */
+    private function getParentCategoryIds(array $category)
+    {
+        if (empty($category['path'])) {
+            return [];
+        }
+
+        return \array_filter(\explode('|', $category['path']));
     }
 }

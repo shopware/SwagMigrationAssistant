@@ -9,10 +9,12 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerReader;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
@@ -22,7 +24,7 @@ class MediaReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    private CustomerReader $customerReader;
+    private AbstractReader $mediaReader;
 
     private MigrationContext $migrationContext;
 
@@ -30,7 +32,7 @@ class MediaReaderTest extends TestCase
     {
         $this->connectionSetup();
 
-        $this->customerReader = new MediaReader(new ConnectionFactory());
+        $this->mediaReader = new MediaReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
             new Shopware55Profile(),
@@ -46,9 +48,9 @@ class MediaReaderTest extends TestCase
 
     public function testRead(): void
     {
-        static::assertTrue($this->customerReader->supports($this->migrationContext));
+        static::assertTrue($this->mediaReader->supports($this->migrationContext));
 
-        $data = $this->customerReader->read($this->migrationContext);
+        $data = $this->mediaReader->read($this->migrationContext);
 
         static::assertCount(10, $data);
         static::assertSame('665', $data[0]['id']);
@@ -66,11 +68,14 @@ class MediaReaderTest extends TestCase
 
     public function testReadTotal(): void
     {
-        static::assertTrue($this->customerReader->supportsTotal($this->migrationContext));
+        static::assertTrue($this->mediaReader->supportsTotal($this->migrationContext));
 
-        $totalStruct = $this->customerReader->readTotal($this->migrationContext);
+        $totalStruct = $this->mediaReader->readTotal($this->migrationContext);
+        static::assertInstanceOf(TotalStruct::class, $totalStruct);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        $dataset = $this->migrationContext->getDataSet();
+        static::assertInstanceOf(DataSet::class, $dataset);
+        static::assertSame($dataset::getEntity(), $totalStruct->getEntityName());
         static::assertSame(591, $totalStruct->getTotal());
     }
 }

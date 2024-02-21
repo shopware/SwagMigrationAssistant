@@ -156,7 +156,6 @@ class OrderReader extends AbstractReader
             $order['_locale'] = \str_replace('_', '-', $locale);
             if (isset($orderDetails[$order['id']])) {
                 $order['details'] = $orderDetails[$order['id']];
-
                 if (isset($orderEsd[$order['id']])) {
                     $this->setEsd($order, $orderEsd);
                 }
@@ -216,7 +215,7 @@ class OrderReader extends AbstractReader
         $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
 
         $query = $query->executeQuery();
-        $fetchedEsd = $query->fetchAllAssociative();
+        $fetchedEsd = FetchModeHelper::group($query->fetchAllAssociative());
 
         $result = [];
         $esdArray = $this->mapData($fetchedEsd, [], ['esd']);
