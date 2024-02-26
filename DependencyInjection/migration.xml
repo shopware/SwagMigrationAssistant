@@ -139,22 +139,6 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
         </service>
 
-        <service id="SwagMigrationAssistant\Controller\MigrationController" public="true">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService"/>
-
-            <call method="setContainer">
-                <argument type="service" id="service_container"/>
-            </call>
-        </service>
-
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="swag_migration_run.repository"/>
@@ -192,14 +176,8 @@
         <service id="SwagMigrationAssistant\Command\MigrateDataCommand">
             <argument type="service" id="swag_migration_general_setting.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument>migration:migrate</argument>
             <tag name="console.command" command="migration:migrate"/>
@@ -236,6 +214,18 @@
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="messenger.bus.shopware"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandler">
+            <argument type="service" id="messenger.bus.shopware"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="swag_migration_data.repository"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
             <tag name="messenger.message_handler"/>
         </service>
 

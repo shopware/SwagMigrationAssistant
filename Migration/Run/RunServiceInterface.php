@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Service\ProgressState;
 #[Package('services-settings')]
 interface RunServiceInterface
 {
-    public function takeoverMigration(string $runUuid, Context $context): string;
+    public function getRunStatus(Context $context): MigrationProgress;
 
     public function abortMigration(string $runUuid, Context $context): void;
 
@@ -24,11 +24,11 @@ interface RunServiceInterface
     /**
      * @param array<int, string> $dataSelectionIds
      */
-    public function createMigrationRun(
+    public function startMigrationRun(
         MigrationContextInterface $migrationContext,
         array $dataSelectionIds,
         Context $context
-    ): ?ProgressState;
+    ): void;
 
     /**
      * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>

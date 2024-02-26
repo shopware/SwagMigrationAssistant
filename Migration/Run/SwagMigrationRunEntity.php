@@ -51,10 +51,7 @@ class SwagMigrationRunEntity extends Entity
 
     protected ?string $accessToken;
 
-    /**
-     * @var RunProgress[]
-     */
-    protected array $progress = [];
+    protected ?MigrationProgress $progress = null;
 
     /**
      * @var PremappingStruct[]
@@ -144,15 +141,12 @@ class SwagMigrationRunEntity extends Entity
         $this->accessToken = $accessToken;
     }
 
-    public function getProgress(): ?array
+    public function getProgress(): ?MigrationProgress
     {
         return $this->progress;
     }
 
-    /**
-     * @param RunProgress[] $progress
-     */
-    public function setProgress(array $progress): void
+    public function setProgress(MigrationProgress $progress): void
     {
         $this->progress = $progress;
     }

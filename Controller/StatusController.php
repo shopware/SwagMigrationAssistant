@@ -222,43 +222,6 @@ class StatusController extends AbstractController
         return new JsonResponse($information);
     }
 
-    // ToDo: MIG-895 - Can be removed. The migration run should be created by "start-migration"
-    // #[Route(path: '/api/_action/migration/create-migration', name: 'api.admin.migration.create-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function createMigration(Request $request, Context $context): JsonResponse
-    {
-        $connectionId = $request->request->getAlnum('connectionId');
-
-        $dataSelectionIds = $request->request->all('dataSelectionIds');
-
-        if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
-        }
-
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
-
-        if ($connection === null) {
-            throw new MigrationContextPropertyMissingException('connectionId');
-        }
-
-        if (empty($dataSelectionIds)) {
-            throw new MigrationContextPropertyMissingException('dataSelectionIds');
-        }
-
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $state = $this->runService->createMigrationRun(
-            $migrationContext,
-            $dataSelectionIds,
-            $context
-        );
-
-        if ($state === null) {
-            return $this->getState($request, $context);
-        }
-
-        return new JsonResponse($state);
-    }
-
     #[Route(path: '/api/_action/migration/start-migration', name: 'api.admin.migration.start-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function startMigration(Request $request, Context $context): Response
     {
@@ -326,51 +289,6 @@ class StatusController extends AbstractController
 
         // in case there is no running migration
         // return new Response(null, Response::HTTP_BAD_REQUEST);
-    }
-
-    // ToDo: MIG-895 - Remove this
-    // #[Route(path: '/api/_action/migration/takeover-migration', name: 'api.admin.migration.takeover-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function takeoverMigration(Request $request, Context $context): JsonResponse
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $accessToken = $this->runService->takeoverMigration($runUuid, $context);
-
-        return new JsonResponse(['accessToken' => $accessToken]);
-    }
-
-    // ToDo: MIG-895 - Remove this
-    // #[Route(path: '/api/_action/migration/finish-migration', name: 'api.admin.migration.finish-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function finishMigration(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->finishMigration($runUuid, $context);
-
-        return new Response();
-    }
-
-    // ToDo: MIG-895 - Remove this
-    // #[Route(path: '/api/_action/migration/assign-themes', name: 'api.admin.migration.assign-themes', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function assignThemes(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
-        }
-
-        $this->runService->assignThemeToSalesChannel($runUuid, $context);
-
-        return new Response();
     }
 
     #[Route(path: '/api/_action/migration/reset-checksums', name: 'api.admin.migration.reset-checksums', methods: ['POST'], defaults: ['_acl' => ['admin']])]

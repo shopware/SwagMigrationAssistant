@@ -17,5 +17,5 @@ interface MigrationDataWriterInterface
     /**
      * Writes the converted data into the database
      */
-    public function writeData(MigrationContextInterface $migrationContext, Context $context): void;
+    public function writeData(MigrationContextInterface $migrationContext, Context $context): int;
 }
