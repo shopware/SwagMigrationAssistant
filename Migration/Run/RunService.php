@@ -13,14 +13,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\TermsResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
@@ -34,7 +31,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -129,127 +125,6 @@ class RunService implements RunServiceInterface
 
         return $run->getProgress();
     }
-
-    /**
-     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
-     */
-    public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array
-    {
-        $unsortedTotals = $this->calculateFetchedTotals($run->getId());
-        $writeProgress = $run->getProgress();
-
-        if ($writeProgress === null) {
-            return [];
-        }
-
-        foreach ($writeProgress as $runKey => $runProgress) {
-            $groupCount = 0;
-
-            foreach ($runProgress['entities'] as $entityKey => $entityProgress) {
-                $entityName = $entityProgress['entityName'];
-                $writeProgress[$runKey]['entities'][$entityKey]['currentCount'] = 0;
-
-                if (!isset($unsortedTotals[$entityName])) {
-                    $writeProgress[$runKey]['entities'][$entityKey]['total'] = 0;
-
-                    continue;
-                }
-
-                $writeProgress[$runKey]['entities'][$entityKey]['total'] = $unsortedTotals[$entityName];
-                $groupCount += $unsortedTotals[$entityName];
-            }
-
-            $writeProgress[$runKey]['currentCount'] = 0;
-            $writeProgress[$runKey]['total'] = $groupCount;
-        }
-
-        return $writeProgress;
-    }
-
-    /**
-     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
-     */
-    public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array
-    {
-        $currentProgress = $run->getProgress();
-        if ($currentProgress === null) {
-            return [];
-        }
-
-        $mediaFileTotal = $this->getMediaFileCounts($run->getId(), $context, false);
-        $mediaFileCount = $this->getMediaFileCounts($run->getId(), $context, true);
-
-        foreach ($currentProgress as &$runProgress) {
-            if ($runProgress['id'] === 'processMediaFiles') {
-                foreach ($runProgress['entities'] as &$entity) {
-                    if ($entity['entityName'] === 'media') {
-                        $entity['currentCount'] = $mediaFileCount;
-                        $entity['total'] = $mediaFileTotal;
-                    }
-                }
-                $runProgress['currentCount'] = $mediaFileCount;
-                $runProgress['total'] = $mediaFileTotal;
-
-                break;
-            }
-        }
-
-        return $currentProgress;
-    }
-
-    /**
-     * @return array<int>
-     */
-    public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        if ($isWritten) {
-            $criteria->addFilter(new MultiFilter(
-                MultiFilter::CONNECTION_OR,
-                [
-                    new MultiFilter(
-                        MultiFilter::CONNECTION_AND,
-                        [
-                            new EqualsFilter('written', true),
-                            new EqualsFilter('writeFailure', false),
-                        ]
-                    ),
-
-                    new MultiFilter(
-                        MultiFilter::CONNECTION_AND,
-                        [
-                            new EqualsFilter('written', false),
-                            new EqualsFilter('writeFailure', true),
-                        ]
-                    ),
-                ]
-            ));
-        }
-        $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
-        $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var TermsResult $termsResult */
-        $termsResult = $result->get('entityCount');
-        $counts = $termsResult->getBuckets();
-
-        if (empty($counts)) {
-            return [];
-        }
-
-        $mappedCounts = [];
-        foreach ($counts as $bucket) {
-            $key = $bucket->getKey();
-
-            if ($key === null) {
-                continue;
-            }
-
-            $mappedCounts[$key] = $bucket->getCount();
-        }
-
-        return $mappedCounts;
-    }
-
     /**
      * @param array<int, string>|null $credentialFields
      */
@@ -358,6 +233,7 @@ SQL;
         $this->bus->dispatch(new CleanupMigrationMessage());
     }
 
+    // Todo: Check if this is needed or can be put in the MQ
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
     {
         /** @var SwagMigrationRunEntity|null $run */
@@ -477,47 +353,6 @@ SQL;
         return $runCount > 0;
     }
 
-    private function getMediaFileCounts(string $runId, Context $context, bool $onlyProcessed = true): int
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        $criteria->addFilter(new EqualsFilter('written', true));
-        if ($onlyProcessed) {
-            $criteria->addFilter(new EqualsFilter('processed', true));
-        }
-        $criteria->addAggregation(new CountAggregation('count', 'id'));
-        $criteria->setLimit(1);
-        $result = $this->mediaFileRepository->aggregate($criteria, $context);
-        /** @var CountResult $countResult */
-        $countResult = $result->get('count');
-
-        return $countResult->getCount();
-    }
-
-    /**
-     * @return array<string, int>
-     */
-    private function calculateFetchedTotals(string $runId): array
-    {
-        $queryBuilder = $this->dbalConnection->createQueryBuilder();
-        $results = $queryBuilder
-            ->select('entity, COUNT(id) AS total')
-            ->from('swag_migration_data')
-            ->where('HEX(run_id) = :runId')
-            ->andWhere('convert_failure = 0')
-            ->groupBy('entity')
-            ->setParameter('runId', $runId)
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        $mappedCounts = [];
-        foreach ($results as $result) {
-            $mappedCounts[(string) $result['entity']] = (int) $result['total'];
-        }
-
-        return $mappedCounts;
-    }
-
     /**
      * @param array<int, string> $dataSelectionIds
      */
@@ -560,23 +395,6 @@ SQL;
             current($dataSets),
             0
         );
-    }
-
-    private function calculateProcessMediaFileProgress(): RunProgress
-    {
-        $entityProgress = new EntityProgress();
-        $entityProgress->setEntityName(DefaultEntities::MEDIA);
-        $entityProgress->setCurrentCount(0);
-        $entityProgress->setTotal(0);
-
-        $runProgress = new RunProgress();
-        $runProgress->setId('processMediaFiles');
-        $runProgress->setEntities([$entityProgress]);
-        $runProgress->setCurrentCount(0);
-        $runProgress->setTotal(0);
-        $runProgress->setSnippet('swag-migration.index.selectDataCard.dataSelection.media');
-
-        return $runProgress;
     }
 
     private function isMigrationRunning(Context $context): bool

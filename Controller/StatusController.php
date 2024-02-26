@@ -40,7 +40,6 @@ class StatusController extends AbstractController
      */
     public function __construct(
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
-        private readonly MigrationProgressServiceInterface $migrationProgressService,
         private readonly RunServiceInterface $runService,
         private readonly DataSelectionRegistryInterface $dataSelectionRegistry,
         private readonly EntityRepository $migrationConnectionRepo,

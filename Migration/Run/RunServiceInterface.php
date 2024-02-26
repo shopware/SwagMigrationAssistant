@@ -27,21 +27,6 @@ interface RunServiceInterface
     public function startMigrationRun(array $dataSelectionIds, Context $context): void;
 
     /**
-     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
-     */
-    public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array;
-
-    /**
-     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
-     */
-    public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array;
-
-    /**
-     * @return array<int>
-     */
-    public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array;
-
-    /**
      * @param array<int, string>|null $credentialFields
      */
     public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void;
