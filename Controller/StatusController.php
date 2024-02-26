@@ -257,25 +257,16 @@ class StatusController extends AbstractController
         // return new Response(null, Response::HTTP_BAD_REQUEST);
     }
 
-    // ToDo: MIG-895 - Refactor this to stop the message queue job
     #[Route(path: '/api/_action/migration/abort-migration', name: 'api.admin.migration.abort-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function abortMigration(Request $request, Context $context): Response
+    public function abortMigration(Context $context): Response
     {
-        // ToDo: MIG-895 - Get the uuid from the running migration or return an error if no migration is running
-        /*
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw new MigrationContextPropertyMissingException('runUuid');
+        try {
+            $this->runService->abortMigration($context);
+        } catch (\Exception $e) {
+            return new Response(null, Response::HTTP_BAD_REQUEST);
         }
-        */
-
-        // $this->runService->abortMigration($runUuid, $context);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
-
-        // in case there is no running migration
-        // return new Response(null, Response::HTTP_BAD_REQUEST);
     }
 
     #[Route(path: '/api/_action/migration/reset-checksums', name: 'api.admin.migration.reset-checksums', methods: ['POST'], defaults: ['_acl' => ['admin']])]
@@ -294,6 +285,7 @@ class StatusController extends AbstractController
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
         }
 
+        // Todo: Put this into the MQ
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();

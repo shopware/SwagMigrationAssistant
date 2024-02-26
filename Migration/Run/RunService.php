@@ -271,23 +271,33 @@ class RunService implements RunServiceInterface
         });
     }
 
-    public function abortMigration(string $runUuid, Context $context): void
+    public function abortMigration(Context $context): void
     {
-        $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
-        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runUuid, $context);
-        $dataCount = $this->getMigrationDataCount($runUuid, $context);
-        if ($dataCount > 0) {
-            /** @var SwagMigrationRunEntity $run */
-            $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
-            $connection = $run->getConnection();
+        $run = $this->getCurrentRun($context);
 
-            if ($connection === null) {
-                return;
-            }
-
-            $this->cleanupMappingChecksums($connection->getId(), $context, false);
+        if ($run === null) {
+            throw new \Exception('No running migration found');
         }
-        $this->cleanupMigration($runUuid);
+
+        $runId = $run->getId();
+        $this->migrationRunRepo->update(
+            [
+                [
+                    'id' => $runId,
+                    'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                ],
+            ],
+            $context
+        );
+
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runId, $context);
+
+        // Todo: Put this in the MQ
+        $dataCount = $this->getMigrationDataCount($runId, $context);
+        if ($dataCount > 0) {
+            $this->cleanupMappingChecksums($run->getConnectionId(), $context, false);
+        }
+        $this->cleanupMigration($runId);
     }
 
     public function cleanupMappingChecksums(string $connectionUuid, Context $context, bool $resetAll = true): void

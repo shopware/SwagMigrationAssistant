@@ -17,7 +17,7 @@ interface RunServiceInterface
 {
     public function getRunStatus(Context $context): MigrationProgress;
 
-    public function abortMigration(string $runUuid, Context $context): void;
+    public function abortMigration(Context $context): void;
 
     public function cleanupMappingChecksums(string $connectionUuid, Context $context): void;
 
