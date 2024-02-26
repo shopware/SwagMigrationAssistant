@@ -239,28 +239,10 @@ class StatusController extends AbstractController
         // return new Response(null, Response::HTTP_BAD_REQUEST);
     }
 
-    // ToDo: MIG-895 - build this in a new way. MQ should store progress that is easy to retrieve. Don't do heavy calculations here (will be polled)!
     #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getState(Request $request, Context $context): JsonResponse
+    public function getState(Context $context): JsonResponse
     {
-        // ToDo: MIG-895 remove the old way:
-        $state = $this->migrationProgressService->getProgress($request, $context);
-
-        // determine active runUuid
-
-        $possibleStates = [
-            'idle', // no migration running
-            'fetching',
-            'writing',
-            'media-processing',
-            'finished', // the MQ job is done, just inform the user about it (needs approval, see endpoint below)
-        ];
-
-        return new JsonResponse([
-            'step' => $possibleStates[1],
-            'progress' => 50,
-            'total' => 1000,
-        ]);
+        return new JsonResponse($this->runService->getRunStatus($context));
     }
 
     // ToDo: MIG-895 - build this in a new way. MQ should store progress that is easy to retrieve. Don't do heavy calculations here (will be polled)!
