@@ -13,7 +13,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ListField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('services-settings')]
 class MigrationProgressField extends JsonField
 {
     public function __construct(
@@ -25,7 +27,7 @@ class MigrationProgressField extends JsonField
             (new IntField('progress', 'progress'))->addFlags(new Required()),
             (new IntField('total', 'total'))->addFlags(new Required()),
             (new StringField('currentEntity', 'currentEntity'))->addFlags(new Required()),
-            (new IntField('currentProgress', 'currentProgress'))->addFlags(new Required()),
+            (new IntField('currentEntityProgress', 'currentEntityProgress'))->addFlags(new Required()),
             (new ListField('dataSets', 'dataSets', StringField::class))->addFlags(new Required()),
         ]);
     }

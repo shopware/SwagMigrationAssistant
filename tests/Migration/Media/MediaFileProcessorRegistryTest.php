@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Media;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
@@ -55,10 +55,10 @@ class MediaFileProcessorRegistryTest extends TestCase
 
         try {
             $this->processorRegistry->getProcessor($context);
-        } catch (\Exception $e) {
-            /* @var ProcessorNotFoundException $e */
-            static::assertInstanceOf(ProcessorNotFoundException::class, $e);
+        } catch (MigrationException $e) {
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame(MigrationException::PROCESSOR_NOT_FOUND, $e->getErrorCode());
+            static::assertSame(['profile' => 'shopware55', 'gateway' => 'local'], $e->getParameters());
         }
     }
 }

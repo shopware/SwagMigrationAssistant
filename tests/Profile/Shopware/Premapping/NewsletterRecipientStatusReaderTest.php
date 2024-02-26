@@ -15,7 +15,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -54,7 +53,6 @@ class NewsletterRecipientStatusReaderTest extends TestCase
     {
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         $mapping = $result->getMapping();
         static::assertCount(1, $mapping);
         static::assertSame(NewsletterRecipientStatusReader::SOURCE_ID, $mapping[0]->getSourceId());

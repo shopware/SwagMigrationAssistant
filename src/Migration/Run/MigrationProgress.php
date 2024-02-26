@@ -7,31 +7,16 @@
 
 namespace SwagMigrationAssistant\Migration\Run;
 
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
+/**
+ * @internal
+ */
+#[Package('services-settings')]
 final class MigrationProgress extends Struct
 {
-    public const STATUS_IDLE = 'idle';
-
-    public const STATUS_FETCHING = 'fetching';
-
-    public const STATUS_WRITING = 'writing';
-
-    public const STATUS_MEDIA_PROCESSING = 'media-processing';
-
-    public const STATUS_CLEANUP = 'cleanup';
-
-    public const STATUS_INDEXING = 'indexing';
-
-    public const STATUS_WAITING_FOR_APPROVE = 'waiting-for-approve';
-
-    public const STATUS_ABORTING = 'aborting';
-
-    public const STATUS_FINISHED = 'finished';
-
-    public const STATUS_ABORTED = 'aborted';
-
-    protected string $step;
+    protected MigrationProgressStatus $step;
 
     protected int $progress;
 
@@ -39,29 +24,31 @@ final class MigrationProgress extends Struct
 
     protected string $currentEntity;
 
-    protected int $currentProgress;
+    protected int $currentEntityProgress;
 
-    /**
-     * @var array<string>
-     */
-    protected array $dataSets;
+    protected ProgressDataSetCollection $dataSets;
 
-    public function __construct(string $step, int $progress, int $total, array $dataSets, string $currentEntity, int $currentProgress)
+    public function __construct(MigrationProgressStatus $step, int $progress, int $total, ProgressDataSetCollection $dataSets, string $currentEntity, int $currentEntityProgress)
     {
         $this->step = $step;
         $this->progress = $progress;
         $this->total = $total;
         $this->dataSets = $dataSets;
         $this->currentEntity = $currentEntity;
-        $this->currentProgress = $currentProgress;
+        $this->currentEntityProgress = $currentEntityProgress;
     }
 
-    public function getStep(): string
+    public function getStepValue(): string
+    {
+        return $this->step->value;
+    }
+
+    public function getStep(): MigrationProgressStatus
     {
         return $this->step;
     }
 
-    public function setStep(string $step): void
+    public function setStep(MigrationProgressStatus $step): void
     {
         $this->step = $step;
     }
@@ -86,12 +73,12 @@ final class MigrationProgress extends Struct
         $this->total = $total;
     }
 
-    public function getDataSets(): array
+    public function getDataSets(): ProgressDataSetCollection
     {
         return $this->dataSets;
     }
 
-    public function setDataSets(array $dataSets): void
+    public function setDataSets(ProgressDataSetCollection $dataSets): void
     {
         $this->dataSets = $dataSets;
     }
@@ -106,13 +93,13 @@ final class MigrationProgress extends Struct
         $this->currentEntity = $currentEntity;
     }
 
-    public function getCurrentProgress(): int
+    public function getCurrentEntityProgress(): int
     {
-        return $this->currentProgress;
+        return $this->currentEntityProgress;
     }
 
-    public function setCurrentProgress(int $currentProgress): void
+    public function setCurrentEntityProgress(int $currentEntityProgress): void
     {
-        $this->currentProgress = $currentProgress;
+        $this->currentEntityProgress = $currentEntityProgress;
     }
 }

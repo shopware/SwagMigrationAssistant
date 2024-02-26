@@ -22,8 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
@@ -132,11 +131,11 @@ class HistoryService implements HistoryServiceInterface
         $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->first();
 
         if ($run === null) {
-            throw new EntityNotExistsException('run', $runUuid);
+            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
         }
 
         if ($run->getStatus() === SwagMigrationRunEntity::STATUS_RUNNING) {
-            throw new MigrationIsRunningException();
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
         $this->connection->executeStatement('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);

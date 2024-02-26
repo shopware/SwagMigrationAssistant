@@ -11,10 +11,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
+use Shopware\Core\Framework\Routing\RoutingException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
@@ -22,7 +21,6 @@ use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
-use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,11 +54,11 @@ class StatusController extends AbstractController
         $gatewayName = (string) $request->query->get('gatewayName');
 
         if ($profileName === '') {
-            throw new MigrationContextPropertyMissingException('profileName');
+            throw RoutingException::missingRequestParameter('profileName');
         }
 
         if ($gatewayName === '') {
-            throw new MigrationContextPropertyMissingException('gatewayName');
+            throw RoutingException::missingRequestParameter('gatewayName');
         }
 
         $profiles = $this->profileRegistry->getProfiles();
@@ -135,7 +133,7 @@ class StatusController extends AbstractController
         $profileName = (string) $request->query->get('profileName');
 
         if ($profileName === '') {
-            throw new MigrationContextPropertyMissingException('profileName');
+            throw RoutingException::missingRequestParameter('profileName');
         }
 
         $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
@@ -160,14 +158,13 @@ class StatusController extends AbstractController
         $credentialFields = $request->request->all('credentialFields');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
         $this->runService->updateConnectionCredentials($context, $connectionId, $credentialFields);
@@ -181,14 +178,13 @@ class StatusController extends AbstractController
         $connectionId = $request->query->getAlnum('connectionId');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
@@ -204,14 +200,13 @@ class StatusController extends AbstractController
         $connectionId = $request->request->getAlnum('connectionId');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
@@ -226,15 +221,16 @@ class StatusController extends AbstractController
         $dataSelectionNames = $request->request->all('dataSelectionNames');
 
         if (empty($dataSelectionNames)) {
-            throw new MigrationContextPropertyMissingException('dataSelectionNames');
+            throw RoutingException::missingRequestParameter('dataSelectionNames');
         }
 
-        $this->runService->startMigrationRun($dataSelectionNames, $context);
+        try {
+            $this->runService->startMigrationRun($dataSelectionNames, $context);
+        } catch (\Throwable $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
 
         return new Response(null, Response::HTTP_NO_CONTENT);
-
-        // in case there is already a migration running
-        // return new Response(null, Response::HTTP_BAD_REQUEST);
     }
 
     #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['GET'], defaults: ['_acl' => ['admin']])]
@@ -247,7 +243,7 @@ class StatusController extends AbstractController
     public function approveFinishedMigration(Context $context): Response
     {
         try {
-            $this->runService->finishMigration($context);
+            $this->runService->approveFinishingMigration($context);
         } catch (\Exception $e) {
             return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
@@ -273,17 +269,16 @@ class StatusController extends AbstractController
         $connectionId = $request->request->getAlnum('connectionId');
 
         if ($connectionId === '') {
-            throw new MigrationContextPropertyMissingException('connectionId');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
         $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
 
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
+            throw MigrationException::noConnectionFound();
         }
 
-        // Todo: Put this into the MQ
+        // ToDo: MIG-965 - Check how we could put this into the MQ
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();
@@ -300,8 +295,7 @@ class StatusController extends AbstractController
     #[Route(path: '/api/_action/migration/get-reset-status', name: 'api.admin.migration.get-reset-status', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getResetStatus(Context $context): JsonResponse
     {
-        /** @var GeneralSettingEntity|null $settings */
-        $settings = $this->generalSettingRepo->search(new Criteria(), $context)->first();
+        $settings = $this->generalSettingRepo->search(new Criteria(), $context)->getEntities()->first();
 
         if ($settings === null) {
             return new JsonResponse(false);

@@ -13,6 +13,9 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('services-settings')]
 abstract class AbstractPremappingReader implements PremappingReaderInterface
 {
+    /**
+     * @var array<string, PremappingEntityStruct>
+     */
     protected array $connectionPremappingDictionary = [];
 
     protected function fillConnectionPremappingDictionary(MigrationContextInterface $migrationContext): void
@@ -28,9 +31,9 @@ abstract class AbstractPremappingReader implements PremappingReaderInterface
         }
 
         foreach ($connectionMapping as $premapping) {
-            if ($premapping['entity'] === static::getMappingName()) {
-                foreach ($premapping['mapping'] as $mapping) {
-                    $this->connectionPremappingDictionary[$mapping['sourceId']] = $mapping;
+            if ($premapping->getEntity() === static::getMappingName()) {
+                foreach ($premapping->getMapping() as $mapping) {
+                    $this->connectionPremappingDictionary[$mapping->getSourceId()] = $mapping;
                 }
             }
         }

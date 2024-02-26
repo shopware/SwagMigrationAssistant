@@ -8,18 +8,10 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\MigrationContext;
+use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
-use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
-use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -30,15 +22,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Package('services-settings')]
 class PremappingController extends AbstractController
 {
-    /**
-     * @param EntityRepository<GeneralSettingCollection>          $generalSettingRepository
-     * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepository
-     */
     public function __construct(
         private readonly PremappingServiceInterface $premappingService,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
-        private readonly EntityRepository $generalSettingRepository,
-        private readonly EntityRepository $migrationConnectionRepository,
     ) {
     }
 
@@ -47,10 +33,10 @@ class PremappingController extends AbstractController
     {
         $dataSelectionIds = $request->request->all('dataSelectionIds');
         if (empty($dataSelectionIds)) {
-            throw new MigrationContextPropertyMissingException('dataSelectionIds');
+            throw RoutingException::missingRequestParameter('dataSelectionIds');
         }
 
-        $migrationContext = $this->constructMigrationContextByActiveConnection($context);
+        $migrationContext = $this->migrationContextFactory->createBySelectedConnection($context);
 
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $dataSelectionIds));
     }
@@ -61,28 +47,13 @@ class PremappingController extends AbstractController
         $premapping = $request->request->all('premapping');
 
         if (empty($premapping)) {
-            throw new MigrationContextPropertyMissingException('premapping');
+            throw RoutingException::missingRequestParameter('premapping');
         }
 
-        $migrationContext = $this->constructMigrationContextByActiveConnection($context);
+        $migrationContext = $this->migrationContextFactory->createBySelectedConnection($context);
 
         $this->premappingService->writePremapping($context, $migrationContext, $premapping);
 
         return new Response('', Response::HTTP_NO_CONTENT);
-    }
-
-    private function constructMigrationContextByActiveConnection(Context $context): MigrationContext
-    {
-        $settings = $this->generalSettingRepository->search(new Criteria(), $context)->first();
-        if (!$settings instanceof GeneralSettingEntity) {
-            throw new EntityNotExistsException(GeneralSettingEntity::class, 'Default');
-        }
-
-        $connection = $this->migrationConnectionRepository->search(new Criteria([$settings->getSelectedConnectionId()]), $context)->first();
-        if (!$connection instanceof SwagMigrationConnectionEntity) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $settings->getSelectedConnectionId());
-        }
-
-        return $this->migrationContextFactory->createByConnection($connection);
     }
 }

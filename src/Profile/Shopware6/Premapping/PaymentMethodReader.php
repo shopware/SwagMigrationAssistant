@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Premapping;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -40,10 +41,13 @@ class PaymentMethodReader extends AbstractPremappingReader
     private array $sourceIdToHandlerDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<PaymentMethodCollection> $paymentMethodRepo
+     */
     public function __construct(
         protected EntityRepository $paymentMethodRepo,
         private readonly GatewayRegistryInterface $gatewayRegistry
@@ -86,7 +90,7 @@ class PaymentMethodReader extends AbstractPremappingReader
             $this->sourceIdToHandlerDictionary[$data['id']] = $data['handlerIdentifier'];
 
             if (isset($this->connectionPremappingDictionary[$data['id']])) {
-                $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+                $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
             }
 
             if (!isset($uuid) || !isset($this->choiceUuids[$uuid])) {

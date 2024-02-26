@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Salutation\SalutationCollection;
 use Shopware\Core\System\Salutation\SalutationEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -33,15 +34,18 @@ class SalutationReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'salutation';
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     protected array $preselectionDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<SalutationCollection> $salutationRepo
+     */
     public function __construct(
         private readonly EntityRepository $salutationRepo,
         private readonly GatewayRegistryInterface $gatewayRegistry
@@ -107,7 +111,7 @@ class SalutationReader extends AbstractPremappingReader
         foreach ($salutations as $salutation) {
             $uuid = '';
             if (isset($this->connectionPremappingDictionary[$salutation])) {
-                $uuid = $this->connectionPremappingDictionary[$salutation]['destinationUuid'];
+                $uuid = $this->connectionPremappingDictionary[$salutation]->getDestinationUuid();
 
                 if (!isset($this->choiceUuids[$uuid])) {
                     $uuid = '';

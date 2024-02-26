@@ -28,6 +28,8 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="swag_migration_general_setting.repository"/>
+            <argument type="service" id="swag_migration_connection.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Mapping\MappingService">
@@ -53,33 +55,25 @@
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry"/>
-            <argument type="service" id="swag_migration_data.repository"/>
-            <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="sales_channel.repository"/>
             <argument type="service" id="theme.repository"/>
             <argument type="service" id="swag_migration_general_setting.repository"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
             <argument type="service" id="Shopware\Storefront\Theme\ThemeService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
-            <argument type="service" id="cache.object"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="Shopware\Core\Framework\Store\Services\TrackingEventClient"/>
             <argument type="service" id="messenger.bus.shopware"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\History\HistoryService">
             <argument type="service" id="swag_migration_logging.repository"/>
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService">
-            <argument type="service" id="swag_migration_run.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"
@@ -132,8 +126,6 @@
         <service id="SwagMigrationAssistant\Controller\PremappingController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
-            <argument type="service" id="swag_migration_general_setting.repository"/>
-            <argument type="service" id="swag_migration_connection.repository"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

@@ -33,7 +33,6 @@ parameters:
             paths:
                 - tests/Migration/Controller/StatusControllerTest.php
                 - tests/Migration/Services/MigrationDataWriterTest.php
-                - tests/Migration/Services/MigrationProgressServiceTest.php
                 - tests/Profile/Shopware/Gateway/Local/
 
         -  # The properties are never uninitialized. They are assigned in the convert method.
@@ -48,7 +47,10 @@ parameters:
 
         - # Can be removed once the min SW version is 6.6.1.0
             message: '#Method Context::createDefaultContext\(\) should not be used in CLI context. Use Context::createCLIContext\(\) instead#'
-            path: src/Command/MigrateDataCommand.php
+            paths:
+                - src/Command/AbortMigrationCommand.php
+                - src/Command/GetMigrationProgressCommand.php
+                - src/Command/StartMigrationCommand.php
 
         # ToDo: fix platform deprecations for v6.7.0.0
         - message: """

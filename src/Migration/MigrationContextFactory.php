@@ -7,20 +7,33 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 
 #[Package('services-settings')]
 class MigrationContextFactory implements MigrationContextFactoryInterface
 {
+    /**
+     * @param EntityRepository<GeneralSettingCollection> $generalSettingRepository
+     * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepository
+     */
     public function __construct(
         private readonly ProfileRegistryInterface $profileRegistry,
         private readonly GatewayRegistryInterface $gatewayRegistry,
-        private readonly DataSetRegistryInterface $dataSetRegistry
+        private readonly DataSetRegistryInterface $dataSetRegistry,
+        private readonly EntityRepository $generalSettingRepository,
+        private readonly EntityRepository $migrationConnectionRepository
     ) {
     }
 
@@ -78,5 +91,24 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
         $migrationContext->setGateway($gateway);
 
         return $migrationContext;
+    }
+
+    public function createBySelectedConnection(Context $context): MigrationContextInterface
+    {
+        $settings = $this->generalSettingRepository->search(new Criteria(), $context)->first();
+        if (!$settings instanceof GeneralSettingEntity) {
+            throw MigrationException::entityNotExists(GeneralSettingEntity::class, 'Default');
+        }
+
+        if ($settings->getSelectedConnectionId() === null) {
+            throw MigrationException::noConnectionIsSelected();
+        }
+
+        $connection = $this->migrationConnectionRepository->search(new Criteria([$settings->getSelectedConnectionId()]), $context)->first();
+        if (!$connection instanceof SwagMigrationConnectionEntity) {
+            throw MigrationException::entityNotExists(SwagMigrationConnectionEntity::class, $settings->getSelectedConnectionId());
+        }
+
+        return $this->createByConnection($connection);
     }
 }

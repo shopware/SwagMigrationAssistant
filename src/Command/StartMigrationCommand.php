@@ -9,8 +9,9 @@ namespace SwagMigrationAssistant\Command;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationIsAlreadyRunningException;
+use SwagMigrationAssistant\Exception\PremappingIsIncompleteException;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
@@ -42,53 +43,46 @@ class StartMigrationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $this->checkDataSelections($input);
         $context = Context::createDefaultContext();
 
-        // Todo: Check Premapping, if its done
-        // $this->generatePremapping($run, $context);
+        if (!$this->validateDataSelections($input)) {
+            $output->writeln('Please provide at least one data selection.');
 
-        $this->runService->startMigrationRun($this->dataSelectionNames, $context);
+            return Command::FAILURE;
+        }
+
+        try {
+            $this->runService->startMigrationRun($this->dataSelectionNames, $context);
+        } catch (MigrationIsAlreadyRunningException $exception) {
+            $output->writeln('Migration is already running, please use migration:get-status to check the progress.');
+
+            return Command::FAILURE;
+        } catch (PremappingIsIncompleteException $exception) {
+            $output->writeln('Premapping is incomplete, please fill it in before performing the migration.');
+
+            return Command::FAILURE;
+        }
 
         $output->writeln('Migration is started, please use migration:get-status to check the progress.');
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     /**
      * @psalm-suppress PossiblyInvalidArgument
      */
-    private function checkDataSelections(InputInterface $input): void
+    private function validateDataSelections(InputInterface $input): bool
     {
         $dataSelections = $input->getArgument('dataSelections');
         if (!$dataSelections) {
-            throw new \InvalidArgumentException('No dataSelections entered');
+            return false;
         }
         if (!\is_array($dataSelections)) {
             $dataSelections = [$dataSelections];
         }
         $this->dataSelectionNames[] = BasicSettingsDataSelection::IDENTIFIER;
         $this->dataSelectionNames = \array_merge($this->dataSelectionNames, $dataSelections);
-    }
 
-    private function generatePremapping(SwagMigrationRunEntity $run, Context $context): void
-    {
-        $migrationContext = $this->migrationContextFactory->create($run);
-
-        if ($migrationContext === null) {
-            throw new \InvalidArgumentException('Migration context could not be created.');
-        }
-
-        $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $run);
-
-        foreach ($premapping as $item) {
-            foreach ($item->getMapping() as $mapping) {
-                if ($mapping->getDestinationUuid() === '') {
-                    $this->runService->abortMigration($context);
-
-                    throw new \InvalidArgumentException('Premapping is incomplete, please fill it in before performing the migration.');
-                }
-            }
-        }
+        return true;
     }
 }

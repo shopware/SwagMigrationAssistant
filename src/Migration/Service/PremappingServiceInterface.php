@@ -22,5 +22,8 @@ interface PremappingServiceInterface
      */
     public function generatePremapping(Context $context, MigrationContextInterface $migrationContext, array $dataSelectionIds): array;
 
+    /**
+     * @param array<array{entity: string, mapping: list<array{sourceId: string, description: string, destinationUuid: string}>}> $premapping
+     */
     public function writePremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void;
 }

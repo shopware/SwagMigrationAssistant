@@ -21,6 +21,7 @@ use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
@@ -57,16 +58,11 @@ class DeliveryTimeReaderTest extends TestCase
         $timeTwo->setId(Uuid::randomHex());
         $timeTwo->setName('2-5 days');
 
-        $premapping = [[
-            'entity' => DeliveryTimeReader::getMappingName(),
-            'mapping' => [
-                0 => [
-                    'sourceId' => DeliveryTimeReader::SOURCE_ID,
-                    'description' => 'Default delivery time',
-                    'destinationUuid' => $this->timeOne->getId(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct(DeliveryTimeReader::getMappingName(), [
+                new PremappingEntityStruct(DeliveryTimeReader::SOURCE_ID, 'Default delivery time', $this->timeOne->getId()),
+            ], []),
+        ];
         $connection->setPremapping($premapping);
 
         $mock->method('search')->willReturn(new EntitySearchResult(DeliveryTimeDefinition::ENTITY_NAME, 2, new EntityCollection([$this->timeOne, $timeTwo]), null, new Criteria(), $this->context));
@@ -84,7 +80,6 @@ class DeliveryTimeReaderTest extends TestCase
     {
         $result = $this->deliveryTimeReader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(1, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
@@ -101,16 +96,11 @@ class DeliveryTimeReaderTest extends TestCase
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
 
-        $premapping = [[
-            'entity' => 'delivery_time',
-            'mapping' => [
-                0 => [
-                    'sourceId' => 'default_delivery_time',
-                    'description' => 'Default delivery time',
-                    'destinationUuid' => Uuid::randomHex(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct(DeliveryTimeReader::getMappingName(), [
+                new PremappingEntityStruct(DeliveryTimeReader::SOURCE_ID, 'Default delivery time', Uuid::randomHex()),
+            ], []),
+        ];
         $connection->setPremapping($premapping);
 
         $this->migrationContext = new MigrationContext(
@@ -120,7 +110,6 @@ class DeliveryTimeReaderTest extends TestCase
 
         $result = $this->deliveryTimeReader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(1, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 

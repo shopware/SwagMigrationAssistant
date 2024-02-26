@@ -24,7 +24,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
@@ -60,6 +59,8 @@ use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactory;
+use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
 use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -67,7 +68,8 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
-use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
+use SwagMigrationAssistant\Migration\Service\PremappingService;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Writer\CustomerWriter;
 use SwagMigrationAssistant\Migration\Writer\ProductWriter;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
@@ -237,6 +239,11 @@ class MigrationDataWriterTest extends TestCase
      */
     private EntityRepository $themeRepo;
 
+    /**
+     * @var EntityRepository<GeneralSettingCollection>
+     */
+    private EntityRepository $generalSettingRepo;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -286,25 +293,26 @@ class MigrationDataWriterTest extends TestCase
             $mappingRepo
         );
 
+        $migrationContextFactoryMock = $this->createMock(MigrationContextFactory::class);
+        $premappingService = $this->createMock(PremappingService::class);
+
         $this->runService = new RunService(
             $this->runRepo,
             $this->connectionRepo,
             new DummyMigrationDataFetcher(new GatewayRegistry([]), $this->loggingService),
-            new SwagMigrationAccessTokenService($this->runRepo),
             new DataSelectionRegistry([]),
-            $this->migrationDataRepo,
-            $this->mediaRepo,
             $this->salesChannelRepo,
             $this->themeRepo,
-            new EntityIndexerRegistry([], static::getContainer()->get('messenger.bus.shopware'), static::getContainer()->get('event_dispatcher')),
+            $this->generalSettingRepo,
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
-            static::getContainer()->get('cache.object'),
             new SwagMigrationDataDefinition(),
             $this->dbConnection,
             new LoggingService($this->loggingRepo),
             static::getContainer()->get(TrackingEventClient::class),
-            static::getContainer()->get('messenger.bus.shopware')
+            static::getContainer()->get('messenger.bus.shopware'),
+            $migrationContextFactoryMock,
+            $premappingService
         );
     }
 
@@ -436,7 +444,7 @@ class MigrationDataWriterTest extends TestCase
         });
         $salesChannelTotalAfter = $this->dbConnection->executeQuery('select count(*) from sales_channel')->fetchOne();
 
-        $this->runService->finishMigration($this->runUuid, $context);
+        $this->runService->approveFinishingMigration($context);
 
         static::assertSame(2, $salesChannelTotalAfter - $salesChannelTotalBefore);
     }
@@ -458,7 +466,7 @@ class MigrationDataWriterTest extends TestCase
         $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
             $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $this->runService->finishMigration($this->runUuid, $context);
+        $this->runService->approveFinishingMigration($context);
 
         $beforeThemeSalesChannel = $this->dbConnection->executeQuery('select count(*) from theme_sales_channel')->fetchOne();
         $this->runService->assignThemeToSalesChannel($this->runUuid, $context);
@@ -700,6 +708,7 @@ class MigrationDataWriterTest extends TestCase
         $this->shippingRepo = static::getContainer()->get('shipping_method.repository');
         $this->countryRepo = static::getContainer()->get('country.repository');
         $this->themeSalesChannelRepo = static::getContainer()->get('theme_sales_channel.repository');
+        $this->generalSettingRepo = static::getContainer()->get('swag_migration_general_setting.repository');
     }
 
     private function initConnectionAndRun(): void
@@ -737,6 +746,23 @@ class MigrationDataWriterTest extends TestCase
                     'id' => $this->runUuid,
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'connectionId' => $this->connectionId,
+                    'progress' => [
+                        'step' => MigrationProgressStatus::WAITING_FOR_APPROVE,
+                        'progress' => 0,
+                        'total' => 0,
+                        'currentEntity' => 'product',
+                        'currentEntityProgress' => 0,
+                        'dataSets' => [
+                            [
+                                'entityName' => 'category',
+                                'total' => 0,
+                            ],
+                            [
+                                'entityName' => 'product',
+                                'total' => 0,
+                            ],
+                        ],
+                    ],
                 ],
             ],
             $this->context

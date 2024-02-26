@@ -8,8 +8,10 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Message;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 
+#[Package('services-settings')]
 class MigrationProcessMessage implements AsyncMessageInterface
 {
     public function __construct(private readonly Context $context, private readonly string $runUuid)

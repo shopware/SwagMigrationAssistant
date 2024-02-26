@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
-use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
@@ -90,7 +90,7 @@ class HistoryController extends AbstractController
         }
 
         if ($this->historyService->isMediaProcessing()) {
-            throw new MigrationIsRunningException();
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
         $this->historyService->clearDataOfRun($runUuid, $context);

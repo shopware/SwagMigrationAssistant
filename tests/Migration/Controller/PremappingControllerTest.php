@@ -10,21 +10,23 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\PremappingController;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -34,6 +36,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class PremappingControllerTest extends TestCase
@@ -41,8 +44,14 @@ class PremappingControllerTest extends TestCase
     use IntegrationTestBehaviour;
     use MigrationServicesTrait;
 
+    /**
+     * @var EntityRepository<SwagMigrationRunCollection>
+     */
     private EntityRepository $runRepo;
 
+    /**
+     * @var EntityRepository<SwagMigrationMappingCollection>
+     */
     private EntityRepository $mappingRepo;
 
     private PremappingController $controller;
@@ -55,7 +64,7 @@ class PremappingControllerTest extends TestCase
 
     private Context $context;
 
-    private string $connectionId;
+    private string $connectionId = '';
 
     private PremappingEntityStruct $firstState;
 
@@ -84,10 +93,8 @@ class PremappingControllerTest extends TestCase
                 ),
                 $this->mappingService,
                 $this->mappingRepo,
-                $this->runRepo,
                 $connectionRepo
             ),
-            $this->runRepo,
             $migrationContextFactory
         );
 
@@ -111,18 +118,26 @@ class PremappingControllerTest extends TestCase
             );
         });
 
+        $generalSettingRepo = $this->getContainer()->get('swag_migration_general_setting.repository');
+        $setting = $generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+
+        $generalSettingRepo->update([
+            [
+                'id' => $setting,
+                'selectedConnectionId' => $this->connectionId,
+            ],
+        ], $this->context);
+
         $this->runUuid = Uuid::randomHex();
         $this->runRepo->create(
             [
                 [
                     'id' => $this->runUuid,
                     'connectionId' => $this->connectionId,
-                    'progress' => require __DIR__ . '/../../_fixtures/run_progress_data.php',
                     'status' => SwagMigrationRunEntity::STATUS_RUNNING,
-                    'accessToken' => 'testToken',
                 ],
             ],
-            Context::createDefaultContext()
+            $this->context
         );
 
         $firstStateUuid = Uuid::randomHex();
@@ -134,28 +149,21 @@ class PremappingControllerTest extends TestCase
         $this->premapping = new PremappingStruct(OrderStateReader::getMappingName(), [$this->firstState, $this->secondState]);
     }
 
-    public function testGeneratePremappingWithoutRunUuid(): void
+    public function testGeneratePremappingWithoutDataSelectionIds(): void
     {
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->generatePremapping(
-            new Request(),
-            $this->context
-        );
-    }
-
-    public function testGeneratePremappingWithInvalidRunUuid(): void
-    {
-        $this->expectException(EntityNotExistsException::class);
-        $this->controller->generatePremapping(
-            new Request([], ['runUuid' => Uuid::randomHex()]),
-            $this->context
-        );
+        try {
+            $this->controller->generatePremapping(new Request(), $this->context);
+        } catch (RoutingException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'dataSelectionIds');
+        }
     }
 
     public function testWritePremapping(): void
     {
         $request = new Request([], [
-            'runUuid' => $this->runUuid,
             'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
         ]);
 
@@ -184,44 +192,16 @@ class PremappingControllerTest extends TestCase
         static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
     }
 
-    public function testWritePremappingWithoutRunUuid(): void
-    {
-        $request = new Request([], [
-            'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
-        ]);
-
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->writePremapping(
-            $request,
-            $this->context
-        );
-    }
-
     public function testWritePremappingWithoutPremapping(): void
     {
-        $request = new Request([], [
-            'runUuid' => $this->runUuid,
-        ]);
-
-        $this->expectException(MigrationContextPropertyMissingException::class);
-        $this->controller->writePremapping(
-            $request,
-            $this->context
-        );
-    }
-
-    public function testWritePremappingWithInvalidRunUuid(): void
-    {
-        $request = new Request([], [
-            'runUuid' => Uuid::randomHex(),
-            'premapping' => \json_decode((string) (new JsonResponse([$this->premapping]))->getContent(), true),
-        ]);
-
-        $this->expectException(EntityNotExistsException::class);
-        $this->controller->writePremapping(
-            $request,
-            $this->context
-        );
+        try {
+            $this->controller->writePremapping(new Request(), $this->context);
+        } catch (RoutingException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(RoutingException::MISSING_REQUEST_PARAMETER_CODE, $e->getErrorCode());
+            static::assertArrayHasKey('parameterName', $e->getParameters());
+            static::assertSame($e->getParameters()['parameterName'], 'premapping');
+        }
     }
 
     public function testWritePremappingTwice(): void

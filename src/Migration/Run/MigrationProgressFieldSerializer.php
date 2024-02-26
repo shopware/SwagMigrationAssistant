@@ -12,7 +12,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldSerializer\JsonFieldSerial
 use Shopware\Core\Framework\DataAbstractionLayer\Write\DataStack\KeyValuePair;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteParameterBag;
+use Shopware\Core\Framework\Log\Package;
+use Symfony\Component\Validator\Constraints\All;
+use Symfony\Component\Validator\Constraints\Collection;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Type;
 
+#[Package('services-settings')]
 class MigrationProgressFieldSerializer extends JsonFieldSerializer
 {
     public function encode(
@@ -21,12 +27,41 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
         KeyValuePair $data,
         WriteParameterBag $parameters
     ): \Generator {
-        if ($data->getValue() !== null && \is_array($data->getValue())) {
-            $value = $data->getValue();
+        $value = $data->getValue();
+        if ($value instanceof MigrationProgress) {
+            $value = $value->jsonSerialize();
+        }
+
+        if (\is_array($value)) {
             unset($value['extensions']);
+
+            if (isset($value['step']) && $value['step'] instanceof MigrationProgressStatus) {
+                $value['step'] = $value['step']->value;
+            }
+
+            if (isset($value['dataSets']) && $value['dataSets'] instanceof ProgressDataSetCollection) {
+                $value['dataSets'] = $value['dataSets']->jsonSerialize();
+
+                foreach ($value['dataSets'] as &$dataSet) {
+                    if ($dataSet instanceof ProgressDataSet) {
+                        $dataSet = $dataSet->jsonSerialize();
+                    }
+                }
+            }
+
+            if (isset($value['dataSets']) && \is_array($value['dataSets'])) {
+                foreach ($value['dataSets'] as &$dataSet) {
+                    unset($dataSet['extensions']);
+                }
+            }
 
             $data = new KeyValuePair($data->getKey(), $value, $data->isRaw());
         }
+
+        $constraints = $this->getConstraints($field);
+        $path = $parameters->getPath() . '/' . $field->getPropertyName();
+
+        $this->validate($constraints, $data, $path);
 
         yield from parent::encode($field, $existence, $data, $parameters);
     }
@@ -38,14 +73,42 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
         }
 
         $raw = \json_decode((string) $value, true, 512, \JSON_THROW_ON_ERROR);
+        $progressDataSetCollection = new ProgressDataSetCollection();
+
+        if (isset($raw['dataSets']) && \array_is_list($raw['dataSets'])) {
+            $progressDataSetCollection->fromArray($raw['dataSets']);
+        }
 
         return new MigrationProgress(
-            (string) $raw['step'],
+            MigrationProgressStatus::from($raw['step']),
             (int) $raw['progress'],
             (int) $raw['total'],
-            $raw['dataSets'],
+            $progressDataSetCollection,
             (string) $raw['currentEntity'],
-            (int) $raw['currentProgress']
+            (int) $raw['currentEntityProgress']
         );
+    }
+
+    protected function getConstraints(Field $field): array
+    {
+        return [
+            new Collection([
+                'step' => [new NotBlank(), new Type('string')],
+                'progress' => [new NotBlank(), new Type('int')],
+                'total' => [new NotBlank(), new Type('int')],
+                'currentEntity' => [new NotBlank(), new Type('string')],
+                'currentEntityProgress' => [new NotBlank(), new Type('int')],
+                'dataSets' => [
+                    new Type('array'),
+                    new All(new Collection([
+                        'allowExtraFields' => true,
+                        'fields' => [
+                            'entityName' => [new NotBlank(), new Type('string')],
+                            'total' => [new NotBlank(), new Type('int')],
+                        ],
+                    ])),
+                ],
+            ]),
+        ];
     }
 }

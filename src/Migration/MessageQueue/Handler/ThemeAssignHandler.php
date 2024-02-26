@@ -14,7 +14,10 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
 #[Package('services-settings')]
-class ThemeAssignHandler
+/**
+ * @internal
+ */
+final class ThemeAssignHandler
 {
     public function __construct(
         private readonly RunServiceInterface $runService

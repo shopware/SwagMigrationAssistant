@@ -14,7 +14,6 @@ use Shopware\Core\Framework\ShopwareHttpException;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\ConverterNotFoundException;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
 use SwagMigrationAssistant\Exception\GatewayNotFoundException;
 use SwagMigrationAssistant\Exception\GatewayReadException;
 use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
@@ -23,11 +22,9 @@ use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
 use SwagMigrationAssistant\Exception\MigrationIsRunningException;
 use SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException;
 use SwagMigrationAssistant\Exception\MigrationWorkloadPropertyMissingException;
-use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
 use SwagMigrationAssistant\Exception\ProfileNotFoundException;
 use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
@@ -48,12 +45,14 @@ class ExceptionTest extends TestCase
         }
     }
 
+    /**
+     * @return array<array{ShopwareHttpException, class-string<object>, int, string}>
+     */
     public static function exceptionProvider(): array
     {
         return [
             [new ConverterNotFoundException('foo'), ConverterNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__CONVERTER_NOT_FOUND'],
             [new DataSetNotFoundException('foo'), DataSetNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__DATASET_NOT_FOUND'],
-            [new EntityNotExistsException(SwagMigrationRunEntity::class, Uuid::randomHex()), EntityNotExistsException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__ENTITY_NOT_EXISTS'],
             [new GatewayNotFoundException('foo'), GatewayNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__GATEWAY_NOT_FOUND'],
             [new GatewayReadException('foo'), GatewayReadException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__GATEWAY_READ'],
             [new InvalidConnectionAuthenticationException('foo'), InvalidConnectionAuthenticationException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID'],
@@ -62,7 +61,6 @@ class ExceptionTest extends TestCase
             [new MigrationIsRunningException(), MigrationIsRunningException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__IS_RUNNING'],
             [new MigrationRunUndefinedStatusException(Uuid::randomHex()), MigrationRunUndefinedStatusException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__RUN_UNDEFINED_STATUS'],
             [new MigrationWorkloadPropertyMissingException('foo'), MigrationWorkloadPropertyMissingException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__WORKLOAD_PROPERTY_MISSING'],
-            [new ProcessorNotFoundException('foo', 'bar'), ProcessorNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND'],
             [new ProfileNotFoundException('foo'), ProfileNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__PROFILE_NOT_FOUND'],
             [new RequestCertificateInvalidException('foo'), RequestCertificateInvalidException::class, Response::HTTP_BAD_REQUEST, 'SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID'],
             [new WriterNotFoundException('foo'), WriterNotFoundException::class, Response::HTTP_NOT_FOUND, 'SWAG_MIGRATION__WRITER_NOT_FOUND'],

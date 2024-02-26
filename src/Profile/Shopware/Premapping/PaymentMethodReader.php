@@ -11,6 +11,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\CashPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DebitPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PrePayment;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -37,20 +38,23 @@ class PaymentMethodReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'payment_method';
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $preselectionDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $preselectionSourceNameDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<PaymentMethodCollection> $paymentMethodRepo
+     */
     public function __construct(
         private readonly EntityRepository $paymentMethodRepo,
         private readonly GatewayRegistryInterface $gatewayRegistry
@@ -99,7 +103,7 @@ class PaymentMethodReader extends AbstractPremappingReader
             $uuid = '';
 
             if (isset($this->connectionPremappingDictionary[$data['id']])) {
-                $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+                $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
             }
             if (!empty($data['description'])) {
                 $description = $data['description'];
@@ -118,7 +122,7 @@ class PaymentMethodReader extends AbstractPremappingReader
 
         $uuid = '';
         if (isset($this->connectionPremappingDictionary[self::SOURCE_ID])) {
-            $uuid = $this->connectionPremappingDictionary[self::SOURCE_ID]['destinationUuid'];
+            $uuid = $this->connectionPremappingDictionary[self::SOURCE_ID]->getDestinationUuid();
 
             if (!isset($this->choiceUuids[$uuid])) {
                 $uuid = '';

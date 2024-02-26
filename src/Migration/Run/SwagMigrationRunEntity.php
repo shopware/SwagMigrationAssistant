@@ -37,19 +37,19 @@ class SwagMigrationRunEntity extends Entity
      */
     final public const STATUS_ABORTED = 'aborted';
 
-    protected ?string $connectionId;
+    protected ?string $connectionId = null;
 
-    protected ?SwagMigrationConnectionEntity $connection;
+    protected ?SwagMigrationConnectionEntity $connection = null;
 
-    protected ?array $totals;
+    protected ?array $totals = null;
 
-    protected ?array $environmentInformation;
+    protected ?array $environmentInformation = null;
 
-    protected ?string $status;
+    protected ?string $status = null;
 
-    protected ?string $userId;
+    protected ?string $userId = null;
 
-    protected ?string $accessToken;
+    protected ?string $accessToken = null;
 
     protected ?MigrationProgress $progress = null;
 

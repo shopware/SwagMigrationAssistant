@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
@@ -71,27 +72,14 @@ class TransactionStateReaderTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $connection->setCredentialFields([]);
-        $premapping = [[
-            'entity' => 'transaction_state',
-            'mapping' => [
-                0 => [
-                    'sourceId' => '1',
-                    'description' => 'open',
-                    'destinationUuid' => $this->stateOpen->getId(),
-                ],
-                1 => [
-                    'sourceId' => '2',
-                    'description' => 'in_process',
-                    'destinationUuid' => $this->stateClosed->getId(),
-                ],
 
-                2 => [
-                    'sourceId' => '300',
-                    'description' => 'payment-invalid',
-                    'destinationUuid' => Uuid::randomHex(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct('transaction_state', [
+                new PremappingEntityStruct('1', 'open', $this->stateOpen->getId()),
+                new PremappingEntityStruct('2', 'in_process', $this->stateClosed->getId()),
+                new PremappingEntityStruct('300', 'payment-invalid', Uuid::randomHex()),
+            ], []),
+        ];
         $connection->setPremapping($premapping);
 
         $this->migrationContext = new MigrationContext(
@@ -117,7 +105,6 @@ class TransactionStateReaderTest extends TestCase
     {
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(4, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 

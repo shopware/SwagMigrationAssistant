@@ -14,7 +14,9 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateEntity;
+use Shopware\Core\System\StateMachine\StateMachineCollection;
 use Shopware\Core\System\StateMachine\StateMachineEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -32,15 +34,19 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'order_delivery_state';
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     protected array $preselectionDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<StateMachineCollection> $stateMachineRepo
+     * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepo
+     */
     public function __construct(
         private readonly EntityRepository $stateMachineRepo,
         private readonly EntityRepository $stateMachineStateRepo,
@@ -84,7 +90,7 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
             if ($data['group'] === 'state') {
                 $uuid = '';
                 if (isset($this->connectionPremappingDictionary[$data['id']])) {
-                    $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+                    $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
 
                     if (!isset($this->choiceUuids[$uuid])) {
                         $uuid = '';

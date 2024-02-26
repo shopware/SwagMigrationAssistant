@@ -11,7 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationAssistant\Migration\Run\MigrationProgress;
+use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -21,9 +22,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+#[Package('services-settings')]
 class GetMigrationProgressCommand extends Command
 {
-    private int $refreshRate;
+    private const PROGRESSBAR_FORMAT = '[%bar%] %current%/%max% ';
 
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
@@ -47,39 +49,46 @@ class GetMigrationProgressCommand extends Command
     {
         $context = Context::createDefaultContext();
         $run = $this->getCurrentRun($context);
-        $this->refreshRate = (int) $input->getOption('refreshRate');
+        $refreshRate = (int) $input->getOption('refreshRate');
 
         if ($run === null) {
-            $output->writeln('No migration is currently running');
+            $output->writeln('Currently there is no migration running');
 
-            return 0;
+            return Command::FAILURE;
         }
 
         $progress = $this->runService->getRunStatus($context);
         $progressBar = new ProgressBar($output, $progress->getTotal());
-        $progressBar->setFormat('[%bar%] %current%/%max% ' . $progress->getStep());
+        $progressBar->setFormat(self::PROGRESSBAR_FORMAT . $progress->getStepValue());
         $progressBar->setMaxSteps($progress->getTotal());
         $progressBar->setProgress($progress->getProgress());
 
-        while ($progress->getStep() !== MigrationProgress::STATUS_FINISHED) {
+        while ($progress->getStep() !== MigrationProgressStatus::FINISHED) {
             $progress = $this->runService->getRunStatus($context);
 
-            if ($progress->getStep() === MigrationProgress::STATUS_WAITING_FOR_APPROVE) {
-                $this->runService->finishMigration($context);
+            if (\in_array($progress->getStep(), [MigrationProgressStatus::ABORTING, MigrationProgressStatus::ABORTED, MigrationProgressStatus::IDLE], true)) {
+                $output->writeln('');
+                $output->writeln('Migration was aborted.');
+
+                break;
+            }
+
+            if ($progress->getStep() === MigrationProgressStatus::WAITING_FOR_APPROVE) {
+                $this->runService->approveFinishingMigration($context);
                 $output->writeln('');
                 $output->writeln('Migration is finished.');
 
                 break;
             }
 
-            $progressBar->setFormat('[%bar%] %current%/%max% ' . $progress->getStep());
+            $progressBar->setFormat(self::PROGRESSBAR_FORMAT . $progress->getStepValue());
             $progressBar->setMaxSteps($progress->getTotal());
             $progressBar->setProgress($progress->getProgress());
 
-            \sleep($this->refreshRate);
+            \sleep($refreshRate);
         }
 
-        return 0;
+        return Command::SUCCESS;
     }
 
     private function getCurrentRun(Context $context): ?SwagMigrationRunEntity

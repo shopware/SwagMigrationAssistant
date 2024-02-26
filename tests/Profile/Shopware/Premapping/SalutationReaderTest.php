@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
@@ -62,27 +63,13 @@ class SalutationReaderTest extends TestCase
         $this->salutationTwo->setDisplayName('Ms');
         $this->salutationTwo->setSalutationKey('ms');
 
-        $premapping = [[
-            'entity' => 'salutation',
-            'mapping' => [
-                0 => [
-                    'sourceId' => 'mr',
-                    'description' => 'mr',
-                    'destinationUuid' => $this->salutationOne->getId(),
-                ],
-                1 => [
-                    'sourceId' => 'ms',
-                    'description' => 'ms',
-                    'destinationUuid' => $this->salutationTwo->getId(),
-                ],
-
-                2 => [
-                    'sourceId' => 'salutation-invalid',
-                    'description' => 'salutation-invalid',
-                    'destinationUuid' => Uuid::randomHex(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct('salutation', [
+                new PremappingEntityStruct('mr', 'mr', $this->salutationOne->getId()),
+                new PremappingEntityStruct('ms', 'ms', $this->salutationTwo->getId()),
+                new PremappingEntityStruct('salutation-invalid', 'salutation-invalid', Uuid::randomHex()),
+            ], []),
+        ];
         $connection->setPremapping($premapping);
 
         $mock = $this->createMock(EntityRepository::class);
@@ -108,7 +95,6 @@ class SalutationReaderTest extends TestCase
     {
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(3, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
