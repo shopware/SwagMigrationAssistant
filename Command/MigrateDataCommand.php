@@ -74,35 +74,12 @@ class MigrateDataCommand extends Command
     {
         $this->output = $output;
         $this->checkOptions($input);
-
-        $context = Context::createCLIContext();
-        /** @var GeneralSettingEntity|null $generalSetting */
-        $generalSetting = $this->generalSettingRepo->search(new Criteria(), $context)->first();
-        if ($generalSetting === null) {
-            throw new \RuntimeException('No settings found');
-        }
-
-        $selectedConnectionId = $generalSetting->getSelectedConnectionId();
-        if ($selectedConnectionId === null) {
-            throw new \InvalidArgumentException('At first please create a connection via the administration.');
-        }
-
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$selectedConnectionId]), $context)->first();
-        if ($connection === null) {
-            throw new \InvalidArgumentException(\sprintf('No connection found for ID "%s".', $selectedConnectionId));
-        }
-
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+        $context = Context::createDefaultContext();
 
         // Todo: Check Premapping, if its done
         //$this->generatePremapping($run, $context);
 
-        $this->runService->startMigrationRun(
-            $migrationContext,
-            $this->dataSelectionNames,
-            $context
-        );
+        $this->runService->startMigrationRun($this->dataSelectionNames, $context);
 
         $progress = $this->runService->getRunStatus($context);
         $progressBar = new ProgressBar($this->output, $progress->getTotal());
@@ -114,7 +91,7 @@ class MigrateDataCommand extends Command
             $progress = $this->runService->getRunStatus($context);
 
             if ($progress->getStep() === MigrationProgress::STATUS_FINISHED) {
-                $this->runService->finishMigration($migrationContext->getRunUuid(), $context);
+                $this->runService->finishMigration($context);
                 $this->output->writeln('');
                 $this->output->writeln('Migration is finished.');
                 break;

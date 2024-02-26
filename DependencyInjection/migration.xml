@@ -59,6 +59,7 @@
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="sales_channel.repository"/>
             <argument type="service" id="theme.repository"/>
+            <argument type="service" id="swag_migration_general_setting.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
             <argument type="service" id="Shopware\Storefront\Theme\ThemeService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
@@ -68,6 +69,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="Shopware\Core\Framework\Store\Services\TrackingEventClient"/>
             <argument type="service" id="messenger.bus.shopware"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
         </service>
 
         <service id="SwagMigrationAssistant\Migration\History\HistoryService">

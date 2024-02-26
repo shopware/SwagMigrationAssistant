@@ -225,8 +225,13 @@ class StatusController extends AbstractController
     #[Route(path: '/api/_action/migration/start-migration', name: 'api.admin.migration.start-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function startMigration(Request $request, Context $context): Response
     {
-        // ToDo: MIG-895 it should create a new migration run
-        // ToDo: MIG-895 implement me: this should submit the MQ job to start the migration
+        $dataSelectionNames = $request->request->all('dataSelectionNames');
+
+        if (empty($dataSelectionNames)) {
+            throw new MigrationContextPropertyMissingException('dataSelectionNames');
+        }
+
+        $this->runService->startMigrationRun($dataSelectionNames, $context);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
 

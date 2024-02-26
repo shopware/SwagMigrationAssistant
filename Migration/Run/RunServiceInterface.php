@@ -24,11 +24,7 @@ interface RunServiceInterface
     /**
      * @param array<int, string> $dataSelectionIds
      */
-    public function startMigrationRun(
-        MigrationContextInterface $migrationContext,
-        array $dataSelectionIds,
-        Context $context
-    ): void;
+    public function startMigrationRun(array $dataSelectionIds, Context $context): void;
 
     /**
      * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
@@ -50,7 +46,7 @@ interface RunServiceInterface
      */
     public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void;
 
-    public function finishMigration(string $runUuid, Context $context): void;
+    public function finishMigration(Context $context): void;
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
 
