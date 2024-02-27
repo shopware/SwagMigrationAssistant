@@ -50,8 +50,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): array {
         $mappedWorkload = [];
         foreach ($workload as $work) {

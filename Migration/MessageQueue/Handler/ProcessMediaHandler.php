@@ -91,8 +91,8 @@ final class ProcessMediaHandler
 
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
-            $workload = $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
-            $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
+            $workload = $processor->process($migrationContext, $context, $workload);
+            $this->processFailures($context, $migrationContext, $processor, $workload);
         } catch (ProcessorNotFoundException $e) {
             $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
                 $message->getRunId(),
@@ -112,8 +112,7 @@ final class ProcessMediaHandler
         Context $context,
         MigrationContextInterface $migrationContext,
         MediaFileProcessorInterface $processor,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): void {
         for ($i = 0; $i < self::MEDIA_ERROR_THRESHOLD; ++$i) {
             $errorWorkload = [];
@@ -128,7 +127,7 @@ final class ProcessMediaHandler
                 break;
             }
 
-            $workload = $processor->process($migrationContext, $context, $errorWorkload, $fileChunkByteSize);
+            $workload = $processor->process($migrationContext, $context, $errorWorkload);
         }
     }
 }

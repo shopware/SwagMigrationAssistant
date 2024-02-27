@@ -33,7 +33,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     ) {
     }
 
-    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): int
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context): int
     {
         $mediaFiles = $this->getMediaFiles($migrationContext);
 
@@ -55,7 +55,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 /*
                  * @psalm-suppress PossiblyNullArgument
                  */
-                $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $currentDataSet, $messageMediaUuids);
+                $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
                 try {
                     $messageMediaUuids = [];
                     $currentCount = 0;
@@ -74,13 +74,13 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 continue;
             }
 
-            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $currentDataSet, $messageMediaUuids);
+            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
             $messageMediaUuids = [];
             $currentCount = 0;
         }
 
         if ($currentCount > 0 && $currentDataSet !== null) {
-            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $currentDataSet, $messageMediaUuids);
+            $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
         }
 
         $this->loggingService->saveLogging($context);
@@ -118,13 +118,12 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     /**
      * @param array<int, string> $mediaUuids
      */
-    private function addMessageToBus(string $runUuid, Context $context, int $fileChunkByteSize, DataSet $dataSet, array $mediaUuids): void
+    private function addMessageToBus(string $runUuid, Context $context, DataSet $dataSet, array $mediaUuids): void
     {
         $message = new ProcessMediaMessage(
             $mediaUuids,
             $runUuid,
             $dataSet::getEntity(),
-            $fileChunkByteSize,
             $context
         );
 

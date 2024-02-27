@@ -197,8 +197,7 @@ class MigrationProcessHandler
 
     private function processMedia(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
     {
-        // Todo: Remove fileChunkByteSize because its never needed
-        $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, 1000000);
+        $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 
         if ($fileCount <= 0) {
             $progress->setStep(MigrationProgress::STATUS_FINISHED);

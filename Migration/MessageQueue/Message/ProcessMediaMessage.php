@@ -21,7 +21,6 @@ class ProcessMediaMessage implements AsyncMessageInterface
         private array $mediaFileIds,
         private string $runId,
         private string $entityName,
-        private int $fileChunkByteSize,
         private Context $context
     ) {
     }
@@ -49,11 +48,6 @@ class ProcessMediaMessage implements AsyncMessageInterface
         $this->runId = $runId;
     }
 
-    public function setFileChunkByteSize(int $fileChunkByteSize): void
-    {
-        $this->fileChunkByteSize = $fileChunkByteSize;
-    }
-
     /**
      * @return string[]
      */
@@ -65,11 +59,6 @@ class ProcessMediaMessage implements AsyncMessageInterface
     public function getRunId(): string
     {
         return $this->runId;
-    }
-
-    public function getFileChunkByteSize(): int
-    {
-        return $this->fileChunkByteSize;
     }
 
     public function getEntityName(): string

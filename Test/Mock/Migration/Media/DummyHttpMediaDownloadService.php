@@ -28,8 +28,7 @@ class DummyHttpMediaDownloadService implements MediaFileProcessorInterface
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): array {
         return $workload;
     }

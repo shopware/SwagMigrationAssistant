@@ -46,8 +46,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): array {
         $mappedWorkload = [];
         foreach ($workload as $work) {

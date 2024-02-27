@@ -57,7 +57,7 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
      *
      * @return list<MediaProcessWorkloadStruct>
      */
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array
     {
         // Map workload with uuids as keys
         /** @var array<string, MediaProcessWorkloadStruct> $mappedWorkload */

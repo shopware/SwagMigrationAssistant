@@ -59,8 +59,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize = 0
+        array $workload
     ): array {
         /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];

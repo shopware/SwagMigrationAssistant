@@ -21,5 +21,5 @@ interface MediaFileProcessorInterface
      *
      * @return MediaProcessWorkloadStruct[]
      */
-    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload, int $fileChunkByteSize): array;
+    public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array;
 }
