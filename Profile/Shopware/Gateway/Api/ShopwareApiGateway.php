@@ -87,6 +87,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         if (isset($environmentData['environmentInformation']['updateAvailable'])) {
             $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
         }
+        $updateAvailable = false;
 
         /** @var CurrencyEntity $targetSystemCurrency */
         $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);

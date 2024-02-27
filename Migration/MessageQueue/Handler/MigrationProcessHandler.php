@@ -17,6 +17,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
@@ -41,7 +42,8 @@ class MigrationProcessHandler
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
         private readonly MigrationDataConverterInterface $migrationDataConverter,
-        private readonly MigrationDataWriterInterface $migrationDataWriter
+        private readonly MigrationDataWriterInterface $migrationDataWriter,
+        private readonly MediaFileProcessorServiceInterface $mediaFileProcessorService
     )
     {
     }
@@ -60,10 +62,12 @@ class MigrationProcessHandler
 
         if ($progress->getStep() === MigrationProgress::STATUS_FETCHING) {
             $this->fetchData($migrationContext, $context, $progress);
+            return;
         }
 
         if ($progress->getStep() === MigrationProgress::STATUS_WRITING) {
             $this->writeData($migrationContext, $context, $progress);
+            return;
         }
 
         if ($progress->getStep() === MigrationProgress::STATUS_MEDIA_PROCESSING) {
@@ -193,8 +197,18 @@ class MigrationProcessHandler
 
     private function processMedia(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
     {
-        // Todo: Process media
-        $progress->setStep(MigrationProgress::STATUS_FINISHED);
+        // Todo: Remove fileChunkByteSize because its never needed
+        $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context, 1000000);
+
+        if ($fileCount <= 0) {
+            $progress->setStep(MigrationProgress::STATUS_FINISHED);
+            $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+            return;
+        }
+
+        $progress->setCurrentProgress($progress->getCurrentProgress() + $fileCount);
+        $progress->setProgress($progress->getProgress() + $fileCount);
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+        $this->bus->dispatch(new MigrationProcessMessage($context));
     }
 }

@@ -216,6 +216,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
             <tag name="messenger.message_handler"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">

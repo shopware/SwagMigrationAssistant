@@ -33,7 +33,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     ) {
     }
 
-    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): void
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context, int $fileChunkByteSize): int
     {
         $mediaFiles = $this->getMediaFiles($migrationContext);
 
@@ -56,7 +56,6 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                  * @psalm-suppress PossiblyNullArgument
                  */
                 $this->addMessageToBus($migrationContext->getRunUuid(), $context, $fileChunkByteSize, $currentDataSet, $messageMediaUuids);
-
                 try {
                     $messageMediaUuids = [];
                     $currentCount = 0;
@@ -85,6 +84,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         }
 
         $this->loggingService->saveLogging($context);
+
+        return count($mediaFiles);
     }
 
     /**
