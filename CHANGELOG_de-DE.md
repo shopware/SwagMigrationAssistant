@@ -1,4 +1,5 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION MAJOR NEEDED
+# # 9.0.0
+- MIG-848 - Verbesserung der Zuordnung von Produkten zu Verkaufskanälen über Sub- und Sprachshops
 - MIG-920 - Unterstützte Shopware 6 Version auf 6.6 geändert und Anpassungen an den Profilen vorgenommen
 - MIG-920 - `Migration/Gateway/HttpClientInterface` hinzugefügt, um die Verwendung von HTTP-Clients zu vereinheitlichen
 - MIG-920 - `Migration/Gateway/HttpSimpleClient.php` als einfacher Wrapper um den bisher verwendeten `GuzzleHttp/Client` hinzugefügt
