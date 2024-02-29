@@ -8,3 +8,5 @@ phpstan.neon
 Test/testData
 /var/
 composer.lock
+src/Resources/public/administration/
+src/Resources/public/static/
