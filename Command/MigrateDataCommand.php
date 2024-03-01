@@ -46,6 +46,8 @@ class MigrateDataCommand extends Command
 
     private OutputInterface $output;
 
+    private int $refreshRate;
+
     /**
      * @param EntityRepository<GeneralSettingCollection> $generalSettingRepo
      * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepo
@@ -67,7 +69,8 @@ class MigrateDataCommand extends Command
         $this
             ->setDescription('Migrate the data of your selected source to Shopware 6. Before you execute this command
             you have to  configure the migration in the Shopware 6 administration.')
-            ->addArgument('dataSelections', InputArgument::IS_ARRAY | InputArgument::REQUIRED);
+            ->addArgument('dataSelections', InputArgument::IS_ARRAY | InputArgument::REQUIRED)
+            ->addOption('refreshRate', 'r', InputOption::VALUE_OPTIONAL, 'Refresh rate in seconds', 5);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
@@ -86,28 +89,21 @@ class MigrateDataCommand extends Command
         $progressBar->setFormat('[%bar%] %current%/%max% ' . $progress->getStep());
         $progressBar->start();
 
-        $currentStep = $progress->getStep();
         while($progress->getStep() !== MigrationProgress::STATUS_FINISHED) {
             $progress = $this->runService->getRunStatus($context);
 
-            if ($progress->getStep() === MigrationProgress::STATUS_FINISHED) {
+            if ($progress->getStep() === MigrationProgress::STATUS_WAITING_FOR_APPROVE) {
                 $this->runService->finishMigration($context);
                 $this->output->writeln('');
                 $this->output->writeln('Migration is finished.');
                 break;
             }
 
-            if ($currentStep !== $progress->getStep()) {
-                $progressBar->finish();
-                $this->output->writeln('');
+            $progressBar->setFormat('[%bar%] %current%/%max% ' . $progress->getStep());
+            $progressBar->setMaxSteps($progress->getTotal());
+            $progressBar->setProgress($progress->getProgress());
 
-                $progressBar = new ProgressBar($this->output, $progress->getTotal());
-                $progressBar->setFormat('[%bar%] %current%/%max% ' . $progress->getStep());
-                $progressBar->start();
-                $currentStep = $progress->getStep();
-            } else {
-                $progressBar->setProgress($progress->getProgress());
-            }
+            sleep($this->refreshRate);
         }
 
         return 0;
@@ -127,6 +123,8 @@ class MigrateDataCommand extends Command
         }
         $this->dataSelectionNames[] = BasicSettingsDataSelection::IDENTIFIER;
         $this->dataSelectionNames = \array_merge($this->dataSelectionNames, $dataSelections);
+
+        $this->refreshRate = (int) $input->getOption('refreshRate');
     }
 
     private function generatePremapping(SwagMigrationRunEntity $run, Context $context): void

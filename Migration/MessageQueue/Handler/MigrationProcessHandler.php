@@ -2,14 +2,19 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
@@ -21,6 +26,7 @@ use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
+use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -43,7 +49,10 @@ class MigrationProcessHandler
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
         private readonly MigrationDataConverterInterface $migrationDataConverter,
         private readonly MigrationDataWriterInterface $migrationDataWriter,
-        private readonly MediaFileProcessorServiceInterface $mediaFileProcessorService
+        private readonly MediaFileProcessorServiceInterface $mediaFileProcessorService,
+        private readonly Connection $dbalConnection,
+        private readonly TagAwareAdapterInterface $cache,
+        private readonly EntityIndexerRegistry $indexer,
     )
     {
     }
@@ -59,19 +68,22 @@ class MigrationProcessHandler
             throw new \Exception('Migration context could not created.');
         }
 
-
-        if ($progress->getStep() === MigrationProgress::STATUS_FETCHING) {
-            $this->fetchData($migrationContext, $context, $progress);
-            return;
-        }
-
-        if ($progress->getStep() === MigrationProgress::STATUS_WRITING) {
-            $this->writeData($migrationContext, $context, $progress);
-            return;
-        }
-
-        if ($progress->getStep() === MigrationProgress::STATUS_MEDIA_PROCESSING) {
-            $this->processMedia($migrationContext, $context, $progress);
+        switch ($progress->getStep()) {
+            case MigrationProgress::STATUS_FETCHING:
+                $this->fetchData($migrationContext, $context, $progress);
+                break;
+            case MigrationProgress::STATUS_WRITING:
+                $this->writeData($migrationContext, $context, $progress);
+                break;
+            case MigrationProgress::STATUS_MEDIA_PROCESSING:
+                $this->processMedia($migrationContext, $context, $progress);
+                break;
+            case MigrationProgress::STATUS_CLEANUP:
+                $this->cleanup($migrationContext, $context, $progress);
+                break;
+            case MigrationProgress::STATUS_INDEXING:
+                $this->indexing($migrationContext, $context, $progress);
+                break;
         }
     }
 
@@ -200,8 +212,9 @@ class MigrationProcessHandler
         $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 
         if ($fileCount <= 0) {
-            $progress->setStep(MigrationProgress::STATUS_FINISHED);
+            $progress->setStep(MigrationProgress::STATUS_CLEANUP);
             $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+            $this->bus->dispatch(new MigrationProcessMessage($context));
             return;
         }
 
@@ -209,5 +222,35 @@ class MigrationProcessHandler
         $progress->setProgress($progress->getProgress() + $fileCount);
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
         $this->bus->dispatch(new MigrationProcessMessage($context));
+    }
+
+    private function cleanup(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
+    {
+        $deleteCount = $this->removeMigrationData();
+
+        if ($deleteCount <= 0) {
+            $progress->setStep(MigrationProgress::STATUS_INDEXING);
+        }
+
+        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+        $this->bus->dispatch(new MigrationProcessMessage($context));
+    }
+
+    private function indexing(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
+    {
+        $this->cache->clear();
+        $this->indexer->index(true);
+
+        $progress->setStep(MigrationProgress::STATUS_WAITING_FOR_APPROVE);
+        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+    }
+
+    private function removeMigrationData(): int
+    {
+        return (new QueryBuilder($this->dbalConnection))
+            ->delete(SwagMigrationDataDefinition::ENTITY_NAME)
+            ->andWhere('written = 1')
+            ->setMaxResults(1000)
+            ->executeStatement();
     }
 }

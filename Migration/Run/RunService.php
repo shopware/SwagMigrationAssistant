@@ -217,8 +217,6 @@ SQL;
         ], $context);
 
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $run->getId(), $context);
-
-        $this->cleanupMigration($run->getId(), true);
     }
 
     public function cleanupMigrationData(): void
@@ -270,10 +268,10 @@ SQL;
         $this->loggingService->saveLogging($context);
     }
 
-    private function getCurrentRun(Context$context): ?SwagMigrationRunEntity
+    private function getCurrentRun(Context$context, ?string $status = null): ?SwagMigrationRunEntity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+        $criteria->addFilter(new EqualsFilter('status', $status ?? SwagMigrationRunEntity::STATUS_RUNNING));
         $criteria->setLimit(1);
 
         return $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();

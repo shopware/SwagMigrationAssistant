@@ -14,6 +14,12 @@ final class MigrationProgress extends Struct
 
     public const STATUS_MEDIA_PROCESSING = 'media-processing';
 
+    public const STATUS_CLEANUP = 'cleanup';
+
+    public const STATUS_INDEXING = 'indexing';
+
+    public const STATUS_WAITING_FOR_APPROVE = 'waiting-for-approve';
+
     public const STATUS_FINISHED = 'finished';
 
     protected string $step;
