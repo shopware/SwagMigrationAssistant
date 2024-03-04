@@ -215,6 +215,11 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\ThemeAssignHandler">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandler">
             <argument type="service" id="messenger.bus.shopware"/>
             <argument type="service" id="swag_migration_run.repository"/>

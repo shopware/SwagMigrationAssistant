@@ -237,7 +237,6 @@ SQL;
         $this->bus->dispatch(new CleanupMigrationMessage());
     }
 
-    // Todo: Check if this is needed or can be put in the MQ
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
     {
         /** @var SwagMigrationRunEntity|null $run */

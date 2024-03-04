@@ -16,6 +16,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ThemeAssignMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
@@ -239,6 +240,7 @@ class MigrationProcessHandler
     {
         $this->cache->clear();
         $this->indexer->index(true);
+        $this->assignThemes($run, $context);
 
         $progress = $run->getProgress();
 
@@ -267,5 +269,10 @@ class MigrationProcessHandler
             ->andWhere('written = 1')
             ->setMaxResults(1000)
             ->executeStatement();
+    }
+
+    private function assignThemes(SwagMigrationRunEntity $run, Context $context): void
+    {
+        $this->bus->dispatch(new ThemeAssignMessage($context, $run->getId()));
     }
 }
