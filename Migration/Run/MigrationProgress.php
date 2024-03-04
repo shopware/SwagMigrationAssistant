@@ -24,6 +24,8 @@ final class MigrationProgress extends Struct
 
     public const STATUS_FINISHED = 'finished';
 
+    public const STATUS_ABORTED = 'aborted';
+
     protected string $step;
 
     protected int $progress;

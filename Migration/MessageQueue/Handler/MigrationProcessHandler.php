@@ -80,10 +80,7 @@ class MigrationProcessHandler
                 $this->processMedia($migrationContext, $context, $progress);
                 break;
             case MigrationProgress::STATUS_ABORTING:
-                $this->runService->cleanupMappingChecksums($run->getConnectionId(), $context, false);
-
-                $progress->setStep(MigrationProgress::STATUS_CLEANUP);
-                $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+                $this->aborting($migrationContext, $context, $progress);
                 break;
             case MigrationProgress::STATUS_CLEANUP:
                 $this->cleanup($migrationContext, $context, $progress);
@@ -243,13 +240,24 @@ class MigrationProcessHandler
         $this->cache->clear();
         $this->indexer->index(true);
 
+        $progress = $run->getProgress();
+
         if ($run->getStatus() === SwagMigrationRunEntity::STATUS_ABORTED) {
-            return;
+            $progress->setStep(MigrationProgress::STATUS_ABORTED);
+        } else {
+            $progress->setStep(MigrationProgress::STATUS_WAITING_FOR_APPROVE);
         }
 
-        $progress = $run->getProgress();
-        $progress->setStep(MigrationProgress::STATUS_WAITING_FOR_APPROVE);
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+    }
+
+    private function aborting(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
+    {
+        $this->runService->cleanupMappingChecksums($migrationContext->getConnection()->getId(), $context, false);
+
+        $progress->setStep(MigrationProgress::STATUS_CLEANUP);
+        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
     private function removeMigrationData(): int
