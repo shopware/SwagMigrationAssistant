@@ -20,6 +20,8 @@ final class MigrationProgress extends Struct
 
     public const STATUS_WAITING_FOR_APPROVE = 'waiting-for-approve';
 
+    public const STATUS_ABORTING = 'aborting';
+
     public const STATUS_FINISHED = 'finished';
 
     protected string $step;

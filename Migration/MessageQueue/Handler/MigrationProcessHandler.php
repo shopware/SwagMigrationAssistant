@@ -14,12 +14,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
+use SwagMigrationAssistant\Migration\Run\RunService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
@@ -53,6 +53,7 @@ class MigrationProcessHandler
         private readonly Connection $dbalConnection,
         private readonly TagAwareAdapterInterface $cache,
         private readonly EntityIndexerRegistry $indexer,
+        private readonly RunService $runService
     )
     {
     }
@@ -60,7 +61,7 @@ class MigrationProcessHandler
     public function __invoke(MigrationProcessMessage $message): void
     {
         $context = $message->getContext();
-        $run = $this->getCurrentRun($context);
+        $run = $this->getCurrentRun($message, $context);
         $progress = $run->getProgress();
         $migrationContext = $this->migrationContextFactory->create($run, $progress->getCurrentProgress(), $this->batchSize, $progress->getCurrentEntity());
 
@@ -78,11 +79,17 @@ class MigrationProcessHandler
             case MigrationProgress::STATUS_MEDIA_PROCESSING:
                 $this->processMedia($migrationContext, $context, $progress);
                 break;
+            case MigrationProgress::STATUS_ABORTING:
+                $this->runService->cleanupMappingChecksums($run->getConnectionId(), $context, false);
+
+                $progress->setStep(MigrationProgress::STATUS_CLEANUP);
+                $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
+                break;
             case MigrationProgress::STATUS_CLEANUP:
                 $this->cleanup($migrationContext, $context, $progress);
                 break;
             case MigrationProgress::STATUS_INDEXING:
-                $this->indexing($migrationContext, $context, $progress);
+                $this->indexing($migrationContext, $context, $run);
                 break;
         }
     }
@@ -95,14 +102,9 @@ class MigrationProcessHandler
         ]], $context);
     }
 
-    private function getCurrentRun(Context $context): SwagMigrationRunEntity
+    private function getCurrentRun(MigrationProcessMessage $message, Context $context): SwagMigrationRunEntity
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING)
-        );
-
-        $run = $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();
+        $run = $this->migrationRunRepo->search(new Criteria([ $message->getRunUuid() ]), $context)->getEntities()->first();
 
         if ($run === null) {
             throw new \Exception('No running migration found');
@@ -150,7 +152,7 @@ class MigrationProcessHandler
         if (empty($data) || $currentEntityTotal <= $progress->getCurrentProgress()) {
             $this->changeProgressToNextEntity($progress, $context);
             $this->updateProgress($runId, $progress, $context);
-            $this->bus->dispatch(new MigrationProcessMessage($context));
+            $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
             return;
         }
 
@@ -160,7 +162,7 @@ class MigrationProcessHandler
         $progress->setProgress($progress->getProgress() + count($data));
 
         $this->updateProgress($runId, $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context));
+        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
     private function writeData(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
@@ -172,13 +174,13 @@ class MigrationProcessHandler
             $progress->setProgress($progress->getProgress() + $writeTotal);
 
             $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-            $this->bus->dispatch(new MigrationProcessMessage($context));
+            $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
             return;
         }
 
         $this->changeProgressToNextEntity($progress, $context);
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context));
+        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
     private function changeProgressToNextEntity( MigrationProgress $progress, Context $context): void
@@ -214,14 +216,14 @@ class MigrationProcessHandler
         if ($fileCount <= 0) {
             $progress->setStep(MigrationProgress::STATUS_CLEANUP);
             $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-            $this->bus->dispatch(new MigrationProcessMessage($context));
+            $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
             return;
         }
 
         $progress->setCurrentProgress($progress->getCurrentProgress() + $fileCount);
         $progress->setProgress($progress->getProgress() + $fileCount);
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context));
+        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
     private function cleanup(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
@@ -233,14 +235,19 @@ class MigrationProcessHandler
         }
 
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context));
+        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
-    private function indexing(MigrationContextInterface $migrationContext, Context $context, MigrationProgress $progress): void
+    private function indexing(MigrationContextInterface $migrationContext, Context $context, SwagMigrationRunEntity $run): void
     {
         $this->cache->clear();
         $this->indexer->index(true);
 
+        if ($run->getStatus() === SwagMigrationRunEntity::STATUS_ABORTED) {
+            return;
+        }
+
+        $progress = $run->getProgress();
         $progress->setStep(MigrationProgress::STATUS_WAITING_FOR_APPROVE);
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
     }

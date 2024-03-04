@@ -7,12 +7,17 @@ use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 
 class MigrationProcessMessage implements AsyncMessageInterface
 {
-    public function __construct(private readonly Context $context)
+    public function __construct(private readonly Context $context, private readonly string $runUuid)
     {
     }
 
     public function getContext(): Context
     {
         return $this->context;
+    }
+
+    public function getRunUuid(): string
+    {
+        return $this->runUuid;
     }
 }

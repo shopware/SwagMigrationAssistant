@@ -110,7 +110,7 @@ class RunService implements RunServiceInterface
         $this->updateUnprocessedMediaFiles($connectionId, $runUuid);
 
         // Todo: Checking, if premapping is filled
-        $this->bus->dispatch(new MigrationProcessMessage($context));
+        $this->bus->dispatch(new MigrationProcessMessage($context, $runUuid));
 
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_STARTED, $runUuid, $context);
     }
@@ -155,24 +155,21 @@ class RunService implements RunServiceInterface
         }
 
         $runId = $run->getId();
+        $progress = $run->getProgress();
+        $progress->setStep(MigrationProgress::STATUS_ABORTING);
+
         $this->migrationRunRepo->update(
             [
                 [
                     'id' => $runId,
                     'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                    'progress' => $progress->jsonSerialize(),
                 ],
             ],
             $context
         );
 
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runId, $context);
-
-        // Todo: Put this in the MQ
-        $dataCount = $this->getMigrationDataCount($runId, $context);
-        if ($dataCount > 0) {
-            $this->cleanupMappingChecksums($run->getConnectionId(), $context, false);
-        }
-        $this->cleanupMigration($runId);
     }
 
     public function cleanupMappingChecksums(string $connectionUuid, Context $context, bool $resetAll = true): void
@@ -209,10 +206,14 @@ SQL;
             throw new \Exception('No running migration found');
         }
 
+        $progress = $run->getProgress();
+        $progress->setStep(MigrationProgress::STATUS_FINISHED);
+
         $this->migrationRunRepo->update([
             [
                 'id' => $run->getId(),
-                'status' => MigrationProgress::STATUS_FINISHED,
+                'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+                'progress' => $progress->jsonSerialize(),
             ],
         ], $context);
 
@@ -268,10 +269,10 @@ SQL;
         $this->loggingService->saveLogging($context);
     }
 
-    private function getCurrentRun(Context$context, ?string $status = null): ?SwagMigrationRunEntity
+    private function getCurrentRun(Context$context): ?SwagMigrationRunEntity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', $status ?? SwagMigrationRunEntity::STATUS_RUNNING));
+        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
         $criteria->setLimit(1);
 
         return $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();

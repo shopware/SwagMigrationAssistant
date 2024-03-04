@@ -220,6 +220,7 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="cache.object"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">
