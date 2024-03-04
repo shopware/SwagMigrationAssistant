@@ -207,6 +207,11 @@ SQL;
         }
 
         $progress = $run->getProgress();
+
+        if ($progress->getStep() !== MigrationProgress::STATUS_WAITING_FOR_APPROVE) {
+            throw new \Exception('No migration to finish found');
+        }
+
         $progress->setStep(MigrationProgress::STATUS_FINISHED);
 
         $this->migrationRunRepo->update([
