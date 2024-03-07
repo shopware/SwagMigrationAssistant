@@ -18,6 +18,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
@@ -120,7 +122,7 @@ class RunService implements RunServiceInterface
         $run = $this->getCurrentRun($context);
 
         if ($run === null || $run->getProgress() === null) {
-            throw new \Exception('No running migration found');
+           return new MigrationProgress(MigrationProgress::STATUS_IDLE, 0, 0, [], '', 0);
         }
 
         return $run->getProgress();
@@ -276,7 +278,10 @@ SQL;
     private function getCurrentRun(Context$context): ?SwagMigrationRunEntity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
+        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
+            new EqualsFilter('progress.step', MigrationProgress::STATUS_ABORTED),
+            new EqualsFilter('progress.step', MigrationProgress::STATUS_FINISHED),
+        ]));
         $criteria->setLimit(1);
 
         return $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();
