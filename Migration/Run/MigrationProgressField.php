@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Migration\Run;
 
@@ -21,7 +26,7 @@ class MigrationProgressField extends JsonField
             (new IntField('total', 'total'))->addFlags(new Required()),
             (new StringField('currentEntity', 'currentEntity'))->addFlags(new Required()),
             (new IntField('currentProgress', 'currentProgress'))->addFlags(new Required()),
-            (new ListField('dataSets', 'dataSets', StringField::class))->addFlags(new Required())
+            (new ListField('dataSets', 'dataSets', StringField::class))->addFlags(new Required()),
         ]);
     }
 

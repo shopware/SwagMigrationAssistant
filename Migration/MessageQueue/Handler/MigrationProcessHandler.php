@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
@@ -55,8 +60,7 @@ class MigrationProcessHandler
         private readonly TagAwareAdapterInterface $cache,
         private readonly EntityIndexerRegistry $indexer,
         private readonly RunService $runService
-    )
-    {
+    ) {
     }
 
     public function __invoke(MigrationProcessMessage $message): void
@@ -73,21 +77,27 @@ class MigrationProcessHandler
         switch ($progress->getStep()) {
             case MigrationProgress::STATUS_FETCHING:
                 $this->fetchData($migrationContext, $context, $progress);
+
                 break;
             case MigrationProgress::STATUS_WRITING:
                 $this->writeData($migrationContext, $context, $progress);
+
                 break;
             case MigrationProgress::STATUS_MEDIA_PROCESSING:
                 $this->processMedia($migrationContext, $context, $progress);
+
                 break;
             case MigrationProgress::STATUS_ABORTING:
                 $this->aborting($migrationContext, $context, $progress);
+
                 break;
             case MigrationProgress::STATUS_CLEANUP:
                 $this->cleanup($migrationContext, $context, $progress);
+
                 break;
             case MigrationProgress::STATUS_INDEXING:
                 $this->indexing($migrationContext, $context, $run);
+
                 break;
         }
     }
@@ -96,13 +106,13 @@ class MigrationProcessHandler
     {
         $this->migrationRunRepo->update([[
             'id' => $runId,
-            'progress' => $progress->jsonSerialize()
+            'progress' => $progress->jsonSerialize(),
         ]], $context);
     }
 
     private function getCurrentRun(MigrationProcessMessage $message, Context $context): SwagMigrationRunEntity
     {
-        $run = $this->migrationRunRepo->search(new Criteria([ $message->getRunUuid() ]), $context)->getEntities()->first();
+        $run = $this->migrationRunRepo->search(new Criteria([$message->getRunUuid()]), $context)->getEntities()->first();
 
         if ($run === null) {
             throw new \Exception('No running migration found');
@@ -151,13 +161,14 @@ class MigrationProcessHandler
             $this->changeProgressToNextEntity($progress, $context);
             $this->updateProgress($runId, $progress, $context);
             $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+
             return;
         }
 
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        $progress->setCurrentProgress($progress->getCurrentProgress() + count($data));
-        $progress->setProgress($progress->getProgress() + count($data));
+        $progress->setCurrentProgress($progress->getCurrentProgress() + \count($data));
+        $progress->setProgress($progress->getProgress() + \count($data));
 
         $this->updateProgress($runId, $progress, $context);
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
@@ -173,6 +184,7 @@ class MigrationProcessHandler
 
             $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
             $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+
             return;
         }
 
@@ -181,18 +193,18 @@ class MigrationProcessHandler
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
-    private function changeProgressToNextEntity( MigrationProgress $progress, Context $context): void
+    private function changeProgressToNextEntity(MigrationProgress $progress, Context $context): void
     {
-        $dataSets = array_keys($progress->getDataSets());
+        $dataSets = \array_keys($progress->getDataSets());
         $currentIndex = \array_search($progress->getCurrentEntity(), $dataSets, true);
 
         $nextEntity = null;
-        if ($currentIndex !== false && $currentIndex < count($dataSets)-1) {
-            $nextEntity = $dataSets[$currentIndex+1];
+        if ($currentIndex !== false && $currentIndex < \count($dataSets) - 1) {
+            $nextEntity = $dataSets[$currentIndex + 1];
         }
 
         if ($nextEntity === null && $progress->getStep() === MigrationProgress::STATUS_FETCHING) {
-            $nextEntity = current($dataSets);
+            $nextEntity = \current($dataSets);
             $progress->setStep(MigrationProgress::STATUS_WRITING);
             $progress->setProgress(0);
             $progress->setTotal($this->getWriteTotal($context));
@@ -215,6 +227,7 @@ class MigrationProcessHandler
             $progress->setStep(MigrationProgress::STATUS_CLEANUP);
             $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
             $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+
             return;
         }
 

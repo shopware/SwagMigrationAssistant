@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Command;
 
@@ -12,9 +17,9 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Input\InputInterface;
 
 class GetMigrationProgressCommand extends Command
 {
@@ -56,13 +61,14 @@ class GetMigrationProgressCommand extends Command
         $progressBar->setMaxSteps($progress->getTotal());
         $progressBar->setProgress($progress->getProgress());
 
-        while($progress->getStep() !== MigrationProgress::STATUS_FINISHED) {
+        while ($progress->getStep() !== MigrationProgress::STATUS_FINISHED) {
             $progress = $this->runService->getRunStatus($context);
 
             if ($progress->getStep() === MigrationProgress::STATUS_WAITING_FOR_APPROVE) {
                 $this->runService->finishMigration($context);
                 $output->writeln('');
                 $output->writeln('Migration is finished.');
+
                 break;
             }
 
@@ -70,13 +76,13 @@ class GetMigrationProgressCommand extends Command
             $progressBar->setMaxSteps($progress->getTotal());
             $progressBar->setProgress($progress->getProgress());
 
-            sleep($this->refreshRate);
+            \sleep($this->refreshRate);
         }
 
         return 0;
     }
 
-    private function getCurrentRun(Context$context): ?SwagMigrationRunEntity
+    private function getCurrentRun(Context $context): ?SwagMigrationRunEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));

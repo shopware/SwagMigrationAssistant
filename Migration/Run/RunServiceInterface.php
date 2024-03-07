@@ -9,8 +9,6 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Service\ProgressState;
 
 #[Package('services-settings')]
 interface RunServiceInterface

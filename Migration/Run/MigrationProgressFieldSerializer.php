@@ -1,4 +1,9 @@
 <?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
 
 namespace SwagMigrationAssistant\Migration\Run;
 
@@ -16,7 +21,7 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
         KeyValuePair $data,
         WriteParameterBag $parameters
     ): \Generator {
-        if ($data->getValue() !== null && is_array($data->getValue())) {
+        if ($data->getValue() !== null && \is_array($data->getValue())) {
             $value = $data->getValue();
             unset($value['extensions']);
 
@@ -32,7 +37,7 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
             return null;
         }
 
-        $raw = json_decode((string) $value, true, 512, \JSON_THROW_ON_ERROR);
+        $raw = \json_decode((string) $value, true, 512, \JSON_THROW_ON_ERROR);
 
         return new MigrationProgress(
             (string) $raw['step'],

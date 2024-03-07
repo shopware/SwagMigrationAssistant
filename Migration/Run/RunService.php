@@ -87,7 +87,8 @@ class RunService implements RunServiceInterface
     ) {
     }
 
-    public function startMigrationRun(array $dataSelectionIds, Context $context): void {
+    public function startMigrationRun(array $dataSelectionIds, Context $context): void
+    {
         if ($this->isMigrationRunning($context)) {
             throw new \Exception('Migration is already running');
         }
@@ -122,11 +123,12 @@ class RunService implements RunServiceInterface
         $run = $this->getCurrentRun($context);
 
         if ($run === null || $run->getProgress() === null) {
-           return new MigrationProgress(MigrationProgress::STATUS_IDLE, 0, 0, [], '', 0);
+            return new MigrationProgress(MigrationProgress::STATUS_IDLE, 0, 0, [], '', 0);
         }
 
         return $run->getProgress();
     }
+
     /**
      * @param array<int, string>|null $credentialFields
      */
@@ -275,7 +277,7 @@ SQL;
         $this->loggingService->saveLogging($context);
     }
 
-    private function getCurrentRun(Context$context): ?SwagMigrationRunEntity
+    private function getCurrentRun(Context $context): ?SwagMigrationRunEntity
     {
         $criteria = new Criteria();
         $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
@@ -392,15 +394,15 @@ SQL;
         DataSelectionCollection $dataSelectionCollection
     ): MigrationProgress {
         $totals = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
-        $overallTotal = array_sum($totals);
-        $dataSets = array_keys($totals);
+        $overallTotal = \array_sum($totals);
+        $dataSets = \array_keys($totals);
 
         return new MigrationProgress(
             MigrationProgress::STATUS_FETCHING,
             0,
             $overallTotal,
             $totals,
-            current($dataSets),
+            \current($dataSets),
             0
         );
     }

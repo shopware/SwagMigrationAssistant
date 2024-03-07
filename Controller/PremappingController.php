@@ -35,11 +35,12 @@ class PremappingController extends AbstractController
      * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepository
      */
     public function __construct(
-        private readonly PremappingServiceInterface       $premappingService,
+        private readonly PremappingServiceInterface $premappingService,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
-        private readonly EntityRepository                 $generalSettingRepository,
-        private readonly EntityRepository                 $migrationConnectionRepository,
-    ) {}
+        private readonly EntityRepository $generalSettingRepository,
+        private readonly EntityRepository $migrationConnectionRepository,
+    ) {
+    }
 
     #[Route(path: '/api/_action/migration/generate-premapping', name: 'api.admin.migration.generate-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function generatePremapping(Request $request, Context $context): JsonResponse

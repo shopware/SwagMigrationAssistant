@@ -56,6 +56,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                  * @psalm-suppress PossiblyNullArgument
                  */
                 $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
+
                 try {
                     $messageMediaUuids = [];
                     $currentCount = 0;
@@ -85,7 +86,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
         $this->loggingService->saveLogging($context);
 
-        return count($mediaFiles);
+        return \count($mediaFiles);
     }
 
     /**

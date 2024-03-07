@@ -19,17 +19,17 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 #[Package('services-settings')]
 class PremappingService implements PremappingServiceInterface
 {
     public function __construct(
         private readonly PremappingReaderRegistryInterface $mappingReaderRegistry,
-        private readonly MappingServiceInterface           $mappingService,
-        private readonly EntityRepository                  $mappingRepo,
-        private readonly EntityRepository                  $connectionRepo
-    ) {}
+        private readonly MappingServiceInterface $mappingService,
+        private readonly EntityRepository $mappingRepo,
+        private readonly EntityRepository $connectionRepo
+    ) {
+    }
 
     /**
      * @param array<int, string> $dataSelectionIds

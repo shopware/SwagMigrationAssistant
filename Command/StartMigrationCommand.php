@@ -46,7 +46,7 @@ class StartMigrationCommand extends Command
         $context = Context::createDefaultContext();
 
         // Todo: Check Premapping, if its done
-        //$this->generatePremapping($run, $context);
+        // $this->generatePremapping($run, $context);
 
         $this->runService->startMigrationRun($this->dataSelectionNames, $context);
 

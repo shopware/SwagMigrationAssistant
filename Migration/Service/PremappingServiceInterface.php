@@ -9,10 +9,8 @@ namespace SwagMigrationAssistant\Migration\Service;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Controller\PremappingController;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 #[Package('services-settings')]
 interface PremappingServiceInterface
