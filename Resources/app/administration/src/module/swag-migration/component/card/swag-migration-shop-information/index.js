@@ -18,8 +18,6 @@ const BADGE_TYPE = Object.freeze({
 Component.register('swag-migration-shop-information', {
     template,
     inject: {
-        /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
-        migrationProcessStoreInitService: 'processStoreInitService',
         /** @var {MigrationApiService} migrationApiService */
         migrationApiService: 'migrationApiService',
         repositoryFactory: 'repositoryFactory',
@@ -329,7 +327,6 @@ Component.register('swag-migration-shop-information', {
             return this.migrationApiService.cleanupMigrationData().then(() => {
                 this.showResetMigrationConfirmModal = false;
                 this.confirmModalIsLoading = false;
-                this.migrationProcessStoreInitService.initProcessStore();
 
                 this.$nextTick(() => {
                     this.$router.go(); // reload page

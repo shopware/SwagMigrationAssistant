@@ -11,13 +11,6 @@ const { mapState } = Shopware.Component.getComponentHelper();
 Component.register('swag-migration-main-page', {
     template,
 
-    inject: {
-        /** @var {MigrationProcessStoreInitService} migrationProcessStoreInitService */
-        migrationProcessStoreInitService: 'processStoreInitService',
-        /** @var {MigrationUiStoreInitService} migrationUiStoreInitService */
-        migrationUiStoreInitService: 'uiStoreInitService',
-    },
-
     metaInfo() {
         return {
             title: this.$createTitle(),

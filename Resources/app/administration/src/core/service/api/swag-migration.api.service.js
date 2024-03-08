@@ -5,10 +5,10 @@ export const MIGRATION_STEP = Object.freeze({
     FETCHING: 'fetching',
     WRITING: 'writing',
     MEDIA_PROCESSING: 'media-processing',
+    WAITING_FOR_APPROVE: 'waiting-for-approve',
     FINISHED: 'finished',
-    // ToDo MIG-895: Rename finished to `waiting-for-approve`
+    // ToDo MIG-895: finish this list
     // possible other states (important for display in the history):
-    // finished
     // aborted
 });
 

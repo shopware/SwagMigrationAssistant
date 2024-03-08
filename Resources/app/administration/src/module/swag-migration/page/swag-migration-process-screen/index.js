@@ -13,6 +13,7 @@ const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
     [MIGRATION_STEP.FETCHING]: 0,
     [MIGRATION_STEP.WRITING]: 1,
     [MIGRATION_STEP.MEDIA_PROCESSING]: 2,
+    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 3,
     [MIGRATION_STEP.FINISHED]: 3,
 });
 
@@ -117,10 +118,9 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 console.log('ToDo: error handling', e);
             }
 
-
-            // assume no running migration for now
-
-            return this.startMigration();
+            if (this.step === MIGRATION_STEP.IDLE) {
+                return this.startMigration();
+            }
         },
 
         async unmountedComponent() {
@@ -156,14 +156,14 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             } else if (state.step === MIGRATION_STEP.MEDIA_PROCESSING) {
                 this.componentIndex = UI_COMPONENT_INDEX.MEDIA_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (state.step === MIGRATION_STEP.FINISHED) {
+            } else if (state.step === MIGRATION_STEP.WAITING_FOR_APPROVE || state.step === MIGRATION_STEP.FINISHED) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
                 this.unregisterPolling();
             }
 
             // update flow chart
-            if (state.step !== MIGRATION_STEP.FINISHED) {
+            if (state.step !== MIGRATION_STEP.WAITING_FOR_APPROVE && state.step !== MIGRATION_STEP.FINISHED) {
                 this.flowChartItemVariant = 'info';
             } else {
                 this.flowChartItemVariant = 'success';
@@ -200,6 +200,16 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             return Promise.resolve();
         },
 
+        async approveFinishedMigration() {
+            try {
+                await this.migrationApiService.approveFinishedMigration();
+                this.$router.push({ name: 'swag.migration.index.main' });
+            } catch (e) {
+                // ToDo MIG-895: Implement error handling
+                console.log('ToDo: error handling', e);
+            }
+        },
+
         onAbortButtonClick() {
             console.log('ToDo: Implement onAbortButtonClick()');
         },
@@ -210,7 +220,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             }
 
             if (this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS) {
-                this.$router.push({ name: 'swag.migration.index.main' });
+                return this.approveFinishedMigration();
             }
 
             return Promise.resolve();
