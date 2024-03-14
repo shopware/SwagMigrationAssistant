@@ -10,5 +10,5 @@ phpstan.neon
 Test/testData
 /var/
 composer.lock
-src/Resources/public/administration/
-src/Resources/public/static/
+Resources/public/administration/
+Resources/public/static/
