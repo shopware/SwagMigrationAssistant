@@ -5,11 +5,12 @@ export const MIGRATION_STEP = Object.freeze({
     FETCHING: 'fetching',
     WRITING: 'writing',
     MEDIA_PROCESSING: 'media-processing',
+    CLEANUP: 'cleanup',
+    INDEXING: 'indexing',
     WAITING_FOR_APPROVE: 'waiting-for-approve',
+    ABORTING: 'aborting',
+    ABORTED: 'aborted',
     FINISHED: 'finished',
-    // ToDo MIG-895: finish this list
-    // possible other states (important for display in the history):
-    // aborted
 });
 
 /**

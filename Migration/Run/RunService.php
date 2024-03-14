@@ -280,7 +280,7 @@ SQL;
     private function getCurrentRun(Context $context): ?SwagMigrationRunEntity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
+        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_OR, [
             new EqualsFilter('progress.step', MigrationProgress::STATUS_ABORTED),
             new EqualsFilter('progress.step', MigrationProgress::STATUS_FINISHED),
         ]));

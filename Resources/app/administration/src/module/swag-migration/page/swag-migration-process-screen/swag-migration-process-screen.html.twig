@@ -2,7 +2,9 @@
     <template #smart-bar-actions>
 
         {% block swag_migration_index_smart_bar_abort_button %}
-            <sw-button v-if="abortButtonVisible" @click="onAbortButtonClick">
+            <sw-button v-if="abortButtonVisible"
+                       :disabled="abortButtonDisabled"
+                       @click="onAbortButtonClick">
                 {{ $tc('swag-migration.index.abortButton') }}
             </sw-button>
         {% endblock %}

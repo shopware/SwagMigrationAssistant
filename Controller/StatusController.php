@@ -249,7 +249,7 @@ class StatusController extends AbstractController
         try {
             $this->runService->finishMigration($context);
         } catch (\Exception $e) {
-            return new Response(null, Response::HTTP_BAD_REQUEST);
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
         return new Response(null, Response::HTTP_NO_CONTENT);
@@ -261,7 +261,7 @@ class StatusController extends AbstractController
         try {
             $this->runService->abortMigration($context);
         } catch (\Exception $e) {
-            return new Response(null, Response::HTTP_BAD_REQUEST);
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
         }
 
         return new Response(null, Response::HTTP_NO_CONTENT);

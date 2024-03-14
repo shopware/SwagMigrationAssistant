@@ -85,6 +85,10 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             return this.isLoading;
         },
 
+        abortButtonDisabled() {
+            return this.isLoading || this.step === MIGRATION_STEP.ABORTING;
+        },
+
         /**
          * @returns {boolean}
          */
@@ -102,25 +106,32 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             // ToDo MIG-895: Do something about parent call, because currently it resets the state / dataSelectionIds
             // await this.$super('createdComponent');
             this.storesInitializing = false;
+            State.commit('swagMigration/ui/setIsLoading', true);
 
             if (this.connectionId === null) {
                 this.$router.push({ name: 'swag.migration.index.main' });
                 return Promise.resolve();
             }
 
-            State.commit('swagMigration/ui/setIsLoading', false);
             try {
                 const state = await this.migrationApiService.getState();
-                await this.visualizeMigrationState(state);
-                this.registerPolling();
+                this.visualizeMigrationState(state);
             } catch (e) {
                 // ToDo MIG-895: Implement error handling
                 console.log('ToDo: error handling', e);
             }
 
             if (this.step === MIGRATION_STEP.IDLE) {
-                return this.startMigration();
+                await this.startMigration();
+                // update to the new state immediately
+                const state = await this.migrationApiService.getState();
+                this.visualizeMigrationState(state);
             }
+
+            this.registerPolling();
+            State.commit('swagMigration/ui/setIsLoading', false);
+
+            return Promise.resolve();
         },
 
         async unmountedComponent() {
@@ -138,28 +149,34 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             this.pollingIntervalId = setInterval(this.migrationStatePoller, MIGRATION_STATE_POLLING_INTERVAL);
         },
 
-        async visualizeMigrationState(state) {
+        visualizeMigrationState(state) {
             if (!state) {
-                return Promise.resolve();
+                return;
             }
 
             this.step = state.step;
             this.progress = state.progress;
             this.total = state.total;
 
-            if (state.step === MIGRATION_STEP.FETCHING) {
-                this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
-                this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (state.step === MIGRATION_STEP.WRITING) {
+            if (
+                state.step === MIGRATION_STEP.FETCHING ||
+                state.step === MIGRATION_STEP.WRITING
+            ) {
                 this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
             } else if (state.step === MIGRATION_STEP.MEDIA_PROCESSING) {
                 this.componentIndex = UI_COMPONENT_INDEX.MEDIA_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (state.step === MIGRATION_STEP.WAITING_FOR_APPROVE || state.step === MIGRATION_STEP.FINISHED) {
+            } else if (
+                state.step === MIGRATION_STEP.WAITING_FOR_APPROVE ||
+                state.step === MIGRATION_STEP.FINISHED
+            ) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
                 this.unregisterPolling();
+            } else if (state.step === MIGRATION_STEP.ABORTING) {
+                // ToDo MIG-895: Implement aborting visualization
+                console.log('ToDo: Implement aborting visualization');
             }
 
             // update flow chart
@@ -173,15 +190,11 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                     this.flowChartInitialItemVariants.push('success');
                 }
             }
-
-            return Promise.resolve();
         },
 
         async startMigration() {
             try {
                 await this.migrationApiService.startMigration(this.dataSelectionIds);
-                this.registerPolling();
-                State.commit('swagMigration/ui/setIsLoading', false);
             } catch (e) {
                 // ToDo MIG-895: Implement error handling
                 console.log('ToDo: error handling', e);
@@ -191,7 +204,12 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         async migrationStatePoller() {
             try {
                 const state = await this.migrationApiService.getState();
-                return this.visualizeMigrationState(state);
+                this.visualizeMigrationState(state);
+                if (this.step === MIGRATION_STEP.IDLE) {
+                    // back in idle, which happens after aborting for example
+                    this.unregisterPolling();
+                    this.$router.push({ name: 'swag.migration.index.main' });
+                }
             } catch (e) {
                 // ToDo MIG-895: Implement error handling
                 console.log('ToDo: error handling', e);
@@ -210,8 +228,17 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             }
         },
 
-        onAbortButtonClick() {
-            console.log('ToDo: Implement onAbortButtonClick()');
+        async onAbortButtonClick() {
+            try {
+                State.commit('swagMigration/ui/setIsLoading', true);
+                await this.migrationApiService.abortMigration();
+                const state = await this.migrationApiService.getState();
+                this.visualizeMigrationState(state);
+                State.commit('swagMigration/ui/setIsLoading', false);
+            } catch (e) {
+                // ToDo MIG-895: Implement error handling
+                console.log('ToDo: error handling', e);
+            }
         },
 
         onContinueButtonClick() {
