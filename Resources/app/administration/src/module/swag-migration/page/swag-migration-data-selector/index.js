@@ -17,11 +17,8 @@ Component.register('swag-migration-data-selector', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'environmentInformation',
-        ]),
-
-        ...mapState('swagMigration/ui', [
             'dataSelectionTableData',
             'dataSelectionIds',
         ]),
@@ -70,7 +67,7 @@ Component.register('swag-migration-data-selector', {
                 }
             });
 
-            State.commit('swagMigration/ui/setDataSelectionIds', selectionIds);
+            State.commit('swagMigration/setDataSelectionIds', selectionIds);
         },
 
         showHelptext(entityTotals) {

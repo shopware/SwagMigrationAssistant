@@ -195,7 +195,6 @@
         "gateway": "Schnittstelle:",
         "connectionCheck": "Verbindungscheck:",
         "lastMigration": "Letzte Migration:",
-        "displayDateTime": "{time} Uhr - {date}",
         "noMigrationDoneYet": "bisher keine durchgeführt",
         "removeCredentialsConfirmDialog": {
           "title": "Zugangsdaten löschen",

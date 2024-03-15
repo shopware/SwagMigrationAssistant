@@ -2,7 +2,6 @@ import template from './swag-migration-base.html.twig';
 import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Component, State } = Shopware;
-const { Criteria } = Shopware.Data;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 /**
@@ -15,7 +14,6 @@ Component.register('swag-migration-base', {
     inject: {
         /** @var {MigrationApiService} migrationApiService */
         migrationApiService: 'migrationApiService',
-        repositoryFactory: 'repositoryFactory',
     },
 
     data() {
@@ -32,36 +30,16 @@ Component.register('swag-migration-base', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'environmentInformation',
             'connectionId',
-        ]),
-
-        ...mapState('swagMigration/ui', [
             'isLoading',
             'dataSelectionTableData',
         ]),
 
         ...mapGetters({
-            storeIsMigrationAllowed: 'swagMigration/ui/isMigrationAllowed',
+            isMigrationAllowed: 'swagMigration/isMigrationAllowed',
         }),
-
-        isMigrationAllowed() {
-            return this.storeIsMigrationAllowed &&
-                this.environmentInformation.migrationDisabled === false;
-        },
-
-        /**
-         * @returns {boolean}
-         */
-        migrateButtonDisabled() {
-            return this.isLoading ||
-                !this.isMigrationAllowed;
-        },
-
-        migrationGeneralSettingRepository() {
-            return this.repositoryFactory.create('swag_migration_general_setting');
-        },
     },
 
     created() {
@@ -90,58 +68,14 @@ Component.register('swag-migration-base', {
         },
 
         async initState() {
-            await this.initProcessStore();
-            await this.initUiStore();
+            await State.dispatch('swagMigration/init');
             this.storesInitializing = false;
         },
 
-        async initProcessStore() {
-            try {
-                State.commit('swagMigration/process/setEnvironmentInformation', {});
-                const criteria = new Criteria(1, 1);
-
-                const settings = await this.migrationGeneralSettingRepository.search(criteria, this.context);
-                if (settings.length === 0) {
-                    return;
-                }
-
-                const connectionId = settings.first().selectedConnectionId;
-                State.commit('swagMigration/process/setConnectionId', connectionId);
-
-                if (connectionId === null) {
-                    return;
-                }
-
-                const connectionCheckResponse = await this.migrationApiService.checkConnection(connectionId);
-                State.commit('swagMigration/process/setEnvironmentInformation', connectionCheckResponse);
-            } catch {
-                // do nothing, default state is already set
-            }
-        },
-
-        async initUiStore() {
-            if (this.connectionId === null) {
-                return;
-            }
-
-            try {
-                const dataSelection = await this.migrationApiService.getDataSelection(this.connectionId);
-                State.commit('swagMigration/ui/setPremapping', []);
-                State.commit('swagMigration/ui/setDataSelectionTableData', dataSelection);
-                const selectedIds = dataSelection.filter(selection => selection.requiredSelection)
-                    .map(selection => selection.id);
-                State.commit('swagMigration/ui/setDataSelectionIds', selectedIds);
-            } catch {
-                // do nothing, default state is already set
-            }
-        },
-
         onMigrate() {
-            this.$nextTick(() => {
-                // navigate to process screen
-                State.commit('swagMigration/ui/setIsLoading', true);
-                this.$router.push({ name: 'swag.migration.processScreen' });
-            });
+            // navigate to process screen
+            State.commit('swagMigration/setIsLoading', true);
+            this.$router.push({ name: 'swag.migration.processScreen' });
         },
     },
 });

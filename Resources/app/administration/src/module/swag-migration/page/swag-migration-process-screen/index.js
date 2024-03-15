@@ -54,7 +54,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     },
 
     computed: {
-        ...mapState('swagMigration/ui', [
+        ...mapState('swagMigration', [
             'isLoading',
             'dataSelectionIds',
         ]),
@@ -103,14 +103,12 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
     methods: {
         async createdComponent() {
-            // ToDo MIG-895: Do something about parent call, because currently it resets the state / dataSelectionIds
-            // await this.$super('createdComponent');
-            this.storesInitializing = false;
-            State.commit('swagMigration/ui/setIsLoading', true);
+            this.initState();
+            State.commit('swagMigration/setIsLoading', true);
 
             if (this.connectionId === null) {
                 this.$router.push({ name: 'swag.migration.index.main' });
-                return Promise.resolve();
+                return;
             }
 
             try {
@@ -129,9 +127,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             }
 
             this.registerPolling();
-            State.commit('swagMigration/ui/setIsLoading', false);
-
-            return Promise.resolve();
+            State.commit('swagMigration/setIsLoading', false);
         },
 
         async unmountedComponent() {
@@ -230,11 +226,11 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
         async onAbortButtonClick() {
             try {
-                State.commit('swagMigration/ui/setIsLoading', true);
+                State.commit('swagMigration/setIsLoading', true);
                 await this.migrationApiService.abortMigration();
                 const state = await this.migrationApiService.getState();
                 this.visualizeMigrationState(state);
-                State.commit('swagMigration/ui/setIsLoading', false);
+                State.commit('swagMigration/setIsLoading', false);
             } catch (e) {
                 // ToDo MIG-895: Implement error handling
                 console.log('ToDo: error handling', e);

@@ -195,7 +195,6 @@
         "gateway": "Gateway:",
         "connectionCheck": "Connection check:",
         "lastMigration": "Last migration:",
-        "displayDateTime": "{time} - {date}",
         "noMigrationDoneYet": "-",
         "removeCredentialsConfirmDialog": {
           "title": "Delete access data",

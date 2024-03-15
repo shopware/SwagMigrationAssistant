@@ -18,12 +18,9 @@ Component.register('swag-migration-main-page', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'environmentInformation',
             'connectionId',
-        ]),
-
-        ...mapState('swagMigration/ui', [
             'isLoading',
         ]),
 

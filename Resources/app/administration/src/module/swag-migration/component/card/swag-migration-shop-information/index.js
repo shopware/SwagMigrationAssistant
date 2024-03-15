@@ -1,7 +1,7 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
-const { Component, Mixin } = Shopware;
+const { Component, Mixin, State } = Shopware;
 const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
@@ -48,7 +48,6 @@ Component.register('swag-migration-shop-information', {
             showRemoveCredentialsConfirmModal: false,
             showResetChecksumsConfirmModal: false,
             showResetMigrationConfirmModal: false,
-            lastConnectionCheck: '-',
             lastMigrationDate: '-',
             connection: null,
             context: Shopware.Context.api,
@@ -56,9 +55,10 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'connectionId',
             'environmentInformation',
+            'lastConnectionCheck',
         ]),
 
         ...mapGetters([
@@ -153,18 +153,12 @@ Component.register('swag-migration-shop-information', {
                 this.connection.gateway.snippet;
         },
 
-        lastConnectionCheckDateTimeParams() {
-            return {
-                date: this.getDateString(this.lastConnectionCheck),
-                time: this.getTimeString(this.lastConnectionCheck),
-            };
+        formattedLastConnectionCheckDate() {
+            return format.date(this.lastConnectionCheck);
         },
 
-        lastMigrationDateTimeParams() {
-            return {
-                date: this.getDateString(this.lastMigrationDate),
-                time: this.getTimeString(this.lastMigrationDate),
-            };
+        formattedLastMigrationDateTime() {
+            return format.date(this.lastMigrationDate);
         },
 
         assetFilter() {
@@ -241,7 +235,6 @@ Component.register('swag-migration-shop-information', {
                 }
                 delete connection.credentialFields;
                 this.connection = connection;
-                this.lastConnectionCheck = new Date();
 
                 return this.migrationApiService.getProfileInformation(
                     connection.profileName,
@@ -255,20 +248,6 @@ Component.register('swag-migration-shop-information', {
                     this.connection.gateway = profileInformation.gateway;
                 });
             });
-        },
-
-        getTimeString(date) {
-            return format.date(date, {
-                day: undefined,
-                month: undefined,
-                year: undefined,
-                hour: 'numeric',
-                minute: '2-digit',
-            });
-        },
-
-        getDateString(date) {
-            return format.date(date);
         },
 
         onClickEditConnectionCredentials() {
@@ -346,6 +325,10 @@ Component.register('swag-migration-shop-information', {
                     growl: true,
                 });
             });
+        },
+
+        onClickRefreshConnection() {
+            return State.dispatch('swagMigration/init');
         },
     },
 });

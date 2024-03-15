@@ -19,7 +19,7 @@ Component.register('swag-migration-confirm-warning', {
     },
 
     computed: {
-        ...mapState('swagMigration/process', [
+        ...mapState('swagMigration', [
             'environmentInformation',
         ]),
 

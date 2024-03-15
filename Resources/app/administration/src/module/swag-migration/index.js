@@ -3,13 +3,11 @@ import './component';
 import './page';
 import './extension';
 import './profile';
-import MigrationProcessStore from '../../core/data/migrationProcess.store';
-import MigrationUIStore from '../../core/data/migrationUI.store';
+import MigrationStore from '../../core/data/migration.store';
 
 const { Module, State } = Shopware;
 
-State.registerModule('swagMigration/process', MigrationProcessStore);
-State.registerModule('swagMigration/ui', MigrationUIStore);
+State.registerModule('swagMigration', MigrationStore);
 
 /**
  * @package services-settings

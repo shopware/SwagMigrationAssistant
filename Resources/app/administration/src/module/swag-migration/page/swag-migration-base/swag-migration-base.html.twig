@@ -13,7 +13,7 @@
 
         {% block swag_migration_base_smart_bar_actions %}
             <template v-if="!storesInitializing" #smart-bar-actions>
-                <sw-button variant="primary" @click="onMigrate" :disabled="migrateButtonDisabled">
+                <sw-button variant="primary" @click="onMigrate" :disabled="!isMigrationAllowed">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>
             </template>
