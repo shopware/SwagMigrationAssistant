@@ -620,12 +620,21 @@
         "titleSuccess": "Mediendownload abgeschlossen",
         "messageSuccess": "Das Herunterladen der Medien wurde abgeschlossen."
       }
+    },
+    "api-error": {
+      "fetchConnectionId": "Fehler beim Abrufen der Verbindungs-ID",
+      "checkConnection": "Fehler beim Prüfen der Verbindung zum Quellsystem",
+      "getDataSelection": "Fehler beim Abrufen der Daten-Auswahl für die aktive Verbindung",
+      "getState": "Fehler beim Abrufen des Migrations-Status",
+      "startMigration": "Fehler beim Starten der Migration",
+      "approveFinishedMigration": "Fehler beim Abschließen der Migration",
+      "abortMigration": "Fehler beim Abbrechen der Migration"
     }
   },
   "global": {
     "error-codes": {
       "SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS": "Der Verbindungsname existiert bereits.",
-      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "Der Verbindungsname muss mindestens 6 Zeichen lang sein.",
+      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "Der Verbindungsname muss mindestens 1 Zeichen lang sein.",
       "SWAG_MIGRATION_INVALID_API_KEY": "Der API-Schlüssel hat nicht die richtige Länge ({length}/40 Zeichen)."
     }
   }

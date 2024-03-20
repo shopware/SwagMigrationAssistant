@@ -619,12 +619,21 @@
         "titleSuccess": "Media download completed",
         "messageSuccess": "The media download has been completed."
       }
+    },
+    "api-error": {
+      "fetchConnectionId": "Failed to get active connection ID.",
+      "checkConnection": "Failed to check the connection to source system.",
+      "getDataSelection": "Failed to get data selection for current connection.",
+      "getState": "Failed to get migration state.",
+      "startMigration": "Failed to start migration.",
+      "approveFinishedMigration": "Failed while completing the migration",
+      "abortMigration": "Failed to abort migration."
     }
   },
   "global": {
     "error-codes": {
       "SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS": "Connection name already exists.",
-      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "The connection name must be at least 6 characters long.",
+      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "The connection name must be at least 1 character long.",
       "SWAG_MIGRATION_INVALID_API_KEY": "The API key does not have the correct length ({length}/40 characters)."
     }
   }

@@ -49,7 +49,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 this.selection.profile !== null &&
                 this.selection.gateway !== null &&
                 this.selection.connectionName !== null &&
-                this.selection.connectionName.length > 5
+                this.selection.connectionName.length > 0
             );
         },
 

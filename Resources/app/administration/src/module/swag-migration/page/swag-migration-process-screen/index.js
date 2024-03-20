@@ -36,6 +36,10 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         migrationApiService: 'migrationApiService',
     },
 
+    mixins: [
+        'notification',
+    ],
+
     data() {
         return {
             isWarningConfirmed: false,
@@ -115,15 +119,24 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 const state = await this.migrationApiService.getState();
                 this.visualizeMigrationState(state);
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
-                console.log('ToDo: error handling', e);
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc('swag-migration.api-error.getState'),
+                });
             }
 
             if (this.step === MIGRATION_STEP.IDLE) {
                 await this.startMigration();
                 // update to the new state immediately
-                const state = await this.migrationApiService.getState();
-                this.visualizeMigrationState(state);
+                try {
+                    const state = await this.migrationApiService.getState();
+                    this.visualizeMigrationState(state);
+                } catch (e) {
+                    this.createNotificationError({
+                        title: this.$tc('global.default.error'),
+                        message: this.$tc('swag-migration.api-error.getState'),
+                    });
+                }
             }
 
             this.registerPolling();
@@ -192,23 +205,27 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             try {
                 await this.migrationApiService.startMigration(this.dataSelectionIds);
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
-                console.log('ToDo: error handling', e);
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc('swag-migration.api-error.startMigration'),
+                });
             }
         },
 
         async migrationStatePoller() {
             try {
                 const state = await this.migrationApiService.getState();
-                this.visualizeMigrationState(state);
-                if (this.step === MIGRATION_STEP.IDLE) {
+                if (state && state.step === MIGRATION_STEP.IDLE) {
                     // back in idle, which happens after aborting for example
                     this.unregisterPolling();
                     this.$router.push({ name: 'swag.migration.index.main' });
                 }
+                this.visualizeMigrationState(state);
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
-                console.log('ToDo: error handling', e);
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc('swag-migration.api-error.getState'),
+                });
             }
 
             return Promise.resolve();
@@ -219,21 +236,35 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 await this.migrationApiService.approveFinishedMigration();
                 this.$router.push({ name: 'swag.migration.index.main' });
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
-                console.log('ToDo: error handling', e);
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc('swag-migration.api-error.approveFinishedMigration'),
+                });
             }
         },
 
         async onAbortButtonClick() {
+            this.showAbortMigrationConfirmDialog = true;
+        },
+
+        onCloseAbortMigrationConfirmDialog() {
+            this.showAbortMigrationConfirmDialog = false;
+        },
+
+        async onAbort() {
             try {
+                this.showAbortMigrationConfirmDialog = false;
                 State.commit('swagMigration/setIsLoading', true);
                 await this.migrationApiService.abortMigration();
                 const state = await this.migrationApiService.getState();
                 this.visualizeMigrationState(state);
+            } catch (error) {
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc('swag-migration.api-error.abortMigration'),
+                });
+            } finally {
                 State.commit('swagMigration/setIsLoading', false);
-            } catch (e) {
-                // ToDo MIG-895: Implement error handling
-                console.log('ToDo: error handling', e);
             }
         },
 

@@ -181,7 +181,7 @@ export default {
         /**
          * @returns {Promise<boolean>} whether the connection id has changed to a new valid one
          */
-        async fetchConnectionId({ state, commit }) {
+        async fetchConnectionId({ state, commit, dispatch }) {
             try {
                 const criteria = new Criteria(1, 1);
                 const settings = await migrationGeneralSettingRepository.search(criteria, Shopware.Context.api);
@@ -197,13 +197,17 @@ export default {
                 commit('setConnectionId', connectionId);
                 return true;
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
+                await dispatch('notification/createNotification', {
+                    variant: 'error',
+                    title: Shopware.Snippet.tc('global.default.error'),
+                    message: Shopware.Snippet.tc('swag-migration.api-error.fetchConnectionId'),
+                });
                 commit('setConnectionId', null);
                 return false;
             }
         },
 
-        async fetchEnvironmentInformation({ state, commit }) {
+        async fetchEnvironmentInformation({ state, commit, dispatch }) {
             commit('setEnvironmentInformation', {});
             if (state.connectionId === null) {
                 return;
@@ -214,11 +218,15 @@ export default {
                 commit('setEnvironmentInformation', connectionCheckResponse);
                 commit('setLastConnectionCheck', new Date());
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
+                await dispatch('notification/createNotification', {
+                    variant: 'error',
+                    title: Shopware.Snippet.tc('global.default.error'),
+                    message: Shopware.Snippet.tc('swag-migration.api-error.checkConnection'),
+                });
             }
         },
 
-        async fetchDataSelectionIds({ state, commit }) {
+        async fetchDataSelectionIds({ state, commit, dispatch }) {
             commit('setDataSelectionTableData', []);
             if (state.connectionId === null) {
                 return;
@@ -231,7 +239,11 @@ export default {
                     .map(selection => selection.id);
                 commit('setDataSelectionIds', selectedIds);
             } catch (e) {
-                // ToDo MIG-895: Implement error handling
+                await dispatch('notification/createNotification', {
+                    variant: 'error',
+                    title: Shopware.Snippet.tc('global.default.error'),
+                    message: Shopware.Snippet.tc('swag-migration.api-error.getDataSelection'),
+                });
             }
         },
     },

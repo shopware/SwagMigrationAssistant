@@ -586,7 +586,7 @@ Component.extend('swag-migration-wizard', 'swag-migration-base', {
 
         onChangeConnectionName(value) {
             this.connectionName = value;
-            if (this.connectionName !== null && this.connectionName.length > 5) {
+            if (this.connectionName !== null && this.connectionName.length > 0) {
                 this.connectionNameErrorCode = '';
                 return;
             }
