@@ -342,6 +342,9 @@ Component.extend('swag-migration-wizard', 'swag-migration-base', {
             // navigate to module
             this.$router.push({
                 name: 'swag.migration.index.main',
+                query: {
+                    forceFullStateReload: true,
+                },
             });
         },
 

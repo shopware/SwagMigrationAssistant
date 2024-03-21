@@ -328,7 +328,7 @@ Component.register('swag-migration-shop-information', {
         },
 
         onClickRefreshConnection() {
-            return State.dispatch('swagMigration/init');
+            return State.dispatch('swagMigration/init', true);
         },
     },
 });

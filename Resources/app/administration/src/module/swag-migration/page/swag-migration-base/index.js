@@ -68,7 +68,8 @@ Component.register('swag-migration-base', {
         },
 
         async initState() {
-            await State.dispatch('swagMigration/init');
+            const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
+            await State.dispatch('swagMigration/init', forceFullStateReload);
             this.storesInitializing = false;
         },
 

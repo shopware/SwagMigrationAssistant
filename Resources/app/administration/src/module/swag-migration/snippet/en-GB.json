@@ -365,11 +365,14 @@
         }
       },
       "loadingScreenCard": {
+        "notice": "If there isn't any progress for a long time please ensure that there are running workers for the message queue and these are powerful enough. You can freely navigate away from this page or close this browser tab and come back later.",
         "flowChart": {
           "premapping": "Checking",
           "fetchData": "Reading",
           "writeData": "Writing",
           "processMedia": "Downloading",
+          "cleanup": "Cleanup",
+          "indexing": "Indexing",
           "finish": "Done"
         },
         "status": {
@@ -384,9 +387,24 @@
             "short": "Writing"
           },
           "media-processing": {
-            "long": "The media is being downloaded",
+            "long": "The media is being transferred",
             "caption": "Large image data can take some time to process.",
-            "short": "Downloading"
+            "short": "Media transfer"
+          },
+          "aborting": {
+            "long": "The migration is being aborted",
+            "caption": "Unwritten data is cleaned up. Already migrated data might be unusable.",
+            "short": "Aborting"
+          },
+          "cleanup": {
+            "long": "The migration is being cleaned up",
+            "caption": "Temporary data is being removed. The migration is almost complete.",
+            "short": "Cleanup"
+          },
+          "indexing": {
+            "long": "The new data is being indexed",
+            "caption": "The migration is almost complete.",
+            "short": "Indexing"
           },
           "finish": "Done"
         },

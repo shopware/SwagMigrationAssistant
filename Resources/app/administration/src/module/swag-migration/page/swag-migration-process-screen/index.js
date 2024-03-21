@@ -13,15 +13,17 @@ const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
     [MIGRATION_STEP.FETCHING]: 0,
     [MIGRATION_STEP.WRITING]: 1,
     [MIGRATION_STEP.MEDIA_PROCESSING]: 2,
-    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 3,
-    [MIGRATION_STEP.FINISHED]: 3,
+    [MIGRATION_STEP.ABORTING]: 3,
+    [MIGRATION_STEP.CLEANUP]: 3,
+    [MIGRATION_STEP.INDEXING]: 4,
+    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 5,
+    [MIGRATION_STEP.FINISHED]: 5,
 });
 
 const UI_COMPONENT_INDEX = Object.freeze({
     WARNING_CONFIRM: -1,
     LOADING_SCREEN: 0,
-    MEDIA_SCREEN: 1,
-    RESULT_SUCCESS: 2,
+    RESULT_SUCCESS: 1,
 });
 
 /**
@@ -39,6 +41,14 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     mixins: [
         'notification',
     ],
+
+    metaInfo() {
+        return {
+            title: this.progressPercentage !== null ?
+                `${this.progressPercentage}% ${this.$createTitle()}` :
+                this.$createTitle(),
+        };
+    },
 
     data() {
         return {
@@ -98,6 +108,14 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
          */
         componentIndexIsResult() {
             return this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
+        },
+
+        progressPercentage() {
+            if (!this.total) {
+                return null;
+            }
+
+            return Math.round((this.progress / this.total) * 100);
         },
     },
 
@@ -163,18 +181,27 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 return;
             }
 
+            if (this.step !== state.step) {
+                // step change, reset progress bar to zero without animation
+                this.progress = 0;
+            }
             this.step = state.step;
-            this.progress = state.progress;
-            this.total = state.total;
+
+            this.$nextTick(() => {
+                // needs to happen one tick later, to reset the progress bar if a step change occurred
+                this.progress = state.progress;
+                this.total = state.total;
+            });
 
             if (
                 state.step === MIGRATION_STEP.FETCHING ||
-                state.step === MIGRATION_STEP.WRITING
+                state.step === MIGRATION_STEP.WRITING ||
+                state.step === MIGRATION_STEP.MEDIA_PROCESSING ||
+                state.step === MIGRATION_STEP.ABORTING ||
+                state.step === MIGRATION_STEP.CLEANUP ||
+                state.step === MIGRATION_STEP.INDEXING
             ) {
                 this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
-                this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (state.step === MIGRATION_STEP.MEDIA_PROCESSING) {
-                this.componentIndex = UI_COMPONENT_INDEX.MEDIA_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
             } else if (
                 state.step === MIGRATION_STEP.WAITING_FOR_APPROVE ||
@@ -183,9 +210,6 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
                 this.unregisterPolling();
-            } else if (state.step === MIGRATION_STEP.ABORTING) {
-                // ToDo MIG-895: Implement aborting visualization
-                console.log('ToDo: Implement aborting visualization');
             }
 
             // update flow chart
@@ -218,7 +242,12 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 if (state && state.step === MIGRATION_STEP.IDLE) {
                     // back in idle, which happens after aborting for example
                     this.unregisterPolling();
-                    this.$router.push({ name: 'swag.migration.index.main' });
+                    this.$router.push({
+                        name: 'swag.migration.index.main',
+                        query: {
+                            forceFullStateReload: true, // also resets data selection for next run
+                        },
+                    });
                 }
                 this.visualizeMigrationState(state);
             } catch (e) {
@@ -234,7 +263,12 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         async approveFinishedMigration() {
             try {
                 await this.migrationApiService.approveFinishedMigration();
-                this.$router.push({ name: 'swag.migration.index.main' });
+                this.$router.push({
+                    name: 'swag.migration.index.main',
+                    query: {
+                        forceFullStateReload: true, // also resets data selection for next run
+                    },
+                });
             } catch (e) {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),

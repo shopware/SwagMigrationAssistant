@@ -40,6 +40,12 @@
                     <sw-step-item>
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.processMedia') }}
                     </sw-step-item>
+                    <sw-step-item>
+                        {{ $tc('swag-migration.index.loadingScreenCard.flowChart.cleanup') }}
+                    </sw-step-item>
+                    <sw-step-item>
+                        {{ $tc('swag-migration.index.loadingScreenCard.flowChart.indexing') }}
+                    </sw-step-item>
                     <sw-step-item disabledIcon="regular-checkmark-xs">
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.finish') }}
                     </sw-step-item>
@@ -55,7 +61,7 @@
 
             {% block swag_migration_index_main_page_card_loadingScreen %}
                 <swag-migration-loading-screen
-                    v-if="componentIndex === UI_COMPONENT_INDEX.LOADING_SCREEN || componentIndex === UI_COMPONENT_INDEX.MEDIA_SCREEN"
+                    v-if="componentIndex === UI_COMPONENT_INDEX.LOADING_SCREEN"
                     :step="step"
                     :progress="progress"
                     :total="total">

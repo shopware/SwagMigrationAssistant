@@ -366,11 +366,14 @@
         }
       },
       "loadingScreenCard": {
+        "notice": "Wenn lange Zeit kein Fortschritt zu erkennen ist, vergewisser dich bitte, dass die Worker für die Message-Queue in Betrieb sind und dass diese leistungsfähig genug sind. Du kannst diese Seite verlassen oder diesen Browser-Tab schließen und später wiederkommen.",
         "flowChart": {
           "premapping": "Prüfen",
           "fetchData": "Lesen",
           "writeData": "Schreiben",
           "processMedia": "Download",
+          "cleanup": "Aufräumen",
+          "indexing": "Indexierung",
           "finish": "Fertig"
         },
         "status": {
@@ -385,9 +388,24 @@
             "short": "Schreiben"
           },
           "media-processing": {
-            "long": "Die Medien werden heruntergeladen",
-            "caption": "Große Bilddaten können etwas Zeit in Anspurch nehmen.",
-            "short": "Medien laden"
+            "long": "Die Medien werden übertragen",
+            "caption": "Große Bilddaten können etwas Zeit in Anspruch nehmen.",
+            "short": "Medien übertragen"
+          },
+          "aborting": {
+            "long": "Die Migration wird abgebrochen",
+            "caption": "Nicht geschriebene Daten werden aufgeräumt. Bereits migrierte Daten bleiben sind eventuell unbrauchbar",
+            "short": "Abbrechen"
+          },
+          "cleanup": {
+            "long": "Die Migration wird aufgeräumt",
+            "caption": "Temporäre Daten werden gelöscht. Die Migration ist fast abgeschlossen.",
+            "short": "Aufräumen"
+          },
+          "indexing": {
+            "long": "Die Indexierung wird durchgeführt",
+            "caption": "Die neuen Daten werden indexiert.",
+            "short": "Indexierung"
           },
           "finish": "Fertig"
         },

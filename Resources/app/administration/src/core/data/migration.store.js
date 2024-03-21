@@ -161,13 +161,13 @@ export default {
     },
 
     actions: {
-        async init({ commit, dispatch }) {
+        async init({ commit, dispatch }, forceFullStateReload = false) {
             commit('setIsLoading', true);
 
             const connectionIdChanged = await dispatch('fetchConnectionId');
             await dispatch('fetchEnvironmentInformation'); // always get the latest environment information
 
-            if (connectionIdChanged) {
+            if (forceFullStateReload || connectionIdChanged) {
                 // first clear old user input
                 commit('setPremapping', []);
                 commit('setDataSelectionIds', []);

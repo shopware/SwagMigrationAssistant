@@ -35,6 +35,10 @@
                                     :maxValue="total">
                             </swag-migration-progress-bar>
                         {% endblock %}
+
+                        <sw-alert variant="info" class="swag-migration-loading-screen__notice">
+                            {{ $tc('swag-migration.index.loadingScreenCard.notice') }}
+                        </sw-alert>
                     </div>
                 {% endblock %}
             </sw-card>
