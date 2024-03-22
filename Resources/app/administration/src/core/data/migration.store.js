@@ -59,6 +59,12 @@ export default {
          * Only the filled part of the premapping.
          */
         filledPremapping: [],
+
+        /**
+         * Flag to indicate if the user has confirmed the warning about different currencies and languages.
+         * Will also be set to true if there are no warnings.
+         */
+        warningConfirmed: false,
     },
 
     mutations: {
@@ -130,6 +136,10 @@ export default {
             state.filledPremapping = filledMapping;
             state.premapping = newPremapping;
         },
+
+        setWarningConfirmed(state, confirmed) {
+            state.warningConfirmed = confirmed;
+        },
     },
 
     getters: {
@@ -156,7 +166,8 @@ export default {
             return migrationAllowedByDataSelection &&
                 migrationAllowedByEnvironment &&
                 !state.isLoading &&
-                getters.isPremappingValid;
+                getters.isPremappingValid &&
+                state.warningConfirmed;
         },
     },
 
@@ -171,6 +182,7 @@ export default {
                 // first clear old user input
                 commit('setPremapping', []);
                 commit('setDataSelectionIds', []);
+                commit('setWarningConfirmed', false);
                 // then fetch new data
                 await dispatch('fetchDataSelectionIds');
             }

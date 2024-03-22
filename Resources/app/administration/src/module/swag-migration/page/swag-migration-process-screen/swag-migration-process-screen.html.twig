@@ -26,7 +26,7 @@
         <sw-card-view v-if="!isLoading && !storesInitializing" class="swag-migration-process-screen">
 
             {% block swag_migration_index_main_page_flow_chart %}
-                <sw-step-display v-if="displayFlowChart && componentIndex !== UI_COMPONENT_INDEX.WARNING_CONFIRM"
+                <sw-step-display v-if="displayFlowChart"
                                  class="swag-migration-process-screen__step-display"
                                  :itemIndex="flowChartItemIndex"
                                  :itemVariant="flowChartItemVariant"
@@ -50,13 +50,6 @@
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.finish') }}
                     </sw-step-item>
                 </sw-step-display>
-            {% endblock %}
-
-            {% block swag_migration_index_main_page_card_confirm_warning %}
-                <swag-migration-confirm-warning v-if="componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM"
-                                                class="swag-migration-process-screen__confirm-warning"
-                                                @confirmation-change="onWarningConfirmationChanged">
-                </swag-migration-confirm-warning>
             {% endblock %}
 
             {% block swag_migration_index_main_page_card_loadingScreen %}

@@ -21,7 +21,6 @@ const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
 });
 
 const UI_COMPONENT_INDEX = Object.freeze({
-    WARNING_CONFIRM: -1,
     LOADING_SCREEN: 0,
     RESULT_SUCCESS: 1,
 });
@@ -52,7 +51,6 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
     data() {
         return {
-            isWarningConfirmed: false,
             displayFlowChart: true,
             flowChartItemIndex: 0,
             flowChartItemVariant: 'info',
@@ -86,10 +84,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
          */
         startButtonVisible() {
             return !this.isLoading &&
-                (
-                    this.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM ||
-                        this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS
-                );
+                    this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
 
         /**
@@ -303,19 +298,11 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         },
 
         onContinueButtonClick() {
-            if (this.componentIndex === UI_COMPONENT_INDEX.WARNING_CONFIRM) {
-                return this.startMigration();
-            }
-
             if (this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS) {
                 return this.approveFinishedMigration();
             }
 
             return Promise.resolve();
-        },
-
-        onWarningConfirmationChanged(isConfirmed) {
-            this.isWarningConfirmed = isConfirmed;
         },
     },
 });
