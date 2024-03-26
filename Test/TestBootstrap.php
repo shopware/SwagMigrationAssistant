@@ -12,7 +12,6 @@ use Shopware\Core\TestBootstrapper;
 
 require __DIR__ . '/../../../../src/Core/TestBootstrapper.php';
 
-/** @var Shopware\Core\TestBootstrapper $bootstrapper */
 $bootstrapper = new TestBootstrapper();
 $_SERVER['PROJECT_ROOT'] = $_ENV['PROJECT_ROOT'] = $bootstrapper->getProjectDir();
 if (!defined('TEST_PROJECT_DIR')) {
@@ -39,7 +38,7 @@ try {
     $bootstrapper->addActivePlugins('SwagMigrationAssistant');
     $bootstrapper->addCallingPlugin();
     $bootstrapper->bootstrap();
-} catch (\Throwable $e) {
+} catch (Throwable $e) {
 }
 
 $pluginLoader = new StaticKernelPluginLoader($classLoader, null, $plugins);

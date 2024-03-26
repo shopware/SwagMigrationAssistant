@@ -116,7 +116,7 @@ class ShippingMethodConverter extends ShopwareMediaConverter
             return;
         }
 
-        $converted['technicalName'] = $converted['technicalName'] . '_migrated';
+        $converted['technicalName'] .= '_migrated';
     }
 
     private function hasTechnicalNameColumn(): bool

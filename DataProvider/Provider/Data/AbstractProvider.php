@@ -56,7 +56,7 @@ abstract class AbstractProvider implements ProviderInterface
     }
 
     /**
-     * @param entityCollection|array $result
+     * @param EntityCollection|array $result
      *
      * cleans up the result and transforms it into an associative array
      */

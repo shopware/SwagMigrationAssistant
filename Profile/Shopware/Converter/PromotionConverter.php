@@ -254,7 +254,7 @@ abstract class PromotionConverter extends ShopwareConverter
 
                 [
                     'id' => $orConditionContainerMapping['entityUuid'],
-                    'type' => (new orRule())->getName(),
+                    'type' => (new OrRule())->getName(),
                     'parentId' => $orContainerMapping['entityUuid'],
                     'value' => [],
                 ],

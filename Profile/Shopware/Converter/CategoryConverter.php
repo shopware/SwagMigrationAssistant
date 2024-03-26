@@ -111,7 +111,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $this->mappingIds[] = $parentMapping['id'];
             $converted['parentId'] = $parentMapping['entityUuid'];
             unset($parentMapping);
-            // get last root category as previous sibling
+        // get last root category as previous sibling
         } elseif (!isset($data['previousSiblingId'])) {
             $previousSiblingUuid = $this->mappingService->getLowestRootCategoryUuid($context);
 
