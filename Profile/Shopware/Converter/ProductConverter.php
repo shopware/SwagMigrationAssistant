@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
@@ -24,7 +25,6 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 
 #[Package('services-settings')]
 abstract class ProductConverter extends ShopwareConverter
@@ -41,13 +41,16 @@ abstract class ProductConverter extends ShopwareConverter
     protected string $runId;
 
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected array $requiredDataFieldKeys = [
         'tax',
         'prices',
     ];
 
+    /**
+     * @var array{minPurchase: int, purchaseSteps: int, shippingFree: bool, restockTime: int}
+     */
     protected array $defaultValues = [
         'minPurchase' => 1,
         'purchaseSteps' => 1,
@@ -109,7 +112,7 @@ abstract class ProductConverter extends ShopwareConverter
     }
 
     /**
-     * @throws ParentEntityForChildNotFoundException
+     * @throws MigrationException
      */
     public function convert(
         array $data,
@@ -264,7 +267,7 @@ abstract class ProductConverter extends ShopwareConverter
     }
 
     /**
-     * @throws ParentEntityForChildNotFoundException
+     * @throws MigrationException
      */
     protected function convertVariantProduct(array $data): ConvertStruct
     {
@@ -276,7 +279,7 @@ abstract class ProductConverter extends ShopwareConverter
         );
 
         if ($parentMapping === null) {
-            throw new ParentEntityForChildNotFoundException(DefaultEntities::PRODUCT, $this->oldProductId);
+            throw MigrationException::parentEntityForChildNotFound(DefaultEntities::PRODUCT, $this->oldProductId);
         }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(

@@ -23,8 +23,8 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabili
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
 /**
- * @phpstan-type Sw5Data array<string, mixed>
  * @phpstan-type Rules array{id: string, name: string, priority: int, moduleTypes: array<string, array<string>>, conditions: array<mixed>}|array{}
+ * @phpstan-type MainOrContainer array{id: string, ruleId: string, type: string, position: int, children: list<array{id: string, ruleId: string, parentId: string, type: string, position: int}>}
  */
 #[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
@@ -69,7 +69,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     protected string $mainLocale;
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
     protected array $requiredDataFields = [
         'deliveryTimeId' => 'delivery_time',
@@ -82,9 +82,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         parent::__construct($mappingService, $loggingService);
     }
 
-    /**
-     * @param Sw5Data $data
-     */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         if (empty($data['id'])) {
@@ -158,7 +155,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        $this->getShippingMethodTranslation($converted, $data);
+        $this->addShippingMethodTranslation($converted, $data);
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'name', $data, 'name');
         $this->convertValue($converted, 'description', $data, 'description');
@@ -253,9 +250,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $shippingMethod
-     * @param Sw5Data $data
+     * @param array<string, mixed> $data
      */
-    protected function getShippingMethodTranslation(array &$shippingMethod, array $data): void
+    protected function addShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -292,7 +289,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param Sw5Data $data
+     * @param array<string, mixed> $data
      *
      * @return array<string, mixed>
      */
@@ -391,7 +388,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param Sw5Data $data
+     * @param array<string, mixed> $data
      *
      * @return Rules
      */
@@ -492,7 +489,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param Sw5Data $data
+     * @param array<string, mixed> $data
      *
      * @return Rules
      */
@@ -626,10 +623,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param Sw5Data $data
+     * @param array<string, mixed> $data
      * @param Rules $rule
      *
-     * @return array<array{id: string, calculation: int, shippingMethodId: string, currencyId: string, quantityStart: float, quantityEnd: float, currencyPrice: array<array<string, float|string|bool>>, rule?: array<mixed>}>
+     * @return list<array<string, mixed>>
      */
     protected function getShippingCosts(array $data, int $calculationType, ?array $rule): array
     {
@@ -725,7 +722,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param Sw5Data $data
+     * @param array<string, mixed> $data
      * @param array<string, mixed> $converted
      */
     private function setCustomAvailabilityRule(array $data, array &$converted): void
@@ -874,8 +871,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, string|bool|int> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param array<string, array<array<string, string>|string>|int|string> $ruleData
+     * @param MainOrContainer $mainOrContainer
      */
     private function setWeekdayCondition(
         array &$ruleData,
@@ -923,8 +920,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param array{bind_laststock: string, bind_shippingfree: string, excludedCategories?: array<string>, bind_weight_to?: string, bind_price_from?: string, bind_price_to?: string, bind_weight_from?: string, bind_weight_to?: string, bind_time_from?: string, bind_time_to?: string, shippingCountries?: array<array<string, string>>, paymentMethods?: array<string>} $ruleData
-     * @param array{id: string, ruleId: string, type: string, position: int, children: array<array<mixed>>} $mainOrContainer
+     * @param array<string, array<array<string, string>|string>|int|string> $ruleData
+     * @param MainOrContainer $mainOrContainer
      */
     private function setBindTimeCondition(
         array &$ruleData,
@@ -979,7 +976,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setLastStockCondition(
         array &$ruleData,
@@ -1017,7 +1014,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setOtherConditions(
         array $ruleData,
@@ -1064,7 +1061,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setShippingCountries(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
@@ -1114,7 +1111,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setPaymentMethods(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
@@ -1170,7 +1167,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setExcludedCategories(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
@@ -1226,7 +1223,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param array<string, mixed> $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setFreeShipping(
         array &$ruleData,

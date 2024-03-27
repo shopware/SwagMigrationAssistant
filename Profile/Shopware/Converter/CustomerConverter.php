@@ -41,7 +41,7 @@ abstract class CustomerConverter extends ShopwareConverter
     protected string $runId;
 
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected array $requiredDataFieldKeys = [
         'firstname',
@@ -52,7 +52,7 @@ abstract class CustomerConverter extends ShopwareConverter
     ];
 
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected array $requiredAddressDataFieldKeys = [
         'firstname',

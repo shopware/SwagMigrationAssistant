@@ -12,11 +12,11 @@ use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -105,9 +105,10 @@ class CategoryConverterTest extends TestCase
         try {
             $this->categoryConverter->convert($categoryData[4], $context, $this->migrationContext);
         } catch (\Exception $e) {
-            /* @var ParentEntityForChildNotFoundException $e */
-            static::assertInstanceOf(ParentEntityForChildNotFoundException::class, $e);
+            static::assertInstanceOf(MigrationException::class, $e);
             static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame(MigrationException::PARENT_ENTITY_NOT_FOUND, $e->getErrorCode());
+            static::assertSame('Parent entity for "category: 9" child not found.', $e->getMessage());
         }
     }
 

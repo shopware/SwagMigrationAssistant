@@ -29,6 +29,10 @@ abstract class ShopwareConverter extends Converter
         return $data['id'];
     }
 
+    /**
+     * @param array<string, mixed> $newData
+     * @param array<string, mixed> $sourceData
+     */
     protected function convertValue(
         array &$newData,
         string $newKey,
@@ -70,9 +74,10 @@ abstract class ShopwareConverter extends Converter
     }
 
     /**
-     * @param string[] $requiredDataFieldKeys
+     * @param array<string, mixed> $rawData
+     * @param list<string> $requiredDataFieldKeys
      *
-     * @return string[]
+     * @return list<string>
      */
     protected function checkForEmptyRequiredDataFields(array $rawData, array $requiredDataFieldKeys): array
     {
@@ -87,9 +92,10 @@ abstract class ShopwareConverter extends Converter
     }
 
     /**
-     * @param string[] $requiredDataFields
+     * @param array<string, mixed> $converted
+     * @param array<string, string> $requiredDataFields
      *
-     * @return string[]
+     * @return list<string>
      */
     protected function checkForEmptyRequiredConvertedFields(array $converted, array $requiredDataFields): array
     {
@@ -114,15 +120,26 @@ abstract class ShopwareConverter extends Converter
         }
     }
 
-    protected function getAttributes(array $attributes, string $entityName, string $connectionName, array $blacklist = [], ?Context $context = null): ?array
-    {
+    /**
+     * @param array<string, mixed> $attributes
+     * @param list<string> $excludeList
+     *
+     * @return array<string, mixed>|null
+     */
+    protected function getAttributes(
+        array $attributes,
+        string $entityName,
+        string $connectionName,
+        array $excludeList = [],
+        ?Context $context = null
+    ): ?array {
         $result = [];
         // remove unwanted characters from connection name
         $connectionName = \str_replace(' ', '', $connectionName);
         $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
 
         foreach ($attributes as $attribute => $value) {
-            if (\in_array($attribute, $blacklist, true)) {
+            if (\in_array($attribute, $excludeList, true)) {
                 continue;
             }
 
