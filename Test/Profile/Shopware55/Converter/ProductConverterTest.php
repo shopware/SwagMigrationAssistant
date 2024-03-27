@@ -359,4 +359,32 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('listPrice', $converted['price'][0]);
         static::assertSame((float) $productData[1]['prices'][0]['pseudoprice'], $converted['price'][0]['listPrice']['net']);
     }
+
+    public function testConvertWithPurchasePrices(): void
+    {
+        $purchasePriceMapping = [
+            0 => 1.11,
+            1 => 9.98,
+            3 => 15.67,
+            5 => 22.51,
+            8 => 29.99,
+            11 => 39.50,
+        ];
+
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $context = Context::createDefaultContext();
+
+        foreach ($purchasePriceMapping as $productArrayKey => $expectedPurchasePrice) {
+            $productData[$productArrayKey]['detail']['purchaseprice'] = $expectedPurchasePrice;
+
+            $convertResult = $this->productConverter->convert($productData[$productArrayKey], $context, $this->migrationContext);
+            $converted = $convertResult->getConverted();
+            static::assertNotNull($converted);
+            $expectedPurchasePriceGross = \round($expectedPurchasePrice * (1 + $converted['tax']['taxRate'] / 100), 2);
+            foreach ($converted['purchasePrices'] as $convertedPurchasePrice) {
+                static::assertSame($expectedPurchasePrice, $convertedPurchasePrice['net']);
+                static::assertSame($expectedPurchasePriceGross, $convertedPurchasePrice['gross']);
+            }
+        }
+    }
 }
