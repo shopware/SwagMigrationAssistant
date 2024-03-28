@@ -81,7 +81,7 @@ abstract class ProductConverter extends ShopwareConverter
         return $data['detail']['ordernumber'];
     }
 
-    public function getMediaUuids(array $converted): ?array
+    public function getMediaUuids(array $converted): array
     {
         $mediaUuids = [];
         foreach ($converted as $data) {
@@ -189,6 +189,9 @@ abstract class ProductConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $mainMapping);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     protected function convertMainProduct(array $data): ConvertStruct
     {
         $containerMapping = $this->mappingService->getOrCreateMapping(
@@ -263,10 +266,12 @@ abstract class ProductConverter extends ShopwareConverter
         }
         $this->updateMainMapping($this->migrationContext, $this->context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     /**
+     * @param array<string, mixed> $data
+     *
      * @throws MigrationException
      */
     protected function convertVariantProduct(array $data): ConvertStruct
@@ -312,6 +317,11 @@ abstract class ProductConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $mainMapping);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     private function getUuidForProduct(array &$data): array
     {
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -340,7 +350,10 @@ abstract class ProductConverter extends ShopwareConverter
     }
 
     /**
-     * @psalm-suppress PossiblyInvalidArgument
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     *
+     * @return array<string, mixed>
      */
     private function getProductData(array &$data, array $converted): array
     {
@@ -448,7 +461,7 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['detail']['shippingtime']);
         }
 
-        $this->getOptions($converted, $data);
+        $this->applyOptions($converted, $data);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -492,6 +505,10 @@ abstract class ProductConverter extends ShopwareConverter
         return $converted;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setPurchasePrices(array &$data, array &$converted): void
     {
         if ($this->currencyUuid === null) {
@@ -499,8 +516,10 @@ abstract class ProductConverter extends ShopwareConverter
         }
 
         $purchasePrice = 0.0;
+        $purchasePriceGross = 0.0;
         if (isset($data['detail']['purchaseprice'])) {
             $purchasePrice = (float) $data['detail']['purchaseprice'];
+            $purchasePriceGross = \round($purchasePrice * (1 + $converted['tax']['taxRate'] / 100), $this->context->getRounding()->getDecimals());
         }
         unset($data['detail']['purchaseprice']);
 
@@ -508,7 +527,7 @@ abstract class ProductConverter extends ShopwareConverter
         if ($this->currencyUuid !== Defaults::CURRENCY) {
             $price[] = [
                 'currencyId' => Defaults::CURRENCY,
-                'gross' => $purchasePrice,
+                'gross' => $purchasePriceGross,
                 'net' => $purchasePrice,
                 'linked' => true,
             ];
@@ -516,7 +535,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         $price[] = [
             'currencyId' => $this->currencyUuid,
-            'gross' => $purchasePrice,
+            'gross' => $purchasePriceGross,
             'net' => $purchasePrice,
             'linked' => true,
         ];
@@ -524,6 +543,9 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['purchasePrices'] = $price;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     private function getDeliveryTime(string $shippingTime): ?array
     {
         $convertedDeliveryTime = [
@@ -576,7 +598,11 @@ abstract class ProductConverter extends ShopwareConverter
         return null;
     }
 
-    private function getOptions(array &$converted, array &$data): void
+    /**
+     * @param array<string, mixed> $converted
+     * @param array<string, mixed> $data
+     */
+    private function applyOptions(array &$converted, array &$data): void
     {
         if (
             !isset($data['configuratorOptions'])
@@ -621,7 +647,7 @@ abstract class ProductConverter extends ShopwareConverter
             ];
 
             if ($shouldBeTranslated) {
-                $this->getOptionTranslation($optionElement, $option);
+                $this->applyOptionTranslation($optionElement, $option);
             }
 
             $this->convertValue($optionElement, 'name', $option, 'name');
@@ -637,6 +663,11 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['options'] = $options;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     private function getManufacturer(array $data): array
     {
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -649,7 +680,7 @@ abstract class ProductConverter extends ShopwareConverter
         $manufacturer['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $this->getManufacturerTranslation($manufacturer, $data);
+        $this->applyManufacturerTranslation($manufacturer, $data);
         $this->convertValue($manufacturer, 'link', $data, 'link');
         $this->convertValue($manufacturer, 'name', $data, 'name');
         $this->convertValue($manufacturer, 'description', $data, 'description');
@@ -665,7 +696,11 @@ abstract class ProductConverter extends ShopwareConverter
         return $manufacturer;
     }
 
-    private function getManufacturerTranslation(array &$manufacturer, array $data): void
+    /**
+     * @param array<string, mixed> $manufacturer
+     * @param array<string, mixed> $data
+     */
+    private function applyManufacturerTranslation(array &$manufacturer, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -700,6 +735,11 @@ abstract class ProductConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $taxData
+     *
+     * @return array<string, mixed>
+     */
     private function getTax(array $taxData): array
     {
         $taxRate = (float) $taxData['tax'];
@@ -723,6 +763,11 @@ abstract class ProductConverter extends ShopwareConverter
         ];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
     private function getUnit(array $data): array
     {
         $unit = [];
@@ -735,14 +780,18 @@ abstract class ProductConverter extends ShopwareConverter
         $unit['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $this->getUnitTranslation($unit, $data);
+        $this->applyUnitTranslation($unit, $data);
         $this->convertValue($unit, 'shortCode', $data, 'unit');
         $this->convertValue($unit, 'name', $data, 'description');
 
         return $unit;
     }
 
-    private function getUnitTranslation(array &$unit, array $data): void
+    /**
+     * @param array<string, mixed> $unit
+     * @param array<string, mixed> $data
+     */
+    private function applyUnitTranslation(array &$unit, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -776,6 +825,12 @@ abstract class ProductConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $esdFiles
+     * @param array<string, mixed> $converted
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private function getEsdFiles(array $esdFiles, string $oldVariantId, array $converted): array
     {
         $mediaObjects = [];
@@ -866,6 +921,12 @@ abstract class ProductConverter extends ShopwareConverter
         return $mediaObjects;
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $media
+     * @param array<string, mixed>  $converted
+     *
+     * @return array<string, mixed>
+     */
     private function getMedia(array $media, string $oldVariantId, array $converted): array
     {
         $mediaObjects = [];
@@ -921,7 +982,7 @@ abstract class ProductConverter extends ShopwareConverter
                 ]
             );
 
-            $this->getMediaTranslation($newMedia, $mediaData);
+            $this->applyMediaTranslation($newMedia, $mediaData);
             $this->convertValue($newMedia, 'title', $mediaData['media'], 'name');
             $this->convertValue($newMedia, 'alt', $mediaData, 'description');
 
@@ -946,7 +1007,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             if ($cover === null
                 || (int) $mediaData['main'] === 1
-                || ((int) $newProductMedia['position'] < $lastPosition && (int) $mediaData['main'] !== 1)
+                || ((int) $newProductMedia['position'] < $lastPosition)
             ) {
                 $cover = $newProductMedia;
                 $lastPosition = (int) $newProductMedia['position'];
@@ -959,7 +1020,11 @@ abstract class ProductConverter extends ShopwareConverter
         return ['media' => $mediaObjects, 'cover' => $cover];
     }
 
-    private function getMediaTranslation(array &$media, array $data): void
+    /**
+     * @param array<string, mixed> $media
+     * @param array<string, mixed> $data
+     */
+    private function applyMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -993,6 +1058,11 @@ abstract class ProductConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $media
+     *
+     * @return array<string, mixed>
+     */
     private function getManufacturerMedia(array $media): array
     {
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -1009,7 +1079,7 @@ abstract class ProductConverter extends ShopwareConverter
             $media['name'] = $manufacturerMedia['id'];
         }
 
-        $this->getMediaTranslation($manufacturerMedia, ['media' => $media]);
+        $this->applyMediaTranslation($manufacturerMedia, ['media' => $media]);
 
         $albumMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -1037,7 +1107,11 @@ abstract class ProductConverter extends ShopwareConverter
         return $manufacturerMedia;
     }
 
-    private function getOptionTranslation(array &$option, array $data): void
+    /**
+     * @param array<string, mixed> $option
+     * @param array<string, mixed> $data
+     */
+    private function applyOptionTranslation(array &$option, array $data): void
     {
         $localeOptionTranslation = [];
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
@@ -1074,6 +1148,11 @@ abstract class ProductConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $priceData
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private function getPrice(array $priceData, float $taxRate): array
     {
         $gross = \round((float) $priceData['price'] * (1 + $taxRate / 100), $this->context->getRounding()->getDecimals());
@@ -1123,6 +1202,12 @@ abstract class ProductConverter extends ShopwareConverter
         return $price;
     }
 
+    /**
+     * @param array<string, mixed> $priceData
+     * @param array<string, mixed> $converted
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private function getPrices(array $priceData, array $converted): array
     {
         $newData = [];
@@ -1257,6 +1342,10 @@ abstract class ProductConverter extends ShopwareConverter
         return $newData;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setGivenProductTranslation(array &$data, array &$converted): void
     {
         $originalData = $data;
@@ -1310,6 +1399,11 @@ abstract class ProductConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $categories
+     *
+     * @return list<array{id: string}>
+     */
     private function getCategoryMapping(array $categories): array
     {
         $categoryMapping = [];
@@ -1332,6 +1426,12 @@ abstract class ProductConverter extends ShopwareConverter
         return $categoryMapping;
     }
 
+    /**
+     * @param array<string, mixed> $converted
+     * @param array<int, mixed> $shops
+     *
+     * @return list<array{id: string, productId: string, salesChannelId: string, visibility: int}>
+     */
     private function getVisibilities(array $converted, array $shops): array
     {
         $visibilities = [];

@@ -5,6 +5,7 @@
 - NEXT-34526 - [BREAKING] Changed method name `getMediaTranslation` to `addMediaTranslation` in `SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter`.
 - NEXT-34526 - [BREAKING] Changed method name `getAttribute` to `addAttribute` in `\SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`.
 - NEXT-34526 - [BREAKING] Changed parameter name `blacklist` to `excludeList` of method `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes`.
+- MIG-868 - Improvement of the product migration, the gross purchase price is now calculated
 
 # 9.0.0
 - MIG-848 - Improving the assigning of products to sales channel via sub- and language shops
