@@ -8,14 +8,15 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\DataProvider\Exception\ProviderHasNoTableAccessException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderInterface;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('services-settings')]
 abstract class AbstractProvider implements ProviderInterface
@@ -25,7 +26,7 @@ abstract class AbstractProvider implements ProviderInterface
 
     public function getProvidedTable(Context $context): array
     {
-        throw new ProviderHasNoTableAccessException($this->getIdentifier());
+        throw MigrationException::providerHasNoTableAccess($this->getIdentifier());
     }
 
     protected function readTotalFromRepo(EntityRepository $repo, Context $context, ?Criteria $criteria = null): int
@@ -36,31 +37,36 @@ abstract class AbstractProvider implements ProviderInterface
 
         $criteria->addAggregation(new CountAggregation('count', 'id'));
 
-        /** @var CountResult|null $result */
         $result = $repo->aggregate($criteria, $context)->get('count');
-
-        if ($result === null) {
+        if (!$result instanceof CountResult) {
             return 0;
         }
 
         return $result->getCount();
     }
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     protected function readTableFromRepo(EntityRepository $repository, Context $context, ?Criteria $criteria = null): array
     {
         if ($criteria === null) {
             $criteria = new Criteria();
         }
 
-        return $repository->search($criteria, $context)->getEntities()->jsonSerialize();
+        return \array_values($repository->search($criteria, $context)->getEntities()->jsonSerialize());
     }
 
     /**
-     * @param entityCollection|array $result
-     *
      * cleans up the result and transforms it into an associative array
+     *
+     * @param EntityCollection|list<Entity>|array<string, mixed> $result
+     * @param list<string> $stripExactKeys
+     * @param list<string> $doNotTouchKeys
+     *
+     * @return array<array<string, mixed>>
      */
-    protected function cleanupSearchResult($result, array $stripExactKeys = [], array $doNotTouchKeys = []): array
+    protected function cleanupSearchResult(EntityCollection|array $result, array $stripExactKeys = [], array $doNotTouchKeys = []): array
     {
         if ($result instanceof EntityCollection) {
             $cleanResult = \array_values($result->getElements());
@@ -89,8 +95,6 @@ abstract class AbstractProvider implements ProviderInterface
                 foreach (self::FORBIDDEN_CONTAINS_KEYS as $forbiddenNeedle) {
                     if (\mb_strpos($key, $forbiddenNeedle)) {
                         unset($cleanResult[$key]);
-
-                        continue;
                     }
                 }
             }
@@ -110,7 +114,7 @@ abstract class AbstractProvider implements ProviderInterface
                 }
 
                 // cleanup child array
-                $cleanResult[$key] = $this->cleanupSearchResult($cleanResult[$key], $stripExactKeys, $doNotTouchKeys);
+                $cleanResult[$key] = $this->cleanupSearchResult($value, $stripExactKeys, $doNotTouchKeys);
 
                 continue;
             }
@@ -118,14 +122,15 @@ abstract class AbstractProvider implements ProviderInterface
             // remove null value keys
             if ($value === null && !\in_array($key, $doNotTouchKeys, true)) {
                 unset($cleanResult[$key]);
-
-                continue;
             }
         }
 
         return $cleanResult;
     }
 
+    /**
+     * @param array<string, mixed> $mainEntity
+     */
     protected function cleanupAssociationToOnlyContainIds(array &$mainEntity, string $associationName): void
     {
         if (!isset($mainEntity[$associationName])) {

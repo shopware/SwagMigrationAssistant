@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CategoryConverter;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductConverter;
@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class ProductConverterTest extends TestCase
@@ -264,9 +265,14 @@ class ProductConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
 
-        $this->expectException(ParentEntityForChildNotFoundException::class);
-        $this->expectExceptionMessage('Parent entity for "product: SW10007.1" child not found');
-        $this->productConverter->convert($productData[15], $context, $this->migrationContext);
+        try {
+            $this->productConverter->convert($productData[15], $context, $this->migrationContext);
+        } catch (\Exception $e) {
+            static::assertInstanceOf(MigrationException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame(MigrationException::PARENT_ENTITY_NOT_FOUND, $e->getErrorCode());
+            static::assertSame('Parent entity for "product: SW10007.1" child not found.', $e->getMessage());
+        }
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 

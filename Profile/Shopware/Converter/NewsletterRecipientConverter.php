@@ -32,7 +32,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
     protected string $runId;
 
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected array $requiredDataFieldKeys = [
         '_locale',
@@ -137,7 +137,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     protected function getSalutation(string $salutation): ?string
@@ -165,6 +165,9 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return $salutationMapping['entityUuid'];
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     protected function getSalesChannel(array $data): ?string
     {
         if (isset($data['shopId'])) {

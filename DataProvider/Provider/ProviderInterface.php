@@ -15,9 +15,15 @@ interface ProviderInterface
 {
     public function getIdentifier(): string;
 
+    /**
+     * @return array<string, mixed>
+     */
     public function getProvidedData(int $limit, int $offset, Context $context): array;
 
     public function getProvidedTotal(Context $context): int;
 
+    /**
+     * @return list<array<string, mixed>>
+     */
     public function getProvidedTable(Context $context): array;
 }

@@ -5,6 +5,8 @@
  * file that was distributed with this source code.
  */
 
+use SwagMigrationAssistant\Migration\RequestStatusStruct;
+
 return [
     'environmentInformation' => [
         'defaultShopLanguage' => 'de-DE',
@@ -80,5 +82,5 @@ return [
         'translations' => 0,
         'shoppingWorlds' => 1,
     ],
-    'requestStatus' => new \SwagMigrationAssistant\Migration\RequestStatusStruct(),
+    'requestStatus' => new RequestStatusStruct(),
 ];

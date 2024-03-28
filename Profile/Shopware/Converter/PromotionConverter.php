@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -28,10 +29,16 @@ abstract class PromotionConverter extends ShopwareConverter
 
     protected string $connectionId;
 
+    /**
+     * @var list<string>
+     */
     private array $productUuids;
 
     private string $runId;
 
+    /**
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepository
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -110,6 +117,10 @@ abstract class PromotionConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setIndividualCodes(array &$data, array &$converted): void
     {
         $converted['individualCodes'] = [];
@@ -157,6 +168,10 @@ abstract class PromotionConverter extends ShopwareConverter
         unset($data['individualCodes']);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setDiscount(array &$data, array &$converted): void
     {
         $type = PromotionDiscountEntity::TYPE_ABSOLUTE;
@@ -196,7 +211,11 @@ abstract class PromotionConverter extends ShopwareConverter
         );
     }
 
-    private function setDiscountRule(array &$data, array &$discount): void
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $discount
+     */
+    private function setDiscountRule(array $data, array &$discount): void
     {
         $rule = $this->getDiscountRule($data);
 
@@ -207,7 +226,12 @@ abstract class PromotionConverter extends ShopwareConverter
         }
     }
 
-    private function getDiscountRule(array &$data): ?array
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>|null
+     */
+    private function getDiscountRule(array $data): ?array
     {
         $promotionRuleMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -254,7 +278,7 @@ abstract class PromotionConverter extends ShopwareConverter
 
                 [
                     'id' => $orConditionContainerMapping['entityUuid'],
-                    'type' => (new orRule())->getName(),
+                    'type' => (new OrRule())->getName(),
                     'parentId' => $orContainerMapping['entityUuid'],
                     'value' => [],
                 ],
@@ -323,6 +347,9 @@ abstract class PromotionConverter extends ShopwareConverter
         return $rule;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function setProductNumbers(array &$data): void
     {
         if (!isset($data['restrictarticles'])) {
@@ -361,6 +388,10 @@ abstract class PromotionConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setCartRule(array &$data, array &$converted): void
     {
         if (empty($this->productUuids) && !isset($data['bindtosupplier']) && !isset($data['minimumcharge'])) {
@@ -513,6 +544,10 @@ abstract class PromotionConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setSalesChannel(array &$data, array &$converted): void
     {
         if (isset($data['subshopID'])) {
@@ -576,6 +611,10 @@ abstract class PromotionConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     private function setCustomerRule(array &$data, array &$converted): void
     {
         if (!isset($data['customergroup'])) {
@@ -677,7 +716,11 @@ abstract class PromotionConverter extends ShopwareConverter
         unset($data['customergroup']);
     }
 
-    private function setShippingDiscount(array &$data, array &$converted): void
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
+    private function setShippingDiscount(array $data, array &$converted): void
     {
         if (!isset($data['shippingfree']) || (int) $data['shippingfree'] === 0) {
             return;

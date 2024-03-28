@@ -33,9 +33,6 @@ abstract class TranslationConverter extends ShopwareConverter
 
     protected string $runId = '';
 
-    /**
-     * @param array<string, mixed> $data
-     */
     public function convert(
         array $data,
         Context $context,
@@ -160,7 +157,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     break;
             }
 
-            $this->getAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -239,7 +236,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         $productTranslation = [];
         foreach ($objectData as $key => $value) {
-            $this->getAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -282,7 +279,7 @@ abstract class TranslationConverter extends ShopwareConverter
     /**
      * @param array<string, mixed> $data
      */
-    protected function createManufacturerProductTranslation(array &$data): ConvertStruct
+    protected function createManufacturerProductTranslation(array $data): ConvertStruct
     {
         $sourceData = $data;
         $manufacturer = [];
@@ -332,7 +329,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 $this->convertValue($manufacturerTranslation, 'description', $objectData, 'description');
             }
 
-            $this->getAttribute(DefaultEntities::PRODUCT_MANUFACTURER, $key, $value, $manufacturerTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PRODUCT_MANUFACTURER, $key, $value, $manufacturerTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -421,7 +418,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     break;
             }
 
-            $this->getAttribute(DefaultEntities::UNIT, $key, $value, $unitTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::UNIT, $key, $value, $unitTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -513,7 +510,7 @@ abstract class TranslationConverter extends ShopwareConverter
             if ($key === 'description') {
                 $this->convertValue($categoryTranslation, 'name', $objectData, $key);
             }
-            $this->getAttribute(DefaultEntities::CATEGORY, $key, $value, $categoryTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::CATEGORY, $key, $value, $categoryTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -593,7 +590,7 @@ abstract class TranslationConverter extends ShopwareConverter
             if ($key === 'position') {
                 $this->convertValue($propertyGroupOptionTranslation, 'position', $objectData, $key, self::TYPE_INTEGER);
             }
-            $this->getAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyGroupOptionTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyGroupOptionTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -676,7 +673,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 $this->convertValue($propertyGroupTranslation, 'description', $objectData, $key);
             }
 
-            $this->getAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyGroupTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyGroupTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -754,7 +751,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 $this->convertValue($propertyValueTranslation, 'name', $objectData, $key);
             }
 
-            $this->getAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyValueTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PROPERTY_GROUP_OPTION, $key, $value, $propertyValueTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -833,7 +830,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 $this->convertValue($propertyOptionTranslation, 'optionName', $objectData, $key);
             }
 
-            $this->getAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyOptionTranslation, $objectData);
+            $this->addAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyOptionTranslation, $objectData);
         }
 
         if (empty($objectData)) {
@@ -865,7 +862,7 @@ abstract class TranslationConverter extends ShopwareConverter
      * @param array<string, mixed> $translation
      * @param array<string, mixed> $objectData
      */
-    protected function getAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
+    protected function addAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
         $connection = $this->migrationContext->getConnection();
 

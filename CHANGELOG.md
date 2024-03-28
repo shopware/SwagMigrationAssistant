@@ -1,3 +1,11 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+- NEXT-34526 - [BREAKING] Added native type to `result` parameter of `SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider::cleanupSearchResult` method.
+- NEXT-34526 - [BREAKING] Removed `DataProvider/Exception/ProviderHasNoTableAccessException.php`, use `SwagMigrationAssistant\Exception\MigrationException::providerHasNoTableAccess` instead.
+- NEXT-34526 - [BREAKING] Removed `Profile/Shopware/Exception/ParentEntityForChildNotFoundException.php`, use `SwagMigrationAssistant\Exception\MigrationException::parentEntityForChildNotFound` instead.
+- NEXT-34526 - [BREAKING] Changed method name `getMediaTranslation` to `addMediaTranslation` in `SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter`.
+- NEXT-34526 - [BREAKING] Changed method name `getAttribute` to `addAttribute` in `\SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`.
+- NEXT-34526 - [BREAKING] Changed parameter name `blacklist` to `excludeList` of method `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes`.
+
 # 9.0.0
 - MIG-848 - Improving the assigning of products to sales channel via sub- and language shops
 - MIG-920 - Changed supported Shopware 6 version to 6.6 and made adjustments to the profiles

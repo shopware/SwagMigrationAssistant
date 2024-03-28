@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Test\Mock\DataProvider;
 
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Tax\TaxCollection;
 use SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider;
 
 #[Package('services-settings')]
@@ -30,6 +32,12 @@ class DummyDataProvider extends AbstractProvider
         return 0;
     }
 
+    /**
+     * @param TaxCollection|CategoryCollection $collection
+     * @param list<string> $writeProtectedFieldKeys
+     *
+     * @return array<array<string, mixed>>
+     */
     public function cleanupProvidedData(EntityCollection $collection, array $writeProtectedFieldKeys = []): array
     {
         return $this->cleanupSearchResult($collection, $writeProtectedFieldKeys);

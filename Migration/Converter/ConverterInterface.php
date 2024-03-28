@@ -21,16 +21,24 @@ interface ConverterInterface
 
     /**
      * Get the identifier of the source data which is only known to converter
+     *
+     * @param array<string, mixed> $data
      */
     public function getSourceIdentifier(array $data): string;
 
     /**
      * Gets the contained media uuids from converted entity data.
+     *
+     * @param array<string, mixed> $converted
+     *
+     * @return list<string>
      */
     public function getMediaUuids(array $converted): ?array;
 
     /**
      * Converts the given data into the internal structure
+     *
+     * @param array<string, mixed> $data
      */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct;
 

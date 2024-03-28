@@ -54,6 +54,9 @@ class ShippingMethodConverter extends ShopwareMediaConverter
         return $mediaIds;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
@@ -102,6 +105,9 @@ class ShippingMethodConverter extends ShopwareMediaConverter
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<string, mixed> $converted
+     */
     private function updateTechnicalNameIfNecessary(array &$converted): void
     {
         if (!$this->hasTechnicalNameColumn()) {
@@ -116,7 +122,7 @@ class ShippingMethodConverter extends ShopwareMediaConverter
             return;
         }
 
-        $converted['technicalName'] = $converted['technicalName'] . '_migrated';
+        $converted['technicalName'] .= '_migrated';
     }
 
     private function hasTechnicalNameColumn(): bool

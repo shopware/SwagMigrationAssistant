@@ -83,7 +83,7 @@ class MigrateDataCommand extends Command
         $this->output = $output;
         $this->checkOptions($input);
 
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
         /** @var GeneralSettingEntity|null $generalSetting */
         $generalSetting = $this->generalSettingRepo->search(new Criteria(), $context)->first();
         if ($generalSetting === null) {

@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -18,7 +19,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Exception\ParentEntityForChildNotFoundException;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryDataSet;
 
 #[Package('services-settings')]
 abstract class CategoryConverter extends ShopwareConverter
@@ -58,7 +59,7 @@ abstract class CategoryConverter extends ShopwareConverter
     }
 
     /**
-     * @throws ParentEntityForChildNotFoundException
+     * @throws MigrationException
      */
     public function convert(
         array $data,
@@ -106,12 +107,12 @@ abstract class CategoryConverter extends ShopwareConverter
             );
 
             if ($parentMapping === null) {
-                throw new ParentEntityForChildNotFoundException(DefaultEntities::CATEGORY, $this->oldCategoryId);
+                throw MigrationException::parentEntityForChildNotFound(DefaultEntities::CATEGORY, $this->oldCategoryId);
             }
             $this->mappingIds[] = $parentMapping['id'];
             $converted['parentId'] = $parentMapping['entityUuid'];
             unset($parentMapping);
-            // get last root category as previous sibling
+        // get last root category as previous sibling
         } elseif (!isset($data['previousSiblingId'])) {
             $previousSiblingUuid = $this->mappingService->getLowestRootCategoryUuid($context);
 
@@ -174,7 +175,13 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], $migrationContext->getDataSet()::getEntity(), $this->connectionName, ['id', 'categoryID'], $this->context);
+            $converted['customFields'] = $this->getAttributes(
+                $data['attributes'],
+                $this->getDataSetEntity($migrationContext) ?? CategoryDataSet::getEntity(),
+                $this->connectionName,
+                ['id', 'categoryID'],
+                $this->context
+            );
         }
         unset($data['attributes']);
 
@@ -215,9 +222,13 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     protected function setGivenCategoryTranslation(array &$data, array &$converted): void
     {
         $originalData = $data;
@@ -266,6 +277,11 @@ abstract class CategoryConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $media
+     *
+     * @return array<string, mixed>
+     */
     protected function getCategoryMedia(array $media): array
     {
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -294,7 +310,7 @@ abstract class CategoryConverter extends ShopwareConverter
             ]
         );
 
-        $this->getMediaTranslation($categoryMedia, ['media' => $media]);
+        $this->addMediaTranslation($categoryMedia, ['media' => $media]);
         $this->convertValue($categoryMedia, 'title', $media, 'name');
         $this->convertValue($categoryMedia, 'alt', $media, 'description');
 
@@ -313,7 +329,11 @@ abstract class CategoryConverter extends ShopwareConverter
         return $categoryMedia;
     }
 
-    protected function getMediaTranslation(array &$media, array $data): void
+    /**
+     * @param array<string, mixed> $media
+     * @param array<string, mixed> $data
+     */
+    protected function addMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {

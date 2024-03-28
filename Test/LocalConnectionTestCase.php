@@ -40,7 +40,7 @@ abstract class LocalConnectionTestCase extends TestCase
         $this->getExternalConnection()->rollBack();
     }
 
-    #[before]
+    #[Before]
     public function before(): void
     {
         $dbUrlParts = \parse_url($_SERVER['DATABASE_URL'] ?? '') ?: [];

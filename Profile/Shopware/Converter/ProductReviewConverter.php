@@ -19,16 +19,12 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 abstract class ProductReviewConverter extends ShopwareConverter
 {
     /**
-     * @var string[]
+     * @var list<string>
      */
     protected array $requiredDataFieldKeys = [
         '_locale',
         'articleID',
     ];
-
-    private string $connectionId;
-
-    private string $mainLocale;
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
@@ -46,18 +42,18 @@ abstract class ProductReviewConverter extends ShopwareConverter
         }
         $this->generateChecksum($data);
         $originalData = $data;
-        $this->mainLocale = $data['_locale'];
+        $mainLocale = $data['_locale'];
         unset($data['_locale']);
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
+        $connectionId = '';
         if ($connection !== null) {
-            $this->connectionId = $connection->getId();
+            $connectionId = $connection->getId();
         }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
+            $connectionId,
             DefaultEntities::PRODUCT_REVIEW,
             $data['id'],
             $context,
@@ -67,7 +63,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
-            $this->connectionId,
+            $connectionId,
             DefaultEntities::PRODUCT_MAIN,
             $data['articleID'],
             $context
@@ -75,7 +71,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $mapping = $this->mappingService->getMapping(
-                $this->connectionId,
+                $connectionId,
                 DefaultEntities::PRODUCT_CONTAINER,
                 $data['articleID'],
                 $context
@@ -100,7 +96,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         if (isset($data['email'])) {
             $mapping = $this->mappingService->getMapping(
-                $this->connectionId,
+                $connectionId,
                 DefaultEntities::CUSTOMER,
                 $data['email'],
                 $context
@@ -116,7 +112,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         $shopId = $data['shop_id'] === null ? $data['mainShopId'] : $data['shop_id'];
         $mapping = $this->mappingService->getMapping(
-            $this->connectionId,
+            $connectionId,
             DefaultEntities::SALES_CHANNEL,
             $shopId,
             $context
@@ -139,8 +135,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
         unset($data['shop_id'], $data['mainShopId']);
 
         $converted['languageId'] = $this->mappingService->getLanguageUuid(
-            $this->connectionId,
-            $this->mainLocale,
+            $connectionId,
+            $mainLocale,
             $context
         );
 
@@ -149,7 +145,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
                     DefaultEntities::LANGUAGE,
-                    $this->mainLocale,
+                    $mainLocale,
                     DefaultEntities::PRODUCT_REVIEW
                 )
             );
@@ -179,6 +175,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $resultData = null;
         }
 
-        return new ConvertStruct($converted, $resultData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $resultData, $this->mainMapping['id'] ?? null);
     }
 }
