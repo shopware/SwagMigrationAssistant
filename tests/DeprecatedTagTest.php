@@ -19,8 +19,8 @@ class DeprecatedTagTest extends TestCase
      * white list file path segments for ignored paths
      */
     private array $whiteList = [
-        'Test/',
-        'Resources/public/',
+        'tests/',
+        'src/Resources/public/',
         'var/',
         'vendor/',
     ];

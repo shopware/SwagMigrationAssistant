@@ -6,6 +6,7 @@
 - NEXT-34526 - [BREAKING] In der Klasse `SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter` wurde der Methodenname `getAttribute` in `addAttribute` geändert.
 - NEXT-34526 - [BREAKING] Der Parametername `blacklist` wurde in `excludeList` in der Methode `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes` geändert.
 - MIG-868 - Verbesserung der Produkt-Migration, der Brutto-Einkaufspreis wird jetzt berechnet
+- MIG-966 - Die Quelldateien wurden in das `src`-Verzeichnis verschoben und das `Test`-Verzeichnis in `tests` umbenannt, ohne Namespaces zu brechen. Damit wurde ein Fehler in unserem Deployment-Prozess behoben, um das Plugin korrekt zu bauen.
 
 # 9.0.0
 - MIG-848 - Verbesserung der Zuordnung von Produkten zu Verkaufskanälen über Sub- und Sprachshops

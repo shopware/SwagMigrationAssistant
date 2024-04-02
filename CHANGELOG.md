@@ -6,6 +6,7 @@
 - NEXT-34526 - [BREAKING] Changed method name `getAttribute` to `addAttribute` in `\SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`.
 - NEXT-34526 - [BREAKING] Changed parameter name `blacklist` to `excludeList` of method `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes`.
 - MIG-868 - Improvement of the product migration, the gross purchase price is now calculated
+- MIG-966 - Moved the source files into the `src` directory and renamed the `Test` directory to `tests` without breaking namespaces. This fixed a bug in our deployment process to properly build the plugin.
 
 # 9.0.0
 - MIG-848 - Improving the assigning of products to sales channel via sub- and language shops

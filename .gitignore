@@ -3,9 +3,10 @@ coverage/
 .phpunit.cache
 .phpunit.result.cache
 vendor
+node_modules
 phpstan.neon
 *.hot-update.js
-Test/testData
+tests/testData
 /var/
 composer.lock
 src/Resources/public/administration/

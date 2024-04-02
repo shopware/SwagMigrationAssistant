@@ -14,7 +14,7 @@
     },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
-        "plugin-icon": "Resources/config/plugin.png",
+        "plugin-icon": "src/Resources/config/plugin.png",
         "copyright": "(c) by shopware AG",
         "label": {
             "de-DE": "Migrations-Assistent",
@@ -40,23 +40,29 @@
             "@phpunit"
         ],
         "ecs": [
-            "../../../vendor/bin/ecs check --config ../../../ecs.php Command Controller Core DataProvider DependencyInjection Exception Migration Profile Resources Test",
+            "../../../vendor/bin/ecs check --config ../../../ecs.php src tests",
             "../../../vendor/bin/ecs check --config ecs.php"
         ],
         "ecs-fix": [
-            "../../../vendor/bin/ecs check --config ../../../ecs.php --fix Command Controller Core DataProvider DependencyInjection Exception Migration Profile Resources Test",
+            "../../../vendor/bin/ecs check --config ../../../ecs.php --fix src tests",
             "../../../vendor/bin/ecs check --config ecs.php --fix"
         ],
         "phpunit": "../../../vendor/bin/phpunit",
         "phpstan": [
-            "@php Test/TestBootstrap.php",
-            "../../../vendor/bin/phpstan analyze ."
+            "php ../../../src/Core/DevOps/StaticAnalyze/phpstan-bootstrap.php",
+            "php bin/phpstan-config-generator.php",
+            "../../../vendor/bin/phpstan analyze"
         ],
         "install5db": "./bin/install-5-test-data.sh"
     },
     "autoload": {
         "psr-4": {
-            "SwagMigrationAssistant\\": ""
+            "SwagMigrationAssistant\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "SwagMigrationAssistant\\Test\\": "tests/"
         }
     },
     "config": {
