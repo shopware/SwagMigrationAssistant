@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CrossSellingDataSet;
@@ -169,6 +170,62 @@ class CrossSellingConverterTest extends TestCase
         static::assertCount(1, $logs);
         static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT', $logs[0]['code']);
         static::assertSame('80', $logs[0]['parameters']['sourceId']);
+    }
+
+    public function testConvertCreatesAdditionalMappingForTypeAndArticleId(): void
+    {
+        $crossSellingData = require __DIR__ . '/../../../_fixtures/cross_selling_data.php';
+
+        $context = Context::createDefaultContext();
+        $checksum = \md5(\serialize($crossSellingData[1]));
+        $connectionId = $this->connection->getId();
+
+        $mappingServiceMock = $this->createMock(MappingService::class);
+        $mappingServiceMock->method('getMapping')->willReturn($this->products[0]);
+        $mappingServiceMock->expects(static::once())->method('updateMapping');
+        $mappingServiceMock->expects(static::exactly(3))
+            ->method('getOrCreateMapping')
+            ->willReturnMap([
+                [
+                    $connectionId,
+                    DefaultEntities::CROSS_SELLING,
+                    '89_product_cross_selling_accessory',
+                    $context,
+                    $checksum,
+                    null,
+                    null,
+                    null,
+                    \array_merge($this->products[0], ['oldIdentifier' => '117']),
+                ], [
+                    $connectionId,
+                    'product_cross_selling_accessory',
+                    '117',
+                    $context,
+                    $checksum,
+                    null,
+                    null,
+                    null,
+                    $this->products[0],
+                ], [
+                    $connectionId,
+                    'product_cross_selling_accessory_relation',
+                    '117_114',
+                    $context,
+                    null,
+                    null,
+                    null,
+                    null,
+                    $this->products[0],
+                ],
+            ]);
+
+        $crossSellingConverter = new Shopware55CrossSellingConverter($mappingServiceMock, $this->loggingService);
+        $result = $crossSellingConverter->convert($crossSellingData[1], $context, $this->migrationContext);
+
+        $converted = $result->getConverted();
+        static::assertNotEmpty($converted);
+        static::assertArrayHasKey('assignedProducts', $converted);
+        static::assertNotEmpty($converted['assignedProducts']);
     }
 
     private function createMapping(): void
