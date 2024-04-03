@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+# 10.0.0
 - NEXT-34526 - [BREAKING] Added native type to `result` parameter of `SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider::cleanupSearchResult` method.
 - NEXT-34526 - [BREAKING] Removed `DataProvider/Exception/ProviderHasNoTableAccessException.php`, use `SwagMigrationAssistant\Exception\MigrationException::providerHasNoTableAccess` instead.
 - NEXT-34526 - [BREAKING] Removed `Profile/Shopware/Exception/ParentEntityForChildNotFoundException.php`, use `SwagMigrationAssistant\Exception\MigrationException::parentEntityForChildNotFound` instead.
@@ -6,7 +6,7 @@
 - NEXT-34526 - [BREAKING] Changed method name `getAttribute` to `addAttribute` in `\SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter`.
 - NEXT-34526 - [BREAKING] Changed parameter name `blacklist` to `excludeList` of method `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes`.
 - MIG-868 - Improvement of the product migration, the gross purchase price is now calculated
-- MIG-966 - Moved the source files into the `src` directory and renamed the `Test` directory to `tests` without breaking namespaces. This fixed a bug in our deployment process to properly build the plugin.
+- MIG-966 - [BREAKING] Moved the source files into the `src` directory and renamed the `Test` directory to `tests` without breaking namespaces, but you may need to reactivate or reinstall the plugin. This fixed a bug in our deployment process to properly build the plugin.
 - MIG-930 - Improved cross-selling migration, cross-selling no longer overwrites existing cross-selling if there are no changes.
 
 # 9.0.0
