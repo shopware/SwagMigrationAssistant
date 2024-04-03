@@ -45,6 +45,17 @@ parameters:
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
 
+        # ToDo: fix platform deprecations for v6.7.0.0
+        - message: """
+                #^Call to deprecated method getName\\(\\) of class Shopware\\\\Core\\\\System\\\\StateMachine\\\\Aggregation\\\\StateMachineState\\\\StateMachineStateEntity\\:
+                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Will also return null
+                return type will be \\?string in v6\\.7\\.0\\.0$#
+          """
+          paths:
+              - src/Profile/Shopware/Premapping/OrderDeliveryStateReader.php
+              - src/Profile/Shopware/Premapping/OrderStateReader.php
+              - src/Profile/Shopware/Premapping/TransactionStateReader.php
+
 services:
     -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
         class: Symplify\PHPStanRules\Rules\NoReturnSetterMethodRule
