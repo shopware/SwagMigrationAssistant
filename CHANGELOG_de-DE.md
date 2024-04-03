@@ -7,6 +7,7 @@
 - NEXT-34526 - [BREAKING] Der Parametername `blacklist` wurde in `excludeList` in der Methode `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes` geändert.
 - MIG-868 - Verbesserung der Produkt-Migration, der Brutto-Einkaufspreis wird jetzt berechnet
 - MIG-966 - Die Quelldateien wurden in das `src`-Verzeichnis verschoben und das `Test`-Verzeichnis in `tests` umbenannt, ohne Namespaces zu brechen. Damit wurde ein Fehler in unserem Deployment-Prozess behoben, um das Plugin korrekt zu bauen.
+- MIG-930 - Verbesserung der Cross-Selling-Migration, das Cross-Selling überschreibt nicht mehr das bestehende Cross-Selling, wenn es keine Änderungen gibt.
 
 # 9.0.0
 - MIG-848 - Verbesserung der Zuordnung von Produkten zu Verkaufskanälen über Sub- und Sprachshops

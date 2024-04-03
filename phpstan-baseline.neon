@@ -1831,16 +1831,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/AttributeConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CrossSellingConverter\\:\\:getProductMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CrossSellingConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CrossSellingConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php

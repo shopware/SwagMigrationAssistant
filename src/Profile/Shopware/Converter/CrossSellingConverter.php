@@ -25,7 +25,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
     public function getSourceIdentifier(array $data): string
     {
-        return $data['id'];
+        return $data['id'] . '_' . $data['type'];
     }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
@@ -43,12 +43,21 @@ abstract class CrossSellingConverter extends ShopwareConverter
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
+            DefaultEntities::CROSS_SELLING,
+            $this->getSourceIdentifier($data),
+            $context,
+            $this->checksum
+        );
+
+        $crossSellingMapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
             $data['type'],
             $data['articleID'],
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+
+        $converted['id'] = $crossSellingMapping['entityUuid'];
 
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
         if ($sourceProductMapping === null) {
@@ -114,9 +123,12 @@ abstract class CrossSellingConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     private function getProductMapping(string $identifier): ?array
     {
         $productMapping = $this->mappingService->getMapping(
