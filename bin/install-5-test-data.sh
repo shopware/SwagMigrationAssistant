@@ -1,12 +1,12 @@
 #! /bin/bash
 
-dirname='./Test/testData'
+dirname='./tests/testData'
 
 # check if test data already exists
 if [ -d "$dirname" ]; then
     echo "Test data already exists. Skipping download."
 else
-    git clone git@gitlab.shopware.com:shopware/6/services/testdata.git Test/testData
+    git clone git@gitlab.shopware.com:shopware/6/services/testdata.git tests/testData
 fi
 
 # find connection string in .env file
@@ -29,4 +29,4 @@ user=$(echo "${parts[1]}" | sed "s/\/\///g")
 password=$(echo "${parts[2]}" |sed 's/@.*//')
 
 # import test data
-mysql -u"$user" -p"$password" --host mysql < Test/testData/Migration/sw55.sql
+mysql -u"$user" -p"$password" --host mysql < tests/testData/Migration/sw55.sql

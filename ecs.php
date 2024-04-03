@@ -32,17 +32,8 @@ file that was distributed with this source code.',
     $ecsConfig->cacheNamespace('SwagMigrationAssistant');
 
     $ecsConfig->paths([
-        __DIR__ . '/Command',
-        __DIR__ . '/Controller',
-        __DIR__ . '/Core',
-        __DIR__ . '/DataProvider',
-        __DIR__ . '/DependencyInjection',
-        __DIR__ . '/Exception',
-        __DIR__ . '/Migration',
-        __DIR__ . '/Profile',
-        __DIR__ . '/Resources',
-        __DIR__ . '/Test',
+        __DIR__ . '/src',
+        __DIR__ . '/tests',
         __DIR__ . '/ecs.php',
-        __DIR__ . '/SwagMigrationAssistant.php',
     ]);
 };

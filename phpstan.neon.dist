@@ -1,8 +1,8 @@
 includes:
     - phpstan-baseline.neon
-    - ../../../vendor/phpstan/phpstan/conf/bleedingEdge.neon
-    - ../../../src/Core/DevOps/StaticAnalyze/PHPStan/extension.neon
-    - ../../../src/Core/DevOps/StaticAnalyze/PHPStan/rules.neon
+    - %ShopwareRoot%/vendor/phpstan/phpstan/conf/bleedingEdge.neon
+    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/extension.neon
+    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/rules.neon
 
 parameters:
     phpVersion: 80100
@@ -13,39 +13,48 @@ parameters:
     checkInternalClassCaseSensitivity: true
     checkUninitializedProperties: true
     paths:
-        - .
-    bootstrapFiles:
-        - Test/TestBootstrap.php
-    symfony:
-        constantHassers: false
-        containerXmlPath: '../../../var/cache/swag_migration_assistant_phpstan/Shopware_Core_DevOps_StaticAnalyze_StaticAnalyzeKernelSwag_migration_assistant_phpstanDebugContainer.xml'
-        consoleApplicationLoader: ../../../src/Core/DevOps/StaticAnalyze/console-application.php
+        - src
+        - tests
     excludePaths:
-        - vendor
-        - var
-        - ecs.php
+        - src/Resources
+    symfony:
+        constant_hassers: false
+        # the placeholder "%ShopwareHashedCacheDir%" will be replaced on execution by bin/phpstan-config-generator.php script
+        container_xml_path: '../../..%ShopwareHashedCacheDir%/%ShopwareKernelClass%DevDebugContainer.xml'
+        consoleApplicationLoader: %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/console-application.php
 
     ignoreErrors:
         - message: '#Service ".*" is private#'
           paths:
-              - Test/**/*Test.php
+              - tests/**/*Test.php
 
         - # PHPStan does not recognize correctly that the properties are initialized in a private method called in the setUp method
             message: '#Access to an uninitialized property SwagMigrationAssistant\\Test.*(mappingService|connection|runId)#'
             paths:
-                - Test/Migration/Controller/StatusControllerTest.php
-                - Test/Migration/Services/MigrationDataWriterTest.php
-                - Test/Migration/Services/MigrationProgressServiceTest.php
-                - Test/Profile/Shopware/Gateway/Local/
+                - tests/Migration/Controller/StatusControllerTest.php
+                - tests/Migration/Services/MigrationDataWriterTest.php
+                - tests/Migration/Services/MigrationProgressServiceTest.php
+                - tests/Profile/Shopware/Gateway/Local/
 
         -  # The properties are never uninitialized. They are assigned in the convert method.
             message: '#Class SwagMigrationAssistant\\Profile\\Shopware\\Converter\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
             paths:
-                - Profile/Shopware/Converter
+                - src/Profile/Shopware/Converter
 
         - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
-            path: DataProvider/Provider/Data/AbstractProvider.php
+            path: src/DataProvider/Provider/Data/AbstractProvider.php
+
+        # ToDo: fix platform deprecations for v6.7.0.0
+        - message: """
+                #^Call to deprecated method getName\\(\\) of class Shopware\\\\Core\\\\System\\\\StateMachine\\\\Aggregation\\\\StateMachineState\\\\StateMachineStateEntity\\:
+                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Will also return null
+                return type will be \\?string in v6\\.7\\.0\\.0$#
+          """
+          paths:
+              - src/Profile/Shopware/Premapping/OrderDeliveryStateReader.php
+              - src/Profile/Shopware/Premapping/OrderStateReader.php
+              - src/Profile/Shopware/Premapping/TransactionStateReader.php
 
 services:
     -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
