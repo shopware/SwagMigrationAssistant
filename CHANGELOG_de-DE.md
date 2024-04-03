@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+# 10.0.0
 - NEXT-34526 - [BREAKING] Der Parameter `result` der Methode `SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider::cleanupSearchResult` wurde um den nativen Typ erweitert.
 - NEXT-34526 - [BREAKING] Die Datei `DataProvider/Exception/ProviderHasNoTableAccessException.php` wurde entfernt, stattdessen `SwagMigrationAssistant\Exception\MigrationException::providerHasNoTableAccess` verwenden.
 - NEXT-34526 - [BREAKING] Die Datei `Profile/Shopware/Exception/ParentEntityForChildNotFoundException.php` wurde entfernt, stattdessen `SwagMigrationAssistant\Exception\MigrationException::parentEntityForChildNotFound` verwenden.
@@ -6,7 +6,7 @@
 - NEXT-34526 - [BREAKING] In der Klasse `SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter` wurde der Methodenname `getAttribute` in `addAttribute` geändert.
 - NEXT-34526 - [BREAKING] Der Parametername `blacklist` wurde in `excludeList` in der Methode `SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter::getAttributes` geändert.
 - MIG-868 - Verbesserung der Produkt-Migration, der Brutto-Einkaufspreis wird jetzt berechnet
-- MIG-966 - Die Quelldateien wurden in das `src`-Verzeichnis verschoben und das `Test`-Verzeichnis in `tests` umbenannt, ohne Namespaces zu brechen. Damit wurde ein Fehler in unserem Deployment-Prozess behoben, um das Plugin korrekt zu bauen.
+- MIG-966 - [BREAKING] Die Quelldateien wurden in das `src`-Verzeichnis verschoben und das `Test`-Verzeichnis in `tests` umbenannt, ohne Namespaces zu brechen, jedoch muss das Plugin evtl. neu aktiviert bzw. installiert werden. Damit wurde ein Fehler in unserem Deployment-Prozess behoben, um das Plugin korrekt zu bauen.
 - MIG-930 - Verbesserung der Cross-Selling-Migration, das Cross-Selling überschreibt nicht mehr das bestehende Cross-Selling, wenn es keine Änderungen gibt.
 
 # 9.0.0
