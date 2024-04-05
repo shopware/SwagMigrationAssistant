@@ -1,6 +1,8 @@
 variables:
   PLUGIN_NAME: SwagMigrationAssistant
-  PLATFORM_BRANCH: 'trunk'
+  PLATFORM_MIN_VERSION: '6.6.0.0'
+  PLATFORM_DEFAULT_VERSION: 'trunk'
+  PLATFORM_BRANCH: $PLATFORM_DEFAULT_VERSION
   DEV_IMAGE: shopware/development:8.2-composer-2
 
 include:
@@ -12,10 +14,10 @@ Danger:
   stage: test
   image:
     name: ghcr.io/shyim/danger-php:latest
-    entrypoint: [""]
+    entrypoint: [ "" ]
   rules:
     - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
-  before_script: []
+  before_script: [ ]
   script:
     - danger ci
 
@@ -39,6 +41,9 @@ phpunit:
       --colors=never
       --coverage-cobertura ${CI_PROJECT_DIR}/cobertura.xml
       --coverage-text #| grep -v -E '^Shopware\\|^  Methods:' # do not output covered files lines
+  parallel:
+    matrix:
+      - PLATFORM_BRANCH: [ $PLATFORM_MIN_VERSION, $PLATFORM_DEFAULT_VERSION ]
 
 phpstan:
   script:
