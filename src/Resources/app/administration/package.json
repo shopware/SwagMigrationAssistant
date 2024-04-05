@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "description": "Migrate shop data to Shopware 6",
   "main": "index.js",
-  "author": "Shopware Services",
+  "author": "shopware AG",
   "license": "MIT"
 }
