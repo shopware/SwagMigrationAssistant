@@ -1,38 +1,46 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd" bootstrap="tests/TestBootstrap.php" executionOrder="random" cacheDirectory=".phpunit.cache">
-  <coverage/>
-  <php>
-    <ini name="error_reporting" value="-1"/>
-    <env name="APP_ENV" value="test"/>
-    <env name="APP_DEBUG" value="1"/>
-    <env name="APP_SECRET" value="s$cretf0rt3st"/>
-    <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
-  </php>
-  <testsuites>
-    <testsuite name="SwagMigrationAssistant Testsuite">
-      <directory suffix="MigrationServicesTrait.php">tests</directory>
-      <directory>tests</directory>
-      <exclude>tests/Profile/Shopware6/Converter/ShopwareConverterTest.php</exclude>
-      <exclude>tests/MigrationServicesTrait.php</exclude>
-    </testsuite>
-  </testsuites>
-  <source>
-    <include>
-      <directory suffix=".php">./</directory>
-    </include>
-    <exclude>
-      <directory suffix=".php">./bin</directory>
-      <directory suffix=".php">./tests</directory>
-      <directory suffix=".php">./src/Profile/Shopware/Gateway/Api/Reader</directory>
-      <directory suffix=".php">./vendor</directory>
-      <directory suffix=".php">./src/Core/Migration</directory>
-      <directory suffix="Collection.php">./src/Migration</directory>
-      <directory suffix="Entity.php">./src/Migration</directory>
-      <directory suffix="Struct.php">./src/Migration</directory>
-      <directory suffix="DataSet.php">./src/Profile</directory>
-      <file>./src/Exception/NoFileSystemPermissionsException.php</file>
-      <file>./src/Migration/EnvironmentInformation.php</file>
-      <file>./src/SwagMigrationAssistant.php</file>
-    </exclude>
-  </source>
+
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
+         bootstrap="tests/TestBootstrap.php"
+         executionOrder="random"
+         cacheDirectory=".phpunit.cache">
+    <coverage/>
+
+    <php>
+        <ini name="error_reporting" value="-1"/>
+        <env name="APP_ENV" value="test"/>
+        <env name="APP_DEBUG" value="1"/>
+        <env name="APP_SECRET" value="s$cretf0rt3st"/>
+        <env name="SYMFONY_DEPRECATIONS_HELPER" value="weak"/>
+    </php>
+
+    <testsuites>
+        <testsuite name="SwagMigrationAssistant Testsuite">
+            <directory suffix="MigrationServicesTrait.php">tests</directory>
+            <directory>tests</directory>
+            <exclude>tests/Profile/Shopware6/Converter/ShopwareConverterTest.php</exclude>
+            <exclude>tests/MigrationServicesTrait.php</exclude>
+        </testsuite>
+    </testsuites>
+
+    <source>
+        <include>
+            <directory>./</directory>
+        </include>
+        <exclude>
+            <directory>./bin</directory>
+            <directory>./tests</directory>
+            <directory>./src/Profile/Shopware/Gateway/Api/Reader</directory>
+            <directory>./vendor</directory>
+            <directory>./src/Core/Migration</directory>
+            <directory suffix="Collection.php">./src/Migration</directory>
+            <directory suffix="Entity.php">./src/Migration</directory>
+            <directory suffix="Struct.php">./src/Migration</directory>
+            <directory suffix="DataSet.php">./src/Profile</directory>
+            <file>./src/Exception/NoFileSystemPermissionsException.php</file>
+            <file>./src/Migration/EnvironmentInformation.php</file>
+            <file>./src/SwagMigrationAssistant.php</file>
+        </exclude>
+    </source>
 </phpunit>

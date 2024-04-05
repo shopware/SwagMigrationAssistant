@@ -5,7 +5,6 @@ includes:
     - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/rules.neon
 
 parameters:
-    phpVersion: 80100
     level: 8
     tmpDir: var/cache/phpstan
     treatPhpDocTypesAsCertain: false
@@ -44,6 +43,10 @@ parameters:
         - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
+
+        - # Can be removed once the min SW version is 6.6.1.0
+            message: '#Method Context::createDefaultContext\(\) should not be used in CLI context. Use Context::createCLIContext\(\) instead#'
+            path: src/Command/MigrateDataCommand.php
 
         # ToDo: fix platform deprecations for v6.7.0.0
         - message: """

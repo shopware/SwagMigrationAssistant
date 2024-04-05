@@ -1,3 +1,6 @@
+# 10.0.1
+- MIG-971 - Fix compatibility with Shopware 6.6.0.x
+
 # 10.0.0
 - NEXT-34526 - [BREAKING] Added native type to `result` parameter of `SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider::cleanupSearchResult` method.
 - NEXT-34526 - [BREAKING] Removed `DataProvider/Exception/ProviderHasNoTableAccessException.php`, use `SwagMigrationAssistant\Exception\MigrationException::providerHasNoTableAccess` instead.
