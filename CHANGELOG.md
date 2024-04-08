@@ -1,3 +1,7 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-951 - Improve the language migration from Shopware 6 to Shopware 6 so the default language is no longer overwritten
+- MIG-951 - [BREAKING] Changes the access modifier of the function `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter::convertData` from public to protected
+
 # 10.0.1
 - MIG-971 - Fix compatibility with Shopware 6.6.0.x
 

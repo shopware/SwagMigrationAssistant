@@ -70,6 +70,9 @@ abstract class ShopwareConverter extends Converter
         return $convertStructResult;
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     abstract protected function convertData(array $data): ConvertStruct;
 
     protected function getMappingIdFacade(string $entityName, string $oldIdentifier): ?string
@@ -110,6 +113,9 @@ abstract class ShopwareConverter extends Converter
         return $mapping['entityUuid'];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getOrCreateMappingMainCompleteFacade(
         string $entityName,
         string $oldIdentifier,
@@ -128,6 +134,8 @@ abstract class ShopwareConverter extends Converter
 
     /**
      * Replaces every id (associationIdKey) in the specified array of entities with the right mapping dependent one.
+     *
+     * @param array<string, mixed> $associationArray
      */
     protected function updateAssociationIds(array &$associationArray, string $entity, string $associationIdKey, string $sourceEntity, bool $logMissing = true, bool $unsetMissing = false): void
     {
@@ -180,6 +188,8 @@ abstract class ShopwareConverter extends Converter
      *         ]
      *     ]
      * ]
+     *
+     * @param array<string, mixed> $converted
      */
     protected function reformatMtoNAssociation(array &$converted, string $idsKey, string $associationKey): void
     {
@@ -198,6 +208,8 @@ abstract class ShopwareConverter extends Converter
     /**
      * Removes all other keys except the ID (which may then be mapped), so no updates to the other entity occur.
      * Only supports single key entities.
+     *
+     * @param array<string, mixed> $converted
      */
     protected function updateEntityAssociation(array &$converted, string $entityKey, ?string $mappingEntity = null): void
     {
