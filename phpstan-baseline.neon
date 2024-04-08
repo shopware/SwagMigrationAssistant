@@ -516,11 +516,6 @@ parameters:
 			path: src/Migration/Data/SwagMigrationDataEntity.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionCollection extends generic class Shopware\\\\Core\\\\Framework\\\\Struct\\\\Collection but does not specify its types\\: TElement$#"
-			count: 1
-			path: src/Migration/DataSelection/DataSelectionCollection.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionRegistry\\:\\:getDataSelectionsByIds\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/DataSelection/DataSelectionRegistry.php
