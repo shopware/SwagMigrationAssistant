@@ -3931,31 +3931,6 @@ parameters:
 			path: src/Profile/Shopware56/Converter/Shopware56TranslationConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryAssociationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CategoryAssociationConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryCmsPageAssociationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CategoryCmsPageAssociationConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CategoryConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryProductStreamAssociationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CategoryProductStreamAssociationConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:processSubentities\\(\\) has parameter \\$sections with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
@@ -3964,101 +3939,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:updateTranslations\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CountryConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CountryConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CountryStateConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CountryStateConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CrossSellingConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CrossSellingConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CurrencyConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CurrencyConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomFieldSetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CustomFieldSetConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomerConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CustomerConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomerGroupConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CustomerGroupConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomerWishlistConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/CustomerWishlistConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DeliveryTimeConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/DeliveryTimeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DocumentBaseConfigConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/DocumentBaseConfigConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DocumentConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/DocumentConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DocumentInheritanceConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/DocumentInheritanceConverter.php
-
-		-
-			message: "#^Change \"convertData\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/LanguageConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\LanguageConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/LanguageConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MailTemplateConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/MailTemplateConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MediaConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/MediaConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MediaFolderConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/MediaFolderConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MediaFolderInheritanceConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/MediaFolderInheritanceConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NewsletterRecipientConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/NewsletterRecipientConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NumberRangeConverter\\:\\:__construct\\(\\) has parameter \\$numberRangeStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
@@ -4071,24 +3951,9 @@ parameters:
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NumberRangeConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\OrderConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/OrderConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\OrderConverter\\:\\:updateLineItems\\(\\) has parameter \\$lineItems with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/OrderConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PageSystemConfigConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/PageSystemConfigConverter.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter has an uninitialized property \\$sourceDefaultCurrencyUuid\\. Give it default value or assign it in the constructor\\.$#"
@@ -4101,17 +3966,7 @@ parameters:
 			path: src/Profile/Shopware6/Converter/ProductConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductConverter.php
-
-		-
 			message: "#^Change \"convertData\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductFeatureSetConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductFeatureSetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ProductFeatureSetConverter.php
 
@@ -4119,51 +3974,11 @@ parameters:
 			message: "#^Change \"convertData\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ProductManufacturerConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductManufacturerConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductManufacturerConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductReviewConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductReviewConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductSortingConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductSortingConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductStreamConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductStreamConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductStreamFilterInheritanceConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductStreamFilterInheritanceConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PromotionConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/PromotionConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/PropertyGroupConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertOption\\(\\) has parameter \\$option with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/PropertyGroupConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\RuleConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\RuleConverter\\:\\:recursiveAddChildren\\(\\) has parameter \\$parentMap with no value type specified in iterable type array\\.$#"
@@ -4186,114 +4001,9 @@ parameters:
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SalesChannelConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SalesChannelDomainConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SalesChannelDomainConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SalutationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SalutationConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SeoUrlConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SeoUrlConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SeoUrlTemplateConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SeoUrlTemplateConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$mappingService\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:getOrCreateMappingMainCompleteFacade\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:reformatMtoNAssociation\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:updateAssociationIds\\(\\) has parameter \\$associationArray with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:updateEntityAssociation\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareMediaConverter\\:\\:updateMediaAssociation\\(\\) has parameter \\$mediaArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SnippetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SnippetConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SnippetSetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SnippetSetConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SystemConfigConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/SystemConfigConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\TaxConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/TaxConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\TaxRuleConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/TaxRuleConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\UnitConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/UnitConverter.php
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
