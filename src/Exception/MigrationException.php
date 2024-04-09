@@ -17,6 +17,7 @@ class MigrationException extends HttpException
     final public const GATEWAY_READ = 'SWAG_MIGRATION__GATEWAY_READ';
     final public const PARENT_ENTITY_NOT_FOUND = 'SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND';
     final public const PROVIDER_HAS_NO_TABLE_ACCESS = 'SWAG_MIGRATION__PROVIDER_HAS_NO_TABLE_ACCESS';
+    final public const ASSOCIATION_MISSING = 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
 
     public static function gatewayRead(string $gateway): self
     {
@@ -45,6 +46,16 @@ class MigrationException extends HttpException
             self::PROVIDER_HAS_NO_TABLE_ACCESS,
             'Data provider "{{ identifier }}" has no direct table access found.',
             ['identifier' => $identifier]
+        );
+    }
+
+    public static function associationMissing(string $entity, string $missingEntity): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::ASSOCIATION_MISSING,
+            'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
+            ['missingEntity' => $missingEntity, 'entity' => $entity]
         );
     }
 }

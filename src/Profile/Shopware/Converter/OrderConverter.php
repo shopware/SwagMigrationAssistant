@@ -23,6 +23,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -83,6 +85,9 @@ abstract class OrderConverter extends ShopwareConverter
 
     protected int $paymentStatusId;
 
+    /**
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepository
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -163,10 +168,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($customerMapping === null) {
-            throw new AssociationEntityRequiredMissingException(
-                DefaultEntities::ORDER,
-                DefaultEntities::CUSTOMER
-            );
+            throw MigrationException::associationMissing(DefaultEntities::ORDER, DefaultEntities::CUSTOMER);
         }
 
         $orderCustomerMapping = $this->mappingService->getOrCreateMapping(
@@ -249,11 +251,17 @@ abstract class OrderConverter extends ShopwareConverter
         $converted['stateId'] = $stateMapping['entityUuid'];
         $this->mappingIds[] = $stateMapping['id'];
 
+        $calculatedTax = new CalculatedTax(
+            (float) $data['invoice_shipping'] - $data['invoice_shipping_net'],
+            (float) $data['invoice_shipping_tax_rate'],
+            (float) $data['invoice_shipping']
+        );
+
         $shippingCosts = new CalculatedPrice(
             (float) $data['invoice_shipping'],
             (float) $data['invoice_shipping'],
-            new CalculatedTaxCollection(),
-            new TaxRuleCollection()
+            new CalculatedTaxCollection([$calculatedTax]),
+            new TaxRuleCollection([new TaxRule((float) $data['invoice_shipping_tax_rate'])])
         );
 
         if (isset($data['details'])) {
@@ -297,7 +305,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['orderstatus']
         );
 
-        $this->getTransactions($data, $converted);
+        $this->applyTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
         $billingAddress = $this->getAddress($data['billingaddress']);
@@ -386,10 +394,14 @@ abstract class OrderConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
-    protected function getTransactions(array $data, array &$converted): void
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
+    protected function applyTransactions(array $data, array &$converted): void
     {
         $converted['transactions'] = [];
         if (!isset($converted['lineItems'])) {
@@ -451,6 +463,9 @@ abstract class OrderConverter extends ShopwareConverter
         $converted['transactions'] = $transactions;
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     */
     protected function getPaymentMethod(array $originalData): ?string
     {
         $paymentMethodMapping = $this->mappingService->getMapping(
@@ -477,6 +492,11 @@ abstract class OrderConverter extends ShopwareConverter
         return $paymentMethodMapping['entityUuid'];
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     *
+     * @return array<string, mixed>
+     */
     protected function getAddress(array $originalData, string $type = self::BILLING_ADDRESS): array
     {
         $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
@@ -566,6 +586,11 @@ abstract class OrderConverter extends ShopwareConverter
         return $address;
     }
 
+    /**
+     * @param array<string, mixed> $oldCountryData
+     *
+     * @return array<string, mixed>
+     */
     protected function getCountry(array $oldCountryData): array
     {
         $country = [];
@@ -590,7 +615,7 @@ abstract class OrderConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
         }
 
-        $this->getCountryTranslation($country, $oldCountryData);
+        $this->applyCountryTranslation($country, $oldCountryData);
         $this->convertValue($country, 'iso', $oldCountryData, 'countryiso');
         $this->convertValue($country, 'position', $oldCountryData, 'position', self::TYPE_INTEGER);
         $this->convertValue($country, 'taxFree', $oldCountryData, 'taxfree', self::TYPE_BOOLEAN);
@@ -605,7 +630,11 @@ abstract class OrderConverter extends ShopwareConverter
         return $country;
     }
 
-    protected function getCountryTranslation(array &$country, array $data): void
+    /**
+     * @param array<string, mixed> $country
+     * @param array<string, mixed> $data
+     */
+    protected function applyCountryTranslation(array &$country, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -639,6 +668,11 @@ abstract class OrderConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed>  $oldStateData
+     *
+     * @return array<string, mixed>
+     */
     protected function getCountryState(array $oldStateData, string $newCountryId): array
     {
         $state = [];
@@ -652,7 +686,7 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
         $state['countryId'] = $newCountryId;
 
-        $this->getCountryStateTranslation($state, $oldStateData);
+        $this->applyCountryStateTranslation($state, $oldStateData);
         $this->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
         $this->convertValue($state, 'position', $oldStateData, 'position', self::TYPE_INTEGER);
         $this->convertValue($state, 'active', $oldStateData, 'active', self::TYPE_BOOLEAN);
@@ -661,7 +695,11 @@ abstract class OrderConverter extends ShopwareConverter
         return $state;
     }
 
-    protected function getCountryStateTranslation(array &$state, array $data): void
+    /**
+     * @param array<string, mixed> $state
+     * @param array<string, mixed> $data
+     */
+    protected function applyCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -697,7 +735,10 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @psalm-suppress PossiblyInvalidArgument
+     * @param array<string, mixed>           $data
+     * @param array<string, mixed>           $converted
+     *
+     * @return array<int, array<string, mixed>>
      */
     protected function getDeliveries(array $data, array $converted, CalculatedPrice $shippingCosts): array
     {
@@ -808,6 +849,12 @@ abstract class OrderConverter extends ShopwareConverter
         return $shippingMethodMapping['entityUuid'];
     }
 
+    /**
+     * @param array<string, mixed>             $originalData
+     * @param array<string, mixed>             $converted
+     *
+     * @return array<int, array<string, mixed>>
+     */
     protected function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
     {
         $lineItems = [];
@@ -910,6 +957,9 @@ abstract class OrderConverter extends ShopwareConverter
         return $lineItems;
     }
 
+    /**
+     * @param array<string, mixed>  $originalData
+     */
     protected function getTaxRules(array $originalData, string $taxStatus): TaxRuleCollection
     {
         if ($taxStatus === CartPrice::TAX_STATE_FREE) {
@@ -926,6 +976,9 @@ abstract class OrderConverter extends ShopwareConverter
         return new TaxRuleCollection($taxRules);
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     */
     protected function getTaxStatus(array $originalData): string
     {
         $taxStatus = CartPrice::TAX_STATE_GROSS;
@@ -965,6 +1018,11 @@ abstract class OrderConverter extends ShopwareConverter
         return $salutationMapping['entityUuid'];
     }
 
+    /**
+     * @param array<string, mixed> $originalEsdItem
+     *
+     * @return array<string, mixed>|null
+     */
     private function getOrderLineItemDownload(array $originalEsdItem): ?array
     {
         $mediaMapping = $this->mappingService->getMapping(
