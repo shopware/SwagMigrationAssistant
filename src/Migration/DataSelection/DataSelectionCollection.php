@@ -11,13 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Collection;
 
 /**
- * @method void                     add(DataSelectionStruct $entity)
- * @method void                     set(string $key, DataSelectionStruct $entity)
- * @method DataSelectionStruct[]    getIterator()
- * @method DataSelectionStruct[]    getElements()
- * @method DataSelectionStruct|null get(string $key)
- * @method DataSelectionStruct|null first()
- * @method DataSelectionStruct|null last()
+ * @template-extends Collection<DataSelectionStruct>
  */
 #[Package('services-settings')]
 class DataSelectionCollection extends Collection
@@ -26,7 +20,7 @@ class DataSelectionCollection extends Collection
     {
         $this->sort(
             function (DataSelectionStruct $first, DataSelectionStruct $second) {
-                return $first->getPosition() > $second->getPosition();
+                return $first->getPosition() <=> $second->getPosition();
             }
         );
     }

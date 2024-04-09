@@ -86,21 +86,20 @@ class DataSelectionRegistryTest extends TestCase
         );
 
         $expected = [
-            0 => (new BasicSettingsDataSelection())->getData()->getId(),
-            1 => (new ProductDataSelection())->getData()->getId(),
-            2 => (new CustomerAndOrderDataSelection())->getData()->getId(),
-            3 => (new SeoUrlDataSelection())->getData()->getId(),
-            4 => (new ProductReviewDataSelection())->getData()->getId(),
-            5 => (new MediaDataSelection())->getData()->getId(),
-            6 => (new NewsletterRecipientDataSelection())->getData()->getId(),
+            (new BasicSettingsDataSelection())->getData()->getId(),
+            (new ProductDataSelection())->getData()->getId(),
+            (new CustomerAndOrderDataSelection())->getData()->getId(),
+            (new SeoUrlDataSelection())->getData()->getId(),
+            (new ProductReviewDataSelection())->getData()->getId(),
+            (new MediaDataSelection())->getData()->getId(),
+            (new NewsletterRecipientDataSelection())->getData()->getId(),
         ];
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
-        static::assertCount(7, $dataSelections->getElements());
+        static::assertCount(7, $dataSelections);
 
         $i = 0;
-        /** @var DataSelectionStruct $selection */
-        foreach ($dataSelections->getIterator() as $selection) {
+        foreach ($dataSelections as $selection) {
             static::assertSame($expected[$i], $selection->getId());
             ++$i;
         }
@@ -145,10 +144,7 @@ class DataSelectionRegistryTest extends TestCase
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
         $totals = $this->environmentInformation->getTotals();
 
-        /** @var DataSelectionStruct $dataSelection */
         foreach ($dataSelections as $dataSelection) {
-            static::assertInstanceOf(DataSelectionStruct::class, $dataSelection);
-
             if (\count($dataSelection->getEntityNamesRequiredForCount()) > 0) {
                 static::assertNotEmpty($dataSelection->getCountedTotal($totals));
             }
@@ -164,7 +160,6 @@ class DataSelectionRegistryTest extends TestCase
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
 
-        /** @var DataSelectionStruct $dataSelection */
         foreach ($dataSelections as $dataSelection) {
             switch ($dataSelection->getId()) {
                 case 'basicSettings':
