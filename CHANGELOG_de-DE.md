@@ -1,6 +1,11 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-951 - Verbessert die Sprachmigration von Shopware 6 zu Shopware 6, damit die Standardsprache nicht mehr überschrieben wird.
 - MIG-951 - [BREAKING] Ändert den Zugriffsmodifikator der Funktion `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter::convertData` von public auf protected
+- MIG-943 - Korrigiert einen Fehler in der Migration der Versandkostenberechnung von Shopware 5
+- MIG-943 - [BREAKING] In der Klasse `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` wurde der Methodenname `getTransactions` in `applyTransactions` geändert
+- MIG-943 - [BREAKING] In der Klasse `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` wurde der Methodenname `getCountryTranslation` in `applyCountryTranslation` geändert
+- MIG-943 - [BREAKING] In der Klasse `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` wurde der Methodenname `getCountryStateTranslation` in `applyCountryStateTranslation` geändert
+- MIG-943 - [BREAKING] Wechselt die Exception `AssociationEntityRequiredMissingException` zu `SwagMigrationAssistant\Exception\MigrationException::associationMissing` in der Methode `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter::convert`
 
 # 10.0.1
 - MIG-971 - Korrigiert Kompatibilität mit Shopware 6.6.0.x

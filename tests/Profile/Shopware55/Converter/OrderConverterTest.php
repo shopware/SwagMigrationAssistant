@@ -21,12 +21,12 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
@@ -195,6 +195,56 @@ class OrderConverterTest extends TestCase
         static::assertTrue($converted['lineItems'][0]['downloads'][0]['accessGranted']);
     }
 
+    public function testConvertShouldSetCalculatedTaxesInOrderDelivery(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData[0],
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
+        static::assertArrayHasKey('shippingCosts', $converted);
+        $shippingCosts = $converted['shippingCosts'];
+        static::assertInstanceOf(CalculatedPrice::class, $shippingCosts);
+        $result = $shippingCosts->getCalculatedTaxes()->first();
+        static::assertInstanceOf(CalculatedTax::class, $result);
+        $taxRule = $shippingCosts->getTaxRules()->first();
+        static::assertInstanceOf(TaxRule::class, $taxRule);
+
+        static::assertSame(9.9, $result->getPrice());
+        static::assertSame(19.0, $result->getTaxRate());
+        static::assertSame(1.58, $result->getTax());
+
+        static::assertSame(19.0, $taxRule->getTaxRate());
+        static::assertSame(100.0, $taxRule->getPercentage());
+
+        static::assertArrayHasKey('deliveries', $converted);
+        $deliveryShippingCosts = $converted['deliveries'][0]['shippingCosts'];
+        static::assertInstanceOf(CalculatedPrice::class, $deliveryShippingCosts);
+        $deliveryResult = $deliveryShippingCosts->getCalculatedTaxes()->first();
+        static::assertInstanceOf(CalculatedTax::class, $deliveryResult);
+        $deliveryTaxRule = $shippingCosts->getTaxRules()->first();
+        static::assertInstanceOf(TaxRule::class, $deliveryTaxRule);
+
+        static::assertSame(9.9, $deliveryResult->getPrice());
+        static::assertSame(19.0, $deliveryResult->getTaxRate());
+        static::assertSame(1.58, $deliveryResult->getTax());
+
+        static::assertSame(19.0, $deliveryTaxRule->getTaxRate());
+        static::assertSame(100.0, $deliveryTaxRule->getPercentage());
+    }
+
     public function testConvertWithoutCustomer(): void
     {
         $orderData = require __DIR__ . '/../../../_fixtures/order_data.php';
@@ -204,9 +254,9 @@ class OrderConverterTest extends TestCase
         try {
             $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
         } catch (\Exception $e) {
-            /* @var AssociationEntityRequiredMissingException $e */
-            static::assertInstanceOf(AssociationEntityRequiredMissingException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertInstanceOf(MigrationException::class, $e);
+            static::assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getStatusCode());
+            static::assertSame(MigrationException::ASSOCIATION_MISSING, $e->getErrorCode());
 
             static::assertArrayHasKey('missingEntity', $e->getParameters());
             static::assertArrayHasKey('entity', $e->getParameters());
