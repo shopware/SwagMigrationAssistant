@@ -16,7 +16,7 @@ interface ProviderInterface
     public function getIdentifier(): string;
 
     /**
-     * @return array<string, mixed>
+     * @return array<string|int, mixed>
      */
     public function getProvidedData(int $limit, int $offset, Context $context): array;
 

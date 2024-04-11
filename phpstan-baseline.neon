@@ -111,11 +111,6 @@ parameters:
 			path: src/DataProvider/Provider/Data/DocumentBaseConfigProvider.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\DocumentInheritanceProvider\\:\\:__construct\\(\\) has parameter \\$documentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/DataProvider/Provider/Data/DocumentInheritanceProvider.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\DocumentProvider\\:\\:__construct\\(\\) has parameter \\$documentRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/DataProvider/Provider/Data/DocumentProvider.php

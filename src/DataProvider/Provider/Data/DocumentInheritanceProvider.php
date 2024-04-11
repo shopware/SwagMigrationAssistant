@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Checkout\Document\DocumentCollection;
+use Shopware\Core\Checkout\Document\DocumentEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -19,6 +21,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class DocumentInheritanceProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<DocumentCollection> $documentRepo
+     */
     public function __construct(private readonly EntityRepository $documentRepo)
     {
     }
@@ -35,18 +40,19 @@ class DocumentInheritanceProvider extends AbstractProvider
         $criteria->setOffset($offset);
         $criteria->addSorting(new FieldSorting('id'));
         $criteria->addFilter(new NotFilter(NotFilter::CONNECTION_OR, [new EqualsFilter('referencedDocumentId', null)]));
-        $result = $this->documentRepo->search($criteria, $context);
 
-        return $this->cleanupSearchResult($result, [
-            'config',
-            'deepLinkCode',
-            'documentTypeId',
-            'documentMediaFileId',
-            'fileType',
-            'orderId',
-            'sent',
-            'static',
-        ]);
+        $searchResult = $this->documentRepo->search($criteria, $context);
+
+        $result = [];
+        /** @var DocumentEntity $document */
+        foreach ($searchResult->getElements() as $document) {
+            $result[] = [
+                'id' => $document->getId(),
+                'referencedDocumentId' => $document->getReferencedDocumentId(),
+            ];
+        }
+
+        return $result;
     }
 
     public function getProvidedTotal(Context $context): int
