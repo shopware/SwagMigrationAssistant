@@ -8,9 +8,20 @@ variables:
   NODE_VERSION: 20
 
 include:
-  project: 'shopware/6/product/platform'
-  ref: 'trunk'
-  file: '.gitlab/templates/plugin.yml'
+  - project: 'shopware/6/product/platform'
+    ref: 'trunk'
+    file: '.gitlab/templates/plugin.yml'
+  - component: gitlab.shopware.com/infrastructure/ci-component-library/kaniko-amd64@trunk
+    inputs:
+      job-suffix: ""
+      stage: E2E
+      destination-image: "${CI_REGISTRY_IMAGE}/ci-e2e"
+      destination-tag: "$CI_PIPELINE_ID"
+      dockerfile: .gitlab/Dockerfile
+      enable-scan: "false"
+      cache: "false"
+      build-arg: "BASE_IMAGE=$PLATFORM_BASE_IMAGE"
+      extra-args: "--build-arg CI_JOB_TOKEN=$CI_JOB_TOKEN"
 
 Danger:
   stage: test
@@ -91,3 +102,110 @@ phpstan:
   script:
     - composer dump-autoload --dev
     - composer phpstan
+
+smoke-test:
+  stage: test
+  needs: []
+  rules:
+    - !reference [.rules, skip]
+    - when: always
+  script:
+    - cd ../../..
+    - php bin/console plugin:refresh
+    - php bin/console plugin:install --activate --clearCache ${PLUGIN_NAME}
+    - php bin/console plugin:uninstall ${PLUGIN_NAME}
+
+build image:
+  variables:
+    PLATFORM_BASE_IMAGE: ${CI_REGISTRY}/shopware/6/product/platform/ci-e2e:${PLATFORM_BRANCH}
+  rules:
+    # not supported, the downstream pipeline should find any issues anyway
+    - if: "$CI_MERGE_REQUEST_LABELS =~ /.*branch::platform::match.*/"
+      when: never
+    - if: "$PARENT_PIPELINE_ID"
+      when: never
+    - when: always
+  needs: []
+
+build image downstream:
+  extends: build image
+  rules:
+    - if: "$PARENT_PIPELINE_ID"
+  needs:
+    - pipeline: $PARENT_PIPELINE_ID
+      job: build image
+      artifacts: false
+
+acceptance:
+  image: mcr.microsoft.com/playwright:v1.43.0-jammy
+  stage: E2E
+  needs:
+    - job: build image
+      optional: true
+    - job: build image downstream
+      optional: true
+  rules:
+    # not supported, the downstream pipeline should find any issues anyway
+    - if: "$CI_MERGE_REQUEST_LABELS =~ /.*branch::platform::match.*/"
+      when: never
+    - when: always
+  services:
+    - name: mysql:8
+      alias: database
+      entrypoint:
+        [
+          "sh",
+          "-c",
+          "docker-entrypoint.sh mysqld --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --default-authentication-plugin=mysql_native_password --sql-require-primary-key=ON",
+        ]
+    - name: redis:7.0
+      alias: redis
+    - name: "${CI_REGISTRY_IMAGE}/ci-e2e:$CI_PIPELINE_ID"
+      alias: shopware.test
+      variables:
+        DATABASE_URL: mysql://root:app@database:3306/root
+  variables:
+    # CI_DEBUG_SERVICES: "true" # This can be used to display the output of all service containers for debugging
+    APP_ENV: prod
+    SHOPWARE_HTTP_CACHE_ENABLED: 0
+    SHOPWARE_DISABLE_UPDATE_CHECK: "true"
+    PROJECT_ROOT: /var/www/html
+    MYSQL_ROOT_PASSWORD: app
+    DATABASE_URL: mysql://root:app@database:3306/root
+    APP_URL: http://shopware.test:8000
+    APP_DEBUG: 1
+  before_script:
+    - tar -czf /tmp/plugin.tar.gz .
+    - rm -Rf .* * || true
+    - echo "Checkout platform branch $PLATFORM_BRANCH"
+    - git clone --depth=1 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/product/platform.git . --branch $PLATFORM_BRANCH
+    - >
+      if ! [[ -z "${MERGE_REF_PATH}" ]]; then
+        echo '$MERGE_REF_PATH is set, checking out merged result'
+        git config remote.origin.fetch '+refs/merge-requests/*:refs/merge-requests/*'
+        git fetch origin ${MERGE_REF_PATH::-4}merge
+        echo "Checking out ${MERGE_REF_PATH::-4}merge"
+        git checkout ${MERGE_REF_PATH::-4}merge
+      fi
+    - mkdir -p custom/plugins/${PLUGIN_NAME}
+    - tar -xzf /tmp/plugin.tar.gz --directory="custom/plugins/${PLUGIN_NAME}"
+    - cd tests/acceptance
+    - npm ci
+    - npx playwright install --with-deps
+  script:
+    - npx playwright test --workers=1 --project=${PLUGIN_NAME}
+  after_script:
+    - |
+      echo "Link to trace download (inspect the one without retry)"
+      echo "https://gitlab.shopware.com/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/browse/tests/acceptance/test-results"
+    - |
+      echo "Link to HTML report"
+      echo "-------------------------------------------------------------------------------------------------------------------------------------------------------"
+      echo "https://shopware.pages.apps.shopware.io/-/6/services/$CI_PROJECT_NAME/-/jobs/$CI_JOB_ID/artifacts/tests/acceptance/playwright-report/index.html"
+      echo "-------------------------------------------------------------------------------------------------------------------------------------------------------"
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+      - $CI_PROJECT_DIR/tests/acceptance/test-results/*
+      - $CI_PROJECT_DIR/tests/acceptance/playwright-report/*

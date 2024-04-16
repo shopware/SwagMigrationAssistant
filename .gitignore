@@ -12,3 +12,4 @@ tests/testData
 composer.lock
 src/Resources/public/administration/
 src/Resources/public/static/
+.env

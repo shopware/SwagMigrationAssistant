@@ -1,0 +1,25 @@
+{
+  "name": "shopware-acceptance-test-suite-swag-migration-assistant",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "lint": "eslint . --ext .ts",
+    "lint:fix": "npm run lint -- --fix",
+    "types": "tsc"
+  },
+  "devDependencies": {
+    "@babel/eslint-parser": "^7.21.3",
+    "@shopware-ag/eslint-config-base": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.6.0",
+    "@typescript-eslint/parser": "^6.6.0",
+    "eslint": "^8.48.0",
+    "eslint-import-resolver-webpack": "^0.13.2",
+    "eslint-plugin-html": "^7.1.0",
+    "eslint-plugin-jest": "^27.2.1",
+    "eslint-plugin-playwright": "^1.5.2",
+    "eslint-plugin-simple-import-sort": "^10.0.0",
+    "typescript": "^5.4.2"
+  },
+  "author": "shopware AG",
+  "license": "ISC"
+}
