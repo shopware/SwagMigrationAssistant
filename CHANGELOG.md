@@ -6,6 +6,7 @@
 - MIG-943 - [BREAKING] Rename method in class `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` from `getCountryTranslation` to `applyCountryTranslation`
 - MIG-943 - [BREAKING] Rename method in class `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` from `getCountryStateTranslation` to `applyCountryStateTranslation`
 - MIG-943 - [BREAKING] Changed thrown exception from `AssociationEntityRequiredMissingException` to `SwagMigrationAssistant\Exception\MigrationException::associationMissing` in method `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter::convert`
+- MIG-967 - Improving the migration of order documents 
 
 # 10.0.1
 - MIG-971 - Fix compatibility with Shopware 6.6.0.x
