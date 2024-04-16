@@ -13,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
-use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -75,7 +74,7 @@ final class ProcessMediaHandler
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $message->getRunId(),
                 $message->getEntityName(),
-                new NoFileSystemPermissionsException()
+                MigrationException::noFileSystemPermissions(),
             ));
             $this->loggingService->saveLogging($context);
 

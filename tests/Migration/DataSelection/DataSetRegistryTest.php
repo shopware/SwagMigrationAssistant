@@ -74,7 +74,7 @@ class DataSetRegistryTest extends TestCase
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
         static::assertEmpty($dataSets);
 
-        static::expectException(DataSetNotFoundException::class);
+        $this->expectException(DataSetNotFoundException::class);
         $this->dataSetRegistry->getDataSet($migrationContext, 'foo');
     }
 }

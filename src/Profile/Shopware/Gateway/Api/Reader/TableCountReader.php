@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -42,7 +42,7 @@ class TableCountReader implements TableCountReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw new GatewayReadException('Shopware Api table count.');
+            throw MigrationException::gatewayRead('Shopware Api table count.');
         }
 
         $arrayResult = \json_decode($result->getBody()->getContents(), true);

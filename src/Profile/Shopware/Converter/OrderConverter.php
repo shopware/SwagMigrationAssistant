@@ -168,7 +168,10 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($customerMapping === null) {
-            throw MigrationException::associationMissing(DefaultEntities::ORDER, DefaultEntities::CUSTOMER);
+            throw MigrationException::associationEntityRequiredMissing(
+                DefaultEntities::ORDER,
+                DefaultEntities::CUSTOMER
+            );
         }
 
         $orderCustomerMapping = $this->mappingService->getOrCreateMapping(

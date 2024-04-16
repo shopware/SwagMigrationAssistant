@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Gateway;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\GatewayNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
@@ -19,7 +19,6 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
-use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class GatewayServiceTest extends TestCase
@@ -49,10 +48,12 @@ class GatewayServiceTest extends TestCase
 
         try {
             $this->gatewayRegistry->getGateway($migrationContext);
-        } catch (\Exception $e) {
-            /* @var GatewayNotFoundException $e */
-            static::assertInstanceOf(GatewayNotFoundException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+        } catch (MigrationException $e) {
+            static::assertSame(MigrationException::GATEWAY_NOT_FOUND, $e->getErrorCode());
+
+            return;
         }
+
+        static::fail('Expected exception not thrown');
     }
 }

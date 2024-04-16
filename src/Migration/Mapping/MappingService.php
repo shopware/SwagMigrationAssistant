@@ -30,6 +30,7 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -968,7 +969,7 @@ class MappingService implements MappingServiceInterface
             return $element->getId();
         }
 
-        throw new LocaleNotFoundException($localeCode);
+        throw MigrationException::localeNotFound($localeCode);
     }
 
     private function searchLanguageByLocale(string $localeUuid, Context $context): ?string

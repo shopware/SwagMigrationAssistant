@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use SwagMigrationAssistant\Exception\ReaderNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
@@ -134,8 +134,15 @@ class LocalGatewayTest extends TestCase
 
         $gateway = $gatewayRegistry->getGateway($migrationContext);
 
-        $this->expectException(ReaderNotFoundException::class);
-        $gateway->read($migrationContext);
+        try {
+            $gateway->read($migrationContext);
+        } catch (MigrationException $e) {
+            static::assertSame(MigrationException::READER_NOT_FOUND, $e->getErrorCode());
+
+            return;
+        }
+
+        static::fail('Expected exception not thrown');
     }
 
     #[DataProvider('profileProvider')]

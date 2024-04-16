@@ -10,12 +10,15 @@ namespace SwagMigrationAssistant\Exception;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
 use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class MigrationException extends HttpException
 {
     final public const GATEWAY_READ = 'SWAG_MIGRATION__GATEWAY_READ';
+
+    final public const GATEWAY_NOT_FOUND = 'SWAG_MIGRATION__GATEWAY_NOT_FOUND';
 
     final public const PARENT_ENTITY_NOT_FOUND = 'SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND';
 
@@ -51,13 +54,115 @@ class MigrationException extends HttpException
 
     public const INVALID_FIELD_SERIALIZER = 'SWAG_MIGRATION__INVALID_FIELD_SERIALIZER';
 
+    public const INVALID_CONNECTION_AUTHENTICATION = 'SWAG_MIGRATION__INVALID_CONNECTION_AUTHENTICATION';
+
+    public const SSL_REQUIRED = 'SWAG_MIGRATION__SSL_REQUIRED';
+
+    public const REQUEST_CERTIFICATE_INVALID = 'SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID';
+
+    public const PLUGIN_NOT_INSTALLED = 'SWAG_MIGRATION__PLUGIN_NOT_INSTALLED';
+
+    public const CONVERTER_NOT_FOUND = 'SWAG_MIGRATION__CONVERTER_NOT_FOUND';
+
+    public const MIGRATION_CONTEXT_PROPERTY_MISSING = 'SWAG_MIGRATION__MIGRATION_CONTEXT_PROPERTY_MISSING';
+
+    public const READER_NOT_FOUND = 'SWAG_MIGRATION__READER_NOT_FOUND';
+
+    public const DATASET_NOT_FOUND = 'SWAG_MIGRATION__DATASET_NOT_FOUND';
+
+    public const LOCALE_NOT_FOUND = 'SWAG_MIGRATION__LOCALE_NOT_FOUND';
+
+    public const UNDEFINED_RUN_STATUS = 'SWAG_MIGRATION__UNDEFINED_RUN_STATUS';
+
+    public const NO_FILE_SYSTEM_PERMISSIONS = 'SWAG_MIGRATION__NO_FILE_SYSTEM_PERMISSIONS';
+
+    public const PROFILE_NOT_FOUND = 'SWAG_MIGRATION__PROFILE_NOT_FOUND';
+
+    public const WRITER_NOT_FOUND = 'SWAG_MIGRATION__WRITER_NOT_FOUND';
+
+    public const COULD_NOT_READ_FILE = 'SWAG_MIGRATION__COULD_NOT_READ_FILE';
+
+    public const ASSOCIATION_ENTITY_REQUIRED_MISSING = 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
+
+    public const PROVIDER_NOT_FOUND = 'SWAG_MIGRATION__PROVIDER_NOT_FOUND';
+
+    public const COULD_NOT_GENERATE_DOCUMENT = 'SWAG_MIGRATION__COULD_NOT_GENERATE_DOCUMENT';
+
     public static function gatewayRead(string $gateway): self
     {
-        return new self(
+        return new GatewayReadException(
             Response::HTTP_NOT_FOUND,
             self::GATEWAY_READ,
             'Could not read from gateway: "{{ gateway }}".',
             ['gateway' => $gateway]
+        );
+    }
+
+    public static function gatewayNotFound(string $profile, string $gateway): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::GATEWAY_NOT_FOUND,
+            'Gateway for profile "{{ profile }}" and gateway "{{ gateway }}" not found.',
+            ['profile' => $profile, 'gateway' => $gateway]
+        );
+    }
+
+    public static function readerNotFound(string $entityName): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::READER_NOT_FOUND,
+            'Data reader for "{{ entityName }}" not found.',
+            ['entityName' => $entityName]
+        );
+    }
+
+    public static function dataSetNotFound(string $entity): self
+    {
+        return new DataSetNotFoundException(
+            Response::HTTP_NOT_FOUND,
+            self::DATASET_NOT_FOUND,
+            'Data set for "{{ entity }}" entity not found.',
+            ['entity' => $entity]
+        );
+    }
+
+    public static function invalidConnectionAuthentication(string $url): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::INVALID_CONNECTION_AUTHENTICATION,
+            'Invalid connection authentication for the request: "{{ url }}"',
+            ['url' => $url]
+        );
+    }
+
+    public static function sslRequired(): self
+    {
+        return new self(
+            Response::HTTP_MISDIRECTED_REQUEST,
+            self::SSL_REQUIRED,
+            'The request failed, because SSL is required.'
+        );
+    }
+
+    public static function requestCertificateInvalid(string $url): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::REQUEST_CERTIFICATE_INVALID,
+            'The following cURL request failed with an SSL certificate problem: "{{ url }}"',
+            ['url' => $url]
+        );
+    }
+
+    public static function pluginNotInstalled(): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::PLUGIN_NOT_INSTALLED,
+            'The required plugin is not installed in the source shop system. Please look up the documentation for this gateway.'
         );
     }
 
@@ -81,6 +186,16 @@ class MigrationException extends HttpException
         );
     }
 
+    public static function providerNotFound(string $identifier): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::PROVIDER_NOT_FOUND,
+            'Data provider for "{{ identifier }}" not found.',
+            ['identifier' => $identifier]
+        );
+    }
+
     public static function associationMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -97,6 +212,16 @@ class MigrationException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::MIGRATION_CONTEXT_NOT_CREATED,
             'Migration context could not be created.',
+        );
+    }
+
+    public static function migrationContextPropertyMissing(string $property): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_CONTEXT_PROPERTY_MISSING,
+            'Required property "{{ property }}" for migration context is missing.',
+            ['property' => $property]
         );
     }
 
@@ -234,6 +359,97 @@ class MigrationException extends HttpException
             self::INVALID_FIELD_SERIALIZER,
             'Expected field of type "{{ expectedField }}" got "{{ field }}".',
             ['expectedField' => $expectedClass, 'field' => $field::class]
+        );
+    }
+
+    public static function convertNotFound(string $entity): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::CONVERTER_NOT_FOUND,
+            'Converter for "{{ entity }}" entity not found.',
+            ['entity' => $entity]
+        );
+    }
+
+    public static function localeNotFound(string $localeCode): self
+    {
+        return new LocaleNotFoundException(
+            Response::HTTP_NOT_FOUND,
+            self::LOCALE_NOT_FOUND,
+            'Locale entity for code "{{ localeCode }}" not found.',
+            ['localeCode' => $localeCode]
+        );
+    }
+
+    public static function undefinedRunStatus(string $status): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::UNDEFINED_RUN_STATUS,
+            'Migration run status "{{ status }}" is not a valid status.',
+            ['status' => $status]
+        );
+    }
+
+    public static function noFileSystemPermissions(): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::NO_FILE_SYSTEM_PERMISSIONS,
+            'No file system permissions to create or write to files or directories.'
+        );
+    }
+
+    public static function profileNotFound(string $profileName): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::PROFILE_NOT_FOUND,
+            'Profile "{{ profileName }}" not found.',
+            ['profileName' => $profileName]
+        );
+    }
+
+    public static function writerNotFound(string $entityName): self
+    {
+        return new WriterNotFoundException(
+            Response::HTTP_NOT_FOUND,
+            self::WRITER_NOT_FOUND,
+            'Writer for "{{ entityName }}" entity not found.',
+            ['entityName' => $entityName]
+        );
+    }
+
+    public static function couldNotReadFile(string $sourcePath): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::COULD_NOT_READ_FILE,
+            'Could not read file from path: "{{ sourcePath }}".',
+            ['sourcePath' => $sourcePath]
+        );
+    }
+
+    public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
+    {
+        return new AssociationEntityRequiredMissingException(
+            Response::HTTP_NOT_FOUND,
+            self::ASSOCIATION_ENTITY_REQUIRED_MISSING,
+            'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
+            [
+                'missingEntity' => $missingEntity,
+                'entity' => $entity,
+            ]
+        );
+    }
+
+    public static function couldNotGenerateDocument(): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::COULD_NOT_GENERATE_DOCUMENT,
+            'Document could not be generated.'
         );
     }
 }

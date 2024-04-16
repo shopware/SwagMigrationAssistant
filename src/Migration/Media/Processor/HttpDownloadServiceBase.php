@@ -22,6 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -144,7 +145,7 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
             $fileHandle = \fopen($filePath, 'ab', false, $streamContext);
 
             if (!\is_resource($fileHandle)) {
-                throw new \RuntimeException(\sprintf('Could not open file %s in mode %s.', $filePath, 'ab'));
+                throw MigrationException::couldNotReadFile($filePath);
             }
 
             \fwrite($fileHandle, $response->getBody()->getContents());

@@ -96,12 +96,13 @@ class ApiReaderTest extends TestCase
 
         try {
             $apiReader->read($migrationContext);
-        } catch (\Exception $e) {
-            /* @var GatewayReadException $e */
-            static::assertInstanceOf(GatewayReadException::class, $e);
-            static::assertSame(SymfonyResponse::HTTP_NOT_FOUND, $e->getStatusCode());
+        } catch (GatewayReadException $e) {
             static::assertArrayHasKey('gateway', $e->getParameters());
             static::assertSame($e->getParameters()['gateway'], 'Shopware Api product');
+
+            return;
         }
+
+        static::fail('GatewayReadException not thrown');
     }
 }

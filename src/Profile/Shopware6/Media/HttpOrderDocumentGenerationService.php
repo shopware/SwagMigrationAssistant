@@ -14,7 +14,7 @@ use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
@@ -82,7 +82,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
                 DefaultEntities::ORDER_DOCUMENT_GENERATED,
-                new NoFileSystemPermissionsException()
+                MigrationException::noFileSystemPermissions(),
             ));
             $this->loggingService->saveLogging($context);
 

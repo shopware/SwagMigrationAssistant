@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Controller/DataProviderController.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Provider\\\\Data\\\\CategoryAssociationProvider\\:\\:__construct\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/DataProvider/Provider/Data/CategoryAssociationProvider.php
@@ -231,11 +226,6 @@ parameters:
 			path: src/DataProvider/Provider/Data/UnitProvider.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/DataProvider/Provider/ProviderRegistry.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Service\\\\EnvironmentService\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/DataProvider/Service/EnvironmentService.php
@@ -329,11 +319,6 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter\\:\\:\\$mappingIds type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Converter/Converter.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 2
-			path: src/Migration/Converter/ConverterRegistry.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Data\\\\SwagMigrationDataCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
@@ -481,24 +466,9 @@ parameters:
 			path: src/Migration/DataSelection/DataSelectionStruct.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Migration/DataSelection/DataSet/DataSetRegistry.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 2
-			path: src/Migration/Gateway/GatewayRegistry.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\EnvironmentReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Gateway/Reader/EnvironmentReaderInterface.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 2
-			path: src/Migration/Gateway/Reader/ReaderRegistry.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:__construct\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
@@ -951,11 +921,6 @@ parameters:
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
 			message: "#^Use default null value and nullable compare instead of isset on object$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
@@ -1151,11 +1116,6 @@ parameters:
 			path: src/Migration/Media/MediaProcessWorkloadStruct.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Migration/Media/Processor/HttpDownloadServiceBase.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
 			count: 1
 			path: src/Migration/Media/SwagMigrationMediaFileCollection.php
@@ -1224,11 +1184,6 @@ parameters:
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\MigrationContext has an uninitialized property \\$gateway\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Migration/MigrationContext.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Migration/Profile/ProfileRegistry.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress has an uninitialized property \\$currentCount\\. Give it default value or assign it in the constructor\\.$#"
@@ -1317,11 +1272,6 @@ parameters:
 
 		-
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:\\$totals type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Run/SwagMigrationRunEntity.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
@@ -1479,11 +1429,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Writer/WriterInterface.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Migration/Writer/WriterRegistry.php
 
 		-
 			message: "#^Anonymous variables in a \"\\$keyValue\\-\\>\\.\\.\\.\" property fetch can lead to false dead property\\. Make sure the variable type is known$#"
@@ -1766,6 +1711,146 @@ parameters:
 			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
 
 		-
+			message: "#^Getter method must return something, not void$#"
+			count: 3
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:__construct\\(\\) has parameter \\$salesChannelRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getAddress\\(\\) has parameter \\$originalData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getAddress\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountry\\(\\) has parameter \\$oldCountryData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountry\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountryState\\(\\) has parameter \\$oldStateData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountryState\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountryStateTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountryStateTranslation\\(\\) has parameter \\$state with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountryTranslation\\(\\) has parameter \\$country with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getCountryTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getDeliveries\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getDeliveries\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getDeliveries\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getLineItems\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getLineItems\\(\\) has parameter \\$originalData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getLineItems\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getOrderLineItemDownload\\(\\) has parameter \\$originalEsdItem with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getOrderLineItemDownload\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getPaymentMethod\\(\\) has parameter \\$originalData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getTaxRules\\(\\) has parameter \\$originalData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getTaxStatus\\(\\) has parameter \\$originalData with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getTransactions\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:getTransactions\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getDocumentType\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getDocumentType\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
+
+		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getMediaFile\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
@@ -1931,11 +2016,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Api/Reader/ApiReader.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ApiReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/CategoryAttributeReader.php
@@ -2008,11 +2088,6 @@ parameters:
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:readData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 12
 			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
@@ -2126,22 +2201,12 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/TableReader.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableReader.php
 
@@ -2946,11 +3011,6 @@ parameters:
 			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
-
-		-
 			message: "#^PHPDoc tag @var for variable \\$split has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/Strategy/Md5StrategyResolver.php
@@ -3471,9 +3531,34 @@ parameters:
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
 
 		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SnippetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/ApiReader.php
+			path: src/Profile/Shopware6/Converter/SnippetConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SnippetSetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SnippetSetConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SystemConfigConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SystemConfigConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\TaxConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/TaxConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\TaxRuleConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/TaxRuleConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\UnitConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/UnitConverter.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$client\\. Give it default value or assign it in the constructor\\.$#"
@@ -3499,16 +3584,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:readData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 7
-			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/TableReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient\\:\\:__construct\\(\\) has parameter \\$connectionRepositoy with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"

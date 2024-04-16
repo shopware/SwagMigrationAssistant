@@ -15,8 +15,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
-use SwagMigrationAssistant\Exception\GatewayReadException;
-use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
@@ -60,8 +59,8 @@ class ApiEnvironmentReaderTest extends TestCase
             ]
         );
 
-        $this->sslInsecureShopwareException = new RequestCertificateInvalidException('product/api/SwagMigrationEnvironment');
-        $this->gatewayReadException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
+        $this->sslInsecureShopwareException = MigrationException::requestCertificateInvalid('product/api/SwagMigrationEnvironment');
+        $this->gatewayReadException = MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
     }
 
     public function testEnvironmentReaderVerifiedTest(): void

@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -139,7 +140,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
             $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? Uuid::randomHex();
 
             if ($fileBlob === false || $mimeType === false) {
-                throw new \RuntimeException(\sprintf('Could read file %s.', $sourcePath));
+                throw MigrationException::couldNotReadFile($sourcePath);
             }
 
             try {

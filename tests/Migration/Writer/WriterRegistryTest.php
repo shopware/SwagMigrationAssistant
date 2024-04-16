@@ -14,7 +14,6 @@ use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Migration\Writer\DummyWriter;
-use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
 class WriterRegistryTest extends TestCase
@@ -28,12 +27,8 @@ class WriterRegistryTest extends TestCase
 
     public function testGetWriter(): void
     {
-        try {
-            $this->writerRegistry->getWriter('foo');
-        } catch (\Exception $e) {
-            /* @var WriterNotFoundException $e */
-            static::assertInstanceOf(WriterNotFoundException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-        }
+        $this->expectException(WriterNotFoundException::class);
+
+        $this->writerRegistry->getWriter('foo');
     }
 }

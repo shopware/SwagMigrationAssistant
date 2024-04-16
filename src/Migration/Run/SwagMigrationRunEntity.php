@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -109,13 +109,10 @@ class SwagMigrationRunEntity extends Entity
         return $this->status;
     }
 
-    /**
-     * @throws MigrationRunUndefinedStatusException
-     */
     public function setStatus(string $status): void
     {
         if (!\in_array($status, [self::STATUS_RUNNING, self::STATUS_FINISHED, self::STATUS_ABORTED], true)) {
-            throw new MigrationRunUndefinedStatusException($status);
+            throw MigrationException::undefinedRunStatus($status);
         }
 
         $this->status = $status;
