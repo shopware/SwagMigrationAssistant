@@ -233,6 +233,16 @@ class StatusController extends AbstractController
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * Returns the progress of the running migration run.
+     * If no migration run is running, it returns the progress with the step status IDLE.
+     *
+     * After starting the migration run, the steps are as follows, if the migration run is not aborted:
+     * IDLE -> FETCHING -> WRITING -> MEDIA_PROCESSING -> CLEANUP -> INDEXING -> WAITING_FOR_APPROVE -> IDLE
+     *
+     * If the migration run is aborted, the steps are as follows:
+     * IDLE -> [FETCHING || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
+     */
     #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getState(Context $context): JsonResponse
     {
@@ -251,6 +261,10 @@ class StatusController extends AbstractController
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
 
+    /**
+     * Abort the running migration.
+     * If no migration run is running or the current migration is not in the FETCHING or WRITING or MEDIA_PROCESSING step, it returns a bad request response.
+     */
     #[Route(path: '/api/_action/migration/abort-migration', name: 'api.admin.migration.abort-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
     public function abortMigration(Context $context): Response
     {

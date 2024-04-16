@@ -154,7 +154,13 @@ class RunService implements RunServiceInterface
         $runId = $run->getId();
         $progress = $run->getProgress();
 
-        if ($progress === null || !\in_array($progress->getStepValue(), [MigrationProgressStatus::FETCHING->value, MigrationProgressStatus::WRITING->value], true)) {
+        $runningSteps = [
+            MigrationProgressStatus::FETCHING->value,
+            MigrationProgressStatus::WRITING->value,
+            MigrationProgressStatus::MEDIA_PROCESSING->value,
+        ];
+
+        if ($progress === null || !\in_array($progress->getStepValue(), $runningSteps, true)) {
             throw MigrationException::noRunningMigration();
         }
 
