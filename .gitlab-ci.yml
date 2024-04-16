@@ -3,7 +3,8 @@ variables:
   PLATFORM_MIN_VERSION: '6.6.0.0'
   PLATFORM_DEFAULT_VERSION: 'trunk'
   PLATFORM_BRANCH: $PLATFORM_DEFAULT_VERSION
-  DEV_IMAGE: shopware/development:8.2-composer-2
+  DEV_IMAGE:
+    value: ${CI_REGISTRY}/infrastructure/docker-base/ci-build:latest
   NODE_VERSION: 20
 
 include:
