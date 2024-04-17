@@ -42,7 +42,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
         }
 
         $options = [
-            'base_uri' => \rtrim($credentials['endpoint'], '/') . '/' . self::DEFAULT_API_ENDPOINT,
+            'base_uri' => \rtrim((string) $credentials['endpoint'], '/') . '/' . self::DEFAULT_API_ENDPOINT,
             'connect_timeout' => 15.0,
             'verify' => false,
         ];

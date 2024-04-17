@@ -35,7 +35,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
             return '';
         }
 
-        $installationRoot = $credentials['installationRoot'] ?? '';
+        $installationRoot = (string) ($credentials['installationRoot'] ?? '');
         if (!$path || $this->isEncoded($path)) {
             return \rtrim($installationRoot) . '/' . $this->substringPath($path);
         }

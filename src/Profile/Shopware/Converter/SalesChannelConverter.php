@@ -252,6 +252,10 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
+    /**
+     * @param array<mixed> $salesChannel
+     * @param array<mixed> $data
+     */
     protected function setSalesChannelTranslation(array &$salesChannel, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);

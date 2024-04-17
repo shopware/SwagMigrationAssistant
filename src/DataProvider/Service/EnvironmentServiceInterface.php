@@ -13,5 +13,8 @@ use Shopware\Core\Framework\Log\Package;
 #[Package('services-settings')]
 interface EnvironmentServiceInterface
 {
+    /**
+     * @return array<string, string|bool|array<mixed>>
+     */
     public function getEnvironmentData(Context $context): array;
 }

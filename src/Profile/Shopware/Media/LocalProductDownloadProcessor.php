@@ -80,7 +80,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
             return '';
         }
 
-        return $credentials['installationRoot'] ?? '';
+        return (string) ($credentials['installationRoot'] ?? '');
     }
 
     /**

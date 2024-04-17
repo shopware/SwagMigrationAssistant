@@ -1,46 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Service\\\\EnvironmentService\\:\\:getEnvironmentData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/DataProvider/Service/EnvironmentService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\DataProvider\\\\Service\\\\EnvironmentServiceInterface\\:\\:getEnvironmentData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/DataProvider/Service/EnvironmentServiceInterface.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity has an uninitialized property \\$gatewayName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Connection/SwagMigrationConnectionEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity has an uninitialized property \\$name\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Connection/SwagMigrationConnectionEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity has an uninitialized property \\$profileName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Connection/SwagMigrationConnectionEntity.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\:\\:getCredentialFields\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Connection/SwagMigrationConnectionEntity.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\:\\:setCredentialFields\\(\\) has parameter \\$credentialFields with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Connection/SwagMigrationConnectionEntity.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Connection\\\\SwagMigrationConnectionEntity\\:\\:\\$credentialFields type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Connection/SwagMigrationConnectionEntity.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConvertStruct\\:\\:__construct\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Converter/ConvertStruct.php
@@ -1567,16 +1527,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:getSalesChannelLanguages\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:getSalesChannelTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:getSalesChannelTranslation\\(\\) has parameter \\$salesChannel with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 

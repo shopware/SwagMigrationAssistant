@@ -75,7 +75,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             return '';
         }
 
-        return $credentials['installationRoot'] ?? '';
+        return (string) ($credentials['installationRoot'] ?? '');
     }
 
     /**

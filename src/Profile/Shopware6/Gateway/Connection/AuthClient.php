@@ -174,6 +174,6 @@ class AuthClient implements HttpClientInterface
             return;
         }
 
-        $this->bearerToken = $credentials['bearer_token'];
+        $this->bearerToken = (string) $credentials['bearer_token'];
     }
 }

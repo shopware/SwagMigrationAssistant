@@ -20,8 +20,11 @@ class SwagMigrationConnectionEntity extends Entity
 {
     use EntityIdTrait;
 
-    protected string $name;
+    protected string $name = '';
 
+    /**
+     * @var array<string, int|string>|null
+     */
     protected ?array $credentialFields = null;
 
     /**
@@ -29,9 +32,9 @@ class SwagMigrationConnectionEntity extends Entity
      */
     protected array $premapping = [];
 
-    protected string $profileName;
+    protected string $profileName = '';
 
-    protected string $gatewayName;
+    protected string $gatewayName = '';
 
     protected ?SwagMigrationRunCollection $runs = null;
 
@@ -49,11 +52,17 @@ class SwagMigrationConnectionEntity extends Entity
         $this->name = $name;
     }
 
+    /**
+     * @return array<string, int|string>|null
+     */
     public function getCredentialFields(): ?array
     {
         return $this->credentialFields;
     }
 
+    /**
+     * @param array<string, int|string> $credentialFields
+     */
     public function setCredentialFields(array $credentialFields): void
     {
         $this->credentialFields = $credentialFields;

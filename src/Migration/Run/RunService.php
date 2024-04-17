@@ -485,7 +485,7 @@ SQL;
     }
 
     /**
-     * @param array<int, string> $credentials
+     * @param array<string, int|string> $credentials
      */
     private function updateRunWithProgress(
         string $runId,

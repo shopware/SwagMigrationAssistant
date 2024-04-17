@@ -31,7 +31,7 @@ class PlainStrategyResolver implements StrategyResolverInterface
             return '';
         }
 
-        $installationRoot = $credentials['installationRoot'] ?? '';
+        $installationRoot = (string) ($credentials['installationRoot'] ?? '');
         $path = $this->normalize($path);
         $path = \ltrim($path, '/');
         $pathInfo = \pathinfo($path);

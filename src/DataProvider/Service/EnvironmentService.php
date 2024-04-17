@@ -38,6 +38,9 @@ class EnvironmentService implements EnvironmentServiceInterface
     ) {
     }
 
+    /**
+     * @return array<string, string|bool|array<mixed>>
+     */
     public function getEnvironmentData(Context $context): array
     {
         /** @var CurrencyEntity $defaultCurrency */
