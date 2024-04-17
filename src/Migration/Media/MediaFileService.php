@@ -27,6 +27,9 @@ class MediaFileService implements MediaFileServiceInterface
 
     protected array $uuids = [];
 
+    /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
+     */
     public function __construct(
         protected EntityRepository $mediaFileRepo,
         protected EntityWriterInterface $entityWriter,

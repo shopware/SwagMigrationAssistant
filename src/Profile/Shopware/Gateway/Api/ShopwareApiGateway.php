@@ -12,7 +12,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\DisplayWarning;
@@ -30,6 +32,10 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
 {
     final public const GATEWAY_NAME = 'api';
 
+    /**
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
     public function __construct(
         private readonly ReaderRegistryInterface $readerRegistry,
         private readonly EnvironmentReaderInterface $environmentReader,

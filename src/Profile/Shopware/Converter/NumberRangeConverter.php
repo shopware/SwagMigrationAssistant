@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -40,6 +41,9 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
     protected string $connectionId;
 
+    /**
+     * @param EntityRepository<NumberRangeCollection> $numberRangeTypeRepo
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,

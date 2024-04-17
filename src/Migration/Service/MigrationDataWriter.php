@@ -18,10 +18,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
@@ -29,6 +31,10 @@ use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 #[Package('services-settings')]
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepo
+     * @param EntityRepository<SwagMigrationMappingCollection> $mappingRepo
+     */
     public function __construct(
         private readonly EntityWriterInterface $entityWriter,
         private readonly EntityRepository $migrationDataRepo,

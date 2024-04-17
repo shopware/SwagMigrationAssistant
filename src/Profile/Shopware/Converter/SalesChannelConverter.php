@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -16,6 +18,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Country\CountryCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -37,6 +41,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
     protected string $oldIdentifier;
 
+    /**
+     * @param EntityRepository<PaymentMethodCollection> $paymentRepository
+     * @param EntityRepository<ShippingMethodCollection> $shippingMethodRepo
+     * @param EntityRepository<CountryCollection> $countryRepository
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepo
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,

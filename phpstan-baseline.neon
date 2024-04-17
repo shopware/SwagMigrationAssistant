@@ -86,16 +86,6 @@ parameters:
 			path: src/Migration/Converter/Converter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Data\\\\SwagMigrationDataCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
-			count: 1
-			path: src/Migration/Data/SwagMigrationDataCollection.php
-
-		-
-			message: "#^Change \"defineFields\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
-			count: 1
-			path: src/Migration/Data/SwagMigrationDataDefinition.php
-
-		-
 			message: "#^swag_migration_data\\.run association has a configured autoload\\=\\=\\=true, this is forbidden for platform integrations$#"
 			count: 1
 			path: src/Migration/Data/SwagMigrationDataDefinition.php
@@ -234,16 +224,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\EnvironmentReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Gateway/Reader/EnvironmentReaderInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:__construct\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/History/HistoryService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:__construct\\(\\) has parameter \\$runRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/History/HistoryService.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:extractBucketInformation\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -391,24 +371,9 @@ parameters:
 			path: src/Migration/Logging/Log/WriteExceptionRunLog.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:__construct\\(\\) has parameter \\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Logging/LoggingService.php
-
-		-
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:\\$logging type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Logging/LoggingService.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingCollection.php
-
-		-
-			message: "#^Change \"defineFields\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingDefinition.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$code\\. Give it default value or assign it in the constructor\\.$#"
@@ -501,82 +466,7 @@ parameters:
 			path: src/Migration/Mapping/MappingDeltaResult.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService has an uninitialized property \\$defaultAvailabilityRule\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService has an uninitialized property \\$defaultLanguageData\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$cmsPageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$countryRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$documentTypeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$localeRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$mediaDefaultFolderRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$migrationMappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$numberRangeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$ruleRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$taxRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:__construct\\(\\) has parameter \\$thumbnailSizeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
@@ -821,11 +711,6 @@ parameters:
 			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Media/MediaFileService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:saveMediaFile\\(\\) has parameter \\$mediaFile with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Media/MediaFileService.php
@@ -1066,16 +951,6 @@ parameters:
 			path: src/Migration/Service/MigrationDataConverterInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:__construct\\(\\) has parameter \\$mappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:__construct\\(\\) has parameter \\$migrationDataRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:extractWriteErrorsWithIndex\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Service/MigrationDataWriter.php
@@ -1136,11 +1011,6 @@ parameters:
 			path: src/Migration/Setting/GeneralSettingEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Subscriber\\\\MediaDeletedSubscriber\\:\\:__construct\\(\\) has parameter \\$mediaFileRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Subscriber/MediaDeletedSubscriber.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\AbstractWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Writer/AbstractWriter.php
@@ -1149,11 +1019,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\AbstractWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Writer/AbstractWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\MediaFolderWriter\\:\\:__construct\\(\\) has parameter \\$mediaFolderRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Writer/MediaFolderWriter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\MediaFolderWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
@@ -1258,11 +1123,6 @@ parameters:
 		-
 			message: "#^Getter method must return something, not void$#"
 			count: 3
-			path: src/Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerConverter\\:\\:__construct\\(\\) has parameter \\$salesChannelRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
 			path: src/Profile/Shopware/Converter/CustomerConverter.php
 
 		-
@@ -1446,11 +1306,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:__construct\\(\\) has parameter \\$numberRangeTypeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:getUuid\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
@@ -1478,11 +1333,6 @@ parameters:
 		-
 			message: "#^Getter method must return something, not void$#"
 			count: 3
-			path: src/Profile/Shopware/Converter/OrderConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderConverter\\:\\:__construct\\(\\) has parameter \\$salesChannelRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
 			path: src/Profile/Shopware/Converter/OrderConverter.php
 
 		-
@@ -1706,27 +1556,7 @@ parameters:
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$countryRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$languagePackRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$paymentRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$salesChannelRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$shippingMethodRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
@@ -1979,16 +1809,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TranslationReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:__construct\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
@@ -3369,136 +3189,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Logging\\\\Log\\\\UnsupportedMediaDefaultFolderLog\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Logging/Log/UnsupportedMediaDefaultFolderLog.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$categoryRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$cmsPageRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$countryRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$countryStateRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$deliveryTimeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$documentBaseConfigRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$documentTypeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$localeRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$mailTemplateRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$mailTemplateTypeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$mediaDefaultRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$migrationMappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$numberRangeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$numberRangeTypeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$productSortingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$ruleRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$salutationRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$seoUrlTemplateRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$stateMachineStateRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$systemConfigRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$taxRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$taxRuleRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$taxRuleTypeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:__construct\\(\\) has parameter \\$thumbnailSizeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:getCmsPageUuidByNames\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"

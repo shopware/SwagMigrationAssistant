@@ -26,6 +26,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 #[Package('services-settings')]
@@ -34,6 +35,10 @@ class HistoryService implements HistoryServiceInterface
     private const LOG_FETCH_LIMIT = 50;
     private const LOG_TIME_FORMAT = 'd.m.Y h:i:s e';
 
+    /**
+     * @param EntityRepository<SwagMigrationRunCollection> $runRepo
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     */
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly EntityRepository $runRepo,

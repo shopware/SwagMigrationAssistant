@@ -17,6 +17,9 @@ class LoggingService implements LoggingServiceInterface
 {
     protected array $logging = [];
 
+    /**
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     */
     public function __construct(private readonly EntityRepository $loggingRepo)
     {
     }

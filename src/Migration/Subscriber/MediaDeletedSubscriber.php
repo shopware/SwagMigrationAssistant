@@ -14,11 +14,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\Event\EntityDeletedEvent;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 #[Package('services-settings')]
 class MediaDeletedSubscriber implements EventSubscriberInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepository
+     */
     public function __construct(private readonly EntityRepository $mediaFileRepository)
     {
     }

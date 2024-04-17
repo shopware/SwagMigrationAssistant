@@ -7,12 +7,17 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Content\Category\CategoryCollection;
+use Shopware\Core\Content\Cms\CmsPageCollection;
 use Shopware\Core\Content\Cms\CmsPageDefinition;
 use Shopware\Core\Content\Cms\CmsPageEntity;
+use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
+use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
+use Shopware\Core\Content\Rule\RuleCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -24,10 +29,17 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\Country\CountryEntity;
+use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
+use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleCollection;
 use Shopware\Core\System\Locale\LocaleEntity;
+use Shopware\Core\System\NumberRange\NumberRangeCollection;
+use Shopware\Core\System\Tax\TaxCollection;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
@@ -49,8 +61,22 @@ class MappingService implements MappingServiceInterface
 
     protected LanguageEntity $defaultLanguageData;
 
-    protected ?string $defaultAvailabilityRule;
-
+    /**
+     * @param EntityRepository<SwagMigrationMappingCollection> $migrationMappingRepo
+     * @param EntityRepository<LocaleCollection> $localeRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     * @param EntityRepository<CountryCollection> $countryRepository
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<TaxCollection> $taxRepo
+     * @param EntityRepository<NumberRangeCollection> $numberRangeRepo
+     * @param EntityRepository<RuleCollection> $ruleRepo
+     * @param EntityRepository<MediaThumbnailSizeCollection> $thumbnailSizeRepo
+     * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultFolderRepo
+     * @param EntityRepository<CategoryCollection> $categoryRepo
+     * @param EntityRepository<CmsPageCollection> $cmsPageRepo
+     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
+     * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
+     */
     public function __construct(
         protected EntityRepository $migrationMappingRepo,
         protected EntityRepository $localeRepository,

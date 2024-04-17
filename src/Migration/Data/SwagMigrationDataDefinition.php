@@ -34,7 +34,7 @@ class SwagMigrationDataDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }
 
-    public function defineFields(): FieldCollection
+    protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),

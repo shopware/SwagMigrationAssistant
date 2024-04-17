@@ -7,9 +7,14 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\Aggregate\CmsPageTranslation\CmsPageTranslationEntity;
 use Shopware\Core\Content\Cms\CmsPageCollection;
+use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
+use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
+use Shopware\Core\Content\Rule\RuleCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -20,13 +25,49 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\CountryCollection;
+use Shopware\Core\System\Currency\CurrencyCollection;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
+use Shopware\Core\System\Language\LanguageCollection;
+use Shopware\Core\System\Locale\LocaleCollection;
+use Shopware\Core\System\NumberRange\NumberRangeCollection;
+use Shopware\Core\System\Tax\TaxCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
 class Shopware6MappingService extends MappingService implements Shopware6MappingServiceInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMappingCollection> $migrationMappingRepo
+     * @param EntityRepository<LocaleCollection> $localeRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     * @param EntityRepository<CountryCollection> $countryRepository
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<TaxCollection> $taxRepo
+     * @param EntityRepository<NumberRangeCollection> $numberRangeRepo
+     * @param EntityRepository<RuleCollection> $ruleRepo
+     * @param EntityRepository<MediaThumbnailSizeCollection> $thumbnailSizeRepo
+     * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultRepo
+     * @param EntityRepository<CategoryCollection> $categoryRepo
+     * @param EntityRepository<CmsPageCollection> $cmsPageRepo
+     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
+     * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
+     * @param EntityRepository<NumberRangeCollection> $numberRangeTypeRepo
+     * @param EntityRepository<NumberRangeCollection> $mailTemplateTypeRepo
+     * @param EntityRepository<NumberRangeCollection> $mailTemplateRepo
+     * @param EntityRepository<NumberRangeCollection> $salutationRepo
+     * @param EntityRepository<NumberRangeCollection> $seoUrlTemplateRepo
+     * @param EntityRepository<NumberRangeCollection> $systemConfigRepo
+     * @param EntityRepository<NumberRangeCollection> $productSortingRepo
+     * @param EntityRepository<NumberRangeCollection> $stateMachineStateRepo
+     * @param EntityRepository<NumberRangeCollection> $documentBaseConfigRepo
+     * @param EntityRepository<NumberRangeCollection> $countryStateRepo
+     * @param EntityRepository<NumberRangeCollection> $taxRuleRepo
+     * @param EntityRepository<NumberRangeCollection> $taxRuleTypeRepo
+     */
     public function __construct(
         EntityRepository $migrationMappingRepo,
         EntityRepository $localeRepository,
