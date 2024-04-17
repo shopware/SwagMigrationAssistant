@@ -20,6 +20,9 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
 
     protected Context $context;
 
+    /**
+     * @var array<mixed>
+     */
     protected array $originalData;
 
     public function getSourceIdentifier(array $data): string

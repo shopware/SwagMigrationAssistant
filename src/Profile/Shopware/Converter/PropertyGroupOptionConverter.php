@@ -112,10 +112,10 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->createAndDeleteNecessaryMappings($data, $converted);
 
         if (isset($data['media'])) {
-            $this->getMedia($converted, $data);
+            $this->setMedia($converted, $data);
         }
 
-        $this->getTranslation($data, $converted);
+        $this->setTranslation($data, $converted);
         $this->updateMainMapping($migrationContext, $context);
 
         $mainMapping = $this->mainMapping['id'] ?? null;
@@ -124,9 +124,10 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     }
 
     /**
-     * @psalm-suppress PossiblyInvalidArgument
+     * @param array<mixed> $converted
+     * @param array<mixed> $data
      */
-    protected function getMedia(array &$converted, array $data): void
+    protected function setMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
             $this->loggingService->addLogEntry(new CannotConvertChildEntity(
@@ -164,7 +165,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             ]
         );
 
-        $this->getMediaTranslation($newMedia, $data);
+        $this->setMediaTranslation($newMedia, $data);
         $this->convertValue($newMedia, 'title', $data['media'], 'name');
         $this->convertValue($newMedia, 'alt', $data['media'], 'description');
 
@@ -183,7 +184,11 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $converted['media'] = $newMedia;
     }
 
-    protected function getMediaTranslation(array &$media, array $data): void
+    /**
+     * @param array<mixed> $media
+     * @param array<mixed> $data
+     */
+    protected function setMediaTranslation(array &$media, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -217,6 +222,10 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<mixed> $data
+     * @param array<mixed> $converted
+     */
     protected function createAndDeleteNecessaryMappings(array $data, array $converted): void
     {
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -259,9 +268,10 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     }
 
     /**
-     * @psalm-suppress TypeDoesNotContainType
+     * @param array<mixed> $data
+     * @param array<mixed> $converted
      */
-    protected function getTranslation(array &$data, array &$converted): void
+    protected function setTranslation(array &$data, array &$converted): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {

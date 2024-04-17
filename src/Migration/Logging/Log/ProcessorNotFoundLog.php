@@ -35,6 +35,9 @@ class ProcessorNotFoundLog implements LogEntryInterface
         return 'Processor not found';
     }
 
+    /**
+     * @return array{profileName: string, gatewayName: string, entity: ?string}
+     */
     public function getParameters(): array
     {
         return [

@@ -36,6 +36,9 @@ class UnsupportedMailTemplateType extends BaseRunLogEntry
         return 'Unsupported mail type';
     }
 
+    /**
+     * @return array{sourceId: ?string, type: string}
+     */
     public function getParameters(): array
     {
         return [

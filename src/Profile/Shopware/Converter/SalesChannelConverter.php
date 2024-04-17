@@ -347,6 +347,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
     }
 
+    /**
+     * @param array<mixed> $languageIds
+     */
     protected function filterExistingLanguageSalesChannelRelation(string $salesChannelUuid, array &$languageIds): void
     {
         $insertLanguages = [];
@@ -364,6 +367,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $languageIds = $insertLanguages;
     }
 
+    /**
+     * @param array<mixed> $converted
+     */
     protected function filterDisabledPackLanguages(array &$converted): void
     {
         if ($this->languagePackRepo === null) {
@@ -398,6 +404,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     protected function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array
     {
         $languages = [];
@@ -426,6 +437,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $languages;
     }
 
+    /**
+     * @param array<mixed> $children
+     */
     private function setRelationMappings(array $children): void
     {
         if (!isset($this->mainMapping['entityUuid'])) {

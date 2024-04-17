@@ -47,6 +47,9 @@ class UnknownEntityLog extends BaseRunLogEntry
         return \sprintf('Cannot find %s', $entity);
     }
 
+    /**
+     * @return array{requiredForEntity: string, requiredForSourceId: string, entity: ?string, sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

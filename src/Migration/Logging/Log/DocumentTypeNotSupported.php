@@ -36,6 +36,9 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
         return 'Document type is not supported';
     }
 
+    /**
+     * @return array{sourceId: ?string, type: string}
+     */
     public function getParameters(): array
     {
         return [

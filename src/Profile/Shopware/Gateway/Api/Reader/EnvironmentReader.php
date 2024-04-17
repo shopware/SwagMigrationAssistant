@@ -24,7 +24,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 #[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
-    private ?HttpClientInterface $client;
+    private ?HttpClientInterface $client = null;
 
     private MigrationContextInterface $migrationContext;
 

@@ -18,6 +18,9 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
 {
     protected string $connectionId;
 
+    /**
+     * @var array<mixed>
+     */
     protected array $originalData;
 
     public function getSourceIdentifier(array $data): string

@@ -225,6 +225,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return $documentType;
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     protected function getMediaFile(array $data): array
     {
         $mapping = $this->mappingService->getOrCreateMapping(

@@ -46,6 +46,9 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
         return \sprintf('The %s entity has one or more empty necessary fields', $entity);
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, emptyField: string}
+     */
     public function getParameters(): array
     {
         return [

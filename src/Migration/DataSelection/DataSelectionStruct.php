@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Migration\DataSelection;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\TotalStruct;
 
 #[Package('services-settings')]
 class DataSelectionStruct extends Struct
@@ -67,11 +68,17 @@ class DataSelectionStruct extends Struct
         return $this->id;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getEntityNames(): array
     {
         return $this->entityNames;
     }
 
+    /**
+     * @param array<string, TotalStruct> $totals
+     */
     public function getCountedTotal(array $totals): int
     {
         $countedTotal = 0;
@@ -84,6 +91,9 @@ class DataSelectionStruct extends Struct
         return $countedTotal;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getEntityNamesRequiredForCount(): array
     {
         return $this->entityNamesRequiredForCount;

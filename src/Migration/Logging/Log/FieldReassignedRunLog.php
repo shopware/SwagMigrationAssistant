@@ -47,6 +47,9 @@ class FieldReassignedRunLog extends BaseRunLogEntry
         return \sprintf('The %s entity has a field that was reassigned', $entity);
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, emptyField: string, replacementField: string}
+     */
     public function getParameters(): array
     {
         return [

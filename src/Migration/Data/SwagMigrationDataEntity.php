@@ -17,25 +17,34 @@ class SwagMigrationDataEntity extends Entity
 {
     use EntityIdTrait;
 
-    protected string $runId;
+    protected string $runId = '';
 
-    protected ?string $entity;
+    protected ?string $entity = null;
 
-    protected int $autoIncrement;
+    protected int $autoIncrement = 0;
 
-    protected ?array $raw;
+    /**
+     * @var array<mixed>|null
+     */
+    protected ?array $raw = null;
 
-    protected ?array $converted;
+    /**
+     * @var array<mixed>|null
+     */
+    protected ?array $converted = null;
 
-    protected ?array $unmapped;
+    /**
+     * @var array<mixed>|null
+     */
+    protected ?array $unmapped = null;
 
-    protected ?string $mappingUuid;
+    protected ?string $mappingUuid = null;
 
-    protected bool $written;
+    protected bool $written = false;
 
-    protected bool $convertFailure;
+    protected bool $convertFailure = false;
 
-    protected bool $writeFailure;
+    protected bool $writeFailure = false;
 
     protected SwagMigrationRunEntity $run;
 
@@ -69,31 +78,49 @@ class SwagMigrationDataEntity extends Entity
         $this->autoIncrement = $autoIncrement;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function getRaw(): ?array
     {
         return $this->raw;
     }
 
+    /**
+     * @param array<mixed> $raw
+     */
     public function setRaw(array $raw): void
     {
         $this->raw = $raw;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function getConverted(): ?array
     {
         return $this->converted;
     }
 
+    /**
+     * @param array<mixed> $converted
+     */
     public function setConverted(array $converted): void
     {
         $this->converted = $converted;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function getUnmapped(): ?array
     {
         return $this->unmapped;
     }
 
+    /**
+     * @param array<mixed> $unmapped
+     */
     public function setUnmapped(array $unmapped): void
     {
         $this->unmapped = $unmapped;

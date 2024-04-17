@@ -37,6 +37,9 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
         return 'Unsupported shipping factor price calculation';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, shippingMethodId: string}
+     */
     public function getParameters(): array
     {
         return [

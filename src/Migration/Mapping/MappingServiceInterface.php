@@ -16,7 +16,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 /**
  * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
  */
-
 #[Package('services-settings')]
 interface MappingServiceInterface
 {
