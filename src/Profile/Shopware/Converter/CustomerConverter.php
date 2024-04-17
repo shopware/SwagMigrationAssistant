@@ -244,7 +244,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
         $converted['salutationId'] = $salutationUuid;
 
-        if (isset($data['addresses'])) {
+        if (isset($data['addresses'], $this->mainMapping['entityUuid'])) {
             $this->getAddresses($data, $converted, $this->mainMapping['entityUuid']);
         }
 
@@ -304,7 +304,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     protected function setPassword(array &$data, array &$converted): void

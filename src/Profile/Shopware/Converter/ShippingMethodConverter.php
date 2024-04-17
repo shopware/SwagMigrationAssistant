@@ -245,7 +245,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     /**
@@ -419,7 +419,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelRule_' . $shopId,
             $this->context
         );
-        $priceRuleUuid = $mapping['entityUuid'];
+        $priceRuleUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -428,7 +428,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelRule_orContainer_' . $shopId,
             $this->context
         );
-        $orContainerUuid = $mapping['entityUuid'];
+        $orContainerUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -437,7 +437,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelRule_andContainer_' . $shopId,
             $this->context
         );
-        $andContainerUuid = $mapping['entityUuid'];
+        $andContainerUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -446,7 +446,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelRule_condition_' . $shopId,
             $this->context
         );
-        $conditionUuid = $mapping['entityUuid'];
+        $conditionUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $rule = [
@@ -540,7 +540,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelAndCustomerGroupRule_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
-        $priceRuleUuid = $mapping['entityUuid'];
+        $priceRuleUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -549,7 +549,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelAndCustomerGroupRule_orContainer_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
-        $orContainerUuid = $mapping['entityUuid'];
+        $orContainerUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -558,7 +558,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelAndCustomerGroupRule_andContainer_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
-        $andContainerUuid = $mapping['entityUuid'];
+        $andContainerUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -567,7 +567,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'salesChannelAndCustomerGroupRule_condition_' . $shopId . '_' . $customerGroupId,
             $this->context
         );
-        $conditionUuid = $mapping['entityUuid'];
+        $conditionUuid = (string) $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $rule = [
@@ -741,7 +741,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->mappingIds[] = $mainRuleMapping['id'];
 
         $mainRule = [
-            'id' => $mainRuleMapping['entityUuid'],
+            'id' => (string) $mainRuleMapping['entityUuid'],
             'priority' => 100,
             'moduleTypes' => [
                 'types' => [
@@ -769,15 +769,15 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->mappingIds[] = $mainAndContainerMapping['id'];
 
         $mainOrContainer = [
-            'id' => $mainOrContainerMapping['entityUuid'],
-            'ruleId' => $mainRuleMapping['entityUuid'],
+            'id' => (string) $mainOrContainerMapping['entityUuid'],
+            'ruleId' => (string) $mainRuleMapping['entityUuid'],
             'type' => 'orContainer',
             'position' => 0,
             'children' => [
                 [
-                    'id' => $mainAndContainerMapping['entityUuid'],
-                    'ruleId' => $mainRuleMapping['entityUuid'],
-                    'parentId' => $mainOrContainerMapping['entityUuid'],
+                    'id' => (string) $mainAndContainerMapping['entityUuid'],
+                    'ruleId' => (string) $mainRuleMapping['entityUuid'],
+                    'parentId' => (string) $mainOrContainerMapping['entityUuid'],
                     'type' => 'andContainer',
                     'position' => 0,
                 ],

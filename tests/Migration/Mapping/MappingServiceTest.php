@@ -18,7 +18,6 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Locale\LocaleCollection;
-use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -99,6 +98,7 @@ class MappingServiceTest extends TestCase
         $additionalData = [
             'key' => 'value',
         ];
+
         $expectedData = $mapping2;
         $expectedData['entityUuid'] = $uuid;
         $expectedData['additionalData'] = $additionalData;
@@ -178,7 +178,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
         $this->mappingService->writeMapping($context);
 
-        $this->mappingService->deleteMapping($languageMapping['entityUuid'], $this->connectionId, $context);
+        $this->mappingService->deleteMapping((string) $languageMapping['entityUuid'], $this->connectionId, $context);
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
         static::assertNull($mapping);

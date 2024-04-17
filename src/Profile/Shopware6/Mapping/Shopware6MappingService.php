@@ -157,7 +157,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $defaultMailTemplate = $this->getMapping($connectionId, DefaultEntities::MAIL_TEMPLATE, $oldIdentifier, $context);
 
         if ($defaultMailTemplate !== null) {
-            return $defaultMailTemplate['entityUuid'];
+            return (string) $defaultMailTemplate['entityUuid'];
         }
 
         $criteria = new Criteria();
@@ -439,7 +439,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $globalDocumentBaseConfig = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $oldIdentifier, $context);
 
         if ($globalDocumentBaseConfig !== null) {
-            return $globalDocumentBaseConfig['entityUuid'];
+            return (string) $globalDocumentBaseConfig['entityUuid'];
         }
 
         $criteria = new Criteria();

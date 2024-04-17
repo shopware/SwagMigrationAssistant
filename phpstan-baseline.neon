@@ -1,47 +1,12 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConvertStruct\\:\\:__construct\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Converter/ConvertStruct.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConvertStruct\\:\\:__construct\\(\\) has parameter \\$unmapped with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Converter/ConvertStruct.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConvertStruct\\:\\:getConverted\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Converter/ConvertStruct.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Converter\\\\ConvertStruct\\:\\:getUnmapped\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Converter/ConvertStruct.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter has an uninitialized property \\$checksum\\. Give it default value or assign it in the constructor\\.$#"
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter\\:\\:\\$mainMapping \\(array\\{id\\: string, connectionId\\: string, oldIdentifier\\: string\\|null, entityUuid\\: string\\|null, entityValue\\: string\\|null, checksum\\: string\\|null, additionalData\\: array\\|null\\}\\|null\\) does not accept array\\{additionalData\\: non\\-empty\\-array\\}\\|array\\{id\\: string, connectionId\\: string, oldIdentifier\\: string\\|null, entityUuid\\: string\\|null, entityValue\\: string\\|null, checksum\\: string\\|null, additionalData\\: non\\-empty\\-array\\}\\.$#"
 			count: 1
 			path: src/Migration/Converter/Converter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter has an uninitialized property \\$mainMapping\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Converter/Converter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter\\:\\:generateChecksum\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Converter/Converter.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter\\:\\:\\$mainMapping type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Converter/Converter.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter\\:\\:\\$mappingIds type has no value type specified in iterable type array\\.$#"
+			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Converter\\\\Converter\\:\\:\\$mainMapping \\(array\\{id\\: string, connectionId\\: string, oldIdentifier\\: string\\|null, entityUuid\\: string\\|null, entityValue\\: string\\|null, checksum\\: string\\|null, additionalData\\: array\\|null\\}\\|null\\) does not accept array\\{checksum\\: string\\}\\|array\\{id\\: string, connectionId\\: string, oldIdentifier\\: string\\|null, entityUuid\\: string\\|null, entityValue\\: string\\|null, checksum\\: string, additionalData\\: array\\|null\\}\\.$#"
 			count: 1
 			path: src/Migration/Converter/Converter.php
 
@@ -436,37 +401,12 @@ parameters:
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:createMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:createMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMappings\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getOrCreateMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getOrCreateMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
@@ -546,37 +486,12 @@ parameters:
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:createMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:createMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMappings\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getOrCreateMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getOrCreateMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
@@ -1051,11 +966,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/AttributeConverter.php
 
 		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/AttributeConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php
@@ -1067,11 +977,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter\\:\\:getCurrencyTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CurrencyConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php
 
@@ -1186,16 +1091,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/CustomerConverter.php
 
 		-
-			message: "#^Offset 'entityUuid' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CustomerConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CustomerConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CustomerGroupConverter.php
@@ -1209,16 +1104,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter\\:\\:getCustomerGroupTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CustomerGroupConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CustomerGroupConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/LanguageConverter.php
 
 		-
 			message: "#^Getter method must return something, not void$#"
@@ -1236,22 +1121,12 @@ parameters:
 			path: src/Profile/Shopware/Converter/MediaConverter.php
 
 		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/MediaConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter\\:\\:getConfiguration\\(\\) has parameter \\$setting with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter\\:\\:getConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
 
@@ -1406,11 +1281,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/OrderConverter.php
 
 		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/OrderConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getDocumentType\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
@@ -1431,24 +1301,9 @@ parameters:
 			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
 
 		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/ProductOptionRelationConverter.php
-
-		-
 			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductOptionRelationConverter\\:\\:\\$originalData type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/ProductOptionRelationConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/ProductPropertyRelationConverter.php
 
 		-
 			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\ProductPropertyRelationConverter\\:\\:\\$originalData type has no value type specified in iterable type array\\.$#"
@@ -1534,16 +1389,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:setRelationMappings\\(\\) has parameter \\$children with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SeoUrlConverter.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$client\\. Give it default value or assign it in the constructor\\.$#"
@@ -2456,6 +2301,76 @@ parameters:
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SalesChannelConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SalesChannelConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SalesChannelDomainConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SalesChannelDomainConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SalutationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SalutationConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SeoUrlConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SeoUrlConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\SeoUrlTemplateConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/SeoUrlTemplateConverter.php
+
+		-
+			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$mappingService\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:reformatMtoNAssociation\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:updateAssociationIds\\(\\) has parameter \\$associationArray with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter\\:\\:updateEntityAssociation\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
+
+		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareMediaConverter\\:\\:updateMediaAssociation\\(\\) has parameter \\$mediaArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
@@ -2711,11 +2626,6 @@ parameters:
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
@@ -2747,11 +2657,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:createListItemMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/DummyMappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 

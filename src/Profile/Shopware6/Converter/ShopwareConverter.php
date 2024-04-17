@@ -114,7 +114,7 @@ abstract class ShopwareConverter extends Converter
     }
 
     /**
-     * @return array<string, mixed>
+     * @return  array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
      */
     protected function getOrCreateMappingMainCompleteFacade(
         string $entityName,

@@ -85,6 +85,6 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

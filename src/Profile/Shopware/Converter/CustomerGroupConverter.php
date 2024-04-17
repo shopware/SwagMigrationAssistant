@@ -72,7 +72,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void

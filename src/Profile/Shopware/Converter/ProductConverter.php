@@ -899,7 +899,6 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->migrationContext,
                 $this->context
             );
-            $this->mappingIds[] = $albumId;
 
             if ($albumId === null) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
@@ -912,6 +911,7 @@ abstract class ProductConverter extends ShopwareConverter
                 continue;
             }
 
+            $this->mappingIds[] = $albumId;
             $newMedia['private'] = true;
             $newMedia['mediaFolderId'] = $albumId;
             $newProductMedia['media'] = $newMedia;
@@ -1419,7 +1419,7 @@ abstract class ProductConverter extends ShopwareConverter
             if ($mapping === null) {
                 continue;
             }
-            $categoryMapping[] = ['id' => $mapping['entityUuid']];
+            $categoryMapping[] = ['id' => (string) $mapping['entityUuid']];
             $this->mappingIds[] = $mapping['id'];
         }
 
@@ -1445,7 +1445,7 @@ abstract class ProductConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $salesChannelUuid = $mapping['entityUuid'];
+                $salesChannelUuid = (string) $mapping['entityUuid'];
                 $this->mappingIds[] = $mapping['id'];
                 $mapping = $this->mappingService->getOrCreateMapping(
                     $this->connectionId,
@@ -1455,7 +1455,7 @@ abstract class ProductConverter extends ShopwareConverter
                 );
                 $this->mappingIds[] = $mapping['id'];
                 $visibilities[] = [
-                    'id' => $mapping['entityUuid'],
+                    'id' => (string) $mapping['entityUuid'],
                     'productId' => $converted['id'],
                     'salesChannelId' => $salesChannelUuid,
                     'visibility' => ProductVisibilityDefinition::VISIBILITY_ALL,

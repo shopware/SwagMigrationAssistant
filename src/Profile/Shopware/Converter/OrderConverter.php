@@ -149,7 +149,7 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityUuid'];
         unset($data['id']);
         $this->uuid = $converted['id'];
 

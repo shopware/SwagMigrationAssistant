@@ -13,6 +13,10 @@ use Shopware\Core\Framework\Struct\Struct;
 #[Package('services-settings')]
 class ConvertStruct extends Struct
 {
+    /**
+     * @param array<mixed>|null $converted
+     * @param array<mixed>|null $unmapped
+     */
     public function __construct(
         private readonly ?array $converted,
         private readonly ?array $unmapped,
@@ -20,11 +24,17 @@ class ConvertStruct extends Struct
     ) {
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function getConverted(): ?array
     {
         return $this->converted;
     }
 
+    /**
+     * @return array<mixed>|null
+     */
     public function getUnmapped(): ?array
     {
         return $this->unmapped;

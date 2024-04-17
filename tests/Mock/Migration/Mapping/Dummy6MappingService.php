@@ -132,7 +132,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $deliveryTimeMapping = $this->getMapping($connectionId, DefaultEntities::DELIVERY_TIME, $name, $context);
 
         if ($deliveryTimeMapping !== null) {
-            return $deliveryTimeMapping['entityUuid'];
+            return (string) $deliveryTimeMapping['entityUuid'];
         }
 
         return self::DEFAULT_DELIVERY_TIME_UUID;
@@ -143,7 +143,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $countryMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY, $oldIdentifier, $context);
 
         if ($countryMapping !== null) {
-            return $countryMapping['entityUuid'];
+            return (string) $countryMapping['entityUuid'];
         }
 
         return null;
@@ -154,7 +154,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $currencyMapping = $this->getMapping($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
 
         if ($currencyMapping !== null) {
-            return $currencyMapping['entityUuid'];
+            return (string) $currencyMapping['entityUuid'];
         }
 
         return null;
@@ -165,7 +165,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $currencyMapping = $this->getMapping($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
 
         if ($currencyMapping !== null) {
-            return $currencyMapping['entityUuid'];
+            return (string) $currencyMapping['entityUuid'];
         }
 
         return null;
@@ -176,7 +176,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $taxMapping = $this->getMapping($connectionId, DefaultEntities::TAX, $sourceId, $context);
 
         if ($taxMapping !== null) {
-            return $taxMapping['entityUuid'];
+            return (string) $taxMapping['entityUuid'];
         }
 
         return null;
@@ -187,7 +187,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $taxRuleMapping = $this->getMapping($connectionId, DefaultEntities::TAX_RULE, $sourceId, $context);
 
         if ($taxRuleMapping !== null) {
-            return $taxRuleMapping['entityUuid'];
+            return (string) $taxRuleMapping['entityUuid'];
         }
 
         return null;
@@ -198,7 +198,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $taxRuleTypeMapping = $this->getMapping($connectionId, DefaultEntities::TAX_RULE_TYPE, $sourceId, $context);
 
         if ($taxRuleTypeMapping !== null) {
-            return $taxRuleTypeMapping['entityUuid'];
+            return (string) $taxRuleTypeMapping['entityUuid'];
         }
 
         return null;
@@ -214,7 +214,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $numberRangeMapping = $this->getMapping($connection->getId(), DefaultEntities::NUMBER_RANGE, $oldIdentifier, $context);
 
         if ($numberRangeMapping !== null) {
-            return $numberRangeMapping['entityUuid'];
+            return (string) $numberRangeMapping['entityUuid'];
         }
 
         return null;
@@ -230,7 +230,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $numberRangeTypeMapping = $this->getMapping($connection->getId(), DefaultEntities::NUMBER_RANGE_TYPE, $oldIdentifier, $context);
 
         if ($numberRangeTypeMapping !== null) {
-            return $numberRangeTypeMapping['entityUuid'];
+            return (string) $numberRangeTypeMapping['entityUuid'];
         }
 
         return null;
@@ -250,7 +250,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $mailTemplateTypeMapping = $this->getMapping($connection->getId(), DefaultEntities::MAIL_TEMPLATE_TYPE, $oldIdentifier, $context);
 
         if ($mailTemplateTypeMapping !== null) {
-            return $mailTemplateTypeMapping['entityUuid'];
+            return (string) $mailTemplateTypeMapping['entityUuid'];
         }
 
         return null;
@@ -261,7 +261,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $mailTemplateMapping = $this->getMapping($connectionId, DefaultEntities::MAIL_TEMPLATE, $oldIdentifier, $context);
 
         if ($mailTemplateMapping) {
-            return $mailTemplateMapping['entityUuid'];
+            return (string) $mailTemplateMapping['entityUuid'];
         }
 
         return $oldIdentifier;
@@ -278,7 +278,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $defaultFolderMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_DEFAULT_FOLDER, $entityName, $context);
 
         if ($defaultFolderMapping !== null) {
-            return $defaultFolderMapping['entityUuid'];
+            return (string) $defaultFolderMapping['entityUuid'];
         }
 
         return null;
@@ -294,7 +294,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $salutationMapping = $this->getMapping($connection->getId(), DefaultEntities::SALUTATION, $oldIdentifier, $context);
 
         if ($salutationMapping !== null) {
-            return $salutationMapping['entityUuid'];
+            return (string) $salutationMapping['entityUuid'];
         }
 
         return null;
@@ -312,7 +312,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $thumbnailSizeMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_THUMBNAIL_SIZE, $sizeString, $context);
 
         if ($thumbnailSizeMapping !== null) {
-            return $thumbnailSizeMapping['entityUuid'];
+            return (string) $thumbnailSizeMapping['entityUuid'];
         }
 
         return null;
@@ -339,7 +339,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $documentTypeMapping = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_TYPE, $technicalName, $context);
 
         if ($documentTypeMapping !== null) {
-            return $documentTypeMapping['entityUuid'];
+            return (string) $documentTypeMapping['entityUuid'];
         }
 
         return null;
@@ -350,7 +350,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $baseConfigMapping = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $oldIdentifier, $context);
 
         if ($baseConfigMapping) {
-            return $baseConfigMapping['entityUuid'];
+            return (string) $baseConfigMapping['entityUuid'];
         }
 
         return $oldIdentifier;
@@ -361,7 +361,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $cmsPageMapping = $this->getMapping('global', DefaultEntities::CMS_PAGE, 'isDuplicate', $context);
 
         if ($cmsPageMapping) {
-            return $cmsPageMapping['entityUuid'];
+            return (string) $cmsPageMapping['entityUuid'];
         }
 
         return null;
@@ -418,9 +418,9 @@ class Dummy6MappingService extends Shopware6MappingService
         $localeMapping = $this->getMapping($connectionId, DefaultEntities::LOCALE, $localeCode, $context);
 
         if ($localeMapping !== null) {
-            $this->locales[$localeCode] = $localeMapping['entityUuid'];
+            $this->locales[$localeCode] = (string) $localeMapping['entityUuid'];
 
-            return $localeMapping['entityUuid'];
+            return (string) $localeMapping['entityUuid'];
         }
 
         $localeUuid = $this->searchLocale($localeCode, $context);
@@ -440,7 +440,7 @@ class Dummy6MappingService extends Shopware6MappingService
         $mapping = $this->getMapping($connectionId, DefaultEntities::SYSTEM_CONFIG, $oldIdentifier, $context);
 
         if ($mapping !== null) {
-            return $mapping['entityUuid'];
+            return (string) $mapping['entityUuid'];
         }
 
         return null;

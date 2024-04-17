@@ -495,7 +495,7 @@ class MappingService implements MappingServiceInterface
         if ($localeMapping !== null) {
             $this->locales[$localeCode] = $localeMapping['entityUuid'];
 
-            return $localeMapping['entityUuid'];
+            return (string) $localeMapping['entityUuid'];
         }
 
         $localeUuid = $this->searchLocale($localeCode, $context);
@@ -531,7 +531,7 @@ class MappingService implements MappingServiceInterface
         $deliveryTimeMapping = $this->getMapping($connectionId, DefaultEntities::DELIVERY_TIME, $name, $context);
 
         if ($deliveryTimeMapping !== null) {
-            return $deliveryTimeMapping['entityUuid'];
+            return (string) $deliveryTimeMapping['entityUuid'];
         }
 
         $criteria = new Criteria();

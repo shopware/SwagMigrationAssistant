@@ -86,7 +86,7 @@ abstract class CurrencyConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     protected function getCurrencyTranslation(array &$currency, array $data): void

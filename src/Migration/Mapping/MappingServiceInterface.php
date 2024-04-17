@@ -13,6 +13,10 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+/**
+ * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+ */
+
 #[Package('services-settings')]
 interface MappingServiceInterface
 {
@@ -20,6 +24,11 @@ interface MappingServiceInterface
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string;
 
+    /**
+     * @param array<mixed>|null $additionalData
+     *
+     * @return  MappingStruct
+     */
     public function getOrCreateMapping(
         string $connectionId,
         string $entityName,
@@ -31,6 +40,9 @@ interface MappingServiceInterface
         ?string $entityValue = null,
     ): array;
 
+    /**
+     * @return  ?MappingStruct
+     */
     public function getMapping(
         string $connectionId,
         string $entityName,
@@ -38,6 +50,11 @@ interface MappingServiceInterface
         Context $context
     ): ?array;
 
+    /**
+     * @param array<mixed>|null $additionalData
+     *
+     * @return  MappingStruct
+     */
     public function createMapping(
         string $connectionId,
         string $entityName,

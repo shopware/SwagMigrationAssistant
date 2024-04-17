@@ -381,7 +381,7 @@ abstract class PromotionConverter extends ShopwareConverter
                     continue;
                 }
 
-                $this->productUuids[] = $productMapping['entityUuid'];
+                $this->productUuids[] = (string) $productMapping['entityUuid'];
                 $this->mappingIds[] = $productMapping['id'];
                 unset($data['restrictarticles']);
             }

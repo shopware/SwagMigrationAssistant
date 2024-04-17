@@ -141,7 +141,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         if ($mapping !== null) {
             $this->mainMapping = $mapping;
 
-            return $mapping['entityUuid'];
+            return (string) $mapping['entityUuid'];
         }
 
         // use global number range uuid for products if available
@@ -157,7 +157,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->checksum
         );
 
-        return $this->mainMapping['entityUuid'];
+        return (string) $this->mainMapping['entityUuid'];
     }
 
     protected function getProductNumberRangeTypeUuid(string $type): ?string

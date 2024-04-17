@@ -81,7 +81,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityUuid'];
 
         if (isset($data['children']) && \count($data['children']) > 0) {
             $this->setRelationMappings($data['children']);
@@ -249,7 +249,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
     /**
@@ -305,7 +305,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $id = $mapping['entityUuid'];
+                $id = (string) $mapping['entityUuid'];
             }
         }
 
@@ -330,7 +330,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $id = $mapping['entityUuid'];
+                $id = (string) $mapping['entityUuid'];
             }
         }
 
