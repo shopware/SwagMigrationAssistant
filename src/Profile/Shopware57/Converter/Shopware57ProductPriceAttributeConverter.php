@@ -20,6 +20,6 @@ class Shopware57ProductPriceAttributeConverter extends ProductPriceAttributeConv
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === ProductPriceAttributeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductPriceAttributeDataSet::getEntity();
     }
 }

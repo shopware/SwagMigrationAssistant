@@ -81,6 +81,8 @@ class CustomerReaderTest extends TestCase
 
         $totalStruct = $this->customerReader->readTotal($this->migrationContext);
 
+        static::assertNotNull($this->migrationContext->getDataSet());
+        static::assertNotNull($totalStruct);
         static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
         static::assertSame(3, $totalStruct->getTotal());
     }

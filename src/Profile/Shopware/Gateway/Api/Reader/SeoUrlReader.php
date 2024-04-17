@@ -20,7 +20,7 @@ class SeoUrlReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SEO_URL;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::SEO_URL;
     }
 
     protected function getApiRoute(): string

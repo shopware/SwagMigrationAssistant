@@ -23,7 +23,7 @@ class LanguageReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::LANGUAGE;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::LANGUAGE;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

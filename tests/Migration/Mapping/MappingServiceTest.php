@@ -17,11 +17,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Locale\LocaleCollection;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -36,12 +38,18 @@ class MappingServiceTest extends TestCase
 
     private MappingServiceInterface $mappingService;
 
+    /**
+     * @var EntityRepository<LocaleCollection>
+     */
     private EntityRepository $localeRepo;
 
     private string $connectionId;
 
     private EntityWriterInterface $entityWriter;
 
+    /**
+     * @var EntityRepository<SwagMigrationMappingCollection>
+     */
     private EntityRepository $mappingRepo;
 
     protected function setUp(): void
@@ -264,7 +272,7 @@ class MappingServiceTest extends TestCase
         static::assertSame($value, $value2);
     }
 
-    private function createMappingService(?StaticEntityRepository $ruleRepository = null): void
+    private function createMappingService(): void
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
@@ -274,7 +282,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('tax.repository'),
             $this->getContainer()->get('number_range.repository'),
-            $ruleRepository ?? $this->getContainer()->get('rule.repository'),
+            $this->getContainer()->get('rule.repository'),
             $this->getContainer()->get('media_thumbnail_size.repository'),
             $this->getContainer()->get('media_default_folder.repository'),
             $this->getContainer()->get('category.repository'),

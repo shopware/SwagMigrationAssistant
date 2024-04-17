@@ -54,7 +54,7 @@ abstract class ApiReader implements ReaderInterface
         );
 
         if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-            throw MigrationException::gatewayRead('Shopware Api ' . $migrationContext->getDataSet()::getEntity());
+            throw MigrationException::gatewayRead('Shopware Api ' . $this->getDataSetEntity($migrationContext));
         }
 
         $arrayResult = \json_decode($result->getBody()->getContents(), true);

@@ -17,6 +17,6 @@ class DummyInvalidCustomerConverter extends Shopware55CustomerConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        return $migrationContext->getDataSet()::getEntity() === InvalidCustomerDataSet::getEntity();
+        return $this->getDataSetEntity($migrationContext) === InvalidCustomerDataSet::getEntity();
     }
 }

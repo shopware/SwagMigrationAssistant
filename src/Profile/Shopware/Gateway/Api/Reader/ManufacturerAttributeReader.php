@@ -20,7 +20,7 @@ class ManufacturerAttributeReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD;
     }
 
     protected function getApiRoute(): string

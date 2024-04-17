@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -28,6 +29,9 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class LocalProductDownloadProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
+     */
     public function __construct(
         private readonly EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
@@ -45,7 +49,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === ProductDownloadDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductDownloadDataSet::getEntity();
     }
 
     public function process(

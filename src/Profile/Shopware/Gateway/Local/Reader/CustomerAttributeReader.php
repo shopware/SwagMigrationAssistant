@@ -20,7 +20,7 @@ class CustomerAttributeReader extends AttributeReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CUSTOMER_CUSTOM_FIELD;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CUSTOMER_CUSTOM_FIELD;
     }
 
     protected function getAttributeTable(): string

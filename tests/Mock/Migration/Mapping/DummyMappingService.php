@@ -72,7 +72,7 @@ class DummyMappingService extends MappingService
     {
     }
 
-    public function saveMapping(array $mapping): void
+    protected function saveMapping(array $mapping): void
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];

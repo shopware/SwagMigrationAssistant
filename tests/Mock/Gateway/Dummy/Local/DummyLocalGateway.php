@@ -43,6 +43,10 @@ class DummyLocalGateway implements GatewayInterface
     {
         $dataSet = $migrationContext->getDataSet();
 
+        if ($dataSet === null) {
+            return [];
+        }
+
         switch ($dataSet::getEntity()) {
             case ProductDataSet::getEntity():
                 return require __DIR__ . '/../../../../_fixtures/product_data.php';

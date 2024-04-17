@@ -20,7 +20,7 @@ class MediaAlbumReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA_FOLDER;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::MEDIA_FOLDER;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

@@ -20,6 +20,6 @@ class Shopware57ShippingMethodConverter extends ShippingMethodConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === ShippingMethodDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ShippingMethodDataSet::getEntity();
     }
 }

@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Utils;
+use Shopware\Core\Checkout\Document\DocumentCollection;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -24,6 +25,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
@@ -36,6 +38,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 {
     private SwagMigrationConnectionEntity $connection;
 
+    /**
+     * @param EntityRepository<DocumentCollection> $documentRepository
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $migrationMediaFileRepo
+     */
     public function __construct(
         private readonly EntityRepository $documentRepository,
         private readonly EntityRepository $migrationMediaFileRepo,

@@ -213,7 +213,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         ];
 
         $converted['typeId'] = Defaults::SALES_CHANNEL_TYPE_STOREFRONT;
-        $this->getSalesChannelTranslation($converted, $data);
+        $this->setSalesChannelTranslation($converted, $data);
         $this->convertValue($converted, 'name', $data, 'name');
         $converted['accessKey'] = AccessKeyHelper::generateAccessKey('sales-channel');
 
@@ -252,7 +252,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
     }
 
-    protected function getSalesChannelTranslation(array &$salesChannel, array $data): void
+    protected function setSalesChannelTranslation(array &$salesChannel, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {

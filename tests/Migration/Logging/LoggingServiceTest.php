@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 
 #[Package('services-settings')]
@@ -27,6 +28,9 @@ class LoggingServiceTest extends TestCase
 
     private LoggingService $loggingService;
 
+    /**
+     * @var EntityRepository<SwagMigrationLoggingCollection>
+     */
     private EntityRepository $loggingRepo;
 
     private Context $context;

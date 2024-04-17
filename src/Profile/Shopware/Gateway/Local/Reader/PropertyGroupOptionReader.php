@@ -21,7 +21,7 @@ class PropertyGroupOptionReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PROPERTY_GROUP_OPTION;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PROPERTY_GROUP_OPTION;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

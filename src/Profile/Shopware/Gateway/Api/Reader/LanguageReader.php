@@ -20,7 +20,7 @@ class LanguageReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::LANGUAGE;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::LANGUAGE;
     }
 
     protected function getApiRoute(): string

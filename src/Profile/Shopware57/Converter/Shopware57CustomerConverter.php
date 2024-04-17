@@ -20,6 +20,6 @@ class Shopware57CustomerConverter extends CustomerConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === CustomerDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CustomerDataSet::getEntity();
     }
 }

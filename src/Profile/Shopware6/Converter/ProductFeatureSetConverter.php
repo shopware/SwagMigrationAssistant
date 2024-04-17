@@ -23,7 +23,7 @@ class ProductFeatureSetConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === ProductFeatureSetDataSet::getEntity();
     }
 
-    public function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
 

@@ -21,7 +21,7 @@ class CrossSellingReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CROSS_SELLING;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CROSS_SELLING;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

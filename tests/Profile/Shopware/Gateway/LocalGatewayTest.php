@@ -14,6 +14,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\Currency\CurrencyCollection;
+use Shopware\Core\System\Language\LanguageCollection;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -62,10 +64,10 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        /** @var EntityRepository $currencyRepository */
+        /** @var EntityRepository<CurrencyCollection> $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
-        /** @var EntityRepository $languageRepository */
+        /** @var EntityRepository<LanguageCollection> $languageRepository */
         $languageRepository = $this->getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
@@ -113,10 +115,10 @@ class LocalGatewayTest extends TestCase
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        /** @var EntityRepository $currencyRepository */
+        /** @var EntityRepository<CurrencyCollection> $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
-        /** @var EntityRepository $languageRepository */
+        /** @var EntityRepository<LanguageCollection> $languageRepository */
         $languageRepository = $this->getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
@@ -162,10 +164,10 @@ class LocalGatewayTest extends TestCase
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
-        /** @var EntityRepository $currencyRepository */
+        /** @var EntityRepository<CurrencyCollection> $currencyRepository */
         $currencyRepository = $this->getContainer()->get('currency.repository');
 
-        /** @var EntityRepository $languageRepository */
+        /** @var EntityRepository<LanguageCollection> $languageRepository */
         $languageRepository = $this->getContainer()->get('language.repository');
 
         $gateway = new ShopwareLocalGateway(

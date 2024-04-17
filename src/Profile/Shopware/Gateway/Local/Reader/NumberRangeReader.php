@@ -21,7 +21,7 @@ class NumberRangeReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::NUMBER_RANGE;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::NUMBER_RANGE;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

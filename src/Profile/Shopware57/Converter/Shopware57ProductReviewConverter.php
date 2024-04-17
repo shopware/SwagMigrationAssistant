@@ -20,6 +20,6 @@ class Shopware57ProductReviewConverter extends ProductReviewConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === ProductReviewDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductReviewDataSet::getEntity();
     }
 }

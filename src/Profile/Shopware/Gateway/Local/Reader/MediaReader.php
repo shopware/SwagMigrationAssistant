@@ -22,7 +22,7 @@ class MediaReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::MEDIA;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::MEDIA;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

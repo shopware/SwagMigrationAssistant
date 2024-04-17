@@ -35,7 +35,7 @@ class ProductManufacturerConverter extends ShopwareMediaConverter
         return $mediaIds;
     }
 
-    public function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
 

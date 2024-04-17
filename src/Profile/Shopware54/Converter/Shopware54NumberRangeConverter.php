@@ -19,6 +19,6 @@ class Shopware54NumberRangeConverter extends NumberRangeConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware54Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === NumberRangeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === NumberRangeDataSet::getEntity();
     }
 }

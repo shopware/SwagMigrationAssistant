@@ -11,6 +11,7 @@ use GuzzleHttp\Client;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -19,6 +20,9 @@ class ConnectionFactory implements ConnectionFactoryInterface
 {
     private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';
 
+    /**
+     * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepository
+     */
     public function __construct(private readonly EntityRepository $connectionRepository)
     {
     }

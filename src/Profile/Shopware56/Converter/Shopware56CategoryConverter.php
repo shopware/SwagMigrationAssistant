@@ -19,6 +19,6 @@ class Shopware56CategoryConverter extends CategoryConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === CategoryDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CategoryDataSet::getEntity();
     }
 }

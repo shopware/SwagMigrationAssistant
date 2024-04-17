@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -21,14 +20,9 @@ class SeoUrlReader extends AbstractReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
-        $dataset = $migrationContext->getDataSet();
-        if (!$dataset instanceof DataSet) {
-            return false;
-        }
-
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $dataset::getEntity() === DefaultEntities::SEO_URL;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::SEO_URL;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

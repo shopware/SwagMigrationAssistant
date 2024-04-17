@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
 use Shopware\Core\Framework\Log\Package;
@@ -29,7 +28,7 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
     {
-        /** @var EntityRepository<ShippingMethodCollection> $shippingMethodRepository */
+        /** @var StaticEntityRepository<ShippingMethodCollection> $shippingMethodRepository */
         $shippingMethodRepository = new StaticEntityRepository([
             new IdSearchResult(
                 1, // trigger already existing technical name check

@@ -69,6 +69,8 @@ class TranslationReaderTest extends TestCase
 
         $totalStruct = $this->translationReader->readTotal($this->migrationContext);
 
+        static::assertNotNull($this->migrationContext->getDataSet());
+        static::assertNotNull($totalStruct);
         static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
         static::assertSame(126, $totalStruct->getTotal());
     }

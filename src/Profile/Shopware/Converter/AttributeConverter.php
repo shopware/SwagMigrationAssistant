@@ -81,7 +81,7 @@ abstract class AttributeConverter extends Converter
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
-            $migrationContext->getDataSet()::getEntity(),
+            $this->getCustomFieldEntityName(),
             $data['name'],
             $context,
             $this->checksum,

@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -31,6 +32,7 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
      * @param StrategyResolverInterface[] $resolver
      */
     public function __construct(
@@ -47,7 +49,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === MediaDataSet::getEntity();
     }
 
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array

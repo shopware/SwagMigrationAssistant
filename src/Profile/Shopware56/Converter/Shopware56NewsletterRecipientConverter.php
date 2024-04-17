@@ -19,6 +19,6 @@ class Shopware56NewsletterRecipientConverter extends NewsletterRecipientConverte
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === NewsletterRecipientDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === NewsletterRecipientDataSet::getEntity();
     }
 }

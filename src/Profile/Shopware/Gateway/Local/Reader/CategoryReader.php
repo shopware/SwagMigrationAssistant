@@ -21,7 +21,7 @@ class CategoryReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CATEGORY;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CATEGORY;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
@@ -38,7 +38,7 @@ class CategoryReader extends AbstractReader
         $mainCategoryLocales = $this->fetchMainCategoryLocales();
 
         $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath', 'previousSiblingId', 'categoryPosition']);
-        $resultSet = $this->setAllLocales($categories, $mainCategoryLocales);
+        $resultSet = $this->generateAllLocales($categories, $mainCategoryLocales);
 
         return $this->cleanupResultSet($resultSet);
     }
@@ -115,7 +115,7 @@ class CategoryReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
-    private function setAllLocales(array $categories, array $mainCategoryLocales): array
+    private function generateAllLocales(array $categories, array $mainCategoryLocales): array
     {
         $resultSet = [];
         $ignoredCategories = $this->getIgnoredCategories();

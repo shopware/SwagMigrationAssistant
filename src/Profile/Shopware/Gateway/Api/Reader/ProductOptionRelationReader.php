@@ -20,7 +20,7 @@ class ProductOptionRelationReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::PRODUCT_OPTION_RELATION;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT_OPTION_RELATION;
     }
 
     protected function getApiRoute(): string

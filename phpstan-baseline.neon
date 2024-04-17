@@ -1066,11 +1066,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/AttributeConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/AttributeConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\AttributeConverter\\:\\:getConfiguredCustomFieldData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/AttributeConverter.php
@@ -1551,11 +1546,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
-			message: "#^Getter method must return something, not void$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$languagePackRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
@@ -1606,51 +1596,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/SeoUrlConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ApiReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CategoryAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CategoryReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CrossSellingReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CurrencyReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CustomerAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CustomerGroupAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CustomerGroupReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/CustomerReader.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$client\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
@@ -1686,101 +1631,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/LanguageReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ManufacturerAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/MediaAlbumReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/MediaReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/NewsletterRecipientReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/NumberRangeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/OrderAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/OrderDocumentAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/OrderDocumentReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ProductAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ProductOptionRelationReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ProductPriceAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ProductPropertyRelationReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ProductReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ProductReviewReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/PropertyGroupOptionReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/SalesChannelReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/SeoUrlReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/ShippingMethodReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableCountReader\\:\\:logExceptions\\(\\) has parameter \\$exceptionArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
@@ -1804,11 +1654,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/TranslationReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
@@ -1851,16 +1696,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
@@ -1871,34 +1706,24 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:generateAllLocales\\(\\) has parameter \\$categories with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:generateAllLocales\\(\\) has parameter \\$mainCategoryLocales with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:generateAllLocales\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
+
+		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:getIgnoredCategories\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:setAllLocales\\(\\) has parameter \\$categories with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:setAllLocales\\(\\) has parameter \\$mainCategoryLocales with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:setAllLocales\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
-			message: "#^Setter method cannot return anything, only set value$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CrossSellingReader\\:\\:enrichWithPositionData\\(\\) has parameter \\$fetchedCrossSelling with no value type specified in iterable type array\\.$#"
@@ -1911,29 +1736,9 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CurrencyReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroupDiscounts\\(\\) has parameter \\$groupIds with no value type specified in iterable type array\\.$#"
@@ -1949,11 +1754,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroups\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerReader\\:\\:assignAssociatedData\\(\\) has parameter \\$customers with no value type specified in iterable type array\\.$#"
@@ -2046,11 +1846,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:appendAssociatedData\\(\\) has parameter \\$locales with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
@@ -2091,16 +1886,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/MainVariantRelationReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ManufacturerAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:fetchAlbums\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
@@ -2126,11 +1911,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/MediaReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaReader.php
@@ -2144,11 +1924,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:prepareMedia\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:addShopAndLocaleByCustomer\\(\\) has parameter \\$item with no value type specified in iterable type array\\.$#"
@@ -2216,29 +1991,9 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NumberRangeReader\\:\\:fetchNumberRanges\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/OrderAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/OrderDocumentAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderDocumentReader\\:\\:fetchDocuments\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -2246,39 +2001,14 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ProductAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductOptionRelationReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ProductPriceAttributeReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductPropertyRelationReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReviewReader\\:\\:fetchReviews\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -2306,29 +2036,14 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PropertyGroupOptionReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SalesChannelReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchExcludedCategories\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"
@@ -2391,24 +2106,9 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/TableReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\TranslationReader\\:\\:fetchTranslations\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:__construct\\(\\) has parameter \\$currencyRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:__construct\\(\\) has parameter \\$languageRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
@@ -2486,16 +2186,6 @@ parameters:
 			path: src/Profile/Shopware/Media/BaseMediaService.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
@@ -2536,16 +2226,6 @@ parameters:
 			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalOrderDocumentProcessor\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalOrderDocumentProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
@@ -2576,11 +2256,6 @@ parameters:
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalProductDownloadProcessor\\:\\:__construct\\(\\) has parameter \\$mediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalProductDownloadProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
@@ -2606,439 +2281,39 @@ parameters:
 			path: src/Profile/Shopware/Media/Strategy/Md5StrategyResolver.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CategoryAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CategoryConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CrossSellingConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CurrencyConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CustomerAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CustomerConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CustomerGroupAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54CustomerGroupConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54LanguageConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ManufacturerAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54MediaConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54MediaFolderConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54NewsletterRecipientConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54NumberRangeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54OrderAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54OrderConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54OrderDocumentAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware54\\\\Converter\\\\Shopware54OrderDocumentConverter\\:\\:getDocumentType\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware54/Converter/Shopware54OrderDocumentConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware54\\\\Converter\\\\Shopware54OrderDocumentConverter\\:\\:getDocumentType\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ProductAttributeConverter.php
+			path: src/Profile/Shopware54/Converter/Shopware54OrderDocumentConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryAssociationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ProductConverter.php
+			path: src/Profile/Shopware6/Converter/CategoryAssociationConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryCmsPageAssociationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ProductOptionRelationConverter.php
+			path: src/Profile/Shopware6/Converter/CategoryCmsPageAssociationConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ProductPriceAttributeConverter.php
+			path: src/Profile/Shopware6/Converter/CategoryConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CategoryProductStreamAssociationConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ProductPropertyRelationConverter.php
+			path: src/Profile/Shopware6/Converter/CategoryProductStreamAssociationConverter.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ProductReviewConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54PropertyGroupOptionConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54SalesChannelConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54SeoUrlConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54ShippingMethodConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54TranslationConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CategoryAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CategoryConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CrossSellingConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CurrencyConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CustomerAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CustomerConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CustomerGroupAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55CustomerGroupConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55LanguageConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ManufacturerAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55MediaConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55MediaFolderConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55NewsletterRecipientConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55NumberRangeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55OrderAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55OrderConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55OrderDocumentAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55OrderDocumentConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ProductAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ProductConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ProductOptionRelationConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ProductPriceAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ProductPropertyRelationConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ProductReviewConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55PropertyGroupOptionConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55SalesChannelConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55SeoUrlConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55ShippingMethodConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware55/Converter/Shopware55TranslationConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CategoryAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CategoryConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CrossSellingConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CurrencyConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CustomerAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CustomerConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CustomerGroupAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56CustomerGroupConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56LanguageConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ManufacturerAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56MediaConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56MediaFolderConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56NewsletterRecipientConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56NumberRangeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56OrderAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56OrderConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56OrderDocumentAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56OrderDocumentConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ProductAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ProductConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ProductOptionRelationConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ProductPriceAttributeConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ProductPropertyRelationConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ProductReviewConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56PropertyGroupOptionConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56SalesChannelConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56SeoUrlConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56ShippingMethodConverter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware56/Converter/Shopware56TranslationConverter.php
+			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:processSubentities\\(\\) has parameter \\$sections with no value type specified in iterable type array\\.$#"
@@ -3051,9 +2326,94 @@ parameters:
 			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NumberRangeConverter\\:\\:__construct\\(\\) has parameter \\$numberRangeStateRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CountryConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
-			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
+			path: src/Profile/Shopware6/Converter/CountryConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CountryStateConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CountryStateConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CrossSellingConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CrossSellingConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CurrencyConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CurrencyConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomFieldSetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CustomFieldSetConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomerConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CustomerConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomerGroupConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CustomerGroupConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CustomerWishlistConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/CustomerWishlistConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DeliveryTimeConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/DeliveryTimeConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DocumentBaseConfigConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/DocumentBaseConfigConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DocumentConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/DocumentConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\DocumentInheritanceConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/DocumentInheritanceConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\LanguageConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/LanguageConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MailTemplateConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/MailTemplateConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MediaConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/MediaConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MediaFolderConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/MediaFolderConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\MediaFolderInheritanceConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/MediaFolderInheritanceConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NewsletterRecipientConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/NewsletterRecipientConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NumberRangeConverter\\:\\:checkForExistingNumberRange\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
@@ -3076,14 +2436,49 @@ parameters:
 			path: src/Profile/Shopware6/Converter/ProductConverter.php
 
 		-
-			message: "#^Change \"convertData\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ProductConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductFeatureSetConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ProductFeatureSetConverter.php
 
 		-
-			message: "#^Change \"convertData\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductManufacturerConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ProductManufacturerConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductReviewConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ProductReviewConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductSortingConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ProductSortingConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductStreamConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ProductStreamConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductStreamFilterInheritanceConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/ProductStreamFilterInheritanceConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PromotionConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/PromotionConverter.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware6/Converter/PropertyGroupConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertOption\\(\\) has parameter \\$option with no value type specified in iterable type array\\.$#"
@@ -3171,16 +2566,6 @@ parameters:
 			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\AuthClient\\:\\:__construct\\(\\) has parameter \\$connectionRepositoy with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Connection/AuthClient.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\ConnectionFactory\\:\\:__construct\\(\\) has parameter \\$connectionRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Connection/ConnectionFactory.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Logging\\\\Log\\\\UnsupportedDocumentTypeLog\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Logging/Log/UnsupportedDocumentTypeLog.php
@@ -3232,16 +2617,6 @@ parameters:
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService has an uninitialized property \\$connection\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:__construct\\(\\) has parameter \\$documentRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:__construct\\(\\) has parameter \\$migrationMediaFileRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
 
@@ -3311,27 +2686,7 @@ parameters:
 			path: tests/Migration/Converter/ConverterRegistryTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Logging\\\\LoggingServiceTest\\:\\:\\$loggingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: tests/Migration/Logging/LoggingServiceTest.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: tests/Migration/Mapping/MappingServiceTest.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest\\:\\:createMappingService\\(\\) has parameter \\$ruleRepository with generic class Shopware\\\\Core\\\\Test\\\\Stub\\\\DataAbstractionLayer\\\\StaticEntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: tests/Migration/Mapping/MappingServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest\\:\\:\\$localeRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: tests/Migration/Mapping/MappingServiceTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest\\:\\:\\$mappingRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: tests/Migration/Mapping/MappingServiceTest.php
 
@@ -3391,11 +2746,6 @@ parameters:
 			path: tests/Mock/Gateway/Dummy/Api/Reader/TableCountDummyReader.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Mock/Gateway/Dummy/Local/DummyLocalGateway.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Logging\\\\DummyLoggingService\\:\\:getLoggingArray\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Logging/DummyLoggingService.php
@@ -3446,11 +2796,6 @@ parameters:
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Change \"saveMapping\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/DummyMappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:createListItemMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
@@ -3491,11 +2836,6 @@ parameters:
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Media/DummyHttpMediaDownloadService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Media\\\\DummyMediaFileService\\:\\:getMediaFileArray\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Media/DummyMediaFileService.php
@@ -3514,11 +2854,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Writer\\\\DummyWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Writer/DummyWriter.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Mock/Profile/Dummy/DummyInvalidCustomerConverter.php
 
 		-
 			message: "#^Anonymous variable in a `\\$response\\['requestStatus'\\]\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
@@ -3541,184 +2876,14 @@ parameters:
 			path: tests/Profile/Shopware/Gateway/ApiReaderTest.php
 
 		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/CustomerReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/NewsletterRecipientReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/NumberRangeReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/OrderDocumentReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/OrderReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/ProductReviewReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/SalesChannelReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/ShippingMethodReaderTest.php
-
-		-
-			message: "#^Cannot call method getEntityName\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Cannot call method getTotal\\(\\) on SwagMigrationAssistant\\\\Migration\\\\TotalStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
-			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/Local/TranslationReaderTest.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\LocalGatewayTest\\:\\:profileProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Profile/Shopware/Gateway/LocalGatewayTest.php
 
 		-
-			message: "#^PHPDoc tag @var for variable \\$currencyRepository contains generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 3
-			path: tests/Profile/Shopware/Gateway/LocalGatewayTest.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$languageRepository contains generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 3
-			path: tests/Profile/Shopware/Gateway/LocalGatewayTest.php
-
-		-
-			message: "#^Cannot call method getCode\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
-
-		-
-			message: "#^Cannot call method getIsWarning\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
-
-		-
-			message: "#^Cannot call method getMessage\\(\\) on SwagMigrationAssistant\\\\Migration\\\\RequestStatusStruct\\|null\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/ShopwareApiGatewayTest.php
-
-		-
-			message: "#^PHPDoc tag @var for variable \\$numberRangeRepo contains generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: tests/Profile/Shopware6/Converter/NumberRangeConverterTest.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductSortingConverterTest\\:\\:loadMapping\\(\\) has parameter \\$mappingArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Profile/Shopware6/Converter/ProductSortingConverterTest.php
-
-		-
-			message: "#^PHPDoc tag @var with type Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository\\<Shopware\\\\Core\\\\Checkout\\\\Shipping\\\\ShippingMethodCollection\\> is not subtype of native type Shopware\\\\Core\\\\Test\\\\Stub\\\\DataAbstractionLayer\\\\StaticEntityRepository\\<Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection\\>\\.$#"
-			count: 1
-			path: tests/Profile/Shopware6/Converter/ShippingMethodConverterTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:dataProviderConvert\\(\\) return type has no value type specified in iterable type iterable\\.$#"

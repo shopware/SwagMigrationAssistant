@@ -20,6 +20,6 @@ class Shopware57CurrencyConverter extends CurrencyConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === CurrencyDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CurrencyDataSet::getEntity();
     }
 }

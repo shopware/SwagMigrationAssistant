@@ -20,9 +20,15 @@ class DummyHttpMediaDownloadService implements MediaFileProcessorInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
+        $dataSet = $migrationContext->getDataSet();
+
+        if ($dataSet === null) {
+            return false;
+        }
+
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
+            && $dataSet::getEntity() === MediaDataSet::getEntity();
     }
 
     public function process(
