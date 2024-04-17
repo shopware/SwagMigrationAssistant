@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -20,6 +21,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class CategoryAssociationProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<CategoryCollection> $categoryRepo
+     */
     public function __construct(private readonly EntityRepository $categoryRepo)
     {
     }

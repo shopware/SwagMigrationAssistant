@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\Product\ProductCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -19,6 +20,9 @@ use Symfony\Component\Routing\RouterInterface;
 #[Package('services-settings')]
 class ProductProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<ProductCollection> $productRepo
+     */
     public function __construct(
         private readonly EntityRepository $productRepo,
         private readonly RouterInterface $router

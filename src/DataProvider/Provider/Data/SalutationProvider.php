@@ -12,11 +12,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Salutation\SalutationCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 #[Package('services-settings')]
 class SalutationProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<SalutationCollection> $salutationRepo
+     */
     public function __construct(private readonly EntityRepository $salutationRepo)
     {
     }

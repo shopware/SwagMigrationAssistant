@@ -18,8 +18,10 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider;
 use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyDefinition;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageDefinition;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
@@ -64,6 +66,7 @@ class EnvironmentServiceTest extends TestCase
         $currencyEntity->setId(Defaults::CURRENCY);
         $currencyEntity->setIsoCode($defaultCurrency);
 
+        /** @var StaticEntityRepository<CurrencyCollection> $currencyRepo */
         $currencyRepo = new StaticEntityRepository(
             [
                 new EntitySearchResult(
@@ -85,6 +88,7 @@ class EnvironmentServiceTest extends TestCase
         $localeEntity->setCode($defaultLocale);
         $languageEntity->setLocale($localeEntity);
 
+        /** @var StaticEntityRepository<LanguageCollection> $languageRepo */
         $languageRepo = new StaticEntityRepository(
             [
                 new EntitySearchResult(

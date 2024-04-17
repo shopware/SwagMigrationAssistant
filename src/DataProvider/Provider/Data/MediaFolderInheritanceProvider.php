@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\Media\Aggregate\MediaFolder\MediaFolderCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -19,6 +20,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class MediaFolderInheritanceProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<MediaFolderCollection> $mediaFolderRepo
+     */
     public function __construct(private readonly EntityRepository $mediaFolderRepo)
     {
     }

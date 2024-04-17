@@ -12,11 +12,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 #[Package('services-settings')]
 class CountryStateProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<CountryStateCollection> $countryStateRepo
+     */
     public function __construct(private readonly EntityRepository $countryStateRepo)
     {
     }

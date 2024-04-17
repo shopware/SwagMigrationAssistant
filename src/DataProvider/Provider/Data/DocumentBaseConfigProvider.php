@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseConfigCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +18,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class DocumentBaseConfigProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<DocumentBaseConfigCollection> $documentBaseConfigRepo
+     */
     public function __construct(private readonly EntityRepository $documentBaseConfigRepo)
     {
     }

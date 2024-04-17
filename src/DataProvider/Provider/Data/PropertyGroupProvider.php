@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\Property\PropertyGroupCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +18,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class PropertyGroupProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<PropertyGroupCollection> $propertyGroupRepo
+     */
     public function __construct(private readonly EntityRepository $propertyGroupRepo)
     {
     }

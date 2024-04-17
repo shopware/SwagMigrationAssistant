@@ -16,12 +16,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider;
 use Shopware\Core\Framework\Store\Services\StoreClient;
+use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyEntity;
+use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 
 #[Package('services-settings')]
 class EnvironmentService implements EnvironmentServiceInterface
 {
+    /**
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
     public function __construct(
         private readonly EntityRepository $currencyRepository,
         private readonly EntityRepository $languageRepository,
