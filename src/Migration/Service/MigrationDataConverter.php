@@ -58,15 +58,14 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 if (\count($createData) === 0) {
                     return;
                 }
-                $converter->writeMapping($context);
-                $this->mediaFileService->writeMediaFile($context);
-                $this->loggingService->saveLogging($context);
-
                 $this->entityWriter->upsert(
                     $this->dataDefinition,
                     $createData,
                     WriteContext::createFromContext($context)
                 );
+                $converter->writeMapping($context);
+                $this->loggingService->saveLogging($context);
+                $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
