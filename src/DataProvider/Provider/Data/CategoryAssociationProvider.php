@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
 use Shopware\Core\Content\Category\CategoryCollection;
-use Shopware\Core\Content\Category\CategoryEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -45,12 +44,11 @@ class CategoryAssociationProvider extends AbstractProvider
             new FieldSorting('level'),
             new FieldSorting('autoIncrement')
         );
-        $result = $this->categoryRepo->search($criteria, $context);
+        $result = $this->categoryRepo->search($criteria, $context)->getEntities();
 
         $neededResult = [];
 
-        /** @var CategoryEntity $item */
-        foreach ($result->getElements() as $item) {
+        foreach ($result as $item) {
             $needed = [];
             $needed['id'] = $item->getId();
             $needed['afterCategoryId'] = $item->getAfterCategoryId();

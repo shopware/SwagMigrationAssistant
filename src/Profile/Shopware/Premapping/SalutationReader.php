@@ -13,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Salutation\SalutationCollection;
-use Shopware\Core\System\Salutation\SalutationEntity;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
@@ -82,8 +81,11 @@ class SalutationReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareGatewayInterface $gateway */
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+
+        if (!$gateway instanceof ShopwareGatewayInterface) {
+            return [];
+        }
 
         $result = $gateway->readTable($migrationContext, 's_core_config_elements', ['name' => 'shopsalutations']);
         if (empty($result)) {
@@ -134,10 +136,9 @@ class SalutationReader extends AbstractPremappingReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('salutationKey'));
-        $salutations = $this->salutationRepo->search($criteria, $context);
+        $salutations = $this->salutationRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var SalutationEntity $salutation */
         foreach ($salutations as $salutation) {
             $key = $salutation->getSalutationKey() ?? '';
 

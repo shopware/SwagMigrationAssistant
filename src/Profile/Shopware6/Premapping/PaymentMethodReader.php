@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Premapping;
 
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -80,8 +79,11 @@ class PaymentMethodReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareGatewayInterface $gateway */
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+
+        if (!$gateway instanceof ShopwareGatewayInterface) {
+            return [];
+        }
 
         $preMappingData = $gateway->readTable($migrationContext, DefaultEntities::PAYMENT_METHOD);
 
@@ -114,15 +116,15 @@ class PaymentMethodReader extends AbstractPremappingReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
-        $paymentMethods = $this->paymentMethodRepo->search($criteria, $context);
+        $paymentMethods = $this->paymentMethodRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var PaymentMethodEntity $paymentMethod */
         foreach ($paymentMethods as $paymentMethod) {
+            $id = $paymentMethod->getId();
             $name = $paymentMethod->getName() ?? '';
-            $this->destinationHandlerToIdDictionary[$paymentMethod->getHandlerIdentifier()] = $paymentMethod->getId();
-            $choices[] = new PremappingChoiceStruct($paymentMethod->getId(), $name);
-            $this->choiceUuids[$paymentMethod->getId()] = $paymentMethod->getId();
+            $this->destinationHandlerToIdDictionary[$paymentMethod->getHandlerIdentifier()] = $id;
+            $choices[] = new PremappingChoiceStruct($id, $name);
+            $this->choiceUuids[$id] = $id;
         }
 
         return $choices;

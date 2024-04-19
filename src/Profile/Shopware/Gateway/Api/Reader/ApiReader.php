@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
@@ -45,7 +44,6 @@ abstract class ApiReader implements ReaderInterface
             return [];
         }
 
-        /** @var GuzzleResponse $result */
         $result = $client->get(
             $this->getApiRoute(),
             [

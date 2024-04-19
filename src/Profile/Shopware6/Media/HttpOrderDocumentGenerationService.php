@@ -67,7 +67,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         Context $context,
         array $workload
     ): array {
-        /** @var MediaProcessWorkloadStruct[] $mappedWorkload */
         $mappedWorkload = [];
         $documentIds = [];
         $runId = $migrationContext->getRunUuid();
@@ -114,7 +113,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $promises = $this->downloadDocument($documents, $mappedWorkload, $client);
 
         // Wait for the requests to complete, even if some of them fail
-        /** @var array $results */
         $results = Utils::settle($promises)->wait();
 
         // handle responses
@@ -131,8 +129,11 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                 }
             );
 
-            /** @var MediaProcessWorkloadStruct $oldWorkload */
             $oldWorkload = \array_pop($oldWorkloadSearchResult);
+
+            if ($oldWorkload === null) {
+                continue;
+            }
 
             if ($state !== 'fulfilled') {
                 $this->handleFailedRequest($oldWorkload, $mappedWorkload[$uuid], $uuid, $additionalData, $failureUuids, $result['reason'] ?? null);

@@ -41,16 +41,6 @@ parameters:
 			path: src/Migration/History/HistoryService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:getLogChunk\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection does not specify its types\\: TElement$#"
-			count: 1
-			path: src/Migration/History/HistoryService.php
-
-		-
-			message: "#^PHPDoc tag @var with type SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\|null is not subtype of native type mixed\\.$#"
-			count: 1
-			path: src/Migration/History/HistoryService.php
-
-		-
 			message: "#^Parameter \\#1 \\$progress of method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:getFormattedSelectedData\\(\\) expects array\\|null, SwagMigrationAssistant\\\\Migration\\\\Run\\\\MigrationProgress\\|null given\\.$#"
 			count: 1
 			path: src/Migration/History/HistoryService.php
@@ -171,11 +161,6 @@ parameters:
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMappings\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getUuidList\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
@@ -207,11 +192,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:updateMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^PHPDoc tag @var with type array\\<SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity\\> is not subtype of native type Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
@@ -252,11 +232,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMappings\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
@@ -921,11 +896,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:\\$numberRangeTypes with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection does not specify its types\\: TElement$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
 			message: "#^Getter method must return something, not void$#"
 			count: 3
 			path: src/Profile/Shopware/Converter/OrderConverter.php
@@ -1119,31 +1089,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
-
-		-
-			message: "#^Anonymous variable in a `\\$column\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 2
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Anonymous variable in a `\\$foreignKey\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:cleanupColumns\\(\\) has parameter \\$columns with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:cleanupColumns\\(\\) has parameter \\$foreignKeys with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:cleanupColumns\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:getAttributeConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -2126,11 +2071,6 @@ parameters:
 			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
 
 		-
-			message: "#^PHPDoc tag @var for variable \\$results has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest has an uninitialized property \\$environmentService\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: tests/DataProvider/Service/EnvironmentServiceTest.php
@@ -2231,11 +2171,6 @@ parameters:
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getMappings\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getProductSortingUuid\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
@@ -2267,11 +2202,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/DummyMappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getMappings\\(\\) return type with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Search\\\\EntitySearchResult does not specify its types\\: TEntityCollection$#"
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 

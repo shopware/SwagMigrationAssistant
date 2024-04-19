@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
@@ -36,7 +35,6 @@ class TableCountReader implements TableCountReaderInterface
             return [];
         }
 
-        /** @var GuzzleResponse $result */
         $result = $client->get(
             'SwagMigrationTotals'
         );

@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
+use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\MigrationException;
@@ -54,8 +54,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
 
         if (isset($information['requestStatus'])) {
-            /** @var RequestStatusStruct $requestStatus */
             $requestStatus = $information['requestStatus'];
+            \assert($requestStatus instanceof RequestStatusStruct);
+
             if ($requestStatus->getCode() === MigrationException::sslRequired()->getErrorCode()) {
                 $requestStatus->setIsWarning(false);
 
@@ -179,13 +180,10 @@ class EnvironmentReader implements EnvironmentReaderInterface
     /**
      * @throws MigrationException
      */
-    private function doSecureRequest(HttpClientInterface $apiClient, string $endpoint): GuzzleResponse
+    private function doSecureRequest(HttpClientInterface $apiClient, string $endpoint): ResponseInterface
     {
         try {
-            /** @var GuzzleResponse $result */
-            $result = $apiClient->get($endpoint);
-
-            return $result;
+            return $apiClient->get($endpoint);
         } catch (ClientException $e) {
             if ($e->getCode() === 401) {
                 throw MigrationException::invalidConnectionAuthentication($endpoint);

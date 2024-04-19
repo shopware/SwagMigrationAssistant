@@ -12,7 +12,6 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DebitPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PrePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -92,8 +91,11 @@ class PaymentMethodReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareGatewayInterface $gateway */
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+
+        if (!$gateway instanceof ShopwareGatewayInterface) {
+            return [];
+        }
 
         $preMappingData = $gateway->readTable($migrationContext, 's_core_paymentmeans');
 
@@ -144,10 +146,9 @@ class PaymentMethodReader extends AbstractPremappingReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
-        $paymentMethods = $this->paymentMethodRepo->search($criteria, $context);
+        $paymentMethods = $this->paymentMethodRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var PaymentMethodEntity $paymentMethod */
         foreach ($paymentMethods as $paymentMethod) {
             $name = $paymentMethod->getName() ?? '';
             $this->preselectionDictionary[$paymentMethod->getHandlerIdentifier()] = $paymentMethod->getId();

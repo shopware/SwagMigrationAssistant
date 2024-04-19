@@ -19,7 +19,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -71,8 +70,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $mappingIds = [];
         $updateWrittenData = [];
 
-        /** @var SwagMigrationDataEntity $data */
-        foreach ($migrationData->getElements() as $data) {
+        foreach ($migrationData->getEntities() as $data) {
             $value = $data->getConverted();
             if ($value !== null) {
                 $converted[$data->getId()] = $value;

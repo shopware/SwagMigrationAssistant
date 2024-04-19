@@ -394,14 +394,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $criteria->addFilter(new EqualsFilter('key', $key));
         $criteria->setLimit(1);
 
-        $result = $this->productSortingRepo->search($criteria, $context);
+        $productSorting = $this->productSortingRepo->search($criteria, $context)->first();
 
-        /** @var ProductSortingEntity|null $productSorting */
-        $productSorting = $result->first();
         $id = null;
         $isLocked = false;
 
-        if ($productSorting !== null) {
+        if ($productSorting instanceof ProductSortingEntity) {
             $id = $productSorting->getId();
             $isLocked = $productSorting->isLocked();
         }
@@ -487,7 +485,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         ]));
         $criteria->addFilter(new EqualsFilter('locked', false));
 
-        /** @var CmsPageCollection $cmsPages */
         $cmsPages = $this->cmsPageRepo->search($criteria, $context)->getEntities();
 
         foreach ($cmsPages as $cmsPage) {
@@ -530,7 +527,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $criteria->addFilter(new EqualsFilter('type', $type));
         $criteria->addFilter(new EqualsFilter('locked', true));
 
-        /** @var CmsPageCollection $cmsPages */
         $cmsPages = $this->cmsPageRepo->search($criteria, $context)->getEntities();
 
         foreach ($cmsPages as $cmsPage) {

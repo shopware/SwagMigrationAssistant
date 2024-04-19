@@ -251,8 +251,7 @@ SQL;
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
     {
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
 
         if ($run === null) {
             return;
@@ -318,8 +317,12 @@ SQL;
 
     private function fireTrackingInformation(string $eventName, string $runUuid, Context $context): void
     {
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
+
+        if ($run === null) {
+            return;
+        }
+
         $progress = $run->getProgress();
         $connection = $run->getConnection();
         $information = [];
@@ -537,7 +540,6 @@ SQL;
      */
     private function getSalesChannels(string $connectionId, Context $context): array
     {
-        /** @var array<int, string> $salesChannelUuids */
         $salesChannelUuids = $this->mappingService->getUuidsByEntity(
             $connectionId,
             SalesChannelDefinition::ENTITY_NAME,

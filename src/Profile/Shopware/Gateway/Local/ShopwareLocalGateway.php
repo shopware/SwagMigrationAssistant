@@ -104,22 +104,32 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         $connection->close();
         $environmentData = $this->localEnvironmentReader->read($migrationContext);
 
-        /** @var CurrencyEntity $targetSystemCurrency */
         $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
-        if (!isset($environmentData['defaultCurrency'])) {
-            $environmentData['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
+
+        $targetCurrencyIsoCode = '';
+        if ($targetSystemCurrency instanceof CurrencyEntity) {
+            $targetCurrencyIsoCode = $targetSystemCurrency->getIsoCode();
+        }
+
+        if (!isset($environmentData['defaultCurrency']) && $targetSystemCurrency instanceof CurrencyEntity) {
+            $environmentData['defaultCurrency'] = $targetCurrencyIsoCode;
         }
 
         $criteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
         $criteria->addAssociation('locale');
-        /** @var LanguageEntity $targetSystemLanguage */
         $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->get(Defaults::LANGUAGE_SYSTEM);
 
-        /** @var LocaleEntity $targetSystemLocale */
-        $targetSystemLocale = $targetSystemLanguage->getLocale();
+        $targetLocaleCode = '';
+        if ($targetSystemLanguage instanceof LanguageEntity) {
+            $targetSystemLocale = $targetSystemLanguage->getLocale();
+
+            if ($targetSystemLocale instanceof LocaleEntity) {
+                $targetLocaleCode = $targetSystemLocale->getCode();
+            }
+        }
 
         if (!isset($environmentData['defaultShopLanguage'])) {
-            $environmentData['defaultShopLanguage'] = $targetSystemLocale->getCode();
+            $environmentData['defaultShopLanguage'] = $targetLocaleCode;
         }
         $environmentData['defaultShopLanguage'] = \str_replace('_', '-', $environmentData['defaultShopLanguage']);
 
@@ -134,10 +144,10 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             new RequestStatusStruct(),
             false,
             [],
-            $targetSystemCurrency->getIsoCode(),
+            $targetCurrencyIsoCode,
             $environmentData['defaultCurrency'],
             $environmentData['defaultShopLanguage'],
-            $targetSystemLocale->getCode()
+            $targetLocaleCode
         );
     }
 

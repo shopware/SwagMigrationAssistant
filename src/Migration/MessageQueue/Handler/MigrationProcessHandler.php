@@ -142,8 +142,11 @@ final class MigrationProcessHandler
         $criteria->setLimit(1);
 
         $result = $this->migrationMediaFileRepo->aggregate($criteria, $context);
-        /** @var CountResult $countResult */
         $countResult = $result->get('count');
+
+        if (!$countResult instanceof CountResult) {
+            return 0;
+        }
 
         return $countResult->getCount();
     }

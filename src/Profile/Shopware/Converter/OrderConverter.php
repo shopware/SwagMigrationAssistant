@@ -411,8 +411,11 @@ abstract class OrderConverter extends ShopwareConverter
             return;
         }
 
-        /** @var CartPrice $cartPrice */
         $cartPrice = $converted['price'];
+        if (!$cartPrice instanceof CartPrice) {
+            return;
+        }
+
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             TransactionStateReader::getMappingName(),

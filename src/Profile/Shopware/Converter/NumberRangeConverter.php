@@ -37,6 +37,9 @@ abstract class NumberRangeConverter extends ShopwareConverter
         'doc_2' => 'document_credit_note',
     ];
 
+    /**
+     * @var EntityCollection<NumberRangeEntity>|null
+     */
     protected ?EntityCollection $numberRangeTypes;
 
     protected string $connectionId;
@@ -168,13 +171,12 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         $collection = $this->numberRangeTypes->filterByProperty('technicalName', self::TYPE_MAPPING[$type]);
 
-        if (empty($collection->first())) {
+        $first = $collection->first();
+        if (empty($first)) {
             return null;
         }
-        /** @var NumberRangeEntity $numberRange */
-        $numberRange = $collection->first();
 
-        return $numberRange->getId();
+        return $first->getId();
     }
 
     protected function getGlobal(string $name): bool

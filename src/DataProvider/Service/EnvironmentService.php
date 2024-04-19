@@ -17,9 +17,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider;
 use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\System\Currency\CurrencyCollection;
-use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageCollection;
-use Shopware\Core\System\Language\LanguageEntity;
 
 #[Package('services-settings')]
 class EnvironmentService implements EnvironmentServiceInterface
@@ -43,14 +41,22 @@ class EnvironmentService implements EnvironmentServiceInterface
      */
     public function getEnvironmentData(Context $context): array
     {
-        /** @var CurrencyEntity $defaultCurrency */
-        $defaultCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->first();
+        $defaultCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->getEntities()->first();
+
+        if ($defaultCurrency === null) {
+            return [];
+        }
+
         $defaultCurrencyIsoCode = $defaultCurrency->getIsoCode();
 
         $languageCriteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
         $languageCriteria->addAssociation('locale');
-        /** @var LanguageEntity $defaultLanguage */
-        $defaultLanguage = $this->languageRepository->search($languageCriteria, $context)->first();
+        $defaultLanguage = $this->languageRepository->search($languageCriteria, $context)->getEntities()->first();
+
+        if ($defaultLanguage === null) {
+            return [];
+        }
+
         $defaultLanguageLocale = $defaultLanguage->getLocale();
         $defaultLanguageLocaleCode = '';
         if ($defaultLanguageLocale !== null) {

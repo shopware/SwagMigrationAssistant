@@ -61,7 +61,6 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array
     {
         // Map workload with uuids as keys
-        /** @var array<string, MediaProcessWorkloadStruct> $mappedWorkload */
         $mappedWorkload = [];
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
@@ -230,7 +229,7 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
     /**
      * Start all the download requests for the media in parallel (async) and return the promise array.
      *
-     * @param Media $media
+     * @param array<int, array<string, string>> $media
      * @param array<string, MediaProcessWorkloadStruct> $mappedWorkload
      *
      * @return array<string, Promise\PromiseInterface>
@@ -334,7 +333,7 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
     /**
      * @param list<string> $mediaIds
      *
-     * @return Media
+     * @return array<int, array<string, string>>
      */
     private function getMediaFiles(array $mediaIds, string $runId): array
     {
@@ -353,7 +352,6 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
 
         $query->executeQuery();
 
-        /** @var Media $result */
         $result = $query->fetchAllAssociative();
         foreach ($result as &$media) {
             $media['id'] = Uuid::fromBytesToHex($media['id']);
@@ -365,7 +363,7 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
     }
 
     /**
-     * @param Media $media
+     * @param array<int, array<string, string>> $media
      */
     private function getMediaName(array $media, string $mediaId): string
     {

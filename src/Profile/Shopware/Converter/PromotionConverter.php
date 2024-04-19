@@ -587,13 +587,15 @@ abstract class PromotionConverter extends ShopwareConverter
             ];
             unset($data['subshopID']);
         } else {
-            /** @var string[] $salesChannelIds */
             $salesChannelIds = $this->salesChannelRepository->searchIds(new Criteria(), $this->context)->getIds();
 
             $priority = 0;
-            /** @var string $promotionId */
             $promotionId = $converted['id'];
             foreach ($salesChannelIds as $salesChannelId) {
+                if (\is_array($salesChannelId)) {
+                    continue;
+                }
+
                 $salesChannelRelationMapping = $this->mappingService->getOrCreateMapping(
                     $this->connectionId,
                     DefaultEntities::SALES_CHANNEL . '_relation',

@@ -30,9 +30,7 @@ class OrderCountIndexer extends CustomerIndexer
     {
         $this->inner->handle($message);
 
-        /** @var array<array<string>|string> $ids */
-        $ids = $message->getData();
-        $ids = \array_unique(\array_filter($ids));
+        $ids = \array_unique(\array_filter($message->getData()));
 
         if (empty($ids)) {
             return;

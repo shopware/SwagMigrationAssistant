@@ -168,9 +168,9 @@ class HistoryControllerTest extends TestCase
     {
         $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
         $run = $result->first();
-        /** @var string $result */
         $result = $this->invokeMethod($this->historyService, 'getPrefixLogInformation', [$run]);
 
+        static::assertIsString($result);
         static::assertStringContainsString('Migration log generated at', $result);
         static::assertStringContainsString('Run id:', $result);
         static::assertStringContainsString('Connection name: myConnection', $result);
@@ -180,9 +180,9 @@ class HistoryControllerTest extends TestCase
     {
         $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
         $run = $result->first();
-        /** @var string $result */
         $result = $this->invokeMethod($this->historyService, 'getSuffixLogInformation', [$run]);
 
+        static::assertIsString($result);
         static::assertStringContainsString('--------------------Additional-metadata---------------------', $result);
         static::assertStringContainsString('Environment information {JSON}:', $result);
         static::assertStringContainsString('Premapping {JSON}: ----------------------------------------------------', $result);

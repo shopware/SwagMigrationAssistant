@@ -120,6 +120,9 @@ interface MappingServiceInterface
 
     public function getLowestRootCategoryUuid(Context $context): ?string;
 
+    /**
+     * @return EntitySearchResult<SwagMigrationMappingCollection>
+     */
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult;
 
     public function preloadMappings(array $mappingIds, Context $context): void;

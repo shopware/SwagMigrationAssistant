@@ -13,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\AbstractPremappingReader;
 use SwagMigrationAssistant\Migration\Premapping\PremappingChoiceStruct;
@@ -104,10 +103,9 @@ class DeliveryTimeReader extends AbstractPremappingReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
-        $deliveryTimes = $this->deliveryTimeRepo->search($criteria, $context);
+        $deliveryTimes = $this->deliveryTimeRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var DeliveryTimeEntity $deliveryTime */
         foreach ($deliveryTimes as $deliveryTime) {
             $id = $deliveryTime->getId();
             $name = $deliveryTime->getName() ?? '';

@@ -122,10 +122,9 @@ class MediaFileService implements MediaFileServiceInterface
                 ),
             ]
         ));
-        $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
+        $mediaFiles = $this->mediaFileRepo->search($criteria, $context)->getEntities();
 
-        /** @var SwagMigrationMediaFileEntity $mediaFile */
-        foreach ($mediaFiles->getElements() as $mediaFile) {
+        foreach ($mediaFiles as $mediaFile) {
             unset($files[$mediaFile->getMediaId()]);
         }
 
@@ -137,11 +136,10 @@ class MediaFileService implements MediaFileServiceInterface
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsAnyFilter('mediaId', $mediaUuids));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
-        $mediaFiles = $this->mediaFileRepo->search($criteria, $context);
+        $mediaFiles = $this->mediaFileRepo->search($criteria, $context)->getEntities();
 
         $updateWrittenMediaFiles = [];
-        /** @var SwagMigrationMediaFileEntity $data */
-        foreach ($mediaFiles->getElements() as $data) {
+        foreach ($mediaFiles as $data) {
             $value = $data->getId();
             $updateWrittenMediaFiles[] = [
                 'id' => $value,

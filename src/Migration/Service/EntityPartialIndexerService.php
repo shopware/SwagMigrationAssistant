@@ -28,7 +28,6 @@ class EntityPartialIndexerService
     {
         $indexers = $this->getIndexers();
 
-        /** @var int $index */
         foreach ($indexers as $index => $indexer) {
             if (!$lastIndexer || $lastIndexer === $indexer->getName()) {
                 $message = $indexer->iterate($lastId);

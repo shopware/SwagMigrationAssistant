@@ -94,24 +94,34 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
             $updateAvailable = $environmentData['environmentInformation']['updateAvailable'];
         }
 
-        /** @var CurrencyEntity $targetSystemCurrency */
         $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);
+
+        $targetCurrencyIsoCode = '';
+        if ($targetSystemCurrency instanceof CurrencyEntity) {
+            $targetCurrencyIsoCode = $targetSystemCurrency->getIsoCode();
+        }
+
         if (!isset($environmentDataArray['defaultCurrency'])) {
-            $environmentDataArray['defaultCurrency'] = $targetSystemCurrency->getIsoCode();
+            $environmentDataArray['defaultCurrency'] = $targetCurrencyIsoCode;
         }
 
         $criteria = new Criteria([Defaults::LANGUAGE_SYSTEM]);
         $criteria->addAssociation('locale');
-        /** @var LanguageEntity $targetSystemLanguage */
         $targetSystemLanguage = $this->languageRepository->search($criteria, $context)->get(Defaults::LANGUAGE_SYSTEM);
 
-        /** @var LocaleEntity $targetSystemLocale */
-        $targetSystemLocale = $targetSystemLanguage->getLocale();
+        $targetLocaleCode = '';
+        if ($targetSystemLanguage instanceof LanguageEntity) {
+            $targetSystemLocale = $targetSystemLanguage->getLocale();
 
-        if (!isset($environmentData['defaultShopLanguage'])) {
-            $environmentData['defaultShopLanguage'] = $targetSystemLocale->getCode();
+            if ($targetSystemLocale instanceof LocaleEntity) {
+                $targetLocaleCode = $targetSystemLocale->getCode();
+            }
         }
-        $environmentData['defaultShopLanguage'] = \str_replace('_', '-', $environmentData['defaultShopLanguage']);
+
+        if (!isset($environmentDataArray['defaultShopLanguage'])) {
+            $environmentDataArray['defaultShopLanguage'] = $targetLocaleCode;
+        }
+        $environmentDataArray['defaultShopLanguage'] = \str_replace('_', '-', $environmentDataArray['defaultShopLanguage']);
 
         $totals = $this->readTotals($migrationContext, $context);
 
@@ -158,10 +168,10 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
             $environmentData['requestStatus'],
             false,
             $displayWarnings,
-            $targetSystemCurrency->getIsoCode(),
+            $targetCurrencyIsoCode,
             $environmentDataArray['defaultCurrency'],
             $environmentDataArray['defaultShopLanguage'],
-            $targetSystemLocale->getCode()
+            $targetLocaleCode
         );
     }
 

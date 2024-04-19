@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Test\Mock\Migration\Mapping;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
@@ -17,6 +16,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService;
@@ -51,7 +51,7 @@ class Dummy6MappingService extends Shopware6MappingService
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
     {
-        return new EntitySearchResult(SwagMigrationMappingDefinition::ENTITY_NAME, 0, new EntityCollection(), null, new Criteria(), $context);
+        return new EntitySearchResult(SwagMigrationMappingDefinition::ENTITY_NAME, 0, new SwagMigrationMappingCollection(), null, new Criteria(), $context);
     }
 
     public function preloadMappings(array $mappingIds, Context $context): void

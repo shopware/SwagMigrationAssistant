@@ -25,6 +25,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -112,7 +113,6 @@ class HistoryService implements HistoryServiceInterface
             }
 
             while ($offset < $total) {
-                /** @var SwagMigrationLoggingCollection $logChunk */
                 $logChunk = $this->getLogChunk($runUuid, $offset, $context);
 
                 foreach ($logChunk->getElements() as $logEntry) {
@@ -132,8 +132,7 @@ class HistoryService implements HistoryServiceInterface
 
     public function clearDataOfRun(string $runUuid, Context $context): void
     {
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->first();
+        $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
 
         if ($run === null) {
             throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
@@ -189,17 +188,13 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria([$runUuid]);
         $criteria->addAssociation('connection');
-        $run = $this->runRepo->search($criteria, $context)->getElements();
-        if (!isset($run[$runUuid])) {
-            return null;
-        }
 
-        /** @var SwagMigrationRunEntity|null $migration */
-        $migration = $run[$runUuid];
-
-        return $migration;
+        return $this->runRepo->search($criteria, $context)->getEntities()->get($runUuid);
     }
 
+    /**
+     * @return EntityCollection<SwagMigrationLoggingEntity>
+     */
     private function getLogChunk(string $runUuid, int $offset, Context $context): EntityCollection
     {
         $criteria = new Criteria();

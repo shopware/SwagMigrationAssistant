@@ -19,7 +19,6 @@ use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
-use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 
 #[Package('services-settings')]
 class LoggingServiceTest extends TestCase
@@ -74,8 +73,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(2, $result->getTotal());
 
         $validCount = 0;
-        /** @var SwagMigrationLoggingEntity $element */
-        foreach ($result->getElements() as $element) {
+        foreach ($result->getEntities() as $element) {
             if ($log1->getCode() === $element->getCode() || $log2->getCode() === $element->getCode()) {
                 ++$validCount;
             }

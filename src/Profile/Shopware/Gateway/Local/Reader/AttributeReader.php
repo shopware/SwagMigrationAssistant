@@ -128,7 +128,6 @@ SQL;
 
         $resultSet = [];
 
-        /** @var Column $column */
         foreach ($columns as $column) {
             $columnData = [
                 'name' => $column->getName(),
@@ -162,6 +161,12 @@ SQL;
         return $this->connection->createSchemaManager()->listTableForeignKeys($table);
     }
 
+    /**
+     * @param array<int, Column> $columns
+     * @param array<ForeignKeyConstraint> $foreignKeys
+     *
+     * @return array<int, Column>
+     */
     private function cleanupColumns(array $columns, array $foreignKeys): array
     {
         $result = [];

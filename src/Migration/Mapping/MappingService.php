@@ -8,15 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Mapping;
 
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
-use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\CmsPageCollection;
 use Shopware\Core\Content\Cms\CmsPageDefinition;
-use Shopware\Core\Content\Cms\CmsPageEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
-use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
-use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Content\Rule\RuleCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -30,17 +26,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\CountryCollection;
-use Shopware\Core\System\Country\CountryEntity;
 use Shopware\Core\System\Currency\CurrencyCollection;
-use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
 use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleCollection;
-use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\Tax\TaxCollection;
-use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -155,8 +147,11 @@ class MappingService implements MappingServiceInterface
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var SwagMigrationMappingEntity $element */
             $element = $result->getEntities()->first();
+
+            if ($element === null) {
+                return null;
+            }
 
             $mapping = [
                 'id' => $element->getId(),
@@ -248,7 +243,6 @@ class MappingService implements MappingServiceInterface
 
         if ($result->count() > 0) {
             $elements = $result->getEntities()->getElements();
-            /** @var SwagMigrationMappingEntity $mapping */
             foreach ($elements as $mapping) {
                 $entityName = $mapping->getEntity();
                 $oldIdentifier = $mapping->getOldIdentifier();
@@ -273,7 +267,6 @@ class MappingService implements MappingServiceInterface
         $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
         $criteria->addFilter(new EqualsFilter('entity', $entityName));
 
-        /** @var SwagMigrationMappingEntity[] $entities */
         $entities = $this->migrationMappingRepo->search($criteria, $context)->getEntities();
 
         $entityUuids = [];
@@ -299,8 +292,12 @@ class MappingService implements MappingServiceInterface
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var SwagMigrationMappingEntity $element */
             $element = $result->getEntities()->first();
+
+            if ($element === null) {
+                return null;
+            }
+
             $value = $element->getEntityValue();
 
             $mapping = [
@@ -367,7 +364,6 @@ class MappingService implements MappingServiceInterface
 
         $uuidList = [];
         if ($result->getTotal() > 0) {
-            /** @var SwagMigrationMappingEntity $entity */
             foreach ($result->getEntities() as $entity) {
                 $uuidList[] = $entity->getEntityUuid();
             }
@@ -436,8 +432,7 @@ class MappingService implements MappingServiceInterface
         $criteria->addFilter(new EqualsFilter('type', 'product_list'));
         $criteria->addFilter(new EqualsFilter('locked', true));
 
-        /** @var CmsPageEntity|null $cmsPage */
-        $cmsPage = $this->cmsPageRepo->search($criteria, $context)->first();
+        $cmsPage = $this->cmsPageRepo->search($criteria, $context)->getEntities()->first();
 
         if ($cmsPage === null) {
             return null;
@@ -580,8 +575,12 @@ class MappingService implements MappingServiceInterface
         $result = $this->countryRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var CountryEntity $element */
             $element = $result->getEntities()->first();
+
+            if ($element === null) {
+                return null;
+            }
+
             $countryUuid = $element->getId();
 
             $this->saveMapping(
@@ -639,8 +638,11 @@ class MappingService implements MappingServiceInterface
         $result = $this->currencyRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var CurrencyEntity $element */
             $element = $result->getEntities()->first();
+
+            if ($element === null) {
+                return null;
+            }
 
             return $element->getId();
         }
@@ -663,8 +665,12 @@ class MappingService implements MappingServiceInterface
         $result = $this->taxRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var TaxEntity $tax */
             $tax = $result->getEntities()->first();
+
+            if ($tax === null) {
+                return null;
+            }
+
             $taxUuid = $tax->getId();
 
             $this->saveMapping(
@@ -748,7 +754,6 @@ class MappingService implements MappingServiceInterface
         $result = $this->mediaDefaultFolderRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var MediaDefaultFolderEntity|null $mediaDefaultFolder */
             $mediaDefaultFolder = $result->getEntities()->first();
             if ($mediaDefaultFolder === null) {
                 return null;
@@ -800,8 +805,11 @@ class MappingService implements MappingServiceInterface
         $result = $this->thumbnailSizeRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var MediaThumbnailSizeEntity $thumbnailSize */
             $thumbnailSize = $result->getEntities()->first();
+
+            if ($thumbnailSize === null) {
+                return null;
+            }
 
             $this->saveMapping(
                 [
@@ -832,13 +840,10 @@ class MappingService implements MappingServiceInterface
         $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
         $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::SALES_CHANNEL));
 
-        $result = $this->migrationMappingRepo->search($criteria, $context);
-
-        /** @var SwagMigrationMappingCollection $saleschannelMappingCollection */
-        $saleschannelMappingCollection = $result->getEntities();
+        $result = $this->migrationMappingRepo->search($criteria, $context)->getEntities();
 
         $uuids = [];
-        foreach ($saleschannelMappingCollection as $swagMigrationMappingEntity) {
+        foreach ($result as $swagMigrationMappingEntity) {
             $uuid = $swagMigrationMappingEntity->getEntityUuid();
 
             if ($uuid === null) {
@@ -872,8 +877,11 @@ class MappingService implements MappingServiceInterface
         $result = $this->documentTypeRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var DocumentTypeEntity $documentType */
             $documentType = $result->getEntities()->first();
+
+            if ($documentType === null) {
+                return null;
+            }
 
             $this->saveMapping(
                 [
@@ -902,7 +910,6 @@ class MappingService implements MappingServiceInterface
         $result = $this->categoryRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var CategoryCollection $collection */
             $collection = $result->getEntities();
             $last = $collection->sortByPosition()->last();
 
@@ -968,10 +975,7 @@ class MappingService implements MappingServiceInterface
         $result = $this->migrationMappingRepo->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var SwagMigrationMappingEntity $element */
-            $element = $result->getEntities()->first();
-
-            return $element->getEntityUuid();
+            return $result->getEntities()->first()?->getEntityUuid();
         }
 
         return null;
@@ -989,8 +993,11 @@ class MappingService implements MappingServiceInterface
         $result = $this->localeRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var LocaleEntity $element */
             $element = $result->getEntities()->first();
+
+            if ($element === null) {
+                throw MigrationException::localeNotFound($localeCode);
+            }
 
             return $element->getId();
         }
@@ -1007,10 +1014,7 @@ class MappingService implements MappingServiceInterface
         $result = $this->languageRepository->search($criteria, $context);
 
         if ($result->getTotal() > 0) {
-            /** @var LanguageEntity $element */
-            $element = $result->getEntities()->first();
-
-            return $element->getId();
+            return $result->getEntities()->first()?->getId();
         }
 
         return null;
