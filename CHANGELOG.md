@@ -1,3 +1,62 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+- MIG-945 - [BREAKING] Changed method name `getMedia` to `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
+- MIG-945 - [BREAKING] Removed cli command `migration:migrate` use `migration:start` instead
+- MIG-945 - [BREAKING] Changed method `writePremapping` of `SwagMigrationAssistant\Controller\PremappingController`
+    - Changed return type from `JsonResponse` to `Response`
+    - Removed parameter `runUuid`
+- MIG-945 - [BREAKING] Removed method `finishMigration` of `SwagMigrationAssistant\Controller\StatusController`
+- MIG-945 - [BREAKING] Changed type of `permapping` field of `SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition` from `JsonField` to new `PremappingField`
+- MIG-945 - [BREAKING] Changed type of `progress` field of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition` from `JsonField` to new `MigrationProgressField`
+- MIG-945 - [BREAKING] Changed return type of `getProgress` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` from `?array` to `?MigrationProgress`
+- MIG-945 - [BREAKING] Changed parameter type of `setProgress` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` from `array` to `MigrationProgress`
+- MIG-945 - [BREAKING] Changed return type of `writeData` of `SwagMigrationAssistant\Migration\DataWriter` from `void` to `int`
+- MIG-945 - [BREAKING] Changed return type of `writeData` of `SwagMigrationAssistant\Migration\DataWriterInterface` from `void` to `int`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `process` of `SwagMigrationAssistant\Migration\Media\Processor\HttpDonwloadServiceBase`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `process` of `SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `processMediaFiles` of `SwagMigrationAssistant\Migration\Service\MediaFileProcessorService`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `processMediaFiles` of `SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `process` of `SwagMigrationAssistant\Profile\Shopware\Media\LocalMediaProcessor`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `process` of `SwagMigrationAssistant\Profile\Shopware\Media\LocalOrderDocumentProcessor`
+- MIG-945 - [BREAKING] Removed parameter `fileChunkByteSize` of method `process` of `SwagMigrationAssistant\Profile\Shopware\Media\LocalProductDownloadProcessor`
+- MIG-945 - [BREAKING] Renamed parameter `context` to `migrationContext` of method `getProcessor` of `SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface`
+- MIG-945 - [BREAKING] Renamed parameter `context` to `migrationContext` of method `getProcessor` of `SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentGenerationService`
+- MIG-945 - [BREAKING] Removed property `fileChunkByteSize` of `SwagMigrationAssistant\Migration\MessageQueue\MessageProcessMediaMessage`
+- MIG-945 - [BREAKING] Removed property `runRepo` of `SwagMigrationAssistant\Migration\Service\PremappingService`
+- MIG-945 - [BREAKING] Changed `SwagMigrationAssistant\Migration\Service\PremappingServiceInterface` / `SwagMigrationAssistant\Migration\Service\PremappingService`
+    - Removed parameter `run` of method `generatePremapping`
+    - Added parameter `dataSelectionIds` to method `generatePremapping`
+- MIG-945 - [BREAKING] Added new constructor parameters `generalSettingRepository` and `migrationConnectionRepository` to `SwagMigrationAssistant\Migration\MigrationContextFactory`
+- MIG-945 - [BREAKING] Added new method `createBySelectedConnection` to interface `SwagMigrationAssistant\Migration\MigrationContextFactoryInterface`
+- MIG-945 - [BREAKING] Removed class/interface/struct:
+    - `SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException` use domain exception instead `MigrationShopwareProfileException::readerNotFound`
+    - `SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledException` use domain exception instead `MigrationShopwareProfileException::pluginNotInstalled`
+    - `SwagMigrationAssistant\Controller\MigrationController`
+    - `SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface`
+    - `SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenStruct`
+    - `SwagMigrationAssistant\Exception\ProcessorNotFoundException` use domain exception instead `MigrationException::processorNotFound`
+    - `SwagMigrationAssistant\Exception\EntityNotExistsException` use domain exception instead `MigrationException::entityNotExists`
+    - `SwagMigrationAssistant\Exception\GatewayNotFoundException` use domain exception instead `MigrationException::gatewayNotFound`
+    - `SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException` use domain exception instead `MigrationException::invalidConnectionAuthentication`
+    - `SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException` use domain exception instead `MigrationException::migrationContextPropertyMissing`
+    - `SwagMigrationAssistant\Exception\MigrationIsRunningException` use domain exception instead `MigrationException::migrationIsAlreadyRunning`
+    - `SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException` use domain exception instead `MigrationException::undefinedRunStatus`
+    - `SwagMigrationAssistant\Exception\MigrationWorkloadPropertyMissingException` use domain exception instead `MigrationException::undefinedRunStatus`
+    - `SwagMigrationAssistant\Exception\NoFileSystemPermissionsException` use domain exception instead `MigrationException::noFileSystemPermissions`
+    - `SwagMigrationAssistant\Exception\ProfileNotFoundException` use domain exception instead `MigrationException::profileNotFound`
+    - `SwagMigrationAssistant\Exception\ReaderNotFoundException` use domain exception instead `MigrationException::readerNotFound`
+    - `SwagMigrationAssistant\Exception\ReaderNotFoundException` use domain exception instead `MigrationException::requestCertificateInvalid`
+    - `SwagMigrationAssistant\Exception\SslRequiredException` use domain exception instead `MigrationException::sslRequired`
+    - `SwagMigrationAssistant\Migration\Service\ProgressState`
+    - `SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService`
+- MIG-945 - [BREAKING] Make following classes / methods internal:
+    - `SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler`
+    - `SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler`
+    - `SwagMigrationAssistant\Migration\Service\MigrationProgressService`
+- MIG-945 - [BREAKING] Changed `SwagMigrationAssistant\Migration\Run\RunService` / `SwagMigrationAssistant\Migration\Run\RunServiceInterface`
+    - Removed properties `accessTokenService`, `migrationDataRepository`, `mediaFileRepository`, `indexer`, `cache`
+    - Removed methods `takeoverMigration`, `calculateWriteProgress`, `calculateMediaFilesProgress`, `calculateCurrentTotals`, `finishMigration`
+    - Removed parameter `abortMigration` of method `abortMigration`
+
 # 11.0.1
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version
 
