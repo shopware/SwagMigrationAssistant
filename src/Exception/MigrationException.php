@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Exception;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Profile\Shopware\Exception\AssociationEntityRequiredMissingException;
 use Symfony\Component\HttpFoundation\Response;
 
 #[Package('services-settings')]
@@ -60,8 +59,6 @@ class MigrationException extends HttpException
 
     public const REQUEST_CERTIFICATE_INVALID = 'SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID';
 
-    public const PLUGIN_NOT_INSTALLED = 'SWAG_MIGRATION__PLUGIN_NOT_INSTALLED';
-
     public const CONVERTER_NOT_FOUND = 'SWAG_MIGRATION__CONVERTER_NOT_FOUND';
 
     public const MIGRATION_CONTEXT_PROPERTY_MISSING = 'SWAG_MIGRATION__MIGRATION_CONTEXT_PROPERTY_MISSING';
@@ -81,8 +78,6 @@ class MigrationException extends HttpException
     public const WRITER_NOT_FOUND = 'SWAG_MIGRATION__WRITER_NOT_FOUND';
 
     public const COULD_NOT_READ_FILE = 'SWAG_MIGRATION__COULD_NOT_READ_FILE';
-
-    public const ASSOCIATION_ENTITY_REQUIRED_MISSING = 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
 
     public const PROVIDER_NOT_FOUND = 'SWAG_MIGRATION__PROVIDER_NOT_FOUND';
 
@@ -154,15 +149,6 @@ class MigrationException extends HttpException
             self::REQUEST_CERTIFICATE_INVALID,
             'The following cURL request failed with an SSL certificate problem: "{{ url }}"',
             ['url' => $url]
-        );
-    }
-
-    public static function pluginNotInstalled(): self
-    {
-        return new self(
-            Response::HTTP_NOT_FOUND,
-            self::PLUGIN_NOT_INSTALLED,
-            'The required plugin is not installed in the source shop system. Please look up the documentation for this gateway.'
         );
     }
 
@@ -428,19 +414,6 @@ class MigrationException extends HttpException
             self::COULD_NOT_READ_FILE,
             'Could not read file from path: "{{ sourcePath }}".',
             ['sourcePath' => $sourcePath]
-        );
-    }
-
-    public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
-    {
-        return new AssociationEntityRequiredMissingException(
-            Response::HTTP_NOT_FOUND,
-            self::ASSOCIATION_ENTITY_REQUIRED_MISSING,
-            'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
-            [
-                'missingEntity' => $missingEntity,
-                'entity' => $entity,
-            ]
         );
     }
 

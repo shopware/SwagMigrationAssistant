@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
-use SwagMigrationAssistant\Profile\Shopware\Exception\DatabaseConnectionException;
+use SwagMigrationAssistant\Profile\Shopware\Exception\MigrationShopwareProfileException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -75,7 +75,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         $profile = $migrationContext->getProfile();
 
         if ($connection === null) {
-            $error = new DatabaseConnectionException();
+            $error = MigrationShopwareProfileException::databaseConnectionError();
 
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),
@@ -90,7 +90,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         try {
             $connection->connect();
         } catch (\Throwable $e) {
-            $error = new DatabaseConnectionException();
+            $error = MigrationShopwareProfileException::databaseConnectionError();
 
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),

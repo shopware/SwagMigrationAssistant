@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
+use SwagMigrationAssistant\Profile\Shopware\Exception\MigrationShopwareProfileException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
@@ -113,7 +114,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
         try {
             if ($this->checkForShopware($this->client)) {
-                throw MigrationException::pluginNotInstalled();
+                throw MigrationShopwareProfileException::pluginNotInstalled();
             }
 
             throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');

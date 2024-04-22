@@ -8,9 +8,8 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Exception;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('services-settings')]
-class AssociationEntityRequiredMissingException extends MigrationException
+class AssociationEntityRequiredMissingException extends MigrationShopwareProfileException
 {
 }
