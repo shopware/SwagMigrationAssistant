@@ -362,7 +362,7 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function convertNotFound(string $entity): self
+    public static function converterNotFound(string $entity): self
     {
         return new self(
             Response::HTTP_NOT_FOUND,
@@ -385,7 +385,7 @@ class MigrationException extends HttpException
     public static function undefinedRunStatus(string $status): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::UNDEFINED_RUN_STATUS,
             'Migration run status "{{ status }}" is not a valid status.',
             ['status' => $status]
@@ -395,7 +395,7 @@ class MigrationException extends HttpException
     public static function noFileSystemPermissions(): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::NO_FILE_SYSTEM_PERMISSIONS,
             'No file system permissions to create or write to files or directories.'
         );
@@ -424,7 +424,7 @@ class MigrationException extends HttpException
     public static function couldNotReadFile(string $sourcePath): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::COULD_NOT_READ_FILE,
             'Could not read file from path: "{{ sourcePath }}".',
             ['sourcePath' => $sourcePath]
@@ -447,7 +447,7 @@ class MigrationException extends HttpException
     public static function couldNotGenerateDocument(): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::COULD_NOT_GENERATE_DOCUMENT,
             'Document could not be generated.'
         );

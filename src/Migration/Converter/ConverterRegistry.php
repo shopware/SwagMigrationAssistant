@@ -38,6 +38,6 @@ class ConverterRegistry implements ConverterRegistryInterface
             throw MigrationException::migrationContextPropertyMissing('Connection');
         }
 
-        throw MigrationException::convertNotFound($connection->getProfileName());
+        throw MigrationException::converterNotFound($connection->getProfileName());
     }
 }

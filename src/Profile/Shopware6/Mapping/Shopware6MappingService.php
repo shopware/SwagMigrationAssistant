@@ -7,14 +7,19 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseConfigCollection;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\Aggregate\CmsPageTranslation\CmsPageTranslationEntity;
 use Shopware\Core\Content\Cms\CmsPageCollection;
+use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeCollection;
+use Shopware\Core\Content\MailTemplate\MailTemplateCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
+use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
 use Shopware\Core\Content\Rule\RuleCollection;
+use Shopware\Core\Content\Seo\SeoUrlTemplate\SeoUrlTemplateCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -25,12 +30,18 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
 use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Locale\LocaleCollection;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
+use Shopware\Core\System\Salutation\SalutationCollection;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
+use Shopware\Core\System\SystemConfig\SystemConfigCollection;
+use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleCollection;
+use Shopware\Core\System\Tax\Aggregate\TaxRuleType\TaxRuleTypeCollection;
 use Shopware\Core\System\Tax\TaxCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -56,17 +67,17 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
      * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
      * @param EntityRepository<NumberRangeCollection> $numberRangeTypeRepo
-     * @param EntityRepository<NumberRangeCollection> $mailTemplateTypeRepo
-     * @param EntityRepository<NumberRangeCollection> $mailTemplateRepo
-     * @param EntityRepository<NumberRangeCollection> $salutationRepo
-     * @param EntityRepository<NumberRangeCollection> $seoUrlTemplateRepo
-     * @param EntityRepository<NumberRangeCollection> $systemConfigRepo
-     * @param EntityRepository<NumberRangeCollection> $productSortingRepo
-     * @param EntityRepository<NumberRangeCollection> $stateMachineStateRepo
-     * @param EntityRepository<NumberRangeCollection> $documentBaseConfigRepo
-     * @param EntityRepository<NumberRangeCollection> $countryStateRepo
-     * @param EntityRepository<NumberRangeCollection> $taxRuleRepo
-     * @param EntityRepository<NumberRangeCollection> $taxRuleTypeRepo
+     * @param EntityRepository<MailTemplateTypeCollection> $mailTemplateTypeRepo
+     * @param EntityRepository<MailTemplateCollection> $mailTemplateRepo
+     * @param EntityRepository<SalutationCollection> $salutationRepo
+     * @param EntityRepository<SeoUrlTemplateCollection> $seoUrlTemplateRepo
+     * @param EntityRepository<SystemConfigCollection> $systemConfigRepo
+     * @param EntityRepository<ProductSortingCollection> $productSortingRepo
+     * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepo
+     * @param EntityRepository<DocumentBaseConfigCollection> $documentBaseConfigRepo
+     * @param EntityRepository<CountryStateCollection> $countryStateRepo
+     * @param EntityRepository<TaxRuleCollection> $taxRuleRepo
+     * @param EntityRepository<TaxRuleTypeCollection> $taxRuleTypeRepo
      */
     public function __construct(
         EntityRepository $migrationMappingRepo,
