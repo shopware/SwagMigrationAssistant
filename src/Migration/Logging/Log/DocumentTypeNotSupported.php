@@ -49,7 +49,7 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
         $args = $this->getParameters();
 
         return \sprintf(
-            'The document with the source id "%s" could not be converted because the document type "%s" is not supported.',
+            'The document with the source id "%s" could not be converted because the document type "%s" is not supported. If you want to migrate this document, please create the document type by follow this documentation: https://developer.shopware.com/docs/guides/plugins/plugins/checkout/document/add-custom-document-type.html',
             $args['sourceId'],
             $args['type']
         );

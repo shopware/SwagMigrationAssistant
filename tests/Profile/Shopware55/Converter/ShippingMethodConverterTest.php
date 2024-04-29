@@ -785,10 +785,10 @@ class ShippingMethodConverterTest extends TestCase
 
     /**
      * @param array<int, array<string, string>> $shippingCosts
-     * @param array<int, array<string, float>> $expected
+     * @param array<int, array<string, float>> $expectedResult
      * */
     #[DataProvider('provideShippingCostData')]
-    public function testConvertCalculationOfQuantityEndValueByType(int $calculationType, array $shippingCosts, array $expected): void
+    public function testConvertCalculationOfQuantityEndValueByType(int $calculationType, array $shippingCosts, array $expectedResult): void
     {
         $shippingMethodData = require __DIR__ . '/../../../_fixtures/shipping_method_data.php';
         $shippingMethodData[0]['calculation'] = $calculationType;
@@ -800,8 +800,8 @@ class ShippingMethodConverterTest extends TestCase
         static::assertIsArray($converted);
         $convertedPrices = $converted['prices'];
         static::assertIsArray($convertedPrices);
-        for ($i = 0, $iMax = \count($expected); $i < $iMax; ++$i) {
-            static::assertSame($expected[$i]['quantityEnd'], $convertedPrices[$i]['quantityEnd']);
+        for ($i = 0, $iMax = \count($expectedResult); $i < $iMax; ++$i) {
+            static::assertSame($expectedResult[$i]['quantityEnd'], $convertedPrices[$i]['quantityEnd']);
         }
         static::assertArrayNotHasKey('quantityEnd', $convertedPrices[2]);
     }
@@ -809,7 +809,7 @@ class ShippingMethodConverterTest extends TestCase
     public static function provideShippingCostData(): \Generator
     {
         yield 'test calculation type quantity' => [
-            'calculation' => self::SW5_CALCULATION_TYPE_QUANTITY,
+            'calculationType' => self::SW5_CALCULATION_TYPE_QUANTITY,
             'shippingCosts' => [
                 [
                     'id' => '305',
@@ -847,7 +847,7 @@ class ShippingMethodConverterTest extends TestCase
         ];
 
         yield 'test calculation type price' => [
-            'calculation' => self::SW5_CALCULATION_TYPE_PRICE,
+            'calculationType' => self::SW5_CALCULATION_TYPE_PRICE,
             'shippingCosts' => [
                 [
                     'id' => '305',
@@ -885,7 +885,7 @@ class ShippingMethodConverterTest extends TestCase
         ];
 
         yield 'test calculation type weight' => [
-            'calculation' => self::SW5_CALCULATION_TYPE_WEIGHT,
+            'calculationType' => self::SW5_CALCULATION_TYPE_WEIGHT,
             'shippingCosts' => [
                 [
                     'id' => '305',
