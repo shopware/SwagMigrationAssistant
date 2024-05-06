@@ -1,6 +1,6 @@
 variables:
   PLUGIN_NAME: SwagMigrationAssistant
-  PLATFORM_MIN_VERSION: '6.6.0.0'
+  PLATFORM_MIN_VERSION: 'v6.6.1.0'
   PLATFORM_DEFAULT_VERSION: 'trunk'
   PLATFORM_BRANCH: $PLATFORM_DEFAULT_VERSION
   DEV_IMAGE:
@@ -128,7 +128,7 @@ build image:
   needs: []
   parallel:
     matrix:
-      - PLATFORM_BRANCH: [ "v$PLATFORM_MIN_VERSION", $PLATFORM_DEFAULT_VERSION ]
+      - PLATFORM_BRANCH: [ $PLATFORM_MIN_VERSION, $PLATFORM_DEFAULT_VERSION ]
 
 build image downstream:
   extends: build image
@@ -169,7 +169,7 @@ acceptance:
         DATABASE_URL: mysql://root:app@database:3306/root
   parallel:
     matrix:
-      - PLATFORM_BRANCH: [ "v$PLATFORM_MIN_VERSION", $PLATFORM_DEFAULT_VERSION ]
+      - PLATFORM_BRANCH: [ $PLATFORM_MIN_VERSION, $PLATFORM_DEFAULT_VERSION ]
   variables:
     CI_DEBUG_SERVICES: "true" # ToDo comment me out # This can be used to display the output of all service containers for debugging
     APP_ENV: prod
