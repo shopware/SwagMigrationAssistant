@@ -23,7 +23,7 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
@@ -49,7 +49,7 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
         $args = $this->getParameters();
 
         return \sprintf(
-            'The document with the source id "%s" could not be converted because the document type "%s" is not supported. If you want to migrate this document, please create the document type by follow this documentation: https://developer.shopware.com/docs/guides/plugins/plugins/checkout/document/add-custom-document-type.html',
+            'The document with the source id "%s" has the document type "%s", which just got migrated but is still missing a document renderer. If you want to generate documents of this type, please follow this documentation: https://developer.shopware.com/docs/guides/plugins/plugins/checkout/document/add-custom-document-type.html',
             $args['sourceId'],
             $args['type']
         );

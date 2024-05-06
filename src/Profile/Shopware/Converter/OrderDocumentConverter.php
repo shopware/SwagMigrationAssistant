@@ -110,6 +110,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $data['orderID'],
             $context
         );
+
         if ($orderMapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
@@ -151,9 +152,6 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         $documentType = $this->getDocumentType($data['documenttype']);
 
-        if ($documentType === null) {
-            return new ConvertStruct(null, $oldData);
-        }
         $converted['documentType'] = $documentType;
         unset($data['documenttype']);
 
@@ -184,7 +182,12 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
-    protected function getDocumentType(array $data): ?array
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    protected function getDocumentType(array $data): array
     {
         $documentType = [];
         $mappedKey = $this->mapDocumentType($data['key']);

@@ -2061,16 +2061,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getDocumentType\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getDocumentType\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\OrderDocumentConverter\\:\\:getMediaFile\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/OrderDocumentConverter.php
@@ -3427,16 +3417,6 @@ parameters:
 
 		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54OrderDocumentConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware54\\\\Converter\\\\Shopware54OrderDocumentConverter\\:\\:getDocumentType\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware54/Converter/Shopware54OrderDocumentConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware54\\\\Converter\\\\Shopware54OrderDocumentConverter\\:\\:getDocumentType\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware54/Converter/Shopware54OrderDocumentConverter.php
 

@@ -53,7 +53,12 @@
             "php bin/phpstan-config-generator.php",
             "../../../vendor/bin/phpstan analyze"
         ],
-        "install5db": "./bin/install-5-test-data.sh"
+        "install5db": "./bin/install-5-test-data.sh",
+        "setup": [
+            "@composer install -o",
+            "@composer install5db",
+            "@php ../../../bin/console p:i -a -c SwagMigrationAssistant"
+        ]
     },
     "autoload": {
         "psr-4": {

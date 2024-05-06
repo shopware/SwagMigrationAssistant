@@ -8,30 +8,31 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware54\Converter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
-use PHPUnit\Framework\MockObject\Rule\InvokedCount;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter;
+use SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Converter\Shopware54OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
+use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55OrderDocumentConverter;
+use SwagMigrationAssistant\Profile\Shopware56\Converter\Shopware56OrderDocumentConverter;
+use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57OrderDocumentConverter;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
-use SwagMigrationAssistant\Test\Mock\Profile\Shopware\OrderDocumentConverterMock;
 
 #[Package('services-settings')]
 class OrderDocumentConverterTest extends TestCase
@@ -142,126 +143,128 @@ class OrderDocumentConverterTest extends TestCase
         static::assertSame($orderDocumentData[0]['docID'], $converted['config']['custom']['invoiceNumber']);
     }
 
-    public function testConvertWithUnknownType(): void
+    public function testConvertShouldLogUnknownType(): void
     {
         $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
+
+        $document = $orderDocumentData[0];
+        $document['id'] = '1';
+        $document['documenttype']['id'] = '999';
+        $document['documenttype']['key'] = 'unknown_type';
+        $document['documenttype']['name'] = 'Unknown type test foo bar';
+
         $context = Context::createDefaultContext();
 
-        $convertResult = $this->orderDocumentConverter->convert(
-            $orderDocumentData[2],
-            $context,
-            $this->migrationContext
-        );
-        static::assertEmpty($convertResult->getConverted());
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED', $logs[0]['code']);
-    }
+        $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
+        $mappingServiceMock->method('getMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
 
-    #[DataProvider('documentTypes')]
-    public function testMapDocumentType(string $type, string $expected): void
-    {
-        $orderDocumentConverter = new OrderDocumentConverterMock();
+        $orderDocumentConverterClasses = [
+            Shopware54OrderDocumentConverter::class => 'migration_unknown_type_test_foo_bar',
+            Shopware55OrderDocumentConverter::class => 'unknown_type',
+            Shopware56OrderDocumentConverter::class => 'unknown_type',
+            Shopware57OrderDocumentConverter::class => 'unknown_type',
+        ];
 
-        static::assertSame($expected, $orderDocumentConverter->mapDocumentType($type));
+        foreach ($orderDocumentConverterClasses as $orderDocumentConverterClass => $expected) {
+            $loggerMock = $this->createMock(LoggingServiceInterface::class);
+            $loggerMock->expects(static::exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
+
+            $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock, $loggerMock);
+            $convertResult = $orderDocumentConverter->convert(
+                $document,
+                $context,
+                $this->migrationContext
+            );
+
+            $converted = $convertResult->getConverted();
+
+            static::assertIsArray($converted);
+            static::assertArrayHasKey('documentType', $converted);
+            static::assertArrayHasKey('technicalName', $converted['documentType']);
+            static::assertSame($expected, $converted['documentType']['technicalName']);
+        }
     }
 
     /**
-     * @return array<string, array<int, string>>
+     * @param array<string, array<string, mixed>> $document
+     */
+    #[DataProvider('documentTypes')]
+    public function testConvertShouldMapDocumentTypes(array $document, string $expectedType): void
+    {
+        $context = Context::createDefaultContext();
+
+        $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
+        $mappingServiceMock->method('getMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
+
+        $orderDocumentConverterClasses = [
+            Shopware54OrderDocumentConverter::class,
+            Shopware55OrderDocumentConverter::class,
+            Shopware56OrderDocumentConverter::class,
+            Shopware57OrderDocumentConverter::class,
+        ];
+
+        foreach ($orderDocumentConverterClasses as $orderDocumentConverterClass) {
+            $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock);
+            $convertResult = $orderDocumentConverter->convert(
+                $document,
+                $context,
+                $this->migrationContext
+            );
+
+            $converted = $convertResult->getConverted();
+
+            static::assertIsArray($converted);
+            static::assertArrayHasKey('documentType', $converted);
+            static::assertArrayHasKey('technicalName', $converted['documentType']);
+            static::assertSame($expectedType, $converted['documentType']['technicalName']);
+        }
+    }
+
+    /**
+     * @return array<string, array<string, array<string, mixed>|string>>
      */
     public static function documentTypes(): array
     {
-        return [
-            'credit from sw5' => ['credit', 'credit_note'],
-            'cancellation from sw5' => ['cancellation', 'storno'],
-            'invoice from sw5' => ['invoice', 'invoice'],
-            'delivery_note from sw5' => ['delivery_note', 'delivery_note'],
-            'storno' => ['storno', 'storno'],
-            'credit_note' => ['credit_note', 'credit_note'],
-            'other key' => ['fooBar', 'fooBar'],
-        ];
-    }
+        $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
 
-    /**
-     * @param array<string, string> $data
-     * @param array<string, string> $mappingResult
-     * @param array<string, string> $expected
-     */
-    #[DataProvider('documentData')]
-    public function testGetDocumentType(
-        array $data,
-        InvokedCount $loggerInvokedCount,
-        ?string $getDocumentTypeUuidResult,
-        array $mappingResult,
-        array $expected
-    ): void {
-        $loggerMock = $this->createMock(LoggingServiceInterface::class);
-        $loggerMock->expects($loggerInvokedCount)->method('addLogEntry');
+        $documentArrayObject = new \ArrayObject($orderDocumentData[0]);
 
-        $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
-        $mappingServiceMock->expects(static::once())->method('getDocumentTypeUuid')->willReturn($getDocumentTypeUuidResult);
-        $mappingServiceMock->expects(empty($mappingResult) ? static::never() : static::once())->method('getOrCreateMapping')->willReturn($mappingResult);
-
-        $orderDocumentConverter = new OrderDocumentConverterMock();
-        $orderDocumentConverter->setMappingService($mappingServiceMock);
-        $orderDocumentConverter->setLoggingService($loggerMock);
-        $orderDocumentConverter->setContext(Context::createDefaultContext());
-        $orderDocumentConverter->setMigrationContext(new MigrationContext(new Shopware54Profile()));
-        $orderDocumentConverter->setRunId(Uuid::randomHex());
-        $orderDocumentConverter->setConnectionId(Uuid::randomHex());
-
-        $result = $orderDocumentConverter->getDocumentType($data);
-
-        static::assertSame($expected, $result);
-    }
-
-    /**
-     * @return array<string, array<int|string, array<string, mixed>|InvokedCount|string|null>>
-     */
-    public static function documentData(): array
-    {
-        $repository = self::getContainer()->get('document_type.repository');
-        $result = $repository->search(new Criteria(), Context::createDefaultContext());
-
-        $returnValue = [
-            'undefined documentType any' => [
-                'data' => ['id' => '1', 'key' => 'any', 'name' => 'any name'],
-                'loggerInvokedCount' => static::once(),
-                'getDocumentTypeUuidResult' => null,
-                'mappingResult' => ['entityUuid' => '9999', 'id' => '9999'],
-                'expected' => ['id' => '9999', 'name' => 'any name', 'technicalName' => 'any'],
-            ],
-
-            'undefined documentType fooBar' => [
-                'data' => ['id' => '2', 'key' => 'fooBar', 'name' => 'fooBar name'],
-                'loggerInvokedCount' => static::once(),
-                'getDocumentTypeUuidResult' => null,
-                'mappingResult' => ['entityUuid' => '8888', 'id' => '8888'],
-                ['id' => '8888', 'name' => 'fooBar name', 'technicalName' => 'fooBar'],
-            ],
+        $data = [
+            ['input' => 'credit', 'expected' => 'credit_note', 'id' => '3'],
+            ['input' => 'cancellation', 'expected' => 'storno', 'id' => '4'],
+            ['input' => 'invoice', 'expected' => 'invoice', 'id' => '1'],
+            ['input' => 'delivery_note', 'expected' => 'delivery_note', 'id' => '2'],
+            ['input' => 'storno', 'expected' => 'storno', 'id' => '4'],
+            ['input' => 'credit_note', 'expected' => 'credit_note', 'id' => '3'],
         ];
 
-        foreach ($result as $index => $documentType) {
-            static::assertInstanceOf(DocumentTypeEntity::class, $documentType);
-            $mappedType = self::mapTypeToShopware5Default($documentType->getTechnicalName());
+        $result = [];
+        foreach ($data as $case) {
+            $document = $documentArrayObject->getArrayCopy();
+            $document['id'] = $document['ID'];
+            $document['documenttype']['key'] = $case['input'];
+            $document['documenttype']['id'] = $case['id'];
 
-            $returnValue['documentType ' . $mappedType] = [
-                'data' => ['id' => $index, 'key' => $mappedType],
-                'loggerInvokedCount' => static::never(),
-                'getDocumentTypeUuidResult' => $documentType->getId(),
-                'mappingResult' => [],
-                'expected' => ['id' => $documentType->getId()],
+            $result['given input: ' . $case['input']] = [
+                'document' => $document,
+                'expectedType' => $case['expected'],
             ];
         }
 
-        return $returnValue;
+        return $result;
     }
 
-    private static function mapTypeToShopware5Default(string $documentType): string
+    private function createDocumentConverter(string $converterClass, MappingServiceInterface $mappingService, ?LoggingServiceInterface $loggingService = null): ShopwareConverter
     {
-        return match ($documentType) {
-            'storno' => 'cancellation',
-            'credit_note' => 'credit',
-            default => $documentType
-        };
+        if ($loggingService === null) {
+            $loggingService = new DummyLoggingService();
+        }
+
+        $instance = new $converterClass($mappingService, $loggingService, new DummyMediaFileService());
+        static::assertInstanceOf(ShopwareConverter::class, $instance);
+
+        return $instance;
     }
 }

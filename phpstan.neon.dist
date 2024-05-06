@@ -60,11 +60,6 @@ parameters:
               - src/Profile/Shopware/Premapping/OrderStateReader.php
               - src/Profile/Shopware/Premapping/TransactionStateReader.php
 
-        - # Overwrite private or protected functions for mocking
-            message: '#Change ".*" method visibility to ".*" to respect parent method visibility.#'
-            paths:
-              - tests/Mock/Profile/Shopware/OrderDocumentConverterMock.php
-
 services:
     -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
         class: Symplify\PHPStanRules\Rules\NoReturnSetterMethodRule

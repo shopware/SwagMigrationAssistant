@@ -145,11 +145,7 @@ class CustomerReader extends AbstractReader
         $query->where('address.user_id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     private function fetchPaymentData(array $ids): array
@@ -163,10 +159,6 @@ class CustomerReader extends AbstractReader
         $query->where('paymentdata.user_id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 }

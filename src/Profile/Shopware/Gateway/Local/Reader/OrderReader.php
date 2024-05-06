@@ -191,11 +191,7 @@ class OrderReader extends AbstractReader
         $query->where('detail.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $fetchedOrderDetails = $query->fetchAllAssociative();
-
-        $fetchedOrderDetails = FetchModeHelper::group($fetchedOrderDetails);
+        $fetchedOrderDetails = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         return $this->mapData($fetchedOrderDetails, [], ['detail']);
     }
@@ -268,11 +264,7 @@ class OrderReader extends AbstractReader
         $query->where('document.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $fetchedOrderDocuments = $query->fetchAllAssociative();
-
-        $fetchedOrderDocuments = FetchModeHelper::group($fetchedOrderDocuments);
+        $fetchedOrderDocuments = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         return $this->mapData($fetchedOrderDocuments, [], ['document']);
     }

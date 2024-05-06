@@ -86,12 +86,10 @@ abstract class AttributeReader extends AbstractReader
             ->select('config.column_name, config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
-            ->setParameter('table', $table)
-            ->executeQuery();
+            ->setParameter('table', $table);
 
-        $rows = $query->fetchAllAssociative();
-
-        $attributeConfiguration = FetchModeHelper::groupUnique($rows);
+        /** @var array<string, array<string, string|mixed|null>> $attributeConfiguration */
+        $attributeConfiguration = FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
 
         $sql = <<<SQL
 SELECT s.*, l.locale
@@ -124,6 +122,7 @@ SQL;
             if (!isset($attributeConfiguration[$column]['translations'][$field])) {
                 $attributeConfiguration[$column]['translations'][$field] = [];
             }
+
             $attributeConfiguration[$column]['translations'][$field][$translation['locale']] = $translation['value'];
         }
 
