@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTy
 abstract class NumberRangeConverter extends ShopwareConverter
 {
     /**
-     * @var array
+     * @var array<string, string>
      */
     protected const TYPE_MAPPING = [
         'user' => 'customer',
@@ -100,11 +100,11 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         // only write name and description when not overriding global number range
         if ($converted['global'] === false) {
-            $this->setNumberRangeTranslation($converted, $data, $migrationContext, $context);
+            $this->setNumberRangeTranslation($converted, $data, $context);
             $this->convertValue($converted, 'name', $data, 'name', self::TYPE_STRING);
             $this->convertValue($converted, 'description', $data, 'desc', self::TYPE_STRING);
 
-            $this->setNumberRangeSalesChannels($converted, $migrationContext, $context);
+            $this->setNumberRangeSalesChannels($converted, $context);
         }
 
         $converted['pattern'] = $data['prefix'] . '{n}';
@@ -132,6 +132,9 @@ abstract class NumberRangeConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $mainMapping);
     }
 
+    /**
+     * @param array<mixed> $data
+     */
     protected function getUuid(array $data, MigrationContextInterface $migrationContext, Context $context): string
     {
         $mapping = $this->mappingService->getMapping(
@@ -184,10 +187,13 @@ abstract class NumberRangeConverter extends ShopwareConverter
         return $name === 'articleordernumber';
     }
 
+    /**
+     * @param array<mixed> $converted
+     * @param array<mixed> $data
+     */
     protected function setNumberRangeTranslation(
         array &$converted,
         array $data,
-        MigrationContextInterface $migrationContext,
         Context $context
     ): void {
         $language = $this->mappingService->getDefaultLanguage($context);
@@ -220,7 +226,10 @@ abstract class NumberRangeConverter extends ShopwareConverter
         }
     }
 
-    protected function setNumberRangeSalesChannels(array &$converted, MigrationContextInterface $migrationContext, Context $context): void
+    /**
+     * @param array<mixed> $converted
+     */
+    protected function setNumberRangeSalesChannels(array &$converted, Context $context): void
     {
         $salesChannelIds = $this->mappingService->getMigratedSalesChannelUuids($this->connectionId, $context);
         $numberRangeSalesChannels = [];

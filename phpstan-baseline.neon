@@ -511,31 +511,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
 
 		-
-			message: "#^Constant SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:TYPE_MAPPING type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:getUuid\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:setNumberRangeSalesChannels\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:setNumberRangeTranslation\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\NumberRangeConverter\\:\\:setNumberRangeTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/NumberRangeConverter.php
-
-		-
 			message: "#^Call to an undefined method Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Entity\\:\\:getLanguageId\\(\\)\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
