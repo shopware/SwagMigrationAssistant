@@ -57,13 +57,6 @@
                         </template>
                     {% endblock %}
 
-                    {% block swag_migration_history_grid_column_selectedData %}
-                        <template #column-progress="{ item }">
-                            <swag-migration-history-selected-data :entityGroups="item.progress">
-                            </swag-migration-history-selected-data>
-                        </template>
-                    {% endblock %}
-
                     {% block swag_migration_history_grid_actions %}
                         <template #actions="{ item }">
                             <sw-context-menu-item :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">

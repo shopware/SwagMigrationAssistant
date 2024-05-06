@@ -31,17 +31,7 @@ parameters:
 			path: src/Migration/History/HistoryService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:getFormattedSelectedData\\(\\) has parameter \\$progress with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/History/HistoryService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:getGroupedLogsOfRun\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/History/HistoryService.php
-
-		-
-			message: "#^Parameter \\#1 \\$progress of method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:getFormattedSelectedData\\(\\) expects array\\|null, SwagMigrationAssistant\\\\Migration\\\\Run\\\\MigrationProgress\\|null given\\.$#"
 			count: 1
 			path: src/Migration/History/HistoryService.php
 

@@ -27,6 +27,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
@@ -243,7 +244,7 @@ class HistoryService implements HistoryServiceInterface
             . 'Connection name: %s' . \PHP_EOL
             . 'Profile: %s' . \PHP_EOL
             . 'Gateway: %s' . \PHP_EOL . \PHP_EOL
-            . 'Selected data:' . \PHP_EOL . '%s' . \PHP_EOL
+            . 'Selected dataSets:' . \PHP_EOL . '%s' . \PHP_EOL
             . '--------------------Log-entries---------------------' . \PHP_EOL,
             \date(self::LOG_TIME_FORMAT),
             $run->getId(),
@@ -255,26 +256,19 @@ class HistoryService implements HistoryServiceInterface
             $connectionName,
             $profileName,
             $gatewayName,
-            $this->getFormattedSelectedData($run->getProgress())
+            $this->getFormattedSelectedDataSets($run->getProgress())
         );
     }
 
-    private function getFormattedSelectedData(?array $progress): string
+    private function getFormattedSelectedDataSets(?MigrationProgress $progress): string
     {
-        if ($progress === null || \count($progress) < 1) {
+        if ($progress === null || $progress->getDataSets()->count() < 1) {
             return '';
         }
 
         $output = '';
-        foreach ($progress as $group) {
-            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $group['id'], $group['total']);
-            foreach ($group['entities'] as $entity) {
-                $output .= \sprintf(
-                    "\t- %s (total: %d)" . \PHP_EOL,
-                    $entity['entityName'],
-                    $entity['total']
-                );
-            }
+        foreach ($progress->getDataSets() as $dataSet) {
+            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $dataSet->getEntityName(), $dataSet->getTotal());
         }
 
         return $output;

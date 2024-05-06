@@ -2,14 +2,18 @@ import { test, expect } from '@fixtures/AcceptanceTest';
 
 const MIGRATION_LOADING_TIMEOUT = 30_000; // 30s (same as request timeout)
 
+// configuration for all the tests in this file
+test.describe.configure({
+    retries: 0, // this test isn't retryable because it doesn't reset state
+    timeout: 300_000, // 5 minutes
+});
+
 test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via local database connection @SwagMigrationAssistant', async ({
     migrationUser,
     databaseCredentials,
     entityCounter,
  }) => {
     const page = migrationUser.page;
-    // allow this complete test to run at max this long
-    test.setTimeout(300_000);  // 5 minutes
     await page.goto('/admin#/swag/migration/index/main');
     await expect(page.locator('.sw-loader-element')).toBeHidden({ timeout: MIGRATION_LOADING_TIMEOUT });
 
@@ -112,15 +116,14 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         expect(error_row_count, 'history error detail should have some rows').toBeGreaterThan(0);
     });
 
-    // ToDo MIG-895: finish this download log file implementation when the download works again
-    /*
     await test.step('Download log file', async () => {
         // Start waiting for log download before clicking. Note no await.
-        const downloadPromise = page.waitForEvent('download');
+        const downloadPromise = page.waitForEvent('download', { timeout: 300_000 });
         await page.getByRole('link', { name: 'download the log file.' }).click();
 
-        // Wait for the download process to complete and save the downloaded file into a buffer
+        // Wait for the download process to complete and save the downloaded file as an artifact and into a buffer
         const download = await downloadPromise;
+        await download.saveAs('test-results/migration-log-sw5_unmodified.txt');
         const logStream = await download.createReadStream();
         const buffers = [];
         for await (const data of logStream) {
@@ -129,11 +132,19 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         const finalBuffer = Buffer.concat(buffers);
         let logString = finalBuffer.toString();
 
+        // cleanup file timestamps
+        logString = logString.replaceAll(/[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4}\s[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\sUTC/g, 'TimestampXXX');
+
         // cleanup log file uuids
-        logString = logString.replaceAll(/"0.+"/g, '"XXX"');
+        logString = logString.replaceAll(/(\s|")(0[0-9a-fA-F]+)/g, '$1XXX');
+
+        // cleanup any media / document file logs, they are inherently non-deterministic,
+        // because media download messages are all put into the message queue and the order they are processed isn't deterministic
+        logString = logString.replaceAll(/(\[warning] SWAG_MIGRATION_CANNOT_GET_).+\n.+\n.+/g, '$1XXX\nXXX\nXXX');
+
+        // Add more replace logic here, if anything new non-deterministic shows up...
 
         // snapshot test the migration log file
         await expect.soft(logString).toMatchSnapshot('migration-log-sw5.txt');
     });
-    */
 });
