@@ -1,4 +1,4 @@
-# REPLACE_GLOBAL_WITH_NEXT_VERSION
+# 11.0.0
 - MIG-951 - Verbessert die Sprachmigration von Shopware 6 zu Shopware 6, damit die Standardsprache nicht mehr überschrieben wird.
 - MIG-951 - [BREAKING] Ändert den Zugriffsmodifikator der Funktion `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter::convertData` von public auf protected
 - MIG-943 - Korrigiert einen Fehler in der Migration der Versandkostenberechnung von Shopware 5

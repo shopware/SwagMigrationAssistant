@@ -1,7 +1,7 @@
 {
     "name": "swag/migration-assistant",
     "description": "Migration plugin for shopware/platform",
-    "version": "10.0.1",
+    "version": "11.0.0",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
