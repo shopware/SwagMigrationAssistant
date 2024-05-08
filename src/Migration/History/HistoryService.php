@@ -200,7 +200,7 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $criteria->setOffset($offset);
         $criteria->setLimit(self::LOG_FETCH_LIMIT);
 

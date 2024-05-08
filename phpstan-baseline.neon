@@ -46,6 +46,11 @@ parameters:
 			path: src/Migration/Logging/LoggingService.php
 
 		-
+			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$autoIncrement\\. Give it default value or assign it in the constructor\\.$#"
+			count: 1
+			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
+
+		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$code\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
