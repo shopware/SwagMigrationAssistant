@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Profile\Shopware54\Converter;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
@@ -19,6 +18,8 @@ use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 #[Package('services-settings')]
 class Shopware54OrderDocumentConverter extends OrderDocumentConverter
 {
+    private const PREFIX = 'migration_';
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware54Profile::PROFILE_NAME
@@ -39,37 +40,26 @@ class Shopware54OrderDocumentConverter extends OrderDocumentConverter
         return parent::convert($data, $context, $migrationContext);
     }
 
-    protected function getDocumentType(array $data): ?array
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    protected function getDocumentType(array $data): array
     {
-        switch ($data['id']) {
-            case '1':
-                $key = 'invoice';
-
-                break;
-            case '2':
-                $key = 'delivery_note';
-
-                break;
-            case '3':
-                $key = 'credit_note';
-
-                break;
-            case '4':
-                $key = 'storno';
-
-                break;
-            default:
-                $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
-                    $this->runId,
-                    $data['id'],
-                    $data['key']
-                ));
-
-                return null;
-        }
-
-        $data['key'] = $key;
+        $data['key'] = match ($data['id']) {
+            '1' => 'invoice',
+            '2' => 'delivery_note',
+            '3' => 'credit_note',
+            '4' => 'storno',
+            default => $this->createName($data['name'])
+        };
 
         return parent::getDocumentType($data);
+    }
+
+    private function createName(string $name): string
+    {
+        return self::PREFIX . \mb_strtolower((string) \preg_replace('/\s+/', '_', $name));
     }
 }

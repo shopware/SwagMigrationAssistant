@@ -176,11 +176,7 @@ class NewsletterRecipientReader extends AbstractReader
         $query->andWhere('addresses.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     private function getGroupedResult(array $shops): array

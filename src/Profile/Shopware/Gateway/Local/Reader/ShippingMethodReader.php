@@ -103,9 +103,7 @@ class ShippingMethodReader extends AbstractReader
 
         $query->addOrderBy('dispatch.id');
 
-        $query->executeQuery();
-
-        return $query->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     private function fetchShippingCosts(array $shippingMethodIds): array
@@ -124,11 +122,7 @@ class ShippingMethodReader extends AbstractReader
 
         $query->orderBy('shippingcosts.from');
 
-        $query->executeQuery();
-
-        $fetchedShippingCosts = $query->fetchAllAssociative();
-
-        $fetchedShippingCosts = FetchModeHelper::group($fetchedShippingCosts);
+        $fetchedShippingCosts = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         return $this->mapData($fetchedShippingCosts, [], ['shippingcosts', 'currencyShortName']);
     }
@@ -147,11 +141,7 @@ class ShippingMethodReader extends AbstractReader
         $query->setParameter('ids', $shippingMethodIds, ArrayParameterType::STRING);
         $query->orderBy('shippingcountries.dispatchID, shippingcountries.countryID');
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     private function fetchPaymentMethods(array $shippingMethodIds): array
@@ -165,11 +155,7 @@ class ShippingMethodReader extends AbstractReader
         $query->setParameter('ids', $shippingMethodIds, ArrayParameterType::STRING);
         $query->orderBy('paymentMethods.dispatchID, paymentMethods.paymentID');
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     private function fetchExcludedCategories(array $shippingMethodIds): array
@@ -183,10 +169,6 @@ class ShippingMethodReader extends AbstractReader
         $query->setParameter('ids', $shippingMethodIds, ArrayParameterType::STRING);
         $query->orderBy('categories.dispatchID, categories.categoryID');
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 }

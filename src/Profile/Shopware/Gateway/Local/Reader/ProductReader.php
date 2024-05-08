@@ -193,11 +193,7 @@ class ProductReader extends AbstractReader
         $query->where('option_relation.article_id IN (:ids)');
         $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $fetchedConfiguratorOptions = $query->fetchAllAssociative();
-
-        $fetchedConfiguratorOptions = FetchModeHelper::group($fetchedConfiguratorOptions);
+        $fetchedConfiguratorOptions = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         return $this->mapData($fetchedConfiguratorOptions, [], ['configurator', 'option']);
     }
@@ -241,9 +237,7 @@ class ProductReader extends AbstractReader
         $query->addOrderBy('product_detail.kind');
         $query->addOrderBy('product_detail.id');
 
-        $query->executeQuery();
-
-        return $query->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     /**
@@ -271,7 +265,7 @@ class ProductReader extends AbstractReader
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<string, array<int, array<string, string|null>>>
      */
     private function getCategories(): array
     {
@@ -290,11 +284,7 @@ class ProductReader extends AbstractReader
         $query->where('product_category.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     /**
@@ -320,11 +310,7 @@ class ProductReader extends AbstractReader
         $query->where('price.articledetailsID IN (:ids)');
         $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $fetchedPrices = $query->fetchAllAssociative();
-
-        $fetchedPrices = FetchModeHelper::group($fetchedPrices);
+        $fetchedPrices = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         return $this->mapData($fetchedPrices, [], ['price', 'currencyShortName']);
     }
@@ -360,11 +346,7 @@ class ProductReader extends AbstractReader
         $query->where('asset.articleID IN (:ids) AND variantAsset.id IS NULL');
         $query->setParameter('ids', $productIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $fetchedAssets = $query->fetchAllAssociative();
-
-        $fetchedAssets = FetchModeHelper::group($fetchedAssets);
+        $fetchedAssets = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         $fetchedAssets = $this->mapData($fetchedAssets, [], ['asset']);
         $fetchedVariantAssets = $this->mapData($this->fetchVariantAssets(), [], ['asset', 'img', 'description', 'main', 'position']);
@@ -393,7 +375,7 @@ class ProductReader extends AbstractReader
     }
 
     /**
-     * @return array<int, mixed>
+     * @return array<string, array<int, array<string, string|null>>>
      */
     private function fetchVariantAssets(): array
     {
@@ -420,11 +402,7 @@ class ProductReader extends AbstractReader
         $query->where('asset.article_detail_id IN (:ids)');
         $query->setParameter('ids', $variantIds, ArrayParameterType::INTEGER);
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     private function getMainCategoryShops(): MainCategoryShopRelationResult
@@ -438,7 +416,7 @@ class ProductReader extends AbstractReader
     }
 
     /**
-     * @param array<int, array<int, array<mixed>>> $categories
+     * @param array<string, array<int, array<string, string|null>>> $categories
      */
     private function getProductVisibility(array $categories, MainCategoryShopRelationResult $mainCategoryShops): ProductVisibilityResult
     {

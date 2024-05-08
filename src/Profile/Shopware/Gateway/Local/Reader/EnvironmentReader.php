@@ -156,11 +156,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
         $query->orderBy('shop.main_id');
 
-        $query->executeQuery();
-
-        $rows = $query->fetchAllAssociative();
-
-        $fetchedShops = FetchModeHelper::groupUnique($rows);
+        $fetchedShops = FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
 
         $shops = $this->mapData($fetchedShops, [], ['shop']);
 

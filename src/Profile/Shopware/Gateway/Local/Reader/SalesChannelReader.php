@@ -82,8 +82,6 @@ class SalesChannelReader extends AbstractReader
 
         $query->orderBy('shop.main_id');
 
-        $rows = $query->fetchAllAssociative();
-
-        return FetchModeHelper::groupUnique($rows);
+        return FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
     }
 }

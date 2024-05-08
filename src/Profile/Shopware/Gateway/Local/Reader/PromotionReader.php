@@ -78,11 +78,7 @@ class PromotionReader extends AbstractReader
         $query->where('codes.voucherID IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
-        $query->executeQuery();
-
-        $fetchedCodes = $query->fetchAllAssociative();
-
-        $fetchedCodes = FetchModeHelper::group($fetchedCodes);
+        $fetchedCodes = FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
 
         return $this->mapData($fetchedCodes, [], ['codes']);
     }

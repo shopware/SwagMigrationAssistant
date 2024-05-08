@@ -110,6 +110,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $data['orderID'],
             $context
         );
+
         if ($orderMapping === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
@@ -151,9 +152,6 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         $documentType = $this->getDocumentType($data['documenttype']);
 
-        if ($documentType === null) {
-            return new ConvertStruct(null, $oldData);
-        }
         $converted['documentType'] = $documentType;
         unset($data['documenttype']);
 
@@ -184,11 +182,18 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return new ConvertStruct($converted, $data, $this->mainMapping['id']);
     }
 
-    protected function getDocumentType(array $data): ?array
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>
+     */
+    protected function getDocumentType(array $data): array
     {
         $documentType = [];
+        $mappedKey = $this->mapDocumentType($data['key']);
+
         $documentTypeUuid = $this->mappingService->getDocumentTypeUuid(
-            $data['key'],
+            $mappedKey,
             $this->context,
             $this->migrationContext
         );
@@ -199,29 +204,23 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return $documentType;
         }
 
-        $knownTypes = ['invoice', 'delivery_note', 'storno', 'credit_note'];
-
-        if (!\in_array($data['key'], $knownTypes, true)) {
-            $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
-                $this->runId,
-                $data['id'],
-                $data['key']
-            ));
-
-            return null;
-        }
+        $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
+            $this->runId,
+            $data['id'],
+            $mappedKey
+        ));
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DocumentTypeDefinition::ENTITY_NAME,
-            $data['key'],
+            $mappedKey,
             $this->context
         );
         $this->mappingIds[] = $mapping['id'];
 
         $documentType['id'] = $mapping['entityUuid'];
         $documentType['name'] = $data['name'];
-        $documentType['technicalName'] = $data['key'];
+        $documentType['technicalName'] = $mappedKey;
 
         return $documentType;
     }
@@ -264,5 +263,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         return $newMedia;
+    }
+
+    protected function mapDocumentType(string $sourceDocumentType): string
+    {
+        return match ($sourceDocumentType) {
+            'cancellation' => 'storno',
+            'credit' => 'credit_note',
+            default => $sourceDocumentType
+        };
     }
 }

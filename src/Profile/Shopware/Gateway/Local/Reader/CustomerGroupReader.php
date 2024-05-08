@@ -103,10 +103,6 @@ class CustomerGroupReader extends AbstractReader
         $query->where('groupID IN (:ids)');
         $query->setParameter('ids', $groupIds, ArrayParameterType::STRING);
 
-        $query->executeQuery();
-
-        $result = $query->fetchAllAssociative();
-
-        return FetchModeHelper::group($result);
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 }
