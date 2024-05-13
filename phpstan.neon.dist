@@ -41,6 +41,17 @@ parameters:
             paths:
                 - src/Profile/Shopware/Converter
 
+        - # Entity properties initialized and handled by our DAL.
+            message: "#^Class SwagMigrationAssistant\\\\.+ has an uninitialized property \\$.+\\. Give it default value or assign it in the constructor\\.$#"
+            paths:
+                - src/Migration/Logging/SwagMigrationLoggingEntity.php
+                - src/Migration/Run/EntityProgress.php
+                - src/Migration/Run/RunProgress.php
+                - src/Migration/Setting/GeneralSettingEntity.php
+                - src/Migration/Data/SwagMigrationDataEntity.php
+                - src/Migration/Mapping/SwagMigrationMappingEntity.php
+                - src/Migration/Media/SwagMigrationMediaFileEntity.php
+
         - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php

@@ -26,6 +26,7 @@ class Migration1715162778AddAutoIncrementToLoggingTest extends TestCase
 
         $migration = new Migration1715162778AddAutoIncrementToLogging();
         $migration->update($conn);
+        $migration->update($conn);
 
         $field = $this->getAutoInrementField($conn);
         static::assertIsArray($field, 'auto_increment field not found in table swag_migration_logging');

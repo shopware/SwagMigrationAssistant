@@ -16,11 +16,6 @@ parameters:
 			path: src/Migration/Data/SwagMigrationDataDefinition.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Data\\\\SwagMigrationDataEntity has an uninitialized property \\$run\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Data/SwagMigrationDataEntity.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\EnvironmentReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Gateway/Reader/EnvironmentReaderInterface.php
@@ -44,66 +39,6 @@ parameters:
 			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:\\$logging type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Logging/LoggingService.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$autoIncrement\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$code\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$description\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$descriptionSnippet\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$entity\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$level\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$parameters\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$run\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$sourceId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$title\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity has an uninitialized property \\$titleSnippet\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -266,46 +201,6 @@ parameters:
 			path: src/Migration/Mapping/SwagMigrationMappingDefinition.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$additionalData\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$checksum\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$connection\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$entity\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$entityUuid\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$entityValue\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity has an uninitialized property \\$oldIdentifier\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity\\:\\:getAdditionalData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
@@ -386,51 +281,6 @@ parameters:
 			path: src/Migration/Media/SwagMigrationMediaFileDefinition.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$entity\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$fileName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$fileSize\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$mediaId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$processFailure\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$processed\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$uri\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$written\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\MessageQueue\\\\OrderCountIndexer\\:\\:updateCustomer\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/MessageQueue/OrderCountIndexer.php
@@ -439,51 +289,6 @@ parameters:
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\MigrationContext has an uninitialized property \\$gateway\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Migration/MigrationContext.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress has an uninitialized property \\$currentCount\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/EntityProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress has an uninitialized property \\$entityName\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/EntityProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\EntityProgress has an uninitialized property \\$total\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/EntityProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress has an uninitialized property \\$currentCount\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/RunProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress has an uninitialized property \\$entities\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/RunProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress has an uninitialized property \\$id\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/RunProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress has an uninitialized property \\$processMediaFiles\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/RunProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress has an uninitialized property \\$snippet\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/RunProgress.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress has an uninitialized property \\$total\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Run/RunProgress.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress\\:\\:setEntities\\(\\) has parameter \\$entities with no value type specified in iterable type array\\.$#"
@@ -599,21 +404,6 @@ parameters:
 			message: "#^swag_migration_general_setting\\.selectedConnection association has a configured autoload\\=\\=\\=true, this is forbidden for platform integrations$#"
 			count: 1
 			path: src/Migration/Setting/GeneralSettingDefinition.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Setting\\\\GeneralSettingEntity has an uninitialized property \\$isReset\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Setting/GeneralSettingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Setting\\\\GeneralSettingEntity has an uninitialized property \\$selectedConnection\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Setting/GeneralSettingEntity.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Setting\\\\GeneralSettingEntity has an uninitialized property \\$selectedConnectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Setting/GeneralSettingEntity.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\AbstractWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"

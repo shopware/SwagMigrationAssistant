@@ -4,6 +4,7 @@
     "esModuleInterop": true,
     "types": ["node"],
     "baseUrl": ".",
+    "include": ["src/**/*"],
     "paths": {
       "@acceptance/*": ["./../../../../../tests/acceptance/*"],
       "@fixtures/*": ["fixtures/*"],

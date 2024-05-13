@@ -24,6 +24,10 @@ class Migration1715162778AddAutoIncrementToLogging extends MigrationStep
 
     public function update(Connection $connection): void
     {
+        if ($this->columnExists($connection, 'swag_migration_logging', 'auto_increment')) {
+            return;
+        }
+
         $connection->executeStatement('
             ALTER TABLE `swag_migration_logging` ADD `auto_increment` BIGINT unsigned NOT NULL AUTO_INCREMENT,
             ADD KEY `idx.auto_increment` (`auto_increment`);
