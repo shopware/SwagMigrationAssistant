@@ -12,6 +12,7 @@ import { test as shopAdminTasks } from '@acceptance/tasks/ShopAdminTasks';
 import { MigrationUser } from '@fixtures/MigrationUser';
 import { DatabaseCredentials } from '@fixtures/DatabaseCredentials';
 import { EntityCounter } from '@fixtures/EntityCounter';
+import { MediaProcessObserver } from '@fixtures/MediaProcessObserver';
 
 export * from '@acceptance/fixtures/AcceptanceTest';
 
@@ -39,4 +40,5 @@ export const test = mergeTests(
     MigrationUser,
     DatabaseCredentials,
     EntityCounter,
+    MediaProcessObserver,
 );

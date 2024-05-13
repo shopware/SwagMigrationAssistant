@@ -416,11 +416,6 @@ parameters:
 			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$run\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Media/SwagMigrationMediaFileEntity.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileEntity has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Migration/Media/SwagMigrationMediaFileEntity.php

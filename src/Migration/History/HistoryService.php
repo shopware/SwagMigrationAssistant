@@ -26,7 +26,6 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -151,7 +150,11 @@ class HistoryService implements HistoryServiceInterface
 
     public function isMediaProcessing(): bool
     {
-        return $this->connection->executeQuery('SELECT 1 FROM messenger_messages WHERE queue_name = :name', ['name' => ProcessMediaMessage::class])->fetchOne();
+        $unprocessedCount = $this->connection->executeQuery(
+            'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
+        )->fetchOne();
+
+        return $unprocessedCount !== '0';
     }
 
     private function extractBucketInformation(Bucket $bucket): array

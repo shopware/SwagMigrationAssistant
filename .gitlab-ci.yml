@@ -140,7 +140,7 @@ build image downstream:
       artifacts: false
 
 acceptance:
-  image: mcr.microsoft.com/playwright:v1.39.0-jammy # ToDo MIG-895: update after platform playwright update is merged
+  image: mcr.microsoft.com/playwright:v1.44.0-jammy
   stage: E2E
   needs:
     - job: build image
@@ -197,7 +197,6 @@ acceptance:
     - tar -xzf /tmp/plugin.tar.gz --directory="custom/plugins/${PLUGIN_NAME}"
     - cd tests/acceptance
     - npm ci
-    #- npx playwright install --with-deps # try without, because container should have browsers installed
   script:
     - npx playwright test --workers=1 --project=${PLUGIN_NAME}
   after_script:

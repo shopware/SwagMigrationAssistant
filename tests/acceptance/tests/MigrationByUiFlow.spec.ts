@@ -12,6 +12,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     migrationUser,
     databaseCredentials,
     entityCounter,
+    mediaProcessObserver,
  }) => {
     const page = migrationUser.page;
     await page.goto('/admin#/swag/migration/index/main');
@@ -82,6 +83,17 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
         await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: MIGRATION_LOADING_TIMEOUT });
         await page.getByRole('button', { name: 'Continue' }).click();
+    });
+
+    // ToDo MIG-985: Remove this if the underlying issue is fixed
+    await test.step('Wait for media download to finish', async () => {
+        await expect.poll(async () => {
+            return await mediaProcessObserver.isMediaProcessing();
+        }, {
+            // Probe after 100ms and then every second
+            intervals: [100, 1_000],
+            timeout: 300_000,
+        }).toBe(false);
     });
 
     await test.step('Expect entities to be there', async () => {
