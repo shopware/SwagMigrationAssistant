@@ -1,4 +1,5 @@
 /* eslint-env node */
+const path = require("path");
 module.exports = {
     extends: [
         "eslint:recommended",
@@ -6,12 +7,12 @@ module.exports = {
         "plugin:@typescript-eslint/stylistic-type-checked",
         "plugin:playwright/recommended"
     ],
-    plugins: ["@typescript-eslint"],
-    parser: "@typescript-eslint/parser",
+    parser: '@typescript-eslint/parser',
     parserOptions: {
         project: true,
         tsconfigRootDir: __dirname,
     },
+    plugins: ['@typescript-eslint'],
     root: true,
     rules: {
         quotes: ["error", "single", { allowTemplateLiterals: true }],

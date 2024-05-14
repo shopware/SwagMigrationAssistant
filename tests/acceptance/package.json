@@ -4,23 +4,23 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint . --ext .ts",
+    "lint": "eslint --ext .js,.ts .",
     "lint:fix": "npm run lint -- --fix",
     "types": "tsc",
     "test": "npx playwright test --ui"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.21.3",
+    "@babel/eslint-parser": "^7.24.5",
     "@shopware-ag/eslint-config-base": "^2.0.0",
-    "@typescript-eslint/eslint-plugin": "^6.6.0",
-    "@typescript-eslint/parser": "^6.6.0",
-    "eslint": "^8.48.0",
-    "eslint-import-resolver-webpack": "^0.13.2",
-    "eslint-plugin-html": "^7.1.0",
-    "eslint-plugin-jest": "^27.2.1",
-    "eslint-plugin-playwright": "^1.5.2",
-    "eslint-plugin-simple-import-sort": "^10.0.0",
-    "typescript": "^5.4.2"
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
+    "eslint": "^8.57.0",
+    "eslint-import-resolver-webpack": "^0.13.8",
+    "eslint-plugin-html": "^8.1.1",
+    "eslint-plugin-jest": "^28.5.0",
+    "eslint-plugin-playwright": "^1.6.1",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@playwright/test": "1.44.0",
