@@ -568,6 +568,14 @@
           "title": "Versandkosten-Berechnungstyp nicht unterstützt",
           "description": "Die Versandmethoden Entität mit der Quell-ID „{sourceId}“ konnte aufgrund eines nicht unterstützten Versandkosten-Berechnungstyp „{type}“, nicht konvertiert werden."
         },
+        "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": {
+          "title": "Migration wurde automatisch abgebrochen",
+          "description": "Die Migration wurde automatisch abgebrochen, da zu viele aufeinander folgende Fehler aufgetreten sind."
+        },
+        "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": {
+          "title": "Message-Queue-Fehler",
+          "description": "Ein Fehler ist in der Message-Queue aufgetreten."
+        },
         "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
           "title": "Theme Kompilierungsfehler",
           "description": "Das Theme mit der ID „{sourceId}“ konnte nicht kompiliert werden."

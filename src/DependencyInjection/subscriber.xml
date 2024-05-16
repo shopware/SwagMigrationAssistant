@@ -9,5 +9,12 @@
             <argument type="service" id="swag_migration_media_file.repository"/>
             <tag name="kernel.event_subscriber"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\Subscriber\MessageQueueSubscriber">
+            <argument type="service" id="messenger.bus.shopware"/>
+            <argument type="service" id="swag_migration_run.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <tag name="kernel.event_subscriber"/>
+        </service>
     </services>
 </container>

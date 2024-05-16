@@ -85,7 +85,8 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
             (int) $raw['total'],
             $progressDataSetCollection,
             (string) $raw['currentEntity'],
-            (int) $raw['currentEntityProgress']
+            (int) $raw['currentEntityProgress'],
+            (int) $raw['exceptionCount']
         );
     }
 
@@ -98,6 +99,7 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
                 'total' => [new NotBlank(), new Type('int')],
                 'currentEntity' => [new NotBlank(), new Type('string')],
                 'currentEntityProgress' => [new NotBlank(), new Type('int')],
+                'exceptionCount' => [new NotBlank(), new Type('int')],
                 'dataSets' => [
                     new Type('array'),
                     new All(new Collection([

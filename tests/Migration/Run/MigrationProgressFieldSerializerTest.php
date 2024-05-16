@@ -51,6 +51,7 @@ class MigrationProgressFieldSerializerTest extends TestCase
                     'total' => 10,
                 ],
             ],
+            'exceptionCount' => 0,
         ];
 
         $input = $expected;
@@ -81,6 +82,7 @@ class MigrationProgressFieldSerializerTest extends TestCase
                     'total' => 10,
                 ],
             ],
+            'exceptionCount' => 0,
         ];
 
         $input = new MigrationProgress(
@@ -171,6 +173,7 @@ class MigrationProgressFieldSerializerTest extends TestCase
             'total' => 2,
             'currentEntity' => 'currentEntity',
             'currentEntityProgress' => 3,
+            'exceptionCount' => 0,
             'dataSets' => [
                 [
                     'entityName' => ProductDefinition::ENTITY_NAME,

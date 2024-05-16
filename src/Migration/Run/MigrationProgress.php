@@ -28,7 +28,9 @@ final class MigrationProgress extends Struct
 
     protected ProgressDataSetCollection $dataSets;
 
-    public function __construct(MigrationProgressStatus $step, int $progress, int $total, ProgressDataSetCollection $dataSets, string $currentEntity, int $currentEntityProgress)
+    protected int $exceptionCount = 0;
+
+    public function __construct(MigrationProgressStatus $step, int $progress, int $total, ProgressDataSetCollection $dataSets, string $currentEntity, int $currentEntityProgress, int $exceptionCount = 0)
     {
         $this->step = $step;
         $this->progress = $progress;
@@ -36,6 +38,7 @@ final class MigrationProgress extends Struct
         $this->dataSets = $dataSets;
         $this->currentEntity = $currentEntity;
         $this->currentEntityProgress = $currentEntityProgress;
+        $this->exceptionCount = $exceptionCount;
     }
 
     public function getStepValue(): string
@@ -101,5 +104,20 @@ final class MigrationProgress extends Struct
     public function setCurrentEntityProgress(int $currentEntityProgress): void
     {
         $this->currentEntityProgress = $currentEntityProgress;
+    }
+
+    public function getExceptionCount(): int
+    {
+        return $this->exceptionCount;
+    }
+
+    public function raiseExceptionCount(): void
+    {
+        ++$this->exceptionCount;
+    }
+
+    public function resetExceptionCount(): void
+    {
+        $this->exceptionCount = 0;
     }
 }

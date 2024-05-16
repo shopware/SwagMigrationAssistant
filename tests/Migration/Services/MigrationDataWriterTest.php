@@ -762,6 +762,7 @@ class MigrationDataWriterTest extends TestCase
                                 'total' => 0,
                             ],
                         ],
+                        'exceptionCount' => 0,
                     ],
                 ],
             ],

@@ -426,6 +426,7 @@ class StatusControllerTest extends TestCase
             'currentEntity' => 'product',
             'currentEntityProgress' => 0,
             'dataSets' => [],
+            'exceptionCount' => 0,
         ], $state);
     }
 

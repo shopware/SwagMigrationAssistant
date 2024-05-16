@@ -568,6 +568,14 @@
           "title": "Unsupported shipping calculation type",
           "description": "The shipping method entity with source id \"{sourceId}\" could not be converted because of unsupported calculation type: {type}."
         },
+        "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": {
+          "title": "Migration aborted automatically",
+          "description": "The migration was aborted automatically, because too many consecutive exceptions occurred."
+        },
+        "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": {
+          "title": "Message queue exception",
+          "description": "An exception occurred while processing the message queue."
+        },
         "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
           "title": "Theme compiling error",
           "description": "The theme with id \"{sourceId}\" could not be compiled."
