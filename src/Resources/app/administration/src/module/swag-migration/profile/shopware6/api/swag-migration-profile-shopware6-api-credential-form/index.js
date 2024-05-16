@@ -92,9 +92,5 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
                 this.areCredentialsValid(newInputCredentials),
             );
         },
-
-        onKeyPressEnter() {
-            this.$emit('onTriggerPrimaryClick');
-        },
     },
 });

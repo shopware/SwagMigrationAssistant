@@ -115,9 +115,5 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
                 this.areCredentialsValid(newInputCredentials),
             );
         },
-
-        onKeyPressEnter() {
-            this.$emit('onTriggerPrimaryClick');
-        },
     },
 });
