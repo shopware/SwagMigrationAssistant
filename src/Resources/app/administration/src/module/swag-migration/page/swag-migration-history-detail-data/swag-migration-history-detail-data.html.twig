@@ -4,14 +4,14 @@
 
             {% block swag_migration_history_detail_data_grid %}
                 <sw-data-grid identifier="swag-migration-history-detail-data"
-                              :dataSource="migrationData"
+                              :data-source="migrationData"
                               :columns="columns"
-                              :showSelection="false"
-                              :showSettings="false"
-                              :allowColumnEdit="false"
-                              :showActions="false"
-                              :sortBy="sortBy"
-                              :sortDirection="sortDirection"
+                              :show-selection="false"
+                              :show-settings="false"
+                              :allow-column-edit="false"
+                              :show-actions="false"
+                              :sort-by="sortBy"
+                              :sort-direction="sortDirection"
                               @column-sort="onSortColumn">
 
                     {% block swag_migration_history_detail_data_grid_name %}
@@ -33,8 +33,7 @@
                                            :total="total"
                                            :steps="[5,10]"
                                            :total-visible="7"
-                                           @page-change="onPageChange">
-                            </sw-pagination>
+                                           @page-change="onPageChange" />
                         </template>
                     {% endblock %}
                 </sw-data-grid>
@@ -44,7 +43,7 @@
         {% block swag_migration_history_detail_data_noError__loader %}
             <div v-if="isLoading"
                  class="swag-migration-history-detail-data__loading-placeholder"></div>
-            <sw-loader v-if="isLoading"></sw-loader>
+            <sw-loader v-if="isLoading" />
         {% endblock %}
     </div>
 {% endblock %}

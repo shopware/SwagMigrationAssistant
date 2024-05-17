@@ -40,8 +40,7 @@
                         <sw-icon class="swag-migration-premapping__success-icon"
                                  name="regular-checkmark"
                                  size="36px"
-                                 decorative>
-                        </sw-icon>
+                                 decorative />
                     </div>
                 {% endblock %}
 
@@ -66,12 +65,12 @@
                 :title="$tc('swag-migration.index.premappingCard.unfilledCardTitle')"
                 :items="unfilledPremapping"
             >
-                <template #items="{ item }" >
+                <template #items="{ item }">
                     <swag-migration-grid-selection
                         :choices="item.choices"
                         :mapping="item.mapping"
                         @update:value="onPremappingChanged"
-                    ></swag-migration-grid-selection>
+                    />
                 </template>
             </swag-migration-tab-card>
         {% endblock %}
@@ -80,8 +79,8 @@
             <swag-migration-expand-div
                 v-if="!isLoading && displayFilledPremapping"
                 class="swag-migration-premapping__expand-div"
-                :expandTitle="$tc('swag-migration.index.premappingCard.expandTitle')"
-                :collapseTitle="$tc('swag-migration.index.premappingCard.collapseTitle')"
+                :expand-title="$tc('swag-migration.index.premappingCard.expandTitle')"
+                :collapse-title="$tc('swag-migration.index.premappingCard.collapseTitle')"
             >
                 {% block swag_migration_premapping_filled_mapping %}
                     <swag-migration-tab-card
@@ -95,7 +94,7 @@
                                 :choices="item.choices"
                                 :mapping="item.mapping"
                                 @update:value="onPremappingChanged"
-                            ></swag-migration-grid-selection>
+                            />
                         </template>
                     </swag-migration-tab-card>
                 {% endblock %}
@@ -108,7 +107,7 @@
             <div>
 
                 {% block swag_migration_premapping_loader %}
-                    <sw-loader class="swag-migration-premapping__loader"></sw-loader>
+                    <sw-loader class="swag-migration-premapping__loader" />
                 {% endblock %}
 
                 {% block swag_migration_premapping_loading_title %}

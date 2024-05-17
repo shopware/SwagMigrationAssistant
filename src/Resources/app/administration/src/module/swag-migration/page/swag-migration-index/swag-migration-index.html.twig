@@ -2,7 +2,8 @@
     <sw-card-view v-if="!storesInitializing">
 
         {% block swag_migration_index_tabs %}
-            <sw-tabs class="swag-migration-index-tabs" position-identifier="swag-migration-index-tabs">
+            <sw-tabs class="swag-migration-index-tabs"
+                     position-identifier="swag-migration-index-tabs">
 
                 {% block swag_migration_index_tab_main %}
                     <sw-tabs-item :route="{ name: 'swag.migration.index.main' }"
@@ -28,8 +29,7 @@
         {% endblock %}
 
         {% block swag_migration_index_content_view %}
-            <router-view ref="contentComponent">
-            </router-view>
+            <router-view ref="contentComponent" />
         {% endblock %}
     </sw-card-view>
 {% endblock %}

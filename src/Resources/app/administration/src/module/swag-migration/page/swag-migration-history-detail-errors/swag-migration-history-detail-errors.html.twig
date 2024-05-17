@@ -5,14 +5,14 @@
             {% block swag_migration_history_detail_errors_grid %}
                 <sw-data-grid v-if="migrationErrors.length > 0"
                               identifier="swag-migration-history-detail-errors"
-                              :dataSource="migrationErrors"
+                              :data-source="migrationErrors"
                               :columns="columns"
-                              :showSelection="false"
-                              :showSettings="false"
-                              :allowColumnEdit="false"
-                              :showActions="false"
-                              :sortBy="sortBy"
-                              :sortDirection="sortDirection"
+                              :show-selection="false"
+                              :show-settings="false"
+                              :allow-column-edit="false"
+                              :show-actions="false"
+                              :sort-by="sortBy"
+                              :sort-direction="sortDirection"
                               @column-sort="onSortColumn">
 
                     {% block swag_migration_history_detail_errors_grid_code%}
@@ -34,8 +34,7 @@
                                            :total="total"
                                            :steps="[5,10]"
                                            :total-visible="7"
-                                           @page-change="onPageChange">
-                            </sw-pagination>
+                                           @page-change="onPageChange" />
                         </template>
                     {% endblock %}
                 </sw-data-grid>
@@ -49,8 +48,8 @@
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_download_form %}
-                <form class="swag-migration-history-detail-errors__download-form"
-                      ref="downloadForm"
+                <form ref="downloadForm"
+                      class="swag-migration-history-detail-errors__download-form"
                       :action="downloadUrl"
                       method="POST">
                     <input type="hidden"
@@ -76,7 +75,7 @@
         {% block swag_migration_history_detail_errors_noError__loader %}
             <div v-if="isLoading"
                  class="swag-migration-history-detail-errors__loading-placeholder"></div>
-            <sw-loader v-if="isLoading"></sw-loader>
+            <sw-loader v-if="isLoading" />
         {% endblock %}
 
     </div>

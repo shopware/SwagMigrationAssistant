@@ -1,8 +1,8 @@
 {% block swag_migration_tab_card %}
     <div class="swag-migration-tab-card">
         <sw-card
-            class="sw-card--grid"
             ref="card"
+            class="sw-card--grid"
             :title="title"
             position-identifier="swag-migration-tab-card"
         >
@@ -10,16 +10,16 @@
 
                 {% block swag_migration_tab_card_item_tab %}
                     <sw-tabs
-                        :small="false"
                         ref="tabs"
-                        @new-item-active="onNewActiveItem"
+                        :small="false"
                         position-identifier="swag-migration-tab-card-item-tab"
+                        @new-item-active="onNewActiveItem"
                     >
                         <sw-tabs-item
                             v-for="(item, key) in items"
-                            :name="key.toString()"
                             :key="key.toString() + '-tab'"
                             ref="swTabsItems"
+                            :name="key.toString()"
                         >
 
                             {% block swag_migration_tab_card_item_tab_content %}
@@ -29,7 +29,8 @@
                             {% endblock %}
 
                             {% block swag_migration_tab_card_item_tab_invalid_badge %}
-                                <span v-show="item.errorBadgeNumber" class="swag-migration-tab-card__invalid-badge">
+                                <span v-show="item.errorBadgeNumber"
+                                      class="swag-migration-tab-card__invalid-badge">
                                     {{ getErrorCountForGroupTab(item) }}
                                 </span>
                             {% endblock %}

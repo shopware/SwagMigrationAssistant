@@ -78,8 +78,6 @@ Component.register('swag-migration-history-detail-data', {
         getList() {
             this.isLoading = true;
 
-            // ToDo MIG-35 - Implement sorting
-
             this.total = this.entityGroups.length;
             const start = (this.page - 1) * this.limit;
             const end = Math.min(start + this.limit, this.total);

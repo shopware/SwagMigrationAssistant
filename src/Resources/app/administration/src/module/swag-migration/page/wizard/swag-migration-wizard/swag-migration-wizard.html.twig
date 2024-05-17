@@ -4,11 +4,12 @@
                   class="swag-migration-wizard__modal"
                   :size="modalSize"
                   :title="$tc(modalTitleSnippet)"
-                  :isLoading="isLoading"
+                  :is-loading="isLoading"
                   @modal-close="onCloseModal">
 
             {% block swag_migration_wizard_placeholder %}
-                <div v-show="isLoading || childIsLoading" class="swag-migration-wizard__placeholder"></div>
+                <div v-show="isLoading || childIsLoading"
+class="swag-migration-wizard__placeholder"></div>
             {% endblock %}
 
             {% block swag_migration_router_view %}
@@ -16,58 +17,60 @@
                         <component
                             :is="Component"
                             v-show="!isLoading && !childIsLoading"
-                            :currentConnectionId="connection.id"
-                            :profileInformationComponent="profileInformationComponent"
-                            :credentialsComponent="credentialsComponent"
+                            :current-connection-id="connection.id"
+                            :profile-information-component="profileInformationComponent"
+                            :credentials-component="credentialsComponent"
                             :credentials="connection.credentialFields"
-                            :errorMessageSnippet="errorMessageSnippet"
-                            :connectionNameErrorCode="connectionNameErrorCode"
-                            @onChildRouteReadyChanged="onChildRouteReadyChanged"
-                            @onTriggerPrimaryClick="triggerPrimaryClick"
-                            @onProfileSelected="onProfileSelected"
-                            @onChangeConnectionName="onChangeConnectionName"
-                            @onConnectionSelected="onConnectionSelected"
-                            @onCredentialsChanged="onCredentialsChanged"
-                            @onIsLoadingChanged="onChildIsLoadingChanged"
-                        ></component>
+                            :error-message-snippet="errorMessageSnippet"
+                            :connection-name-error-code="connectionNameErrorCode"
+                            @on-child-route-ready-changed="onChildRouteReadyChanged"
+                            @on-trigger-primary-click="triggerPrimaryClick"
+                            @on-profile-selected="onProfileSelected"
+                            @on-change-connection-name="onChangeConnectionName"
+                            @on-connection-selected="onConnectionSelected"
+                            @on-credentials-changed="onCredentialsChanged"
+                            @on-is-loading-changed="onChildIsLoadingChanged"
+                        />
                     </router-view>
             {% endblock %}
 
-            <template class="swag-migration-wizard__footer" #modal-footer>
-                {% block swag_migration_wizard_footer %}
-                    {% block swag_migration_wizard_arrow %}
-                        <div class="swag-migration-wizard__left-actions">
-                            <sw-button v-show="buttonBackVisible"
-                                       class="swag-migration-wizard__buttonBack"
-                                       size="small"
-                                       @click="onButtonBackClick">
-                                {{ $tc(buttonBackSnippet) }}
-                            </sw-button>
-                        </div>
-                    {% endblock %}
-
-                    {% block swag_migration_wizard_actions %}
-                        <div class="swag-migration-wizard__right-actions">
-
-                            {% block swag_migration_wizard_actions_previous %}
-                                <sw-button v-show="buttonSecondaryVisible"
+            <template #modal-footer>
+                <div class="swag-migration-wizard__footer">
+                    {% block swag_migration_wizard_footer %}
+                        {% block swag_migration_wizard_arrow %}
+                            <div class="swag-migration-wizard__left-actions">
+                                <sw-button v-show="buttonBackVisible"
+                                           class="swag-migration-wizard__buttonBack"
                                            size="small"
-                                           @click="onButtonSecondaryClick">
-                                    {{ $tc(buttonSecondarySnippet) }}
+                                           @click="onButtonBackClick">
+                                    {{ $tc(buttonBackSnippet) }}
                                 </sw-button>
-                            {% endblock %}
+                            </div>
+                        {% endblock %}
 
-                            {% block swag_migration_wizard_actions_next %}
-                                <sw-button size="small"
-                                           variant="primary"
-                                           :disabled="buttonPrimaryDisabled"
-                                           @click="onButtonPrimaryClick">
-                                    {{ $tc(buttonPrimarySnippet) }}
-                                </sw-button>
-                            {% endblock %}
-                        </div>
+                        {% block swag_migration_wizard_actions %}
+                            <div class="swag-migration-wizard__right-actions">
+
+                                {% block swag_migration_wizard_actions_previous %}
+                                    <sw-button v-show="buttonSecondaryVisible"
+                                               size="small"
+                                               @click="onButtonSecondaryClick">
+                                        {{ $tc(buttonSecondarySnippet) }}
+                                    </sw-button>
+                                {% endblock %}
+
+                                {% block swag_migration_wizard_actions_next %}
+                                    <sw-button size="small"
+                                               variant="primary"
+                                               :disabled="buttonPrimaryDisabled"
+                                               @click="onButtonPrimaryClick">
+                                        {{ $tc(buttonPrimarySnippet) }}
+                                    </sw-button>
+                                {% endblock %}
+                            </div>
+                        {% endblock %}
                     {% endblock %}
-                {% endblock %}
+                </div>
             </template>
         </sw-modal>
     </div>

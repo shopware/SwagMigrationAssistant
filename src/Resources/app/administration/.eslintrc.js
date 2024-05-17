@@ -105,8 +105,14 @@ module.exports = {
             ],
             files: ['**/*.js'],
             excludedFiles: ['*.spec.js', '*.spec.vue3.js'],
+            parser: '@typescript-eslint/parser',
+            parserOptions: {
+                project: true,
+                tsconfigRootDir: __dirname,
+            },
             rules: {
                 ...baseRules,
+                '@typescript-eslint/no-floating-promises': 'warn',
                 'vue/require-prop-types': 'error',
                 'vue/require-default-prop': 'error',
                 'vue/no-mutating-props': 'error',
@@ -136,12 +142,6 @@ module.exports = {
                         'renderError',
                     ],
                 }],
-                // eslint-disable-next-line no-warning-comments
-                // TODO: NEXT-35608 - Enable this rules again after VUE 3 migration
-                'vue/no-deprecated-destroyed-lifecycle': 'off',
-                'vue/no-deprecated-events-api': 'off',
-                'vue/require-slots-as-functions': 'off',
-                'vue/no-deprecated-props-default-this': 'off',
             },
         }, {
             extends: [
@@ -184,10 +184,12 @@ module.exports = {
                 'vue/no-deprecated-slot-attribute': ['error'],
                 'vue/no-deprecated-slot-scope-attribute': ['error'],
                 'sw-deprecation-rules/no-twigjs-blocks': 'error',
+                // eslint-disable-next-line no-warning-comments
+                // ToDo MIG-987: activate this two rules again
                 // @deprecated v.6.7.0.0 - will be error in v.6.7
-                'sw-deprecation-rules/no-deprecated-components': ['warn', 'disableFix'],
+                'sw-deprecation-rules/no-deprecated-components': 'off', // ['warn', 'disableFix'],
                 // @deprecated v.6.7.0.0 - will be error in v.6.7
-                'sw-deprecation-rules/no-deprecated-component-usage': ['warn', 'disableFix'],
+                'sw-deprecation-rules/no-deprecated-component-usage': 'off', // ['warn', 'disableFix'],
                 'vue/no-useless-template-attributes': 'error',
                 'vue/no-lone-template': 'error',
 
@@ -201,13 +203,11 @@ module.exports = {
                 'vue/valid-template-root': 'off',
                 'vue/no-v-model-argument': 'off',
                 'vue/no-v-for-template-key': 'off',
-                // TODO: NEXT-18182 - Enable this rules again after VUE 3 migration
-                'vue/html-closing-bracket-newline': 'off',
-                'vue/no-v-for-template-key-on-child': 'off',
                 'vue/no-deprecated-filter': 'error',
-                'vue/no-deprecated-dollar-listeners-api': 'off',
-                'vue/no-deprecated-dollar-scopedslots-api': 'off',
-                'vue/no-deprecated-v-on-native-modifier': 'off',
+
+                // doesn't play nicely with our twig blocks
+                'vue/html-closing-bracket-newline': 'off',
+                'vue/first-attribute-linebreak': 'off',
             },
         }, {
             files: ['**/*.spec.js', '**/*.spec.vue3.js', '**/fixtures/*.js', 'test/**/*.js', 'test/**/*.ts'],
@@ -258,6 +258,7 @@ module.exports = {
                 'no-shadow': 'off',
                 '@typescript-eslint/no-shadow': ['error'],
                 '@typescript-eslint/consistent-type-imports': ['error'],
+                '@typescript-eslint/no-floating-promises': 'warn',
                 'import/extensions': [
                     'error',
                     'ignorePackages',

@@ -2,7 +2,8 @@
     <div>
 
         {% block swag_migration_result_screen_card %}
-            <sw-card class="swag-migration-result-screen" position-identifier="swag-migration-result-screen">
+            <sw-card class="swag-migration-result-screen"
+                     position-identifier="swag-migration-result-screen">
 
                 {% block swag_migration_result_screen_content %}
                     <div class="swag-migration-result-screen__content">
@@ -12,8 +13,7 @@
                                 <sw-icon class="swag-migration-result-screen__icon"
                                          name="regular-thumbs-up"
                                          size="36px"
-                                         decorative>
-                                </sw-icon>
+                                         decorative />
                             </div>
                         {% endblock %}
 
@@ -31,7 +31,8 @@
         {% endblock %}
 
         {% block swag_migration_result_screen_survey_card %}
-            <sw-card class="swag-migration-result-survey" position-identifier="swag-migration-result-survey">
+            <sw-card class="swag-migration-result-survey"
+                     position-identifier="swag-migration-result-survey">
 
                 {% block swag_migration_result_screen_survey_content %}
                     <div class="swag-migration-result-survey__content">
@@ -54,14 +55,17 @@
                                target="_blank"
                                rel="noopener">
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.survey.buttonText') }}
-                                <sw-icon class="swag-migration-result-survey__external-icon" name="regular-external-link-s" size="8"></sw-icon>
+                                <sw-icon class="swag-migration-result-survey__external-icon"
+                                         name="regular-external-link-s"
+                                         size="8" />
                             </a>
                         {% endblock %}
 
                         {% block swag_migration_result_screen_survey_icon %}
                             <div>
                                 <img class="swag-migration-result-survey__icon"
-                                     :src="assetFilter('/swagmigrationassistant/static/img/wizard-result-survey-icon.svg')">
+                                     :src="assetFilter('/swagmigrationassistant/static/img/wizard-result-survey-icon.svg')"
+                                     alt="">
                             </div>
                         {% endblock %}
                     </div>

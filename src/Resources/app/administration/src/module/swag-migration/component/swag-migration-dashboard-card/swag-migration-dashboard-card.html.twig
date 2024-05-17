@@ -1,5 +1,6 @@
 {% block swag_migration_dashboard_card %}
-    <sw-card class="swag-migration-dashboard-card" position-identifier="swag-migration-dashboard-card">
+    <sw-card class="swag-migration-dashboard-card"
+             position-identifier="swag-migration-dashboard-card">
 
         {% block swag_migration_dashboard_card_wrapper %}
             {%  block swag_migration_dashboard_card_title %}
@@ -11,7 +12,8 @@
             {% endblock %}
 
             {% block swag_migration_dashboard_card_container %}
-                <sw-container class="swag-migration-shop-information" rows="auto auto">
+                <sw-container class="swag-migration-shop-information"
+                              rows="auto auto">
                     {% block fuuuu %}
                     {% endblock %}
 
@@ -37,7 +39,8 @@
                                             {% endblock %}
 
                                             {%  block swag_migration_dashboard_card_button %}
-                                                <sw-button variant="primary" :routerLink="{ name: 'swag.migration.index.main'}">
+                                                <sw-button variant="primary"
+                                                           :router-link="{ name: 'swag.migration.index.main'}">
                                                     {{ $tc('swag-migration.dashboard.button') }}
                                                 </sw-button>
                                             {%  endblock %}
@@ -46,7 +49,8 @@
 
                                     {%  block swag_migration_dashboard_card_right_content %}
                                         <div class="swag-migration-dashboard-card__right-content">
-                                            <img :src="assetFilter('/swagmigrationassistant/static/img/wizard-introduction.svg')">
+                                            <img :src="assetFilter('/swagmigrationassistant/static/img/wizard-introduction.svg')"
+                                                 alt="">
                                         </div>
                                     {% endblock %}
                                 </div>

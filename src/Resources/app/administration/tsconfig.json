@@ -101,6 +101,6 @@
 
     "noErrorTruncation": false,                           /* Disable truncating types in error messages. */
   },
-  "include": ["./src/**/*", "./scripts/**/*"],
+  "include": ["./src/**/*", "./scripts/**/*", ".eslintrc.js"],
   "exclude": ["node_modules"]
 }
