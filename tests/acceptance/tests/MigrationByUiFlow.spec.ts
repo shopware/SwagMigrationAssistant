@@ -157,6 +157,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         // Add more replace logic here, if anything new non-deterministic shows up...
 
         // snapshot test the migration log file
-        await expect.soft(logString).toMatchSnapshot('migration-log-sw5.txt');
+        expect.soft(logString).toMatchSnapshot('migration-log-sw5.txt');
     });
 });

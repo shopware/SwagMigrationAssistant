@@ -4,8 +4,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint --ext .js,.ts .",
-    "lint:fix": "npm run lint -- --fix",
+    "lint": "eslint --ext .js,.ts,.cjs .",
+    "lint-fix": "npm run lint -- --fix",
     "types": "tsc",
     "test": "npx playwright test --ui"
   },

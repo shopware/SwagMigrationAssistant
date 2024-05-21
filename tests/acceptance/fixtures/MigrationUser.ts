@@ -1,4 +1,4 @@
-import { test as base, expect } from '@shopware-ag/acceptance-test-suite';
+import { test as base } from '@shopware-ag/acceptance-test-suite';
 import {FixtureTypes} from './AcceptanceTest';
 
 export const MigrationUser = base.extend<FixtureTypes>({

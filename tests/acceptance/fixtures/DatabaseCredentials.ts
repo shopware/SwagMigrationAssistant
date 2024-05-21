@@ -11,7 +11,7 @@ export interface DatabaseCredentialsStruct {
 
 export const DatabaseCredentials = base.extend<FixtureTypes>({
     DatabaseCredentials: [async ({ }, use) => {
-        const dbUrl = process.env['DATABASE_URL'];
+        const dbUrl = process.env.DATABASE_URL;
         const match = dbUrl.match(/\/\/(.+):(.+)@(.+):(.+)\/(.+)/);
         expect(match.length).toBeGreaterThanOrEqual(5);
         const credentials = {

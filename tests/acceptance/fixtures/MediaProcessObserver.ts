@@ -10,7 +10,7 @@ export const MediaProcessObserver = base.extend<FixtureTypes>({
     MediaProcessObserver: async ({ AdminApiContext }, use) => {
         const isMediaProcessing = async () => {
             const response = await AdminApiContext.get(`/api/_action/migration/is-media-processing`, {});
-            await expect(response.ok()).toBeTruthy();
+            expect(response.ok()).toBeTruthy();
             return await response.json();
         };
 
