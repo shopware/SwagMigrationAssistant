@@ -1,3 +1,6 @@
+# 11.0.1
+- MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version
+
 # 11.0.0
 - MIG-951 - Improve the language migration from Shopware 6 to Shopware 6 so the default language is no longer overwritten
 - MIG-951 - [BREAKING] Changes the access modifier of the function `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter::convertData` from public to protected
