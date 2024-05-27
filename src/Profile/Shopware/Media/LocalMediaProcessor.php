@@ -168,6 +168,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $processedMedia[] = $mediaId;
         }
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failureUuids);
+        $this->setProcessFailureFlag($migrationContext->getRunUuid(), $context, $failureUuids);
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
@@ -213,6 +214,29 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                     'processed' => true,
                 ];
             }
+        }
+
+        if (empty($updateableMediaEntities)) {
+            return;
+        }
+
+        $this->mediaFileRepo->update($updateableMediaEntities, $context);
+    }
+
+    /**
+     * @param array<int, string> $failureUuids
+     */
+    private function setProcessFailureFlag(string $runId, Context $context, array $failureUuids): void
+    {
+        $failureMediaFiles = $this->getMediaFiles($failureUuids, $runId);
+        $updateableMediaEntities = [];
+        foreach ($failureMediaFiles as $mediaFile) {
+            $mediaFileId = $mediaFile['id'];
+
+            $updateableMediaEntities[] = [
+                'id' => $mediaFileId,
+                'processFailure' => true,
+            ];
         }
 
         if (empty($updateableMediaEntities)) {

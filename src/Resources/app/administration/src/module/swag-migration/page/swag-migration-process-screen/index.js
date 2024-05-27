@@ -120,7 +120,8 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
     methods: {
         async createdComponent() {
-            this.initState();
+            // ToDo MIG-944: debug why tsc / eslint wasn't catching a missing await here...
+            await this.initState();
             State.commit('swagMigration/setIsLoading', true);
 
             if (this.connectionId === null) {

@@ -59,8 +59,17 @@ Component.register('swag-migration-history-detail-data', {
         },
 
         entityGroups() {
-            return Object.entries(this.migrationRun.progress.dataSets).map(([name, count]) => {
-                return { id: name, name, total: count };
+            return this.migrationRun.progress.dataSets.map((entitySelection) => {
+                let name = entitySelection.entityName;
+                if (this.$te(`swag-migration.index.selectDataCard.entities.${name}`)) {
+                    name = this.$tc(`swag-migration.index.selectDataCard.entities.${name}`);
+                }
+
+                return {
+                    id: entitySelection.entityName,
+                    name,
+                    total: entitySelection.total,
+                };
             });
         },
     },

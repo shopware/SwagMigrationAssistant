@@ -26,7 +26,11 @@ echo "Connection String: $connectionString"
 IFS=':' read -r -a parts <<< "$connectionString"
 
 user=$(echo "${parts[1]}" | sed "s/\/\///g")
-password=$(echo "${parts[2]}" |sed 's/@.*//')
+password=$(echo "${parts[2]}" | sed 's/@.*//')
+host=$(echo "${parts[2]}" | sed 's/.*@//')
+
+echo "MySQL host: $host"
+echo "MySQL user: $user"
 
 # import test data
-mysql -u"$user" -p"$password" --host mysql < tests/testData/Migration/sw55.sql
+mysql -u"$user" -p"$password" --host "$host" < tests/testData/Migration/sw55.sql

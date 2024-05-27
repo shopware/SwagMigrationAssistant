@@ -1,0 +1,5 @@
+# whitelist of snapshot files to store in git which are used by the CI pipeline
+*
+!*SwagMigrationAssistant-linux.txt
+!*SwagMigrationAssistant-linux.png
+!.gitignore

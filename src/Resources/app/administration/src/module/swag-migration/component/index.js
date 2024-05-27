@@ -6,7 +6,6 @@
 import './swag-migration-dashboard-card';
 import './card';
 import './swag-migration-grid-extended';
-import './swag-migration-history-selected-data';
 import './swag-migration-tab-card';
 import './swag-migration-tab-card-item';
 import './swag-migration-grid-selection';

@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "shopware/core": "~6.6.0"
+        "shopware/core": "~6.6.1"
     },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",
@@ -62,7 +62,8 @@
         ],
         "admin:install": [
             "@npm:admin install",
-            "@npm:jest install"
+            "@npm:jest install",
+            "@npm:acceptance install"
         ],
         "admin:lint": [
             "@npm:jest run lint",
@@ -74,8 +75,10 @@
         ],
         "admin:unit": "@npm:jest run unit",
         "admin:unit:watch": "@npm:jest run unit-watch",
+        "admin:acceptance": "@npm:acceptance run test",
         "npm:admin": "cd src/Resources/app/administration && npm",
-        "npm:jest": "cd tests/Jest && npm"
+        "npm:jest": "cd tests/Jest && npm",
+        "npm:acceptance": "cd tests/acceptance && npm"
     },
     "autoload": {
         "psr-4": {

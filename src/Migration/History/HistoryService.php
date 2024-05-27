@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
@@ -150,7 +150,11 @@ class HistoryService implements HistoryServiceInterface
 
     public function isMediaProcessing(): bool
     {
-        return $this->connection->executeQuery('SELECT 1 FROM messenger_messages WHERE queue_name = :name', ['name' => ProcessMediaMessage::class])->fetchOne();
+        $unprocessedCount = $this->connection->executeQuery(
+            'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
+        )->fetchOne();
+
+        return $unprocessedCount !== '0';
     }
 
     private function extractBucketInformation(Bucket $bucket): array
@@ -199,7 +203,7 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $criteria->setOffset($offset);
         $criteria->setLimit(self::LOG_FETCH_LIMIT);
 
@@ -243,7 +247,7 @@ class HistoryService implements HistoryServiceInterface
             . 'Connection name: %s' . \PHP_EOL
             . 'Profile: %s' . \PHP_EOL
             . 'Gateway: %s' . \PHP_EOL . \PHP_EOL
-            . 'Selected data:' . \PHP_EOL . '%s' . \PHP_EOL
+            . 'Selected dataSets:' . \PHP_EOL . '%s' . \PHP_EOL
             . '--------------------Log-entries---------------------' . \PHP_EOL,
             \date(self::LOG_TIME_FORMAT),
             $run->getId(),
@@ -255,26 +259,19 @@ class HistoryService implements HistoryServiceInterface
             $connectionName,
             $profileName,
             $gatewayName,
-            $this->getFormattedSelectedData($run->getProgress())
+            $this->getFormattedSelectedDataSets($run->getProgress())
         );
     }
 
-    private function getFormattedSelectedData(?array $progress): string
+    private function getFormattedSelectedDataSets(?MigrationProgress $progress): string
     {
-        if ($progress === null || \count($progress) < 1) {
+        if ($progress === null || $progress->getDataSets()->count() < 1) {
             return '';
         }
 
         $output = '';
-        foreach ($progress as $group) {
-            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $group['id'], $group['total']);
-            foreach ($group['entities'] as $entity) {
-                $output .= \sprintf(
-                    "\t- %s (total: %d)" . \PHP_EOL,
-                    $entity['entityName'],
-                    $entity['total']
-                );
-            }
+        foreach ($progress->getDataSets() as $dataSet) {
+            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $dataSet->getEntityName(), $dataSet->getTotal());
         }
 
         return $output;

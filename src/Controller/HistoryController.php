@@ -98,7 +98,7 @@ class HistoryController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.clear-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.is-media-processing', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function isMediaProcessing(): JsonResponse
     {
         $result = $this->historyService->isMediaProcessing();

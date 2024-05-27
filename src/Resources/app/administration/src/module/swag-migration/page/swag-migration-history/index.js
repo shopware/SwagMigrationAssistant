@@ -110,13 +110,6 @@ Component.register('swag-migration-history', {
                     allowResize: true,
                 },
                 {
-                    property: 'progress',
-                    dataIndex: 'progress',
-                    label: this.$tc('swag-migration.history.selectedData'),
-                    visible: false,
-                    allowResize: true,
-                },
-                {
                     property: 'createdAt',
                     dataIndex: 'createdAt',
                     label: this.$tc('swag-migration.history.importDateTime'),
