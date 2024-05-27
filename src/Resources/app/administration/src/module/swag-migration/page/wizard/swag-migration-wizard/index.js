@@ -403,7 +403,9 @@ Component.extend('swag-migration-wizard', 'swag-migration-base', {
 
             if (this.currentRoute === this.routes.connectionSelect) {
                 this.saveSelectedConnection(this.connection).then(() => {
-                    this.doConnectionCheck();
+                    return this.doConnectionCheck();
+                }).catch(() => {
+                    this.isLoading = false;
                 });
                 return;
             }
@@ -441,42 +443,34 @@ Component.extend('swag-migration-wizard', 'swag-migration-base', {
             this.navigateToNext();
         },
 
-        loadSelectedConnection(connectionId) {
-            return new Promise((resolve) => {
-                // resolve if connection is already loaded
-                if (Object.keys(this.connection).length) {
-                    resolve();
-                    return;
-                }
+        async loadSelectedConnection(connectionId) {
+            // resolve if connection is already loaded
+            if (Object.keys(this.connection).length) {
+                return;
+            }
 
-                this.isLoading = true;
+            this.isLoading = true;
 
-                if (connectionId !== undefined) {
-                    this.fetchConnection(connectionId).then(() => {
-                        resolve();
-                    });
-                    return;
-                }
+            if (connectionId !== undefined) {
+                await this.fetchConnection(connectionId);
+                return;
+            }
 
-                const criteria = new Criteria(1, 1);
-                this.migrationGeneralSettingRepository.search(criteria, this.context).then((items) => {
-                    if (items.length < 1) {
-                        this.isLoading = false;
-                        this.onNoConnectionSelected();
-                        resolve();
-                        return;
-                    }
+            const criteria = new Criteria(1, 1);
+            const items = this.migrationGeneralSettingRepository.search(criteria, this.context);
+            if (items.length < 1) {
+                this.isLoading = false;
+                this.onNoConnectionSelected();
+                return;
+            }
 
-                    if (items.first().selectedConnectionId === null) {
-                        this.isLoading = false;
-                        this.onNoConnectionSelected();
-                        resolve();
-                        return;
-                    }
+            if (items.first().selectedConnectionId === null) {
+                this.isLoading = false;
+                this.onNoConnectionSelected();
+                return;
+            }
 
-                    this.fetchConnection(items.first().selectedConnectionId);
-                });
-            });
+            await this.fetchConnection(items.first().selectedConnectionId);
         },
 
         fetchConnection(connectionId) {

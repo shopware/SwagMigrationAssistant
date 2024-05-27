@@ -8,7 +8,8 @@
                 <template #columns="{ item }">
 
                     {% block swag_migration_grid_selection_grid_column_description %}
-                        <sw-grid-column flex="1fr" :label="$tc('swag-migration.index.premappingCard.previousTitle')">
+                        <sw-grid-column flex="1fr"
+                                        :label="$tc('swag-migration.index.premappingCard.previousTitle')">
                             {{ item.description }}
                         </sw-grid-column>
                     {% endblock %}
@@ -31,7 +32,9 @@
                                     >
                                         {{ $tc('swag-migration.index.premappingCard.placeholder') }}
                                     </option>
-                                    <option v-for="choice in choices" :key="choice.uuid" :value="choice.uuid">
+                                    <option v-for="choice in choices"
+                                            :key="choice.uuid"
+                                            :value="choice.uuid">
                                         {{ choice.description }}
                                     </option>
                                 </sw-select-field>
@@ -48,8 +51,7 @@
                             :total="total"
                             :total-visible="7"
                             :steps="paginationSteps"
-                            @page-change="onPageChange">
-                        </sw-pagination>
+                            @page-change="onPageChange" />
                     </template>
                 {% endblock %}
             </sw-grid>

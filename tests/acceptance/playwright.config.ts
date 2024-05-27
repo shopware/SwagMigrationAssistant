@@ -9,11 +9,11 @@ dotenv.config();
 const platformDir = path.resolve(process.cwd(), '../../../../..');
 const platformEnv = {};
 dotenv.config({ path: path.resolve(platformDir, '.env'), processEnv: platformEnv });
-if (!process.env['DATABASE_URL'] && platformEnv['DATABASE_URL']) {
-    process.env['DATABASE_URL'] = platformEnv['DATABASE_URL'];
+if (!process.env.DATABASE_URL && platformEnv.DATABASE_URL) {
+    process.env.DATABASE_URL = platformEnv.DATABASE_URL;
 }
-if (!process.env['APP_URL'] && platformEnv['APP_URL']) {
-    process.env['APP_URL'] = platformEnv['APP_URL'];
+if (!process.env.APP_URL && platformEnv.APP_URL) {
+    process.env.APP_URL = platformEnv.APP_URL;
 }
 
 const missingEnvVars = ['APP_URL', 'DATABASE_URL'].filter((envVar) => {
@@ -29,15 +29,15 @@ if (missingEnvVars.length > 0) {
     process.exit(1);
 }
 
-process.env['SHOPWARE_ADMIN_USERNAME'] = process.env['SHOPWARE_ADMIN_USERNAME'] || 'admin';
-process.env['SHOPWARE_ADMIN_PASSWORD'] = process.env['SHOPWARE_ADMIN_PASSWORD'] || 'shopware';
+process.env.SHOPWARE_ADMIN_USERNAME = process.env.SHOPWARE_ADMIN_USERNAME ?? 'admin';
+process.env.SHOPWARE_ADMIN_PASSWORD = process.env.SHOPWARE_ADMIN_PASSWORD ?? 'shopware';
 
 // make sure APP_URL ends with a slash
-process.env['APP_URL'] = process.env['APP_URL'].replace(/\/+$/, '') + '/';
-if (process.env['ADMIN_URL']) {
-    process.env['ADMIN_URL'] = process.env['ADMIN_URL'].replace(/\/+$/, '') + '/';
+process.env.APP_URL = process.env.APP_URL.replace(/\/+$/, '') + '/';
+if (process.env.ADMIN_URL) {
+    process.env.ADMIN_URL = process.env.ADMIN_URL.replace(/\/+$/, '') + '/';
 } else {
-    process.env['ADMIN_URL'] = process.env['APP_URL'] + 'admin/';
+    process.env.ADMIN_URL = process.env.APP_URL + 'admin/';
 }
 
 export default defineConfig({
@@ -50,7 +50,7 @@ export default defineConfig({
 
     use: {
         /* Base URL to use in actions like `await page.goto('/')`. */
-        baseURL: process.env['APP_URL'],
+        baseURL: process.env.APP_URL,
         trace: 'on',
         video: 'off',
     },
@@ -58,7 +58,7 @@ export default defineConfig({
     // We abuse this to wait for the external webserver
     webServer: {
         command: 'sleep 1d',
-        url: process.env['APP_URL'],
+        url: process.env.APP_URL,
         reuseExistingServer: true,
     },
 

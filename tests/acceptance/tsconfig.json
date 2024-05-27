@@ -4,5 +4,12 @@
     "esModuleInterop": true,
     "types": ["node"],
     "baseUrl": ".",
-  }
+    "strict": true,
+    "allowJs": true,
+  },
+  "include": [
+    "./**/*.js",
+    "./**/*.ts",
+    ".eslintrc.cjs"
+  ]
 }

@@ -8,7 +8,9 @@
                     <div class="swag-migration-wizard__content-information">
 
                         {% block swag_migration_wizard_page_plugin_information_svg %}
-                            <img class="swag-migration-wizard__plugin" :src="assetFilter('/swagmigrationassistant/static/img/wizard-shopware55-api-plugin-information.svg')">
+                            <img class="swag-migration-wizard__plugin"
+                                 :src="assetFilter('/swagmigrationassistant/static/img/wizard-shopware55-api-plugin-information.svg')"
+                                 alt="">
                         {% endblock %}
 
                         {% block swag_migration_wizard_page_plugin_information_title %}
@@ -25,7 +27,11 @@
 
                         {% block swag_migration_wizard_page_plugin_information_plugin_link %}
                             <div class="swag-migration-wizard__link">
-                                <a class="link" target="_blank" href="https://store.shopware.com/search?sSearch=Swag226607479310">{{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.pluginLink') }}</a>
+                                <a class="link"
+                                   target="_blank"
+                                   href="https://store.shopware.com/search?sSearch=Swag226607479310">
+                                    {{ $tc('swag-migration.wizard.pages.profileInformation.shopware55Api.pluginLink') }}
+                                </a>
                             </div>
                         {% endblock %}
                     </div>

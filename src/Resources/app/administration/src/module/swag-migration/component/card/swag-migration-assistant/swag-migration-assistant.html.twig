@@ -14,7 +14,8 @@
 
                 {% block swag_migration_assistant_connection_illustration %}
                     <img class="swag-migration-assistant__illustration"
-                         :src="assetFilter('/swagmigrationassistant/static/img/assistant-connection.svg')">
+                         :src="assetFilter('/swagmigrationassistant/static/img/assistant-connection.svg')"
+                         alt="">
                 {% endblock %}
 
                 {% block swag_migration_assistant_connection_title %}
@@ -31,7 +32,11 @@
 
                 {% block swag_migration_assistant_connection_content_link %}
                     <div class="swag-migration-assistant__link">
-                        <a class="link" target="_blank" href="http://docs.shopware.com/en/migration-en">{{ $tc('swag-migration.index.assistantCard.connection.link') }}</a>
+                        <a class="link"
+                           target="_blank"
+                           href="http://docs.shopware.com/en/migration-en">
+                            {{ $tc('swag-migration.index.assistantCard.connection.link') }}
+                        </a>
                     </div>
                 {% endblock %}
             </div>
@@ -42,7 +47,8 @@
 
                 {% block swag_migration_assistant_dataSelection_illustration %}
                     <img class="swag-migration-assistant__illustration"
-                         :src="assetFilter('/swagmigrationassistant/static/img/assistant-dataSelection.svg')">
+                         :src="assetFilter('/swagmigrationassistant/static/img/assistant-dataSelection.svg')"
+                         alt="">
                 {% endblock %}
 
                 {% block swag_migration_assistant_dataSelection_title %}
@@ -64,7 +70,8 @@
 
                 {% block swag_migration_assistant_migrationOverview_illustration %}
                     <img class="swag-migration-assistant__illustration"
-                         :src="assetFilter('/swagmigrationassistant/static/img/assistant-migrationOverview.svg')">
+                         :src="assetFilter('/swagmigrationassistant/static/img/assistant-migrationOverview.svg')"
+                         alt="">
                 {% endblock %}
 
                 {% block swag_migration_assistant_migrationOverview_title %}
@@ -74,7 +81,9 @@
                 {% endblock %}
 
                 {% block swag_migration_assistant_migrationOverview_content %}
-                <p class="swag-migration-assistant__content">{{ $tc('swag-migration.index.assistantCard.migrationOverview.content') }}</p>
+                <p class="swag-migration-assistant__content">
+                    {{ $tc('swag-migration.index.assistantCard.migrationOverview.content') }}
+                </p>
                 {% endblock %}
             </div>
         {% endblock %}

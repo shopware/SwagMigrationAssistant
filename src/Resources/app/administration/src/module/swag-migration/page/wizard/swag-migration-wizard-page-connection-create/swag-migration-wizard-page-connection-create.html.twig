@@ -1,9 +1,9 @@
 {% block swag_migration_wizard_page_create_profile %}
-    <div class="swag-migration-wizard swag-migration-wizard-page-create-profile"
-         @keypress.enter="onKeyPressEnter">
+    <div class="swag-migration-wizard swag-migration-wizard-page-create-profile">
 
         {% block swag_migration_wizard_page_create_profile_content %}
-            <div v-if="!isLoading" class="swag-migration-wizard__content">
+            <div v-if="!isLoading"
+                 class="swag-migration-wizard__content">
 
                 {% block swag_migration_wizard_page_create_profile_information %}
                     <div class="swag-migration-wizard__content-information">
@@ -22,25 +22,24 @@
                             {{ profileHint }}
                         </sw-alert>
 
-                        <sw-text-field v-autofocus
-                                       v-model:value="selection.connectionName"
+                        <sw-text-field v-model:value="selection.connectionName"
+                                       v-autofocus
                                        :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
                                        :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
                                        validation="required"
-                                       :helpText="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
+                                       :help-text="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
                                        :error="connectionNameError"
                                        @update:value="onChangeConnectionName"
-                        >
-                        </sw-text-field>
+                        />
 
-                        <sw-single-select :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
+                        <sw-single-select v-model:value="selection.profile"
+                                          :label="$tc('swag-migration.wizard.pages.connectionCreate.profileLabel')"
                                           :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.profilePlaceholder')"
-                                          :popoverClasses="['swag-migration-wizard-page-create-profile']"
-                                          :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
+                                          :popover-classes="['swag-migration-wizard-page-create-profile']"
+                                          :popover-config="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                                           :options="profiles"
-                                          v-model:value="selection.profile"
-                                          valueProperty="name"
-                                          :searchFunction="profileSearch"
+                                          value-property="name"
+                                          :search-function="profileSearch"
                                           validation="required"
                                           @update:value="onSelectProfile"
                         >
@@ -51,28 +50,32 @@
                                 </template>
 
                                 <template #result-label-property="{ item, index, labelProperty, valueProperty, searchTerm, highlightSearchTerm, getKey }">
-                                    <div v-if="item.name === 'profileLink'" class="swag-migration-wizard-create-connection__install-profile-link-wrapper">
+                                    <div v-if="item.name === 'profileLink'"
+                                         class="swag-migration-wizard-create-connection__install-profile-link-wrapper">
                                         <div>
                                             {{ $tc('swag-migration.wizard.pages.connectionCreate.profileInstall') }}
                                         </div>
                                         <div>
-                                            <sw-icon name="regular-chevron-right-xs" size="16"></sw-icon>
+                                            <sw-icon name="regular-chevron-right-xs"
+                                                     size="16" />
                                         </div>
                                     </div>
-                                    <span v-else v-html="getText(item)"></span>
+                                    <span v-else
+                                          v-html="getText(item)">
+                                    </span>
                                 </template>
                             {% endblock %}
                         </sw-single-select>
 
-                        <sw-single-select :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
+                        <sw-single-select v-model:value="selection.gateway"
+                                          :label="$tc('swag-migration.wizard.pages.connectionCreate.gatewayLabel')"
                                           :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.gatewayPlaceholder')"
-                                          :helpText="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
-                                          :popoverClasses="['swag-migration-wizard-page-create-profile']"
-                                          :popoverConfig="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
+                                          :help-text="$tc('swag-migration.wizard.pages.connectionCreate.gatewayTooltip')"
+                                          :popover-classes="['swag-migration-wizard-page-create-profile']"
+                                          :popover-config="{active: true, resizeWidth: true, style: { zIndex: 1000, marginLeft: '8px' }}"
                                           :options="gateways"
-                                          v-model:value="selection.gateway"
-                                          valueProperty="name"
-                                          :searchFunction="gatewaySearch"
+                                          value-property="name"
+                                          :search-function="gatewaySearch"
                                           validation="required"
                                           @update:value="onSelectGateway">
 

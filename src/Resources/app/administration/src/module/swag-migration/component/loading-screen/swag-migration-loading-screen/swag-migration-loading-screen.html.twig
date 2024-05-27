@@ -29,14 +29,14 @@
 
                         {% block swag_migration_index_loading_screen_progress_bar %}
                             <swag-migration-progress-bar
-                                    :leftPointDescription="progressBarLeftPointDescription"
-                                    :rightPointDescription="$tc('swag-migration.index.loadingScreenCard.status.finish')"
+                                    :left-point-description="progressBarLeftPointDescription"
+                                    :right-point-description="$tc('swag-migration.index.loadingScreenCard.status.finish')"
                                     :value="progress"
-                                    :maxValue="total">
-                            </swag-migration-progress-bar>
+                                    :max-value="total" />
                         {% endblock %}
 
-                        <sw-alert variant="info" class="swag-migration-loading-screen__notice">
+                        <sw-alert variant="info"
+                                  class="swag-migration-loading-screen__notice">
                             {{ $tc('swag-migration.index.loadingScreenCard.notice') }}
                         </sw-alert>
                     </div>

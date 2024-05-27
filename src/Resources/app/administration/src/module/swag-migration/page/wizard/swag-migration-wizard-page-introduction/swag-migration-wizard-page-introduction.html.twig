@@ -8,7 +8,9 @@
                     <div class="swag-migration-wizard__content-information">
 
                         {% block swag_migration_wizard_page_introduction_svg %}
-                            <img class="swag-migration-wizard__illustration" :src="assetFilter('/swagmigrationassistant/static/img/wizard-introduction.svg')">
+                            <img class="swag-migration-wizard__illustration"
+                                 :src="assetFilter('/swagmigrationassistant/static/img/wizard-introduction.svg')"
+                                 alt="">
                         {% endblock %}
 
                         {% block swag_migration_wizard_page_introduction_api_hint %}

@@ -5,15 +5,19 @@
             <template #smart-bar-header>
                 <h2>
                     {{ $tc('sw-settings.index.title') }}
-                    <sw-icon name="regular-chevron-right-xs" small></sw-icon>
+                    <sw-icon name="regular-chevron-right-xs"
+                             small />
                     {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
                 </h2>
             </template>
         {% endblock %}
 
         {% block swag_migration_base_smart_bar_actions %}
-            <template v-if="!storesInitializing" #smart-bar-actions>
-                <sw-button variant="primary" @click="onMigrate" :disabled="!isMigrationAllowed">
+            <template v-if="!storesInitializing"
+                      #smart-bar-actions>
+                <sw-button variant="primary"
+                           :disabled="!isMigrationAllowed"
+                           @click="onMigrate">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>
             </template>
@@ -27,7 +31,7 @@
                 </sw-card-view>
 
                 {% block swag_migration_base_loader_content %}
-                    <sw-loader v-if="storesInitializing"></sw-loader>
+                    <sw-loader v-if="storesInitializing" />
                 {% endblock %}
             </template>
         {% endblock %}
