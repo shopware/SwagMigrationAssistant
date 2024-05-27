@@ -39,7 +39,6 @@ parameters:
             message: '#Class SwagMigrationAssistant\\Profile\\Shopware6{0,1}\\Converter\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
             paths:
                 - src/Profile/Shopware/Converter
-                - src/Profile/Shopware6/Converter/ShopwareConverter
 
         - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'

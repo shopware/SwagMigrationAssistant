@@ -23,8 +23,6 @@ class MigrationException extends HttpException
 
     final public const PROVIDER_HAS_NO_TABLE_ACCESS = 'SWAG_MIGRATION__PROVIDER_HAS_NO_TABLE_ACCESS';
 
-    final public const ASSOCIATION_MISSING = 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
-
     public const MIGRATION_CONTEXT_NOT_CREATED = 'SWAG_MIGRATION__MIGRATION_CONTEXT_NOT_CREATED';
 
     public const NO_RUNNING_MIGRATION = 'SWAG_MIGRATION__NO_RUNNING_MIGRATION';
@@ -179,16 +177,6 @@ class MigrationException extends HttpException
             self::PROVIDER_NOT_FOUND,
             'Data provider for "{{ identifier }}" not found.',
             ['identifier' => $identifier]
-        );
-    }
-
-    public static function associationMissing(string $entity, string $missingEntity): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::ASSOCIATION_MISSING,
-            'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
-            ['missingEntity' => $missingEntity, 'entity' => $entity]
         );
     }
 

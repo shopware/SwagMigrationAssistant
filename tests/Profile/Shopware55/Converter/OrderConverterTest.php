@@ -21,12 +21,12 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
+use SwagMigrationAssistant\Profile\Shopware\Exception\MigrationShopwareProfileException;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderDeliveryStateReader;
@@ -254,9 +254,9 @@ class OrderConverterTest extends TestCase
         try {
             $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
         } catch (\Exception $e) {
-            static::assertInstanceOf(MigrationException::class, $e);
-            static::assertSame(Response::HTTP_INTERNAL_SERVER_ERROR, $e->getStatusCode());
-            static::assertSame(MigrationException::ASSOCIATION_MISSING, $e->getErrorCode());
+            static::assertInstanceOf(MigrationShopwareProfileException::class, $e);
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
+            static::assertSame(MigrationShopwareProfileException::ASSOCIATION_ENTITY_REQUIRED_MISSING, $e->getErrorCode());
 
             static::assertArrayHasKey('missingEntity', $e->getParameters());
             static::assertArrayHasKey('entity', $e->getParameters());
