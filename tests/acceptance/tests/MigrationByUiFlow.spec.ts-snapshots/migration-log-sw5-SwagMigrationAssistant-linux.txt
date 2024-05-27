@@ -113,22 +113,6 @@ translation of object type "page" with source id "273" could not be converted.
 Cannot find product_download_media
 The order entity with the source id "15" cannot find the depended product_download_media entity with the source id "1".
 
-[info] SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED
-Document type is not supported
-The document with the source id "3" could not be converted because the document type "credit" is not supported.
-
-[info] SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED
-Document type is not supported
-The document with the source id "4" could not be converted because the document type "cancellation" is not supported.
-
-[info] SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED
-Document type is not supported
-The document with the source id "3" could not be converted because the document type "credit" is not supported.
-
-[info] SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED
-Document type is not supported
-The document with the source id "4" could not be converted because the document type "cancellation" is not supported.
-
 [info] SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE
 Unsupported object type
 seo_url of object type "blog" with source id "958" could not be converted.
@@ -456,6 +440,22 @@ seo_url of object type "listing" with source id "10565" could not be converted.
 [info] SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE
 Unsupported object type
 seo_url of object type "listing" with source id "10566" could not be converted.
+
+[warning] SWAG_MIGRATION_CANNOT_GET_XXX
+XXX
+XXX
+
+[warning] SWAG_MIGRATION_CANNOT_GET_XXX
+XXX
+XXX
+
+[warning] SWAG_MIGRATION_CANNOT_GET_XXX
+XXX
+XXX
+
+[warning] SWAG_MIGRATION_CANNOT_GET_XXX
+XXX
+XXX
 
 [warning] SWAG_MIGRATION_CANNOT_GET_XXX
 XXX

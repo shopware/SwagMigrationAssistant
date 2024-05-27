@@ -1,15 +1,15 @@
-import { test as base, expect } from '@acceptance/fixtures/AcceptanceTest';
+import { test as base, expect } from '@shopware-ag/acceptance-test-suite';
+import {FixtureTypes} from './AcceptanceTest';
 
-export const MigrationUser = base.extend({
-    migrationUser: async ({ shopAdmin }, use) => {
+export const MigrationUser = base.extend<FixtureTypes>({
+    MigrationUser: async ({ ShopAdmin }, use) => {
         // setup
         // ...
-        console.log('migrationUser setup');
 
-        await use(shopAdmin);
+        await use(ShopAdmin);
 
         // teardown
         // ...
-        console.info('SwagMigrationAssistant tests did run, they might leave a whole bunch of data in the shop');
+        console.warn('SwagMigrationAssistant tests did run, they might leave a whole bunch of data in the shop');
     },
 });

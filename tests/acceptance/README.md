@@ -1,6 +1,6 @@
 ## Setup
 
-Navigate to this directory if you haven't yet.
+Navigate to this directory if you haven't yet (inside the plugin folder).
 
 ```
 cd tests/acceptance
@@ -14,24 +14,16 @@ npm install
 
 Also make sure this plugin is installed.
 
+If you haven't installed playwright, also run:
+
+```
+npx playwright install
+npx playwright install-deps
+```
+
 ## Running Tests
 
-### Running all SwagMigrationAssistant tests
-
-Navigate to `[platform-repo]/tests/acceptance` and run:
-
-```
-npx playwright test --project=swag-migration-assistant
-```
-
-If that doesn't work, try the plugin folder name
-```
-npx playwright test --project=SwagMigrationAssistant
-```
-
-### Running all tests incl. SwagMigrationAssistant
-
-Navigate to `[platform-repo]/tests/acceptance` and run:
+Navigate to `[SwagMigrationAssistant-repo]/tests/acceptance` and run:
 
 ```
 npx playwright test
@@ -39,7 +31,7 @@ npx playwright test
 
 ### Running tests and update snapshots / screenshots
 ```
-npx playwright test --project=swag-migration-assistant --update-snapshots
+npx playwright test --update-snapshots
 ```
 you might need to rename the snapshot files, so they end in `-linux.txt`,
 otherwise the CI pipeline doesn't recognise them.

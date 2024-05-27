@@ -1,42 +1,26 @@
 import path from 'path';
-import dotenv from '@acceptance/node_modules/dotenv';
-import { mergeTests } from '@acceptance/fixtures/AcceptanceTest';
-import { test as workerFixtures } from '@acceptance/fixtures/WorkerFixtures';
-import { test as setupFixtures } from '@acceptance/fixtures/SetupFixtures';
-import { test as dataFixtures } from '@acceptance/test-data/DataFixtures';
-import { test as storefrontPagesFixtures } from '@acceptance/page-objects/StorefrontPages';
-import { test as administrationPagesFixtures } from '@acceptance/page-objects/AdministrationPages';
-import { test as shopCustomerTasks } from '@acceptance/tasks/ShopCustomerTasks';
-import { test as shopAdminTasks } from '@acceptance/tasks/ShopAdminTasks';
+import dotenv from 'dotenv';
+import { test as ShopwareTestSuite, mergeTests } from '@shopware-ag/acceptance-test-suite';
+import type { FixtureTypes as BaseTypes } from '@shopware-ag/acceptance-test-suite';
 
-import { MigrationUser } from '@fixtures/MigrationUser';
-import { DatabaseCredentials } from '@fixtures/DatabaseCredentials';
-import { EntityCounter } from '@fixtures/EntityCounter';
-import { MediaProcessObserver } from '@fixtures/MediaProcessObserver';
+import { MigrationUser } from './MigrationUser';
+import { DatabaseCredentials, DatabaseCredentialsStruct } from './DatabaseCredentials';
+import {EntityCounter, EntityCounterStruct} from './EntityCounter';
+import {MediaProcessObserver, MediaProcessObserverStruct} from './MediaProcessObserver';
 
-export * from '@acceptance/fixtures/AcceptanceTest';
+export * from '@shopware-ag/acceptance-test-suite';
 
-// Read from "SwagMigrationAssistant/tests/acceptance/.env" file
-const pluginAcceptanceDir = path.resolve(__dirname, '../');
-dotenv.config({ path: path.resolve(pluginAcceptanceDir, '.env')});
-
-// Read from "platform/.env" file and only set DATABASE_URL if not otherwise set from it
-const platformDir = path.resolve(process.cwd(), '../../');
-const platformEnv = {};
-dotenv.config({ path: path.resolve(platformDir, '.env'), processEnv: platformEnv });
-if (!process.env['DATABASE_URL'] && platformEnv['DATABASE_URL']) {
-    process.env['DATABASE_URL'] = platformEnv['DATABASE_URL'];
+export interface MigrationFixtureTypes {
+    MigrationUser: FixtureTypes['ShopAdmin'],
+    DatabaseCredentials: DatabaseCredentialsStruct,
+    EntityCounter: EntityCounterStruct,
+    MediaProcessObserver: MediaProcessObserverStruct,
 }
 
+export type FixtureTypes = MigrationFixtureTypes & BaseTypes;
 
 export const test = mergeTests(
-    workerFixtures,
-    setupFixtures,
-    dataFixtures,
-    storefrontPagesFixtures,
-    administrationPagesFixtures,
-    shopCustomerTasks,
-    shopAdminTasks,
+    ShopwareTestSuite,
     MigrationUser,
     DatabaseCredentials,
     EntityCounter,

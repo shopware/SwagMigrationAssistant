@@ -1,7 +1,16 @@
-import { test as base, expect } from '@acceptance/fixtures/AcceptanceTest';
+import { test as base, expect } from '@shopware-ag/acceptance-test-suite';
+import {FixtureTypes} from './AcceptanceTest';
 
-export const DatabaseCredentials = base.extend({
-    databaseCredentials: [async ({ }, use) => {
+export interface DatabaseCredentialsStruct {
+    user: string,
+    password: string,
+    host: string,
+    port: string,
+    database: string,
+}
+
+export const DatabaseCredentials = base.extend<FixtureTypes>({
+    DatabaseCredentials: [async ({ }, use) => {
         const dbUrl = process.env['DATABASE_URL'];
         const match = dbUrl.match(/\/\/(.+):(.+)@(.+):(.+)\/(.+)/);
         expect(match.length).toBeGreaterThanOrEqual(5);
@@ -11,7 +20,7 @@ export const DatabaseCredentials = base.extend({
             host: match[3],
             port: match[4],
             database: 'sw55',
-        };
+        } as DatabaseCredentialsStruct;
 
         await use(credentials);
     }, { scope: 'worker' }],

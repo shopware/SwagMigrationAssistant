@@ -1,16 +1,21 @@
-import {test as base, expect, test} from '@acceptance/fixtures/AcceptanceTest';
+import {test as base, expect } from '@playwright/test';
+import {FixtureTypes} from './AcceptanceTest';
 
-// ToDo MIG-985: remove this workaround when the underlaying issue is fixed
-export const MediaProcessObserver = base.extend({
-    mediaProcessObserver: async ({adminApiContext}, use) => {
+export interface MediaProcessObserverStruct {
+    isMediaProcessing: () => Promise<boolean>
+}
+
+// ToDo MIG-985: remove this workaround when the underlying issue is fixed
+export const MediaProcessObserver = base.extend<FixtureTypes>({
+    MediaProcessObserver: async ({ AdminApiContext }, use) => {
         const isMediaProcessing = async () => {
-            const response = await adminApiContext.get(`/api/_action/migration/is-media-processing`, {});
+            const response = await AdminApiContext.get(`/api/_action/migration/is-media-processing`, {});
             await expect(response.ok()).toBeTruthy();
             return await response.json();
         };
 
         await use({
-            isMediaProcessing
+            isMediaProcessing,
         });
     },
 });

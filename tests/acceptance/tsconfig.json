@@ -4,13 +4,5 @@
     "esModuleInterop": true,
     "types": ["node"],
     "baseUrl": ".",
-    "include": ["src/**/*"],
-    "paths": {
-      "@acceptance/*": ["./../../../../../tests/acceptance/*"],
-      "@fixtures/*": ["fixtures/*"],
-      "@page-objects/*": ["page-objects/*"],
-      "@tasks/*": ["tasks/*"],
-      "@data/*": ["test-data/*"],
-    }
   }
 }

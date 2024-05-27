@@ -1,4 +1,4 @@
-import { test, expect } from '@fixtures/AcceptanceTest';
+import { test, expect } from '../fixtures/AcceptanceTest';
 
 const MIGRATION_LOADING_TIMEOUT = 30_000; // 30s (same as request timeout)
 
@@ -9,12 +9,12 @@ test.describe.configure({
 });
 
 test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via local database connection @SwagMigrationAssistant', async ({
-    migrationUser,
-    databaseCredentials,
-    entityCounter,
-    mediaProcessObserver,
+    MigrationUser,
+    DatabaseCredentials,
+    EntityCounter,
+    MediaProcessObserver,
  }) => {
-    const page = migrationUser.page;
+    const page = MigrationUser.page;
     await page.goto('/admin#/swag/migration/index/main');
     await expect(page.locator('.sw-loader-element')).toBeHidden({ timeout: MIGRATION_LOADING_TIMEOUT });
 
@@ -37,11 +37,11 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByPlaceholder('Select gateway').fill('Local');
         await page.getByText('Local database').click();
         await page.getByRole('button', { name: 'Establish connection' }).click();
-        await page.getByPlaceholder('Enter host').fill(databaseCredentials.host);
-        await page.getByLabel('Port').fill(databaseCredentials.port);
-        await page.getByPlaceholder('Enter username').fill(databaseCredentials.user);
-        await page.getByPlaceholder('Enter password').fill(databaseCredentials.password);
-        await page.getByPlaceholder('Enter name').fill(databaseCredentials.database);
+        await page.getByPlaceholder('Enter host').fill(DatabaseCredentials.host);
+        await page.getByLabel('Port').fill(DatabaseCredentials.port);
+        await page.getByPlaceholder('Enter username').fill(DatabaseCredentials.user);
+        await page.getByPlaceholder('Enter password').fill(DatabaseCredentials.password);
+        await page.getByPlaceholder('Enter name').fill(DatabaseCredentials.database);
         await page.getByPlaceholder('Enter installation root').fill('/tmp');
         await page.getByRole('button', { name: 'Connect' }).click();
 
@@ -88,7 +88,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     // ToDo MIG-985: Remove this if the underlying issue is fixed
     await test.step('Wait for media download to finish', async () => {
         await expect.poll(async () => {
-            return await mediaProcessObserver.isMediaProcessing();
+            return await MediaProcessObserver.isMediaProcessing();
         }, {
             // Probe after 100ms and then every second
             intervals: [100, 1_000],
@@ -97,24 +97,24 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     });
 
     await test.step('Expect entities to be there', async () => {
-        await entityCounter.checkEntityCount('swag_migration_logging', 699);
+        await EntityCounter.checkEntityCount('swag_migration_logging', 699);
 
-        await entityCounter.checkEntityCount('product', 427);
-        await entityCounter.checkEntityCount('product_review', 2);
-        await entityCounter.checkEntityCount('category', 63);
-        await entityCounter.checkEntityCount('property_group', 14);
-        await entityCounter.checkEntityCount('property_group_option', 93);
-        await entityCounter.checkEntityCount('product_manufacturer', 14);
+        await EntityCounter.checkEntityCount('product', 427);
+        await EntityCounter.checkEntityCount('product_review', 2);
+        await EntityCounter.checkEntityCount('category', 63);
+        await EntityCounter.checkEntityCount('property_group', 14);
+        await EntityCounter.checkEntityCount('property_group_option', 93);
+        await EntityCounter.checkEntityCount('product_manufacturer', 14);
 
-        await entityCounter.checkEntityCount('order', 2);
-        await entityCounter.checkEntityCount('customer', 3);
+        await EntityCounter.checkEntityCount('order', 2);
+        await EntityCounter.checkEntityCount('customer', 3);
 
-        await entityCounter.checkEntityCount('cms_page', 10);
-        await entityCounter.checkEntityCount('media', 599);
-        await entityCounter.checkEntityCount('media_folder', 26);
+        await EntityCounter.checkEntityCount('cms_page', 10);
+        await EntityCounter.checkEntityCount('media', 603);
+        await EntityCounter.checkEntityCount('media_folder', 26);
 
-        await entityCounter.checkEntityCount('newsletter_recipient', 0);
-        await entityCounter.checkEntityCount('promotion', 4);
+        await EntityCounter.checkEntityCount('newsletter_recipient', 0);
+        await EntityCounter.checkEntityCount('promotion', 4);
     });
 
     await test.step('Inspect the migration history', async () => {

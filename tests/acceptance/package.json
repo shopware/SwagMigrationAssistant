@@ -2,10 +2,12 @@
   "name": "shopware-acceptance-test-suite-swag-migration-assistant",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "lint": "eslint . --ext .ts",
     "lint:fix": "npm run lint -- --fix",
-    "types": "tsc"
+    "types": "tsc",
+    "test": "npx playwright test --ui"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.21.3",
@@ -19,6 +21,12 @@
     "eslint-plugin-playwright": "^1.5.2",
     "eslint-plugin-simple-import-sort": "^10.0.0",
     "typescript": "^5.4.2"
+  },
+  "dependencies": {
+    "@playwright/test": "1.44.0",
+    "@shopware-ag/acceptance-test-suite": "1.1.4",
+    "@shopware/api-client": "^0.0.0-canary-20230823113412",
+    "dotenv": "^16.4.5"
   },
   "author": "shopware AG",
   "license": "ISC"
