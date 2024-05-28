@@ -306,11 +306,6 @@ parameters:
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:getPremapping\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Run/SwagMigrationRunEntity.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:getTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php

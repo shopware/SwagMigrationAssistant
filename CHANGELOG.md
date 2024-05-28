@@ -56,6 +56,7 @@
     - Removed properties `accessTokenService`, `migrationDataRepository`, `mediaFileRepository`, `indexer`, `cache`
     - Removed methods `takeoverMigration`, `calculateWriteProgress`, `calculateMediaFilesProgress`, `calculateCurrentTotals`, `finishMigration`
     - Removed parameter `abortMigration` of method `abortMigration`
+- MIG-962 - [BREAKING] Removed getters and setters for `premapping` on `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use them on `\SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity` instead
 
 # 11.0.1
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version

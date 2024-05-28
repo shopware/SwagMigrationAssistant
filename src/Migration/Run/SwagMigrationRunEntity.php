@@ -15,7 +15,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 
 #[Package('services-settings')]
 class SwagMigrationRunEntity extends Entity
@@ -52,11 +51,6 @@ class SwagMigrationRunEntity extends Entity
     protected ?string $accessToken = null;
 
     protected ?MigrationProgress $progress = null;
-
-    /**
-     * @var PremappingStruct[]
-     */
-    protected array $premapping = [];
 
     protected ?SwagMigrationDataCollection $data = null;
 
@@ -146,19 +140,6 @@ class SwagMigrationRunEntity extends Entity
     public function setProgress(MigrationProgress $progress): void
     {
         $this->progress = $progress;
-    }
-
-    public function getPremapping(): ?array
-    {
-        return $this->premapping;
-    }
-
-    /**
-     * @param PremappingStruct[] $premapping
-     */
-    public function setPremapping(array $premapping): void
-    {
-        $this->premapping = $premapping;
     }
 
     public function getData(): ?SwagMigrationDataCollection
