@@ -144,7 +144,7 @@ export default {
 
     getters: {
         isPremappingValid(state) {
-            return state.premapping.length > 0 && !state.premapping.some((group) => {
+            return !state.premapping.some((group) => {
                 return group.mapping.some((mapping) => {
                     return mapping.destinationUuid === null || mapping.destinationUuid.length === 0;
                 });

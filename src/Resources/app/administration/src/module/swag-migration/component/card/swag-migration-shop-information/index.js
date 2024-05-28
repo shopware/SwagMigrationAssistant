@@ -229,17 +229,23 @@ Component.register('swag-migration-shop-information', {
          * @param {string} connectionId
          */
         fetchConnection(connectionId) {
-            return this.migrationConnectionRepository.get(connectionId, this.context).then((connection) => {
-                if (!connection) {
-                    return null;
-                }
-                delete connection.credentialFields;
-                this.connection = connection;
+            if (!connectionId) {
+                return Promise.resolve();
+            }
 
-                return this.migrationApiService.getProfileInformation(
-                    connection.profileName,
-                    connection.gatewayName,
-                ).then((profileInformation) => {
+            return this.migrationConnectionRepository.get(connectionId, this.context)
+                .then((connection) => {
+                    if (!connection) {
+                        return Promise.resolve(null);
+                    }
+                    delete connection.credentialFields;
+                    this.connection = connection;
+
+                    return this.migrationApiService.getProfileInformation(
+                        connection.profileName,
+                        connection.gatewayName,
+                    );
+                }).then((profileInformation) => {
                     if (!profileInformation) {
                         return;
                     }
@@ -247,7 +253,6 @@ Component.register('swag-migration-shop-information', {
                     this.connection.profile = profileInformation.profile;
                     this.connection.gateway = profileInformation.gateway;
                 });
-            });
         },
 
         onClickEditConnectionCredentials() {
