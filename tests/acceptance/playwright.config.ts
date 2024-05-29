@@ -47,6 +47,8 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : 1,
     reporter: 'html',
+    timeout: 300_000, // 5 min. test timeout
+    globalTimeout: 600_000, // kill test suite after 10 min. running
 
     use: {
         /* Base URL to use in actions like `await page.goto('/')`. */
