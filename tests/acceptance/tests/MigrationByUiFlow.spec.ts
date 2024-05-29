@@ -32,7 +32,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByPlaceholder('Enter name').fill('sw5local');
         await page.locator('div').filter({ hasText: /^Shopware 5\.5 - shopware AG$/ }).click();
-        await page.getByText('Shopware 5.7 - shopware AG').click();
+        await page.getByText('Shopware 5.5 - shopware AG').click();
         await page.getByText('Select gateway').click();
         await page.getByPlaceholder('Select gateway').fill('Local');
         await page.getByText('Local database').click();

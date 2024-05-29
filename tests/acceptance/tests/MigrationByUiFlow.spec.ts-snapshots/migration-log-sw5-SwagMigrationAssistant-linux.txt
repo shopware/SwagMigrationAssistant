@@ -6,7 +6,7 @@ Updated at: TimestampXXX
 Last control user id: -
 Connection id: XXX
 Connection name: sw5local
-Profile: shopware57
+Profile: shopware55
 Gateway: local
 
 Selected dataSets:
@@ -2846,7 +2846,7 @@ Environment information {JSON}:
 {
     "extensions": [],
     "sourceSystemName": "Shopware",
-    "sourceSystemVersion": "5.7",
+    "sourceSystemVersion": "5.5",
     "sourceSystemDomain": "sw55.local",
     "totals": {
         "category": {
