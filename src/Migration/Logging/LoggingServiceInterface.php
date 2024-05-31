@@ -10,9 +10,10 @@ namespace SwagMigrationAssistant\Migration\Logging;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-interface LoggingServiceInterface
+interface LoggingServiceInterface extends ResetInterface
 {
     public function addLogEntry(LogEntryInterface $logEntry): void;
 

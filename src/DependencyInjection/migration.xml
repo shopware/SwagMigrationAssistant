@@ -6,6 +6,8 @@
     <services>
         <service id="SwagMigrationAssistant\Migration\Logging\LoggingService">
             <argument type="service" id="swag_migration_logging.repository"/>
+
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Media\MediaFileService">
@@ -13,6 +15,8 @@
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry"/>
+
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
@@ -49,6 +53,8 @@
             <argument type="service" id="document_type.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
+
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Run\RunService">

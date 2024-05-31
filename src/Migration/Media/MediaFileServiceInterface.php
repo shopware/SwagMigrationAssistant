@@ -10,9 +10,10 @@ namespace SwagMigrationAssistant\Migration\Media;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-interface MediaFileServiceInterface
+interface MediaFileServiceInterface extends ResetInterface
 {
     public function writeMediaFile(Context $context): void;
 

@@ -19,6 +19,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
 class MediaFileService implements MediaFileServiceInterface
@@ -36,6 +37,12 @@ class MediaFileService implements MediaFileServiceInterface
         protected EntityDefinition $mediaFileDefinition,
         protected ConverterRegistryInterface $converterRegistry
     ) {
+    }
+
+    public function reset(): void
+    {
+        $this->writeArray = [];
+        $this->uuids = [];
     }
 
     public function writeMediaFile(Context $context): void

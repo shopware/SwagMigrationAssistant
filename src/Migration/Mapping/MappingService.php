@@ -89,6 +89,14 @@ class MappingService implements MappingServiceInterface
     ) {
     }
 
+    public function reset(): void
+    {
+        $this->writeArray = [];
+        $this->languageData = [];
+        $this->locales = [];
+        $this->mappings = [];
+    }
+
     public function getOrCreateMapping(
         string $connectionId,
         string $entityName,

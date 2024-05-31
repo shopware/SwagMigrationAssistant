@@ -24,6 +24,11 @@ class LoggingService implements LoggingServiceInterface
     {
     }
 
+    public function reset(): void
+    {
+        $this->logging = [];
+    }
+
     public function saveLogging(Context $context): void
     {
         if (empty($this->logging)) {
