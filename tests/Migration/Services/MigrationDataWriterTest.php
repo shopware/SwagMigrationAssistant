@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\Services;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Order\OrderCollection;
@@ -308,7 +309,7 @@ class MigrationDataWriterTest extends TestCase
             $this->mappingService,
             new SwagMigrationDataDefinition(),
             $this->dbConnection,
-            new LoggingService($this->loggingRepo),
+            new LoggingService($this->loggingRepo, new NullLogger()),
             static::getContainer()->get(TrackingEventClient::class),
             static::getContainer()->get('messenger.bus.shopware'),
             $migrationContextFactoryMock,
@@ -666,7 +667,8 @@ class MigrationDataWriterTest extends TestCase
             $this->deliveryTimeRepo,
             static::getContainer()->get('document_type.repository'),
             $this->entityWriter,
-            static::getContainer()->get(SwagMigrationMappingDefinition::class)
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            new NullLogger()
         );
     }
 

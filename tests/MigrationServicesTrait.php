@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test;
 
+use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
 use Shopware\Core\Checkout\Order\Aggregate\OrderTransaction\OrderTransactionStates;
@@ -73,7 +74,10 @@ trait MigrationServicesTrait
         EntityRepository $languageRepository,
         ReaderRegistryInterface $readerRegistry
     ): MigrationDataFetcherInterface {
-        $loggingService = new LoggingService($loggingRepo);
+        $loggingService = new LoggingService(
+            $loggingRepo,
+            new NullLogger()
+        );
 
         $connectionFactory = new ConnectionFactory();
         $gatewayRegistry = new GatewayRegistry(new DummyCollection([
@@ -109,7 +113,11 @@ trait MigrationServicesTrait
         EntityRepository $countryRepo,
         EntityRepository $salesChannelRepo
     ): MigrationDataConverterInterface {
-        $loggingService = new LoggingService($loggingRepo);
+        $loggingService = new LoggingService(
+            $loggingRepo,
+            new NullLogger()
+        );
+
         $validator = Validation::createValidator();
         $converterRegistry = new ConverterRegistry(
             new DummyCollection(

@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Framework\Context;
@@ -386,7 +387,8 @@ class MigrationDataProcessingTest extends TestCase
             static::getContainer()->get('delivery_time.repository'),
             static::getContainer()->get('document_type.repository'),
             static::getContainer()->get(EntityWriter::class),
-            static::getContainer()->get(SwagMigrationMappingDefinition::class)
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            new NullLogger()
         );
     }
 

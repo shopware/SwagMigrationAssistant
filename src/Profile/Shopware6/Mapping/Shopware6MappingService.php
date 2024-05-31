@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseConfigCollection;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
@@ -96,6 +97,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepository $documentTypeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
+        LoggerInterface $logger,
         private readonly EntityRepository $numberRangeTypeRepo,
         private readonly EntityRepository $mailTemplateTypeRepo,
         private readonly EntityRepository $mailTemplateRepo,
@@ -125,7 +127,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             $deliveryTimeRepo,
             $documentTypeRepo,
             $entityWriter,
-            $mappingDefinition
+            $mappingDefinition,
+            $logger
         );
     }
 

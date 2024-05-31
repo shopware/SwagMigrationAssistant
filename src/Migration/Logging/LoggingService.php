@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Logging;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
@@ -20,12 +21,18 @@ class LoggingService implements LoggingServiceInterface
     /**
      * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
      */
-    public function __construct(private readonly EntityRepository $loggingRepo)
-    {
+    public function __construct(
+        private readonly EntityRepository $loggingRepo,
+        private readonly LoggerInterface $logger
+    ) {
     }
 
     public function reset(): void
     {
+        if (!empty($this->logging)) {
+            $this->logger->error('SwagMigrationAssistant: Migration logging was not empty on calling reset.');
+        }
+
         $this->logging = [];
     }
 
@@ -35,9 +42,13 @@ class LoggingService implements LoggingServiceInterface
             return;
         }
 
-        $this->loggingRepo->create($this->logging, $context);
-
-        $this->logging = [];
+        try {
+            $this->loggingRepo->create($this->logging, $context);
+        } catch (\Exception) {
+            $this->writePerEntry($context);
+        } finally {
+            $this->logging = [];
+        }
     }
 
     public function addLogEntry(LogEntryInterface $logEntry): void
@@ -54,5 +65,16 @@ class LoggingService implements LoggingServiceInterface
             'sourceId' => $logEntry->getSourceId(),
             'runId' => $logEntry->getRunId(),
         ];
+    }
+
+    private function writePerEntry(Context $context): void
+    {
+        foreach ($this->logging as $log) {
+            try {
+                $this->loggingRepo->create([$log], $context);
+            } catch (\Exception) {
+                $this->logger->error('SwagMigrationAssistant: Could not write log entry: ', $log);
+            }
+        }
     }
 }

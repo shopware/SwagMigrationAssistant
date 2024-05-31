@@ -12,13 +12,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
  */
 #[Package('services-settings')]
-interface MappingServiceInterface extends ResetInterface
+interface MappingServiceInterface
 {
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array;
 
