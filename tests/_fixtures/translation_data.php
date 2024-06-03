@@ -16,6 +16,18 @@ return [
         'locale' => 'en-US',
         'name' => null,
     ],
+    'productSeoData' => [
+        'id' => '6',
+        'objecttype' => 'article',
+        'objectdata' => 'a:8:{s:10:"txtArtikel";s:11:"Filler mass";s:19:"txtlangbeschreibung";s:30:"<p>Description translation</p>";s:9:"metaTitle";s:22:"Meta title translation";s:19:"txtshortdescription";s:29:"Short description translation";s:11:"txtkeywords";s:20:"Keywords translation";s:17:"__attribute_attr1";s:29:"Free text field 1 translation";s:17:"__attribute_attr2";s:29:"Free text field 2 translation";s:17:"__attribute_attr3";s:29:"Free text field 3 translation";}',
+        'objectkey' => '6',
+        'objectlanguage' => '2',
+        'dirty' => '1',
+        'locale' => 'en-GB',
+        'name' => null,
+        'ordernumber' => null,
+        'mediaId' => null,
+    ],
     'productnolocale' => [
         'id' => '277',
         'objecttype' => 'article',

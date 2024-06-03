@@ -1,6 +1,10 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
-- MIG-983 - Fix migration of shop bounded customers   
+- MIG-983 - Fix migration of shop bounded customers
+- MIG-983 - [BREAKING] Changed method name `getAddresses` to `applyAddresses` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
+- MIG-983 - [BREAKING] Changed method name `getCountryTranslation` to `applyCountryTranslation` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
+- MIG-983 - [BREAKING] Changed method name `getCountryStateTranslation` to `applyCountryStateTranslation` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - MIG-986 - Fix migration of order tracking codes
+- MIG-992 - Fix migration of product seo data
 
 # 11.0.1
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version
