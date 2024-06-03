@@ -292,6 +292,7 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
+        static::assertSame(['b2b-tracking-code'], $converted['deliveries'][0]['trackingCodes']);
         static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('mustermann@b2b.de', $converted['orderCustomer']['email']);
         static::assertSame($cartPrice->getTaxStatus(), CartPrice::TAX_STATE_NET);
