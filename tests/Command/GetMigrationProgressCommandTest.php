@@ -10,16 +10,10 @@ namespace SwagMigrationAssistant\Test\Command;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Command\GetMigrationProgressCommand;
-use SwagMigrationAssistant\Migration\Run\MigrationProgress;
-use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
-use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
+use SwagMigrationAssistant\Migration\Run\MigrationState;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunService;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -32,26 +26,17 @@ class GetMigrationProgressCommandTest extends TestCase
 
     public function testGetProgressWithFinishingMigration(): void
     {
-        $runEntity = new SwagMigrationRunEntity();
-        $runEntity->setId(Uuid::randomHex());
-
         $migrationRunService = $this->createMock(RunService::class);
         $migrationRunService
             ->method('getRunStatus')
-            ->willReturn(new MigrationProgress(MigrationProgressStatus::FETCHING, 0, 100, new ProgressDataSetCollection([]), 'product', 0))
-            ->willReturn(new MigrationProgress(MigrationProgressStatus::WAITING_FOR_APPROVE, 0, 100, new ProgressDataSetCollection([]), 'product', 0));
+            ->willReturn(new MigrationState(MigrationStep::FETCHING, 0, 100))
+            ->willReturn(new MigrationState(MigrationStep::WAITING_FOR_APPROVE, 0, 100));
         $migrationRunService
             ->expects(static::once())
             ->method('approveFinishingMigration');
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepository */
-        $runRepository = new StaticEntityRepository([
-            new SwagMigrationRunCollection([$runEntity]),
-        ], new SwagMigrationRunDefinition());
-
         $commandTester = $this->createCommandTester(
             $migrationRunService,
-            $runRepository
         );
 
         $result = $commandTester->execute([
@@ -63,15 +48,11 @@ class GetMigrationProgressCommandTest extends TestCase
 
     public function testGetProgressWithoutRunningMigration(): void
     {
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepository */
-        $runRepository = new StaticEntityRepository([
-            new SwagMigrationRunCollection([]),
-        ], new SwagMigrationRunDefinition());
+        $runServiceMock = $this->createMock(RunService::class);
+        $runServiceMock->method('getRunStatus')
+            ->willReturn(new MigrationState(MigrationStep::IDLE, 0, 0));
 
-        $commandTester = $this->createCommandTester(
-            $this->createMock(RunService::class),
-            $runRepository
-        );
+        $commandTester = $this->createCommandTester($runServiceMock);
 
         $result = $commandTester->execute([
             'command' => self::COMMAND_NAME,
@@ -83,26 +64,17 @@ class GetMigrationProgressCommandTest extends TestCase
 
     public function testGetProgressWithAbortingMigration(): void
     {
-        $runEntity = new SwagMigrationRunEntity();
-        $runEntity->setId(Uuid::randomHex());
-
         $migrationRunService = $this->createMock(RunService::class);
         $migrationRunService
             ->method('getRunStatus')
-            ->willReturn(new MigrationProgress(MigrationProgressStatus::FETCHING, 0, 100, new ProgressDataSetCollection([]), 'product', 0))
-            ->willReturn(new MigrationProgress(MigrationProgressStatus::ABORTING, 0, 100, new ProgressDataSetCollection([]), 'product', 0));
+            ->willReturn(new MigrationState(MigrationStep::FETCHING, 0, 100))
+            ->willReturn(new MigrationState(MigrationStep::ABORTING, 0, 100));
         $migrationRunService
             ->expects(static::never())
             ->method('approveFinishingMigration');
 
-        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepository */
-        $runRepository = new StaticEntityRepository([
-            new SwagMigrationRunCollection([$runEntity]),
-        ], new SwagMigrationRunDefinition());
-
         $commandTester = $this->createCommandTester(
             $migrationRunService,
-            $runRepository
         );
 
         $result = $commandTester->execute([
@@ -113,16 +85,12 @@ class GetMigrationProgressCommandTest extends TestCase
         static::assertStringContainsString('Migration was aborted', $commandTester->getDisplay());
     }
 
-    /**
-     * @param StaticEntityRepository<SwagMigrationRunCollection> $runRepository
-     */
-    private function createCommandTester(RunService&MockObject $runService, StaticEntityRepository $runRepository): CommandTester
+    private function createCommandTester(RunService&MockObject $runService): CommandTester
     {
         $kernel = self::getKernel();
         $application = new Application($kernel);
 
         $application->add(new GetMigrationProgressCommand(
-            $runRepository,
             $runService,
             self::COMMAND_NAME
         ));

@@ -18,16 +18,16 @@
                               @column-sort="onSortColumn">
 
                     {% block swag_migration_history_grid_column_status %}
-                        <template #column-status="{ item }">
-                            <sw-icon v-if="item.status === 'finished'"
+                        <template #column-step="{ item }">
+                            <sw-icon v-if="item.step === 'finished'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--finished"
                                      name="regular-checkmark"
                                      size="16px" />
-                            <sw-icon v-else-if="item.status === 'aborted'"
+                            <sw-icon v-else-if="item.step === 'aborted'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted"
                                      name="regular-times"
                                      size="16px" />
-                            <sw-icon v-else-if="item.status === 'running'"
+                            <sw-icon v-else-if="item.step === 'running'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--loading"
                                      name="regular-circle"
                                      size="16px" />

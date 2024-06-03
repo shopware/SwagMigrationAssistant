@@ -138,7 +138,7 @@ class HistoryService implements HistoryServiceInterface
             throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
         }
 
-        if ($run->getStatus() === SwagMigrationRunEntity::STATUS_RUNNING) {
+        if ($run->getStep()->isRunning()) {
             throw MigrationException::migrationIsAlreadyRunning();
         }
 
@@ -251,7 +251,7 @@ class HistoryService implements HistoryServiceInterface
             . '--------------------Log-entries---------------------' . \PHP_EOL,
             \date(self::LOG_TIME_FORMAT),
             $run->getId(),
-            $run->getStatus() ?? '-',
+            $run->getStepValue(),
             $createdAt,
             $updatedAt,
             $run->getUserId() ?? '-',

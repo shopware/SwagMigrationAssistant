@@ -24,7 +24,7 @@ interface RunServiceInterface
      * If the migration run is aborted, the steps are as follows:
      * IDLE -> [FETCHING || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
      */
-    public function getRunStatus(Context $context): MigrationProgress;
+    public function getRunStatus(Context $context): MigrationState;
 
     /**
      * Abort the running migration.
@@ -50,5 +50,5 @@ interface RunServiceInterface
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
 
-    public function cleanupMigrationData(): void;
+    public function cleanupMigrationData(Context $context): void;
 }

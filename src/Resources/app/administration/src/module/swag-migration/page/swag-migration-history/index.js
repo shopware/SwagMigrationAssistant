@@ -103,8 +103,8 @@ Component.register('swag-migration-history', {
                     allowResize: true,
                 },
                 {
-                    property: 'status',
-                    dataIndex: 'status',
+                    property: 'step',
+                    dataIndex: 'step',
                     label: this.$tc('swag-migration.history.status'),
                     align: 'center',
                     allowResize: true,

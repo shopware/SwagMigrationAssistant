@@ -47,6 +47,7 @@ parameters:
                 - src/Migration/Logging/SwagMigrationLoggingEntity.php
                 - src/Migration/Run/EntityProgress.php
                 - src/Migration/Run/RunProgress.php
+                - src/Migration/Run/SwagMigrationRunEntity.php
                 - src/Migration/Setting/GeneralSettingEntity.php
                 - src/Migration/Data/SwagMigrationDataEntity.php
                 - src/Migration/Mapping/SwagMigrationMappingEntity.php

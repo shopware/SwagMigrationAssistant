@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('services-settings')]
-enum MigrationProgressStatus: string
+enum MigrationStep: string
 {
     case IDLE = 'idle';
 
@@ -31,4 +31,12 @@ enum MigrationProgressStatus: string
     case FINISHED = 'finished';
 
     case ABORTED = 'aborted';
+
+    public function isRunning(): bool
+    {
+        return !\in_array($this, [
+            self::FINISHED,
+            self::ABORTED,
+        ], true);
+    }
 }

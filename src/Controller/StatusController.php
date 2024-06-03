@@ -299,9 +299,9 @@ class StatusController extends AbstractController
     }
 
     #[Route(path: '/api/_action/migration/cleanup-migration-data', name: 'api.admin.migration.cleanup-migration-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
-    public function cleanupMigrationData(): Response
+    public function cleanupMigrationData(Context $context): Response
     {
-        $this->runService->cleanupMigrationData();
+        $this->runService->cleanupMigrationData($context);
 
         return new Response();
     }

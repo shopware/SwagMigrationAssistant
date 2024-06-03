@@ -21,7 +21,6 @@ use Shopware\Core\Framework\Validation\WriteConstraintViolationException;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationProgressField;
 use SwagMigrationAssistant\Migration\Run\MigrationProgressFieldSerializer;
-use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSet;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
@@ -40,7 +39,6 @@ class MigrationProgressFieldSerializerTest extends TestCase
     public function testEncodeWithArrayInput(): void
     {
         $expected = [
-            'step' => 'step',
             'progress' => 1,
             'total' => 2,
             'currentEntity' => 'currentEntity',
@@ -52,11 +50,13 @@ class MigrationProgressFieldSerializerTest extends TestCase
                 ],
             ],
             'exceptionCount' => 0,
+            'isAborted' => 0,
         ];
 
         $input = $expected;
         $input['extensions'] = [];
         $input['dataSets'][0]['extensions'] = [];
+        $input['isAborted'] = (bool) $expected['isAborted'];
 
         $encoded = $this->serializer->encode(
             new MigrationProgressField('progress', 'progress'),
@@ -71,7 +71,6 @@ class MigrationProgressFieldSerializerTest extends TestCase
     public function testEncodeWithStructInput(): void
     {
         $expected = [
-            'step' => MigrationProgressStatus::IDLE->value,
             'progress' => 1,
             'total' => 2,
             'currentEntity' => 'currentEntity',
@@ -83,15 +82,17 @@ class MigrationProgressFieldSerializerTest extends TestCase
                 ],
             ],
             'exceptionCount' => 0,
+            'isAborted' => 1,
         ];
 
         $input = new MigrationProgress(
-            MigrationProgressStatus::IDLE,
             $expected['progress'],
             $expected['total'],
             new ProgressDataSetCollection([new ProgressDataSet(ProductDefinition::ENTITY_NAME, 10)]),
             $expected['currentEntity'],
-            $expected['currentEntityProgress']
+            $expected['currentEntityProgress'],
+            $expected['exceptionCount'],
+            (bool) $expected['isAborted'],
         );
 
         $encoded = $this->serializer->encode(
@@ -107,7 +108,6 @@ class MigrationProgressFieldSerializerTest extends TestCase
     public function testDecode(): void
     {
         $expected = new MigrationProgress(
-            MigrationProgressStatus::IDLE,
             1,
             2,
             new ProgressDataSetCollection([ProductDefinition::ENTITY_NAME => new ProgressDataSet(ProductDefinition::ENTITY_NAME, 10)]),
@@ -116,7 +116,6 @@ class MigrationProgressFieldSerializerTest extends TestCase
         );
 
         $input = [
-            'step' => MigrationProgressStatus::IDLE->value,
             'progress' => 1,
             'total' => 2,
             'currentEntity' => 'currentEntity',
@@ -127,6 +126,8 @@ class MigrationProgressFieldSerializerTest extends TestCase
                     'total' => 10,
                 ],
             ],
+            'exceptionCount' => 0,
+            'isAborted' => false,
         ];
 
         $decoded = $this->serializer->decode(
@@ -140,7 +141,6 @@ class MigrationProgressFieldSerializerTest extends TestCase
     public function testDecodeWithoutDataSetKey(): void
     {
         $expected = new MigrationProgress(
-            MigrationProgressStatus::IDLE,
             1,
             2,
             new ProgressDataSetCollection(),
@@ -149,11 +149,12 @@ class MigrationProgressFieldSerializerTest extends TestCase
         );
 
         $input = [
-            'step' => MigrationProgressStatus::IDLE->value,
             'progress' => 1,
             'total' => 2,
             'currentEntity' => 'currentEntity',
             'currentEntityProgress' => 3,
+            'exceptionCount' => 0,
+            'isAborted' => false,
         ];
 
         $decoded = $this->serializer->decode(
@@ -168,12 +169,12 @@ class MigrationProgressFieldSerializerTest extends TestCase
     public function testEncodeWithInvalidInput(string $missingKey, bool $isDataSetKey = false): void
     {
         $input = [
-            'step' => MigrationProgressStatus::IDLE->value,
             'progress' => 1,
             'total' => 2,
             'currentEntity' => 'currentEntity',
             'currentEntityProgress' => 3,
             'exceptionCount' => 0,
+            'isAborted' => false,
             'dataSets' => [
                 [
                     'entityName' => ProductDefinition::ENTITY_NAME,
@@ -210,7 +211,6 @@ class MigrationProgressFieldSerializerTest extends TestCase
 
     public static function invalidInputProvider(): \Generator
     {
-        yield 'Unset step key of main data' => ['step'];
         yield 'Unset progress key of main data' => ['progress'];
         yield 'Unset total key of main data' => ['total'];
         yield 'Unset currentEntity key of main data' => ['currentEntity'];

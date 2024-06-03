@@ -27,8 +27,8 @@ use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
@@ -135,7 +135,7 @@ class PremappingControllerTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'connectionId' => $this->connectionId,
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             $this->context

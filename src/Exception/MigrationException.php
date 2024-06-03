@@ -290,13 +290,13 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function unknownProgressStep(string $step): self
+    public static function unknownProgressStep(?string $step): self
     {
         return new self(
             Response::HTTP_BAD_REQUEST,
             self::UNKNOWN_PROGRESS_STEP,
             'Unknown progress step: "{{ step }}".',
-            ['step' => $step]
+            ['step' => $step ?? 'null']
         );
     }
 

@@ -97,13 +97,13 @@ Component.register('swag-migration-history-detail', {
         },
 
         runStatusSnippet() {
-            return this.migrationRun.status === null ? '' :
-                `swag-migration.history.detailPage.status.${this.migrationRun.status}`;
+            return this.migrationRun.step === null ? '' :
+                `swag-migration.history.detailPage.status.${this.migrationRun.step}`;
         },
 
         runStatusClasses() {
-            return this.migrationRun.status === null ? '' :
-                `swag-migration-history-detail__run-status-value--${this.migrationRun.status}`;
+            return this.migrationRun.step === null ? '' :
+                `swag-migration-history-detail__run-status-value--${this.migrationRun.step}`;
         },
 
         assetFilter() {

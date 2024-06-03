@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\FieldAccessorBuilder\JsonFieldAccessorBuilder;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IntField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
@@ -23,13 +24,13 @@ class MigrationProgressField extends JsonField
         string $propertyName
     ) {
         parent::__construct($storageName, $propertyName, [
-            (new StringField('step', 'step'))->addFlags(new Required()),
             (new IntField('progress', 'progress'))->addFlags(new Required()),
             (new IntField('total', 'total'))->addFlags(new Required()),
             (new StringField('currentEntity', 'currentEntity'))->addFlags(new Required()),
             (new IntField('currentEntityProgress', 'currentEntityProgress'))->addFlags(new Required()),
             (new ListField('dataSets', 'dataSets', StringField::class))->addFlags(new Required()),
             (new IntField('exceptionCount', 'exceptionCount'))->addFlags(new Required()),
+            (new BoolField('isAborted', 'isAborted'))->addFlags(new Required()),
         ]);
     }
 
