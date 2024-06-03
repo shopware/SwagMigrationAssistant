@@ -28,6 +28,7 @@ class CustomerReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
+            && $migrationContext->getDataSet()
             && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CUSTOMER;
     }
 
@@ -63,6 +64,9 @@ class CustomerReader extends AbstractReader
         return new TotalStruct(DefaultEntities::CUSTOMER, $total);
     }
 
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     private function fetchCustomers(MigrationContextInterface $migrationContext): array
     {
         $ids = $this->fetchIdentifiers('s_user', $migrationContext->getOffset(), $migrationContext->getLimit());
@@ -87,6 +91,9 @@ class CustomerReader extends AbstractReader
         $query->leftJoin('customer', 's_core_locales', 'customerlanguage', 'customer.language = customerlanguage.id');
         $this->addTableSelection($query, 's_core_locales', 'customerlanguage');
 
+        $query->leftJoin('customer', 's_core_shops', 'shop', 'customer.subshopID = shop.id');
+        $this->addTableSelection($query, 's_core_shops', 'shop');
+
         $query->where('customer.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
 
@@ -97,6 +104,12 @@ class CustomerReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
+    /**
+     * @param array<int, array<string, mixed>> $customers
+     * @param array<int, string> $ids
+     *
+     * @return array<int, array<string, mixed>>
+     */
     private function assignAssociatedData(array $customers, array $ids): array
     {
         $customerAddresses = $this->fetchCustomerAdresses($ids);
@@ -125,6 +138,11 @@ class CustomerReader extends AbstractReader
         return $customers;
     }
 
+    /**
+     * @param array<int, string> $ids
+     *
+     * @return array<string, array<int, array<string, string|null>>>
+     */
     private function fetchCustomerAdresses(array $ids): array
     {
         $query = $this->connection->createQueryBuilder();
@@ -148,6 +166,11 @@ class CustomerReader extends AbstractReader
         return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
+    /**
+     * @param array<int, string> $ids
+     *
+     * @return array<string, array<int, array<string, string|null>>>
+     */
     private function fetchPaymentData(array $ids): array
     {
         $query = $this->connection->createQueryBuilder();

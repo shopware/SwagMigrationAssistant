@@ -1,3 +1,6 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-983 - Korrigiert einen Fehler bei der Migration von Kunden, die an einen Shop gebunden sind
+
 # 11.0.1
 - MIG-988 - Ein Fehler der Premapping-UI wurde behoben, um kompatible mit der neusten Platform version zu bleiben
 

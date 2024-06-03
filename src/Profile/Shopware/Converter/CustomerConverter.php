@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
@@ -65,6 +66,9 @@ abstract class CustomerConverter extends ShopwareConverter
 
     protected string $connectionName;
 
+    /**
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepository
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -148,12 +152,18 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->context
             );
 
-            if ($mapping !== null) {
+            if (isset($mapping['entityUuid'])) {
                 $converted['salesChannelId'] = $mapping['entityUuid'];
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
+
+                if (isset($data['shop']['customer_scope']) && (bool) $data['shop']['customer_scope'] === true) {
+                    $converted['boundSalesChannelId'] = $mapping['entityUuid'];
+                }
             }
         }
+
+        unset($data['shop']);
 
         if (empty($converted['salesChannelId'])) {
             $criteria = new Criteria();
@@ -240,8 +250,8 @@ abstract class CustomerConverter extends ShopwareConverter
         }
         $converted['salutationId'] = $salutationUuid;
 
-        if (isset($data['addresses'])) {
-            $this->getAddresses($data, $converted, $this->mainMapping['entityUuid']);
+        if (isset($data['addresses']) && isset($this->mainMapping['entityUuid'])) {
+            $this->applyAddresses($data, $converted, $this->mainMapping['entityUuid']);
         }
 
         if (isset($data['attributes'])) {
@@ -300,9 +310,13 @@ abstract class CustomerConverter extends ShopwareConverter
 
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
     protected function setPassword(array &$data, array &$converted): void
     {
         $originalEncoder = $data['encoder'];
@@ -318,6 +332,9 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['password'], $data['encoder']);
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     */
     protected function getDefaultPaymentMethod(array $originalData): ?string
     {
         $paymentMethodMapping = $this->mappingService->getMapping(
@@ -343,7 +360,11 @@ abstract class CustomerConverter extends ShopwareConverter
         return $paymentMethodMapping['entityUuid'];
     }
 
-    protected function getAddresses(array &$originalData, array &$converted, string $customerUuid): void
+    /**
+     * @param array<string, mixed> $originalData
+     * @param array<string, mixed> $converted
+     */
+    protected function applyAddresses(array &$originalData, array &$converted, string $customerUuid): void
     {
         $addresses = [];
         $mainVatId = null;
@@ -442,6 +463,11 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->checkUnsetDefaultBillingAddress($originalData, $converted, $customerUuid);
     }
 
+    /**
+     * @param array<string, mixed> $oldCountryData
+     *
+     * @return array<string, mixed>
+     */
     protected function getCountry(array $oldCountryData): array
     {
         $country = [];
@@ -469,7 +495,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
         }
 
-        $this->getCountryTranslation($country, $oldCountryData);
+        $this->applyCountryTranslation($country, $oldCountryData);
         $this->convertValue($country, 'iso', $oldCountryData, 'countryiso');
         $this->convertValue($country, 'position', $oldCountryData, 'position', self::TYPE_INTEGER);
         $this->convertValue($country, 'taxFree', $oldCountryData, 'taxfree', self::TYPE_BOOLEAN);
@@ -484,7 +510,11 @@ abstract class CustomerConverter extends ShopwareConverter
         return $country;
     }
 
-    protected function getCountryTranslation(array &$country, array $data): void
+    /**
+     * @param array<string, mixed> $country
+     * @param array<string, mixed> $data
+     */
+    protected function applyCountryTranslation(array &$country, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -518,6 +548,12 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $oldStateData
+     * @param array<string, mixed> $newCountryData
+     *
+     * @return array<string, mixed>
+     */
     protected function getCountryState(array $oldStateData, array $newCountryData): array
     {
         $state = [];
@@ -531,7 +567,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
         $state['countryId'] = $newCountryData['id'];
 
-        $this->getCountryStateTranslation($state, $oldStateData);
+        $this->applyCountryStateTranslation($state, $oldStateData);
         $this->convertValue($state, 'name', $oldStateData, 'name');
         $this->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
         $this->convertValue($state, 'position', $oldStateData, 'position', self::TYPE_INTEGER);
@@ -540,7 +576,11 @@ abstract class CustomerConverter extends ShopwareConverter
         return $state;
     }
 
-    protected function getCountryStateTranslation(array &$state, array $data): void
+    /**
+     * @param array<string, mixed> $state
+     * @param array<string, mixed> $data
+     */
+    protected function applyCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -573,6 +613,11 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     * @param array<string, mixed> $converted
+     * @param array<int, array<string, mixed>> $addresses
+     */
     protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, array $addresses): void
     {
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
@@ -590,6 +635,10 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     * @param array<string, mixed> $converted
+     */
     protected function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
     {
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
@@ -606,6 +655,10 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $originalData
+     * @param array<string, mixed> $converted
+     */
     protected function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
     {
         if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {

@@ -449,4 +449,26 @@ class CustomerConverterTest extends TestCase
         static::assertSame($logs[2]['parameters']['emptyField'], 'default billing and shipping address');
         static::assertSame($logs[2]['parameters']['replacementField'], 'first address');
     }
+
+    public function testGetCustomerWithShopScope(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['shop'] = [
+            'customer_scope' => '1',
+        ];
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertIsArray($converted);
+        static::assertNotNull($converted['boundSalesChannelId']);
+    }
 }

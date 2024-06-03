@@ -56,6 +56,7 @@ class CustomerReaderTest extends TestCase
         static::assertSame('3', $data[0]['default_shipping_address_id']);
         static::assertSame('prepayment', $data[0]['defaultpayment']['name']);
         static::assertSame('de-DE', $data[0]['customerlanguage']['locale']);
+        static::assertSame('0', $data[0]['shop']['customer_scope']);
         static::assertCount(2, $data[0]['addresses']);
 
         static::assertSame('2', $data[1]['id']);
@@ -64,6 +65,7 @@ class CustomerReaderTest extends TestCase
         static::assertSame('4', $data[1]['default_shipping_address_id']);
         static::assertSame('invoice', $data[1]['defaultpayment']['name']);
         static::assertSame('de-DE', $data[1]['customerlanguage']['locale']);
+        static::assertSame('0', $data[1]['shop']['customer_scope']);
         static::assertCount(2, $data[1]['addresses']);
 
         static::assertSame('3', $data[2]['id']);
@@ -72,6 +74,7 @@ class CustomerReaderTest extends TestCase
         static::assertSame('5', $data[2]['default_shipping_address_id']);
         static::assertSame('prepayment', $data[2]['defaultpayment']['name']);
         static::assertSame('de-DE', $data[2]['customerlanguage']['locale']);
+        static::assertSame('0', $data[2]['shop']['customer_scope']);
         static::assertCount(1, $data[2]['addresses']);
     }
 
@@ -80,8 +83,11 @@ class CustomerReaderTest extends TestCase
         static::assertTrue($this->customerReader->supportsTotal($this->migrationContext));
 
         $totalStruct = $this->customerReader->readTotal($this->migrationContext);
+        static::assertNotNull($totalStruct);
 
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+        $dataset = $this->migrationContext->getDataSet();
+        static::assertNotNull($dataset);
+        static::assertSame($dataset::getEntity(), $totalStruct->getEntityName());
         static::assertSame(3, $totalStruct->getTotal());
     }
 }
