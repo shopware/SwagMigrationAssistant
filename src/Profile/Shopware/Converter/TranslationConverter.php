@@ -155,6 +155,18 @@ abstract class TranslationConverter extends ShopwareConverter
                     $this->convertValue($productTranslation, 'packUnit', $objectData, 'txtpackunit');
 
                     break;
+                case 'txtshortdescription':
+                    $this->convertValue($productTranslation, 'metaDescription', $objectData, 'txtshortdescription');
+
+                    break;
+                case 'txtkeywords':
+                    $this->convertValue($productTranslation, 'keywords', $objectData, 'txtkeywords');
+
+                    break;
+                case 'metaTitle':
+                    $this->convertValue($productTranslation, 'metaTitle', $objectData, 'metaTitle');
+
+                    break;
             }
 
             $this->addAttribute(DefaultEntities::PRODUCT, $key, $value, $productTranslation, $objectData);

@@ -636,4 +636,37 @@ class TranslationConverterTest extends TestCase
         static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_MEDIA', $logs[0]['code']);
         static::assertSame($logParameters, $logs[0]['parameters']);
     }
+
+    public function testConvertProductTranslationsWithSeoData(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
+        $context = Context::createDefaultContext();
+
+        $productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, new DummyMediaFileService());
+        $productConverter->convert($productData[0], $context, $this->productMigrationContext);
+
+        $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
+        $translationData = $translationData['productSeoData'];
+
+        $context = Context::createDefaultContext();
+
+        $convertResult = $this->translationConverter->convert($translationData, $context, $this->migrationContext);
+        $converted = $convertResult->getConverted();
+
+        static::assertIsArray($converted);
+        static::assertArrayHasKey('translations', $converted);
+        $translations = $converted['translations'];
+
+        static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $translations);
+        $translations = $translations[DummyMappingService::DEFAULT_LANGUAGE_UUID];
+
+        static::assertArrayHasKey('metaTitle', $translations);
+        static::assertSame('Meta title translation', $translations['metaTitle']);
+
+        static::assertArrayHasKey('metaDescription', $translations);
+        static::assertSame('Short description translation', $translations['metaDescription']);
+
+        static::assertArrayHasKey('keywords', $translations);
+        static::assertSame('Keywords translation', $translations['keywords']);
+    }
 }
