@@ -13,8 +13,6 @@ export const MIGRATION_STEP = Object.freeze({
     INDEXING: 'indexing',
     WAITING_FOR_APPROVE: 'waiting-for-approve',
     ABORTING: 'aborting',
-    ABORTED: 'aborted',
-    FINISHED: 'finished',
 });
 
 /**

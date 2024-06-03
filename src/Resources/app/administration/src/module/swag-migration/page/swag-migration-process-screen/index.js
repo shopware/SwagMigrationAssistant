@@ -17,7 +17,6 @@ const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
     [MIGRATION_STEP.CLEANUP]: 3,
     [MIGRATION_STEP.INDEXING]: 4,
     [MIGRATION_STEP.WAITING_FOR_APPROVE]: 5,
-    [MIGRATION_STEP.FINISHED]: 5,
 });
 
 const UI_COMPONENT_INDEX = Object.freeze({
@@ -128,9 +127,13 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 return;
             }
 
+            let migrationRunning = false;
             try {
                 const state = await this.migrationApiService.getState();
-                this.visualizeMigrationState(state);
+                if (state?.step !== MIGRATION_STEP.IDLE) {
+                    migrationRunning = true;
+                    this.visualizeMigrationState(state);
+                }
             } catch (e) {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
@@ -138,7 +141,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 });
             }
 
-            if (this.step === MIGRATION_STEP.IDLE) {
+            if (!migrationRunning) {
                 await this.startMigration();
                 // update to the new state immediately
                 try {
@@ -200,7 +203,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
             } else if (
                 state.step === MIGRATION_STEP.WAITING_FOR_APPROVE ||
-                state.step === MIGRATION_STEP.FINISHED
+                state.step === MIGRATION_STEP.IDLE
             ) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
@@ -208,7 +211,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             }
 
             // update flow chart
-            if (state.step !== MIGRATION_STEP.WAITING_FOR_APPROVE && state.step !== MIGRATION_STEP.FINISHED) {
+            if (state.step !== MIGRATION_STEP.WAITING_FOR_APPROVE && state.step !== MIGRATION_STEP.IDLE) {
                 this.flowChartItemVariant = 'info';
             } else {
                 this.flowChartItemVariant = 'success';

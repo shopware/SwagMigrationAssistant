@@ -53,28 +53,44 @@ Component.register('swag-migration-premapping', {
 
     methods: {
         fetchPremapping() {
+            State.commit('swagMigration/setIsLoading', true);
             this.isLoading = true;
 
-            return this.migrationApiService.generatePremapping(this.dataSelectionIds).then((premapping) => {
-                State.commit('swagMigration/setPremapping', premapping);
-
-                return this.savePremapping();
-            }).then(() => {
-                this.isLoading = false;
-            }).catch(() => {
-                this.isLoading = false;
-            });
+            return this.migrationApiService.generatePremapping(this.dataSelectionIds)
+                .then((premapping) => {
+                    State.commit('swagMigration/setPremapping', premapping);
+                    return this.savePremapping();
+                }).finally(() => {
+                    State.commit('swagMigration/setIsLoading', false);
+                    this.isLoading = false;
+                });
         },
 
         async savePremapping() {
-            if (this.premapping && this.premapping.length > 0) {
-                await this.migrationApiService.writePremapping(this.premapping);
+            if (!this.premapping || this.premapping.length === 0) {
+                return;
             }
+
+            const filledOut = this.premapping.every(
+                (group) => group.mapping.every(
+                    (mapping) => mapping.destinationUuid !== null &&
+                        mapping.destinationUuid !== undefined &&
+                        mapping.destinationUuid !== '',
+                ),
+            );
+
+            if (!filledOut) {
+                return;
+            }
+
+            await this.migrationApiService.writePremapping(this.premapping);
         },
 
         onPremappingChanged() {
+            State.commit('swagMigration/setIsLoading', true);
             debounce(async () => {
                 await this.savePremapping();
+                State.commit('swagMigration/setIsLoading', false);
             }, 500)();
         },
     },

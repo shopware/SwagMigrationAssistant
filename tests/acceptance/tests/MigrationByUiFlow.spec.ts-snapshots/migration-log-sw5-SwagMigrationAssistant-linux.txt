@@ -6,7 +6,7 @@ Updated at: TimestampXXX
 Last control user id: -
 Connection id: XXX
 Connection name: sw5local
-Profile: shopware57
+Profile: shopware55
 Gateway: local
 
 Selected dataSets:
@@ -2846,7 +2846,7 @@ Environment information {JSON}:
 {
     "extensions": [],
     "sourceSystemName": "Shopware",
-    "sourceSystemVersion": "5.7",
+    "sourceSystemVersion": "5.5",
     "sourceSystemDomain": "sw55.local",
     "totals": {
         "category": {
@@ -3035,6 +3035,350 @@ Environment information {JSON}:
 }
 
 Premapping {JSON}: ----------------------------------------------------
-[]
+[
+    {
+        "extensions": [],
+        "entity": "order_state",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "-1",
+                "description": "Abgebrochen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "1",
+                "description": "In Bearbeitung (Wartet)",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "8",
+                "description": "Kl\u00e4rung notwendig",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "2",
+                "description": "Komplett abgeschlossen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "7",
+                "description": "Komplett ausgeliefert",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "0",
+                "description": "Offen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "4",
+                "description": "Storniert \/ Abgelehnt",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "3",
+                "description": "Teilweise abgeschlossen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "Teilweise ausgeliefert",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "5",
+                "description": "Zur Lieferung bereit",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "order_delivery_state",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "-1",
+                "description": "Abgebrochen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "1",
+                "description": "In Bearbeitung (Wartet)",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "8",
+                "description": "Kl\u00e4rung notwendig",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "2",
+                "description": "Komplett abgeschlossen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "7",
+                "description": "Komplett ausgeliefert",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "0",
+                "description": "Offen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "4",
+                "description": "Storniert \/ Abgelehnt",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "3",
+                "description": "Teilweise abgeschlossen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "Teilweise ausgeliefert",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "5",
+                "description": "Zur Lieferung bereit",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "transaction_state",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "13",
+                "description": "1. Mahnung",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "14",
+                "description": "2. Mahnung",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "15",
+                "description": "3. Mahnung",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "32",
+                "description": "Der Kredit wurde genehmigt.",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "31",
+                "description": "Der Kredit wurde vorlaeufig akzeptiert.",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "33",
+                "description": "Die Zahlung wurde angewiesen.",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "34",
+                "description": "Es wurde eine Zeitverlaengerung eingetragen.",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "30",
+                "description": "Es wurde kein Kredit genehmigt.",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "16",
+                "description": "Inkasso",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "12",
+                "description": "Komplett bezahlt",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "10",
+                "description": "Komplett in Rechnung gestellt",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "17",
+                "description": "Offen",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "18",
+                "description": "Reserviert",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "11",
+                "description": "Teilweise bezahlt",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "9",
+                "description": "Teilweise in Rechnung gestellt",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "19",
+                "description": "Verzoegert",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "35",
+                "description": "Vorgang wurde abgebrochen.",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "20",
+                "description": "Wiedergutschrift",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "21",
+                "description": "\u00dcberpr\u00fcfung notwendig",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "payment_method",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "2",
+                "description": "Lastschrift",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "3",
+                "description": "Nachnahme",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "4",
+                "description": "Rechnung",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "SEPA",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "default_payment_method",
+                "description": "Standard Payment Method",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "5",
+                "description": "Vorkasse",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "salutation",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "mr",
+                "description": "mr",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "ms",
+                "description": "ms",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "delivery_time",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "default_delivery_time",
+                "description": "Standard delivery time",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "shipping_availability_rule",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "default_shipping_availability_rule",
+                "description": "Standard shipping availability rule",
+                "destinationUuid": "XXX"
+            }
+        ],
+        "choices": []
+    }
+]
 
 

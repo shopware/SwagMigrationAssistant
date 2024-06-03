@@ -17,6 +17,7 @@
                       #smart-bar-actions>
                 <sw-button variant="primary"
                            :disabled="!isMigrationAllowed"
+                           :is-loading="isLoading"
                            @click="onMigrate">
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </sw-button>

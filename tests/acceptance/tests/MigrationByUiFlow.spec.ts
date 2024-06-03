@@ -16,7 +16,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
  }) => {
     const page = MigrationUser.page;
     await page.goto('/admin#/swag/migration/index/main');
-    await expect(page.locator('.sw-loader-element')).toBeHidden({ timeout: MIGRATION_LOADING_TIMEOUT });
+    await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
 
     await test.step('Discover that no connection is setup', async () => {
         await expect(page.getByText('No connection')).toBeVisible();
@@ -32,7 +32,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByPlaceholder('Enter name').fill('sw5local');
         await page.locator('div').filter({ hasText: /^Shopware 5\.5 - shopware AG$/ }).click();
-        await page.getByText('Shopware 5.7 - shopware AG').click();
+        await page.getByText('Shopware 5.5 - shopware AG').click();
         await page.getByText('Select gateway').click();
         await page.getByPlaceholder('Select gateway').fill('Local');
         await page.getByText('Local database').click();
@@ -47,7 +47,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
 
         await page.getByRole('button', { name: 'Done' }).click({ timeout: MIGRATION_LOADING_TIMEOUT });
-        await expect(page.locator('.sw-loader-element')).toBeHidden({ timeout: MIGRATION_LOADING_TIMEOUT });
+        await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
         await expect(page.locator('.swag-migration-shop-information__connection-status')).toHaveText('Connected');
     });
 
@@ -57,7 +57,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.locator('.sw-grid__cell-content').first().click();
 
         // wait for loading state to finish
-        await expect(page.locator('.sw-loader-element')).toBeHidden();
+        await expect(page.locator('.sw-loader-element')).toHaveCount(0);
         await expect(page.getByText('Manual assignments')).toBeVisible();
         // select the first available option for all open premappings
         const premappingItems = page.locator('.swag-migration-grid-selection__choice-column select');
@@ -72,7 +72,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
         // start and inspect the migration process
         await page.getByRole('button', { name: 'Start migration' }).click();
-        await expect(page.locator('.sw-loader-element')).toBeHidden({ timeout: MIGRATION_LOADING_TIMEOUT });
+        await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
     });
 
     await test.step('Inspect the migration', async () => {

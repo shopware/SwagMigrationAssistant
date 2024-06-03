@@ -279,12 +279,18 @@ class HistoryService implements HistoryServiceInterface
 
     private function getSuffixLogInformation(SwagMigrationRunEntity $run): string
     {
+        $connection = $run->getConnection();
+        $premapping = 'Associated connection not found';
+        if ($connection !== null) {
+            $premapping = $connection->getPremapping();
+        }
+
         return \sprintf(
             '--------------------Additional-metadata---------------------' . \PHP_EOL
             . 'Environment information {JSON}:' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
             . 'Premapping {JSON}: ----------------------------------------------------' . \PHP_EOL . '%s' . \PHP_EOL,
             \json_encode($run->getEnvironmentInformation(), \JSON_PRETTY_PRINT),
-            \json_encode($run->getPremapping(), \JSON_PRETTY_PRINT)
+            \json_encode($premapping, \JSON_PRETTY_PRINT)
         );
     }
 }
