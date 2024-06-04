@@ -347,6 +347,7 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
         $query->from('swag_migration_media_file');
         $query->where('run_id = :runId');
         $query->andWhere('media_id IN (:ids)');
+        $query->andWhere('written = 1');
         $query->setParameter('ids', $binaryMediaIds, ArrayParameterType::STRING);
         $query->setParameter('runId', Uuid::fromHexToBytes($runId));
 

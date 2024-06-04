@@ -127,7 +127,11 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         // Update written-Flag of the media file in the media file table
-        $this->mediaFileService->setWrittenFlag($converted, $migrationContext, $context);
+        $this->mediaFileService->setWrittenFlag(
+            $this->mediaFileService->filterUnwrittenData($converted, $updateWrittenData),
+            $migrationContext,
+            $context
+        );
     }
 
     private function handleWriteException(

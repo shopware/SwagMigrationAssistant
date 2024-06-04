@@ -64,6 +64,23 @@ class MediaFileService implements MediaFileServiceInterface
         $this->writeArray[] = $mediaFile;
     }
 
+    public function filterUnwrittenData(array $converted, array $updateWrittenData)
+    {
+        foreach ($converted as $dataId => $entity) {
+            if (!isset($updateWrittenData[$dataId])) {
+                unset($converted[$dataId]);
+            }
+
+            if ($updateWrittenData[$dataId]['written'] === true) {
+                continue;
+            }
+
+            unset($converted[$dataId]);
+        }
+
+        return $converted;
+    }
+
     public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void
     {
         $converter = $this->converterRegistry->getConverter($migrationContext);
