@@ -4,6 +4,8 @@
 - MIG-983 - [BREAKING] Changed method name `getCountryTranslation` to `applyCountryTranslation` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - MIG-983 - [BREAKING] Changed method name `getCountryStateTranslation` to `applyCountryStateTranslation` in `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - MIG-986 - Fix migration of order tracking codes
+- MIG-989 - Improve migration of Media files
+- MIG-989 - [BREAKING] Added method `filterUnwrittenData` to `\SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface`
 - MIG-992 - Fix migration of product seo data
 
 # 11.0.1

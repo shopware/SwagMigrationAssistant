@@ -18,5 +18,13 @@ interface MediaFileServiceInterface
 
     public function saveMediaFile(array $mediaFile): void;
 
+    /**
+     * @param array<string, array<string, mixed>> $converted
+     * @param array<string, array<string, mixed>> $updateWrittenData
+     *
+     * @return array<string, array<string, mixed>>
+     */
+    public function filterUnwrittenData(array $converted, array $updateWrittenData);
+
     public function setWrittenFlag(array $converted, MigrationContextInterface $migrationContext, Context $context): void;
 }

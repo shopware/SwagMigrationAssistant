@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\Media\Process;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Promise;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -62,6 +63,16 @@ class HttpDownloadServiceBaseTest extends TestCase
 
     public function testProcessSucceeds(): void
     {
+        $testResult = [];
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $queryBuilderMock->method('andWhere')
+            ->willReturnCallback(function ($argument) use (&$testResult, $queryBuilderMock) {
+                $testResult[] = $argument;
+
+                return $queryBuilderMock;
+            });
+
         $mediaFiles = [
             [
                 'mediaId' => Uuid::randomHex(),
@@ -70,7 +81,7 @@ class HttpDownloadServiceBaseTest extends TestCase
                 'uri' => 'http://test.localhost/test.jpg?random=123456789',
             ],
         ];
-        $httpDownloadServiceBase = $this->createBase($mediaFiles);
+        $httpDownloadServiceBase = $this->createBase($mediaFiles, $queryBuilderMock);
         $initialWorkload = [
             new MediaProcessWorkloadStruct(
                 $mediaFiles[0]['mediaId'],
@@ -94,6 +105,8 @@ class HttpDownloadServiceBaseTest extends TestCase
         ], $resultWorkload);
 
         static::assertEquals([], $this->loggingService->getLoggingArray());
+        static::assertContains('media_id IN (:ids)', $testResult);
+        static::assertContains('written = 1', $testResult);
     }
 
     public function testProcessWithRequestFailure(): void
@@ -202,7 +215,7 @@ class HttpDownloadServiceBaseTest extends TestCase
     /**
      * @param list<array{mediaId: string, fileName: string, fileContent: ?string, uri: string}> $migrationMedia
      */
-    private function createBase(array $migrationMedia): DummyHttpDownloadService
+    private function createBase(array $migrationMedia, ?QueryBuilder $queryBuilder = null): DummyHttpDownloadService
     {
         $migrationMediaFiles = [];
         foreach ($migrationMedia as $media) {
@@ -217,7 +230,10 @@ class HttpDownloadServiceBaseTest extends TestCase
         }
 
         $dbalConnection = $this->createMock(Connection::class);
-        $queryBuilder = $this->createMock(QueryBuilder::class);
+        if (!$queryBuilder instanceof QueryBuilder || !$queryBuilder instanceof MockObject) {
+            $queryBuilder = $this->createMock(QueryBuilder::class);
+        }
+
         $queryBuilder->method('fetchAllAssociative')->willReturn($migrationMediaFiles);
         $dbalConnection->method('createQueryBuilder')->willReturn($queryBuilder);
 
