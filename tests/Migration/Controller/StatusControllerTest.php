@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Migration\Controller;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -178,7 +179,7 @@ class StatusControllerTest extends TestCase
                 $mappingService,
                 static::getContainer()->get(SwagMigrationDataDefinition::class),
                 static::getContainer()->get(Connection::class),
-                new LoggingService($loggingRepo),
+                new LoggingService($loggingRepo, new NullLogger()),
                 static::getContainer()->get(TrackingEventClient::class),
                 static::getContainer()->get('messenger.bus.shopware'),
                 static::getContainer()->get(MigrationContextFactory::class),

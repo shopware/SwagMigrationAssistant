@@ -35,6 +35,16 @@ class SwagMigrationRunDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }
 
+    public function getCollectionClass(): string
+    {
+        return SwagMigrationRunCollection::class;
+    }
+
+    public function getEntityClass(): string
+    {
+        return SwagMigrationRunEntity::class;
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
@@ -52,15 +62,5 @@ class SwagMigrationRunDefinition extends EntityDefinition
             new OneToManyAssociationField('mediaFiles', SwagMigrationMediaFileDefinition::class, 'run_id'),
             new OneToManyAssociationField('logs', SwagMigrationLoggingDefinition::class, 'run_id'),
         ]);
-    }
-
-    public function getCollectionClass(): string
-    {
-        return SwagMigrationRunCollection::class;
-    }
-
-    public function getEntityClass(): string
-    {
-        return SwagMigrationRunEntity::class;
     }
 }

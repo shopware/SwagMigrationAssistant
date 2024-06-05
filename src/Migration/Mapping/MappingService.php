@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\CmsPageCollection;
@@ -37,9 +38,10 @@ use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-class MappingService implements MappingServiceInterface
+class MappingService implements MappingServiceInterface, ResetInterface
 {
     protected array $migratedSalesChannels = [];
 
@@ -85,8 +87,22 @@ class MappingService implements MappingServiceInterface
         protected EntityRepository $deliveryTimeRepo,
         protected EntityRepository $documentTypeRepo,
         protected EntityWriterInterface $entityWriter,
-        protected EntityDefinition $mappingDefinition
+        protected EntityDefinition $mappingDefinition,
+        protected LoggerInterface $logger
     ) {
+    }
+
+    public function reset(): void
+    {
+        if (!empty($this->writeArray)) {
+            $this->logger->error('SwagMigrationAssistant: Migration mapping was not empty on calling reset.');
+        }
+
+        $this->writeArray = [];
+        $this->languageData = [];
+        $this->locales = [];
+        $this->mappings = [];
+        $this->migratedSalesChannels = [];
     }
 
     public function getOrCreateMapping(
@@ -409,16 +425,20 @@ class MappingService implements MappingServiceInterface
             return;
         }
 
-        $this->entityWriter->upsert(
-            $this->mappingDefinition,
-            $this->writeArray,
-            WriteContext::createFromContext($context)
-        );
-
-        $this->writeArray = [];
-        // This should not really be necessary
-        // but removing it could increase memory usage / needs profiling
-        $this->mappings = [];
+        try {
+            $this->entityWriter->upsert(
+                $this->mappingDefinition,
+                $this->writeArray,
+                WriteContext::createFromContext($context)
+            );
+        } catch (\Exception) {
+            $this->writePerEntry($context);
+        } finally {
+            $this->writeArray = [];
+            // This should not really be necessary
+            // but removing it could increase memory usage / needs profiling
+            $this->mappings = [];
+        }
     }
 
     public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
@@ -1018,5 +1038,26 @@ class MappingService implements MappingServiceInterface
         }
 
         return null;
+    }
+
+    private function writePerEntry(Context $context): void
+    {
+        foreach ($this->writeArray as $mapping) {
+            try {
+                $this->entityWriter->upsert(
+                    $this->mappingDefinition,
+                    [$mapping],
+                    WriteContext::createFromContext($context)
+                );
+            } catch (\Exception $e) {
+                $this->logger->error(
+                    'SwagMigrationAssistant: Error while writing migration mapping',
+                    [
+                        'error' => $e->getMessage(),
+                        'mapping' => $mapping,
+                    ]
+                );
+            }
+        }
     }
 }

@@ -72,13 +72,6 @@ class DummyMappingService extends MappingService
     {
     }
 
-    protected function saveMapping(array $mapping): void
-    {
-        $entity = $mapping['entity'];
-        $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
-    }
-
     public function getMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?array
     {
         return $this->mappings[\md5($entityName . $oldIdentifier)] ?? null;
@@ -217,5 +210,12 @@ class DummyMappingService extends MappingService
     public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
     {
         return null;
+    }
+
+    protected function saveMapping(array $mapping): void
+    {
+        $entity = $mapping['entity'];
+        $oldIdentifier = $mapping['oldIdentifier'];
+        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
     }
 }

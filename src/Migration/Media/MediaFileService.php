@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Media;
 
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -19,9 +20,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-class MediaFileService implements MediaFileServiceInterface
+class MediaFileService implements MediaFileServiceInterface, ResetInterface
 {
     protected array $writeArray = [];
 
@@ -34,8 +36,19 @@ class MediaFileService implements MediaFileServiceInterface
         protected EntityRepository $mediaFileRepo,
         protected EntityWriterInterface $entityWriter,
         protected EntityDefinition $mediaFileDefinition,
-        protected ConverterRegistryInterface $converterRegistry
+        protected ConverterRegistryInterface $converterRegistry,
+        protected LoggerInterface $logger
     ) {
+    }
+
+    public function reset(): void
+    {
+        if (!empty($this->writeArray)) {
+            $this->logger->error('SwagMigrationAssistant: Migration media file service was not empty on calling reset.');
+        }
+
+        $this->writeArray = [];
+        $this->uuids = [];
     }
 
     public function writeMediaFile(Context $context): void
@@ -46,14 +59,18 @@ class MediaFileService implements MediaFileServiceInterface
             return;
         }
 
-        $this->entityWriter->insert(
-            $this->mediaFileDefinition,
-            $this->writeArray,
-            WriteContext::createFromContext($context)
-        );
-
-        $this->writeArray = [];
-        $this->uuids = [];
+        try {
+            $this->entityWriter->insert(
+                $this->mediaFileDefinition,
+                $this->writeArray,
+                WriteContext::createFromContext($context)
+            );
+        } catch (\Exception) {
+            $this->writePerEntry($context);
+        } finally {
+            $this->writeArray = [];
+            $this->uuids = [];
+        }
     }
 
     public function saveMediaFile(array $mediaFile): void
@@ -156,5 +173,26 @@ class MediaFileService implements MediaFileServiceInterface
             $updateWrittenMediaFiles,
             WriteContext::createFromContext($context)
         );
+    }
+
+    private function writePerEntry(Context $context): void
+    {
+        foreach ($this->writeArray as $media) {
+            try {
+                $this->entityWriter->insert(
+                    $this->mediaFileDefinition,
+                    [$media],
+                    WriteContext::createFromContext($context)
+                );
+            } catch (\Exception $e) {
+                $this->logger->error(
+                    'SwagMigrationAssistant: Could not write media file.',
+                    [
+                        'error' => $e->getMessage(),
+                        'media' => $media,
+                    ]
+                );
+            }
+        }
     }
 }

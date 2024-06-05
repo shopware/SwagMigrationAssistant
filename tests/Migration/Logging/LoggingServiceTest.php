@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Logging;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -40,7 +41,7 @@ class LoggingServiceTest extends TestCase
     {
         $this->context = Context::createDefaultContext();
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->loggingService = new LoggingService($this->loggingRepo);
+        $this->loggingService = new LoggingService($this->loggingRepo, new NullLogger());
 
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->runUuid = Uuid::randomHex();

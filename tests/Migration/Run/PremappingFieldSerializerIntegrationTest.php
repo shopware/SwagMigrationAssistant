@@ -27,6 +27,11 @@ class PremappingFieldSerializerIntegrationTest extends TestCase
 
     private PremappingFieldSerializer $serializer;
 
+    protected function setUp(): void
+    {
+        $this->serializer = $this->getContainer()->get(PremappingFieldSerializer::class);
+    }
+
     public static function invalidInputProvider(): \Generator
     {
         yield 'Unset entity key of main data' => ['entity'];
@@ -39,11 +44,6 @@ class PremappingFieldSerializerIntegrationTest extends TestCase
 
         yield 'Unset uuid key of choices' => ['uuid', 'choices'];
         yield 'Unset description key of choices' => ['description', 'choices'];
-    }
-
-    protected function setUp(): void
-    {
-        $this->serializer = $this->getContainer()->get(PremappingFieldSerializer::class);
     }
 
     #[DataProvider('invalidInputProvider')]

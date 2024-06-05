@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -295,7 +296,8 @@ class PremappingControllerTest extends TestCase
             $this->getContainer()->get('delivery_time.repository'),
             $this->getContainer()->get('document_type.repository'),
             $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class)
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            new NullLogger()
         );
     }
 }

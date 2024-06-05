@@ -34,6 +34,16 @@ class SwagMigrationDataDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }
 
+    public function getCollectionClass(): string
+    {
+        return SwagMigrationDataCollection::class;
+    }
+
+    public function getEntityClass(): string
+    {
+        return SwagMigrationDataEntity::class;
+    }
+
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
@@ -52,15 +62,5 @@ class SwagMigrationDataDefinition extends EntityDefinition
             new UpdatedAtField(),
             new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class, 'id', true),
         ]);
-    }
-
-    public function getCollectionClass(): string
-    {
-        return SwagMigrationDataCollection::class;
-    }
-
-    public function getEntityClass(): string
-    {
-        return SwagMigrationDataEntity::class;
     }
 }
