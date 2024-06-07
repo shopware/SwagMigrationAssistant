@@ -550,8 +550,8 @@ SQL;
             return;
         }
 
-        $qb = new QueryBuilder($this->dbalConnection);
-        $qb->delete($this->migrationDataDefinition->getEntityName())
+        $queryBuilder = new QueryBuilder($this->dbalConnection);
+        $queryBuilder->delete($this->migrationDataDefinition->getEntityName())
             ->andWhere('run_id = :runId')
             ->setParameter('runId', Uuid::fromHexToBytes($lastInactiveRun->getId()))
             ->executeStatement();

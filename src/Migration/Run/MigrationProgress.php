@@ -30,8 +30,15 @@ final class MigrationProgress extends Struct
 
     protected bool $isAborted = false;
 
-    public function __construct(int $progress, int $total, ProgressDataSetCollection $dataSets, string $currentEntity, int $currentEntityProgress, int $exceptionCount = 0, bool $isAborted = false)
-    {
+    public function __construct(
+        int $progress,
+        int $total,
+        ProgressDataSetCollection $dataSets,
+        string $currentEntity,
+        int $currentEntityProgress,
+        int $exceptionCount = 0,
+        bool $isAborted = false
+    ) {
         $this->progress = $progress;
         $this->total = $total;
         $this->dataSets = $dataSets;

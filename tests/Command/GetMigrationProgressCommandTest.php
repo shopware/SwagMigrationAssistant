@@ -29,8 +29,14 @@ class GetMigrationProgressCommandTest extends TestCase
         $migrationRunService = $this->createMock(RunService::class);
         $migrationRunService
             ->method('getRunStatus')
-            ->willReturn(new MigrationState(MigrationStep::FETCHING, 0, 100))
-            ->willReturn(new MigrationState(MigrationStep::WAITING_FOR_APPROVE, 0, 100));
+            ->willReturn(
+                new MigrationState(MigrationStep::FETCHING, 0, 100),
+                new MigrationState(MigrationStep::WRITING, 0, 100),
+                new MigrationState(MigrationStep::MEDIA_PROCESSING, 0, 100),
+                new MigrationState(MigrationStep::CLEANUP, 0, 100),
+                new MigrationState(MigrationStep::INDEXING, 0, 100),
+                new MigrationState(MigrationStep::WAITING_FOR_APPROVE, 0, 100),
+            );
         $migrationRunService
             ->expects(static::once())
             ->method('approveFinishingMigration');
@@ -67,8 +73,11 @@ class GetMigrationProgressCommandTest extends TestCase
         $migrationRunService = $this->createMock(RunService::class);
         $migrationRunService
             ->method('getRunStatus')
-            ->willReturn(new MigrationState(MigrationStep::FETCHING, 0, 100))
-            ->willReturn(new MigrationState(MigrationStep::ABORTING, 0, 100));
+            ->willReturn(
+                new MigrationState(MigrationStep::FETCHING, 0, 100),
+                new MigrationState(MigrationStep::ABORTING, 0, 100),
+                new MigrationState(MigrationStep::IDLE, 0, 100),
+            );
         $migrationRunService
             ->expects(static::never())
             ->method('approveFinishingMigration');

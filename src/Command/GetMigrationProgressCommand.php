@@ -33,13 +33,18 @@ class GetMigrationProgressCommand extends Command
     {
         $this
             ->setDescription('Shows the current progress of a migration')
-            ->addOption('refreshRate', 'r', InputOption::VALUE_OPTIONAL, 'Refresh rate in seconds', 5);
+            ->addOption('refreshRate', 'r', InputOption::VALUE_OPTIONAL, 'Refresh rate in milliseconds', 500);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $context = Context::createDefaultContext();
-        $refreshRate = (int) $input->getOption('refreshRate');
+        $refreshRateMs = (int) $input->getOption('refreshRate');
+        if ($refreshRateMs < 250) {
+            $refreshRateMs = 250;
+            $output->writeln('refreshRates smaller than 250ms are not supported, falling back to 250ms.');
+        }
+
         $migrationState = $this->runService->getRunStatus($context);
 
         if ($migrationState->getStep() === MigrationStep::IDLE) {
@@ -56,7 +61,7 @@ class GetMigrationProgressCommand extends Command
         while ($migrationState->getStep() !== MigrationStep::FINISHED) {
             $migrationState = $this->runService->getRunStatus($context);
 
-            if (\in_array($migrationState->getStep(), [MigrationStep::ABORTING, MigrationStep::ABORTED, MigrationStep::IDLE], true)) {
+            if ($migrationState->getStep() === MigrationStep::IDLE) {
                 $output->writeln('');
                 $output->writeln('Migration was aborted.');
 
@@ -75,7 +80,7 @@ class GetMigrationProgressCommand extends Command
             $progressBar->setMaxSteps($migrationState->getTotal());
             $progressBar->setProgress($migrationState->getProgress());
 
-            \sleep($refreshRate);
+            \usleep($refreshRateMs * 1000);
         }
 
         return Command::SUCCESS;
