@@ -102,6 +102,14 @@ final class ProcessMediaHandler
             ));
 
             $this->loggingService->saveLogging($context);
+        } catch (\Exception $e) {
+            $this->loggingService->addLogEntry(new ExceptionRunLog(
+                $message->getRunId(),
+                $message->getEntityName(),
+                $e
+            ));
+
+            $this->loggingService->saveLogging($context);
         }
     }
 

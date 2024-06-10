@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -107,7 +108,20 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             }
 
             $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
-            $this->persistFileToMedia($sourcePath, $mediaFile, $context);
+
+            try {
+                $this->persistFileToMedia($sourcePath, $mediaFile, $context);
+            } catch (\Exception $e) {
+                $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+
+                $this->loggingService->addLogEntry(new ExceptionRunLog(
+                    $mappedWorkload[$mediaId]->getRunId(),
+                    DefaultEntities::ORDER_DOCUMENT,
+                    $e,
+                    $mediaId
+                ));
+            }
+
             $processedMedia[] = $mediaId;
         }
 
