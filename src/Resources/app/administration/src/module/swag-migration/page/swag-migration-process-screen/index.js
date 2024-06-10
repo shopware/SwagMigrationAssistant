@@ -231,6 +231,12 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.startMigration'),
                 });
+                this.$router.push({
+                    name: 'swag.migration.index.main',
+                    query: {
+                        forceFullStateReload: true, // also resets data selection for next run
+                    },
+                });
             }
         },
 
@@ -260,6 +266,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
         async approveFinishedMigration() {
             try {
+                State.commit('swagMigration/setIsLoading', true);
                 await this.migrationApiService.approveFinishedMigration();
                 this.$router.push({
                     name: 'swag.migration.index.main',
@@ -272,6 +279,14 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.approveFinishedMigration'),
                 });
+                this.$router.push({
+                    name: 'swag.migration.index.main',
+                    query: {
+                        forceFullStateReload: true, // also resets data selection for next run
+                    },
+                });
+            } finally {
+                State.commit('swagMigration/setIsLoading', false);
             }
         },
 

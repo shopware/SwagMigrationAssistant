@@ -82,7 +82,7 @@ Component.register('swag-migration-data-selector', {
             let string = '';
             Object.keys(item.entityTotals).forEach((key) => {
                 string += `${this.$tc(item.entityNames[key])
-                } ${
+                }: ${
                     item.entityTotals[key]
                 }</br>`;
             });

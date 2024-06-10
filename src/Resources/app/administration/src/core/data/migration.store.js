@@ -213,7 +213,7 @@ export default {
                     variant: 'error',
                     title: Shopware.Snippet.tc('global.default.error'),
                     message: Shopware.Snippet.tc('swag-migration.api-error.fetchConnectionId'),
-                });
+                }, { root: true });
                 commit('setConnectionId', null);
                 return false;
             }
@@ -234,7 +234,7 @@ export default {
                     variant: 'error',
                     title: Shopware.Snippet.tc('global.default.error'),
                     message: Shopware.Snippet.tc('swag-migration.api-error.checkConnection'),
-                });
+                }, { root: true });
             }
         },
 
@@ -255,7 +255,7 @@ export default {
                     variant: 'error',
                     title: Shopware.Snippet.tc('global.default.error'),
                     message: Shopware.Snippet.tc('swag-migration.api-error.getDataSelection'),
-                });
+                }, { root: true });
             }
         },
     },

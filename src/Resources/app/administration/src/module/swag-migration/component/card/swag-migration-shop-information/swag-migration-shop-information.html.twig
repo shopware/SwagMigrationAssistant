@@ -4,6 +4,19 @@
         :title="$tc('swag-migration.index.shopInfoCard.cardTitle')"
         position-identifier="swag-migration-shop-information"
     >
+        <template #header-right>
+            <sw-button
+                class="swag-migration-shop-information__refresh-connection"
+                size="x-small"
+                square
+                @click="onClickRefreshConnection"
+            >
+                <sw-icon
+                    name="regular-redo-s"
+                    small
+                />
+            </sw-button>
+        </template>
 
         {% block swag_migration_shop_information_content %}
             <template #grid>
@@ -184,13 +197,6 @@
                                             <sw-description-list>
                                                 <dt>
                                                     {{ $tc('swag-migration.index.shopInfoCard.connectionCheck') }}
-                                                    <sw-button class="swag-migration-shop-information__refresh-connection"
-                                                               size="x-small"
-                                                               square
-                                                               @click="onClickRefreshConnection">
-                                                        <sw-icon name="regular-redo-s"
-                                                                 small />
-                                                    </sw-button>
                                                 </dt>
                                                 <dd v-if="lastConnectionCheck">
                                                     {{ formattedLastConnectionCheckDate }}
