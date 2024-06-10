@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
 #[Package('services-settings')]
 class LoggingServiceTest extends TestCase
@@ -50,6 +51,7 @@ class LoggingServiceTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'status' => 'inProgress',
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             $this->context

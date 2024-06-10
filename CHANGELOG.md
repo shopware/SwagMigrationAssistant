@@ -57,6 +57,13 @@
     - Removed methods `takeoverMigration`, `calculateWriteProgress`, `calculateMediaFilesProgress`, `calculateCurrentTotals`, `finishMigration`
     - Removed parameter `abortMigration` of method `abortMigration`
 - MIG-962 - [BREAKING] Removed getters and setters for `premapping` on `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use them on `\SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity` instead
+- MIG-991 - [BREAKING] Added `SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface` parameter to `\SwagMigrationAssistant\Migration\Run\RunService` constructor
+- MIG-991 - [BREAKING] Added `Context` parameter to `\SwagMigrationAssistant\Migration\Run\RunServiceInterface::cleanupMigrationData` and implementors
+- MIG-991 - [BREAKING] Added `Context` parameter to `\SwagMigrationAssistant\Controller\StatusController::cleanupMigrationData`
+- MIG-991 - [BREAKING] Removed property `$status` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` and renamed its field in the corresponding definition, use `$step` instead
+- MIG-991 - [BREAKING] Removed method `getStatus` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `getStep` or `getStepValue` instead
+- MIG-991 - [BREAKING] Removed method `setStatus` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\RunTransitionService::transitionToRunStep` instead
+- MIG-991 - [BREAKING] Removed constants `STATUS_RUNNING`, `STATUS_FINISHED` and `STATUS_ABORTED` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\MigrationStep` instead
 
 # 11.0.1
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version

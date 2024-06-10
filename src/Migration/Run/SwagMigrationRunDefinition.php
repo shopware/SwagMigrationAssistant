@@ -54,7 +54,7 @@ class SwagMigrationRunDefinition extends EntityDefinition
             new MigrationProgressField('progress', 'progress'),
             new StringField('user_id', 'userId'),
             new StringField('access_token', 'accessToken'),
-            (new StringField('status', 'status'))->addFlags(new Required()),
+            (new StringField('step', 'step'))->addFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, 'id', true),

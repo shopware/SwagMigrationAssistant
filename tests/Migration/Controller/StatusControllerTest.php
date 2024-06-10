@@ -34,11 +34,11 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistry;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
-use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\RunTransitionService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
@@ -149,7 +149,7 @@ class StatusControllerTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'connectionId' => $this->connectionId,
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             Context::createDefaultContext()
@@ -184,6 +184,7 @@ class StatusControllerTest extends TestCase
                 static::getContainer()->get('messenger.bus.shopware'),
                 static::getContainer()->get(MigrationContextFactory::class),
                 static::getContainer()->get(PremappingService::class),
+                static::getContainer()->get(RunTransitionService::class),
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),
@@ -193,7 +194,7 @@ class StatusControllerTest extends TestCase
             static::getContainer()->get(ProfileRegistry::class),
             static::getContainer()->get(GatewayRegistry::class),
             $migrationContextFactory,
-            $this->generalSettingRepo
+            $this->generalSettingRepo,
         );
     }
 
@@ -281,7 +282,7 @@ class StatusControllerTest extends TestCase
         $this->runRepo->update([
             [
                 'id' => $this->runUuid,
-                'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                'step' => MigrationStep::ABORTED->value,
             ],
         ], $this->context);
 
@@ -410,7 +411,8 @@ class StatusControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'progress' => (new MigrationProgress(MigrationProgressStatus::FETCHING, 0, 100, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'progress' => (new MigrationProgress(0, 100, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             $this->context
@@ -424,10 +426,6 @@ class StatusControllerTest extends TestCase
             'step' => 'fetching',
             'progress' => 0,
             'total' => 100,
-            'currentEntity' => 'product',
-            'currentEntityProgress' => 0,
-            'dataSets' => [],
-            'exceptionCount' => 0,
         ], $state);
     }
 
@@ -514,7 +512,7 @@ class StatusControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'status' => SwagMigrationRunEntity::STATUS_ABORTED,
+                    'step' => MigrationStep::ABORTED->value,
                 ],
             ],
             $this->context
@@ -531,7 +529,8 @@ class StatusControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'progress' => (new MigrationProgress(MigrationProgressStatus::FETCHING, 0, 100, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'progress' => (new MigrationProgress(0, 100, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             $this->context
@@ -542,7 +541,7 @@ class StatusControllerTest extends TestCase
 
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
         static::assertNotNull($run);
-        static::assertSame('aborted', $run->getStatus());
+        static::assertSame(MigrationStep::ABORTING, $run->getStep());
     }
 
     public function testFinishMigrationWithoutRunUuid(): void
@@ -557,7 +556,8 @@ class StatusControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'progress' => (new MigrationProgress(MigrationProgressStatus::WAITING_FOR_APPROVE, 0, 0, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'progress' => (new MigrationProgress(0, 0, new ProgressDataSetCollection([]), 'product', 0))->jsonSerialize(),
+                    'step' => MigrationStep::WAITING_FOR_APPROVE->value,
                 ],
             ],
             $this->context
@@ -567,7 +567,7 @@ class StatusControllerTest extends TestCase
 
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
         static::assertNotNull($run);
-        static::assertSame('finished', $run->getStatus());
+        static::assertSame(MigrationStep::FINISHED, $run->getStep());
     }
 
     public function testGetResetStatus(): void

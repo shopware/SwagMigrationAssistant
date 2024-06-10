@@ -19,13 +19,14 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
-use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Subscriber\MessageQueueSubscriber;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
+use SwagMigrationAssistant\Test\Mock\Migration\Run\DummyRunTransitionService;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
@@ -43,14 +44,22 @@ class MessageQueueSubscriberTest extends TestCase
      * @param array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: string} $expected
      */
     #[DataProvider('getOnWorkerMessageFailedProvider')]
-    public function testOnWorkerMessageFailed(string $progressStatus, string $runStatus, bool $messageWillRetry, array $expected): void
+    public function testOnWorkerMessageFailed(MigrationStep $step, bool $isAborted, bool $messageWillRetry, array $expected): void
     {
-        $migrationProgress = new MigrationProgress(MigrationProgressStatus::from($progressStatus), 0, 1, new ProgressDataSetCollection(), ProductDefinition::ENTITY_NAME, 0);
+        $migrationProgress = new MigrationProgress(
+            0,
+            1,
+            new ProgressDataSetCollection(),
+            ProductDefinition::ENTITY_NAME,
+            0,
+            0,
+            $isAborted
+        );
 
         $runUuid = Uuid::randomHex();
         $run = new SwagMigrationRunEntity();
-        $run->setStatus($runStatus);
         $run->setId($runUuid);
+        $run->setStep($step);
         $run->setProgress($migrationProgress);
 
         /** @var StaticEntityRepository<SwagMigrationRunCollection> $repository */
@@ -63,6 +72,8 @@ class MessageQueueSubscriberTest extends TestCase
         $busMock = new CollectingMessageBus();
         $event = new WorkerMessageFailedEvent(new Envelope(new MigrationProcessMessage($this->context, $runUuid)), '', new \Exception());
 
+        $dummyRunTransitionService = new DummyRunTransitionService($run->getStep());
+
         if ($messageWillRetry) {
             $event->setForRetry();
         }
@@ -70,7 +81,8 @@ class MessageQueueSubscriberTest extends TestCase
         $subscriber = new MessageQueueSubscriber(
             $busMock,
             $repository,
-            $dummyLoggingService
+            $dummyLoggingService,
+            $dummyRunTransitionService,
         );
 
         $subscriber->onWorkerMessageFailed($event);
@@ -79,7 +91,8 @@ class MessageQueueSubscriberTest extends TestCase
         static::assertSame($expected['exceptionCount'], $migrationProgress->getExceptionCount());
         static::assertCount($expected['logCount'], $dummyLoggingService->getLoggingArray());
         static::assertCount($expected['updateCount'], $repository->updates);
-        static::assertSame($expected['step'], $migrationProgress->getStepValue());
+        static::assertSame($expected['step'], $dummyRunTransitionService->getActiveStep());
+        static::assertSame($expected['isAborted'], $migrationProgress->isAborted());
 
         if ($expected['updateCount'] === 0) {
             return;
@@ -89,59 +102,63 @@ class MessageQueueSubscriberTest extends TestCase
     }
 
     /**
-     * @return \Generator<string, array{progressStatus: string, runStatus: string, messageWillRetry: bool, expected: array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: string}}>
+     * @return \Generator<string, array{step: MigrationStep, messageWillRetry: bool, expected: array{messageCount: int, exceptionCount: int, logCount: int, updateCount: int, step: MigrationStep}}>
      */
     public static function getOnWorkerMessageFailedProvider(): \Generator
     {
         yield 'Aborting migration should be aborted' => [
-            'progressStatus' => MigrationProgressStatus::ABORTING->value,
-            'runStatus' => SwagMigrationRunEntity::STATUS_ABORTED,
+            'step' => MigrationStep::ABORTING,
+            'isAborted' => false,
             'messageWillRetry' => false,
             'expected' => [
                 'messageCount' => 0,
                 'exceptionCount' => 1,
                 'logCount' => 2,
                 'updateCount' => 1,
-                'step' => MigrationProgressStatus::ABORTED->value,
+                'step' => MigrationStep::ABORTED,
+                'isAborted' => true,
             ],
         ];
 
         yield 'Migration in fetching state and message will be retry should raise only exception count' => [
-            'progressStatus' => MigrationProgressStatus::FETCHING->value,
-            'runStatus' => SwagMigrationRunEntity::STATUS_RUNNING,
+            'step' => MigrationStep::FETCHING,
+            'isAborted' => false,
             'messageWillRetry' => true,
             'expected' => [
                 'messageCount' => 0,
                 'exceptionCount' => 1,
                 'logCount' => 1,
                 'updateCount' => 1,
-                'step' => MigrationProgressStatus::FETCHING->value,
+                'step' => MigrationStep::FETCHING,
+                'isAborted' => false,
             ],
         ];
 
         yield 'Migration in fetching state and message will NOT be retry should raise exception count and add new message to bus' => [
-            'progressStatus' => MigrationProgressStatus::FETCHING->value,
-            'runStatus' => SwagMigrationRunEntity::STATUS_RUNNING,
+            'step' => MigrationStep::FETCHING,
+            'isAborted' => false,
             'messageWillRetry' => false,
             'expected' => [
                 'messageCount' => 1,
                 'exceptionCount' => 1,
                 'logCount' => 1,
                 'updateCount' => 1,
-                'step' => MigrationProgressStatus::FETCHING->value,
+                'step' => MigrationStep::FETCHING,
+                'isAborted' => false,
             ],
         ];
 
         yield 'Migration in aborted state should do nothing' => [
-            'progressStatus' => MigrationProgressStatus::ABORTED->value,
-            'runStatus' => SwagMigrationRunEntity::STATUS_ABORTED,
+            'step' => MigrationStep::ABORTED,
+            'isAborted' => true,
             'messageWillRetry' => false,
             'expected' => [
                 'messageCount' => 0,
                 'exceptionCount' => 0,
                 'logCount' => 0,
                 'updateCount' => 0,
-                'step' => MigrationProgressStatus::ABORTED->value,
+                'step' => MigrationStep::ABORTED,
+                'isAborted' => true,
             ],
         ];
     }
@@ -149,7 +166,6 @@ class MessageQueueSubscriberTest extends TestCase
     public function testOnWorkerMessageFailedShouldRaiseExceptionCountAndAbortRunAndAddNewMessageToBus(): void
     {
         $migrationProgress = new MigrationProgress(
-            MigrationProgressStatus::FETCHING,
             0,
             1,
             new ProgressDataSetCollection(),
@@ -160,8 +176,8 @@ class MessageQueueSubscriberTest extends TestCase
 
         $runUuid = Uuid::randomHex();
         $run = new SwagMigrationRunEntity();
-        $run->setStatus(SwagMigrationRunEntity::STATUS_RUNNING);
         $run->setId($runUuid);
+        $run->setStep(MigrationStep::FETCHING);
         $run->setProgress($migrationProgress);
 
         /** @var StaticEntityRepository<SwagMigrationRunCollection> $repository */
@@ -186,10 +202,13 @@ class MessageQueueSubscriberTest extends TestCase
             '',
             new \Exception()
         );
+        $dummyRunTransitionService = new DummyRunTransitionService($run->getStep());
+
         $subscriber = new MessageQueueSubscriber(
             $busMock,
             $repository,
-            $dummyLoggingService
+            $dummyLoggingService,
+            $dummyRunTransitionService
         );
 
         $subscriber->onWorkerMessageFailed($event);
@@ -197,8 +216,7 @@ class MessageQueueSubscriberTest extends TestCase
         static::assertCount(1, $busMock->getMessages());
         static::assertSame(4, $migrationProgress->getExceptionCount());
         static::assertSame($migrationProgress, $repository->updates[0][0]['progress']);
-        static::assertSame(MigrationProgressStatus::ABORTING->value, $migrationProgress->getStepValue());
-        static::assertSame(SwagMigrationRunEntity::STATUS_ABORTED, $run->getStatus());
+        static::assertSame(MigrationStep::ABORTING, $dummyRunTransitionService->getActiveStep());
         static::assertCount(1, $dummyLoggingService->getLoggingArray());
     }
 
@@ -206,7 +224,6 @@ class MessageQueueSubscriberTest extends TestCase
     public function testOnWorkerMessageHandled(bool $noMessage, bool $noRun, bool $noProgress, int $exceptionCount, int $expectedExceptionCount, int $expectedUpdateCount): void
     {
         $migrationProgress = new MigrationProgress(
-            MigrationProgressStatus::FETCHING,
             0,
             1,
             new ProgressDataSetCollection(),
@@ -217,7 +234,7 @@ class MessageQueueSubscriberTest extends TestCase
 
         $runUuid = Uuid::randomHex();
         $run = new SwagMigrationRunEntity();
-        $run->setStatus(SwagMigrationRunEntity::STATUS_RUNNING);
+        $run->setStep(MigrationStep::FETCHING);
         $run->setId($runUuid);
 
         if (!$noProgress) {
@@ -245,10 +262,13 @@ class MessageQueueSubscriberTest extends TestCase
             new Envelope($noMessage ? new \stdClass() : new MigrationProcessMessage($this->context, $runUuid)),
             '',
         );
+        $dummyRunTransitionService = new DummyRunTransitionService($run->getStep());
+
         $subscriber = new MessageQueueSubscriber(
             $busMock,
             $repository,
-            $dummyLoggingService
+            $dummyLoggingService,
+            $dummyRunTransitionService
         );
 
         $subscriber->onWorkerMessageHandled($event);

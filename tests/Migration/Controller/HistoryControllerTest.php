@@ -22,8 +22,8 @@ use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Request;
@@ -91,7 +91,7 @@ class HistoryControllerTest extends TestCase
                     'id' => $this->runUuid,
                     'connectionId' => $connectionId,
                     'credentialFields' => $credentialFields,
-                    'status' => SwagMigrationRunEntity::STATUS_FINISHED,
+                    'step' => MigrationStep::FINISHED->value,
                 ],
             ],
             $this->context

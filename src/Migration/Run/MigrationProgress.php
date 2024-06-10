@@ -16,8 +16,6 @@ use Shopware\Core\Framework\Struct\Struct;
 #[Package('services-settings')]
 final class MigrationProgress extends Struct
 {
-    protected MigrationProgressStatus $step;
-
     protected int $progress;
 
     protected int $total;
@@ -30,30 +28,24 @@ final class MigrationProgress extends Struct
 
     protected int $exceptionCount = 0;
 
-    public function __construct(MigrationProgressStatus $step, int $progress, int $total, ProgressDataSetCollection $dataSets, string $currentEntity, int $currentEntityProgress, int $exceptionCount = 0)
-    {
-        $this->step = $step;
+    protected bool $isAborted = false;
+
+    public function __construct(
+        int $progress,
+        int $total,
+        ProgressDataSetCollection $dataSets,
+        string $currentEntity,
+        int $currentEntityProgress,
+        int $exceptionCount = 0,
+        bool $isAborted = false
+    ) {
         $this->progress = $progress;
         $this->total = $total;
         $this->dataSets = $dataSets;
         $this->currentEntity = $currentEntity;
         $this->currentEntityProgress = $currentEntityProgress;
         $this->exceptionCount = $exceptionCount;
-    }
-
-    public function getStepValue(): string
-    {
-        return $this->step->value;
-    }
-
-    public function getStep(): MigrationProgressStatus
-    {
-        return $this->step;
-    }
-
-    public function setStep(MigrationProgressStatus $step): void
-    {
-        $this->step = $step;
+        $this->isAborted = $isAborted;
     }
 
     public function getProgress(): int
@@ -119,5 +111,15 @@ final class MigrationProgress extends Struct
     public function resetExceptionCount(): void
     {
         $this->exceptionCount = 0;
+    }
+
+    public function isAborted(): bool
+    {
+        return $this->isAborted;
+    }
+
+    public function setIsAborted(bool $isAborted): void
+    {
+        $this->isAborted = $isAborted;
     }
 }

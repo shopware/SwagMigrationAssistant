@@ -35,7 +35,7 @@ use SwagMigrationAssistant\Migration\MigrationContextFactory;
 use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
-use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSet;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunService;
@@ -51,6 +51,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Test\Mock\Migration\Run\DummyRunTransitionService;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -102,10 +103,9 @@ class RunServiceTest extends TestCase
         $run = new SwagMigrationRunEntity();
         $run->setId(Uuid::randomHex());
         $run->setConnection($connectionEntity);
-        $run->setStatus(SwagMigrationRunEntity::STATUS_RUNNING);
+        $run->setStep(MigrationStep::WAITING_FOR_APPROVE);
 
         $progress = new MigrationProgress(
-            MigrationProgressStatus::WAITING_FOR_APPROVE,
             0,
             10,
             new ProgressDataSetCollection([new ProgressDataSet('product', 10)]),
@@ -116,8 +116,8 @@ class RunServiceTest extends TestCase
         $run->setProgress($progress);
 
         $this->runRepo = new StaticEntityRepository([
-            [],
-            [],
+            new SwagMigrationRunCollection([]),
+            new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([$run]),
         ], new SwagMigrationRunDefinition());
 
@@ -179,8 +179,10 @@ class RunServiceTest extends TestCase
             ->expects(static::never())
             ->method('dispatch');
 
+        $run = new SwagMigrationRunEntity();
+        $run->setId(Uuid::randomHex());
         $this->runRepo = new StaticEntityRepository([
-            [Uuid::randomHex()],
+            new SwagMigrationRunCollection([$run]),
         ], new SwagMigrationRunDefinition());
 
         $runService = $this->createRunService(
@@ -209,7 +211,7 @@ class RunServiceTest extends TestCase
             ->method('dispatch');
 
         $this->runRepo = new StaticEntityRepository([
-            [],
+            new SwagMigrationRunCollection([]),
         ], new SwagMigrationRunDefinition());
 
         $generalSettingEntity = new GeneralSettingEntity();
@@ -302,7 +304,8 @@ class RunServiceTest extends TestCase
             $trackingEventClient,
             $messageBus,
             $this->migrationContextFactory,
-            $premappingService
+            $premappingService,
+            new DummyRunTransitionService(MigrationStep::WAITING_FOR_APPROVE),
         );
     }
 }

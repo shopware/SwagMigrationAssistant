@@ -21,20 +21,7 @@ class SwagMigrationRunEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    final public const STATUS_RUNNING = 'running';
-
-    /**
-     * @var string
-     */
-    final public const STATUS_FINISHED = 'finished';
-
-    /**
-     * @var string
-     */
-    final public const STATUS_ABORTED = 'aborted';
+    protected string $step;
 
     protected ?string $connectionId = null;
 
@@ -43,8 +30,6 @@ class SwagMigrationRunEntity extends Entity
     protected ?array $totals = null;
 
     protected ?array $environmentInformation = null;
-
-    protected ?string $status = null;
 
     protected ?string $userId = null;
 
@@ -98,18 +83,30 @@ class SwagMigrationRunEntity extends Entity
         $this->environmentInformation = $environmentInformation;
     }
 
-    public function getStatus(): ?string
+    public function getStep(): MigrationStep
     {
-        return $this->status;
-    }
-
-    public function setStatus(string $status): void
-    {
-        if (!\in_array($status, [self::STATUS_RUNNING, self::STATUS_FINISHED, self::STATUS_ABORTED], true)) {
-            throw MigrationException::undefinedRunStatus($status);
+        $step = MigrationStep::tryFrom($this->step);
+        if ($step === null) {
+            throw MigrationException::undefinedRunStatus($this->step);
         }
 
-        $this->status = $status;
+        return $step;
+    }
+
+    public function getStepValue(): string
+    {
+        return $this->step;
+    }
+
+    /**
+     * # Safety:
+     * You are only allowed to use this method to set an initial step when creating a new run.
+     * Every other step transition should go through RunTransitionService::transitionToRunStep
+     * to avoid data races.
+     */
+    public function setStep(MigrationStep $step): void
+    {
+        $this->step = $step->value;
     }
 
     public function getUserId(): ?string
@@ -137,6 +134,12 @@ class SwagMigrationRunEntity extends Entity
         return $this->progress;
     }
 
+    /**
+     * # Safety:
+     * Only the MigrationProcessHandler is allowed to call this method
+     * (except for initial run creation, where this can also be called elsewhere).
+     * This is important to prevent data races between http requests controllers and the message queue.
+     */
     public function setProgress(MigrationProgress $progress): void
     {
         $this->progress = $progress;

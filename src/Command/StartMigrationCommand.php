@@ -63,7 +63,7 @@ class StartMigrationCommand extends Command
             return Command::FAILURE;
         }
 
-        $output->writeln('Migration is started, please use migration:get-status to check the progress.');
+        $output->writeln('Migration is started, please use migration:get-progress to check the progress.');
 
         return Command::SUCCESS;
     }

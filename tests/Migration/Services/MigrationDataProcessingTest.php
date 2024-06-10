@@ -34,8 +34,8 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
@@ -438,7 +438,7 @@ class MigrationDataProcessingTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'step' => MigrationStep::FETCHING->value,
                     'profileName' => Shopware55Profile::PROFILE_NAME,
                     'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                 ],

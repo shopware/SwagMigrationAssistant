@@ -77,6 +77,11 @@
             <argument type="service" id="messenger.bus.shopware"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Run\RunTransitionService">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\History\HistoryService">
@@ -177,7 +182,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\Command\GetMigrationProgressCommand">
-            <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
             <argument>migration:get-progress</argument>
             <tag name="console.command" command="migration:get-progress"/>
@@ -236,6 +240,7 @@
             <argument type="service" id="cache.object"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">

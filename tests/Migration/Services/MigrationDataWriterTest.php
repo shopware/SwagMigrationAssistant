@@ -61,10 +61,10 @@ use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactory;
-use SwagMigrationAssistant\Migration\Run\MigrationProgressStatus;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\RunTransitionService;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
@@ -313,7 +313,8 @@ class MigrationDataWriterTest extends TestCase
             static::getContainer()->get(TrackingEventClient::class),
             static::getContainer()->get('messenger.bus.shopware'),
             $migrationContextFactoryMock,
-            $premappingService
+            $premappingService,
+            static::getContainer()->get(RunTransitionService::class),
         );
     }
 
@@ -746,10 +747,9 @@ class MigrationDataWriterTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
                     'connectionId' => $this->connectionId,
+                    'step' => MigrationStep::WAITING_FOR_APPROVE->value,
                     'progress' => [
-                        'step' => MigrationProgressStatus::WAITING_FOR_APPROVE,
                         'progress' => 0,
                         'total' => 0,
                         'currentEntity' => 'product',
@@ -765,6 +765,7 @@ class MigrationDataWriterTest extends TestCase
                             ],
                         ],
                         'exceptionCount' => 0,
+                        'isAborted' => false,
                     ],
                 ],
             ],

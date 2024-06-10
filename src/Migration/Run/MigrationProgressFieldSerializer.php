@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\Validator\Constraints\All;
 use Symfony\Component\Validator\Constraints\Collection;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 use Symfony\Component\Validator\Constraints\Type;
 
 #[Package('services-settings')]
@@ -34,10 +35,6 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
 
         if (\is_array($value)) {
             unset($value['extensions']);
-
-            if (isset($value['step']) && $value['step'] instanceof MigrationProgressStatus) {
-                $value['step'] = $value['step']->value;
-            }
 
             if (isset($value['dataSets']) && $value['dataSets'] instanceof ProgressDataSetCollection) {
                 $value['dataSets'] = $value['dataSets']->jsonSerialize();
@@ -80,13 +77,13 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
         }
 
         return new MigrationProgress(
-            MigrationProgressStatus::from($raw['step']),
             (int) $raw['progress'],
             (int) $raw['total'],
             $progressDataSetCollection,
             (string) $raw['currentEntity'],
             (int) $raw['currentEntityProgress'],
-            (int) $raw['exceptionCount']
+            (int) $raw['exceptionCount'],
+            (bool) $raw['isAborted'],
         );
     }
 
@@ -94,12 +91,12 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
     {
         return [
             new Collection([
-                'step' => [new NotBlank(), new Type('string')],
                 'progress' => [new NotBlank(), new Type('int')],
                 'total' => [new NotBlank(), new Type('int')],
                 'currentEntity' => [new NotBlank(), new Type('string')],
                 'currentEntityProgress' => [new NotBlank(), new Type('int')],
                 'exceptionCount' => [new NotBlank(), new Type('int')],
+                'isAborted' => [new NotNull(), new Type('bool')],
                 'dataSets' => [
                     new Type('array'),
                     new All(new Collection([
