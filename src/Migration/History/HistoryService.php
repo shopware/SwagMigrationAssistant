@@ -18,12 +18,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
@@ -53,14 +51,7 @@ class HistoryService implements HistoryServiceInterface
     ): array {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addFilter(
-            new NotFilter(
-                NotFilter::CONNECTION_AND,
-                [
-                    new EqualsFilter('level', LogEntryInterface::LOG_LEVEL_INFO),
-                ]
-            )
-        );
+
         $criteria->addAggregation(
             new TermsAggregation(
                 'count',
@@ -74,7 +65,13 @@ class HistoryService implements HistoryServiceInterface
                     null,
                     new TermsAggregation(
                         'entity',
-                        'entity'
+                        'entity',
+                        null,
+                        null,
+                        new TermsAggregation(
+                            'level',
+                            'level'
+                        )
                     )
                 )
             )
@@ -167,11 +164,19 @@ class HistoryService implements HistoryServiceInterface
         $entityResult = $titleBucket->getResult();
         $entityString = empty($entityResult->getBuckets()) ? '' : $entityResult->getBuckets()[0]->getKey();
 
+        $levelString = '';
+        if ($entityString !== '') {
+            /** @var TermsResult $levelResult */
+            $levelResult = $entityResult->getBuckets()[0]->getResult();
+            $levelString = empty($levelResult->getBuckets()) ? '' : $levelResult->getBuckets()[0]->getKey();
+        }
+
         return [
             'code' => $bucket->getKey(),
             'count' => $bucket->getCount(),
             'titleSnippet' => $titleBucket->getKey(),
             'entity' => $entityString,
+            'level' => $levelString,
         ];
     }
 

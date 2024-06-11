@@ -64,6 +64,7 @@
 - MIG-991 - [BREAKING] Removed method `getStatus` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `getStep` or `getStepValue` instead
 - MIG-991 - [BREAKING] Removed method `setStatus` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\RunTransitionService::transitionToRunStep` instead
 - MIG-991 - [BREAKING] Removed constants `STATUS_RUNNING`, `STATUS_FINISHED` and `STATUS_ABORTED` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\MigrationStep` instead
+- MIG-962 - [BREAKING] Every admin component is now private / internal
 
 # 11.0.1
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version

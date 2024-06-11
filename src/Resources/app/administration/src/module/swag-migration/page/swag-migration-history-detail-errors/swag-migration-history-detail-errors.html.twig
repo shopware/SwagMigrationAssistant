@@ -21,6 +21,12 @@
                         </template>
                     {% endblock %}
 
+                    {% block swag_migration_history_detail_errors_grid_level %}
+                        <template #column-level="{ item }">
+                            {{ item.level }}
+                        </template>
+                    {% endblock %}
+
                     {% block swag_migration_history_detail_errors_grid_count %}
                         <template #column-count="{ item }">
                             {{ item.count }}
