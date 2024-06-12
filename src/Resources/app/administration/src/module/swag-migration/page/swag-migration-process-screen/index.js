@@ -81,7 +81,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         /**
          * @returns {boolean}
          */
-        startButtonVisible() {
+        backToOverviewButtonVisible() {
             return !this.isLoading &&
                     this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
@@ -89,7 +89,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         /**
          * @returns {boolean}
          */
-        startButtonDisabled() {
+        backToOverviewButtonDisabled() {
             return this.isLoading;
         },
 
@@ -161,6 +161,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
         async unmountedComponent() {
             this.unregisterPolling();
+            this.total = 0; // hide percentage in browser tab title again
         },
 
         unregisterPolling() {

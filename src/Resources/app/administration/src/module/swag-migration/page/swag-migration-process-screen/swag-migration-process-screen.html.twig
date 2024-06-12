@@ -10,12 +10,12 @@
             </sw-button>
         {% endblock %}
 
-        {% block swag_migration_index_smart_bar_start_button %}
-            <sw-button v-if="startButtonVisible"
+        {% block swag_migration_index_smart_bar_back_to_overview_button %}
+            <sw-button v-if="backToOverviewButtonVisible"
                        variant="primary"
-                       :disabled="startButtonDisabled"
+                       :disabled="backToOverviewButtonDisabled"
                        @click="onContinueButtonClick">
-                {{ $tc('swag-migration.index.startButton') }}
+                {{ $tc('swag-migration.index.backToOverviewButton') }}
             </sw-button>
         {% endblock %}
 
