@@ -3,7 +3,6 @@ Run id: XXX
 Status: finished
 Created at: TimestampXXX
 Updated at: TimestampXXX
-Last control user id: -
 Connection id: XXX
 Connection name: sw5local
 Profile: shopware55

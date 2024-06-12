@@ -31,10 +31,6 @@ class SwagMigrationRunEntity extends Entity
 
     protected ?array $environmentInformation = null;
 
-    protected ?string $userId = null;
-
-    protected ?string $accessToken = null;
-
     protected ?MigrationProgress $progress = null;
 
     protected ?SwagMigrationDataCollection $data = null;
@@ -107,26 +103,6 @@ class SwagMigrationRunEntity extends Entity
     public function setStep(MigrationStep $step): void
     {
         $this->step = $step->value;
-    }
-
-    public function getUserId(): ?string
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(string $userId): void
-    {
-        $this->userId = $userId;
-    }
-
-    public function getAccessToken(): ?string
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken(string $accessToken): void
-    {
-        $this->accessToken = $accessToken;
     }
 
     public function getProgress(): ?MigrationProgress

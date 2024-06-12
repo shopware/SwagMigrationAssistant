@@ -247,7 +247,6 @@ class HistoryService implements HistoryServiceInterface
             . 'Status: %s' . \PHP_EOL
             . 'Created at: %s' . \PHP_EOL
             . 'Updated at: %s' . \PHP_EOL
-            . 'Last control user id: %s' . \PHP_EOL
             . 'Connection id: %s' . \PHP_EOL
             . 'Connection name: %s' . \PHP_EOL
             . 'Profile: %s' . \PHP_EOL
@@ -259,7 +258,6 @@ class HistoryService implements HistoryServiceInterface
             $run->getStepValue(),
             $createdAt,
             $updatedAt,
-            $run->getUserId() ?? '-',
             $run->getConnectionId() ?? '-',
             $connectionName,
             $profileName,
