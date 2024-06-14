@@ -1,5 +1,6 @@
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
+import { MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.api.service';
 
 const { Component, Mixin, State } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -14,8 +15,12 @@ const CONNECTION_NAME_ERRORS = Object.freeze({
 /**
  * @private
  * @package services-settings
+ *
+ * Note:
+ * This component should not inherit from another component, because Rufus is overriding it and NEXT-36774 breaks it then.
+ * We might inherit from 'swag-migration-base' in the future again.
  */
-Component.extend('swag-migration-wizard', 'swag-migration-base', {
+Component.register('swag-migration-wizard', {
     template,
 
     inject: {
@@ -33,6 +38,7 @@ Component.extend('swag-migration-wizard', 'swag-migration-base', {
 
         return {
             context: Shopware.Context.api,
+            storesInitializing: true,
             showModal: true,
             isLoading: true,
             childIsLoading: false,
@@ -186,14 +192,39 @@ Component.extend('swag-migration-wizard', 'swag-migration-base', {
         });
     },
 
+    created() {
+        this.createdComponent();
+    },
+
     methods: {
-        createdComponent() {
-            return this.$super('createdComponent').then(() => {
-                return this.loadSelectedConnection(this.connectionId).then(() => {
-                    this.isLoading = false;
-                    this.onChildRouteChanged(); // update strings for current child
-                });
-            });
+        async createdComponent() {
+            await this.checkMigrationBackendState();
+            await this.initState();
+
+            await this.loadSelectedConnection(this.connectionId);
+            this.isLoading = false;
+            this.onChildRouteChanged(); // update strings for current child
+        },
+
+        async checkMigrationBackendState() {
+            try {
+                const response = await this.migrationApiService.getState();
+                if (!response || !response.step) {
+                    return;
+                }
+
+                if (response.step !== MIGRATION_STEP.IDLE) {
+                    this.$router.push({ name: 'swag.migration.processScreen' });
+                }
+            } catch {
+                // do nothing
+            }
+        },
+
+        async initState() {
+            const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
+            await State.dispatch('swagMigration/init', forceFullStateReload);
+            this.storesInitializing = false;
         },
 
         getRoutes() {

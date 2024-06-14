@@ -4,11 +4,11 @@
                   class="swag-migration-wizard__modal"
                   :size="modalSize"
                   :title="$tc(modalTitleSnippet)"
-                  :is-loading="isLoading"
+                  :is-loading="isLoading || storesInitializing"
                   @modal-close="onCloseModal">
 
             {% block swag_migration_wizard_placeholder %}
-                <div v-show="isLoading || childIsLoading"
+                <div v-show="isLoading || storesInitializing || childIsLoading"
 class="swag-migration-wizard__placeholder"></div>
             {% endblock %}
 
@@ -16,7 +16,7 @@ class="swag-migration-wizard__placeholder"></div>
                     <router-view v-slot="{ Component }">
                         <component
                             :is="Component"
-                            v-show="!isLoading && !childIsLoading"
+                            v-show="!isLoading && !childIsLoading && !storesInitializing"
                             :current-connection-id="connection.id"
                             :profile-information-component="profileInformationComponent"
                             :credentials-component="credentialsComponent"
