@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -92,6 +93,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
     ): array {
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
+        $failedMedia = [];
 
         foreach ($media as $mediaFile) {
             $sourcePath = $installationRoot . '/files/' . $mediaFile['uri'];
@@ -106,16 +108,31 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                     $sourcePath
                 ));
                 $processedMedia[] = $mediaId;
+                $failedMedia[] = $mediaId;
 
                 continue;
             }
 
             $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::FINISH_STATE);
-            $this->persistFileToMedia($sourcePath, $mediaFile, $context);
+
+            try {
+                $this->persistFileToMedia($sourcePath, $mediaFile, $context);
+            } catch (\Exception $e) {
+                $failedMedia[] = $mediaId;
+                $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+
+                $this->loggingService->addLogEntry(new ExceptionRunLog(
+                    $mappedWorkload[$mediaId]->getRunId(),
+                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    $e,
+                    $mediaId
+                ));
+            }
+
             $processedMedia[] = $mediaId;
         }
 
-        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia);
+        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
@@ -179,21 +196,41 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
         });
     }
 
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids): void
+    /**
+     * @param list<string> $finishedUuids
+     * @param list<string> $failureUuids
+     */
+    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
     {
         $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-        $updateableMediaEntities = [];
+
+        $mediaEntitiesToUpdate = [];
         foreach ($mediaFiles as $mediaFile) {
-            $updateableMediaEntities[] = [
-                'id' => $mediaFile['id'],
-                'processed' => true,
-            ];
+            $mediaFileId = $mediaFile['id'];
+
+            if (!\in_array($mediaFileId, $failureUuids, true)) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFileId,
+                    'processed' => true,
+                ];
+            }
         }
 
-        if (empty($updateableMediaEntities)) {
+        if (!empty($failureUuids)) {
+            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
+
+            foreach ($mediaFiles as $mediaFile) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFile['id'],
+                    'processFailure' => true,
+                ];
+            }
+        }
+
+        if (empty($mediaEntitiesToUpdate)) {
             return;
         }
 
-        $this->mediaFileRepo->update($updateableMediaEntities, $context);
+        $this->mediaFileRepo->update($mediaEntitiesToUpdate, $context);
     }
 }

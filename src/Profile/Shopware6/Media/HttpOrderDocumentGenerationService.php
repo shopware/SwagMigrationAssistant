@@ -151,24 +151,42 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         return \array_values($mappedWorkload);
     }
 
+    /**
+     * @param list<string> $finishedUuids
+     * @param list<string> $failureUuids
+     */
     private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
     {
         $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-        $updateProcessedMediaFiles = [];
-        foreach ($mediaFiles as $data) {
-            if (!\in_array($data['media_id'], $failureUuids, true)) {
-                $updateProcessedMediaFiles[] = [
-                    'id' => $data['id'],
+
+        $mediaEntitiesToUpdate = [];
+        foreach ($mediaFiles as $mediaFile) {
+            $mediaFileId = $mediaFile['id'];
+
+            if (!\in_array($mediaFileId, $failureUuids, true)) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFileId,
                     'processed' => true,
                 ];
             }
         }
 
-        if (empty($updateProcessedMediaFiles)) {
+        if (!empty($failureUuids)) {
+            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
+
+            foreach ($mediaFiles as $mediaFile) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFile['id'],
+                    'processFailure' => true,
+                ];
+            }
+        }
+
+        if (empty($mediaEntitiesToUpdate)) {
             return;
         }
 
-        $this->migrationMediaFileRepo->update($updateProcessedMediaFiles, $context);
+        $this->migrationMediaFileRepo->update($mediaEntitiesToUpdate, $context);
     }
 
     /**
@@ -208,6 +226,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         return $promises;
     }
 
+    /**
+     * @param array<string, mixed> $result
+     * @param list<string> $finishedUuids
+     */
     private function handleCompleteRequest(Context $context, array $result, string $documentId, array &$finishedUuids): void
     {
         /** @var Response $response */
@@ -280,6 +302,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $finishedUuids[] = $documentId;
     }
 
+    /**
+     * @param array<string, mixed> $additionalData
+     * @param list<string> $failureUuids
+     */
     private function handleFailedRequest(
         MediaProcessWorkloadStruct $oldWorkload,
         MediaProcessWorkloadStruct &$mappedWorkload,

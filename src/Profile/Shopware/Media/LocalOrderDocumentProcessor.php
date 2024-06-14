@@ -89,6 +89,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
     ): array {
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
+        $failedMedia = [];
 
         foreach ($media as $mediaFile) {
             $sourcePath = $installationRoot . '/files/documents/' . $mediaFile['file_name'] . '.pdf';
@@ -103,6 +104,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                     $sourcePath
                 ));
                 $processedMedia[] = $mediaId;
+                $failedMedia[] = $mediaId;
 
                 continue;
             }
@@ -112,6 +114,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             try {
                 $this->persistFileToMedia($sourcePath, $mediaFile, $context);
             } catch (\Exception $e) {
+                $failedMedia[] = $mediaId;
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
@@ -125,7 +128,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             $processedMedia[] = $mediaId;
         }
 
-        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia);
+        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
@@ -184,21 +187,41 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         });
     }
 
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids): void
+    /**
+     * @param list<string> $finishedUuids
+     * @param list<string> $failureUuids
+     */
+    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
     {
         $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-        $updateableMediaEntities = [];
+
+        $mediaEntitiesToUpdate = [];
         foreach ($mediaFiles as $mediaFile) {
-            $updateableMediaEntities[] = [
-                'id' => $mediaFile['id'],
-                'processed' => true,
-            ];
+            $mediaFileId = $mediaFile['id'];
+
+            if (!\in_array($mediaFileId, $failureUuids, true)) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFileId,
+                    'processed' => true,
+                ];
+            }
         }
 
-        if (empty($updateableMediaEntities)) {
+        if (!empty($failureUuids)) {
+            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
+
+            foreach ($mediaFiles as $mediaFile) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFile['id'],
+                    'processFailure' => true,
+                ];
+            }
+        }
+
+        if (empty($mediaEntitiesToUpdate)) {
             return;
         }
 
-        $this->mediaFileRepo->update($updateableMediaEntities, $context);
+        $this->mediaFileRepo->update($mediaEntitiesToUpdate, $context);
     }
 }
