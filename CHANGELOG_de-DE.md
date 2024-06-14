@@ -8,6 +8,7 @@
 - MIG-989 - [BREAKING] Neue Methode `filterUnwrittenData` zu `SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface` hinzugefügt
 - MIG-992 - Korrigiert einen Fehler bei der Migration von Produktseodaten
 - MIG-1006 - Behebt einen Fehler bei der Migration von Produkt-Coverbildern
+- MIG-990 - Ausnahmen dürfen die Verarbeitung von ProcessMediaMessage nicht abbrechen
 
 # 11.0.1
 - MIG-988 - Ein Fehler der Premapping-UI wurde behoben, um kompatible mit der neusten Platform version zu bleiben
