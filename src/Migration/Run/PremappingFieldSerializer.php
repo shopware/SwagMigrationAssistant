@@ -135,30 +135,30 @@ class PremappingFieldSerializer extends JsonFieldSerializer
     protected function getConstraints(Field $field): array
     {
         return [
-            new All(new Collection([
+            new All([new Collection([
                 'entity' => [new NotBlank(), new Type('string')],
                 'mapping' => [
                     new Type('array'),
-                    new All(new Collection([
+                    new All([new Collection([
                         'allowExtraFields' => true,
                         'fields' => [
                             'sourceId' => [new NotBlank(), new Type('string')],
                             'description' => [new NotBlank(), new Type('string')],
                             'destinationUuid' => [new NotBlank(), new Type('string')],
                         ],
-                    ])),
+                    ])]),
                 ],
                 'choices' => [
                     new Type('array'),
-                    new All(new Collection([
+                    new All([new Collection([
                         'allowExtraFields' => true,
                         'fields' => [
                             'uuid' => [new NotBlank(), new Type('string')],
                             'description' => [new NotBlank(), new Type('string')],
                         ],
-                    ])),
+                    ])]),
                 ],
-            ])),
+            ])]),
         ];
     }
 }
