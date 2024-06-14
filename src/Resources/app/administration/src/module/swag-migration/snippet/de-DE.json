@@ -165,7 +165,6 @@
     "index": {
       "title": "Übersicht",
       "migrateButton": "Migration starten",
-      "startButton": "Fortfahren",
       "savePremapping": {
           "saveButton": "Premapping speichern",
           "message": "Das Premapping wurde erfolgreich gespeichert."
@@ -174,12 +173,13 @@
       "continueButton": "Fortsetzen",
       "abortButton": "Beenden",
       "finishButton": "Fertig",
-      "backButton": "Zur Übersicht",
+      "backToOverviewButton": "Zur Übersicht",
       "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
       "shopwareMajorVersionText": "Wir haben festgestellt, dass die Version deines Quellsystems {sourceSystem} nicht der Version des Zielsystems {targetSystem} entspricht. Bitte stelle sicher, dass beide Systeme in der gleichen Major-Version vorliegen, bevor Du mit der Migration startest.",
       "shopInfoCard": {
         "cardTitle": "Shopsystem",
+        "refreshTooltip": "Prüfe die Verbindung zum Quellsystem",
         "buttonEditSettings": "Verbindung bearbeiten",
         "buttonCreateConnection": "Neue Verbindung anlegen",
         "buttonCreateInitialConnection": "Initiale Verbindung anlegen",
@@ -373,7 +373,9 @@
         }
       },
       "loadingScreenCard": {
-        "notice": "Wenn lange Zeit kein Fortschritt zu erkennen ist, vergewisser dich bitte, dass die Worker für die Message-Queue in Betrieb sind und dass diese leistungsfähig genug sind. Du kannst diese Seite verlassen oder diesen Browser-Tab schließen und später wiederkommen.",
+        "notice": "Tipp: Dieser Vorgang läuft in der Nachrichtenwarteschlange ab. Du musst nicht auf dieser Seite bleiben, wenn dein Shop richtig konfiguriert ist.",
+        "documentationLink": "https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue.html#message-queue",
+        "documentationLinkText": "Nachrichtenwarteschlange-Dokumentation",
         "flowChart": {
           "premapping": "Prüfen",
           "fetchData": "Lesen",
@@ -607,7 +609,7 @@
       "noData": "Es wurden keine Migrationen gefunden.",
       "detailPage": {
         "title": "Details zur Migration",
-        "timestamp": "Zeitpunkt:",
+        "timestamp": "Startzeitpunkt:",
         "runStatus": "Migrations-Status:",
         "status": {
           "finished": "Abgeschlossen",

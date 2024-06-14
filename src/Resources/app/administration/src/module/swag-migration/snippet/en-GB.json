@@ -165,7 +165,6 @@
     "index": {
       "title": "General",
       "migrateButton": "Start migration",
-      "startButton": "Continue",
       "savePremapping": {
           "saveButton": "Save premapping",
           "message": "Premapping has been saved."
@@ -174,12 +173,13 @@
       "continueButton": "Continue",
       "abortButton": "Cancel",
       "finishButton": "Finish",
-      "backButton": "Overview",
+      "backToOverviewButton": "Back to overview",
       "migrationAlreadyRunning": "Migration already started.",
       "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
       "shopwareMajorVersionText": "We have noticed that your source system {sourceSystem} version does not match your target system {targetSystem} version. Please ensure to use the same major version for both systems before you start the migration.",
       "shopInfoCard": {
         "cardTitle": "Shop system",
+        "refreshTooltip": "Check connection to source system",
         "buttonEditSettings": "Edit connection",
         "buttonCreateConnection": "Create new connection",
         "buttonCreateInitialConnection": "Create initial connection",
@@ -373,7 +373,9 @@
         }
       },
       "loadingScreenCard": {
-        "notice": "If there isn't any progress for a long time please ensure that there are running workers for the message queue and these are powerful enough. You can freely navigate away from this page or close this browser tab and come back later.",
+        "notice": "Tip: This process runs in the message queue. You don't need to stay on this page if your shop is configured correctly.",
+        "documentationLink": "https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue.html#message-queue",
+        "documentationLinkText": "Message queue documentation",
         "flowChart": {
           "premapping": "Checking",
           "fetchData": "Reading",
@@ -607,7 +609,7 @@
       "noData": "No migrations found.",
       "detailPage": {
         "title": "Migration details",
-        "timestamp": "Time:",
+        "timestamp": "Start time:",
         "runStatus": "Migration status:",
         "status": {
           "finished": "Finished",

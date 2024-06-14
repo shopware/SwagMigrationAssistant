@@ -82,7 +82,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         }
 
         await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: MIGRATION_LOADING_TIMEOUT });
-        await page.getByRole('button', { name: 'Continue' }).click();
+        await page.getByRole('button', { name: 'Back to overview' }).click();
     });
 
     // ToDo MIG-985: Remove this if the underlying issue is fixed

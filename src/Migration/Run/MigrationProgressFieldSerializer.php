@@ -99,13 +99,13 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
                 'isAborted' => [new NotNull(), new Type('bool')],
                 'dataSets' => [
                     new Type('array'),
-                    new All(new Collection([
+                    new All([new Collection([
                         'allowExtraFields' => true,
                         'fields' => [
                             'entityName' => [new NotBlank(), new Type('string')],
                             'total' => [new NotBlank(), new Type('int')],
                         ],
-                    ])),
+                    ])]),
                 ],
             ]),
         ];

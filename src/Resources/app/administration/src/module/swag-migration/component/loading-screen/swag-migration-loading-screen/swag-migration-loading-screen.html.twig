@@ -38,6 +38,11 @@
                         <sw-alert variant="info"
                                   class="swag-migration-loading-screen__notice">
                             {{ $tc('swag-migration.index.loadingScreenCard.notice') }}
+                            <a class="link"
+                               :href="$tc('swag-migration.index.loadingScreenCard.documentationLink')"
+                               target="_blank">
+                                {{ $tc('swag-migration.index.loadingScreenCard.documentationLinkText') }}
+                            </a>
                         </sw-alert>
                     </div>
                 {% endblock %}
