@@ -28,7 +28,7 @@
 - MIG-945 - [BREAKING] Added new constructor parameters `generalSettingRepository` and `migrationConnectionRepository` to `SwagMigrationAssistant\Migration\MigrationContextFactory`
 - MIG-945 - [BREAKING] Added new method `createBySelectedConnection` to interface `SwagMigrationAssistant\Migration\MigrationContextFactoryInterface`
 - MIG-945 - [BREAKING] Removed class/interface/struct:
-    - `SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException` use domain exception instead `MigrationShopwareProfileException::readerNotFound`
+    - `SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException` use domain exception instead `MigrationException::readerNotFound`
     - `SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledException` use domain exception instead `MigrationShopwareProfileException::pluginNotInstalled`
     - `SwagMigrationAssistant\Controller\MigrationController`
     - `SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface`
