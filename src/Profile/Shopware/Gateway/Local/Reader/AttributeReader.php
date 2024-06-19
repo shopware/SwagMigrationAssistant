@@ -76,6 +76,9 @@ abstract class AttributeReader extends AbstractReader
 
     abstract protected function getAttributeTable(): string;
 
+    /**
+     * @return list<array{name: string, type: string, _locale: string, configuration: array<string, string|mixed|null>|null}>
+     */
     private function getAttributeConfiguration(string $table): array
     {
         $columns = $this->getTableColumns($table);
@@ -128,7 +131,6 @@ SQL;
 
         $resultSet = [];
 
-        /** @var Column $column */
         foreach ($columns as $column) {
             $columnData = [
                 'name' => $column->getName(),
@@ -147,7 +149,7 @@ SQL;
     }
 
     /**
-     * @return Column[]
+     * @return array<Column>
      */
     private function getTableColumns(string $table): array
     {
@@ -155,13 +157,19 @@ SQL;
     }
 
     /**
-     * @return ForeignKeyConstraint[]
+     * @return array<ForeignKeyConstraint>
      */
     private function getTableForeignKeys(string $table): array
     {
         return $this->connection->createSchemaManager()->listTableForeignKeys($table);
     }
 
+    /**
+     * @param array<Column> $columns
+     * @param array<ForeignKeyConstraint> $foreignKeys
+     *
+     * @return list<Column>
+     */
     private function cleanupColumns(array $columns, array $foreignKeys): array
     {
         $result = [];

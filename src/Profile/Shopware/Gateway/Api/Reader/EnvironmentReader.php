@@ -25,6 +25,9 @@ use SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledExceptio
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+/**
+ * @phpstan-type ReadArray array{environmentInformation: array<string, mixed>, requestStatus: RequestStatusStruct}
+ */
 #[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
@@ -36,6 +39,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
     {
     }
 
+    /**
+     * @return ReadArray
+     */
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->migrationContext = $migrationContext;
@@ -57,7 +63,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
 
         if (isset($information['requestStatus'])) {
-            /** @var RequestStatusStruct $requestStatus */
             $requestStatus = $information['requestStatus'];
             if ($requestStatus->getCode() === (new SslRequiredException())->getErrorCode()) {
                 $requestStatus->setIsWarning(false);
@@ -77,6 +82,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
         return $information;
     }
 
+    /**
+     * @param ReadArray $information
+     */
     private function doSecureCheck(array &$information): bool
     {
         if ($this->client === null) {
@@ -94,6 +102,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
     }
 
+    /**
+     * @param ReadArray $information
+     */
     private function doInsecureCheck(array &$information): bool
     {
         if ($this->client === null) {
@@ -101,14 +112,17 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
 
         try {
-            $information['environmentInformation'] = $this->readData($this->client, false);
+            $information['environmentInformation'] = $this->readData($this->client);
 
             return true;
-        } catch (ShopwareHttpException $eUnverified) {
+        } catch (ShopwareHttpException) {
             return false;
         }
     }
 
+    /**
+     * @param ReadArray $information
+     */
     private function doShopwareCheck(array &$information): bool
     {
         if ($this->client === null) {
@@ -133,6 +147,8 @@ class EnvironmentReader implements EnvironmentReaderInterface
      * @throws RequestCertificateInvalidException
      * @throws InvalidConnectionAuthenticationException
      * @throws SslRequiredException
+     *
+     * @return array<string, mixed>
      */
     private function readData(HttpClientInterface $apiClient, bool $verified = false): array
     {

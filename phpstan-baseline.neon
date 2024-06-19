@@ -521,16 +521,6 @@ parameters:
 			path: src/Migration/DataSelection/DataSelectionRegistryInterface.php
 
 		-
-			message: "#^Anonymous variable in a `\\$totals\\[\\$countedEntityName\\]\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: src/Migration/DataSelection/DataSelectionStruct.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionStruct\\:\\:getCountedTotal\\(\\) has parameter \\$totals with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/DataSelection/DataSelectionStruct.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSelectionStruct\\:\\:getEntityNames\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/DataSelection/DataSelectionStruct.php
@@ -549,11 +539,6 @@ parameters:
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 2
 			path: src/Migration/Gateway/GatewayRegistry.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Gateway\\\\Reader\\\\EnvironmentReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Gateway/Reader/EnvironmentReaderInterface.php
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
@@ -1012,11 +997,6 @@ parameters:
 
 		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Use default null value and nullable compare instead of isset on object$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
@@ -1781,11 +1761,6 @@ parameters:
 			path: src/Migration/Writer/WriterRegistry.php
 
 		-
-			message: "#^Anonymous variables in a \"\\$keyValue\\-\\>\\.\\.\\.\" property fetch can lead to false dead property\\. Make sure the variable type is known$#"
-			count: 2
-			path: src/Profile/Shopware/Converter/AttributeConverter.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/AttributeConverter.php
@@ -1821,11 +1796,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/AttributeConverter.php
 
 		-
-			message: "#^Getter method must return something, not void$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CurrencyConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter\\:\\:getCurrencyTranslation\\(\\) has parameter \\$currency with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php
@@ -1839,11 +1809,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php
-
-		-
-			message: "#^Getter method must return something, not void$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/CustomerGroupConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter\\:\\:getCustomerGroupTranslation\\(\\) has parameter \\$customerGroup with no value type specified in iterable type array\\.$#"
@@ -1864,11 +1829,6 @@ parameters:
 			message: "#^Offset 'id' might not exist on array\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/LanguageConverter.php
-
-		-
-			message: "#^Getter method must return something, not void$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/MediaConverter.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaConverter\\:\\:getMediaTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
@@ -1971,11 +1931,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/ProductPropertyRelationConverter.php
 
 		-
-			message: "#^Getter method must return something, not void$#"
-			count: 3
-			path: src/Profile/Shopware/Converter/PropertyGroupOptionConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\PropertyGroupOptionConverter\\:\\:createAndDeleteNecessaryMappings\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/PropertyGroupOptionConverter.php
@@ -2017,11 +1972,6 @@ parameters:
 
 		-
 			message: "#^Call to an undefined method Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Entity\\:\\:getLanguageId\\(\\)\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
-
-		-
-			message: "#^Getter method must return something, not void$#"
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
@@ -2152,31 +2102,6 @@ parameters:
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:doInsecureCheck\\(\\) has parameter \\$information with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:doSecureCheck\\(\\) has parameter \\$information with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:doShopwareCheck\\(\\) has parameter \\$information with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:readData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
 
@@ -2341,36 +2266,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
 		-
-			message: "#^Anonymous variable in a `\\$column\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 2
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Anonymous variable in a `\\$foreignKey\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:cleanupColumns\\(\\) has parameter \\$columns with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:cleanupColumns\\(\\) has parameter \\$foreignKeys with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:cleanupColumns\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\AttributeReader\\:\\:getAttributeConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/AttributeReader.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryAttributeReader.php
@@ -2512,11 +2407,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:mapData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
 
@@ -3681,26 +3571,6 @@ parameters:
 			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:doInsecureCheck\\(\\) has parameter \\$information with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:doSecureCheck\\(\\) has parameter \\$information with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader\\:\\:readData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
 			message: "#^Throwing new exceptions within classes are not allowed\\. Please use domain exception pattern\\. See https\\://github\\.com/shopware/platform/blob/v6\\.4\\.20\\.0/adr/2022\\-02\\-24\\-domain\\-exceptions\\.md$#"
 			count: 7
 			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
@@ -3889,16 +3759,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:mapLockedCmsPageUuidByNameAndType\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\-\\>getBody\\(\\)\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService has an uninitialized property \\$connection\\. Give it default value or assign it in the constructor\\.$#"
@@ -4116,11 +3976,6 @@ parameters:
 			path: tests/Mock/Gateway/Dummy/Api/Reader/EnvironmentDummyReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Api\\\\Reader\\\\EnvironmentDummyReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Mock/Gateway/Dummy/Api/Reader/EnvironmentDummyReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Api\\\\Reader\\\\TableCountDummyReader\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Gateway/Dummy/Api/Reader/TableCountDummyReader.php
@@ -4254,11 +4109,6 @@ parameters:
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: tests/Mock/Profile/Dummy/DummyInvalidCustomerConverter.php
-
-		-
-			message: "#^Anonymous variable in a `\\$response\\['requestStatus'\\]\\-\\>\\.\\.\\.\\(\\)` method call can lead to false dead methods\\. Make sure the variable type is known$#"
-			count: 14
-			path: tests/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
 
 		-
 			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$dataArray type has no value type specified in iterable type array\\.$#"

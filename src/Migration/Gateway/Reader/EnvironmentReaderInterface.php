@@ -13,5 +13,8 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('services-settings')]
 interface EnvironmentReaderInterface
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function read(MigrationContextInterface $migrationContext): array;
 }

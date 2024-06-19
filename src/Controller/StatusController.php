@@ -23,7 +23,6 @@ use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
-use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -51,8 +50,13 @@ class StatusController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/migration/get-profile-information', name: 'api.admin.migration.get-profile-information', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getProfileInformation(Request $request): ?Response
+    #[Route(
+        path: '/api/_action/migration/get-profile-information',
+        name: 'api.admin.migration.get-profile-information',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getProfileInformation(Request $request): Response
     {
         $profileName = (string) $request->query->get('profileName');
         $gatewayName = (string) $request->query->get('gatewayName');
@@ -113,8 +117,13 @@ class StatusController extends AbstractController
         );
     }
 
-    #[Route(path: '/api/_action/migration/get-profiles', name: 'api.admin.migration.get-profiles', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getProfiles(): Response
+    #[Route(
+        path: '/api/_action/migration/get-profiles',
+        name: 'api.admin.migration.get-profiles',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getProfiles(): JsonResponse
     {
         $profiles = $this->profileRegistry->getProfiles();
 
@@ -131,8 +140,13 @@ class StatusController extends AbstractController
         return new JsonResponse($returnProfiles);
     }
 
-    #[Route(path: '/api/_action/migration/get-gateways', name: 'api.admin.migration.get-gateways', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getGateways(Request $request): Response
+    #[Route(
+        path: '/api/_action/migration/get-gateways',
+        name: 'api.admin.migration.get-gateways',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getGateways(Request $request): JsonResponse
     {
         $profileName = (string) $request->query->get('profileName');
 
@@ -154,7 +168,12 @@ class StatusController extends AbstractController
         return new JsonResponse($gatewayNames);
     }
 
-    #[Route(path: '/api/_action/migration/update-connection-credentials', name: 'api.admin.migration.update-connection-credentials', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/update-connection-credentials',
+        name: 'api.admin.migration.update-connection-credentials',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function updateConnectionCredentials(Request $request, Context $context): Response
     {
         $connectionId = $request->request->getAlnum('connectionId');
@@ -165,8 +184,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
@@ -177,7 +195,12 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/data-selection', name: 'api.admin.migration.data-selection', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/data-selection',
+        name: 'api.admin.migration.data-selection',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
     public function getDataSelection(Request $request, Context $context): JsonResponse
     {
         $connectionId = $request->query->getAlnum('connectionId');
@@ -186,8 +209,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
@@ -200,7 +222,12 @@ class StatusController extends AbstractController
         return new JsonResponse(\array_values($this->dataSelectionRegistry->getDataSelections($migrationContext, $environmentInformation)->getElements()));
     }
 
-    #[Route(path: '/api/_action/migration/check-connection', name: 'api.admin.migration.check-connection', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/check-connection',
+        name: 'api.admin.migration.check-connection',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
         $connectionId = $request->request->getAlnum('connectionId');
@@ -209,8 +236,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
@@ -222,7 +248,12 @@ class StatusController extends AbstractController
         return new JsonResponse($information);
     }
 
-    #[Route(path: '/api/_action/migration/get-state', name: 'api.admin.migration.get-state', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/get-state',
+        name: 'api.admin.migration.get-state',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function getState(Request $request, Context $context): JsonResponse
     {
         $state = $this->migrationProgressService->getProgress($request, $context);
@@ -230,7 +261,12 @@ class StatusController extends AbstractController
         return new JsonResponse($state);
     }
 
-    #[Route(path: '/api/_action/migration/create-migration', name: 'api.admin.migration.create-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/create-migration',
+        name: 'api.admin.migration.create-migration',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function createMigration(Request $request, Context $context): JsonResponse
     {
         $connectionId = $request->request->getAlnum('connectionId');
@@ -241,8 +277,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
             throw new MigrationContextPropertyMissingException('connectionId');
@@ -266,7 +301,12 @@ class StatusController extends AbstractController
         return new JsonResponse($state);
     }
 
-    #[Route(path: '/api/_action/migration/takeover-migration', name: 'api.admin.migration.takeover-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/takeover-migration',
+        name: 'api.admin.migration.takeover-migration',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function takeoverMigration(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -281,7 +321,12 @@ class StatusController extends AbstractController
     }
 
     // Aborts an already running migration remotely.
-    #[Route(path: '/api/_action/migration/abort-migration', name: 'api.admin.migration.abort-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/abort-migration',
+        name: 'api.admin.migration.abort-migration',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function abortMigration(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -295,7 +340,12 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/finish-migration', name: 'api.admin.migration.finish-migration', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/finish-migration',
+        name: 'api.admin.migration.finish-migration',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function finishMigration(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -309,7 +359,12 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/assign-themes', name: 'api.admin.migration.assign-themes', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/assign-themes',
+        name: 'api.admin.migration.assign-themes',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function assignThemes(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -323,7 +378,12 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/reset-checksums', name: 'api.admin.migration.reset-checksums', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/reset-checksums',
+        name: 'api.admin.migration.reset-checksums',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function resetChecksums(Request $request, Context $context): Response
     {
         $connectionId = $request->request->getAlnum('connectionId');
@@ -332,8 +392,7 @@ class StatusController extends AbstractController
             throw new MigrationContextPropertyMissingException('connectionId');
         }
 
-        /** @var SwagMigrationConnectionEntity|null $connection */
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->first();
+        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
 
         if ($connection === null) {
             throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $connectionId);
@@ -344,7 +403,12 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/cleanup-migration-data', name: 'api.admin.migration.cleanup-migration-data', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/cleanup-migration-data',
+        name: 'api.admin.migration.cleanup-migration-data',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
     public function cleanupMigrationData(): Response
     {
         $this->runService->cleanupMigrationData();
@@ -352,11 +416,15 @@ class StatusController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/get-reset-status', name: 'api.admin.migration.get-reset-status', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/migration/get-reset-status',
+        name: 'api.admin.migration.get-reset-status',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
     public function getResetStatus(Context $context): JsonResponse
     {
-        /** @var GeneralSettingEntity|null $settings */
-        $settings = $this->generalSettingRepo->search(new Criteria(), $context)->first();
+        $settings = $this->generalSettingRepo->search(new Criteria(), $context)->getEntities()->first();
 
         if ($settings === null) {
             return new JsonResponse(false);

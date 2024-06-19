@@ -49,12 +49,14 @@ class EnvironmentReaderTest extends TestCase
 
         static::assertSame('de_DE', $data['defaultShopLanguage']);
         static::assertSame('sw55.local', $data['host']);
-        static::assertSame('1', $data['additionalData'][0]['id']);
-        static::assertSame('3', $data['additionalData'][0]['category_id']);
-        static::assertSame('de_DE', $data['additionalData'][0]['locale']['locale']);
-        static::assertSame('2', $data['additionalData'][0]['children'][0]['id']);
-        static::assertSame('1', $data['additionalData'][0]['children'][0]['main_id']);
-        static::assertSame('en_GB', $data['additionalData'][0]['children'][0]['locale']['locale']);
-        static::assertSame('39', $data['additionalData'][0]['children'][0]['category_id']);
+        static::assertArrayHasKey(0, $data['additionalData']);
+        $additionalData = $data['additionalData'][0];
+        static::assertSame('1', $additionalData['id']);
+        static::assertSame('3', $additionalData['category_id']);
+        static::assertSame('de_DE', $additionalData['locale']['locale']);
+        static::assertSame('2', $additionalData['children'][0]['id']);
+        static::assertSame('1', $additionalData['children'][0]['main_id']);
+        static::assertSame('en_GB', $additionalData['children'][0]['locale']['locale']);
+        static::assertSame('39', $additionalData['children'][0]['category_id']);
     }
 }

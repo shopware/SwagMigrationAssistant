@@ -24,19 +24,20 @@ class EnvironmentReader implements EnvironmentReaderInterface
     {
     }
 
+    /**
+     * @return array{defaultShopLanguage: string, host: string, additionalData: array<string, mixed>, defaultCurrency: string}
+     */
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
         $locale = $this->getDefaultShopLocale();
 
-        $resultSet = [
+        return [
             'defaultShopLanguage' => $locale,
             'host' => $this->getHost(),
             'additionalData' => $this->getAdditionalData(),
             'defaultCurrency' => $this->getDefaultCurrency(),
         ];
-
-        return $resultSet;
     }
 
     protected function setConnection(MigrationContextInterface $migrationContext): void

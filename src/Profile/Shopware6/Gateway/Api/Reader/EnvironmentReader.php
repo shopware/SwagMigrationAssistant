@@ -22,6 +22,9 @@ use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
+/**
+ * @phpstan-type ReadArray array{environmentInformation: array<string, mixed>, requestStatus: RequestStatusStruct}
+ */
 #[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
@@ -31,6 +34,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
     {
     }
 
+    /**
+     * @return ReadArray
+     */
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->client = $this->connectionFactory->createApiClient($migrationContext);
@@ -51,7 +57,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
 
         if (isset($information['requestStatus'])) {
-            /** @var RequestStatusStruct $requestStatus */
             $requestStatus = $information['requestStatus'];
             if ($requestStatus->getCode() === (new SslRequiredException())->getErrorCode()) {
                 $requestStatus->setIsWarning(false);
@@ -67,6 +72,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
         return $information;
     }
 
+    /**
+     * @param ReadArray $information
+     */
     private function doSecureCheck(array &$information): bool
     {
         try {
@@ -80,10 +88,13 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
     }
 
+    /**
+     * @param ReadArray $information
+     */
     private function doInsecureCheck(array &$information): bool
     {
         try {
-            $information['environmentInformation'] = $this->readData(false);
+            $information['environmentInformation'] = $this->readData();
 
             return true;
         } catch (ShopwareHttpException $eUnverified) {
@@ -93,6 +104,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     private function readData(bool $verified = false): array
     {
         if ($this->client === null) {

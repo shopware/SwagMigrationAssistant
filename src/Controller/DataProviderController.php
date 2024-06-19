@@ -47,16 +47,26 @@ final class DataProviderController
     ) {
     }
 
-    #[Route(path: '/api/_action/data-provider/get-environment', name: 'api.admin.data-provider.get-environment', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getEnvironment(Context $context): Response
+    #[Route(
+        path: '/api/_action/data-provider/get-environment',
+        name: 'api.admin.data-provider.get-environment',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getEnvironment(Context $context): JsonResponse
     {
         $data = $this->environmentService->getEnvironmentData($context);
 
         return new JsonResponse($data);
     }
 
-    #[Route(path: '/api/_action/data-provider/get-data', name: 'api.admin.data-provider.get-data', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getData(Request $request, Context $context): Response
+    #[Route(
+        path: '/api/_action/data-provider/get-data',
+        name: 'api.admin.data-provider.get-data',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getData(Request $request, Context $context): JsonResponse
     {
         $identifier = (string) $request->query->get('identifier');
         $limit = (int) $request->query->get('limit', '250');
@@ -72,8 +82,13 @@ final class DataProviderController
         return new JsonResponse($data);
     }
 
-    #[Route(path: '/api/_action/data-provider/get-total', name: 'api.admin.data-provider.get-total', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getTotal(Request $request, Context $context): Response
+    #[Route(
+        path: '/api/_action/data-provider/get-total',
+        name: 'api.admin.data-provider.get-total',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getTotal(Request $request, Context $context): JsonResponse
     {
         $providerArray = $this->providerRegistry->getAllDataProviders();
 
@@ -85,8 +100,13 @@ final class DataProviderController
         return new JsonResponse($totals);
     }
 
-    #[Route(path: '/api/_action/data-provider/get-table', name: 'api.admin.data-provider.get-table', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function getTable(Request $request, Context $context): Response
+    #[Route(
+        path: '/api/_action/data-provider/get-table',
+        name: 'api.admin.data-provider.get-table',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function getTable(Request $request, Context $context): JsonResponse
     {
         $identifier = (string) $request->query->get('identifier');
 
@@ -100,7 +120,12 @@ final class DataProviderController
         return new JsonResponse($data);
     }
 
-    #[Route(path: '/api/_action/data-provider/generate-document', name: 'api.admin.data-provider.generate-document', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(
+        path: '/api/_action/data-provider/generate-document',
+        name: 'api.admin.data-provider.generate-document',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
     public function generateDocument(Request $request, Context $context): JsonResponse
     {
         $identifier = (string) $request->query->get('identifier');
@@ -122,8 +147,13 @@ final class DataProviderController
         ]);
     }
 
-    #[Route(path: '/api/_action/data-provider/download-private-file/{file}', name: 'api.admin.data-provider.download-private-file', methods: ['GET'], defaults: ['_acl' => ['admin']])]
-    public function downloadPrivateFile(Request $request, Context $context): Response
+    #[Route(
+        path: '/api/_action/data-provider/download-private-file/{file}',
+        name: 'api.admin.data-provider.download-private-file',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function downloadPrivateFile(Request $request, Context $context): StreamedResponse|RedirectResponse
     {
         $identifier = (string) $request->query->get('identifier');
 
@@ -168,7 +198,7 @@ final class DataProviderController
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array{Content-Disposition: string, Content-Length: int, Content-Type: string}
      */
     private function getStreamHeaders(MediaEntity $media): array
     {
