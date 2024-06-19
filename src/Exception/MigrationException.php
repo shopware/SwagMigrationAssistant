@@ -81,6 +81,32 @@ class MigrationException extends HttpException
 
     public const COULD_NOT_GENERATE_DOCUMENT = 'SWAG_MIGRATION__COULD_NOT_GENERATE_DOCUMENT';
 
+    public const ASSOCIATION_ENTITY_REQUIRED_MISSING = 'SWAG_MIGRATION__ASSOCIATION_REQUIRED_MISSING';
+
+    public const DATABASE_CONNECTION_ERROR = 'SWAG_MIGRATION__DATABASE_CONNECTION_ERROR';
+
+    public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
+    {
+        return new AssociationEntityRequiredMissingException(
+            Response::HTTP_NOT_FOUND,
+            self::ASSOCIATION_ENTITY_REQUIRED_MISSING,
+            'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
+            [
+                'missingEntity' => $missingEntity,
+                'entity' => $entity,
+            ]
+        );
+    }
+
+    public static function databaseConnectionError(): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::DATABASE_CONNECTION_ERROR,
+            'Database connection could not be established.'
+        );
+    }
+
     public static function gatewayRead(string $gateway): self
     {
         return new GatewayReadException(

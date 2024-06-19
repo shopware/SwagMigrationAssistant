@@ -5,11 +5,11 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Profile\Shopware\Exception;
+namespace SwagMigrationAssistant\Exception;
 
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('services-settings')]
-class AssociationEntityRequiredMissingException extends MigrationShopwareProfileException
+class AssociationEntityRequiredMissingException extends MigrationException
 {
 }
