@@ -246,11 +246,11 @@ abstract class AttributeConverter extends Converter
 
         if ($data['configuration']['column_type'] === 'combobox') {
             $options = [];
-            foreach (\json_decode($data['configuration']['array_store']) as $keyValue) {
+            foreach (\json_decode($data['configuration']['array_store'], true, 512, \JSON_THROW_ON_ERROR) as $keyValue) {
                 $options[] = [
-                    'value' => $keyValue->key,
+                    'value' => $keyValue['key'],
                     'label' => [
-                        $locale => $keyValue->value,
+                        $locale => $keyValue['value'],
                     ],
                 ];
             }

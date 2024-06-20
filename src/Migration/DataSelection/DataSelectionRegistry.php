@@ -47,7 +47,7 @@ class DataSelectionRegistry implements DataSelectionRegistryInterface
         foreach ($ids as $id) {
             $dataSelection = $profileDataSelections->get($id);
 
-            if (empty($dataSelection)) {
+            if ($dataSelection === null) {
                 continue;
             }
 

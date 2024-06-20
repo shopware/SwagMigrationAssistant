@@ -11,7 +11,6 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader;
 use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
@@ -126,7 +125,7 @@ class ProductReaderTest extends LocalConnectionTestCase
         return new ProductDataSet();
     }
 
-    private function getProductReader(): AbstractReader
+    private function getProductReader(): ProductReader
     {
         return new ProductReader($this->getConnectionFactory());
     }

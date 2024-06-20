@@ -15,6 +15,9 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader
 #[Package('services-settings')]
 class EnvironmentDummyReader extends EnvironmentReader
 {
+    /**
+     * @return array{environmentInformation: array<string, mixed>, requestStatus: RequestStatusStruct}
+     */
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {
         return [

@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise\Utils;
+use GuzzleHttp\Psr7\Response;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -209,8 +210,9 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
     private function handleCompleteRequest(Context $context, array $result, string $documentId, array &$finishedUuids): void
     {
+        /** @var Response $response */
         $response = $result['value'];
-        $arrayResponse = \json_decode($response->getBody()->getContents(), true);
+        $arrayResponse = \json_decode($response->getBody()->getContents(), true, 512, \JSON_THROW_ON_ERROR);
 
         $shownArray = $arrayResponse;
         unset($shownArray['file_blob']);
