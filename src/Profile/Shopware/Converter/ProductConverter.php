@@ -929,10 +929,10 @@ abstract class ProductConverter extends ShopwareConverter
      */
     private function getMedia(array $media, string $oldVariantId, array $converted): array
     {
-        $mediaObjects = [];
         $cover = null;
-        $lastPosition = null;
-        $main = false;
+        $coverId = $this->getCoverId($media);
+
+        $mediaObjects = [];
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
                 $this->loggingService->addLogEntry(new CannotConvertChildEntity(
@@ -1001,23 +1001,72 @@ abstract class ProductConverter extends ShopwareConverter
             $newProductMedia['media'] = $newMedia;
             $mediaObjects[] = $newProductMedia;
 
-            if ($main === true) {
+            if (isset($mediaData['id']) && $coverId === $mediaData['id']) {
+                $cover = $newProductMedia;
+            }
+        }
+
+        return ['media' => $mediaObjects, 'cover' => $cover];
+    }
+
+    /**
+     * Searches for the cover image in the media array and returns the SW5 id of it.
+     * Detail media is preferred over main media and if both of them are not available, the media with the lowest priority is taken.
+     *
+     * @param array<mixed> $media
+     */
+    private function getCoverId(array $media): ?string
+    {
+        $cover = null;
+        $lastPosition = null;
+        $main = false;
+        $detailMedia = false;
+
+        foreach ($media as $mediaData) {
+            if (($main || $detailMedia) && !isset($mediaData['article_detail_id'])) {
                 continue;
             }
 
+            $isMainMedia = (int) $mediaData['main'] === 1;
+            $hasLowerPosition = (int) $mediaData['position'] < $lastPosition;
+            $isDetailMedia = isset($mediaData['article_detail_id']);
+
             if ($cover === null
-                || (int) $mediaData['main'] === 1
-                || ((int) $newProductMedia['position'] < $lastPosition)
+                || $isMainMedia
+                || $hasLowerPosition
+                || $isDetailMedia
             ) {
-                $cover = $newProductMedia;
-                $lastPosition = (int) $newProductMedia['position'];
-                if ((int) $mediaData['main'] === 1) {
+                if ($detailMedia) {
+                    if ($hasLowerPosition) {
+                        $cover = $mediaData;
+                        $lastPosition = (int) $mediaData['position'];
+                    }
+
+                    continue;
+                }
+
+                if ($isDetailMedia) {
+                    $cover = $mediaData;
+                    $lastPosition = (int) $mediaData['position'];
+                    $detailMedia = true;
+
+                    continue;
+                }
+
+                $cover = $mediaData;
+                $lastPosition = (int) $mediaData['position'];
+                if ($isMainMedia) {
                     $main = true;
                 }
             }
         }
 
-        return ['media' => $mediaObjects, 'cover' => $cover];
+        $coverId = null;
+        if ($cover !== null) {
+            $coverId = $cover['id'];
+        }
+
+        return $coverId;
     }
 
     /**

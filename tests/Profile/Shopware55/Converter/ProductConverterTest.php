@@ -61,6 +61,7 @@ class ProductConverterTest extends TestCase
         );
 
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CURRENCY, 'EUR', Context::createDefaultContext(), null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::PRODUCT_CONTAINER, '15', Context::createDefaultContext(), null, [], Uuid::randomHex());
     }
 
     public function testSupports(): void
@@ -70,7 +71,7 @@ class ProductConverterTest extends TestCase
         static::assertTrue($supportsDefinition);
     }
 
-    public function testConvert(): void
+    public function testConvertFFFF(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
@@ -93,6 +94,38 @@ class ProductConverterTest extends TestCase
         static::assertSame([], $converted['categories']);
         static::assertSame($productData[0]['assets'][0]['description'], $converted['media'][0]['media']['alt']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
+    public function testConvertProductWithVariantMediaShouldSetVariantMediaAsCover(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_with_media.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData[0], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        static::assertSame('dog-green', $converted['cover']['media']['title']);
+    }
+
+    public function testConvertProductWithMultipleVariantMediaShouldSetVariantMediaWithLowestPositionAsCover(): void
+    {
+        $productData = require __DIR__ . '/../../../_fixtures/product_with_media.php';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->productConverter->convert($productData[1], $context, $this->migrationContext);
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($convertResult->getMappingUuid());
+        static::assertNotNull($converted);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+
+        static::assertSame('dog-pink', $converted['cover']['media']['title']);
     }
 
     public function testConvertWithoutAttributes(): void
