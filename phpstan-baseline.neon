@@ -2841,16 +2841,6 @@ parameters:
 			path: src/Profile/Shopware/Logging/Log/UnsupportedShippingPriceLog.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\BaseMediaService\\:\\:getMediaFiles\\(\\) has parameter \\$mediaIds with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/BaseMediaService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\BaseMediaService\\:\\:getMediaFiles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/BaseMediaService.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
