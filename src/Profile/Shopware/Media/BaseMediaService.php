@@ -9,14 +9,26 @@ namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Content\Media\MediaCollection;
+use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+/**
+ * @phpstan-type Media list<array{'id': string, 'run_id': string, 'media_id': string, 'uri': string, 'file_size': string, 'file_name': string}>
+ */
 #[Package('services-settings')]
 abstract class BaseMediaService
 {
-    public function __construct(protected Connection $dbalConnection)
-    {
+    /**
+     * @param EntityRepository<MediaCollection> $mediaFileRepository
+     */
+    public function __construct(
+        protected readonly Connection $dbalConnection,
+        protected readonly EntityRepository $mediaFileRepository,
+    ) {
     }
 
     protected function getDataSetEntity(MigrationContextInterface $migrationContext): ?string
@@ -29,25 +41,75 @@ abstract class BaseMediaService
         return $dataSet::getEntity();
     }
 
+    /**
+     * @param list<string> $mediaIds
+     *
+     * @return Media
+     */
     protected function getMediaFiles(array $mediaIds, string $runId): array
     {
+        $binaryMediaIds = [];
+        foreach ($mediaIds as $mediaId) {
+            $binaryMediaIds[] = Uuid::fromHexToBytes($mediaId);
+        }
+
         $query = $this->dbalConnection->createQueryBuilder();
-        $query->select('hex(id) as id, hex(run_id) as run_id, entity, uri, file_name, file_size, hex(media_id) as media_id, written, processed, process_failure');
+        $query->select('*');
         $query->from('swag_migration_media_file');
-        $query->where('HEX(run_id) = :runId');
-        $query->andWhere('HEX(media_id) IN (:ids)');
-        $query->setParameter('ids', $mediaIds, ArrayParameterType::STRING);
-        $query->setParameter('runId', $runId);
+        $query->where('run_id = :runId');
+        $query->andWhere('media_id IN (:ids)');
+        $query->andWhere('written = 1');
+        $query->setParameter('ids', $binaryMediaIds, ArrayParameterType::STRING);
+        $query->setParameter('runId', Uuid::fromHexToBytes($runId));
 
         $query->executeQuery();
 
+        /** @var Media $result */
         $result = $query->fetchAllAssociative();
         foreach ($result as &$media) {
-            $media['id'] = \mb_strtolower($media['id']);
-            $media['run_id'] = \mb_strtolower($media['run_id']);
-            $media['media_id'] = \mb_strtolower($media['media_id']);
+            $media['id'] = Uuid::fromBytesToHex($media['id']);
+            $media['run_id'] = Uuid::fromBytesToHex($media['run_id']);
+            $media['media_id'] = Uuid::fromBytesToHex($media['media_id']);
         }
 
         return $result;
+    }
+
+    /**
+     * @param list<string> $finishedUuids
+     * @param list<string> $failureUuids
+     */
+    protected function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
+    {
+        $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
+
+        $mediaEntitiesToUpdate = [];
+        foreach ($mediaFiles as $mediaFile) {
+            $mediaFileId = $mediaFile['id'];
+
+            if (!\in_array($mediaFileId, $failureUuids, true)) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFileId,
+                    'processed' => true,
+                ];
+            }
+        }
+
+        if (!empty($failureUuids)) {
+            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
+
+            foreach ($mediaFiles as $mediaFile) {
+                $mediaEntitiesToUpdate[] = [
+                    'id' => $mediaFile['id'],
+                    'processFailure' => true,
+                ];
+            }
+        }
+
+        if (empty($mediaEntitiesToUpdate)) {
+            return;
+        }
+
+        $this->mediaFileRepository->update($mediaEntitiesToUpdate, $context);
     }
 }

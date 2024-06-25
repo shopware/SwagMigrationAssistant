@@ -39,15 +39,14 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
     public function __construct(
         private readonly EntityRepository $documentRepository,
-        private readonly EntityRepository $migrationMediaFileRepo,
+        EntityRepository $migrationMediaFileRepo,
         private readonly LoggingServiceInterface $loggingService,
         private readonly MappingServiceInterface $mappingService,
         private readonly MediaService $mediaService,
         private readonly ConnectionFactoryInterface $connectionFactory,
         Connection $dbalConnection
     ) {
-        $this->dbalConnection = $dbalConnection;
-        parent::__construct($dbalConnection);
+        parent::__construct($dbalConnection, $migrationMediaFileRepo);
     }
 
     public function supports(MigrationContextInterface $migrationContext): bool
@@ -149,44 +148,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
-    }
-
-    /**
-     * @param list<string> $finishedUuids
-     * @param list<string> $failureUuids
-     */
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
-    {
-        $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-
-        $mediaEntitiesToUpdate = [];
-        foreach ($mediaFiles as $mediaFile) {
-            $mediaFileId = $mediaFile['id'];
-
-            if (!\in_array($mediaFileId, $failureUuids, true)) {
-                $mediaEntitiesToUpdate[] = [
-                    'id' => $mediaFileId,
-                    'processed' => true,
-                ];
-            }
-        }
-
-        if (!empty($failureUuids)) {
-            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
-
-            foreach ($mediaFiles as $mediaFile) {
-                $mediaEntitiesToUpdate[] = [
-                    'id' => $mediaFile['id'],
-                    'processFailure' => true,
-                ];
-            }
-        }
-
-        if (empty($mediaEntitiesToUpdate)) {
-            return;
-        }
-
-        $this->migrationMediaFileRepo->update($mediaEntitiesToUpdate, $context);
     }
 
     /**

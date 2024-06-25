@@ -34,13 +34,13 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
      * @param StrategyResolverInterface[] $resolver
      */
     public function __construct(
-        private readonly EntityRepository $mediaFileRepo,
+        EntityRepository $mediaFileRepo,
         private readonly FileSaver $fileSaver,
         private readonly LoggingServiceInterface $loggingService,
         private readonly iterable $resolver,
         Connection $dbalConnection
     ) {
-        parent::__construct($dbalConnection);
+        parent::__construct($dbalConnection, $mediaFileRepo);
     }
 
     public function supports(MigrationContextInterface $migrationContext): bool
@@ -142,6 +142,8 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
                 try {
                     $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
+
+                    $processedMedia[] = $mediaId;
                 } catch (\Exception $e) {
                     $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $failedMedia[] = $mediaId;
@@ -163,7 +165,6 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 ));
                 $failedMedia[] = $mediaId;
             }
-            $processedMedia[] = $mediaId;
         }
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
         $this->loggingService->saveLogging($context);
@@ -197,43 +198,5 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
             }
         }
-    }
-
-    /**
-     * @param list<string> $finishedUuids
-     * @param list<string> $failureUuids
-     */
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
-    {
-        $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-
-        $mediaEntitiesToUpdate = [];
-        foreach ($mediaFiles as $mediaFile) {
-            $mediaFileId = $mediaFile['id'];
-
-            if (!\in_array($mediaFileId, $failureUuids, true)) {
-                $mediaEntitiesToUpdate[] = [
-                    'id' => $mediaFileId,
-                    'processed' => true,
-                ];
-            }
-        }
-
-        if (!empty($failureUuids)) {
-            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
-
-            foreach ($mediaFiles as $mediaFile) {
-                $mediaEntitiesToUpdate[] = [
-                    'id' => $mediaFile['id'],
-                    'processFailure' => true,
-                ];
-            }
-        }
-
-        if (empty($mediaEntitiesToUpdate)) {
-            return;
-        }
-
-        $this->mediaFileRepo->update($mediaEntitiesToUpdate, $context);
     }
 }
