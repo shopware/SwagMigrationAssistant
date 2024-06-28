@@ -300,5 +300,10 @@
 
             <tag name="shopware.migration.processor"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator"
+                 decorates="Shopware\Core\Content\Product\Stock\StockStorage">
+            <argument type="service" id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator.inner"/>
+        </service>
     </services>
 </container>

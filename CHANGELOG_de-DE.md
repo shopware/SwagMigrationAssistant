@@ -1,3 +1,6 @@
+# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+- MIG-1009 - Verhindert das migrierte Bestellungen die Anpassung des Produkt-Warenbestands auslösen
+
 # 12.0.0
 - MIG-983 - Korrigiert einen Fehler bei der Migration von Kunden, die an einen Shop gebunden sind
 - MIG-983 - [BREAKING] In der Klasse `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` wurde der Methodenname `getAddresses` in `applyAddresses` geändert.

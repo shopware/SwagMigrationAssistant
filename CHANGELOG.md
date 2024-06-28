@@ -66,6 +66,7 @@
 - MIG-991 - [BREAKING] Removed constants `STATUS_RUNNING`, `STATUS_FINISHED` and `STATUS_ABORTED` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\MigrationStep` instead
 - MIG-962 - [BREAKING] Every admin component is now private / internal
 - MIG-994 - [BREAKING] Remove fields `user_id` and `access_token` from `swag_migration_run` and corresponding EntityDefinition and related classes.
+- MIG-1009 - Prevents migrated orders from triggering the adjustment of the product stock
 
 # 12.0.0
 - MIG-983 - Fix migration of shop bounded customers
