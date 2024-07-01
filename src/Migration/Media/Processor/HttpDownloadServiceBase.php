@@ -29,7 +29,6 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService;
 
 /**
  * @phpstan-import-type Media from BaseMediaService

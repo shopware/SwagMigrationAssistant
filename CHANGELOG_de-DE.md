@@ -11,6 +11,7 @@
 - MIG-990 - Verbesserung der Stabilität bei der Migration von Medien
 - MIG-990 - [BREAKING] Hinzufügen eines weiteren Konstruktorparameters zum `BaseMediaService` und ändern aller betroffenden Klassen
 - MIG-990 - [BREAKING] Hinzufügen der Methode `setProcessedFlag` zu dem `BaseMediaService` und ändern aller betroffenden Klassen
+- MIG-990 - [BREAKING] `BaseMediaService` wurde zum `SwagMigrationAssistant\Migration\Media\Processor` Namespace verschoben
 
 # 11.0.1
 - MIG-988 - Ein Fehler der Premapping-UI wurde behoben, um kompatible mit der neusten Platform version zu bleiben

@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Profile\Shopware\Media;
+namespace SwagMigrationAssistant\Migration\Media\Processor;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;

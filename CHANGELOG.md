@@ -11,6 +11,7 @@
 - MIG-990 - Don't let exceptions abort handling of ProcessMediaMessage
 - MIG-990 - [BREAKING] Changed constructor of `BaseMediaService`, added `EntityRepository $mediaFileRepository` as new parameter, updated all extending classes.
 - MIG-990 - [BREAKING] Added method `setProcessedFlag` in `BaseMediaService` and updated all media processors to use this method
+- MIG-990 - [BREAKING] Moved `BaseMediaService` to `SwagMigrationAssistant\Migration\Media\Processor` namespace
 
 # 11.0.1
 - MIG-988 - A bug in the premapping UI has been fixed to remain compatible with the latest platform version
