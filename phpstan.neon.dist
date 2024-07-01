@@ -65,6 +65,14 @@ parameters:
               - src/Profile/Shopware/Premapping/OrderStateReader.php
               - src/Profile/Shopware/Premapping/TransactionStateReader.php
 
+        - message: """
+                #^Fetching class constant class of deprecated class Shopware\\\\Core\\\\Checkout\\\\Payment\\\\Cart\\\\PaymentHandler\\\\CashPayment:
+                tag:v6.7.0 - reason:becomes-internal$#
+          """
+          paths:
+              - src/Profile/Shopware/Premapping/PaymentMethodReader.php
+              - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
+
 services:
     -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
         class: Symplify\PHPStanRules\Rules\NoReturnSetterMethodRule
