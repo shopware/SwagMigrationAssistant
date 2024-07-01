@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -34,13 +35,13 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
      * @param StrategyResolverInterface[] $resolver
      */
     public function __construct(
-        private readonly EntityRepository $mediaFileRepo,
+        EntityRepository $mediaFileRepo,
         private readonly FileSaver $fileSaver,
         private readonly LoggingServiceInterface $loggingService,
         private readonly iterable $resolver,
         Connection $dbalConnection
     ) {
-        parent::__construct($dbalConnection);
+        parent::__construct($dbalConnection, $mediaFileRepo);
     }
 
     public function supports(MigrationContextInterface $migrationContext): bool
@@ -108,7 +109,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         Context $context
     ): array {
         $processedMedia = [];
-        $failureUuids = [];
+        $failedMedia = [];
 
         foreach ($media as $mediaFile) {
             $rowId = $mediaFile['id'];
@@ -127,7 +128,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                         $sourcePath
                     ));
                     $processedMedia[] = $mediaId;
-                    $failureUuids[$rowId] = $mediaId;
+                    $failedMedia[] = $mediaId;
 
                     continue;
                 }
@@ -142,9 +143,11 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
                 try {
                     $this->persistFileToMedia($filePath, $mediaFile, $fileSize, $fileExtension, $context);
+
+                    $processedMedia[] = $mediaId;
                 } catch (\Exception $e) {
                     $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $failureUuids[$rowId] = $mediaId;
+                    $failedMedia[] = $mediaId;
                     $this->loggingService->addLogEntry(new ExceptionRunLog(
                         $mappedWorkload[$mediaId]->getRunId(),
                         DefaultEntities::MEDIA,
@@ -161,11 +164,10 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                     $mediaId,
                     $sourcePath
                 ));
-                $failureUuids[$rowId] = $mediaId;
+                $failedMedia[] = $mediaId;
             }
-            $processedMedia[] = $mediaId;
         }
-        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failureUuids);
+        $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
         $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
@@ -197,26 +199,5 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $mediaId, $context);
             }
         }
-    }
-
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
-    {
-        $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-        $updateableMediaEntities = [];
-        foreach ($mediaFiles as $mediaFile) {
-            $mediaFileId = $mediaFile['id'];
-            if (!isset($failureUuids[$mediaFileId])) {
-                $updateableMediaEntities[] = [
-                    'id' => $mediaFileId,
-                    'processed' => true,
-                ];
-            }
-        }
-
-        if (empty($updateableMediaEntities)) {
-            return;
-        }
-
-        $this->mediaFileRepo->update($updateableMediaEntities, $context);
     }
 }

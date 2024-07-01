@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Migration\Media\Processor;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise;
@@ -32,20 +31,21 @@ use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
- * @phpstan-type Media list<array{'id': string, 'run_id': string, 'media_id': string, 'uri': string, 'file_size': string, 'file_name': string}>
+ * @phpstan-import-type Media from BaseMediaService
  */
 #[Package('services-settings')]
-abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
+abstract class HttpDownloadServiceBase extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**
      * @param EntityRepository<MediaCollection> $mediaFileRepo
      */
     public function __construct(
-        private readonly Connection $dbalConnection,
-        private readonly EntityRepository $mediaFileRepo,
+        Connection $dbalConnection,
+        EntityRepository $mediaFileRepo,
         private readonly FileSaver $fileSaver,
         private readonly LoggingServiceInterface $loggingService,
     ) {
+        parent::__construct($dbalConnection, $mediaFileRepo);
     }
 
     abstract public function supports(MigrationContextInterface $migrationContext): bool;
@@ -331,40 +331,6 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
     }
 
     /**
-     * @param list<string> $mediaIds
-     *
-     * @return Media
-     */
-    private function getMediaFiles(array $mediaIds, string $runId): array
-    {
-        $binaryMediaIds = [];
-        foreach ($mediaIds as $mediaId) {
-            $binaryMediaIds[] = Uuid::fromHexToBytes($mediaId);
-        }
-
-        $query = $this->dbalConnection->createQueryBuilder();
-        $query->select('*');
-        $query->from('swag_migration_media_file');
-        $query->where('run_id = :runId');
-        $query->andWhere('media_id IN (:ids)');
-        $query->andWhere('written = 1');
-        $query->setParameter('ids', $binaryMediaIds, ArrayParameterType::STRING);
-        $query->setParameter('runId', Uuid::fromHexToBytes($runId));
-
-        $query->executeQuery();
-
-        /** @var Media $result */
-        $result = $query->fetchAllAssociative();
-        foreach ($result as &$media) {
-            $media['id'] = Uuid::fromBytesToHex($media['id']);
-            $media['run_id'] = Uuid::fromBytesToHex($media['run_id']);
-            $media['media_id'] = Uuid::fromBytesToHex($media['media_id']);
-        }
-
-        return $result;
-    }
-
-    /**
      * @param Media $media
      */
     private function getMediaName(array $media, string $mediaId): string
@@ -376,40 +342,5 @@ abstract class HttpDownloadServiceBase implements MediaFileProcessorInterface
         }
 
         return '';
-    }
-
-    /**
-     * @param list<string> $finishedUuids
-     * @param list<string> $failureUuids
-     */
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
-    {
-        $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-        $updateProcessedMediaFiles = [];
-        foreach ($mediaFiles as $data) {
-            if (!\in_array($data['media_id'], $failureUuids, true)) {
-                $updateProcessedMediaFiles[] = [
-                    'id' => $data['id'],
-                    'processed' => true,
-                ];
-            }
-        }
-
-        if (!empty($failureUuids)) {
-            $mediaFiles = $this->getMediaFiles($failureUuids, $runId);
-
-            foreach ($mediaFiles as $data) {
-                $updateProcessedMediaFiles[] = [
-                    'id' => $data['id'],
-                    'processFailure' => true,
-                ];
-            }
-        }
-
-        if (empty($updateProcessedMediaFiles)) {
-            return;
-        }
-
-        $this->mediaFileRepo->update($updateProcessedMediaFiles, $context);
     }
 }

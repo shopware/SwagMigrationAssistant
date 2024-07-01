@@ -25,10 +25,10 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
-use SwagMigrationAssistant\Profile\Shopware\Media\BaseMediaService;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
@@ -39,15 +39,14 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
     public function __construct(
         private readonly EntityRepository $documentRepository,
-        private readonly EntityRepository $migrationMediaFileRepo,
+        EntityRepository $migrationMediaFileRepo,
         private readonly LoggingServiceInterface $loggingService,
         private readonly MappingServiceInterface $mappingService,
         private readonly MediaService $mediaService,
         private readonly ConnectionFactoryInterface $connectionFactory,
         Connection $dbalConnection
     ) {
-        $this->dbalConnection = $dbalConnection;
-        parent::__construct($dbalConnection);
+        parent::__construct($dbalConnection, $migrationMediaFileRepo);
     }
 
     public function supports(MigrationContextInterface $migrationContext): bool
@@ -151,26 +150,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         return \array_values($mappedWorkload);
     }
 
-    private function setProcessedFlag(string $runId, Context $context, array $finishedUuids, array $failureUuids): void
-    {
-        $mediaFiles = $this->getMediaFiles($finishedUuids, $runId);
-        $updateProcessedMediaFiles = [];
-        foreach ($mediaFiles as $data) {
-            if (!\in_array($data['media_id'], $failureUuids, true)) {
-                $updateProcessedMediaFiles[] = [
-                    'id' => $data['id'],
-                    'processed' => true,
-                ];
-            }
-        }
-
-        if (empty($updateProcessedMediaFiles)) {
-            return;
-        }
-
-        $this->migrationMediaFileRepo->update($updateProcessedMediaFiles, $context);
-    }
-
     /**
      * @param MediaProcessWorkloadStruct[] $mappedWorkload
      */
@@ -208,6 +187,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         return $promises;
     }
 
+    /**
+     * @param array<string, mixed> $result
+     * @param list<string> $finishedUuids
+     */
     private function handleCompleteRequest(Context $context, array $result, string $documentId, array &$finishedUuids): void
     {
         /** @var Response $response */
@@ -280,6 +263,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $finishedUuids[] = $documentId;
     }
 
+    /**
+     * @param array<string, mixed> $additionalData
+     * @param list<string> $failureUuids
+     */
     private function handleFailedRequest(
         MediaProcessWorkloadStruct $oldWorkload,
         MediaProcessWorkloadStruct &$mappedWorkload,

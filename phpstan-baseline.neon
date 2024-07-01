@@ -2841,16 +2841,6 @@ parameters:
 			path: src/Profile/Shopware/Logging/Log/UnsupportedShippingPriceLog.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\BaseMediaService\\:\\:getMediaFiles\\(\\) has parameter \\$mediaIds with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/BaseMediaService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\BaseMediaService\\:\\:getMediaFiles\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/BaseMediaService.php
-
-		-
 			message: "#^Cannot call static method getEntity\\(\\) on SwagMigrationAssistant\\\\Migration\\\\DataSelection\\\\DataSet\\\\DataSet\\|null\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
@@ -2877,16 +2867,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:persistFileToMedia\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$failureUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
 
@@ -2921,11 +2901,6 @@ parameters:
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalOrderDocumentProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
-
-		-
 			message: "#^Parameter \\#1 \\$blob of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
 			count: 3
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
@@ -2952,11 +2927,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalProductDownloadProcessor\\:\\:persistFileToMedia\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalProductDownloadProcessor\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
 
@@ -3782,36 +3752,6 @@ parameters:
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:downloadDocument\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:handleCompleteRequest\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:handleCompleteRequest\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:handleFailedRequest\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:handleFailedRequest\\(\\) has parameter \\$failureUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:setProcessedFlag\\(\\) has parameter \\$failureUuids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:setProcessedFlag\\(\\) has parameter \\$finishedUuids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
 
