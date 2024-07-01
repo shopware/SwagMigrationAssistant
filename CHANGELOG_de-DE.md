@@ -1,4 +1,4 @@
-# REPLACE_GLOBAL_WITH_NEXT_VERSION
+# 12.0.0
 - MIG-983 - Korrigiert einen Fehler bei der Migration von Kunden, die an einen Shop gebunden sind
 - MIG-983 - [BREAKING] In der Klasse `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` wurde der Methodenname `getAddresses` in `applyAddresses` geändert.
 - MIG-983 - [BREAKING] In der Klasse `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` wurde der Methodenname `getCountryTranslation` in `applyCountryTranslation` geändert.
@@ -6,12 +6,12 @@
 - MIG-986 - Behebt einen Fehler bei der Migration von Trackingnummern in den Bestellungen
 - MIG-989 - Verbesserung der Migration von Mediendateien
 - MIG-989 - [BREAKING] Neue Methode `filterUnwrittenData` zu `SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface` hinzugefügt
-- MIG-992 - Korrigiert einen Fehler bei der Migration von Produktseodaten
-- MIG-1006 - Behebt einen Fehler bei der Migration von Produkt-Coverbildern
 - MIG-990 - Verbesserung der Stabilität bei der Migration von Medien
 - MIG-990 - [BREAKING] Hinzufügen eines weiteren Konstruktorparameters zum `BaseMediaService` und ändern aller betroffenden Klassen
 - MIG-990 - [BREAKING] Hinzufügen der Methode `setProcessedFlag` zu dem `BaseMediaService` und ändern aller betroffenden Klassen
 - MIG-990 - [BREAKING] `BaseMediaService` wurde zum `SwagMigrationAssistant\Migration\Media\Processor` Namespace verschoben
+- MIG-992 - Korrigiert einen Fehler bei der Migration von Produktseodaten
+- MIG-1006 - Behebt einen Fehler bei der Migration von Produkt-Coverbildern
 
 # 11.0.1
 - MIG-988 - Ein Fehler der Premapping-UI wurde behoben, um kompatible mit der neusten Platform version zu bleiben
