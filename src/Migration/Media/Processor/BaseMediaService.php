@@ -9,11 +9,11 @@ namespace SwagMigrationAssistant\Migration\Media\Processor;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Shopware\Core\Content\Media\MediaCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 abstract class BaseMediaService
 {
     /**
-     * @param EntityRepository<MediaCollection> $mediaFileRepository
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepository
      */
     public function __construct(
         protected readonly Connection $dbalConnection,

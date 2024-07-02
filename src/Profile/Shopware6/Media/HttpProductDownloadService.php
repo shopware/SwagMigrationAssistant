@@ -9,13 +9,13 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Media\File\FileSaver;
-use Shopware\Core\Content\Media\MediaCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 class HttpProductDownloadService extends HttpDownloadServiceBase
 {
     /**
-     * @param EntityRepository<MediaCollection> $mediaFileRepo
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
      */
     public function __construct(
         Connection $dbalConnection,

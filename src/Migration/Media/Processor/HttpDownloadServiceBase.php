@@ -14,7 +14,6 @@ use GuzzleHttp\Promise\Utils;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
-use Shopware\Core\Content\Media\MediaCollection;
 use Shopware\Core\Content\Media\MediaException;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -27,6 +26,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -37,7 +37,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 abstract class HttpDownloadServiceBase extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**
-     * @param EntityRepository<MediaCollection> $mediaFileRepo
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
      */
     public function __construct(
         Connection $dbalConnection,
