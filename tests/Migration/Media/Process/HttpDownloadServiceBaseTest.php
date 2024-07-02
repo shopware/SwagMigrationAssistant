@@ -16,8 +16,6 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
-use Shopware\Core\Content\Media\MediaCollection;
-use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\Log\Package;
@@ -25,6 +23,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -237,10 +237,10 @@ class HttpDownloadServiceBaseTest extends TestCase
         $queryBuilder->method('fetchAllAssociative')->willReturn($migrationMediaFiles);
         $dbalConnection->method('createQueryBuilder')->willReturn($queryBuilder);
 
-        /** @var StaticEntityRepository<MediaCollection> $mediaFileRepo */
+        /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
         $mediaFileRepo = new StaticEntityRepository(
             [],
-            new MediaDefinition()
+            new SwagMigrationMediaFileDefinition()
         );
         $fileSaver = $this->createMock(FileSaver::class);
         $httpClient = $this->createMock(HttpClientInterface::class);
