@@ -621,9 +621,10 @@
         "logDescription": "Für mehr Details {link}",
         "logDownload": "lade das Protokoll herunter.",
         "errorCode": "Protokolleintrag",
-        "errorLevel": "Protokollevel",
+        "errorLevel": "Protokolllevel",
         "errorCount": "Anzahl",
         "noErrorsOccurred": "Es sind keine Fehler aufgetreten.",
+        "noProgressData": "Dieser Durchlauf wurde in einer früheren Version des Plugins durchgeführt und die Daten wurden gelöscht.",
         "dataName": "Name",
         "dataCount": "Datensätze",
         "close": "Schließen"

@@ -624,6 +624,7 @@
         "errorLevel": "Log level",
         "errorCount": "Count",
         "noErrorsOccurred": "No errors have occurred.",
+        "noProgressData": "This run was performed in a previous version of the plugin and its data has been deleted.",
         "dataName": "Name",
         "dataCount": "Datasets",
         "close": "Close"
