@@ -128,7 +128,7 @@ class EnvironmentDummyReader extends EnvironmentReader
     }
 
     /**
-     * @return array{environmentInformation: array<string, mixed>, requestStatus: RequestStatusStruct}
+     * @return array<string, mixed>
      */
     public function read(MigrationContextInterface $migrationContext, array $params = []): array
     {

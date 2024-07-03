@@ -40,7 +40,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
     /**
      * @var EntityCollection<NumberRangeEntity>|null
      */
-    protected ?EntityCollection $numberRangeTypes;
+    protected ?EntityCollection $numberRangeTypes = null;
 
     protected string $connectionId;
 
@@ -58,7 +58,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
-        if (empty($this->numberRangeTypes)) {
+        if (!$this->numberRangeTypes instanceof EntityCollection) {
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
 
@@ -165,14 +165,14 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
     protected function getProductNumberRangeTypeUuid(string $type): ?string
     {
-        if (empty($this->numberRangeTypes)) {
+        if (!$this->numberRangeTypes instanceof EntityCollection) {
             return null;
         }
 
         $collection = $this->numberRangeTypes->filterByProperty('technicalName', self::TYPE_MAPPING[$type]);
 
         $first = $collection->first();
-        if (empty($first)) {
+        if ($first === null) {
             return null;
         }
 
