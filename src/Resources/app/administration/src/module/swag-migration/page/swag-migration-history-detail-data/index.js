@@ -59,6 +59,10 @@ Component.register('swag-migration-history-detail-data', {
         },
 
         entityGroups() {
+            if (!this.migrationRun.progress) {
+                return [];
+            }
+
             return this.migrationRun.progress.dataSets.map((entitySelection) => {
                 let name = entitySelection.entityName;
                 if (this.$te(`swag-migration.index.selectDataCard.entities.${name}`)) {
