@@ -32,7 +32,7 @@ class AbortMigrationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
 
         try {
             $this->runService->abortMigration($context);

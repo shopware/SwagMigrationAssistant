@@ -46,7 +46,7 @@ class StartMigrationCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
 
         if (!$this->validateDataSelections($input)) {
             $output->writeln('Please provide at least one data selection.');

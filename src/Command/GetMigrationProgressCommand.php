@@ -41,7 +41,7 @@ class GetMigrationProgressCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {
-        $context = Context::createDefaultContext();
+        $context = Context::createCLIContext();
         $refreshRateMs = (int) $input->getOption('refreshRate');
         if ($refreshRateMs < 250) {
             $refreshRateMs = 250;
