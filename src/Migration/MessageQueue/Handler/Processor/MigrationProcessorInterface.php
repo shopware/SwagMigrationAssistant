@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
@@ -18,5 +19,5 @@ interface MigrationProcessorInterface
 {
     public function supports(MigrationStep $step): bool;
 
-    public function process(MigrationContextInterface $migrationContext, Context $context, SwagMigrationRunEntity $run): void;
+    public function process(MigrationContextInterface $migrationContext, Context $context, SwagMigrationRunEntity $run, MigrationProgress $progress): void;
 }

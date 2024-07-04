@@ -54,7 +54,7 @@ final class MigrationProcessHandler
         }
 
         $processor = $this->processorRegistry->getProcessor($run->getStep());
-        $processor->process($migrationContext, $context, $run);
+        $processor->process($migrationContext, $context, $run, $progress);
     }
 
     private function getCurrentRun(MigrationProcessMessage $message, Context $context): SwagMigrationRunEntity

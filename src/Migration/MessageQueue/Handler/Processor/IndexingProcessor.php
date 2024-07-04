@@ -11,11 +11,11 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ThemeAssignMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
@@ -56,23 +56,12 @@ class IndexingProcessor extends AbstractProcessor
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        SwagMigrationRunEntity $run
+        SwagMigrationRunEntity $run,
+        MigrationProgress $progress
     ): void {
-        $progress = $run->getProgress();
-
-        if ($progress === null) {
-            throw MigrationException::noRunProgressFound($run->getId());
-        }
-
         $this->cache->clear();
         $this->indexer->index(true);
-        $this->assignThemes($run, $context);
-
-        $progress = $run->getProgress();
-
-        if ($progress === null) {
-            throw MigrationException::noRunProgressFound($run->getId());
-        }
+        $this->bus->dispatch(new ThemeAssignMessage($context, $run->getId()));
 
         if ($progress->isAborted()) {
             $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::ABORTED);
@@ -81,10 +70,5 @@ class IndexingProcessor extends AbstractProcessor
         }
 
         $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-    }
-
-    private function assignThemes(SwagMigrationRunEntity $run, Context $context): void
-    {
-        $this->bus->dispatch(new ThemeAssignMessage($context, $run->getId()));
     }
 }

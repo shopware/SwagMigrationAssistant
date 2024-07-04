@@ -15,6 +15,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
@@ -54,14 +55,9 @@ class AbortingProcessor extends AbstractProcessor
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        SwagMigrationRunEntity $run
+        SwagMigrationRunEntity $run,
+        MigrationProgress $progress
     ): void {
-        $progress = $run->getProgress();
-
-        if ($progress === null) {
-            throw MigrationException::noRunProgressFound($run->getId());
-        }
-
         $connection = $migrationContext->getConnection();
         if ($connection === null) {
             throw MigrationException::noConnectionFound();

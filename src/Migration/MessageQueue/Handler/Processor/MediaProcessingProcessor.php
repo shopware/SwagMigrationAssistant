@@ -10,11 +10,11 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
@@ -54,14 +54,9 @@ class MediaProcessingProcessor extends AbstractProcessor
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        SwagMigrationRunEntity $run
+        SwagMigrationRunEntity $run,
+        MigrationProgress $progress
     ): void {
-        $progress = $run->getProgress();
-
-        if ($progress === null) {
-            throw MigrationException::noRunProgressFound($run->getId());
-        }
-
         $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 
         if ($fileCount <= 0) {
