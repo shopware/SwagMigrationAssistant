@@ -11,11 +11,16 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\NoRunningMigrationException;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[Package('services-settings')]
+#[AsCommand(
+    name: 'migration:abort',
+    description: 'Abort the current migration',
+)]
 class AbortMigrationCommand extends Command
 {
     public function __construct(
@@ -23,11 +28,6 @@ class AbortMigrationCommand extends Command
         ?string $name = null
     ) {
         parent::__construct($name);
-    }
-
-    protected function configure(): void
-    {
-        $this->setDescription('Abort the current migration');
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

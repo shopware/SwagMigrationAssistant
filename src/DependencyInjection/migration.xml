@@ -171,20 +171,17 @@
 
         <service id="SwagMigrationAssistant\Command\StartMigrationCommand">
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <argument>migration:start</argument>
-            <tag name="console.command" command="migration:start"/>
+            <tag name="console.command"/>
         </service>
 
         <service id="SwagMigrationAssistant\Command\AbortMigrationCommand">
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <argument>migration:abort</argument>
-            <tag name="console.command" command="migration:abort"/>
+            <tag name="console.command"/>
         </service>
 
         <service id="SwagMigrationAssistant\Command\GetMigrationProgressCommand">
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <argument>migration:get-progress</argument>
-            <tag name="console.command" command="migration:get-progress"/>
+            <tag name="console.command"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry">

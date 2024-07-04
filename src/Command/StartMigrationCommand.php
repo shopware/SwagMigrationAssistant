@@ -13,12 +13,18 @@ use SwagMigrationAssistant\Exception\MigrationIsAlreadyRunningException;
 use SwagMigrationAssistant\Exception\PremappingIsIncompleteException;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\BasicSettingsDataSelection;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[Package('services-settings')]
+#[AsCommand(
+    name: 'migration:start',
+    description: 'Migrate the data of your selected source to Shopware 6. Before you execute this command
+    you have to configure the migration in the Shopware 6 administration.',
+)]
 class StartMigrationCommand extends Command
 {
     /**
@@ -35,10 +41,7 @@ class StartMigrationCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Migrate the data of your selected source to Shopware 6. Before you execute this command
-            you have to  configure the migration in the Shopware 6 administration.')
-            ->addArgument('dataSelections', InputArgument::IS_ARRAY | InputArgument::REQUIRED);
+        $this->addArgument('dataSelections', InputArgument::IS_ARRAY | InputArgument::REQUIRED);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int

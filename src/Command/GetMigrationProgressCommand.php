@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputInterface;
@@ -18,6 +19,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 #[Package('services-settings')]
+#[AsCommand(
+    name: 'migration:get-progress',
+    description: 'Shows the current progress of a migration',
+)]
 class GetMigrationProgressCommand extends Command
 {
     private const PROGRESSBAR_FORMAT = '[%bar%] %current%/%max% ';
@@ -31,9 +36,7 @@ class GetMigrationProgressCommand extends Command
 
     protected function configure(): void
     {
-        $this
-            ->setDescription('Shows the current progress of a migration')
-            ->addOption('refreshRate', 'r', InputOption::VALUE_OPTIONAL, 'Refresh rate in milliseconds', 500);
+        $this->addOption('refreshRate', 'r', InputOption::VALUE_OPTIONAL, 'Refresh rate in milliseconds', 500);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output): int
