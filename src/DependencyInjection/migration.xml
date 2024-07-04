@@ -223,21 +223,11 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandler">
-            <argument type="service" id="messenger.bus.shopware"/>
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="swag_migration_data.repository"/>
-            <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry"/>
+
             <tag name="messenger.message_handler"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-            <argument type="service" id="cache.object"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">
@@ -248,6 +238,67 @@
                  decorates="Shopware\Core\Checkout\Customer\DataAbstractionLayer\CustomerIndexer">
             <argument type="service" id="SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer.inner"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry">
+            <argument type="tagged" tag="shopware.migration.processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor" abstract="true">
+            <argument id="swag_migration_run.repository" type="service"/>
+            <argument id="swag_migration_data.repository" type="service"/>
+            <argument id="swag_migration_media_file.repository" type="service"/>
+            <argument id="SwagMigrationAssistant\Migration\Run\RunTransitionService" type="service"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\FetchingProcessor"
+                 parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
+            <argument id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher" type="service"/>
+            <argument id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" type="service"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="shopware.migration.processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\WritingProcessor"
+                 parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
+            <argument id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" type="service"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="shopware.migration.processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbortingProcessor"
+                 parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
+            <argument id="SwagMigrationAssistant\Migration\Run\RunService" type="service"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="shopware.migration.processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\CleanUpProcessor"
+                 parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="shopware.migration.processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\IndexingProcessor"
+                 parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
+            <argument type="service" id="cache.object"/>
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="shopware.migration.processor"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor"
+                 parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
+            <argument type="service" id="messenger.bus.shopware"/>
+
+            <tag name="shopware.migration.processor"/>
         </service>
     </services>
 </container>
