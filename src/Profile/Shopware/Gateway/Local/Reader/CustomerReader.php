@@ -28,8 +28,7 @@ class CustomerReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CUSTOMER;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CUSTOMER;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\Cms\CmsPageCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,6 +19,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class CmsPageProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<CmsPageCollection> $cmsPageRepo
+     */
     public function __construct(private readonly EntityRepository $cmsPageRepo)
     {
     }

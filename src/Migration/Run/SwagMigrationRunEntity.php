@@ -10,56 +10,28 @@ namespace SwagMigrationAssistant\Migration\Run;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 
 #[Package('services-settings')]
 class SwagMigrationRunEntity extends Entity
 {
     use EntityIdTrait;
 
-    /**
-     * @var string
-     */
-    final public const STATUS_RUNNING = 'running';
+    protected string $step;
 
-    /**
-     * @var string
-     */
-    final public const STATUS_FINISHED = 'finished';
+    protected ?string $connectionId = null;
 
-    /**
-     * @var string
-     */
-    final public const STATUS_ABORTED = 'aborted';
+    protected ?SwagMigrationConnectionEntity $connection = null;
 
-    protected ?string $connectionId;
+    protected ?array $totals = null;
 
-    protected ?SwagMigrationConnectionEntity $connection;
+    protected ?array $environmentInformation = null;
 
-    protected ?array $totals;
-
-    protected ?array $environmentInformation;
-
-    protected ?string $status;
-
-    protected ?string $userId;
-
-    protected ?string $accessToken;
-
-    /**
-     * @var RunProgress[]
-     */
-    protected array $progress = [];
-
-    /**
-     * @var PremappingStruct[]
-     */
-    protected array $premapping = [];
+    protected ?MigrationProgress $progress = null;
 
     protected ?SwagMigrationDataCollection $data = null;
 
@@ -107,67 +79,46 @@ class SwagMigrationRunEntity extends Entity
         $this->environmentInformation = $environmentInformation;
     }
 
-    public function getStatus(): ?string
+    public function getStep(): MigrationStep
     {
-        return $this->status;
+        $step = MigrationStep::tryFrom($this->step);
+        if ($step === null) {
+            throw MigrationException::undefinedRunStatus($this->step);
+        }
+
+        return $step;
+    }
+
+    public function getStepValue(): string
+    {
+        return $this->step;
     }
 
     /**
-     * @throws MigrationRunUndefinedStatusException
+     * # Safety:
+     * You are only allowed to use this method to set an initial step when creating a new run.
+     * Every other step transition should go through RunTransitionService::transitionToRunStep
+     * to avoid data races.
      */
-    public function setStatus(string $status): void
+    public function setStep(MigrationStep $step): void
     {
-        if (!\in_array($status, [self::STATUS_RUNNING, self::STATUS_FINISHED, self::STATUS_ABORTED], true)) {
-            throw new MigrationRunUndefinedStatusException($status);
-        }
-
-        $this->status = $status;
+        $this->step = $step->value;
     }
 
-    public function getUserId(): ?string
-    {
-        return $this->userId;
-    }
-
-    public function setUserId(string $userId): void
-    {
-        $this->userId = $userId;
-    }
-
-    public function getAccessToken(): ?string
-    {
-        return $this->accessToken;
-    }
-
-    public function setAccessToken(string $accessToken): void
-    {
-        $this->accessToken = $accessToken;
-    }
-
-    public function getProgress(): ?array
+    public function getProgress(): ?MigrationProgress
     {
         return $this->progress;
     }
 
     /**
-     * @param RunProgress[] $progress
+     * # Safety:
+     * Only the MigrationProcessHandler is allowed to call this method
+     * (except for initial run creation, where this can also be called elsewhere).
+     * This is important to prevent data races between http requests controllers and the message queue.
      */
-    public function setProgress(array $progress): void
+    public function setProgress(MigrationProgress $progress): void
     {
         $this->progress = $progress;
-    }
-
-    public function getPremapping(): ?array
-    {
-        return $this->premapping;
-    }
-
-    /**
-     * @param PremappingStruct[] $premapping
-     */
-    public function setPremapping(array $premapping): void
-    {
-        $this->premapping = $premapping;
     }
 
     public function getData(): ?SwagMigrationDataCollection

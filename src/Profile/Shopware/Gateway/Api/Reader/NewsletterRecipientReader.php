@@ -20,7 +20,7 @@ class NewsletterRecipientReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::NEWSLETTER_RECIPIENT;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::NEWSLETTER_RECIPIENT;
     }
 
     protected function getApiRoute(): string

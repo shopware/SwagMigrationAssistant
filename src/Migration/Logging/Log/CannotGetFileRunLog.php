@@ -48,6 +48,9 @@ class CannotGetFileRunLog extends BaseRunLogEntry
         return \sprintf('The %s file cannot be downloaded / copied', $entity);
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, uri: string}
+     */
     public function getParameters(): array
     {
         return [

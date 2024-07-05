@@ -1,6 +1,6 @@
 {% block swag_migration_history %}
     <sw-card class="swag-migration-history"
-             :isLoading="isLoading"
+             :is-loading="isLoading"
              :large="true"
              position-identifier="swag-migration-history">
         <template #grid>
@@ -8,32 +8,29 @@
             {% block swag_migration_history_grid %}
                 <sw-data-grid v-if="migrationRuns.length > 0"
                               identifier="swag-migration-history"
-                              :dataSource="migrationRuns"
+                              :data-source="migrationRuns"
                               :columns="migrationColumns"
-                              :showSelection="false"
-                              :showSettings="true"
-                              :allowColumnEdit="true"
-                              :sortBy="sortBy"
-                              :sortDirection="sortDirection"
+                              :show-selection="false"
+                              :show-settings="true"
+                              :allow-column-edit="true"
+                              :sort-by="sortBy"
+                              :sort-direction="sortDirection"
                               @column-sort="onSortColumn">
 
                     {% block swag_migration_history_grid_column_status %}
-                        <template #column-status="{ item }">
-                            <sw-icon v-if="item.status === 'finished'"
+                        <template #column-step="{ item }">
+                            <sw-icon v-if="item.step === 'finished'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--finished"
                                      name="regular-checkmark"
-                                     size="16px">
-                            </sw-icon>
-                            <sw-icon v-else-if="item.status === 'aborted'"
+                                     size="16px" />
+                            <sw-icon v-else-if="item.step === 'aborted'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--aborted"
                                      name="regular-times"
-                                     size="16px">
-                            </sw-icon>
-                            <sw-icon v-else-if="item.status === 'running'"
+                                     size="16px" />
+                            <sw-icon v-else-if="item.step === 'running'"
                                      class="swag-migration-history__status-icon swag-migration-history__status-icon--loading"
                                      name="regular-circle"
-                                     size="16px">
-                            </sw-icon>
+                                     size="16px" />
                         </template>
                     {% endblock %}
 
@@ -57,22 +54,17 @@
                         </template>
                     {% endblock %}
 
-                    {% block swag_migration_history_grid_column_selectedData %}
-                        <template #column-progress="{ item }">
-                            <swag-migration-history-selected-data :entityGroups="item.progress">
-                            </swag-migration-history-selected-data>
-                        </template>
-                    {% endblock %}
-
                     {% block swag_migration_history_grid_actions %}
                         <template #actions="{ item }">
-                            <sw-context-menu-item :routerLink="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
+                            <sw-context-menu-item :router-link="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
                             <sw-context-menu-item @click="onContextDownloadLogFile(item.id)">
                                 {{ $tc('swag-migration.history.contextMenu.downloadLogs') }}
                             </sw-context-menu-item>
-                            <sw-context-menu-item variant="danger" @click="onContextClearRunClicked(item.id)" :disabled="isMediaProcessing">
+                            <sw-context-menu-item variant="danger"
+                                                  :disabled="isMediaProcessing"
+                                                  @click="onContextClearRunClicked(item.id)">
                                 {{ $tc('swag-migration.history.contextMenu.clearLogs') }}
                             </sw-context-menu-item>
                         </template>
@@ -84,8 +76,7 @@
                                                :limit="limit"
                                                :total="total"
                                                :total-visible="7"
-                                               @page-change="onPageChange">
-                                </sw-pagination>
+                                               @page-change="onPageChange" />
                         </template>
                     {% endblock %}
 
@@ -93,7 +84,8 @@
             {% endblock %}
 
             {% block swag_migration_history_no_data %}
-                <div v-if="migrationRuns.length === 0" class="swag-migration-history__no-data">
+                <div v-if="migrationRuns.length === 0"
+                     class="swag-migration-history__no-data">
                     <p class="swag-migration-history__no-data-label">
                         {{ $tc('swag-migration.history.noData') }}
                     </p>
@@ -101,12 +93,12 @@
             {% endblock %}
 
             {% block swag_migration_history_router_view %}
-                <router-view></router-view>
+                <router-view />
             {% endblock %}
 
             {% block swag_migration_history_log_download_form %}
-                <form class="swag-migration-history-detail-errors__download-form"
-                      ref="downloadLogsOfRunForm"
+                <form ref="downloadLogsOfRunForm"
+                      class="swag-migration-history-detail-errors__download-form"
                       :action="logDownloadEndpoint"
                       method="POST">
                     <input type="hidden"
@@ -119,7 +111,7 @@
                 <sw-modal v-if="showRunClearConfirmModal"
                           class="swag-migration-history__run-clear-confirm-modal"
                           :title="$tc('swag-migration.history.clearRunDialog.title')"
-                          :isLoading="runClearConfirmModalIsLoading"
+                          :is-loading="runClearConfirmModalIsLoading"
                           size="460px"
                           @modal-close="showRunClearConfirmModal = false">
 

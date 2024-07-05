@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
+use SwagMigrationAssistant\Exception\MigrationException;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -137,7 +138,7 @@ final class DataProviderController
         $generatedDocument = $this->documentGenerator->readDocument($identifier, $context);
 
         if ($generatedDocument === null) {
-            throw new \Exception('Document could not be generated.');
+            throw MigrationException::couldNotGenerateDocument();
         }
 
         return new JsonResponse([

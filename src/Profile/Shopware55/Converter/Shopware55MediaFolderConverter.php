@@ -19,6 +19,6 @@ class Shopware55MediaFolderConverter extends MediaFolderConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === MediaFolderDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === MediaFolderDataSet::getEntity();
     }
 }

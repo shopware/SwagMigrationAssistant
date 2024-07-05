@@ -28,17 +28,17 @@ class ProductReviewConverterTest extends TestCase
     private MigrationContext $migrationContext;
 
     /**
-     * @var array<array<string, string>>
+     * @var array<array<string, string|array<string>|null>>
      */
     private array $products;
 
     /**
-     * @var array<array<string, string>>
+     * @var array<array<string, string|array<string>|null>>
      */
     private array $salesChannel;
 
     /**
-     * @var array<array<string, string>>
+     * @var array<array<string, string|array<string>|null>>
      */
     private array $customer;
 

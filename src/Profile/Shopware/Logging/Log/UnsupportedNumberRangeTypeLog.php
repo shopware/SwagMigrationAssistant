@@ -37,6 +37,9 @@ class UnsupportedNumberRangeTypeLog extends BaseRunLogEntry
         return 'Unsupported number range type';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, type: string}
+     */
     public function getParameters(): array
     {
         return [

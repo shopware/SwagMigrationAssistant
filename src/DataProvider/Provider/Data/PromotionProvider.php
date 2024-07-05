@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Checkout\Promotion\PromotionCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +18,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class PromotionProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<PromotionCollection> $promotionRepo
+     */
     public function __construct(private readonly EntityRepository $promotionRepo)
     {
     }
@@ -52,6 +56,9 @@ class PromotionProvider extends AbstractProvider
         return $this->readTotalFromRepo($this->promotionRepo, $context);
     }
 
+    /**
+     * @param array<mixed> $cleanResult
+     */
     private function cleanupAssociations(array &$cleanResult): void
     {
         foreach ($cleanResult as &$promotion) {

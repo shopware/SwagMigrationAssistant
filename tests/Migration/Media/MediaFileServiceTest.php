@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Media;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -129,7 +130,8 @@ class MediaFileServiceTest extends TestCase
             $entityRepository ?? $this->createMock(EntityRepository::class),
             $entityWriter ?? $this->createMock(EntityWriterInterface::class),
             $mediaFileDefinition ?? $this->createMock(EntityDefinition::class),
-            $converterRegistry ?? $this->createMock(ConverterRegistryInterface::class)
+            $converterRegistry ?? $this->createMock(ConverterRegistryInterface::class),
+            $this->createMock(LoggerInterface::class)
         );
     }
 }

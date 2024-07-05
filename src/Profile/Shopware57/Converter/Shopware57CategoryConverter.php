@@ -20,6 +20,6 @@ class Shopware57CategoryConverter extends CategoryConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === CategoryDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CategoryDataSet::getEntity();
     }
 }

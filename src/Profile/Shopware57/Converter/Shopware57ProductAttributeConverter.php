@@ -20,6 +20,6 @@ class Shopware57ProductAttributeConverter extends ProductAttributeConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === ProductAttributeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductAttributeDataSet::getEntity();
     }
 }

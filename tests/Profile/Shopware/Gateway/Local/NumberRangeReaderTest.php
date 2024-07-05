@@ -69,6 +69,8 @@ class NumberRangeReaderTest extends TestCase
 
         $totalStruct = $this->numberRangeReader->readTotal($this->migrationContext);
 
+        static::assertNotNull($this->migrationContext->getDataSet());
+        static::assertNotNull($totalStruct);
         static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
         static::assertSame(9, $totalStruct->getTotal());
     }

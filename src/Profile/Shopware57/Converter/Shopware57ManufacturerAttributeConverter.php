@@ -20,6 +20,6 @@ class Shopware57ManufacturerAttributeConverter extends ManufacturerAttributeConv
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === ManufacturerAttributeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ManufacturerAttributeDataSet::getEntity();
     }
 }

@@ -20,6 +20,6 @@ class Shopware57OrderDocumentConverter extends OrderDocumentConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === OrderDocumentDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === OrderDocumentDataSet::getEntity();
     }
 }

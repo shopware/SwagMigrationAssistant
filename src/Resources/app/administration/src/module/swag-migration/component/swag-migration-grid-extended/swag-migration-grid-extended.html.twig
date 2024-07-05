@@ -1,24 +1,25 @@
 {% block sw_grid_body_slot_items %}
-    <sw-grid-row :class="extendedGridRowClasses(item, index)"
+    <sw-grid-row :key="item.id"
+                 :class="extendedGridRowClasses(item, index)"
                  :style="columnFlex"
-                 :key="item.id"
                  :item="item"
                  :index="index"
                  @inline-edit-finish="onInlineEditFinish"
                  @inline-edit-start="onInlineEditStart">
 
         {% block sw_grid_body_item_selectable %}
-            <div v-if="selectable" class="sw-grid-column">
+            <div v-if="selectable"
+                 class="sw-grid-column">
                 <div class="sw-grid__cell-content">
                     <sw-checkbox-field :value="isSelected(item.id)"
                                        :disabled="isDisabled(item)"
-                                       @update:value="selectItem($event, item)">
-                    </sw-checkbox-field>
+                                       @update:value="selectItem($event, item)" />
                 </div>
             </div>
         {% endblock %}
 
-        <slot name="columns" :item="item">
+        <slot name="columns"
+              :item="item">
             {% block sw_grid_slot_columns %}{% endblock %}
         </slot>
     </sw-grid-row>

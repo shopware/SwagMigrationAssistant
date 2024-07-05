@@ -11,8 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use SwagMigrationAssistant\Exception\GatewayReadException;
-use SwagMigrationAssistant\Exception\ReaderNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
@@ -43,8 +42,6 @@ class ShopwareApiGatewayTest extends TestCase
             new FooDataSet()
         );
 
-        $this->expectException(ReaderNotFoundException::class);
-
         $connectionFactory = new ConnectionFactory();
         $apiReader = new ProductReader($connectionFactory);
         $environmentReader = new EnvironmentReader($connectionFactory);
@@ -60,7 +57,16 @@ class ShopwareApiGatewayTest extends TestCase
             $this->getContainer()->get('language.repository')
         );
         $migrationContext->setGateway($gateway);
-        $gateway->read($migrationContext);
+
+        try {
+            $gateway->read($migrationContext);
+        } catch (MigrationException $e) {
+            static::assertSame(MigrationException::READER_NOT_FOUND, $e->getErrorCode());
+
+            return;
+        }
+
+        static::fail('Expected exception not thrown');
     }
 
     public function testReadEnvironmentInformationFailed(): void
@@ -90,11 +96,11 @@ class ShopwareApiGatewayTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('language.repository')
         );
-        /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
-        $errorException = new GatewayReadException('Shopware 5.5 Api SwagMigrationEnvironment', 466);
+        $errorException = MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
 
         static::assertSame($response->getTotals(), []);
+        static::assertNotNull($response->getRequestStatus());
         static::assertSame($response->getRequestStatus()->getCode(), $errorException->getErrorCode());
         static::assertSame($response->getRequestStatus()->getMessage(), $errorException->getMessage());
         static::assertFalse($response->getRequestStatus()->getIsWarning());
@@ -124,6 +130,38 @@ class ShopwareApiGatewayTest extends TestCase
             $this->getContainer()->get('currency.repository'),
             $this->getContainer()->get('language.repository')
         );
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertSame('Shopware', $response->getSourceSystemName());
+        static::assertSame('___VERSION___', $response->getSourceSystemVersion());
+        static::assertSame('foo', $response->getSourceSystemDomain());
+    }
+
+    public function testReadEnvironmentInformationWithoutSourceDefaultLanguage(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setCredentialFields(['endpoint' => 'foo']);
+
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $connection
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new ProductReader($connectionFactory);
+        $environmentReader = new EnvironmentDummyReader($connectionFactory);
+        $environmentReader->setDummyData(['defaultShopLanguage' => null]);
+        $tableReader = new TableReader($connectionFactory);
+        $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
+
+        $gateway = new ShopwareApiGateway(
+            new ReaderRegistry([$apiReader]),
+            $environmentReader,
+            $tableReader,
+            $tableCountReader,
+            $this->getContainer()->get('currency.repository'),
+            $this->getContainer()->get('language.repository')
+        );
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
         static::assertInstanceOf(EnvironmentInformation::class, $response);
@@ -131,5 +169,6 @@ class ShopwareApiGatewayTest extends TestCase
         static::assertSame('Shopware', $response->getSourceSystemName());
         static::assertSame('___VERSION___', $response->getSourceSystemVersion());
         static::assertSame('foo', $response->getSourceSystemDomain());
+        static::assertSame('en-GB', $response->getSourceSystemLocale());
     }
 }

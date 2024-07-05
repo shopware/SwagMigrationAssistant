@@ -5,11 +5,12 @@ const { debug } = Shopware.Utils;
  * Mixin for the navigation logic inside a wizard.
  * See swag-migration-wizard as an example.
  *
+ * @private
  * @package services-settings
  */
 Mixin.register('swag-wizard', {
     inject: [
-        'feature'
+        'feature',
     ],
     data() {
         return {
@@ -193,7 +194,7 @@ Mixin.register('swag-wizard', {
          */
         navigateToRoute(route) {
             this.$router.push({ name: route.name }).catch((error) => {
-                console.info(error.message)
+                console.error(error.message);
             });
         },
 

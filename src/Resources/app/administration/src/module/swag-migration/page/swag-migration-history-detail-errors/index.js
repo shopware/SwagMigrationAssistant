@@ -4,14 +4,15 @@ import './swag-migration-history-detail-errors.scss';
 const { Component, Mixin } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-history-detail-errors', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
     },
 
     mixins: [
@@ -30,7 +31,7 @@ Component.register('swag-migration-history-detail-errors', {
             isLoading: true,
             allMigrationErrors: null,
             migrationErrors: [],
-            sortBy: 'count',
+            sortBy: 'level',
             sortDirection: 'DESC',
             disableRouteParams: true,
             limit: 10,
@@ -51,6 +52,14 @@ Component.register('swag-migration-history-detail-errors', {
                     property: 'title',
                     dataIndex: 'title',
                     label: this.$tc('swag-migration.history.detailPage.errorCode'),
+                    primary: true,
+                    allowResize: true,
+                    sortable: true,
+                },
+                {
+                    property: 'level',
+                    dataIndex: 'level',
+                    label: this.$tc('swag-migration.history.detailPage.errorLevel'),
                     primary: true,
                     allowResize: true,
                     sortable: true,
@@ -90,7 +99,7 @@ Component.register('swag-migration-history-detail-errors', {
         },
 
         loadAllMigrationErrors() {
-            return this.migrationService.getGroupedLogsOfRun(
+            return this.migrationApiService.getGroupedLogsOfRun(
                 this.migrationRun.id,
             ).then((response) => {
                 this.total = response.total;

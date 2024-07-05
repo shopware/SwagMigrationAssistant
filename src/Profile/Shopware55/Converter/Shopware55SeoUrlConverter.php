@@ -19,6 +19,6 @@ class Shopware55SeoUrlConverter extends SeoUrlConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === SeoUrlDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === SeoUrlDataSet::getEntity();
     }
 }

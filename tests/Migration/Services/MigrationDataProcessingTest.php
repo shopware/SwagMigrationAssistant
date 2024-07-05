@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Services;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Framework\Context;
@@ -33,8 +34,8 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
@@ -386,7 +387,8 @@ class MigrationDataProcessingTest extends TestCase
             static::getContainer()->get('delivery_time.repository'),
             static::getContainer()->get('document_type.repository'),
             static::getContainer()->get(EntityWriter::class),
-            static::getContainer()->get(SwagMigrationMappingDefinition::class)
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            new NullLogger()
         );
     }
 
@@ -436,7 +438,7 @@ class MigrationDataProcessingTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'step' => MigrationStep::FETCHING->value,
                     'profileName' => Shopware55Profile::PROFILE_NAME,
                     'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                 ],

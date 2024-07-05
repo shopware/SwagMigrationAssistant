@@ -16,11 +16,16 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader
 class EnvironmentDummyReader extends EnvironmentReader
 {
     /**
-     * @return array{environmentInformation: array<string, mixed>, requestStatus: RequestStatusStruct}
+     * @var array<string, mixed>
      */
-    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    public array $dummyData = [];
+
+    /**
+     * @param array<string, mixed> $dummyData
+     */
+    public function setDummyData(array $dummyData): void
     {
-        return [
+        $this->dummyData = [
             'environmentInformation' => [
                 'defaultShopLanguage' => 'de-DE',
                 'defaultCurrency' => 'EUR',
@@ -119,5 +124,18 @@ class EnvironmentDummyReader extends EnvironmentReader
             ],
             'requestStatus' => new RequestStatusStruct(),
         ];
+        $this->dummyData['environmentInformation'] = \array_merge($this->dummyData['environmentInformation'], $dummyData);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function read(MigrationContextInterface $migrationContext, array $params = []): array
+    {
+        if (empty($this->dummyData)) {
+            $this->setDummyData([]);
+        }
+
+        return $this->dummyData;
     }
 }

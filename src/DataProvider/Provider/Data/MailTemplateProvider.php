@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\MailTemplate\MailTemplateCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -17,6 +18,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class MailTemplateProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<MailTemplateCollection> $mailTemplateRepo
+     */
     public function __construct(private readonly EntityRepository $mailTemplateRepo)
     {
     }

@@ -19,6 +19,6 @@ class Shopware54MediaConverter extends MediaConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware54Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === MediaDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === MediaDataSet::getEntity();
     }
 }

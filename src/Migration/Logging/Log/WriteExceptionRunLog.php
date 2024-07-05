@@ -12,6 +12,9 @@ use Shopware\Core\Framework\Log\Package;
 #[Package('services-settings')]
 class WriteExceptionRunLog extends BaseRunLogEntry
 {
+    /**
+     * @param array<mixed> $error
+     */
     public function __construct(
         string $runId,
         string $entity,
@@ -36,13 +39,16 @@ class WriteExceptionRunLog extends BaseRunLogEntry
         return 'A write exception has occurred';
     }
 
+    /**
+     * @return array{entity: ?string, dataId: ?string, error: array<mixed>, description: string}
+     */
     public function getParameters(): array
     {
         return [
             'entity' => $this->getEntity(),
             'dataId' => $this->getSourceId(),
             'error' => $this->error,
-            'description' => \json_encode([
+            'description' => (string) \json_encode([
                 'entity' => $this->getEntity(),
                 'dataId' => $this->getSourceId(),
                 'error' => $this->error,

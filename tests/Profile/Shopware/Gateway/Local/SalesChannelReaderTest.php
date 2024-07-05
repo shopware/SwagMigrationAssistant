@@ -72,6 +72,8 @@ class SalesChannelReaderTest extends TestCase
 
         $totalStruct = $this->salesChannelReader->readTotal($this->migrationContext);
 
+        static::assertNotNull($this->migrationContext->getDataSet());
+        static::assertNotNull($totalStruct);
         static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
         static::assertSame(2, $totalStruct->getTotal());
     }

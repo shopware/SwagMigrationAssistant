@@ -11,6 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
+use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 
@@ -19,15 +20,21 @@ class SwagMigrationConnectionEntity extends Entity
 {
     use EntityIdTrait;
 
-    protected string $name;
+    protected string $name = '';
 
+    /**
+     * @var array<string, int|string>|null
+     */
     protected ?array $credentialFields = null;
 
+    /**
+     * @var array<PremappingStruct>
+     */
     protected array $premapping = [];
 
-    protected string $profileName;
+    protected string $profileName = '';
 
-    protected string $gatewayName;
+    protected string $gatewayName = '';
 
     protected ?SwagMigrationRunCollection $runs = null;
 
@@ -45,21 +52,33 @@ class SwagMigrationConnectionEntity extends Entity
         $this->name = $name;
     }
 
+    /**
+     * @return array<string, int|string>|null
+     */
     public function getCredentialFields(): ?array
     {
         return $this->credentialFields;
     }
 
+    /**
+     * @param array<string, int|string> $credentialFields
+     */
     public function setCredentialFields(array $credentialFields): void
     {
         $this->credentialFields = $credentialFields;
     }
 
+    /**
+     * @return array<PremappingStruct>|null
+     */
     public function getPremapping(): ?array
     {
         return $this->premapping;
     }
 
+    /**
+     * @param array<PremappingStruct> $premapping
+     */
     public function setPremapping(array $premapping): void
     {
         $this->premapping = $premapping;

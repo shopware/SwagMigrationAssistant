@@ -11,13 +11,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\Log\Package;
 
 /**
- * @method void                               add(SwagMigrationConnectionEntity $entity)
- * @method void                               set(string $key, SwagMigrationConnectionEntity $entity)
- * @method SwagMigrationConnectionEntity[]    getIterator()
- * @method SwagMigrationConnectionEntity[]    getElements()
- * @method SwagMigrationConnectionEntity|null get(string $key)
- * @method SwagMigrationConnectionEntity|null first()
- * @method SwagMigrationConnectionEntity|null last()
+ * @extends EntityCollection<SwagMigrationConnectionEntity>
  */
 #[Package('services-settings')]
 class SwagMigrationConnectionCollection extends EntityCollection

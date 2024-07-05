@@ -20,7 +20,7 @@ class CrossSellingReader extends ApiReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareApiGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::CROSS_SELLING;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::CROSS_SELLING;
     }
 
     protected function getApiRoute(): string

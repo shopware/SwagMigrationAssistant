@@ -19,6 +19,6 @@ class Shopware56LanguageConverter extends LanguageConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === LanguageDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === LanguageDataSet::getEntity();
     }
 }

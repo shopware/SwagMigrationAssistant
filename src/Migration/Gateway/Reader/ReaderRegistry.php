@@ -8,8 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Gateway\Reader;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException;
-use SwagMigrationAssistant\Exception\ReaderNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -23,7 +22,7 @@ class ReaderRegistry implements ReaderRegistryInterface
     }
 
     /**
-     * @throws ReaderNotFoundException
+     * @throws MigrationException
      */
     public function getReader(MigrationContextInterface $migrationContext): ReaderInterface
     {
@@ -35,10 +34,10 @@ class ReaderRegistry implements ReaderRegistryInterface
 
         $dataSet = $migrationContext->getDataSet();
         if ($dataSet === null) {
-            throw new MigrationContextPropertyMissingException('DataSet');
+            throw MigrationException::migrationContextPropertyMissing('DataSet');
         }
 
-        throw new ReaderNotFoundException($dataSet::getEntity());
+        throw MigrationException::readerNotFound($dataSet::getEntity());
     }
 
     /**

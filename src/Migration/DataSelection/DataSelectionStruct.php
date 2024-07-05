@@ -68,6 +68,9 @@ class DataSelectionStruct extends Struct
         return $this->id;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getEntityNames(): array
     {
         return $this->entityNames;
@@ -88,6 +91,9 @@ class DataSelectionStruct extends Struct
         return $countedTotal;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getEntityNamesRequiredForCount(): array
     {
         return $this->entityNamesRequiredForCount;

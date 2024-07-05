@@ -18,6 +18,9 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
 {
     protected string $connectionId;
 
+    /**
+     * @var array<mixed>
+     */
     protected array $originalData;
 
     public function getSourceIdentifier(array $data): string
@@ -95,6 +98,6 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
         ];
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, null, $this->mainMapping['id']);
+        return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

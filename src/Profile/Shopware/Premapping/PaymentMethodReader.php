@@ -11,7 +11,7 @@ use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\CashPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\DebitPayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\PrePayment;
-use Shopware\Core\Checkout\Payment\PaymentMethodEntity;
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -37,20 +37,23 @@ class PaymentMethodReader extends AbstractPremappingReader
     private const MAPPING_NAME = 'payment_method';
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $preselectionDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string>
      */
     private array $preselectionSourceNameDictionary = [];
 
     /**
-     * @var string[]
+     * @var array<string, string>
      */
-    private array $choiceUuids;
+    private array $choiceUuids = [];
 
+    /**
+     * @param EntityRepository<PaymentMethodCollection> $paymentMethodRepo
+     */
     public function __construct(
         private readonly EntityRepository $paymentMethodRepo,
         private readonly GatewayRegistryInterface $gatewayRegistry
@@ -88,8 +91,11 @@ class PaymentMethodReader extends AbstractPremappingReader
      */
     private function getMapping(MigrationContextInterface $migrationContext): array
     {
-        /** @var ShopwareGatewayInterface $gateway */
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
+
+        if (!$gateway instanceof ShopwareGatewayInterface) {
+            return [];
+        }
 
         $preMappingData = $gateway->readTable($migrationContext, 's_core_paymentmeans');
 
@@ -99,7 +105,7 @@ class PaymentMethodReader extends AbstractPremappingReader
             $uuid = '';
 
             if (isset($this->connectionPremappingDictionary[$data['id']])) {
-                $uuid = $this->connectionPremappingDictionary[$data['id']]['destinationUuid'];
+                $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
             }
             if (!empty($data['description'])) {
                 $description = $data['description'];
@@ -118,7 +124,7 @@ class PaymentMethodReader extends AbstractPremappingReader
 
         $uuid = '';
         if (isset($this->connectionPremappingDictionary[self::SOURCE_ID])) {
-            $uuid = $this->connectionPremappingDictionary[self::SOURCE_ID]['destinationUuid'];
+            $uuid = $this->connectionPremappingDictionary[self::SOURCE_ID]->getDestinationUuid();
 
             if (!isset($this->choiceUuids[$uuid])) {
                 $uuid = '';
@@ -140,10 +146,9 @@ class PaymentMethodReader extends AbstractPremappingReader
     {
         $criteria = new Criteria();
         $criteria->addSorting(new FieldSorting('name'));
-        $paymentMethods = $this->paymentMethodRepo->search($criteria, $context);
+        $paymentMethods = $this->paymentMethodRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
-        /** @var PaymentMethodEntity $paymentMethod */
         foreach ($paymentMethods as $paymentMethod) {
             $name = $paymentMethod->getName() ?? '';
             $this->preselectionDictionary[$paymentMethod->getHandlerIdentifier()] = $paymentMethod->getId();

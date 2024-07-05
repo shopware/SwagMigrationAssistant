@@ -23,7 +23,7 @@ class ShippingMethodReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::SHIPPING_METHOD;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::SHIPPING_METHOD;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool

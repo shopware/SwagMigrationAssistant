@@ -13,8 +13,7 @@
                         <sw-icon class="swag-migration-confirm-warning__bubble-icon"
                                  name="regular-exclamation-triangle"
                                  size="36px"
-                                 decorative>
-                        </sw-icon>
+                                 decorative />
                     </div>
                 {% endblock %}
 
@@ -37,11 +36,10 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_warning_checkbox %}
-                    <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
+                    <sw-checkbox-field v-model:value="isCurrencyChecked"
+                                       class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                       v-model:value="isCurrencyChecked"
-                                       @update:value="onCheckboxValueChanged">
-                    </sw-checkbox-field>
+                                       @update:value="onCheckboxValueChanged" />
                 {% endblock %}
             </sw-card>
         {% endblock %}
@@ -58,8 +56,7 @@
                         <sw-icon class="swag-migration-confirm-warning__bubble-icon"
                                  name="regular-exclamation-triangle"
                                  size="36px"
-                                 decorative>
-                        </sw-icon>
+                                 decorative />
                     </div>
                 {% endblock %}
 
@@ -82,11 +79,10 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_language_warning_checkbox %}
-                    <sw-checkbox-field class="swag-migration-confirm-warning__checkbox"
+                    <sw-checkbox-field v-model:value="isLanguageChecked"
+                                       class="swag-migration-confirm-warning__checkbox"
                                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                       v-model:value="isLanguageChecked"
-                                       @update:value="onCheckboxValueChanged">
-                    </sw-checkbox-field>
+                                       @update:value="onCheckboxValueChanged" />
                 {% endblock %}
             </sw-card>
         {% endblock %}

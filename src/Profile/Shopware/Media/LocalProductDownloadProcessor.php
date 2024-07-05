@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -21,6 +22,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\Processor\BaseMediaService;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -29,6 +31,9 @@ use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 #[Package('services-settings')]
 class LocalProductDownloadProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo
+     */
     public function __construct(
         EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
@@ -46,14 +51,13 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === ProductDownloadDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductDownloadDataSet::getEntity();
     }
 
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): array {
         $mappedWorkload = [];
         foreach ($workload as $work) {
@@ -78,7 +82,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
             return '';
         }
 
-        return $credentials['installationRoot'] ?? '';
+        return (string) ($credentials['installationRoot'] ?? '');
     }
 
     /**
@@ -159,7 +163,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
             $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? Uuid::randomHex();
 
             if ($fileBlob === false || $mimeType === false) {
-                throw new \RuntimeException(\sprintf('Could read file %s.', $sourcePath));
+                throw MigrationException::couldNotReadFile($sourcePath);
             }
 
             try {

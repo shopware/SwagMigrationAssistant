@@ -19,6 +19,6 @@ class Shopware56ProductReviewConverter extends ProductReviewConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === ProductReviewDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductReviewDataSet::getEntity();
     }
 }

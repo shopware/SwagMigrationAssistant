@@ -7,9 +7,20 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Psr\Log\LoggerInterface;
+use Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseConfigCollection;
+use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
+use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\Aggregate\CmsPageTranslation\CmsPageTranslationEntity;
 use Shopware\Core\Content\Cms\CmsPageCollection;
+use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeCollection;
+use Shopware\Core\Content\MailTemplate\MailTemplateCollection;
+use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
+use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
+use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
+use Shopware\Core\Content\Rule\RuleCollection;
+use Shopware\Core\Content\Seo\SeoUrlTemplate\SeoUrlTemplateCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -20,13 +31,55 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
+use Shopware\Core\System\Country\CountryCollection;
+use Shopware\Core\System\Currency\CurrencyCollection;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
+use Shopware\Core\System\Language\LanguageCollection;
+use Shopware\Core\System\Locale\LocaleCollection;
+use Shopware\Core\System\NumberRange\NumberRangeCollection;
+use Shopware\Core\System\Salutation\SalutationCollection;
+use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
+use Shopware\Core\System\SystemConfig\SystemConfigCollection;
+use Shopware\Core\System\Tax\Aggregate\TaxRule\TaxRuleCollection;
+use Shopware\Core\System\Tax\Aggregate\TaxRuleType\TaxRuleTypeCollection;
+use Shopware\Core\System\Tax\TaxCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
+use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
 class Shopware6MappingService extends MappingService implements Shopware6MappingServiceInterface
 {
+    /**
+     * @param EntityRepository<SwagMigrationMappingCollection> $migrationMappingRepo
+     * @param EntityRepository<LocaleCollection> $localeRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     * @param EntityRepository<CountryCollection> $countryRepository
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<TaxCollection> $taxRepo
+     * @param EntityRepository<NumberRangeCollection> $numberRangeRepo
+     * @param EntityRepository<RuleCollection> $ruleRepo
+     * @param EntityRepository<MediaThumbnailSizeCollection> $thumbnailSizeRepo
+     * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultRepo
+     * @param EntityRepository<CategoryCollection> $categoryRepo
+     * @param EntityRepository<CmsPageCollection> $cmsPageRepo
+     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
+     * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
+     * @param EntityRepository<NumberRangeCollection> $numberRangeTypeRepo
+     * @param EntityRepository<MailTemplateTypeCollection> $mailTemplateTypeRepo
+     * @param EntityRepository<MailTemplateCollection> $mailTemplateRepo
+     * @param EntityRepository<SalutationCollection> $salutationRepo
+     * @param EntityRepository<SeoUrlTemplateCollection> $seoUrlTemplateRepo
+     * @param EntityRepository<SystemConfigCollection> $systemConfigRepo
+     * @param EntityRepository<ProductSortingCollection> $productSortingRepo
+     * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepo
+     * @param EntityRepository<DocumentBaseConfigCollection> $documentBaseConfigRepo
+     * @param EntityRepository<CountryStateCollection> $countryStateRepo
+     * @param EntityRepository<TaxRuleCollection> $taxRuleRepo
+     * @param EntityRepository<TaxRuleTypeCollection> $taxRuleTypeRepo
+     */
     public function __construct(
         EntityRepository $migrationMappingRepo,
         EntityRepository $localeRepository,
@@ -44,6 +97,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepository $documentTypeRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
+        LoggerInterface $logger,
         private readonly EntityRepository $numberRangeTypeRepo,
         private readonly EntityRepository $mailTemplateTypeRepo,
         private readonly EntityRepository $mailTemplateRepo,
@@ -73,7 +127,8 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             $deliveryTimeRepo,
             $documentTypeRepo,
             $entityWriter,
-            $mappingDefinition
+            $mappingDefinition,
+            $logger
         );
     }
 
@@ -116,7 +171,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $defaultMailTemplate = $this->getMapping($connectionId, DefaultEntities::MAIL_TEMPLATE, $oldIdentifier, $context);
 
         if ($defaultMailTemplate !== null) {
-            return $defaultMailTemplate['entityUuid'];
+            return (string) $defaultMailTemplate['entityUuid'];
         }
 
         $criteria = new Criteria();
@@ -342,14 +397,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $criteria->addFilter(new EqualsFilter('key', $key));
         $criteria->setLimit(1);
 
-        $result = $this->productSortingRepo->search($criteria, $context);
+        $productSorting = $this->productSortingRepo->search($criteria, $context)->first();
 
-        /** @var ProductSortingEntity|null $productSorting */
-        $productSorting = $result->first();
         $id = null;
         $isLocked = false;
 
-        if ($productSorting !== null) {
+        if ($productSorting instanceof ProductSortingEntity) {
             $id = $productSorting->getId();
             $isLocked = $productSorting->isLocked();
         }
@@ -398,7 +451,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $globalDocumentBaseConfig = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $oldIdentifier, $context);
 
         if ($globalDocumentBaseConfig !== null) {
-            return $globalDocumentBaseConfig['entityUuid'];
+            return (string) $globalDocumentBaseConfig['entityUuid'];
         }
 
         $criteria = new Criteria();
@@ -435,7 +488,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         ]));
         $criteria->addFilter(new EqualsFilter('locked', false));
 
-        /** @var CmsPageCollection $cmsPages */
         $cmsPages = $this->cmsPageRepo->search($criteria, $context)->getEntities();
 
         foreach ($cmsPages as $cmsPage) {
@@ -478,7 +530,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         $criteria->addFilter(new EqualsFilter('type', $type));
         $criteria->addFilter(new EqualsFilter('locked', true));
 
-        /** @var CmsPageCollection $cmsPages */
         $cmsPages = $this->cmsPageRepo->search($criteria, $context)->getEntities();
 
         foreach ($cmsPages as $cmsPage) {

@@ -179,7 +179,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $data, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $data, $this->mainMapping['id'] ?? null);
     }
 
     /**
@@ -225,6 +225,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return $documentType;
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     protected function getMediaFile(array $data): array
     {
         $mapping = $this->mappingService->getOrCreateMapping(

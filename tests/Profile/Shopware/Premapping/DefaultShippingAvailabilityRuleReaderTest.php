@@ -21,6 +21,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Premapping\PremappingEntityStruct;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
@@ -33,7 +34,7 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
 
     private MigrationContextInterface $migrationContext;
 
-    private DefaultShippingAvailabilityRuleReader $reader;
+    private ?DefaultShippingAvailabilityRuleReader $reader = null;
 
     private Context $context;
 
@@ -46,6 +47,7 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
+        $this->migrationContext = new MigrationContext(new Shopware55Profile());
 
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
@@ -64,16 +66,11 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
 
     public function testGetValidPremapping(): void
     {
-        $premapping = [[
-            'entity' => DefaultShippingAvailabilityRuleReader::getMappingName(),
-            'mapping' => [
-                0 => [
-                    'sourceId' => DefaultShippingAvailabilityRuleReader::SOURCE_ID,
-                    'description' => 'Description of the default rule',
-                    'destinationUuid' => $this->ruleEntity->getId(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct(DefaultShippingAvailabilityRuleReader::getMappingName(), [
+                new PremappingEntityStruct(DefaultShippingAvailabilityRuleReader::SOURCE_ID, 'Description of the default rule', $this->ruleEntity->getId()),
+            ], []),
+        ];
         $this->connection->setPremapping($premapping);
 
         $mock = $this->createMock(EntityRepository::class);
@@ -88,7 +85,6 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
 
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(1, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 
@@ -100,16 +96,11 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
 
     public function testGetInvalidPremapping(): void
     {
-        $premapping = [[
-            'entity' => DefaultShippingAvailabilityRuleReader::getMappingName(),
-            'mapping' => [
-                0 => [
-                    'sourceId' => DefaultShippingAvailabilityRuleReader::SOURCE_ID,
-                    'description' => 'Description of the default rule',
-                    'destinationUuid' => Uuid::randomHex(),
-                ],
-            ],
-        ]];
+        $premapping = [
+            new PremappingStruct(DefaultShippingAvailabilityRuleReader::getMappingName(), [
+                new PremappingEntityStruct(DefaultShippingAvailabilityRuleReader::SOURCE_ID, 'Description of the default rule', Uuid::randomHex()),
+            ], []),
+        ];
         $this->connection->setPremapping($premapping);
 
         $mock = $this->createMock(EntityRepository::class);
@@ -124,7 +115,6 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
 
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertInstanceOf(PremappingStruct::class, $result);
         static::assertCount(1, $result->getMapping());
         static::assertCount(2, $result->getChoices());
 

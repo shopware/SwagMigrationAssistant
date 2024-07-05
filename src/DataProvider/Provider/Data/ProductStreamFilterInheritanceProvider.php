@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
+use Shopware\Core\Content\ProductStream\Aggregate\ProductStreamFilter\ProductStreamFilterCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -19,6 +20,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('services-settings')]
 class ProductStreamFilterInheritanceProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<ProductStreamFilterCollection> $productStreamFilterRepo
+     */
     public function __construct(private readonly EntityRepository $productStreamFilterRepo)
     {
     }

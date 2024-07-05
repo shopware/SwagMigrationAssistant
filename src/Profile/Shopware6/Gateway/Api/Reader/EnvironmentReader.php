@@ -11,10 +11,7 @@ use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\ShopwareHttpException;
-use SwagMigrationAssistant\Exception\GatewayReadException;
-use SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException;
-use SwagMigrationAssistant\Exception\RequestCertificateInvalidException;
-use SwagMigrationAssistant\Exception\SslRequiredException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -58,7 +55,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
         if (isset($information['requestStatus'])) {
             $requestStatus = $information['requestStatus'];
-            if ($requestStatus->getCode() === (new SslRequiredException())->getErrorCode()) {
+            \assert($requestStatus instanceof RequestStatusStruct);
+
+            if ($requestStatus->getCode() === MigrationException::sslRequired()->getErrorCode()) {
                 $requestStatus->setIsWarning(false);
 
                 return $information;
@@ -122,32 +121,32 @@ class EnvironmentReader implements EnvironmentReaderInterface
             );
 
             if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-                throw new GatewayReadException('Shopware 6 API Environment Call', 466);
+                throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
             }
 
             return \json_decode($result->getBody()->getContents(), true);
         } catch (ClientException $e) {
             if ($e->getCode() === 401) {
-                throw new InvalidConnectionAuthenticationException('get-data');
+                throw MigrationException::invalidConnectionAuthentication('get-data');
             }
 
-            throw new GatewayReadException('Shopware 6 API Environment Call', 466);
+            throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
         } catch (RequestException $e) {
             if ($e->getRequest()->getUri()->getPath() === '/api/oauth/token') {
                 // something went wrong with authentication.
-                throw new InvalidConnectionAuthenticationException('get-data');
+                throw MigrationException::invalidConnectionAuthentication('get-data');
             }
 
             $response = $e->getResponse();
             if ($response !== null && \mb_strpos($response->getBody()->getContents(), 'SSL required')) {
-                throw new SslRequiredException();
+                throw MigrationException::sslRequired();
             }
 
             if (isset($e->getHandlerContext()['errno']) && $e->getHandlerContext()['errno'] === 60) {
-                throw new RequestCertificateInvalidException($e->getHandlerContext()['url']);
+                throw MigrationException::requestCertificateInvalid($e->getHandlerContext()['url']);
             }
 
-            throw new GatewayReadException('Shopware 6 API Environment Call', 466);
+            throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
         }
     }
 }

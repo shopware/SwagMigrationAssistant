@@ -19,6 +19,6 @@ class Shopware56ProductPropertyRelationConverter extends ProductPropertyRelation
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === ProductPropertyRelationDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === ProductPropertyRelationDataSet::getEntity();
     }
 }

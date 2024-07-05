@@ -45,6 +45,9 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
         return \sprintf('The %s entity already exists', $entity);
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

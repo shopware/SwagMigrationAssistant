@@ -12,40 +12,35 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexerRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\TermsAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket\TermsResult;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeService;
-use SwagMigrationAssistant\Exception\MigrationIsRunningException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Migration\Service\ProgressState;
-use SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService;
-use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
+use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use Symfony\Component\Messenger\MessageBusInterface;
 
 #[Package('services-settings')]
@@ -58,187 +53,84 @@ class RunService implements RunServiceInterface
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
      * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepo
-     * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepository
-     * @param EntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepository
      * @param EntityRepository<SalesChannelCollection> $salesChannelRepository
      * @param EntityRepository<ThemeCollection> $themeRepository
+     * @param EntityRepository<GeneralSettingCollection> $generalSettingRepo
      */
     public function __construct(
         private readonly EntityRepository $migrationRunRepo,
         private readonly EntityRepository $connectionRepo,
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
-        private readonly SwagMigrationAccessTokenService $accessTokenService,
         private readonly DataSelectionRegistryInterface $dataSelectionRegistry,
-        private readonly EntityRepository $migrationDataRepository,
-        private readonly EntityRepository $mediaFileRepository,
         private readonly EntityRepository $salesChannelRepository,
         private readonly EntityRepository $themeRepository,
-        private readonly EntityIndexerRegistry $indexer,
+        private readonly EntityRepository $generalSettingRepo,
         private readonly ThemeService $themeService,
         private readonly MappingServiceInterface $mappingService,
-        private readonly TagAwareAdapterInterface $cache,
         private readonly EntityDefinition $migrationDataDefinition,
         private readonly Connection $dbalConnection,
         private readonly LoggingServiceInterface $loggingService,
         private readonly TrackingEventClient $trackingEventClient,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
+        private readonly MigrationContextFactoryInterface $migrationContextFactory,
+        private readonly PremappingServiceInterface $premappingService,
+        private readonly RunTransitionServiceInterface $runTransitionService,
     ) {
     }
 
-    public function takeoverMigration(string $runUuid, Context $context): string
+    public function startMigrationRun(array $dataSelectionIds, Context $context): void
     {
-        return $this->accessTokenService->updateRunAccessToken($runUuid, $context);
-    }
-
-    public function createMigrationRun(
-        MigrationContextInterface $migrationContext,
-        array $dataSelectionIds,
-        Context $context
-    ): ?ProgressState {
         if ($this->isMigrationRunning($context)) {
-            return null;
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
-        $this->cleanupUnwrittenRunData($migrationContext, $context);
+        $connection = $this->getCurrentConnection($context);
 
-        $runUuid = $this->createPlainMigrationRun($migrationContext, $context);
+        if ($connection === null) {
+            throw MigrationException::noConnectionIsSelected();
+        }
+
+        if (!$this->isPremmappingValid($dataSelectionIds, $connection, $context)) {
+            throw MigrationException::premappingIsIncomplete();
+        }
+
+        $connectionId = $connection->getId();
+        // ToDo: MIG-965 - Check how we could put this into the MQ
+        $this->cleanupUnwrittenRunDataOfLastInactiveRun($context);
+
+        $runUuid = $this->createPlainMigrationRun($connectionId, $context);
 
         if ($runUuid === null) {
-            return null;
+            throw MigrationException::runCouldNotBeCreated();
         }
 
-        $accessToken = $this->accessTokenService->updateRunAccessToken($runUuid, $context);
+        $this->updateMigrationRun($runUuid, $connection, $context, $dataSelectionIds);
+        $this->updateUnprocessedMediaFiles($connectionId, $runUuid);
 
-        $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
-        $dataSelectionCollection = $this->getDataSelectionCollection($migrationContext, $environmentInformation, $dataSelectionIds);
-        $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
-
-        $this->updateMigrationRun($runUuid, $migrationContext, $environmentInformation, $runProgress, $context);
-        $this->updateUnprocessedMediaFiles($migrationContext, $runUuid);
+        $this->bus->dispatch(new MigrationProcessMessage($context, $runUuid));
 
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_STARTED, $runUuid, $context);
-
-        return new ProgressState(false, true, $runUuid, $accessToken, -1, null, 0, 0, $runProgress);
     }
 
-    /**
-     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
-     */
-    public function calculateWriteProgress(SwagMigrationRunEntity $run, Context $context): array
+    public function getRunStatus(Context $context): MigrationState
     {
-        $unsortedTotals = $this->calculateFetchedTotals($run->getId());
-        $writeProgress = $run->getProgress();
+        $run = $this->getActiveRun($context);
 
-        if ($writeProgress === null) {
-            return [];
+        if ($run === null || $run->getProgress() === null) {
+            return new MigrationState(
+                MigrationStep::IDLE,
+                0,
+                0
+            );
         }
 
-        foreach ($writeProgress as $runKey => $runProgress) {
-            $groupCount = 0;
+        $progress = $run->getProgress();
 
-            foreach ($runProgress['entities'] as $entityKey => $entityProgress) {
-                $entityName = $entityProgress['entityName'];
-                $writeProgress[$runKey]['entities'][$entityKey]['currentCount'] = 0;
-
-                if (!isset($unsortedTotals[$entityName])) {
-                    $writeProgress[$runKey]['entities'][$entityKey]['total'] = 0;
-
-                    continue;
-                }
-
-                $writeProgress[$runKey]['entities'][$entityKey]['total'] = $unsortedTotals[$entityName];
-                $groupCount += $unsortedTotals[$entityName];
-            }
-
-            $writeProgress[$runKey]['currentCount'] = 0;
-            $writeProgress[$runKey]['total'] = $groupCount;
-        }
-
-        return $writeProgress;
-    }
-
-    /**
-     * @return array<int, array{ id: string, entities: array<int, array{ entityName: string, currentCount: int, total: int }>, currentCount: int, total: int }>
-     */
-    public function calculateMediaFilesProgress(SwagMigrationRunEntity $run, Context $context): array
-    {
-        $currentProgress = $run->getProgress();
-        if ($currentProgress === null) {
-            return [];
-        }
-
-        $mediaFileTotal = $this->getMediaFileCounts($run->getId(), $context, false);
-        $mediaFileCount = $this->getMediaFileCounts($run->getId(), $context, true);
-
-        foreach ($currentProgress as &$runProgress) {
-            if ($runProgress['id'] === 'processMediaFiles') {
-                foreach ($runProgress['entities'] as &$entity) {
-                    if ($entity['entityName'] === 'media') {
-                        $entity['currentCount'] = $mediaFileCount;
-                        $entity['total'] = $mediaFileTotal;
-                    }
-                }
-                $runProgress['currentCount'] = $mediaFileCount;
-                $runProgress['total'] = $mediaFileTotal;
-
-                break;
-            }
-        }
-
-        return $currentProgress;
-    }
-
-    /**
-     * @return array<int>
-     */
-    public function calculateCurrentTotals(string $runId, bool $isWritten, Context $context): array
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        if ($isWritten) {
-            $criteria->addFilter(new MultiFilter(
-                MultiFilter::CONNECTION_OR,
-                [
-                    new MultiFilter(
-                        MultiFilter::CONNECTION_AND,
-                        [
-                            new EqualsFilter('written', true),
-                            new EqualsFilter('writeFailure', false),
-                        ]
-                    ),
-
-                    new MultiFilter(
-                        MultiFilter::CONNECTION_AND,
-                        [
-                            new EqualsFilter('written', false),
-                            new EqualsFilter('writeFailure', true),
-                        ]
-                    ),
-                ]
-            ));
-        }
-        $criteria->addAggregation(new TermsAggregation('entityCount', 'entity'));
-        $result = $this->migrationDataRepository->aggregate($criteria, $context);
-        /** @var TermsResult $termsResult */
-        $termsResult = $result->get('entityCount');
-        $counts = $termsResult->getBuckets();
-
-        if (empty($counts)) {
-            return [];
-        }
-
-        $mappedCounts = [];
-        foreach ($counts as $bucket) {
-            $key = $bucket->getKey();
-
-            if ($key === null) {
-                continue;
-            }
-
-            $mappedCounts[$key] = $bucket->getCount();
-        }
-
-        return $mappedCounts;
+        return new MigrationState(
+            $run->getStep(),
+            $progress->getProgress(),
+            $progress->getTotal(),
+        );
     }
 
     /**
@@ -246,10 +138,8 @@ class RunService implements RunServiceInterface
      */
     public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void
     {
-        $isMigrationRunning = $this->isMigrationRunningWithGivenConnection($context, $connectionUuid);
-
-        if ($isMigrationRunning) {
-            throw new MigrationIsRunningException();
+        if ($this->isMigrationRunning($context)) {
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields): void {
@@ -262,23 +152,28 @@ class RunService implements RunServiceInterface
         });
     }
 
-    public function abortMigration(string $runUuid, Context $context): void
+    public function abortMigration(Context $context): void
     {
-        $this->accessTokenService->invalidateRunAccessToken($runUuid, $context);
-        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runUuid, $context);
-        $dataCount = $this->getMigrationDataCount($runUuid, $context);
-        if ($dataCount > 0) {
-            /** @var SwagMigrationRunEntity $run */
-            $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
-            $connection = $run->getConnection();
+        $run = $this->getActiveRun($context);
 
-            if ($connection === null) {
-                return;
-            }
-
-            $this->cleanupMappingChecksums($connection->getId(), $context, false);
+        if ($run === null) {
+            throw MigrationException::noRunningMigration();
         }
-        $this->cleanupMigration($runUuid);
+
+        $runId = $run->getId();
+        $runningSteps = [
+            MigrationStep::FETCHING->value,
+            MigrationStep::WRITING->value,
+            MigrationStep::MEDIA_PROCESSING->value,
+        ];
+
+        if (!\in_array($run->getStepValue(), $runningSteps, true)) {
+            throw MigrationException::noRunningMigration();
+        }
+
+        $this->runTransitionService->transitionToRunStep($runId, MigrationStep::ABORTING);
+
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runId, $context);
     }
 
     public function cleanupMappingChecksums(string $connectionUuid, Context $context, bool $resetAll = true): void
@@ -307,26 +202,27 @@ SQL;
         );
     }
 
-    public function finishMigration(string $runUuid, Context $context): void
+    public function approveFinishingMigration(Context $context): void
     {
-        $this->migrationRunRepo->update([
-            [
-                'id' => $runUuid,
-                'status' => 'finished',
-            ],
-        ], $context);
+        $run = $this->getActiveRun($context);
 
-        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $runUuid, $context);
+        if ($run === null) {
+            throw MigrationException::noRunningMigration();
+        }
 
-        $this->cleanupMigration($runUuid, true);
+        if ($run->getStep() !== MigrationStep::WAITING_FOR_APPROVE) {
+            throw MigrationException::noRunToFinish();
+        }
+
+        $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::FINISHED);
+
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $run->getId(), $context);
     }
 
-    public function cleanupMigrationData(): void
+    public function cleanupMigrationData(Context $context): void
     {
-        $result = $this->dbalConnection->fetchOne('SELECT 1 FROM swag_migration_run WHERE `status` = :status', ['status' => SwagMigrationRunEntity::STATUS_RUNNING]);
-
-        if ($result !== false) {
-            throw new MigrationIsRunningException();
+        if ($this->isMigrationRunning($context)) {
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
         $this->dbalConnection->executeStatement('UPDATE swag_migration_general_setting SET selected_connection_id = NULL, `is_reset` = 1;');
@@ -335,8 +231,7 @@ SQL;
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
     {
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
 
         if ($run === null) {
             return;
@@ -369,10 +264,63 @@ SQL;
         $this->loggingService->saveLogging($context);
     }
 
+    /**
+     * @param array<int, string> $dataSelectionIds
+     */
+    private function isPremmappingValid(array $dataSelectionIds, SwagMigrationConnectionEntity $connection, Context $context): bool
+    {
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+        $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $dataSelectionIds);
+
+        foreach ($premapping as $item) {
+            foreach ($item->getMapping() as $mapping) {
+                if ($mapping->getDestinationUuid() === '') {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private function getActiveRun(Context $context): ?SwagMigrationRunEntity
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_OR, [
+            new EqualsFilter('step', MigrationStep::ABORTED->value),
+            new EqualsFilter('step', MigrationStep::FINISHED->value),
+        ]));
+        $criteria->setLimit(1);
+
+        return $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();
+    }
+
+    private function isMigrationRunning(Context $context): bool
+    {
+        return $this->getActiveRun($context) !== null;
+    }
+
+    private function getLastInactiveRun(Context $context): ?SwagMigrationRunEntity
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, [
+            new EqualsFilter('step', MigrationStep::ABORTED->value),
+            new EqualsFilter('step', MigrationStep::FINISHED->value),
+        ]));
+        $criteria->addSorting(new FieldSorting('createdAt', 'DESC'));
+        $criteria->setLimit(1);
+
+        return $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();
+    }
+
     private function fireTrackingInformation(string $eventName, string $runUuid, Context $context): void
     {
-        /** @var SwagMigrationRunEntity $run */
-        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->first();
+        $run = $this->migrationRunRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
+
+        if ($run === null) {
+            return;
+        }
+
         $progress = $run->getProgress();
         $connection = $run->getConnection();
         $information = [];
@@ -400,24 +348,7 @@ SQL;
             return;
         }
 
-        foreach ($progress as $entityGroup) {
-            if ($entityGroup['total'] === 0) {
-                continue;
-            }
-
-            foreach ($entityGroup['entities'] as $entity) {
-                if ($entity['total'] === 0) {
-                    continue;
-                }
-
-                $entityName = $entity['entityName'];
-                $information['totals'][$entityName] = $entity['total'];
-            }
-        }
-
-        if ($information === []) {
-            return;
-        }
+        $information['runProgress'] = $progress;
 
         if ($connection !== null) {
             $information['profileName'] = $connection->getProfileName();
@@ -435,192 +366,81 @@ SQL;
         $this->trackingEventClient->fireTrackingEvent($eventName, $information);
     }
 
-    private function cleanupMigration(string $runUuid, bool $removeOnlyWrittenData = false): void
-    {
-        $this->removeMigrationData($runUuid, $removeOnlyWrittenData);
-
-        $this->cache->clear();
-        $this->indexer->index(true);
-    }
-
-    private function isMigrationRunningWithGivenConnection(Context $context, string $connectionUuid): bool
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('connectionId', $connectionUuid),
-            new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING)
-        );
-
-        $runCount = $this->migrationRunRepo->search($criteria, $context)->getEntities()->count();
-
-        return $runCount > 0;
-    }
-
-    private function getMediaFileCounts(string $runId, Context $context, bool $onlyProcessed = true): int
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runId));
-        $criteria->addFilter(new EqualsFilter('written', true));
-        if ($onlyProcessed) {
-            $criteria->addFilter(new EqualsFilter('processed', true));
-        }
-        $criteria->addAggregation(new CountAggregation('count', 'id'));
-        $criteria->setLimit(1);
-        $result = $this->mediaFileRepository->aggregate($criteria, $context);
-        /** @var CountResult $countResult */
-        $countResult = $result->get('count');
-
-        return $countResult->getCount();
-    }
-
     /**
-     * @return array<string, int>
-     */
-    private function calculateFetchedTotals(string $runId): array
-    {
-        $queryBuilder = $this->dbalConnection->createQueryBuilder();
-        $results = $queryBuilder
-            ->select('entity, COUNT(id) AS total')
-            ->from('swag_migration_data')
-            ->where('HEX(run_id) = :runId')
-            ->andWhere('convert_failure = 0')
-            ->groupBy('entity')
-            ->setParameter('runId', $runId)
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        $mappedCounts = [];
-        foreach ($results as $result) {
-            $mappedCounts[(string) $result['entity']] = (int) $result['total'];
-        }
-
-        return $mappedCounts;
-    }
-
-    /**
-     * @param array<RunProgress> $runProgress
+     * @param array<int, string> $dataSelectionIds
      */
     private function updateMigrationRun(
         string $runUuid,
-        MigrationContextInterface $migrationContext,
-        EnvironmentInformation $environmentInformation,
-        array $runProgress,
-        Context $context
+        SwagMigrationConnectionEntity $connection,
+        Context $context,
+        array $dataSelectionIds
     ): void {
-        $connection = $migrationContext->getConnection();
-
-        $credentials = [];
-        if ($connection !== null) {
-            $credentials = $connection->getCredentialFields();
-        }
+        $credentials = $connection->getCredentialFields();
 
         if (empty($credentials)) {
             $credentials = [];
         }
 
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+        $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
+        $dataSelectionCollection = $this->getDataSelectionCollection($migrationContext, $environmentInformation, $dataSelectionIds);
+        $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
+
         $this->updateRunWithProgress($runUuid, $credentials, $environmentInformation, $runProgress, $context);
     }
 
-    /**
-     * @return array<RunProgress>
-     */
     private function calculateRunProgress(
         EnvironmentInformation $environmentInformation,
         DataSelectionCollection $dataSelectionCollection
-    ): array {
-        $totals = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
-        $runProgressArray = [];
-        $processMediaFiles = false;
-        $entityNamesInUse = [];
+    ): MigrationProgress {
+        $dataSetCollection = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
+        $overallTotal = 0;
 
-        foreach ($dataSelectionCollection as $dataSelection) {
-            $entities = [];
-            $sumTotal = 0;
-            foreach (\array_keys($dataSelection->getEntityNames()) as $entityName) {
-                if (isset($entityNamesInUse[$entityName])) {
-                    continue;
-                }
+        $dataSetCollection->map(function (ProgressDataSet $progressDataSet) use (&$overallTotal): void {
+            $overallTotal += $progressDataSet->getTotal();
+        });
 
-                $total = 0;
-                if (isset($totals[$entityName])) {
-                    $total = $totals[$entityName];
-                }
-
-                $entityProgress = new EntityProgress();
-                $entityProgress->setEntityName((string) $entityName);
-                $entityProgress->setCurrentCount(0);
-                $entityProgress->setTotal($total);
-
-                $entities[] = $entityProgress;
-                $sumTotal += $total;
-                $entityNamesInUse[$entityName] = $entityName;
-            }
-
-            if (empty($entities)) {
-                continue;
-            }
-
-            $runProgress = new RunProgress();
-            $runProgress->setId($dataSelection->getId());
-            $runProgress->setEntities($entities);
-            $runProgress->setCurrentCount(0);
-            $runProgress->setTotal($sumTotal);
-            $runProgress->setSnippet($dataSelection->getSnippet());
-            $runProgress->setProcessMediaFiles($dataSelection->getProcessMediaFiles());
-
-            if ($dataSelection->getProcessMediaFiles()) {
-                $processMediaFiles = true;
-            }
-
-            $runProgressArray[] = $runProgress;
+        $firstDataSet = $dataSetCollection->first();
+        if ($firstDataSet === null) {
+            throw MigrationException::noDataToMigrate();
         }
 
-        if ($processMediaFiles) {
-            $runProgressArray[] = $this->calculateProcessMediaFileProgress();
-        }
-
-        return $runProgressArray;
+        return new MigrationProgress(
+            0,
+            $overallTotal,
+            $dataSetCollection,
+            $firstDataSet->getEntityName(),
+            0
+        );
     }
 
-    private function calculateProcessMediaFileProgress(): RunProgress
-    {
-        $entityProgress = new EntityProgress();
-        $entityProgress->setEntityName(DefaultEntities::MEDIA);
-        $entityProgress->setCurrentCount(0);
-        $entityProgress->setTotal(0);
-
-        $runProgress = new RunProgress();
-        $runProgress->setId('processMediaFiles');
-        $runProgress->setEntities([$entityProgress]);
-        $runProgress->setCurrentCount(0);
-        $runProgress->setTotal(0);
-        $runProgress->setSnippet('swag-migration.index.selectDataCard.dataSelection.media');
-
-        return $runProgress;
-    }
-
-    private function isMigrationRunning(Context $context): bool
+    private function getCurrentConnection(Context $context): ?SwagMigrationConnectionEntity
     {
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('status', SwagMigrationRunEntity::STATUS_RUNNING));
-        $total = $this->migrationRunRepo->searchIds($criteria, $context)->getTotal();
+        $criteria->setLimit(1);
 
-        return $total > 0;
-    }
+        $setting = $this->generalSettingRepo->search($criteria, $context)->getEntities()->first();
 
-    private function createPlainMigrationRun(MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
+        if ($setting === null) {
             return null;
         }
 
+        $connectionId = $setting->getSelectedConnectionId();
+
+        if ($connectionId === null) {
+            return null;
+        }
+
+        return $this->connectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
+    }
+
+    private function createPlainMigrationRun(string $connectionId, Context $context): ?string
+    {
         $writtenEvent = $this->migrationRunRepo->create(
             [
                 [
-                    'connectionId' => $connection->getId(),
-                    'status' => SwagMigrationRunEntity::STATUS_RUNNING,
+                    'connectionId' => $connectionId,
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             $context
@@ -643,14 +463,13 @@ SQL;
     }
 
     /**
-     * @param array<int, string> $credentials
-     * @param array<RunProgress> $runProgress
+     * @param array<string, int|string> $credentials
      */
     private function updateRunWithProgress(
         string $runId,
         array $credentials,
         EnvironmentInformation $environmentInformation,
-        array $runProgress,
+        MigrationProgress $runProgress,
         Context $context
     ): void {
         $this->migrationRunRepo->update(
@@ -659,7 +478,7 @@ SQL;
                     'id' => $runId,
                     'environmentInformation' => $environmentInformation->jsonSerialize(),
                     'credentialFields' => $credentials,
-                    'progress' => $runProgress,
+                    'progress' => $runProgress->jsonSerialize(),
                 ],
             ],
             $context
@@ -674,19 +493,16 @@ SQL;
         return $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $environmentInformation, $dataSelectionIds);
     }
 
-    /**
-     * @return array<string, int>
-     */
-    private function calculateToBeFetchedTotals(EnvironmentInformation $environmentInformation, DataSelectionCollection $dataSelectionCollection): array
+    private function calculateToBeFetchedTotals(EnvironmentInformation $environmentInformation, DataSelectionCollection $dataSelectionCollection): ProgressDataSetCollection
     {
         $environmentInformationTotals = $environmentInformation->getTotals();
-        $totals = [];
+        $totals = new ProgressDataSetCollection();
         foreach ($dataSelectionCollection as $dataSelection) {
             foreach (\array_keys($dataSelection->getEntityNames()) as $entityName) {
-                if (isset($environmentInformationTotals[$entityName]) && !isset($totals[$entityName])) {
-                    $totals[$entityName] = $environmentInformationTotals[$entityName]->getTotal();
-                } elseif (!isset($totals[$entityName])) {
-                    $totals[$entityName] = 1;
+                if (isset($environmentInformationTotals[$entityName]) && $totals->get($entityName) === null) {
+                    $totals->set($entityName, new ProgressDataSet($entityName, $environmentInformationTotals[$entityName]->getTotal()));
+                } elseif ($totals->get($entityName) === null) {
+                    $totals->set($entityName, new ProgressDataSet($entityName, 1));
                 }
             }
         }
@@ -694,26 +510,11 @@ SQL;
         return $totals;
     }
 
-    private function removeMigrationData(string $runUuid, bool $onlyWritten = false): void
-    {
-        $qb = new QueryBuilder($this->dbalConnection);
-        $qb->delete($this->migrationDataDefinition->getEntityName())
-            ->andWhere('HEX(run_id) = :runId');
-
-        if ($onlyWritten === true) {
-            $qb->andWhere('written = 1');
-        }
-
-        $qb->setParameter('runId', $runUuid)
-            ->executeStatement();
-    }
-
     /**
      * @return array<string>
      */
     private function getSalesChannels(string $connectionId, Context $context): array
     {
-        /** @var array<int, string> $salesChannelUuids */
         $salesChannelUuids = $this->mappingService->getUuidsByEntity(
             $connectionId,
             SalesChannelDefinition::ENTITY_NAME,
@@ -741,58 +542,23 @@ SQL;
         return \reset($ids);
     }
 
-    private function cleanupUnwrittenRunData(MigrationContextInterface $migrationContext, Context $context): void
+    private function cleanupUnwrittenRunDataOfLastInactiveRun(Context $context): void
     {
-        $connection = $migrationContext->getConnection();
+        $lastInactiveRun = $this->getLastInactiveRun($context);
 
-        if ($connection === null) {
+        if ($lastInactiveRun === null) {
             return;
         }
 
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('connectionId', $connection->getId()),
-            new EqualsAnyFilter('status', [SwagMigrationRunEntity::STATUS_FINISHED, SwagMigrationRunEntity::STATUS_ABORTED])
-        );
-        $criteria->addSorting(new FieldSorting('createdAt', 'DESC'));
-        $criteria->setLimit(1);
-
-        $idSearchResult = $this->migrationRunRepo->searchIds($criteria, $context);
-
-        if ($idSearchResult->firstId() !== null) {
-            $lastRunUuid = $idSearchResult->firstId();
-
-            $qb = new QueryBuilder($this->dbalConnection);
-            $qb->delete($this->migrationDataDefinition->getEntityName())
-                ->andWhere('HEX(run_id) = :runId')
-                ->setParameter('runId', $lastRunUuid)
-                ->executeStatement();
-        }
+        $queryBuilder = new QueryBuilder($this->dbalConnection);
+        $queryBuilder->delete($this->migrationDataDefinition->getEntityName())
+            ->andWhere('run_id = :runId')
+            ->setParameter('runId', Uuid::fromHexToBytes($lastInactiveRun->getId()))
+            ->executeStatement();
     }
 
-    private function getMigrationDataCount(string $runUuid, Context $context): int
+    private function updateUnprocessedMediaFiles(string $connectionId, string $runUuid): void
     {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addAggregation(new CountAggregation('count', 'id'));
-        $result = $this->migrationDataRepository->aggregate($criteria, $context);
-
-        /** @var CountResult $countResult */
-        $countResult = $result->get('count');
-
-        return $countResult->getCount();
-    }
-
-    private function updateUnprocessedMediaFiles(MigrationContextInterface $migrationContext, string $runUuid): void
-    {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return;
-        }
-
-        $connectionId = $connection->getId();
-
         $sql = <<<SQL
 UPDATE swag_migration_media_file AS mediafile
 INNER JOIN swag_migration_run AS run ON run.id = mediafile.run_id

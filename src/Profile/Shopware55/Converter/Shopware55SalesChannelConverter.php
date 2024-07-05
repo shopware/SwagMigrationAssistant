@@ -19,6 +19,6 @@ class Shopware55SalesChannelConverter extends SalesChannelConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === SalesChannelDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === SalesChannelDataSet::getEntity();
     }
 }

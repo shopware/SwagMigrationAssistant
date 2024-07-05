@@ -34,6 +34,9 @@ class ThemeCompilingErrorRunLog extends BaseRunLogEntry
         return 'Theme compiling error';
     }
 
+    /**
+     * @return array{sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

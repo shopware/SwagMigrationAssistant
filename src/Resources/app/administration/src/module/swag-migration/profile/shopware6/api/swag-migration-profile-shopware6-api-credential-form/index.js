@@ -3,6 +3,7 @@ import template from './swag-migration-profile-shopware6-api-credential-form.htm
 const { Component } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-profile-shopware6major-api-credential-form', {
@@ -90,10 +91,6 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
             this.emitOnChildRouteReadyChanged(
                 this.areCredentialsValid(newInputCredentials),
             );
-        },
-
-        onKeyPressEnter() {
-            this.$emit('onTriggerPrimaryClick');
         },
     },
 });

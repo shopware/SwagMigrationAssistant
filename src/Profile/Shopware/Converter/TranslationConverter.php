@@ -158,6 +158,11 @@ abstract class TranslationConverter extends ShopwareConverter
                 case 'txtshortdescription':
                     $this->convertValue($productTranslation, 'metaDescription', $objectData, 'txtshortdescription');
 
+                    if (isset($productTranslation['metaDescription'])) {
+                        // meta description is limited to 255 characters in Shopware 6
+                        $productTranslation['metaDescription'] = \mb_substr($productTranslation['metaDescription'], 0, 255);
+                    }
+
                     break;
                 case 'txtkeywords':
                     $this->convertValue($productTranslation, 'keywords', $objectData, 'txtkeywords');
@@ -224,6 +229,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['ordernumber'],
             $this->context
         );
+        unset($data['ordernumber']);
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
@@ -278,7 +284,6 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['name'], $data['locale']);
 
-        /** @var array<string, mixed> $returnData */
         $returnData = $data;
         if (empty($returnData)) {
             $returnData = null;
@@ -517,6 +522,11 @@ abstract class TranslationConverter extends ShopwareConverter
         $this->convertValue($categoryTranslation, 'metaTitle', $objectData, 'metatitle');
         $this->convertValue($categoryTranslation, 'metaDescription', $objectData, 'metadescription');
         $this->convertValue($categoryTranslation, 'keywords', $objectData, 'metakeywords');
+
+        if (isset($categoryTranslation['metaDescription'])) {
+            // meta description is limited to 255 characters in Shopware 6
+            $categoryTranslation['metaDescription'] = \mb_substr($categoryTranslation['metaDescription'], 0, 255);
+        }
 
         foreach ($objectData as $key => $value) {
             if ($key === 'description') {

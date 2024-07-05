@@ -20,6 +20,6 @@ class Shopware57CustomerGroupConverter extends CustomerGroupConverter
     {
         return $migrationContext->getProfile()->getName() === Shopware57Profile::PROFILE_NAME
             && $migrationContext->getDataSet() !== null
-            && $migrationContext->getDataSet()::getEntity() === CustomerGroupDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CustomerGroupDataSet::getEntity();
     }
 }

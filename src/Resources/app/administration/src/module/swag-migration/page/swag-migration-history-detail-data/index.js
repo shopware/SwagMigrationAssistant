@@ -4,6 +4,7 @@ import './swag-migration-history-detail-data.scss';
 const { Component, Mixin } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-history-detail-data', {
@@ -58,15 +59,28 @@ Component.register('swag-migration-history-detail-data', {
         },
 
         entityGroups() {
-            return this.migrationRun.progress.filter((group) => (group.id !== 'processMediaFiles'));
+            if (!this.migrationRun.progress) {
+                return [];
+            }
+
+            return this.migrationRun.progress.dataSets.map((entitySelection) => {
+                let name = entitySelection.entityName;
+                if (this.$te(`swag-migration.index.selectDataCard.entities.${name}`)) {
+                    name = this.$tc(`swag-migration.index.selectDataCard.entities.${name}`);
+                }
+
+                return {
+                    id: entitySelection.entityName,
+                    name,
+                    total: entitySelection.total,
+                };
+            });
         },
     },
 
     methods: {
         getList() {
             this.isLoading = true;
-
-            // ToDo MIG-35 - Implement sorting
 
             this.total = this.entityGroups.length;
             const start = (this.page - 1) * this.limit;

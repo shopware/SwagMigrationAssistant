@@ -59,12 +59,12 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
         }
 
         foreach ($mappingArray as $premapping) {
-            if ($premapping['entity'] !== self::MAPPING_NAME) {
+            if ($premapping->getEntity() !== self::MAPPING_NAME) {
                 continue;
             }
 
-            foreach ($premapping['mapping'] as $mapping) {
-                $this->connectionPremappingValue = $mapping['destinationUuid'];
+            foreach ($premapping->getMapping() as $mapping) {
+                $this->connectionPremappingValue = $mapping->getDestinationUuid();
             }
         }
     }

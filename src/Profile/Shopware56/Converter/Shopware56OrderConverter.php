@@ -19,6 +19,6 @@ class Shopware56OrderConverter extends OrderConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware56Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === OrderDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === OrderDataSet::getEntity();
     }
 }

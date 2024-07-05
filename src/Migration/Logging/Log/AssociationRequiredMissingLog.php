@@ -46,6 +46,9 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
         return \sprintf('Associated %s not found', $entity);
     }
 
+    /**
+     * @return array{missingEntity: ?string, requiredFor: string, sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

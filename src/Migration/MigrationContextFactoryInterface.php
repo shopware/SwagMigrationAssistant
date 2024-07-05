@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -19,4 +20,6 @@ interface MigrationContextFactoryInterface
     public function createByProfileName(string $profileName): MigrationContextInterface;
 
     public function createByConnection(SwagMigrationConnectionEntity $connection): MigrationContextInterface;
+
+    public function createBySelectedConnection(Context $context): MigrationContextInterface;
 }

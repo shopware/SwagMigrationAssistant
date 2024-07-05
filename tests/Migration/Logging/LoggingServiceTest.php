@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Logging;
 
 use PHPUnit\Framework\TestCase;
+use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,7 +19,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
-use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
 #[Package('services-settings')]
 class LoggingServiceTest extends TestCase
@@ -27,6 +29,9 @@ class LoggingServiceTest extends TestCase
 
     private LoggingService $loggingService;
 
+    /**
+     * @var EntityRepository<SwagMigrationLoggingCollection>
+     */
     private EntityRepository $loggingRepo;
 
     private Context $context;
@@ -37,7 +42,7 @@ class LoggingServiceTest extends TestCase
     {
         $this->context = Context::createDefaultContext();
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->loggingService = new LoggingService($this->loggingRepo);
+        $this->loggingService = new LoggingService($this->loggingRepo, new NullLogger());
 
         $runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->runUuid = Uuid::randomHex();
@@ -46,6 +51,7 @@ class LoggingServiceTest extends TestCase
                 [
                     'id' => $this->runUuid,
                     'status' => 'inProgress',
+                    'step' => MigrationStep::FETCHING->value,
                 ],
             ],
             $this->context
@@ -70,8 +76,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(2, $result->getTotal());
 
         $validCount = 0;
-        /** @var SwagMigrationLoggingEntity $element */
-        foreach ($result->getElements() as $element) {
+        foreach ($result->getEntities() as $element) {
             if ($log1->getCode() === $element->getCode() || $log2->getCode() === $element->getCode()) {
                 ++$validCount;
             }

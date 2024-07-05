@@ -19,6 +19,6 @@ class Shopware54CurrencyConverter extends CurrencyConverter
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware54Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === CurrencyDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CurrencyDataSet::getEntity();
     }
 }

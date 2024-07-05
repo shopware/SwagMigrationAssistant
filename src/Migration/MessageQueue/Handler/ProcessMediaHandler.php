@@ -11,10 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\NoFileSystemPermissionsException;
-use SwagMigrationAssistant\Exception\ProcessorNotFoundException;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Exception\NoConnectionFoundException;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -28,6 +26,9 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
+/**
+ * @internal
+ */
 #[AsMessageHandler]
 #[Package('services-settings')]
 final class ProcessMediaHandler
@@ -46,7 +47,7 @@ final class ProcessMediaHandler
     }
 
     /**
-     * @throws EntityNotExistsException
+     * @throws MigrationException
      */
     public function __invoke(ProcessMediaMessage $message): void
     {
@@ -55,25 +56,25 @@ final class ProcessMediaHandler
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunId()]), $context)->first();
 
         if (!$run instanceof SwagMigrationRunEntity) {
-            throw new EntityNotExistsException(SwagMigrationRunEntity::class, $message->getRunId());
+            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $message->getRunId());
         }
 
         $connection = $run->getConnection();
         if ($connection === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
+            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $message->getRunId());
         }
 
         $migrationContext = $this->migrationContextFactory->create($run, 0, 0, $message->getEntityName());
 
         if ($migrationContext === null) {
-            throw new EntityNotExistsException(SwagMigrationConnectionEntity::class, $message->getRunId());
+            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $message->getRunId());
         }
 
         if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $message->getRunId(),
                 $message->getEntityName(),
-                new NoFileSystemPermissionsException()
+                MigrationException::noFileSystemPermissions(),
             ));
             $this->loggingService->saveLogging($context);
 
@@ -91,9 +92,9 @@ final class ProcessMediaHandler
 
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
-            $workload = $processor->process($migrationContext, $context, $workload, $message->getFileChunkByteSize());
-            $this->processFailures($context, $migrationContext, $processor, $workload, $message->getFileChunkByteSize());
-        } catch (ProcessorNotFoundException $e) {
+            $workload = $processor->process($migrationContext, $context, $workload);
+            $this->processFailures($context, $migrationContext, $processor, $workload);
+        } catch (NoConnectionFoundException $e) {
             $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
                 $message->getRunId(),
                 $message->getEntityName(),
@@ -120,8 +121,7 @@ final class ProcessMediaHandler
         Context $context,
         MigrationContextInterface $migrationContext,
         MediaFileProcessorInterface $processor,
-        array $workload,
-        int $fileChunkByteSize
+        array $workload
     ): void {
         for ($i = 0; $i < self::MEDIA_ERROR_THRESHOLD; ++$i) {
             $errorWorkload = [];
@@ -136,7 +136,7 @@ final class ProcessMediaHandler
                 break;
             }
 
-            $workload = $processor->process($migrationContext, $context, $errorWorkload, $fileChunkByteSize);
+            $workload = $processor->process($migrationContext, $context, $errorWorkload);
         }
     }
 }

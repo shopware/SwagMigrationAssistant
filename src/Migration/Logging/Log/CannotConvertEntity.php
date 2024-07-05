@@ -45,6 +45,9 @@ class CannotConvertEntity extends BaseRunLogEntry
         return \sprintf('The %s entity could not be converted', $entity);
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

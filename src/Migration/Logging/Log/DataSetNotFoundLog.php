@@ -36,6 +36,9 @@ class DataSetNotFoundLog extends BaseRunLogEntry
         return 'DataSet not found';
     }
 
+    /**
+     * @return array{profileName: string, entity: ?string, sourceId: ?string}
+     */
     public function getParameters(): array
     {
         return [

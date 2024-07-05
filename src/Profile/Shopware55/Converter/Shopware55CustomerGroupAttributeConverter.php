@@ -19,6 +19,6 @@ class Shopware55CustomerGroupAttributeConverter extends CustomerGroupAttributeCo
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware55Profile::PROFILE_NAME
-            && $migrationContext->getDataSet()::getEntity() === CustomerGroupAttributeDataSet::getEntity();
+            && $this->getDataSetEntity($migrationContext) === CustomerGroupAttributeDataSet::getEntity();
     }
 }

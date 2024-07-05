@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
+use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Util\AccessKeyHelper;
 use Shopware\Core\Framework\Context;
@@ -16,6 +18,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Country\CountryCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -37,6 +41,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
     protected string $oldIdentifier;
 
+    /**
+     * @param EntityRepository<PaymentMethodCollection> $paymentRepository
+     * @param EntityRepository<ShippingMethodCollection> $shippingMethodRepo
+     * @param EntityRepository<CountryCollection> $countryRepository
+     * @param EntityRepository<SalesChannelCollection> $salesChannelRepo
+     */
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -71,7 +81,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityUuid'];
 
         if (isset($data['children']) && \count($data['children']) > 0) {
             $this->setRelationMappings($data['children']);
@@ -203,7 +213,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         ];
 
         $converted['typeId'] = Defaults::SALES_CHANNEL_TYPE_STOREFRONT;
-        $this->getSalesChannelTranslation($converted, $data);
+        $this->setSalesChannelTranslation($converted, $data);
         $this->convertValue($converted, 'name', $data, 'name');
         $converted['accessKey'] = AccessKeyHelper::generateAccessKey('sales-channel');
 
@@ -239,10 +249,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
         $this->updateMainMapping($migrationContext, $context);
 
-        return new ConvertStruct($converted, $returnData, $this->mainMapping['id']);
+        return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
-    protected function getSalesChannelTranslation(array &$salesChannel, array $data): void
+    /**
+     * @param array<mixed> $salesChannel
+     * @param array<mixed> $data
+     */
+    protected function setSalesChannelTranslation(array &$salesChannel, array $data): void
     {
         $language = $this->mappingService->getDefaultLanguage($this->context);
         if ($language === null) {
@@ -291,7 +305,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $id = $mapping['entityUuid'];
+                $id = (string) $mapping['entityUuid'];
             }
         }
 
@@ -316,7 +330,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $id = $mapping['entityUuid'];
+                $id = (string) $mapping['entityUuid'];
             }
         }
 
@@ -333,6 +347,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $this->countryRepository->searchIds($criteria, Context::createDefaultContext())->firstId() ?? '';
     }
 
+    /**
+     * @param array<mixed> $languageIds
+     */
     protected function filterExistingLanguageSalesChannelRelation(string $salesChannelUuid, array &$languageIds): void
     {
         $insertLanguages = [];
@@ -350,6 +367,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $languageIds = $insertLanguages;
     }
 
+    /**
+     * @param array<mixed> $converted
+     */
     protected function filterDisabledPackLanguages(array &$converted): void
     {
         if ($this->languagePackRepo === null) {
@@ -384,6 +404,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<mixed>
+     */
     protected function getSalesChannelLanguages(string $languageUuid, array $data, Context $context): array
     {
         $languages = [];
@@ -412,6 +437,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         return $languages;
     }
 
+    /**
+     * @param array<mixed> $children
+     */
     private function setRelationMappings(array $children): void
     {
         if (!isset($this->mainMapping['entityUuid'])) {

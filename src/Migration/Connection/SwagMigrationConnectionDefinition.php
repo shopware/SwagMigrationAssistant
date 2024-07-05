@@ -21,6 +21,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Run\PremappingField;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 
@@ -50,7 +51,7 @@ class SwagMigrationConnectionDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             (new StringField('name', 'name'))->addFlags(new Required()),
             (new JsonField('credential_fields', 'credentialFields'))->addFlags(new WriteProtected(MigrationContext::SOURCE_CONTEXT)),
-            new JsonField('premapping', 'premapping'),
+            new PremappingField('premapping', 'premapping'),
             (new StringField('profile_name', 'profileName'))->addFlags(new Required()),
             (new StringField('gateway_name', 'gatewayName'))->addFlags(new Required()),
             new CreatedAtField(),

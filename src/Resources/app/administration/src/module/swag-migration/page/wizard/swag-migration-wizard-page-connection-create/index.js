@@ -5,14 +5,15 @@ const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
     inject: {
-        /** @var {MigrationApiService} migrationService */
-        migrationService: 'migrationService',
+        /** @var {MigrationApiService} migrationApiService */
+        migrationApiService: 'migrationApiService',
     },
 
     props: {
@@ -48,7 +49,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 this.selection.profile !== null &&
                 this.selection.gateway !== null &&
                 this.selection.connectionName !== null &&
-                this.selection.connectionName.length > 5
+                this.selection.connectionName.length > 0
             );
         },
 
@@ -81,17 +82,14 @@ Component.register('swag-migration-wizard-page-connection-create', {
     },
 
     methods: {
-        createdComponent() {
+        async createdComponent() {
             this.setIsLoading(true);
             this.emitOnChildRouteReadyChanged(false);
 
-            return this.migrationService.getProfiles().then((profiles) => {
-                this.profiles = profiles;
-                this.pushLinkToProfiles();
-
-                this.selectDefaultProfile();
-                this.setIsLoading(false);
-            });
+            this.profiles = await this.migrationApiService.getProfiles();
+            this.pushLinkToProfiles();
+            await this.selectDefaultProfile();
+            this.setIsLoading(false);
         },
 
         pushLinkToProfiles() {
@@ -120,10 +118,9 @@ Component.register('swag-migration-wizard-page-connection-create', {
             return `${item.sourceSystemName} ${item.version} - <i>${item.author}</i>`;
         },
 
-        selectDefaultProfile() {
-            this.onSelectProfile('shopware55').then(() => {
-                this.onSelectGateway('api');
-            });
+        async selectDefaultProfile() {
+            await this.onSelectProfile('shopware55');
+            this.onSelectGateway('api');
         },
 
         setIsLoading(value) {
@@ -149,7 +146,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
                 this.selection.gateway = null;
 
                 if (this.selection.profile !== null) {
-                    this.migrationService.getGateways(this.selection.profile).then((gateways) => {
+                    this.migrationApiService.getGateways(this.selection.profile).then((gateways) => {
                         this.gateways = gateways;
                         this.selection.gateway = null;
 
@@ -184,10 +181,6 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         emitOnChildRouteReadyChanged(isReady) {
             this.$emit('onChildRouteReadyChanged', isReady);
-        },
-
-        onKeyPressEnter() {
-            this.$emit('onTriggerPrimaryClick');
         },
     },
 });

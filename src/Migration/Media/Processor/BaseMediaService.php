@@ -42,7 +42,7 @@ abstract class BaseMediaService
     }
 
     /**
-     * @param list<string> $mediaIds
+     * @param array<int, string> $mediaIds
      *
      * @return Media
      */

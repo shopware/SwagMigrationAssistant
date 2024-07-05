@@ -37,6 +37,9 @@ class ExceptionRunLog extends BaseRunLogEntry
         return 'An exception occurred';
     }
 
+    /**
+     * @return array{entity: ?string, sourceId: ?string, exceptionCode: int|string, exceptionMessage: ?string, exceptionFile: string, exceptionLine: int, exceptionTrace: ?string, description: string}
+     */
     public function getParameters(): array
     {
         $entity = $this->getEntity() ?? '-';

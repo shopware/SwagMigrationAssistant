@@ -35,26 +35,6 @@ class SwagMigrationRunDefinition extends EntityDefinition
         return self::ENTITY_NAME;
     }
 
-    public function defineFields(): FieldCollection
-    {
-        return new FieldCollection([
-            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
-            new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class),
-            new JsonField('environment_information', 'environmentInformation'),
-            new JsonField('progress', 'progress'),
-            new JsonField('premapping', 'premapping'),
-            new StringField('user_id', 'userId'),
-            new StringField('access_token', 'accessToken'),
-            (new StringField('status', 'status'))->addFlags(new Required()),
-            new CreatedAtField(),
-            new UpdatedAtField(),
-            new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, 'id', true),
-            new OneToManyAssociationField('data', SwagMigrationDataDefinition::class, 'run_id'),
-            new OneToManyAssociationField('mediaFiles', SwagMigrationMediaFileDefinition::class, 'run_id'),
-            new OneToManyAssociationField('logs', SwagMigrationLoggingDefinition::class, 'run_id'),
-        ]);
-    }
-
     public function getCollectionClass(): string
     {
         return SwagMigrationRunCollection::class;
@@ -63,5 +43,22 @@ class SwagMigrationRunDefinition extends EntityDefinition
     public function getEntityClass(): string
     {
         return SwagMigrationRunEntity::class;
+    }
+
+    protected function defineFields(): FieldCollection
+    {
+        return new FieldCollection([
+            (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class),
+            new JsonField('environment_information', 'environmentInformation'),
+            new MigrationProgressField('progress', 'progress'),
+            (new StringField('step', 'step'))->addFlags(new Required()),
+            new CreatedAtField(),
+            new UpdatedAtField(),
+            new ManyToOneAssociationField('connection', 'connection_id', SwagMigrationConnectionDefinition::class, 'id', true),
+            new OneToManyAssociationField('data', SwagMigrationDataDefinition::class, 'run_id'),
+            new OneToManyAssociationField('mediaFiles', SwagMigrationMediaFileDefinition::class, 'run_id'),
+            new OneToManyAssociationField('logs', SwagMigrationLoggingDefinition::class, 'run_id'),
+        ]);
     }
 }

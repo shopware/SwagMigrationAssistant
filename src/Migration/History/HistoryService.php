@@ -18,15 +18,14 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Bucket
 use Shopware\Core\Framework\DataAbstractionLayer\Search\AggregationResult\Metric\CountResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\EntityNotExistsException;
-use SwagMigrationAssistant\Exception\MigrationIsRunningException;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 #[Package('services-settings')]
@@ -35,6 +34,10 @@ class HistoryService implements HistoryServiceInterface
     private const LOG_FETCH_LIMIT = 50;
     private const LOG_TIME_FORMAT = 'd.m.Y h:i:s e';
 
+    /**
+     * @param EntityRepository<SwagMigrationRunCollection> $runRepo
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     */
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly EntityRepository $runRepo,
@@ -48,14 +51,7 @@ class HistoryService implements HistoryServiceInterface
     ): array {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addFilter(
-            new NotFilter(
-                NotFilter::CONNECTION_AND,
-                [
-                    new EqualsFilter('level', LogEntryInterface::LOG_LEVEL_INFO),
-                ]
-            )
-        );
+
         $criteria->addAggregation(
             new TermsAggregation(
                 'count',
@@ -69,7 +65,13 @@ class HistoryService implements HistoryServiceInterface
                     null,
                     new TermsAggregation(
                         'entity',
-                        'entity'
+                        'entity',
+                        null,
+                        null,
+                        new TermsAggregation(
+                            'level',
+                            'level'
+                        )
                     )
                 )
             )
@@ -108,7 +110,6 @@ class HistoryService implements HistoryServiceInterface
             }
 
             while ($offset < $total) {
-                /** @var SwagMigrationLoggingCollection $logChunk */
                 $logChunk = $this->getLogChunk($runUuid, $offset, $context);
 
                 foreach ($logChunk->getElements() as $logEntry) {
@@ -128,15 +129,14 @@ class HistoryService implements HistoryServiceInterface
 
     public function clearDataOfRun(string $runUuid, Context $context): void
     {
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->first();
+        $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
 
         if ($run === null) {
-            throw new EntityNotExistsException('run', $runUuid);
+            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
         }
 
-        if ($run->getStatus() === SwagMigrationRunEntity::STATUS_RUNNING) {
-            throw new MigrationIsRunningException();
+        if ($run->getStep()->isRunning()) {
+            throw MigrationException::migrationIsAlreadyRunning();
         }
 
         $this->connection->executeStatement('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
@@ -147,7 +147,11 @@ class HistoryService implements HistoryServiceInterface
 
     public function isMediaProcessing(): bool
     {
-        return $this->connection->executeQuery('SELECT 1 FROM messenger_messages WHERE queue_name = :name', ['name' => ProcessMediaMessage::class])->fetchOne();
+        $unprocessedCount = $this->connection->executeQuery(
+            'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
+        )->fetchOne();
+
+        return $unprocessedCount !== '0';
     }
 
     private function extractBucketInformation(Bucket $bucket): array
@@ -160,11 +164,19 @@ class HistoryService implements HistoryServiceInterface
         $entityResult = $titleBucket->getResult();
         $entityString = empty($entityResult->getBuckets()) ? '' : $entityResult->getBuckets()[0]->getKey();
 
+        $levelString = '';
+        if ($entityString !== '') {
+            /** @var TermsResult $levelResult */
+            $levelResult = $entityResult->getBuckets()[0]->getResult();
+            $levelString = empty($levelResult->getBuckets()) ? '' : $levelResult->getBuckets()[0]->getKey();
+        }
+
         return [
             'code' => $bucket->getKey(),
             'count' => $bucket->getCount(),
             'titleSnippet' => $titleBucket->getKey(),
             'entity' => $entityString,
+            'level' => $levelString,
         ];
     }
 
@@ -185,22 +197,18 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria([$runUuid]);
         $criteria->addAssociation('connection');
-        $run = $this->runRepo->search($criteria, $context)->getElements();
-        if (!isset($run[$runUuid])) {
-            return null;
-        }
 
-        /** @var SwagMigrationRunEntity|null $migration */
-        $migration = $run[$runUuid];
-
-        return $migration;
+        return $this->runRepo->search($criteria, $context)->getEntities()->get($runUuid);
     }
 
+    /**
+     * @return EntityCollection<SwagMigrationLoggingEntity>
+     */
     private function getLogChunk(string $runUuid, int $offset, Context $context): EntityCollection
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
-        $criteria->addSorting(new FieldSorting('createdAt', FieldSorting::ASCENDING));
+        $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $criteria->setOffset($offset);
         $criteria->setLimit(self::LOG_FETCH_LIMIT);
 
@@ -239,43 +247,34 @@ class HistoryService implements HistoryServiceInterface
             . 'Status: %s' . \PHP_EOL
             . 'Created at: %s' . \PHP_EOL
             . 'Updated at: %s' . \PHP_EOL
-            . 'Last control user id: %s' . \PHP_EOL
             . 'Connection id: %s' . \PHP_EOL
             . 'Connection name: %s' . \PHP_EOL
             . 'Profile: %s' . \PHP_EOL
             . 'Gateway: %s' . \PHP_EOL . \PHP_EOL
-            . 'Selected data:' . \PHP_EOL . '%s' . \PHP_EOL
+            . 'Selected dataSets:' . \PHP_EOL . '%s' . \PHP_EOL
             . '--------------------Log-entries---------------------' . \PHP_EOL,
             \date(self::LOG_TIME_FORMAT),
             $run->getId(),
-            $run->getStatus() ?? '-',
+            $run->getStepValue(),
             $createdAt,
             $updatedAt,
-            $run->getUserId() ?? '-',
             $run->getConnectionId() ?? '-',
             $connectionName,
             $profileName,
             $gatewayName,
-            $this->getFormattedSelectedData($run->getProgress())
+            $this->getFormattedSelectedDataSets($run->getProgress())
         );
     }
 
-    private function getFormattedSelectedData(?array $progress): string
+    private function getFormattedSelectedDataSets(?MigrationProgress $progress): string
     {
-        if ($progress === null || \count($progress) < 1) {
+        if ($progress === null || $progress->getDataSets()->count() < 1) {
             return '';
         }
 
         $output = '';
-        foreach ($progress as $group) {
-            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $group['id'], $group['total']);
-            foreach ($group['entities'] as $entity) {
-                $output .= \sprintf(
-                    "\t- %s (total: %d)" . \PHP_EOL,
-                    $entity['entityName'],
-                    $entity['total']
-                );
-            }
+        foreach ($progress->getDataSets() as $dataSet) {
+            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $dataSet->getEntityName(), $dataSet->getTotal());
         }
 
         return $output;
@@ -283,12 +282,18 @@ class HistoryService implements HistoryServiceInterface
 
     private function getSuffixLogInformation(SwagMigrationRunEntity $run): string
     {
+        $connection = $run->getConnection();
+        $premapping = 'Associated connection not found';
+        if ($connection !== null) {
+            $premapping = $connection->getPremapping();
+        }
+
         return \sprintf(
             '--------------------Additional-metadata---------------------' . \PHP_EOL
             . 'Environment information {JSON}:' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
             . 'Premapping {JSON}: ----------------------------------------------------' . \PHP_EOL . '%s' . \PHP_EOL,
             \json_encode($run->getEnvironmentInformation(), \JSON_PRETTY_PRINT),
-            \json_encode($run->getPremapping(), \JSON_PRETTY_PRINT)
+            \json_encode($premapping, \JSON_PRETTY_PRINT)
         );
     }
 }

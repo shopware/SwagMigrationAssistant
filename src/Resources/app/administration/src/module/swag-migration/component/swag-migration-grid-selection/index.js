@@ -4,6 +4,7 @@ import './swag-migration-grid-selection.scss';
 const { Component, Mixin } = Shopware;
 
 /**
+ * @private
  * @package services-settings
  */
 Component.register('swag-migration-grid-selection', {
@@ -31,6 +32,15 @@ Component.register('swag-migration-grid-selection', {
             limit: 10,
             paginationSteps: [5, 10, 15, 20, 25, 30],
         };
+    },
+
+    watch: {
+        choices() {
+            this.getList();
+        },
+        mapping() {
+            this.getList();
+        },
     },
 
     methods: {

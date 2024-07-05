@@ -1,0 +1,658 @@
+{
+  "swag-migration": {
+    "dashboard": {
+      "title": "Migrations-Assistent",
+      "headline": "Beginne mit Deinem Umzug zu Shopware",
+      "information": "Verbinde zunächst Dein bisheriges Shopsystem – der Migrations-Assistent hilft Dir dabei.",
+      "button": "Migrations-Assistenten öffnen",
+      "shopInfoCard": {
+          "header": "Migrations-Assistent",
+          "button": "Öffnen",
+          "resetButton": "Abschließen"
+      }
+    },
+    "general": {
+      "mainMenuItemGeneral": "Migrations-Assistent",
+      "descriptionTextModule": "Modul zum Migrieren der Daten",
+      "tabMain": "Übersicht",
+      "tabHistory": "Historie",
+      "tabDataSelector": "Datenauswahl"
+    },
+    "wizard": {
+      "buttonAbort": "Abbrechen",
+      "buttonLetsGo": "Starten",
+      "buttonConnectionCreate": "Verbindung anlegen",
+      "buttonConnectionSelect": "Verbindung wechseln",
+      "buttonConnect": "Verbindung herstellen",
+      "buttonToProfileInformation": "Information",
+      "buttonNext": "Fortfahren",
+      "buttonFinish": "Fertig",
+      "buttonEdit": "Verbindung bearbeiten",
+      "buttonLater": "Schließen",
+      "buttonUseSsl": "Nutze HTTPS",
+      "pages": {
+        "introduction": {
+          "title": "Migrations-Assistent",
+          "contentHeadline": "Lass uns was bewegen",
+          "contentInformation": "Gemeinsam verbinden wir Dein Shopsystem mit Shopware 6. Im Anschluss daran kannst Du mit Hilfe des Migrations-Assistenten Schritt für Schritt Deine Daten migrieren."
+        },
+        "profileInstallation": {
+          "title": "Migration - Shopsystem-Profile",
+          "content": "Wähle das Shopsystem, von dem aus Deine Daten migriert werden sollen und installiere das passende Profil-Plugin",
+          "availabilityHeadline": "Bisher verfügbar:",
+          "availableVersionHeadline": "Unterstützt:",
+          "installedHint": "Installiert",
+          "installationButton": "Installieren",
+          "shopwareProfileHeadline": "Shopware - Profil",
+          "magentoProfileHeadline": "Magento - Profil",
+          "profileManufacturer": "shopware AG"
+        },
+        "connectionSelect": {
+          "title": "Migration - Verbindung wechseln",
+          "contentInformation": "Wähle eine bestehende Verbindung aus der Liste aus, um Daten zu aktualisieren.",
+          "connectionLabel": "Name der Verbindung",
+          "connectionPlaceholder": "Bitte Verbindung auswählen"
+        },
+        "connectionCreate": {
+          "title": "Migration - Neue Verbindung anlegen",
+          "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
+          "profileLabel": "Shopsystem-Profil",
+          "profilePlaceholder": "Bitte wählen",
+          "profileInstall": "Weiteres Profil installieren",
+          "gatewayLabel": "Schnittstelle",
+          "gatewayTooltip": "Bezeichnet die Art der Verbindung zwischen den Systemen.",
+          "gatewayPlaceholder": "Bitte wählen",
+          "connectionLabel": "Verbindungsname",
+          "connectionPlaceholder": "Namen eintragen",
+          "connectionTooltip": "Einen eindeutigen Namen für die Verbindung eingeben.",
+          "gateways": {
+            "shopwareApi": "API",
+            "shopwareLocal": "Lokale Datenbank"
+          },
+          "hint": {
+            "local": "Beachte: Die Shopsysteme müssen auf demselben Server liegen. Du benötigst die Zugangsdaten der Datenbank."
+          }
+        },
+        "profileInformation": {
+          "title": "Migration - Verbindung vorbereiten",
+          "shopware55Api": {
+            "contentTitle": "Installiere den Migration Connector",
+            "contentInformation": "Für die Migration ist die Installation des kostenlosen Plugins „Migration Connector“ erforderlich. Dieses findest Du in Deinem Shopware 5 Backend unter: Plugin Manager > Erweiterungen > Migrationstools. Bitte installiere und aktiviere das Plugin.",
+            "pluginLink": "Mehr Informationen zum Plugin"
+          },
+          "shopware6Api": {
+            "contentTitle": "Anforderungen",
+            "plugin": {
+              "title": "Erweiterung",
+              "description": "Installiere die Migrations-Assistent-Erweiterung im Quellsystem.",
+              "linkText": "Mehr zur Migrations-Assistent-Erweiterung",
+              "link": "https://store.shopware.com/swag257162657297f/migrations-assistent.html"
+            },
+            "integration": {
+              "title": "Integration",
+              "description": "Lege eine Integration im Quellsystem unter Einstellungen > System > Integrationen an. Im nächsten Schritt benötigst Du die dort erzeugte Zugangs-ID und den Sicherheitsschlüssel.",
+              "linkText": "Mehr zu Integrationen",
+              "link": "https://docs.shopware.com/de/shopware-6-de/settings/system/integrationen"
+            }
+          }
+        },
+        "credentials": {
+          "title": "Migration - Verbindung bearbeiten",
+          "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
+          "shopware55": {
+            "api": {
+              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 5 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung von Deinem Shopware 5 Backend.",
+              "apiKeyLabel": "API-Schlüssel",
+              "apiKeyTooltip": "Der API-Schlüssel dient der Sicherheit und Identifizierung.",
+              "apiKeyPlaceholder": "Schlüssel einfügen",
+              "apiUserLabel": "Benutzername (API-User)",
+              "apiUserTooltip": "Benutzername Deines Shopware 5 Backends.",
+              "apiUserPlaceholder": "Login-Benutzernamen eintragen",
+              "endpointLabel": "Shop-Domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"
+            },
+            "local": {
+              "contentInformation": "Wir benötigen noch Zugangsdaten um eine Verbindung zu Deiner Datenbank von Shopware 5 herstellen zu können.",
+              "dbHostLabel": "Host",
+              "dbHostPlaceholder": "Host eintragen",
+              "dbPortLabel": "Port",
+              "dbNameLabel": "Datenbankname",
+              "dbNamePlaceholder": "Name eintragen",
+              "dbUserLabel": "Benutzername",
+              "dbUserPlaceholder": "Name eintragen",
+              "dbPasswordLabel": "Passwort",
+              "dbPasswordPlaceholder": "Passwort eintragen",
+              "installationRoot": "Ordner der Shopinstallation",
+              "installationRootPlaceholder": "Root-Verzeichnis eingeben"
+            }
+          },
+          "shopware6": {
+            "api": {
+              "contentInformation": "Du benötigst gültige API-Anmeldeinformationen, um eine Verbindung zwischen Deiner Quell- und Ziel-Instanz von Shopware 6 herzustellen. Diese erhälst Du, wenn Du eine Integration in Deinem Quellsystem erstellst.",
+              "apiPasswordLabel": "Sicherheitsschlüssel",
+              "apiPasswordTooltip": "Der Sicherheitsschlüssel dient der Sicherheit und Identifizierung.",
+              "apiPasswordPlaceholder": "Sicherheitsschlüssel einfügen",
+              "apiUserLabel": "Zugangs-ID",
+              "apiUserTooltip": "Zugangs-ID Deiner Integration im Quellsystem",
+              "apiUserPlaceholder": "Zugangs-ID eintragen",
+              "endpointLabel": "Shop-Domain",
+              "endpointPlaceholder": "www.demoshop.com",
+              "endpointSSLLabel": "Mein Shop verwendet eine sichere Verbindung (SSL)"
+            }
+          },
+          "statusTitle": "Verbindungscheck",
+          "success": {
+            "contentTitle": "Erfolgreich verbunden",
+            "contentInformation": "Du kannst mit Deiner Migration beginnen.",
+            "undefinedErrorMsg": "Bei der Prüfung des SSL-Zertifikats der angegebenen Shop-Domain ist ein unbekannter Fehler aufgetreten.",
+            "SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID": "Wir haben festgestellt, dass das SSL-Zertifikat der angegebenen Shop-Domain nicht sicher ist. Überprüfe das Zertifikat zur eigenen Sicherheit."
+          },
+          "error": {
+            "contentTitle": "Keine Verbindung hergestellt",
+            "alertErrorTitle": "Achtung",
+            "undefinedErrorMsg": "Interner Server-Fehler. Bitte versuche es erneut.",
+            "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
+            "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
+            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Migration Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
+            "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Die Datenbank Verbindung konnte nicht hergestellt werden.",
+            "SWAG_MIGRATION__IS_RUNNING": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten, bis die Migration abgeschlossen ist.",
+            "SWAG_MIGRATION__SSL_REQUIRED": "Wir haben festgestellt, dass die angegebene Shop-Domain eine SSL-Verbindung erfordert."
+          }
+        }
+      }
+    },
+    "index": {
+      "title": "Übersicht",
+      "migrateButton": "Migration starten",
+      "savePremapping": {
+          "saveButton": "Premapping speichern",
+          "message": "Das Premapping wurde erfolgreich gespeichert."
+      },
+      "pauseButton": "Pausieren",
+      "continueButton": "Fortsetzen",
+      "abortButton": "Beenden",
+      "finishButton": "Fertig",
+      "backToOverviewButton": "Zur Übersicht",
+      "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
+      "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
+      "shopwareMajorVersionText": "Wir haben festgestellt, dass die Version deines Quellsystems {sourceSystem} nicht der Version des Zielsystems {targetSystem} entspricht. Bitte stelle sicher, dass beide Systeme in der gleichen Major-Version vorliegen, bevor Du mit der Migration startest.",
+      "shopInfoCard": {
+        "cardTitle": "Shopsystem",
+        "refreshTooltip": "Prüfe die Verbindung zum Quellsystem",
+        "buttonEditSettings": "Verbindung bearbeiten",
+        "buttonCreateConnection": "Neue Verbindung anlegen",
+        "buttonCreateInitialConnection": "Initiale Verbindung anlegen",
+        "buttonSelectConnection": "Verbindung wechseln",
+        "buttonRemoveCredentials": "Zugangsdaten löschen",
+        "buttonProfileInstallation": "Weiteres Profil installieren",
+        "buttonResetChecksums": "Reset der Prüfsummen",
+        "buttonResetMigration": "Migration abschließen",
+        "connected": "Verbunden",
+        "notConnected": "Nicht verbunden",
+        "noConnection": "Keine Verbindung",
+        "profile": "System-Profil:",
+        "gateway": "Schnittstelle:",
+        "connectionCheck": "Verbindungscheck:",
+        "lastMigration": "Letzte Migration:",
+        "noMigrationDoneYet": "bisher keine durchgeführt",
+        "removeCredentialsConfirmDialog": {
+          "title": "Zugangsdaten löschen",
+          "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
+          "contentHint": "Möchtest Du die aktuellen Zugangsdaten löschen?",
+          "abortButtonText": "Abbrechen",
+          "confirmButtonText": "Ja, löschen"
+        },
+        "resetChecksumsConfirmDialog": {
+          "title": "Reset der Prüfsummen",
+          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration alle Daten aus dem Quellsystem noch einmal berücksichtigt. Dies beinhaltet auch bereits migrierte, unveränderte Datensätze. <br><br><strong>Wichtig:</strong> Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, werden wieder überschrieben. Die Daten aus dem Quellsystem haben Vorrang.",
+          "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
+          "abortButtonText": "Abbrechen",
+          "confirmButtonText": "Ja, zurücksetzen"
+        },
+        "resetMigrationConfirmDialog": {
+            "title": "Die Migration abschließen",
+            "header": "Deine Shopdaten sind fertig migriert?",
+            "content": "Super! Schließe dann jetzt die Migration ab, um temporäre und ungenutzte Dateien aufzuräumen. <strong>Bitte beachte:</strong> Das Abschließen der Migration ist endgültig. Du kannst danach keine Migration mehr über Deine aktuelle Verbindung durchführen.",
+            "contentHint": "Möchtest Du die Migration jetzt abschließen?",
+            "abortButtonText": "Abbrechen",
+            "confirmButtonText": "Jetzt abschließen",
+            "errorNotification": {
+                "title": "Fehler bei Abschluss der Migration",
+                "message": "Eine Migration wird zur Zeit durchgeführt."
+            }
+        }
+      },
+      "assistantCard": {
+        "title": "Information",
+        "headline": "So funktioniert die Migration",
+        "finish": "Fertig!",
+        "connection": {
+          "title": "Eine Verbindung anlegen",
+          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann alle von Dir ausgewählten Daten migrieren.",
+          "link": "Hilfe & Dokumentation"
+        },
+        "dataSelection": {
+          "title": "Daten für die Migration auswählen",
+          "content": "Wähle aus, welche Daten migiert werden sollen. Auch Plugin-Daten können migriert werden, wenn das zugehörige Plugin in Shopware 6 installiert ist. Die Verfügbarkeit des Plugins kannst Du in Deinem Shopware-Account prüfen."
+        },
+        "migrationOverview": {
+          "title": "Die Migration im Überblick",
+          "content": "1. Ein Datencheck prüft Deine Daten. Gegebenfalls wird eine Zuordnung benötigt.\n2. Die Daten werden von Deinem System gelesen und zugeordnet.\n3. Die Daten werden in Shopware 6 geschrieben.\n4. Die Medien werden heruntergeladen."
+        }
+      },
+      "selectDataCard": {
+        "cardTitle": "Datenauswahl",
+        "dataHeader": "Daten",
+        "dataTypes": {
+          "basicData": "Shopdaten",
+          "pluginData": "Plugindaten"
+        },
+        "headers": {
+          "name": "Name",
+          "dataType": "Typ",
+          "total": "Datensätze"
+        },
+        "dataSelection": {
+          "customersOrders": "Kunden & Bestellungen",
+          "products": "Produkte",
+          "media": "Medien",
+          "processMediaFiles": "Medien",
+          "basicSettings": "Basisdaten",
+          "newsletterRecipient": "Newsletter-Empfänger",
+          "productReviews": "Produktbewertungen",
+          "seoUrls": "SEO-URLs",
+          "promotions": "Rabatte & Aktionen",
+          "cms": "Layouts",
+          "customerWishlists": "Merkzettel"
+        },
+        "entities": {
+          "category": "Kategorien",
+          "category_custom_field": "Kategorie Zusatzfelder",
+          "product": "Produkte",
+          "product_custom_field": "Produkt Zusatzfelder",
+          "product_price_custom_field": "Produktpreis Zusatzfelder",
+          "customer": "Kunden",
+          "customer_custom_field": "Kunden Zusatzfelder",
+          "customer_group_custom_field": "Kundengruppe Zusatzfelder",
+          "delivery_time": "Lieferzeiten",
+          "order": "Bestellungen",
+          "order_custom_field": "Bestellungen Zusatzfelder",
+          "media": "Medien",
+          "translation": "Übersetzungen",
+          "customer_group": "Kundengruppen",
+          "product_option_relation": "Produktoptionen",
+          "product_property_relation": "Produkteigenschaften",
+          "property_group_option": "Eigenschaften",
+          "order_document": "Bestelldokumente",
+          "order_document_base_config": "Dokumentkonfigurationen",
+          "order_document_inheritance": "Bestelldokument-Relationen",
+          "order_document_custom_field": "Bestelldokument Zusatzfelder",
+          "number_range": "Nummernkreise",
+          "shipping_method": "Versandmethoden",
+          "currency": "Währungen",
+          "sales_channel": "Verkaufskanäle",
+          "sales_channel_domain": "Domänen",
+          "product_review": "Bewertungen",
+          "seo_url": "SEO-URLs",
+          "seo_url_template": "SEO-URL-Vorlagen",
+          "product_cross_selling": "Cross Selling",
+          "promotion": "Rabatte & Aktionen",
+          "language": "Sprachen",
+          "category_association": "Kategorie-Verbindungen",
+          "category_cms_page_association": "Kategorie-Layout-Verbindungen",
+          "category_product_stream_association": "Kategorie-Dynamische-Produktgruppe-Verbindungen",
+          "tax": "Steuersätze",
+          "tax_rule": "Steuerregeln",
+          "property_group": "Produkteigenschaften-Gruppen",
+          "product_manufacturer": "Hersteller",
+          "product_manufacturer_custom_field": "Hersteller Zusatzfelder",
+          "main_variant_relation": "Hauptvariantenrelationen",
+          "customer_wishlist": "Merkzettel",
+          "unit": "Einheiten",
+          "media_folder": "Medienordner",
+          "media_folder_inheritance": "Medienordner-Vererbungen",
+          "salutation": "Anreden",
+          "rule": "Regeln",
+          "country": "Länder",
+          "custom_field_set": "Zusatzfelder",
+          "snippet": "Textbausteine",
+          "snippet_set": "Textbaustein-Sets",
+          "mail_template": "E-Mail-Template",
+          "product_feature_set": "Wesentliche Merkmale",
+          "product_sorting": "Produkt-Sortierungen",
+          "system_config": "Stammdaten",
+          "page_system_config": "Layout-Stammdaten",
+          "cms_page": "Layouts",
+          "product_stream": "Dynamische Produktgruppen",
+          "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter",
+          "country_state": "Bundesländer"
+        },
+        "noData": "Es wurden keine Daten zum Migrieren gefunden."
+      },
+      "confirmWarningCard": {
+        "currencyMismatch": {
+          "title": "Die Migration hat eine andere Währung erkannt",
+          "text": "Die Währung der zu migrierenden Daten stimmt nicht mit der Standard Währung [{targetSystemCurrency}] überein. Die Daten mit [{sourceSystemCurrency}] können migriert werden, sie werden aber nicht automatisch umgerechnet. Im Nachhinein kann eine manuelle Anpassung der Preise erfolgen.",
+          "question": "Bist Du sicher, dass die Daten in die Standard Währung [{targetSystemCurrency}] migriert werden sollen?",
+          "checkboxLabel": "Ja, ich möchte fortfahren"
+        },
+        "languageMismatch": {
+            "title": "Die Migration hat eine andere Sprache erkannt",
+            "text": "Die Sprache der zu migrierenden Daten stimmt nicht mit der Standard Sprache [{targetSystemLanguage}] überein. Die Daten mit [{sourceSystemLanguage}] können migriert werden, sie werden aber nicht automatisch umgerechnet. Im Nachhinein kann eine manuelle Anpassung der Übersetzungen erfolgen.",
+            "question": "Bist Du sicher, dass die Daten in die Standard Sprache [{targetSystemLanguage}] migriert werden sollen?",
+            "checkboxLabel": "Ja, ich möchte fortfahren"
+        }
+      },
+      "premappingCard": {
+        "validTitle": "Die Prüfung der Daten ist abgeschlossen",
+        "validCaption": "Die Daten sind zum Fortfahren bereit",
+        "loadingTitle": "Die Prüfung der Daten wird durchgeführt",
+        "loadingCaption": "Die bisherigen Daten werden geprüft.",
+        "unfilledTitle": "Die Prüfung der Daten ist abgeschlossen",
+        "unfilledCaption": "Du kannst erst fortfahren, wenn die manuelle Zuordnung erfolgt ist.",
+        "unfilledAlert": "Wir haben festgestellt, dass es Daten gibt, die eine manuelle Zuordnung benötigen.",
+        "previousTitle": "Bisher",
+        "newAssignmentTitle": "Neue Zuordnung",
+        "placeholder": "Bitte auswählen",
+        "filledCardTitle": "Durchgeführte Zuordnung",
+        "expandTitle": "Durchgeführte Zuordnung ausblenden",
+        "collapseTitle": "Durchgeführte Zuordnung anzeigen",
+        "unfilledCardTitle": "Manuelle Zuordnung",
+        "group": {
+          "order_state": "Bestellstatus",
+          "order_delivery_state": "Lieferstatus",
+          "transaction_state": "Zahlungsstatus",
+          "payment_method": "Zahlungsarten",
+          "manufacturer": "Hersteller",
+          "salutation": "Anrede",
+          "delivery_time": "Lieferzeit",
+          "salesChannel": "Newsletter-Verkaufskanäle",
+          "newsletter_status": "Newsletter-Status",
+          "shipping_availability_rule": "Versandartverfügbarkeit"
+        }
+      },
+      "loadingScreenCard": {
+        "notice": "Tipp: Dieser Vorgang läuft in der Nachrichtenwarteschlange ab. Du musst nicht auf dieser Seite bleiben, wenn dein Shop richtig konfiguriert ist.",
+        "documentationLink": "https://developer.shopware.com/docs/guides/hosting/infrastructure/message-queue.html#message-queue",
+        "documentationLinkText": "Nachrichtenwarteschlange-Dokumentation",
+        "flowChart": {
+          "premapping": "Prüfen",
+          "fetchData": "Lesen",
+          "writeData": "Schreiben",
+          "processMedia": "Download",
+          "cleanup": "Aufräumen",
+          "indexing": "Indexierung",
+          "finish": "Fertig"
+        },
+        "status": {
+          "fetching": {
+            "long": "Die Daten werden von Deinem System gelesen",
+            "caption": "Die neuen Zuordnungen werden verarbeitet.",
+            "short": "Lesen"
+          },
+          "writing": {
+            "long": "Die Daten werden in Shopware 6 geschrieben",
+            "caption": "Je nach Shopgröße kann es etwas länger dauern.",
+            "short": "Schreiben"
+          },
+          "media-processing": {
+            "long": "Die Medien werden übertragen",
+            "caption": "Große Bilddaten können etwas Zeit in Anspruch nehmen.",
+            "short": "Medien übertragen"
+          },
+          "aborting": {
+            "long": "Die Migration wird abgebrochen",
+            "caption": "Nicht geschriebene Daten werden aufgeräumt. Bereits migrierte Daten bleiben sind eventuell unbrauchbar",
+            "short": "Abbrechen"
+          },
+          "cleanup": {
+            "long": "Die Migration wird aufgeräumt",
+            "caption": "Temporäre Daten werden gelöscht. Die Migration ist fast abgeschlossen.",
+            "short": "Aufräumen"
+          },
+          "indexing": {
+            "long": "Die Indexierung wird durchgeführt",
+            "caption": "Die neuen Daten werden indexiert.",
+            "short": "Indexierung"
+          },
+          "finish": "Fertig"
+        },
+        "result": {
+          "title": "Der Migrations-Assistent ist fertig",
+          "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
+          "logSummary": "Logbuch",
+          "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen. Es kann sein, dass zu einem späteren Zeitpunkt noch mehr Log-Nachrichten hinzukommen, weil der Mediendownload noch im Hintergrund läuft."
+        }
+      },
+      "confirmAbortDialog": {
+        "title": "Migration beenden",
+        "content": "Die Daten sind noch nicht vollständig migriert und teilweise unbrauchbar. Die gesamten Daten müssen erneut migriert werden, wenn Du jetzt beendest.",
+        "hint": "Möchtest Du die Migration beenden?",
+        "cancelRunning": "Fortsetzen",
+        "cancelPause": "Pausieren",
+        "confirm": "Migration beenden"
+      },
+      "errorTypes": {
+        "error": "Fehler",
+        "warning": "Warnung",
+        "info": "Information"
+      },
+      "error": {
+        "authorizationError": {
+          "information": "Authorisierungsfehler. Die Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
+        },
+        "canNotConnectToServer": "Keine Verbindung zum Server. Bitte überprüfe die Verbindung.",
+        "customerExists": {
+          "information": "Ein Kunde mit der E-Mail „{mail}“ existiert bereits. Du kannst den Kunden auf diese Weise nicht der Datenbank hinzufügen."
+        },
+        "gatewayNotFound": {
+          "information": "Gateway „{notFoundGateway}“ konnte nicht gefunden werden."
+        },
+        "gatewayRead": {
+          "information": "Gateway „{unreadableGateway}“ konnte nicht gelesen werden."
+        },
+        "localeNotFound": {
+          "information": "Eintrag des Locale-Codes „{notFoundCode}“ konnte nicht gefunden werden."
+        },
+        "migrationContextPropertyMissing": {
+          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Migrationskontext nicht gefunden werden."
+        },
+        "migrationsWorkloadPropertyMissing": {
+          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Migrations-Workload nicht gefunden werden."
+        },
+        "noFileSystemPermissions": {
+          "information": "Du besitzt keine Rechte um Dateien oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe Deine Berechtigungen."
+        },
+        "profileNotFound": {
+          "information": "Migrationsprofil „{notFoundProfile}“ konnte nicht gefunden werden."
+        },
+        "undefinedIndex" : {
+          "title": "Unidentifizierter Index",
+          "detail": "Unidentifizierter Index konnte nicht migriert werden.",
+          "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe Deine Daten."
+        },
+        "unknownError": "Unbekannter Fehler. Für weitere Informationen kannst Du in die Logging-Tabelle Deiner Datenbank schauen.",
+        "mediaProcessConnectionError": "Beim Kopieren der Mediadaten ist ein Verbindungsfehler aufgetreten. Bitte überprüfen Sie die Verbindung.",
+        "SWAG_MIGRATION__WRITER_NOT_FOUND": {
+          "title": "Filewriter nicht gefunden",
+          "description": "Filewriter für die „{entity}“-Entität konnte nicht gefunden werden."
+        },
+        "SWAG_MIGRATION__SHOPWARE_CANNOT_DOWNLOAD_DATA": {
+          "title": "Konnte Medien nicht herunterladen",
+          "description": "Konnte Medien nicht herunterladen. Betroffene Datei: {uri}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND": {
+          "title": "Eltern-Entität nicht gefunden",
+          "description": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
+        },
+        "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
+          "title": "Zugehörige {entity} Entität nicht gefunden",
+          "description": "Die {missingEntity} Entität mit der Quell-ID „{sourceId}“ kann nicht gefunden werden, ist aber für {requiredFor} erforderlich."
+        },
+        "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {
+          "title": "Der {entity} Entität fehlt ein Pflichtfeld",
+          "description": "Der {entity} Entität mit der Quell-ID „{sourceId}“ fehlen die Daten für das Pflichtfeld „{emptyField}“."
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": {
+          "title": "Nicht unterstützter Objekttyp",
+          "description": "Die {entity} des Objekttyps „{objectType}“ mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden."
+        },
+        "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": {
+          "title": "Invalide unserialisierte Daten",
+          "description": "Die {entity} Entität mit der Quell-ID „{sourceId}“ konnte aufgrund ungültiger deserialisierter Objektdaten für die Entität „{unserializedEntity}“ und folgenden Rohdaten nicht konvertiert werden: {serializedData}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": {
+          "title": "Quelldatei nicht gefunden",
+          "description": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}"
+        },
+        "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": {
+          "title": "Die Kind-Entität {entity} konnte nicht konvertiert werden",
+          "description": "Die Kind {entity} Entität aus der Eltern {parentEntity} Entität mit der ID \"{parentSourceId}\" konnte nicht konvertiert werden."
+        },
+        "SWAG_MIGRATION_CANNOT_CONVERT_ENTITY": {
+          "title": "Die Entität {entity} konnte nicht konvertiert werden.",
+          "description": "Die {entity} Entität mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden."
+        },
+        "SWAG_MIGRATION_CANNOT_GET_FILE": {
+          "title": "Die {entity} Datei konnte nicht heruntergeladen / kopiert werden",
+          "description": "Die {entity} Datei mit der URI „{uri}“ und der Media-Id „{sourceId}“ konnte nicht heruntergeladen / kopiert werden."
+        },
+        "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": {
+          "title": "Die Entität-Anzahl konnte nicht gelesen werden",
+          "description": "Gesamtanzahl für die {entity} Entität konnte nicht gelesen werden. Überprüfe ob die Tabelle „{table}“ in dem Quellsystem existiert und die optionale Bedingung „{condition}“ valide ist. Fehlermeldung: {exceptionMessage}"
+        },
+        "SWAG_MIGRATION__DATASET_NOT_FOUND": {
+          "title": "DataSet nicht gefunden",
+          "description": "DataSet für Profile „{profileName}“ und Entität „{entity}“ wurde nicht gefunden. Entität mit der ID „{sourceId}“ konnte nicht verarbeitet werden."
+        },
+        "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": {
+          "title": "Die {entity} Entität existiert bereits",
+          "description": "Die {entity} Entität mit der Quell-Id „{sourceId}“ existiert bereits und konnte nicht geschrieben werden."
+        },
+        "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
+          "title": "Ein Feld der {entity} Entität wurde neu zugeordnet",
+          "description": "Das Feld „{emptyField}“ der {entity} Entität mit der Quell-ID „{sourceId}“ wurde mit dem „{replacementField}“ Feld ersetzt."
+        },
+        "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
+          "title": "Processor nicht gefunden",
+          "description": "Processor für Profil „{profileName}“, Gateway „{gatewayName}“ und Entität „{entity}“ wurde nicht gefunden."
+        },
+        "SWAG_MIGRATION_ENTITY_UNKNOWN": {
+          "title": "Konnte {entity} nicht finden",
+          "description": "Die {requiredForEntity} Entität mit der Quell-ID „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
+        },
+        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
+          "title": "E-Mail-Adresse ungültig",
+          "description": "Die E-Mail-Adresse der Entität {entity} mit der Quell-ID „{sourceId}“ ist ungültig: {email}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
+          "title": "Nummernkreis-Typ nicht unterstützt",
+          "description": "Die Nummernkreis Entität mit der Quell-ID „{sourceId}“ konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": {
+          "title": "Faktor-Preisberechnung bei Versandkosten nicht unterstützt",
+          "description": "Die Versandkosten Entität mit der Quell-ID „{sourceId}“ der Versandmethode „{shippingMethodId}“ konnte aufgrund von nicht unterstützter Faktor-Preisberechnung, nicht konvertiert werden."
+        },
+        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": {
+          "title": "Versandkosten-Berechnungstyp nicht unterstützt",
+          "description": "Die Versandmethoden Entität mit der Quell-ID „{sourceId}“ konnte aufgrund eines nicht unterstützten Versandkosten-Berechnungstyp „{type}“, nicht konvertiert werden."
+        },
+        "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": {
+          "title": "Migration wurde automatisch abgebrochen",
+          "description": "Die Migration wurde automatisch abgebrochen, da zu viele aufeinander folgende Fehler aufgetreten sind."
+        },
+        "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": {
+          "title": "Message-Queue-Fehler",
+          "description": "Ein Fehler ist in der Message-Queue aufgetreten."
+        },
+        "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
+          "title": "Theme Kompilierungsfehler",
+          "description": "Das Theme mit der ID „{sourceId}“ konnte nicht kompiliert werden."
+        },
+        "SWAG_MIGRATION_RUN_EXCEPTION": {
+          "title": "Systemfehler aufgetreten",
+          "description": "{description}"
+        },
+        "SWAG_MIGRATION__DEBUG": {
+          "title": "Debug-Ausgabe",
+          "description": "{logData}"
+        },
+        "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
+          "title": "Dokumenttyp wird nicht unterstützt",
+          "description": "Das Dokument mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden, da der Dokumenttyp „{type}“ nicht unterstützt wird."
+        },
+        "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
+          "title": "Ein Schreibfehler ist aufgetreten",
+          "description": "{description}"
+        }
+      }
+    },
+    "history": {
+      "connectionName": "Verbindungsname",
+      "profileAndGateway": "Profil & Schnittstelle",
+      "status": "Status",
+      "importDateTime": "Startzeitpunkt",
+      "shopDomain": "Shop-Domain",
+      "shopSystem": "Shopsystem",
+      "selectedData": "Daten",
+      "contextMenu": {
+        "details": "Details anzeigen",
+        "downloadLogs": "Protokoll herunterladen",
+        "clearLogs": "Migrationsdaten löschen"
+      },
+      "clearRunDialog": {
+        "title": "Migrationsdaten löschen",
+        "content": "Beim Löschen der Migrationsdaten werden Log-Einträge, Mediendateien-Einträge, temporäre Migrationsdatensätze und der Migrationslauf selbst entfernt. Nach dem Löschen ist die Migration in der Historie nicht mehr einsehbar.",
+        "contentHint": "Willst Du die Daten wirklich löschen?"
+      },
+      "noData": "Es wurden keine Migrationen gefunden.",
+      "detailPage": {
+        "title": "Details zur Migration",
+        "timestamp": "Startzeitpunkt:",
+        "runStatus": "Migrations-Status:",
+        "status": {
+          "finished": "Abgeschlossen",
+          "aborted": "Abgebrochen",
+          "running": "Laufend"
+        },
+        "data": "Daten",
+        "errors": "Details",
+        "logDescription": "Für mehr Details {link}",
+        "logDownload": "lade das Protokoll herunter.",
+        "errorCode": "Protokolleintrag",
+        "errorLevel": "Protokolllevel",
+        "errorCount": "Anzahl",
+        "noErrorsOccurred": "Es sind keine Fehler aufgetreten.",
+        "noProgressData": "Dieser Durchlauf wurde in einer früheren Version des Plugins durchgeführt und die Daten wurden gelöscht.",
+        "dataName": "Name",
+        "dataCount": "Datensätze",
+        "close": "Schließen"
+      }
+    },
+    "worker-listener": {
+      "mediaProcessing": {
+        "title": "Die Medien werden heruntergeladen",
+        "message": "Keine Dateien verbleibend. | Eine Datei verbleibend. | {n} Dateien verbleibend.",
+        "titleSuccess": "Mediendownload abgeschlossen",
+        "messageSuccess": "Das Herunterladen der Medien wurde abgeschlossen."
+      }
+    },
+    "api-error": {
+      "fetchConnectionId": "Fehler beim Abrufen der Verbindungs-ID",
+      "checkConnection": "Fehler beim Prüfen der Verbindung zum Quellsystem",
+      "getDataSelection": "Fehler beim Abrufen der Daten-Auswahl für die aktive Verbindung",
+      "getState": "Fehler beim Abrufen des Migrations-Status",
+      "startMigration": "Fehler beim Starten der Migration",
+      "approveFinishedMigration": "Fehler beim Abschließen der Migration",
+      "abortMigration": "Fehler beim Abbrechen der Migration"
+    }
+  },
+  "global": {
+    "error-codes": {
+      "SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS": "Der Verbindungsname existiert bereits.",
+      "SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT": "Der Verbindungsname muss mindestens 1 Zeichen lang sein.",
+      "SWAG_MIGRATION_INVALID_API_KEY": "Der API-Schlüssel hat nicht die richtige Länge ({length}/40 Zeichen)."
+    }
+  }
+}

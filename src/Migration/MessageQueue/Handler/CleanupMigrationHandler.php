@@ -15,7 +15,10 @@ use Symfony\Component\Messenger\MessageBusInterface;
 
 #[AsMessageHandler]
 #[Package('services-settings')]
-class CleanupMigrationHandler
+/**
+ * @internal
+ */
+final class CleanupMigrationHandler
 {
     public function __construct(
         private readonly Connection $connection,

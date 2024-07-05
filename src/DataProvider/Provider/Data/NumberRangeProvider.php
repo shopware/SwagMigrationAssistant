@@ -12,11 +12,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
 #[Package('services-settings')]
 class NumberRangeProvider extends AbstractProvider
 {
+    /**
+     * @param EntityRepository<NumberRangeCollection> $numberRangeRepo
+     */
     public function __construct(private readonly EntityRepository $numberRangeRepo)
     {
     }

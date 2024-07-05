@@ -22,7 +22,7 @@ class TranslationReader extends AbstractReader
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface
             && $migrationContext->getGateway()->getName() === ShopwareLocalGateway::GATEWAY_NAME
-            && $migrationContext->getDataSet()::getEntity() === DefaultEntities::TRANSLATION;
+            && $this->getDataSetEntity($migrationContext) === DefaultEntities::TRANSLATION;
     }
 
     public function supportsTotal(MigrationContextInterface $migrationContext): bool
