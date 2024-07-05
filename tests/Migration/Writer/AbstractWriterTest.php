@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
 #[Package('services-settings')]
@@ -65,6 +66,7 @@ class AbstractWriterTest extends TestCase
             );
 
         $this->abstractWriter->writeData($this->dataToWrite, $this->context);
+        static::assertTrue($this->context->hasExtension(AbstractWriter::EXTENSION_NAME));
     }
 
     public function testWriteDataReturnWriteResult(): void
@@ -74,5 +76,19 @@ class AbstractWriterTest extends TestCase
         $result = $this->abstractWriter->writeData($this->dataToWrite, $this->context);
 
         static::assertEquals(['test' => '1234'], $result);
+    }
+
+    public function testWriteDataAddsExtension(): void
+    {
+        $this->abstractWriter->writeData($this->dataToWrite, $this->context);
+
+        static::assertTrue($this->context->hasExtension(AbstractWriter::EXTENSION_NAME));
+
+        $extension = $this->context->getExtension(AbstractWriter::EXTENSION_NAME);
+        static::assertInstanceOf(ArrayStruct::class, $extension);
+
+        $extensionData = $extension->all();
+        static::assertArrayHasKey(AbstractWriter::EXTENSION_SOURCE_KEY, $extensionData);
+        static::assertSame(AbstractWriter::EXTENSION_SOURCE_VALUE, $extensionData[AbstractWriter::EXTENSION_SOURCE_KEY]);
     }
 }
