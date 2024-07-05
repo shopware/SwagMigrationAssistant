@@ -156,6 +156,7 @@
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Migration Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Die Datenbank Verbindung konnte nicht hergestellt werden.",
+            "SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG": "Die Datenbankverbindung hat nicht die richtigen Attribute und diese können nicht gesetzt werden.",
             "SWAG_MIGRATION__IS_RUNNING": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten, bis die Migration abgeschlossen ist.",
             "SWAG_MIGRATION__SSL_REQUIRED": "Wir haben festgestellt, dass die angegebene Shop-Domain eine SSL-Verbindung erfordert."
           }

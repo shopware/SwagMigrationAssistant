@@ -70,6 +70,7 @@
 - MIG-962 - [BREAKING] Jede Admin-Komponente ist jetzt privat / intern
 - MIG-994 - [BREAKING] Entfernen der Felder `user_id` und `access_token` aus `swag_migration_run` und der entsprechenden EntityDefinition und den zugehörigen Klassen
 - MIG-1009 - Verhindert das migrierte Bestellungen die Anpassung des Produkt-Warenbestands auslösen
+- MIG-1011 - Sicherstellung, dass Datenbankattribute (wie z. B. "stringify fetches") bei lokalen Gateway-Verbindungen immer gesetzt sind
 
 # 12.0.0
 - MIG-983 - Korrigiert einen Fehler bei der Migration von Kunden, die an einen Shop gebunden sind
