@@ -271,7 +271,7 @@ abstract class OrderConverter extends ShopwareConverter
             $taxStatus = $this->getTaxStatus($data);
             $taxRules = $this->getTaxRules($data, $taxStatus);
 
-            $converted['lineItems'] = $this->getLineItems($data['details'], $converted, $taxRules, $taxStatus, $context);
+            $converted['lineItems'] = $this->getLineItems($data['details'], $taxRules, $taxStatus);
 
             $converted['price'] = new CartPrice(
                 (float) $data['invoice_amount_net'],
@@ -675,7 +675,7 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, mixed>  $oldStateData
+     * @param array<string, mixed> $oldStateData
      *
      * @return array<string, mixed>
      */
@@ -856,12 +856,11 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, mixed>             $originalData
-     * @param array<string, mixed>             $converted
+     * @param array<string, mixed> $originalData
      *
      * @return array<int, array<string, mixed>>
      */
-    protected function getLineItems(array $originalData, array &$converted, TaxRuleCollection $taxRules, string $taxStatus, Context $context): array
+    protected function getLineItems(array $originalData, TaxRuleCollection $taxRules, string $taxStatus): array
     {
         $lineItems = [];
 

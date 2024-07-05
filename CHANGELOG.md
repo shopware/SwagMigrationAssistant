@@ -56,6 +56,9 @@
     - Removed properties `accessTokenService`, `migrationDataRepository`, `mediaFileRepository`, `indexer`, `cache`
     - Removed methods `takeoverMigration`, `calculateWriteProgress`, `calculateMediaFilesProgress`, `calculateCurrentTotals`, `finishMigration`
     - Removed parameter `abortMigration` of method `abortMigration`
+- MIG-945 - [BREAKING] Removed parameter `migrationContext` from method `setNumberRangeSalesChannels` of `SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter`
+- MIG-945 - [BREAKING] Removed parameter `migrationContext` from method `setNumberRangeTranslation` of `SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter`
+- MIG-945 - [BREAKING] Removed parameters `context` and `converted` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - MIG-962 - [BREAKING] Removed getters and setters for `premapping` on `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use them on `\SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity` instead
 - MIG-991 - [BREAKING] Added `SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface` parameter to `\SwagMigrationAssistant\Migration\Run\RunService` constructor
 - MIG-991 - [BREAKING] Added `Context` parameter to `\SwagMigrationAssistant\Migration\Run\RunServiceInterface::cleanupMigrationData` and implementors
