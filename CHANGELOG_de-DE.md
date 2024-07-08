@@ -1,4 +1,74 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+# 13.0.0
+- MIG-945 - [BREAKING] Änderung des Methodennamens `getMedia` zu `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
+- MIG-945 - [BREAKING] CLI-Befehl `migration:migrate` entfernt und verwende stattdessen `migration:start`
+- MIG-945 - [BREAKING] Geänderte Methode `writePremapping` von `SwagMigrationAssistant\Controller\PremappingController`
+    - Rückgabetyp von `JsonResponse` auf `Response` geändert
+    - Parameter `runUuid` entfernt
+- MIG-945 - [BREAKING] Methode `finishMigration` von `SwagMigrationAssistant\Controller\StatusController` entfernt
+- MIG-945 - [BREAKING] Typ des Feldes `Premapping` von `SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition` von `JsonField` auf das neue `PremappingField` geändert
+- MIG-945 - [BREAKING] Typ des Feldes `progress` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition` von `JsonField` auf das neue `MigrationProgressField` geändert
+- MIG-945 - [BREAKING] Rückgabetyp von `getProgress` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` von `?array` zu `?MigrationProgress` geändert
+- MIG-945 - [BREAKING] Parametertyp von `setProgress` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` von `array` auf `MigrationProgress` geändert
+- MIG-945 - [BREAKING] Rückgabetyp von `writeData` von `SwagMigrationAssistant\Migration\DataWriter` von `void` auf `int` geändert
+- MIG-945 - [BREAKING] Rückgabetyp von `writeData` von `SwagMigrationAssistant\Migration\DataWriterInterface` von `void` auf `int` geändert
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `process` von `SwagMigrationAssistant\Migration\Media\Processor\HttpDonwloadServiceBase` entfernt
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `process` von `SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface` entfernt
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `processMediaFiles` von `SwagMigrationAssistant\Migration\Service\MediaFileProcessorService` entfernt
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `processMediaFiles` von `SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface` entfernt
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `process` von `SwagMigrationAssistant\Profile\Shopware\Media\LocalMediaProcessor` entfernt
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `process` von `SwagMigrationAssistant\Profile\Shopware\Media\LocalOrderDocumentProcessor` entfernt
+- MIG-945 - [BREAKING] Parameter `fileChunkByteSize` der Methode `process` von `SwagMigrationAssistant\Profile\Shopware\Media\LocalProductDownloadProcessor` entfernt
+- MIG-945 - [BREAKING] Parameter `context` in `migrationContext` der Methode `getProcessor` von `SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface` umbenannt
+- MIG-945 - [BREAKING] Parameters `context` in `migrationContext` der Methode `getProcessor` von `SwagMigrationAssistant\Profile\Shopware6\Media\HttpOrderDocumentGenerationService` umbenannt
+- MIG-945 - [BREAKING] Eigenschaft `fileChunkByteSize` von `SwagMigrationAssistant\Migration\MessageQueue\MessageProcessMediaMessage` entfernt
+- MIG-945 - [BREAKING] Eigenschaft `runRepo` von `SwagMigrationAssistant\Migration\Service\PremappingService` entfernt
+- MIG-945 - [BREAKING] Änderungen in `SwagMigrationAssistant\Migration\Service\PremappingServiceInterface` / `SwagMigrationAssistant\Migration\Service\PremappingService`
+    - Parameter `run` der Methode `generatePremapping` entfernt
+    - Parameter `dataSelectionIds` zur Methode `generatePremapping` hinzugefügt
+- MIG-945 - [BREAKING] Konstruktorparameter `generalSettingRepository` und `migrationConnectionRepository` zu `SwagMigrationAssistant\Migration\MigrationContextFactory` hinzugefügt
+- MIG-945 - [BREAKING] Methode `createBySelectedConnection` zur Schnittstelle `SwagMigrationAssistant\Migration\MigrationContextFactoryInterface` hinzugefügt
+- MIG-945 - [BREAKING] Klasse/Interface/Struct entfernt:
+    - `SwagMigrationAssistant\Profile\Shopware\Exception\LocalReaderNotFoundException`, stattdessen `MigrationException::readerNotFound` verwenden
+    - `SwagMigrationAssistant\Profile\Shopware\Exception\PluginNotInstalledException` verwende stattdessen `MigrationShopwareProfileException::pluginNotInstalled`
+    - `SwagMigrationAssistant\Controller\MigrationController`
+    - `SwagMigrationAssistant\Migration\Service\MigrationProgressServiceInterface`
+    - `SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenStruct`
+    - `SwagMigrationAssistant\Exception\ProcessorNotFoundException` verwende stattdessen `MigrationException::processorNotFound`
+    - `SwagMigrationAssistant\Exception\EntityNotExistsException` verwende stattdessen `MigrationException::entityNotExists`
+    - `SwagMigrationAssistant\Exception\GatewayNotFoundException` verwende stattdessen `MigrationException::gatewayNotFound`
+    - `SwagMigrationAssistant\Exception\InvalidConnectionAuthenticationException` verwenden stattdessen `MigrationException::invalidConnectionAuthentication`
+    - `SwagMigrationAssistant\Exception\MigrationContextPropertyMissingException` verwenden stattdessen `MigrationException::migrationContextPropertyMissing`
+    - `SwagMigrationAssistant\Exception\MigrationIsRunningException` verwendet stattdessen `MigrationException::migrationIsAlreadyRunning`
+    - `SwagMigrationAssistant\Exception\MigrationRunUndefinedStatusException` verwenden stattdessen `MigrationException::undefinedRunStatus`
+    - `SwagMigrationAssistant\Exception\MigrationWorkloadPropertyMissingException` verwenden stattdessen `MigrationException::undefinedRunStatus`
+    - `SwagMigrationAssistant\Exception\NoFileSystemPermissionsException` verwenden stattdessen `MigrationException::noFileSystemPermissions`
+    - `SwagMigrationAssistant\Exception\ProfileNotFoundException` verwenden stattdessen `MigrationException::profileNotFound`
+    - `SwagMigrationAssistant\Exception\ReaderNotFoundException` verwenden stattdessen `MigrationException::readerNotFound`
+    - `SwagMigrationAssistant\Exception\ReaderNotFoundException` verwenden stattdessen `MigrationException::requestCertificateInvalid`
+    - `SwagMigrationAssistant\Exception\SslRequiredException` verwenden stattdessen `MigrationException::sslRequired`
+    - `SwagMigrationAssistant\Migration\Service\ProgressState`
+    - `SwagMigrationAssistant\Migration\Service\SwagMigrationAccessTokenService`
+- MIG-945 - [BREAKING] Folgende Klassen/Methoden werden intern:
+    - `SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler`
+    - `SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler`
+    - `SwagMigrationAssistant\Migration\Service\MigrationProgressService`
+- MIG-945 - [BREAKING] Änderungen in `SwagMigrationAssistant\Migration\Run\RunService` / `SwagMigrationAssistant\Migration\Run\RunServiceInterface`
+    - Eigenschaften `accessTokenService`, `migrationDataRepository`, `mediaFileRepository`, `indexer`, `cache` wurden entfernt
+    - Methoden `takeoverMigration`, `calculateWriteProgress`, `calculateMediaFilesProgress`, `calculateCurrentTotals`, `finishMigration` wurden entfernt
+    - Parameter `abortMigration` der Methode `abortMigration` wurde entfernt
+- MIG-945 - [BREAKING] Parameter `migrationContext` der Methode `setNumberRangeSalesChannels` von `SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter` entfernt
+- MIG-945 - [BREAKING] Parameter `migrationContext` der Methode `setNumberRangeTranslation` von `SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter` entfernt
+- MIG-945 - [BREAKING] Parameter `context` und `converted` der Methode `getLineItems` von `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` entfernt
+- MIG-962 - [BREAKING] Getter und Setter für `Premapping` bei `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` entfernt, verwende stattdessen `\SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity`
+- MIG-991 - [BREAKING] Parameter `SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface` zum Konstruktor `\SwagMigrationAssistant\Migration\Run\RunService` hinzugefügt
+- MIG-991 - [BREAKING] Parameter `$context` zu `\SwagMigrationAssistant\Migration\Run\RunServiceInterface::cleanupMigrationData` und Implementationen hinzugefügt
+- MIG-991 - [BREAKING] Parameter `$context` zu `\SwagMigrationAssistant\Controller\StatusController::cleanupMigrationData` hinzugefügt
+- MIG-991 - [BREAKING] Eigenschaft `$status` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` entfernt und das Feld in der entsprechenden Definition umbenannt, verwende stattdessen `$step`.
+- MIG-991 - [BREAKING] Methode `getStatus` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` entfernt, verwende stattdessen `getStep` oder `getStepValue`
+- MIG-991 - [BREAKING] Methode `setStatus` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` entfernt, verwende stattdessen `SwagMigrationAssistant\Migration\Run\RunTransitionService::transitionToRunStep`.
+- MIG-991 - [BREAKING] Konstanten `STATUS_RUNNING`, `STATUS_FINISHED` und `STATUS_ABORTED` von `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` entfernt, verwende stattdessen `SwagMigrationAssistant\Migration\Run\MigrationStep`
+- MIG-962 - [BREAKING] Jede Admin-Komponente ist jetzt privat / intern
+- MIG-994 - [BREAKING] Entfernen der Felder `user_id` und `access_token` aus `swag_migration_run` und der entsprechenden EntityDefinition und den zugehörigen Klassen
 - MIG-1009 - Verhindert das migrierte Bestellungen die Anpassung des Produkt-Warenbestands auslösen
 
 # 12.0.0

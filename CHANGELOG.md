@@ -1,4 +1,4 @@
-# REPLACE-GLOBALLY-WITH-NEXT-VERSION (MAJOR NEEDED)
+# 13.0.0
 - MIG-945 - [BREAKING] Changed method name `getMedia` to `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
 - MIG-945 - [BREAKING] Removed cli command `migration:migrate` use `migration:start` instead
 - MIG-945 - [BREAKING] Changed method `writePremapping` of `SwagMigrationAssistant\Controller\PremappingController`
@@ -61,14 +61,14 @@
 - MIG-945 - [BREAKING] Removed parameters `context` and `converted` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - MIG-962 - [BREAKING] Removed getters and setters for `premapping` on `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use them on `\SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity` instead
 - MIG-991 - [BREAKING] Added `SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface` parameter to `\SwagMigrationAssistant\Migration\Run\RunService` constructor
-- MIG-991 - [BREAKING] Added `Context` parameter to `\SwagMigrationAssistant\Migration\Run\RunServiceInterface::cleanupMigrationData` and implementors
-- MIG-991 - [BREAKING] Added `Context` parameter to `\SwagMigrationAssistant\Controller\StatusController::cleanupMigrationData`
+- MIG-991 - [BREAKING] Added `$context` parameter to `\SwagMigrationAssistant\Migration\Run\RunServiceInterface::cleanupMigrationData` and implementors
+- MIG-991 - [BREAKING] Added `$context` parameter to `\SwagMigrationAssistant\Controller\StatusController::cleanupMigrationData`
 - MIG-991 - [BREAKING] Removed property `$status` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity` and renamed its field in the corresponding definition, use `$step` instead
 - MIG-991 - [BREAKING] Removed method `getStatus` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `getStep` or `getStepValue` instead
 - MIG-991 - [BREAKING] Removed method `setStatus` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\RunTransitionService::transitionToRunStep` instead
 - MIG-991 - [BREAKING] Removed constants `STATUS_RUNNING`, `STATUS_FINISHED` and `STATUS_ABORTED` of `SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity`, use `SwagMigrationAssistant\Migration\Run\MigrationStep` instead
 - MIG-962 - [BREAKING] Every admin component is now private / internal
-- MIG-994 - [BREAKING] Remove fields `user_id` and `access_token` from `swag_migration_run` and corresponding EntityDefinition and related classes.
+- MIG-994 - [BREAKING] Remove fields `user_id` and `access_token` from `swag_migration_run` and corresponding EntityDefinition and related classes
 - MIG-1009 - Prevents migrated orders from triggering the adjustment of the product stock
 
 # 12.0.0
