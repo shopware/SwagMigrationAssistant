@@ -11,6 +11,7 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception\ConnectionException;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -45,7 +46,9 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 
     public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection
     {
-        if ($this->externalConnection instanceof Connection) {
+        if ($this->externalConnection !== null) {
+            $this->ensureConnectionAttributes($this->externalConnection);
+
             return $this->externalConnection;
         }
 
@@ -66,8 +69,11 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
             'user' => (string) ($credentials['dbUser'] ?? ''),
             'password' => (string) ($credentials['dbPassword'] ?? ''),
             'host' => (string) ($credentials['dbHost'] ?? ''),
-            'driver' => 'pdo_mysql',
             'charset' => 'utf8mb4',
+            'driver' => 'pdo_mysql',
+            'driverOptions' => [
+                \PDO::ATTR_STRINGIFY_FETCHES => true,
+            ],
         ];
 
         if (isset($credentials['dbPort'])) {
@@ -75,14 +81,7 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
         }
 
         $this->externalConnection = DriverManager::getConnection($connectionParams);
-
-        try {
-            if (\is_object($this->externalConnection->getNativeConnection()) && \method_exists($this->externalConnection->getNativeConnection(), 'setAttribute')) {
-                $this->externalConnection->getNativeConnection()->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
-            }
-        } catch (ConnectionException $exception) {
-            // nth
-        }
+        $this->ensureConnectionAttributes($this->externalConnection);
 
         return $this->externalConnection;
     }
@@ -90,5 +89,25 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
     public function reset(): void
     {
         $this->externalConnection = null;
+    }
+
+    private function ensureConnectionAttributes(Connection $connection): void
+    {
+        try {
+            $nativeConnection = $connection->getNativeConnection();
+            // we can assume that the underlying connection always uses the 'pdo_mysql' driver,
+            // as specified in $connectionParams passed to DriverManager::getConnection above
+            if (!$nativeConnection instanceof \PDO) {
+                throw MigrationException::databaseConnectionAttributesWrong();
+            }
+
+            $successfullySet = $nativeConnection->setAttribute(\PDO::ATTR_STRINGIFY_FETCHES, true);
+            if (!$successfullySet) {
+                throw MigrationException::databaseConnectionAttributesWrong();
+            }
+        } catch (ConnectionException $exception) {
+            // $connection->getNativeConnection() tries to connect to the DB
+            // we want to ignore connection errors at this point
+        }
     }
 }
