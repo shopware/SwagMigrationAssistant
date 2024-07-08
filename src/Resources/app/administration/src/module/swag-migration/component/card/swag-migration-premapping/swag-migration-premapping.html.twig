@@ -60,7 +60,7 @@
 
         {% block swag_migration_premapping_unfilled_mapping %}
             <swag-migration-tab-card
-                v-if="displayUnfilledPremapping"
+                v-if="!isLoading && displayUnfilledPremapping"
                 class="swag-migration-premapping__tab-card"
                 :title="$tc('swag-migration.index.premappingCard.unfilledCardTitle')"
                 :items="unfilledPremapping"

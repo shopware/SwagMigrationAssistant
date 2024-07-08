@@ -50,7 +50,8 @@ Component.register('swag-migration-grid-selection', {
             const end = Math.min(start + this.limit, this.total);
             this.items = [];
 
-            // Copy the object references into the display items array (for pagination). Note: Array.slice dont work
+            // Copy the object references into the display items array (for pagination).
+            // Note: Array.slice does not work (as it copies)
             for (let i = start; i < end; i += 1) {
                 this.items.push(this.mapping[i]);
             }
