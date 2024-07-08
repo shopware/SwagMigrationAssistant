@@ -79,7 +79,7 @@ class PremappingService implements PremappingServiceInterface
                 $id = $mapping['sourceId'];
                 $identifier = $mapping['destinationUuid'];
 
-                if (empty($identifier)) {
+                if (!isset($identifier) || $identifier === '') {
                     continue;
                 }
 
