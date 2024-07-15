@@ -333,15 +333,17 @@
       },
       "confirmWarningCard": {
         "currencyMismatch": {
-          "title": "Migration has recognised another currency",
-          "text": "The currency of the data to be migrated does not match the standard currency [{targetSystemCurrency}]. Data with [{sourceSystemCurrency}] can still be migrated, but it will not be automatically converted. You can adjust the prices manually afterwards.",
-          "question": "Are you sure that the data should be migrated in the standard currency [{targetSystemCurrency}]?",
+          "title": "Different default currencies recognised",
+          "info": "A migration with different default currencies can lead to corrupted data records and cause unpredictable side effects.",
+          "text": "The default currencies of the source system [{sourceSystemCurrency}] and target system [{targetSystemCurrency}] do not match. The data can be migrated, but it is not converted automatically.",
+          "question": "Are you sure you want to run the migration with different default currencies?",
           "checkboxLabel": "Yes, I would like to continue"
         },
         "languageMismatch": {
-            "title": "Migration has recognised another language",
-            "text": "The language of the data to be migrated does not match the standard language [{targetSystemLanguage}]. Data with [{sourceSystemLanguage}] can still be migrated, but it will not be automatically converted. You can adjust the translations manually afterwards.",
-            "question": "Are you sure that the data should be migrated in the standard language [{targetSystemLanguage}]?",
+            "title": "Different default languages recognised",
+            "info": "A migration with different default languages can lead to corrupted data records and cause unpredictable side effects.",
+            "text": "The default languages of the source system [{sourceSystemLanguage}] and target system [{targetSystemLanguage}] do not match. The data can be migrated, but it is not automatically assigned.",
+            "question": "Are you sure you want to run the migration with different default languages?",
             "checkboxLabel": "Yes, I would like to continue"
         }
       },

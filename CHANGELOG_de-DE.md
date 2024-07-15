@@ -1,3 +1,7 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1016 - Verbessert die Warnungen für unterschiedliche Standardwährung und Standardsprache in der Datenauswahl.
+- MIG-1016 - Fügt einen neuen Block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig` hinzu.
+
 # 13.0.0
 - MIG-945 - [BREAKING] Änderung des Methodennamens `getMedia` zu `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
 - MIG-945 - [BREAKING] CLI-Befehl `migration:migrate` entfernt und verwende stattdessen `migration:start`

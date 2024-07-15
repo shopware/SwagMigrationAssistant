@@ -333,15 +333,17 @@
       },
       "confirmWarningCard": {
         "currencyMismatch": {
-          "title": "Die Migration hat eine andere Währung erkannt",
-          "text": "Die Währung der zu migrierenden Daten stimmt nicht mit der Standard Währung [{targetSystemCurrency}] überein. Die Daten mit [{sourceSystemCurrency}] können migriert werden, sie werden aber nicht automatisch umgerechnet. Im Nachhinein kann eine manuelle Anpassung der Preise erfolgen.",
-          "question": "Bist Du sicher, dass die Daten in die Standard Währung [{targetSystemCurrency}] migriert werden sollen?",
+          "title": "Unterschiedliche Standardwährungen erkannt",
+          "info": "Eine Migration mit unterschiedlichen Standardwährungen kann zu korrumpierten Datensätzen führen und unvorhersehbare Nebeneffekte verursachen.",
+          "text": "Die Standardwährungen des Quellsystems [{sourceSystemCurrency}] und Zielsystems [{targetSystemCurrency}] stimmen nicht überein. Die Daten können migriert werden, sie werden aber nicht automatisch umgerechnet.",
+          "question": "Bist Du sicher, dass Du die Migration mit unterschiedlichen Standardwährungen durchführen möchtest?",
           "checkboxLabel": "Ja, ich möchte fortfahren"
         },
         "languageMismatch": {
-            "title": "Die Migration hat eine andere Sprache erkannt",
-            "text": "Die Sprache der zu migrierenden Daten stimmt nicht mit der Standard Sprache [{targetSystemLanguage}] überein. Die Daten mit [{sourceSystemLanguage}] können migriert werden, sie werden aber nicht automatisch umgerechnet. Im Nachhinein kann eine manuelle Anpassung der Übersetzungen erfolgen.",
-            "question": "Bist Du sicher, dass die Daten in die Standard Sprache [{targetSystemLanguage}] migriert werden sollen?",
+            "title": "Unterschiedliche Standardsprachen erkannt",
+            "info": "Eine Migration mit unterschiedlichen Standardsprachen kann zu korrumpierten Datensätzen führen und unvorhersehbare Nebeneffekte verursachen.",
+            "text": "Die Standardsprachen des Quellsystems [{sourceSystemLanguage}] und Zielsystems [{targetSystemLanguage}] stimmen nicht überein. Die Daten können migriert werden, sie werden aber nicht automatisch zugeordnet.",
+            "question": "Bist Du sicher, dass Du die Migration mit unterschiedlichen Standardsprachen durchführen möchtest?",
             "checkboxLabel": "Ja, ich möchte fortfahren"
         }
       },
