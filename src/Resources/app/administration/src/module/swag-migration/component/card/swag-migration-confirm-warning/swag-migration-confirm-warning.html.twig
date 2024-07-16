@@ -4,8 +4,8 @@
         {% block swag_migration_confirm_warning_card %}
             <sw-card
                 v-if="hasDifferentCurrency"
-                class="swag-migration-confirm-warning"
-                position-identifier="swag-migration-confirm-warning"
+                class="swag-migration-confirm-warning__card"
+                position-identifier="swag-migration-confirm-warning__card"
             >
 
                 {% block swag_migration_confirm_warning_bubble %}
@@ -27,6 +27,12 @@
                     <p class="swag-migration-confirm-warning__text">
                         {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.text', 0, { sourceSystemCurrency, targetSystemCurrency }) }}
                     </p>
+                {% endblock %}
+
+                {% block swag_migration_confirm_warning_alert %}
+                    <sw-alert variant="error" class="swag-migration-confirm-warning__alert">
+                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.info') }}
+                    </sw-alert>
                 {% endblock %}
 
                 {% block swag_migration_confirm_warning_question %}
@@ -70,6 +76,12 @@
                     <p class="swag-migration-confirm-warning__text">
                         {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.text', 0, { sourceSystemLanguage, targetSystemLanguage }) }}
                     </p>
+                {% endblock %}
+
+                {% block swag_migration_confirm_language_warning_alert %}
+                    <sw-alert variant="error" class="swag-migration-confirm-warning__alert">
+                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.info') }}
+                    </sw-alert>
                 {% endblock %}
 
                 {% block swag_migration_confirm_language_warning_question %}
