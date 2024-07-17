@@ -923,7 +923,7 @@ abstract class ProductConverter extends ShopwareConverter
 
     /**
      * @param array<int, array<string, mixed>> $media
-     * @param array<string, mixed>  $converted
+     * @param array<string, mixed> $converted
      *
      * @return array<string, mixed>
      */

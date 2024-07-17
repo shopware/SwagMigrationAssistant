@@ -741,8 +741,8 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, mixed>           $data
-     * @param array<string, mixed>           $converted
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
      *
      * @return array<int, array<string, mixed>>
      */
@@ -963,7 +963,7 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, mixed>  $originalData
+     * @param array<string, mixed> $originalData
      */
     protected function getTaxRules(array $originalData, string $taxStatus): TaxRuleCollection
     {
