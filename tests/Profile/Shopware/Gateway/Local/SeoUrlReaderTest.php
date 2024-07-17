@@ -130,7 +130,7 @@ class SeoUrlReaderTest extends LocalConnectionTestCase
     }
 
     /**
-     * @param array<int, array<string, mixed>>  $data
+     * @param array<int, array<string, mixed>> $data
      *
      * @return array<string, mixed>
      */

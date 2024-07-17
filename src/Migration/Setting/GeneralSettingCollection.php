@@ -11,10 +11,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\Log\Package;
 
 /**
- * @method void                      add(GeneralSettingEntity $entity)
- * @method void                      set(string $key, GeneralSettingEntity $entity)
- * @method GeneralSettingEntity[]    getIterator()
- * @method GeneralSettingEntity[]    getElements()
+ * @method void add(GeneralSettingEntity $entity)
+ * @method void set(string $key, GeneralSettingEntity $entity)
+ * @method GeneralSettingEntity[] getIterator()
+ * @method GeneralSettingEntity[] getElements()
  * @method GeneralSettingEntity|null get(string $key)
  * @method GeneralSettingEntity|null first()
  * @method GeneralSettingEntity|null last()

@@ -11,10 +11,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\Log\Package;
 
 /**
- * @method void                            add(SwagMigrationMappingEntity $entity)
- * @method void                            set(string $key, SwagMigrationMappingEntity $entity)
- * @method SwagMigrationMappingEntity[]    getIterator()
- * @method SwagMigrationMappingEntity[]    getElements()
+ * @method void add(SwagMigrationMappingEntity $entity)
+ * @method void set(string $key, SwagMigrationMappingEntity $entity)
+ * @method SwagMigrationMappingEntity[] getIterator()
+ * @method SwagMigrationMappingEntity[] getElements()
  * @method SwagMigrationMappingEntity|null get(string $key)
  * @method SwagMigrationMappingEntity|null first()
  * @method SwagMigrationMappingEntity|null last()

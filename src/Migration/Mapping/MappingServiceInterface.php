@@ -26,7 +26,7 @@ interface MappingServiceInterface
     /**
      * @param array<mixed>|null $additionalData
      *
-     * @return  MappingStruct
+     * @return MappingStruct
      */
     public function getOrCreateMapping(
         string $connectionId,
@@ -40,7 +40,7 @@ interface MappingServiceInterface
     ): array;
 
     /**
-     * @return  ?MappingStruct
+     * @return ?MappingStruct
      */
     public function getMapping(
         string $connectionId,
@@ -52,7 +52,7 @@ interface MappingServiceInterface
     /**
      * @param array<mixed>|null $additionalData
      *
-     * @return  MappingStruct
+     * @return MappingStruct
      */
     public function createMapping(
         string $connectionId,
