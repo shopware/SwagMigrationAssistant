@@ -1,6 +1,7 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-1016 - Improves the warnings for different default currency and default language in the data selection.
 - MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`.
+- MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5.
 
 # 13.0.0
 - MIG-945 - [BREAKING] Changed method name `getMedia` to `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`

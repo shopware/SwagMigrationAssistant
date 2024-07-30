@@ -137,4 +137,65 @@ class FetchingProcessorTest extends TestCase
 
         static::assertCount(1, $this->bus->getMessages());
     }
+
+    public function testProcessWithEmptyResultsShouldContinueWhileEntityTotalIsReached(): void
+    {
+        $progress = new MigrationProgress(
+            0,
+            1000,
+            new ProgressDataSetCollection([
+                'product' => new ProgressDataSet('product', 1000),
+                'category' => new ProgressDataSet('category', 1000),
+            ]),
+            'product',
+            0
+        );
+
+        $run = new SwagMigrationRunEntity();
+        $run->setId(Uuid::randomHex());
+        $run->setProgress($progress);
+        $run->setStep(MigrationStep::FETCHING);
+
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+
+        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, 'run-uuid', null, 0, 100);
+
+        $dataConverter = $this->createMock(MigrationDataConverter::class);
+        // Method "convert" expected to be called 10 times
+        $dataConverter->expects(static::exactly(10))->method('convert');
+
+        $dataFetcher = $this->createMock(MigrationDataFetcher::class);
+        // Method "fetchData" expected to be called 11 times because the last call will exceed the limit condition
+        $dataFetcher->expects(static::exactly(11))->method('fetchData')->willReturn([]);
+
+        $this->processor = new FetchingProcessor(
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(RunTransitionServiceInterface::class),
+            $dataFetcher,
+            $dataConverter,
+            $this->bus
+        );
+
+        $counter = 0;
+        while ($progress->getCurrentEntity() === 'product') {
+            $this->processor->process(
+                $migrationContext,
+                Context::createDefaultContext(),
+                $run,
+                $progress
+            );
+
+            if ($counter > 10) {
+                static::fail('The processor is stuck in an infinite loop');
+            }
+
+            ++$counter;
+        }
+
+        static::assertSame('category', $progress->getCurrentEntity());
+        static::assertSame(0, $progress->getCurrentEntityProgress());
+    }
 }
