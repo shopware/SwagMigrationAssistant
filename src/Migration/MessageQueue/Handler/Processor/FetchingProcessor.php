@@ -60,10 +60,10 @@ class FetchingProcessor extends AbstractProcessor
         MigrationProgress $progress
     ): void {
         $runId = $migrationContext->getRunUuid();
-        $currentEntityTotal = $progress->getDataSets()->getTotalByEntityName($progress->getCurrentEntity());
+        $totalCountOfCurrentEntity = $progress->getDataSets()->getTotalByEntityName($progress->getCurrentEntity());
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
 
-        if (empty($data) || $currentEntityTotal <= $progress->getCurrentEntityProgress()) {
+        if ($progress->getCurrentEntityProgress() >= $totalCountOfCurrentEntity) {
             $this->changeProgressToNextEntity($run, $progress, $context);
             $this->updateProgress($runId, $progress, $context);
             $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
@@ -73,8 +73,8 @@ class FetchingProcessor extends AbstractProcessor
 
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($data));
-        $progress->setProgress($progress->getProgress() + \count($data));
+        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + $migrationContext->getLimit());
+        $progress->setProgress($progress->getProgress() + $migrationContext->getLimit());
 
         $this->updateProgress($runId, $progress, $context);
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
