@@ -966,36 +966,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/TableReaderInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:getMediaPathMapping\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:getResolver\\(\\) has parameter \\$mediaFile with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalMediaProcessor\\:\\:persistFileToMedia\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Parameter \\#2 \\$destination of method Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\FileSaver\\:\\:persistFileToMedia\\(\\) expects string, string\\|null given\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
-			message: "#^Parameter \\#2 \\$mimeType of class Shopware\\\\Core\\\\Content\\\\Media\\\\File\\\\MediaFile constructor expects string, string\\|false given\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Media/LocalMediaProcessor.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalOrderDocumentProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
@@ -1149,21 +1119,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:mapLockedCmsPageUuidByNameAndType\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService has an uninitialized property \\$connection\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:downloadDocument\\(\\) has parameter \\$documents with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Media\\\\HttpOrderDocumentGenerationService\\:\\:downloadDocument\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Media/HttpOrderDocumentGenerationService.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest has an uninitialized property \\$environmentService\\. Give it default value or assign it in the constructor\\.$#"

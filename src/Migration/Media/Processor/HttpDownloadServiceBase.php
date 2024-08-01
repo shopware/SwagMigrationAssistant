@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\TemporaryFileErrorLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -132,8 +133,18 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $originalFileExtension = \explode('?', $uriFileExtension)[0]; // fix for URI query params after extension
             $fileExtension = $this->getFileExtension($originalFileExtension);
 
-            $tempFilePath = (string) \tempnam(\sys_get_temp_dir(), '');
-            $filePath = \sprintf('%s.%s', $tempFilePath, $fileExtension);
+            $filePath = \tempnam(\sys_get_temp_dir(), 'SwagMigrationAssistant-');
+            if ($filePath === false) {
+                $failureUuids[] = $uuid;
+                $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
+                $this->loggingService->addLogEntry(new TemporaryFileErrorLog(
+                    $work->getRunId(),
+                    $this->getMediaEntity(),
+                    $uuid
+                ));
+
+                continue;
+            }
 
             $streamContext = \stream_context_create([
                 'http' => [

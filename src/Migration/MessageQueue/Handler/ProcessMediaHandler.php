@@ -70,17 +70,6 @@ final class ProcessMediaHandler
             throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $message->getRunId());
         }
 
-        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $message->getRunId(),
-                $message->getEntityName(),
-                MigrationException::noFileSystemPermissions(),
-            ));
-            $this->loggingService->saveLogging($context);
-
-            return;
-        }
-
         $workload = [];
         foreach ($message->getMediaFileIds() as $mediaFileId) {
             $workload[] = new MediaProcessWorkloadStruct(
