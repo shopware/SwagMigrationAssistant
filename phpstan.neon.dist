@@ -42,9 +42,10 @@ parameters:
                 - tests/Profile/Shopware/Gateway/Local/
 
         -  # The properties are never uninitialized. They are assigned in the convert method.
-            message: '#Class SwagMigrationAssistant\\Profile\\Shopware6{0,1}\\Converter\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
+            message: '#Class SwagMigrationAssistant\\Profile\\Shopware6{0,1}\\Converter|Media\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
             paths:
                 - src/Profile/Shopware/Converter
+                - src/Profile/Shopware6/Media
 
         - # Entity properties initialized and handled by our DAL.
             message: "#^Class SwagMigrationAssistant\\\\.+ has an uninitialized property \\$.+\\. Give it default value or assign it in the constructor\\.$#"

@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Media;
 
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\Utils;
 use GuzzleHttp\Psr7\Response;
 use Shopware\Core\Checkout\Document\DocumentCollection;
@@ -16,7 +17,6 @@ use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
@@ -83,17 +83,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $documentIds[] = $work->getMediaId();
         }
 
-        if (!\is_dir('_temp') && !\mkdir('_temp') && !\is_dir('_temp')) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $runId,
-                DefaultEntities::ORDER_DOCUMENT_GENERATED,
-                MigrationException::noFileSystemPermissions(),
-            ));
-            $this->loggingService->saveLogging($context);
-
-            return $workload;
-        }
-
         $documents = $this->getMediaFiles($documentIds, $runId);
 
         // Do download requests and store the promises
@@ -157,7 +146,10 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
     }
 
     /**
-     * @param MediaProcessWorkloadStruct[] $mappedWorkload
+     * @param array<array<string, mixed>> $documents
+     * @param array<MediaProcessWorkloadStruct> $mappedWorkload
+     *
+     * @return array<string, PromiseInterface>
      */
     private function downloadDocument(array $documents, array $mappedWorkload, HttpClientInterface $client): array
     {

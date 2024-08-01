@@ -16,6 +16,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
+use Shopware\Core\Content\Media\File\MediaFile;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\Log\Package;
@@ -212,6 +213,76 @@ class HttpDownloadServiceBaseTest extends TestCase
         ], $this->loggingService->getLoggingArray());
     }
 
+    public function testProcessShouldCreateATempFile(): void
+    {
+        $mediaFiles = [
+            $this->createFileData(__DIR__ . '/_fixtures/test1.jpg'),
+            $this->createFileData(__DIR__ . '/_fixtures/test2.jpg'),
+        ];
+
+        $initialWorkload = [];
+        $migrationMediaFiles = [];
+        foreach ($mediaFiles as $media) {
+            $initialWorkload[] = new MediaProcessWorkloadStruct(
+                $media['mediaId'],
+                $this->runId,
+            );
+
+            $migrationMediaFiles[] = [
+                'id' => Uuid::randomBytes(),
+                'run_id' => Uuid::fromHexToBytes($this->runId),
+                'media_id' => Uuid::fromHexToBytes($media['mediaId']),
+                'file_name' => $media['fileName'],
+                'file_size' => $media['fileSize'],
+                'uri' => $media['uri'],
+            ];
+        }
+
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $queryBuilderMock->method('andWhere')->willReturnSelf();
+        $queryBuilderMock->method('fetchAllAssociative')->willReturn($migrationMediaFiles);
+
+        $dbalConnection = $this->createMock(Connection::class);
+        $dbalConnection->method('createQueryBuilder')->willReturn($queryBuilderMock);
+
+        /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
+        $mediaFileRepo = new StaticEntityRepository(
+            [],
+            new SwagMigrationMediaFileDefinition()
+        );
+
+        $fileSaverMock = $this->createMock(FileSaver::class);
+        // TestCase: Check that the filename starts with "/tmp/", the file exists and the size is correct
+        $fileSaverMock->expects(static::exactly(2))
+            ->method('persistFileToMedia')
+            ->willReturnCallback(function ($mediaFile, $destination, $mediaId): void {
+                static::assertInstanceOf(MediaFile::class, $mediaFile);
+                static::assertStringStartsWith('/tmp/', $mediaFile->getFileName());
+                static::assertFileExists($mediaFile->getFileName());
+                static::assertSame($mediaFile->getFileSize(), \filesize($mediaFile->getFileName()));
+                static::assertEquals('jpg', $mediaFile->getFileExtension());
+
+                static::assertIsString($destination);
+                static::assertStringStartsWith('test', $destination);
+
+                static::assertIsString($mediaId);
+                static::assertTrue(Uuid::isValid($mediaId));
+            });
+
+        $httpDownloadServiceBase = new DummyHttpDownloadService(
+            $dbalConnection,
+            $mediaFileRepo,
+            $fileSaverMock,
+            $this->loggingService,
+            $this->createHttpClientMock($mediaFiles)
+        );
+
+        $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload);
+        foreach ($resultWorkload as $workload) {
+            static::assertEquals(MediaProcessWorkloadStruct::FINISH_STATE, $workload->getState());
+        }
+    }
+
     /**
      * @param list<array{mediaId: string, fileName: string, fileContent: ?string, uri: string}> $migrationMedia
      */
@@ -243,10 +314,53 @@ class HttpDownloadServiceBaseTest extends TestCase
             new SwagMigrationMediaFileDefinition()
         );
         $fileSaver = $this->createMock(FileSaver::class);
+        $httpClient = $this->createHttpClientMock($migrationMedia);
+
+        return new DummyHttpDownloadService(
+            $dbalConnection,
+            $mediaFileRepo,
+            $fileSaver,
+            $this->loggingService,
+            $httpClient
+        );
+    }
+
+    /**
+     * @return array{mediaId: string, fileName: string, fileSize: int, fileContent: string, uri: string, path: string}
+     */
+    private function createFileData(string $filePath): array
+    {
+        $fileSize = \filesize($filePath);
+        static::assertIsInt($fileSize);
+        static::assertNotEmpty($fileSize);
+
+        $fileHandle = \fopen($filePath, 'rb');
+        static::assertIsResource($fileHandle);
+
+        $fileContent = \fread($fileHandle, $fileSize);
+        static::assertIsString($fileContent);
+
+        \fclose($fileHandle);
+
+        return [
+            'mediaId' => Uuid::randomHex(),
+            'fileName' => 'test1.jpg',
+            'fileSize' => $fileSize,
+            'fileContent' => $fileContent,
+            'uri' => 'http://test.localhost/test1.jpg?random=' . \random_int(10000, 99999),
+            'path' => $filePath,
+        ];
+    }
+
+    /**
+     * @param list<array<string, mixed>> $mediaFiles
+     */
+    private function createHttpClientMock(array $mediaFiles): HttpClientInterface
+    {
         $httpClient = $this->createMock(HttpClientInterface::class);
-        $httpClient->method('getAsync')->willReturnCallback(function ($uri) use ($migrationMedia) {
+        $httpClient->method('getAsync')->willReturnCallback(function ($uri) use ($mediaFiles) {
             $fileContent = null;
-            foreach ($migrationMedia as $mediaFile) {
+            foreach ($mediaFiles as $mediaFile) {
                 if ($mediaFile['uri'] === $uri) {
                     $fileContent = $mediaFile['fileContent'];
 
@@ -274,12 +388,6 @@ class HttpDownloadServiceBaseTest extends TestCase
             return $promise;
         });
 
-        return new DummyHttpDownloadService(
-            $dbalConnection,
-            $mediaFileRepo,
-            $fileSaver,
-            $this->loggingService,
-            $httpClient
-        );
+        return $httpClient;
     }
 }
