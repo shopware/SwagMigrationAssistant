@@ -1,4 +1,4 @@
-# REPLACE_GLOBAL_WITH_NEXT_VERSION
+# 13.1.0
 - MIG-981 - Media migration now uses the system's temporary directory to download files.
 - MIG-1016 - Improves the warnings for different default currency and default language in the data selection.
 - MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`.
