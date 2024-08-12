@@ -26,8 +26,6 @@ Component.register('swag-migration-premapping', {
 
     computed: {
         ...mapState('swagMigration', [
-            'unfilledPremapping',
-            'filledPremapping',
             'premapping',
             'dataSelectionIds',
         ]),
@@ -35,14 +33,6 @@ Component.register('swag-migration-premapping', {
         ...mapGetters('swagMigration', [
             'isPremappingValid',
         ]),
-
-        displayUnfilledPremapping() {
-            return this.unfilledPremapping.length > 0;
-        },
-
-        displayFilledPremapping() {
-            return this.filledPremapping.length > 0;
-        },
     },
 
     watch: {

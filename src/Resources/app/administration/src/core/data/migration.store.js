@@ -51,16 +51,6 @@ export default {
         premapping: [],
 
         /**
-         * Only the unfilled part of the premapping.
-         */
-        unfilledPremapping: [],
-
-        /**
-         * Only the filled part of the premapping.
-         */
-        filledPremapping: [],
-
-        /**
          * Flag to indicate if the user has confirmed the warning about different currencies and languages.
          * Will also be set to true if there are no warnings.
          */
@@ -92,49 +82,59 @@ export default {
             state.dataSelectionTableData = newTableData;
         },
 
+        // merges the existing premapping (in the state) with the newly provided one.
+        // resets the state premapping if an empty array is passed as an argument.
         setPremapping(state, newPremapping) {
-            if (newPremapping === undefined && newPremapping.length < 1) {
-                state.unfilledPremapping = [];
-                state.filledPremapping = [];
+            if (newPremapping === undefined || newPremapping === null || newPremapping.length < 1) {
+                state.premapping = [];
                 return;
             }
 
-            const unfilledMapping = [];
-            const filledMapping = [];
-
             newPremapping.forEach((group) => {
-                const newFilledGroup = {
-                    choices: group.choices,
-                    entity: group.entity,
-                    mapping: [],
-                };
+                // the premapping is grouped by entity, find the corresponding group in the state
+                let existingGroup = state.premapping.find(
+                    (existingGroupItem) => existingGroupItem.entity === group.entity,
+                );
 
-                const newUnfilledGroup = {
-                    choices: group.choices,
-                    entity: group.entity,
-                    mapping: [],
-                };
+                if (!existingGroup) {
+                    // if it doesn't exist, create a new group for this entity with no mappings
+                    existingGroup = {
+                        choices: group.choices,
+                        entity: group.entity,
+                        mapping: [],
+                    };
+                    // and add it to the state premapping groups
+                    state.premapping.push(existingGroup);
+                }
 
                 group.mapping.forEach((mapping) => {
-                    if (mapping.destinationUuid.length > 0) {
-                        newFilledGroup.mapping.push(mapping);
+                    const existingMapping = existingGroup.mapping.find(
+                        // sourceId is unique per entity and always provided by the backend
+                        (existingMappingItem) => existingMappingItem.sourceId === mapping.sourceId,
+                    );
+
+                    if (existingMapping) {
+                        // mapping already exist, update the choices received from the backend
+                        // just in case there are new ones
+                        existingMapping.choices = mapping.choices;
+                        return;
+                    }
+
+                    const newMapping = {
+                        // build a unique identifier, which can be used as a vue key for reactivity (v-for)
+                        id: `${existingGroup.entity}-${mapping.sourceId}`,
+                        ...mapping,
+                    };
+
+                    // either push the new mapping to the start or end
+                    // depending on if it is already filled (automatically by the backend)
+                    if (mapping.destinationUuid) {
+                        existingGroup.mapping.push(newMapping);
                     } else {
-                        newUnfilledGroup.mapping.push(mapping);
+                        existingGroup.mapping.unshift(newMapping);
                     }
                 });
-
-                if (newFilledGroup.mapping.length > 0) {
-                    filledMapping.push(newFilledGroup);
-                }
-
-                if (newUnfilledGroup.mapping.length > 0) {
-                    unfilledMapping.push(newUnfilledGroup);
-                }
             });
-
-            state.unfilledPremapping = unfilledMapping;
-            state.filledPremapping = filledMapping;
-            state.premapping = newPremapping;
         },
 
         setWarningConfirmed(state, confirmed) {

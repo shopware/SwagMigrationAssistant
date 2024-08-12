@@ -55,7 +55,9 @@ Component.register('swag-migration-tab-card', {
                 if (this.tabItems !== undefined && this.tabItems.length > 0) {
                     this.selectedNumber = this.tabItems[0].name;
                     setTimeout(() => {
-                        this.$refs.tabs.setActiveItem(this.tabItems[0]);
+                        if (this.$refs.swTabs) {
+                            this.$refs.swTabs.setActiveItem(this.tabItems[0]);
+                        }
                     });
                 }
             });
@@ -69,12 +71,34 @@ Component.register('swag-migration-tab-card', {
 
         getErrorCountForGroupTab(group) {
             return group.mapping.reduce((currentValue, mapping) => {
-                if (mapping.destinationUuid === null || mapping.destinationUuid.length === 0) {
+                if (
+                    mapping.destinationUuid === undefined ||
+                    mapping.destinationUuid === null ||
+                    mapping.destinationUuid.length === 0
+                ) {
                     return currentValue + 1;
                 }
 
                 return currentValue;
             }, 0);
+        },
+
+        getKey(item) {
+            if (item.entity === undefined || item.entity === null) {
+                // see https://vuejs.org/api/built-in-special-attributes.html#key
+                // we use child components with state
+                // means not having a proper unique identifier for each tab likely causes issues.
+                // For example the child components may not be properly destroyed and created and just
+                // "patched" in place with a completely different tab
+                console.error(
+                    'swag-migration-tab-card item without `entity` property',
+                    item,
+                    'more info here: https://vuejs.org/api/built-in-special-attributes.html#key',
+                );
+                return undefined;
+            }
+
+            return item.entity;
         },
     },
 });
