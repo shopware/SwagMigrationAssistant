@@ -58,17 +58,30 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
         // wait for loading state to finish
         await expect(page.locator('.sw-loader-element')).toHaveCount(0);
-        await expect(page.getByText('Manual assignments')).toBeVisible();
-        // select the first available option for all open premappings
-        const premappingItems = page.locator('.swag-migration-grid-selection__choice-column select');
-        await premappingItems.evaluateAll(async list => {
-            for await (const item of list) {
-                item.selectedIndex = 1;
-                item.dispatchEvent(new Event('change'));
-                await new Promise(resolve => setTimeout(resolve, 150));
-            }
-        });
-        await expect(page.getByText('The data check is complete')).toBeVisible();
+        await expect(page.getByText('Assignments')).toBeVisible();
+
+        // premapping:
+        // go through each entity (tab card title)
+        const tabs = page.locator('.swag-migration-tab-card__title');
+        for (let i = 0; i < await tabs.count(); i++) {
+            const tab = tabs.nth(i);
+            await tab.click();
+
+            // go through each select input and select the first available option for each
+            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column select');
+            await premappingItems.evaluateAll(async list => {
+                for await (const item of list) {
+                    item.selectedIndex = 1;
+                    item.dispatchEvent(new Event('change'));
+                    await new Promise(resolve => setTimeout(resolve, 150));
+                }
+            });
+
+            // Note: if we ever have more premapping items in our test data set,
+            // we also need to consider pagination here (currently only the first page is considered)
+        }
+
+        await expect(page.getByText('Data check completed')).toBeVisible();
 
         // start and inspect the migration process
         await page.getByRole('button', { name: 'Start migration' }).click();

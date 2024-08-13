@@ -105,6 +105,9 @@ export default {
                     };
                     // and add it to the state premapping groups
                     state.premapping.push(existingGroup);
+                } else {
+                    // in case the group already exists, override the choices by the latest ones received from the server
+                    existingGroup.choices = group.choices;
                 }
 
                 group.mapping.forEach((mapping) => {
@@ -114,9 +117,10 @@ export default {
                     );
 
                     if (existingMapping) {
-                        // mapping already exist, update the choices received from the backend
-                        // just in case there are new ones
-                        existingMapping.choices = mapping.choices;
+                        // mapping already exist, check if it was already set and override if not
+                        if (existingMapping.destinationUuid === null || existingMapping.destinationUuid === '') {
+                            existingMapping.destinationUuid = mapping.destinationUuid;
+                        }
                         return;
                     }
 
@@ -128,7 +132,7 @@ export default {
 
                     // either push the new mapping to the start or end
                     // depending on if it is already filled (automatically by the backend)
-                    if (mapping.destinationUuid) {
+                    if (mapping.destinationUuid !== null && mapping.destinationUuid !== '') {
                         existingGroup.mapping.push(newMapping);
                     } else {
                         existingGroup.mapping.unshift(newMapping);
@@ -146,7 +150,7 @@ export default {
         isPremappingValid(state) {
             return !state.premapping.some((group) => {
                 return group.mapping.some((mapping) => {
-                    return mapping.destinationUuid === null || mapping.destinationUuid.length === 0;
+                    return mapping.destinationUuid === null || mapping.destinationUuid === '';
                 });
             });
         },
