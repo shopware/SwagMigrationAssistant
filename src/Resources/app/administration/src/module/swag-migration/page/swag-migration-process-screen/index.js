@@ -83,7 +83,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
          */
         backToOverviewButtonVisible() {
             return !this.isLoading &&
-                    this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
+                this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
 
         /**
@@ -109,7 +109,11 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                 return null;
             }
 
-            return Math.round((this.progress / this.total) * 100);
+            // Prevent progress bar and window title from exceeding 100%
+            return Math.min(
+                Math.round((this.progress / this.total) * 100),
+                100,
+            );
         },
     },
 

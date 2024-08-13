@@ -198,4 +198,50 @@ class FetchingProcessorTest extends TestCase
         static::assertSame('category', $progress->getCurrentEntity());
         static::assertSame(0, $progress->getCurrentEntityProgress());
     }
+
+    public function testProcessShouldAddCurrentDataCountToProgress(): void
+    {
+        $progress = new MigrationProgress(
+            0,
+            1000,
+            new ProgressDataSetCollection([
+                'product' => new ProgressDataSet('product', 1000),
+            ]),
+            'product',
+            0
+        );
+
+        $run = new SwagMigrationRunEntity();
+        $run->setId(Uuid::randomHex());
+        $run->setProgress($progress);
+        $run->setStep(MigrationStep::FETCHING);
+
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(Uuid::randomHex());
+
+        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, 'run-uuid', null, 0, 100);
+
+        $dataConverter = $this->createMock(MigrationDataConverter::class);
+        $dataFetcher = $this->createMock(MigrationDataFetcher::class);
+        $dataFetcher->method('fetchData')->willReturn([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+
+        $this->processor = new FetchingProcessor(
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(RunTransitionServiceInterface::class),
+            $dataFetcher,
+            $dataConverter,
+            $this->bus
+        );
+
+        $this->processor->process(
+            $migrationContext,
+            Context::createDefaultContext(),
+            $run,
+            $progress
+        );
+
+        static::assertSame(10, $progress->getProgress());
+    }
 }
