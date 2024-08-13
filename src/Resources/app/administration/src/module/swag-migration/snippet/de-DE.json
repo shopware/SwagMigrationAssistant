@@ -155,6 +155,7 @@
             "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
             "SWAG_MIGRATION__CONNECTION_AUTHENTICATION_INVALID": "Deine Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Migration Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
+            "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED__HINT": "Falls Du den „Migration Connector“ schon installiert und den Cache über das Shopware-5-Backend gelöscht hast (Einstellungen > Caches/Performance), versuche den Shopware-5-Cache-Ordner (var/cache) manuell zu löschen.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Die Datenbank Verbindung konnte nicht hergestellt werden.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG": "Die Datenbankverbindung hat nicht die richtigen Attribute und diese können nicht gesetzt werden.",
             "SWAG_MIGRATION__IS_RUNNING": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten, bis die Migration abgeschlossen ist.",

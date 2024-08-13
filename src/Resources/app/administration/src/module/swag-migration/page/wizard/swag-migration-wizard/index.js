@@ -48,6 +48,7 @@ Component.register('swag-migration-wizard', {
             selectedProfile: {},
             childRouteReady: false, // child routes with forms will emit and change this value depending on their validation.
             errorMessageSnippet: '',
+            errorMessageHintSnippet: '',
             connectionNameErrorCode: '',
             currentErrorCode: '',
         };
@@ -355,12 +356,21 @@ Component.register('swag-migration-wizard', {
         onResponseError(errorCode) {
             if (errorCode !== '') {
                 this.errorMessageSnippet = `swag-migration.wizard.pages.credentials.error.${errorCode}`;
+
+                if (this.$te(`swag-migration.wizard.pages.credentials.error.${errorCode}__HINT`)) {
+                    this.errorMessageHintSnippet = `swag-migration.wizard.pages.credentials.error.${errorCode}__HINT`;
+                }
             } else {
                 this.errorMessageSnippet = '';
+                this.errorMessageHintSnippet = '';
             }
 
             if (this.errorMessageSnippet === this.$tc(`swag-migration.wizard.pages.credentials.error.${errorCode}`)) {
                 this.errorMessageSnippet = 'swag-migration.wizard.pages.credentials.error.undefinedErrorMsg';
+
+                if (this.$te('swag-migration.wizard.pages.credentials.error.undefinedErrorMsg__HINT')) {
+                    this.errorMessageHintSnippet = 'swag-migration.wizard.pages.credentials.error.undefinedErrorMsg__HINT';
+                }
             }
 
             this.currentErrorCode = errorCode;
