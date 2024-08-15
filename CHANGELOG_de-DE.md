@@ -1,3 +1,7 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten
+- MIG-1046 - Behebung eines Problems bei der Validierung von json-Feldern für einen Migrationslauf, das den Start einer Migration in der neuesten Shopware-Version verhindern konnte
+
 # 13.1.0
 - MIG-981 - Die Medienmigration verwendet jetzt das temporäre Verzeichnis des Systems zum Herunterladen von Dateien.
 - MIG-1016 - Verbessert die Warnungen für unterschiedliche Standardwährung und Standardsprache in der Datenauswahl.

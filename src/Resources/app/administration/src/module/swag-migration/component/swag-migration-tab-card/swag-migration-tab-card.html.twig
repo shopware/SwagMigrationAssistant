@@ -10,16 +10,17 @@
 
                 {% block swag_migration_tab_card_item_tab %}
                     <sw-tabs
-                        ref="tabs"
+                        ref="swTabs"
                         :small="false"
                         position-identifier="swag-migration-tab-card-item-tab"
                         @new-item-active="onNewActiveItem"
                     >
                         <sw-tabs-item
-                            v-for="(item, key) in items"
-                            :key="key.toString() + '-tab'"
+                            v-for="(item, index) in items"
+                            :key="getKey(item)"
                             ref="swTabsItems"
-                            :name="key.toString()"
+                            :name="index.toString()"
+                            :has-error="getErrorCountForGroupTab(item) > 0"
                         >
 
                             {% block swag_migration_tab_card_item_tab_content %}
@@ -29,7 +30,7 @@
                             {% endblock %}
 
                             {% block swag_migration_tab_card_item_tab_invalid_badge %}
-                                <span v-show="item.errorBadgeNumber"
+                                <span v-show="getErrorCountForGroupTab(item) > 0"
                                       class="swag-migration-tab-card__invalid-badge">
                                     {{ getErrorCountForGroupTab(item) }}
                                 </span>
@@ -40,8 +41,8 @@
             </template>
 
             <template
-                v-for="(item, key) in items"
-                :key="key.toString() + '-content'"
+                v-for="(item, index) in items"
+                :key="getKey(item)"
             >
                 <swag-migration-tab-card-item ref="contentContainer">
                     <slot

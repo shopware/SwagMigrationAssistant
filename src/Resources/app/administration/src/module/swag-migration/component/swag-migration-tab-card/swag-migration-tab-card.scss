@@ -1,6 +1,10 @@
 @import "~scss/variables";
 
 .swag-migration-tab-card {
+    .sw-tabs {
+        width: 100%;
+    }
+
     .sw-tabs__custom-content {
         padding: 0;
     }
@@ -14,8 +18,10 @@
         font-size: 12px;
         text-align: center;
         padding: 0 8px;
-        position: absolute;
-        transform: translateY(-25%);
-        margin-left: 4px;
+        margin-left: 2px;
+    }
+
+    .sw-tabs-item__error-badge {
+        display: none;
     }
 }

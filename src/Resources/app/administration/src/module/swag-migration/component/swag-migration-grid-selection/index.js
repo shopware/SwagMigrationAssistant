@@ -30,7 +30,7 @@ Component.register('swag-migration-grid-selection', {
             items: [],
             disableRouteParams: true,
             limit: 10,
-            paginationSteps: [5, 10, 15, 20, 25, 30],
+            paginationSteps: [10, 20, 30, 50],
         };
     },
 
@@ -48,7 +48,7 @@ Component.register('swag-migration-grid-selection', {
             this.total = this.mapping.length;
             const start = (this.page - 1) * this.limit;
             const end = Math.min(start + this.limit, this.total);
-            this.items = [];
+            this.items.length = 0; // clear the items array without creating a new reference
 
             // Copy the object references into the display items array (for pagination).
             // Note: Array.slice does not work (as it copies)

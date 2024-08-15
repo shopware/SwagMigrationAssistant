@@ -1,6 +1,6 @@
 {% block swag_migration_tab_card_item %}
     <div class="swag-migration-tab-card-item">
-        <div v-show="active">
+        <div v-if="active">
             <slot>
                 {% block swag_migration_tab_card_item_slot %}{% endblock %}
             </slot>

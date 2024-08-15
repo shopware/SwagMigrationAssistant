@@ -28,7 +28,7 @@ class MigrationProgressField extends JsonField
             (new IntField('total', 'total'))->addFlags(new Required()),
             (new StringField('currentEntity', 'currentEntity'))->addFlags(new Required()),
             (new IntField('currentEntityProgress', 'currentEntityProgress'))->addFlags(new Required()),
-            (new ListField('dataSets', 'dataSets', StringField::class))->addFlags(new Required()),
+            (new ListField('dataSets', 'dataSets', JsonField::class))->addFlags(new Required()),
             (new IntField('exceptionCount', 'exceptionCount'))->addFlags(new Required()),
             (new BoolField('isAborted', 'isAborted'))->addFlags(new Required()),
         ]);

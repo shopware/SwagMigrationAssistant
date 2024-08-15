@@ -3296,6 +3296,18 @@ Premapping {JSON}: ----------------------------------------------------
         "mapping": [
             {
                 "extensions": [],
+                "sourceId": "default_payment_method",
+                "description": "Standard Payment Method",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "SEPA",
+                "destinationUuid": "XXX"
+            },
+            {
+                "extensions": [],
                 "sourceId": "2",
                 "description": "Lastschrift",
                 "destinationUuid": "XXX"
@@ -3314,18 +3326,6 @@ Premapping {JSON}: ----------------------------------------------------
             },
             {
                 "extensions": [],
-                "sourceId": "6",
-                "description": "SEPA",
-                "destinationUuid": "XXX"
-            },
-            {
-                "extensions": [],
-                "sourceId": "default_payment_method",
-                "description": "Standard Payment Method",
-                "destinationUuid": "XXX"
-            },
-            {
-                "extensions": [],
                 "sourceId": "5",
                 "description": "Vorkasse",
                 "destinationUuid": "XXX"
@@ -3339,14 +3339,14 @@ Premapping {JSON}: ----------------------------------------------------
         "mapping": [
             {
                 "extensions": [],
-                "sourceId": "mr",
-                "description": "mr",
+                "sourceId": "ms",
+                "description": "ms",
                 "destinationUuid": "XXX"
             },
             {
                 "extensions": [],
-                "sourceId": "ms",
-                "description": "ms",
+                "sourceId": "mr",
+                "description": "mr",
                 "destinationUuid": "XXX"
             }
         ],

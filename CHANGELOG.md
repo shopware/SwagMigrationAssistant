@@ -1,3 +1,7 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
+- MIG-1046 - Fixed an issue related to the validation of json fields for a migration run, which could prevent starting a migration in the latest shopware version
+
 # 13.1.0
 - MIG-981 - Media migration now uses the system's temporary directory to download files.
 - MIG-1016 - Improves the warnings for different default currency and default language in the data selection.

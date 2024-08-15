@@ -1,14 +1,6 @@
 {% block swag_migration_premapping %}
     <div class="swag-migration-premapping">
 
-        {% block swag_migration_premapping_unfilled_alert %}
-            <sw-alert v-if="!isPremappingValid"
-                      class="swag-migration-premapping__alert"
-                      variant="error">
-                {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
-            </sw-alert>
-        {% endblock %}
-
         {% block swag_migration_premapping_unfilled_card %}
             <sw-card
                 v-if="!isPremappingValid"
@@ -26,6 +18,14 @@
                     <div class="swag-migration-premapping__unfilled-caption">
                         {{ $tc('swag-migration.index.premappingCard.unfilledCaption') }}
                     </div>
+                {% endblock %}
+
+                {% block swag_migration_premapping_unfilled_alert %}
+                    <sw-alert v-if="!isPremappingValid"
+                              class="swag-migration-premapping__alert"
+                              variant="error">
+                        {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
+                    </sw-alert>
                 {% endblock %}
             </sw-card>
         {% endblock %}
@@ -60,10 +60,10 @@
 
         {% block swag_migration_premapping_unfilled_mapping %}
             <swag-migration-tab-card
-                v-if="!isLoading && displayUnfilledPremapping"
+                v-if="!isLoading && premapping.length > 0"
                 class="swag-migration-premapping__tab-card"
-                :title="$tc('swag-migration.index.premappingCard.unfilledCardTitle')"
-                :items="unfilledPremapping"
+                :title="$tc('swag-migration.index.premappingCard.cardTitle')"
+                :items="premapping"
             >
                 <template #items="{ item }">
                     <swag-migration-grid-selection
@@ -73,32 +73,6 @@
                     />
                 </template>
             </swag-migration-tab-card>
-        {% endblock %}
-
-        {% block swag_migration_premapping_expand_div %}
-            <swag-migration-expand-div
-                v-if="!isLoading && displayFilledPremapping"
-                class="swag-migration-premapping__expand-div"
-                :expand-title="$tc('swag-migration.index.premappingCard.expandTitle')"
-                :collapse-title="$tc('swag-migration.index.premappingCard.collapseTitle')"
-            >
-                {% block swag_migration_premapping_filled_mapping %}
-                    <swag-migration-tab-card
-                        v-if="displayFilledPremapping"
-                        class="swag-migration-premapping__filled-tab-card swag-migration-premapping__tab-card"
-                        :title="$tc('swag-migration.index.premappingCard.filledCardTitle')"
-                        :items="filledPremapping"
-                    >
-                        <template #items="{ item }">
-                            <swag-migration-grid-selection
-                                :choices="item.choices"
-                                :mapping="item.mapping"
-                                @update:value="onPremappingChanged"
-                            />
-                        </template>
-                    </swag-migration-tab-card>
-                {% endblock %}
-            </swag-migration-expand-div>
         {% endblock %}
 
         <sw-card v-if="isLoading"
