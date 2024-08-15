@@ -71,11 +71,7 @@ Component.register('swag-migration-tab-card', {
 
         getErrorCountForGroupTab(group) {
             return group.mapping.reduce((currentValue, mapping) => {
-                if (
-                    mapping.destinationUuid === undefined ||
-                    mapping.destinationUuid === null ||
-                    mapping.destinationUuid.length === 0
-                ) {
+                if (!mapping.destinationUuid) {
                     return currentValue + 1;
                 }
 
@@ -84,7 +80,7 @@ Component.register('swag-migration-tab-card', {
         },
 
         getKey(item) {
-            if (item.entity === undefined || item.entity === null) {
+            if (!item.entity) {
                 // see https://vuejs.org/api/built-in-special-attributes.html#key
                 // we use child components with state
                 // means not having a proper unique identifier for each tab likely causes issues.

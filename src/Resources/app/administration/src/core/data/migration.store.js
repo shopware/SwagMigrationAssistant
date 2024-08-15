@@ -118,21 +118,21 @@ export default {
 
                     if (existingMapping) {
                         // mapping already exist, check if it was already set and override if not
-                        if (existingMapping.destinationUuid === null || existingMapping.destinationUuid === '') {
+                        if (!existingMapping.destinationUuid) {
                             existingMapping.destinationUuid = mapping.destinationUuid;
                         }
                         return;
                     }
 
                     const newMapping = {
+                        ...mapping,
                         // build a unique identifier, which can be used as a vue key for reactivity (v-for)
                         id: `${existingGroup.entity}-${mapping.sourceId}`,
-                        ...mapping,
                     };
 
                     // either push the new mapping to the start or end
                     // depending on if it is already filled (automatically by the backend)
-                    if (mapping.destinationUuid !== null && mapping.destinationUuid !== '') {
+                    if (mapping.destinationUuid) {
                         existingGroup.mapping.push(newMapping);
                     } else {
                         existingGroup.mapping.unshift(newMapping);
