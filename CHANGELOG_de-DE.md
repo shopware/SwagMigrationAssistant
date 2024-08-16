@@ -1,4 +1,5 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1042 - Fügt einen Hinweises bezüglich des Löschen des Caches hinzu, wenn der Shopware 5 Connector nicht erkannt wird.
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten
 - MIG-1045 - Korrigiert den angezeigten prozentualen Status beim Lesen von Daten
 - MIG-1046 - Behebung eines Problems bei der Validierung von json-Feldern für einen Migrationslauf, das den Start einer Migration in der neuesten Shopware-Version verhindern konnte
