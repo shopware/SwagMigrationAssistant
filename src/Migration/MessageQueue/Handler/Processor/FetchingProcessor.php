@@ -73,8 +73,12 @@ class FetchingProcessor extends AbstractProcessor
 
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
+        // increase "currentEntityProgress" by the batch limit,
+        // so next process iteration will handle the next batch
         $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + $migrationContext->getLimit());
-        $progress->setProgress($progress->getProgress() + $migrationContext->getLimit());
+        // increase the overall (step) "progress" by the actual amount of entities processed,
+        // so together with the total amount of entities (which we get upfront) a percentage can be calculated and progress bar shown (in the admin UI / CLI)
+        $progress->setProgress($progress->getProgress() + \count($data));
 
         $this->updateProgress($runId, $progress, $context);
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
