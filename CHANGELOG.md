@@ -1,6 +1,6 @@
-# REPLACE_GLOBAL_WITH_NEXT_VERSION
-- MIG-1042 - Adding a notice to clear the cache when the Shopware 5 Connector can't be found.
+# 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
+- MIG-1042 - Adding a notice to clear the cache when the Shopware 5 Connector can't be found.
 - MIG-1045 - Fix displayed percentage status while reading data
 - MIG-1046 - Fixed an issue related to the validation of json fields for a migration run, which could prevent starting a migration in the latest shopware version
 
