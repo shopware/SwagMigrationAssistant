@@ -849,7 +849,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionName') {
-                $this->convertValue($propertyOptionTranslation, 'optionName', $objectData, $key);
+                $this->convertValue($propertyOptionTranslation, 'name', $objectData, $key);
             }
 
             $this->addAttribute(DefaultEntities::PROPERTY_GROUP, $key, $value, $propertyOptionTranslation, $objectData);
