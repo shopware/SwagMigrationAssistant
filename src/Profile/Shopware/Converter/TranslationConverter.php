@@ -884,7 +884,7 @@ abstract class TranslationConverter extends ShopwareConverter
      * @param array<string, mixed> $translation
      * @param array<string, mixed> $objectData
      */
-    protected function addAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
+    protected function addAttribute(string $entityName, string $key, string|int|float $value, array &$translation, array &$objectData): void
     {
         $connection = $this->migrationContext->getConnection();
 
