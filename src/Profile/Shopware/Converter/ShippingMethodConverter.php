@@ -946,7 +946,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if (!isset($ruleData['bind_time_from'])) {
             $value['fromTime'] = '00:00';
         } else {
-            $secs = $ruleData['bind_time_from'];
+            $secs = (int) $ruleData['bind_time_from'];
             $min = \mb_str_pad((string) \floor(($secs % 3600) / 60), 2, '0', \STR_PAD_LEFT);
             $hour = \mb_str_pad((string) \floor(($secs % 86400) / 3600), 2, '0', \STR_PAD_LEFT);
             $value['fromTime'] = $hour . ':' . $min;
@@ -955,7 +955,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if (!isset($ruleData['bind_time_to'])) {
             $value['toTime'] = '00:00';
         } else {
-            $secs = $ruleData['bind_time_to'];
+            $secs = (int) $ruleData['bind_time_to'];
             $min = \mb_str_pad((string) \floor(($secs % 3600) / 60), 2, '0', \STR_PAD_LEFT);
             $hour = \mb_str_pad((string) \floor(($secs % 86400) / 3600), 2, '0', \STR_PAD_LEFT);
             $value['toTime'] = $hour . ':' . $min;

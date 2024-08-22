@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Writer;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
@@ -27,6 +28,11 @@ abstract class AbstractWriter implements WriterInterface
     ) {
     }
 
+    /**
+     * @param array<mixed> $data
+     *
+     * @return array<string, array<EntityWriteResult>>
+     */
     public function writeData(array $data, Context $context): array
     {
         $writeResults = [];

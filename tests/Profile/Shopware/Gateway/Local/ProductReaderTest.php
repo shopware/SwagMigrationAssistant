@@ -120,6 +120,35 @@ class ProductReaderTest extends LocalConnectionTestCase
         static::assertSame(['3'], $product['shops']);
     }
 
+    public function testGetSeoUrlMainCategories(): void
+    {
+        $sql = \file_get_contents(__DIR__ . '/_fixtures/subshop_and_seo_categories.sql');
+        static::assertIsString($sql);
+
+        $connection = $this->getExternalConnection();
+        $connection->executeStatement($sql);
+
+        $productReader = $this->getProductReader();
+        $this->setLimitAndOffset(500, 0);
+        static::assertTrue($productReader->supports($this->getMigrationContext()));
+
+        $data = $productReader->read($this->getMigrationContext());
+
+        $productOne = $this->getProductById(9, $data);
+        static::assertCount(2, $productOne['mainCategories']);
+        static::assertSame('1', $productOne['mainCategories'][0]['shopId']);
+        static::assertSame('14', $productOne['mainCategories'][0]['categoryId']);
+        static::assertSame('3', $productOne['mainCategories'][1]['shopId']);
+        static::assertSame('34', $productOne['mainCategories'][1]['categoryId']);
+
+        $productTwo = $this->getProductById(272, $data);
+        static::assertCount(2, $productTwo['mainCategories']);
+        static::assertSame('1', $productTwo['mainCategories'][0]['shopId']);
+        static::assertSame('15', $productTwo['mainCategories'][0]['categoryId']);
+        static::assertSame('3', $productTwo['mainCategories'][1]['shopId']);
+        static::assertSame('16', $productTwo['mainCategories'][1]['categoryId']);
+    }
+
     protected function getDataSet(): DataSet
     {
         return new ProductDataSet();
