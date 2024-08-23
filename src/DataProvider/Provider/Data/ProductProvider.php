@@ -44,6 +44,7 @@ class ProductProvider extends AbstractProvider
         $criteria->addAssociation('properties');
         $criteria->addAssociation('options');
         $criteria->addAssociation('prices');
+        $criteria->addAssociation('mainCategories');
         $criteria->addAssociation('media.media.tags');
         $criteria->addAssociation('media.media.translations');
         $criteria->addAssociation('visibilities');

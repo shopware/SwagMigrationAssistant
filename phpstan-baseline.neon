@@ -396,36 +396,6 @@ parameters:
 			path: src/Migration/Setting/GeneralSettingDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\AbstractWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Writer/AbstractWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\AbstractWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Writer/AbstractWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\MediaFolderWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Writer/MediaFolderWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\MediaFolderWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Writer/MediaFolderWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\OrderWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Writer/OrderWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\OrderWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Writer/OrderWriter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\TranslationWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Writer/TranslationWriter.php

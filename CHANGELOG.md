@@ -1,3 +1,6 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1033 - Added the migration of SEO main category for products with SW5 or SW6 as a source system
+
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
 - MIG-1042 - Adding a notice to clear the cache when the Shopware 5 Connector can't be found.

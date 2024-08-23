@@ -120,6 +120,7 @@ class ProductReader extends AbstractReader
         $options = $this->getConfiguratorOptions();
         $esdPath = $this->getEsdConfig();
         $esdFiles = $this->getEsdFiles();
+        $seoMainCategories = $this->getProductSeoMainCategories();
 
         // represents the main language of the migrated shop
         $locale = $this->getDefaultShopLocale();
@@ -130,6 +131,9 @@ class ProductReader extends AbstractReader
 
             if (isset($categories[$product['id']])) {
                 $product['categories'] = $categories[$product['id']];
+            }
+            if (isset($seoMainCategories[$product['id']])) {
+                $product['mainCategories'] = $seoMainCategories[$product['id']];
             }
             if (isset($prices[$product['detail']['id']])) {
                 $product['prices'] = $prices[$product['detail']['id']];
@@ -154,7 +158,7 @@ class ProductReader extends AbstractReader
             $product['shops'] = $productVisibility->getShops($product['id']);
         }
         unset(
-            $product, $categories,
+            $product, $categories, $seoMainCategories,
             $prices, $media, $options, $esdFile
         );
 
@@ -171,6 +175,28 @@ class ProductReader extends AbstractReader
         foreach ($fetchedProducts as $product) {
             $this->productMapping->set($product['product_detail.id'], $product['product.id']);
         }
+    }
+
+    /**
+     * @return array<string, array<int, array<string, string|null>>>
+     */
+    private function getProductSeoMainCategories(): array
+    {
+        $iterator = $this->productMapping->getIterator();
+        $productIds = \array_values(
+            $iterator->getArrayCopy()
+        );
+
+        // Just select subshop main categories and ignore language shops
+        $query = $this->connection->createQueryBuilder();
+        $query->select(['seoCategory.article_id', 'seoCategory.shop_id as shopId', 'seoCategory.category_id as categoryId'])
+            ->from('s_articles_categories_seo', 'seoCategory')
+            ->join('seoCategory', 's_core_shops', 'shop', 'shop.id = seoCategory.shop_id')
+            ->where('article_id IN (:ids)')
+            ->andWhere('shop.main_id IS NULL')
+            ->setParameter('ids', $productIds, ArrayParameterType::INTEGER);
+
+        return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
     /**

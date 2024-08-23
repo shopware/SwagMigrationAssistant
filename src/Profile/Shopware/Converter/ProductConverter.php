@@ -359,16 +359,21 @@ abstract class ProductConverter extends ShopwareConverter
     {
         if (isset($data['manufacturer'])) {
             $converted['manufacturer'] = $this->getManufacturer($data['manufacturer']);
+            unset($data['manufacturer'], $data['supplierID']);
         }
-        unset($data['manufacturer'], $data['supplierID']);
+
+        if (isset($data['mainCategories'])) {
+            $converted['mainCategories'] = $this->createMainCategoriesMapping($data['mainCategories']);
+            unset($data['mainCategories']);
+        }
 
         $converted['tax'] = $this->getTax($data['tax']);
         unset($data['tax'], $data['taxID']);
 
         if (isset($data['unit']['id'])) {
             $converted['unit'] = $this->getUnit($data['unit']);
+            unset($data['unit'], $data['detail']['unitID']);
         }
-        unset($data['unit'], $data['detail']['unitID']);
 
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
@@ -414,8 +419,8 @@ abstract class ProductConverter extends ShopwareConverter
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::PRODUCT, $this->connectionName, ['id', 'articleID', 'articledetailsID'], $this->context);
+            unset($data['attributes']);
         }
-        unset($data['attributes']);
 
         $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', self::TYPE_STRING);
 
@@ -1446,6 +1451,42 @@ abstract class ProductConverter extends ShopwareConverter
         if ($languageUuid !== null) {
             $converted['translations'][$languageUuid] = $localeTranslation;
         }
+    }
+
+    /**
+     * @param array<int, array<string, string>> $categories
+     *
+     * @return array<int, array<string, string>>
+     */
+    private function createMainCategoriesMapping(array $categories): array
+    {
+        $mainCategories = [];
+        foreach ($categories as $category) {
+            $categoryId = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::CATEGORY,
+                $category['categoryId'],
+                $this->context
+            )['entityUuid'];
+
+            $salesChannelId = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::SALES_CHANNEL,
+                $category['shopId'],
+                $this->context
+            )['entityUuid'];
+
+            if (!$categoryId || !$salesChannelId) {
+                continue;
+            }
+
+            $mainCategories[] = [
+                'categoryId' => $categoryId,
+                'salesChannelId' => $salesChannelId,
+            ];
+        }
+
+        return $mainCategories;
     }
 
     /**
