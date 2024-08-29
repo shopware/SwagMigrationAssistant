@@ -40,14 +40,8 @@
             "@phpunit",
             "@admin:lint"
         ],
-        "ecs": [
-            "../../../vendor/bin/ecs check --config ../../../ecs.php src tests",
-            "../../../vendor/bin/ecs check --config ecs.php"
-        ],
-        "ecs-fix": [
-            "../../../vendor/bin/ecs check --config ../../../ecs.php --fix src tests",
-            "../../../vendor/bin/ecs check --config ecs.php --fix"
-        ],
+        "ecs": "../../../vendor/bin/php-cs-fixer fix --dry-run",
+        "ecs-fix": "../../../vendor/bin/php-cs-fixer fix",
         "phpunit": "../../../vendor/bin/phpunit",
         "phpstan": [
             "php ../../../src/Core/DevOps/StaticAnalyze/phpstan-bootstrap.php",
