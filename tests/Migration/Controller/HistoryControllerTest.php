@@ -161,7 +161,7 @@ class HistoryControllerTest extends TestCase
 
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $result);
         static::assertNotNull($result->first());
-        static::assertSame('Lorem Ipsum', $result->first()->get('description'));
+        static::assertSame('Lorem Ipsum', $result->first()->getDescription());
     }
 
     public function testGetPrefixLogInformation(): void

@@ -13,3 +13,4 @@ composer.lock
 src/Resources/public/administration/
 src/Resources/public/static/
 .env
+/migration_assistant.cache
