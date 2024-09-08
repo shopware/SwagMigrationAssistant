@@ -19,7 +19,7 @@ class SwagMigrationMappingEntity extends Entity
 
     protected string $connectionId;
 
-    protected SwagMigrationConnectionEntity $connection;
+    protected ?SwagMigrationConnectionEntity $connection = null;
 
     protected ?string $entity;
 
@@ -43,7 +43,7 @@ class SwagMigrationMappingEntity extends Entity
         $this->connectionId = $connectionId;
     }
 
-    public function getConnection(): SwagMigrationConnectionEntity
+    public function getConnection(): ?SwagMigrationConnectionEntity
     {
         return $this->connection;
     }
