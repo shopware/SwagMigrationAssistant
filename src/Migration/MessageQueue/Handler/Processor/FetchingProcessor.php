@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -71,7 +72,27 @@ class FetchingProcessor extends AbstractProcessor
             return;
         }
 
+        // TODO: remove me
+        // needs 'composer update'
+        // needs 'composer require blackfire/php-sdk' executed in platform!
+        // ------------------------------------------------
+        $blackfire = new \Blackfire\Client();
+        $config = new \Blackfire\Profile\Configuration();
+        $config->setTitle("MigrationIT2-baseline: CONVERT " . $migrationContext->getDataSet()::getEntity() . " OFFSET: " . $migrationContext->getOffset());
+        $start = microtime(true);
+        $probe = $blackfire->createProbe($config);
+        // ------------------------------------------------
+
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
+        // TODO: remove me
+        // ------------------------------------------------
+        $time_elapsed_secs = microtime(true) - $start;
+        if ($migrationContext->getOffset() !== 0 || $migrationContext->getDataSet()::getEntity() !== DefaultEntities::PRODUCT) {
+            $probe->discard();
+        }
+        $profile = $blackfire->endProbe($probe);
+        // ------------------------------------------------
 
         // increase "currentEntityProgress" by the batch limit,
         // so next process iteration will handle the next batch
