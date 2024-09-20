@@ -1,5 +1,6 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-1033 - Added the migration of SEO main category for products with SW5 or SW6 as a source system
+- MIG-1049 - Made `connection` property of `SwagMigrationMappingEntity` optional
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
