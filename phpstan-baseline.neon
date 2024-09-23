@@ -196,21 +196,6 @@ parameters:
 			path: src/Migration/Mapping/SwagMigrationMappingDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity\\:\\:getAdditionalData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity\\:\\:setAdditionalData\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingEntity\\:\\:\\$additionalData type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/SwagMigrationMappingEntity.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:saveMediaFile\\(\\) has parameter \\$mediaFile with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Media/MediaFileService.php

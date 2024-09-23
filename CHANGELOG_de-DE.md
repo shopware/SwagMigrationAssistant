@@ -1,5 +1,6 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-1033 - Die Migration der SEO-Hauptkategorie für Produkte mit SW5 oder SW6 als Quellsystem wurde hinzugefügt
+- MIG-1049 - Das Setzen der `connection`-Eigenschaft in `SwagMigrationMappingEntity` ist jetzt optional
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

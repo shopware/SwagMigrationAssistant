@@ -19,7 +19,7 @@ class SwagMigrationMappingEntity extends Entity
 
     protected string $connectionId;
 
-    protected SwagMigrationConnectionEntity $connection;
+    protected ?SwagMigrationConnectionEntity $connection = null;
 
     protected ?string $entity;
 
@@ -31,6 +31,9 @@ class SwagMigrationMappingEntity extends Entity
 
     protected ?string $checksum;
 
+    /**
+     * @var array<string, mixed>|null
+     */
     protected ?array $additionalData;
 
     public function getConnectionId(): string
@@ -43,7 +46,7 @@ class SwagMigrationMappingEntity extends Entity
         $this->connectionId = $connectionId;
     }
 
-    public function getConnection(): SwagMigrationConnectionEntity
+    public function getConnection(): ?SwagMigrationConnectionEntity
     {
         return $this->connection;
     }
@@ -103,11 +106,17 @@ class SwagMigrationMappingEntity extends Entity
         $this->checksum = $checksum;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
     public function getAdditionalData(): ?array
     {
         return $this->additionalData;
     }
 
+    /**
+     * @param array<string, mixed> $additionalData
+     */
     public function setAdditionalData(array $additionalData): void
     {
         $this->additionalData = $additionalData;
