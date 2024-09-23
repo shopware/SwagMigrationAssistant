@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Exception;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
@@ -88,6 +89,8 @@ class MigrationException extends HttpException
     public const DATABASE_CONNECTION_ATTRIBUTES_WRONG = 'SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG';
 
     public const LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND = 'SWAG_MIGRATION__LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND';
+
+    public const INVALID_WRITE_CONTEXT = 'SWAG_MIGRATION__INVALID_WRITE_CONTEXT';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
@@ -460,6 +463,18 @@ class MigrationException extends HttpException
             self::LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND,
             'Locale with code: "{{ localeCode }}" for language lookup not found.',
             ['localeCode' => $localeCode]
+        );
+    }
+
+    public static function invalidWriteContext(Context $invalidContext): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::INVALID_WRITE_CONTEXT,
+            'Invalid context passed to writer. It must have a source of SystemSource but got {{ sourceType }}',
+            [
+                'sourceType' => $invalidContext->getSource()::class,
+            ]
         );
     }
 }

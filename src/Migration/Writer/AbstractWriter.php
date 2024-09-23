@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Writer;
 
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityWriteResult;
@@ -14,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\ArrayStruct;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('services-settings')]
 abstract class AbstractWriter implements WriterInterface
@@ -29,12 +31,22 @@ abstract class AbstractWriter implements WriterInterface
     }
 
     /**
+     * ## Warning:
+     * Be careful what context gets passed into this method,
+     * as Context with AdminApiSource contains the (admin) user id
+     * and thus might create side effects for CreatedBy and UpdatedBy DAL fields.
+     * This is prevented by throwing a MigrationException::invalidWriteContext exception.
+     *
      * @param array<mixed> $data
      *
      * @return array<string, array<EntityWriteResult>>
      */
     public function writeData(array $data, Context $context): array
     {
+        if (!$context->getSource() instanceof SystemSource) {
+            throw MigrationException::invalidWriteContext($context);
+        }
+
         $writeResults = [];
 
         $context->addExtension(

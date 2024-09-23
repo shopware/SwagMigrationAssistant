@@ -45,6 +45,14 @@ class CustomerConverter extends ShopwareConverter
         $this->updateAssociationIds($converted['addresses'], DefaultEntities::SALUTATION, 'salutationId', DefaultEntities::CUSTOMER);
         $this->updateAssociationIds($converted['addresses'], DefaultEntities::COUNTRY_STATE, 'countryStateId', DefaultEntities::COUNTRY_STATE);
 
+        if (isset($data['createdById'])) {
+            $converted['createdById'] = $this->getMappingIdFacade(DefaultEntities::USER, $data['createdById']);
+        }
+
+        if (isset($data['updatedById'])) {
+            $converted['updatedById'] = $this->getMappingIdFacade(DefaultEntities::USER, $data['updatedById']);
+        }
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 }

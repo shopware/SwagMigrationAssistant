@@ -47,7 +47,6 @@ class CustomerProvider extends AbstractProvider
             'customerId',
             'tagIds',
             'autoIncrement',
-            'createdById',
         ]);
     }
 

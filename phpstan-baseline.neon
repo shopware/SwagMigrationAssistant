@@ -336,41 +336,6 @@ parameters:
 			path: src/Migration/Service/MigrationDataConverterInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:extractWriteErrorsWithIndex\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:handleWriteException\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:handleWriteException\\(\\) has parameter \\$updateWrittenData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:removeChecksumsOfUnwrittenData\\(\\) has parameter \\$mappingIds with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:removeChecksumsOfUnwrittenData\\(\\) has parameter \\$updateWrittenData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:writePerEntity\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataWriter\\:\\:writePerEntity\\(\\) has parameter \\$updateWrittenData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Service/MigrationDataWriter.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Setting\\\\GeneralSettingCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
 			count: 1
 			path: src/Migration/Setting/GeneralSettingCollection.php
@@ -969,11 +934,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NumberRangeConverter\\:\\:checkForExistingNumberRange\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\OrderConverter\\:\\:updateLineItems\\(\\) has parameter \\$lineItems with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/OrderConverter.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter has an uninitialized property \\$sourceDefaultCurrencyUuid\\. Give it default value or assign it in the constructor\\.$#"

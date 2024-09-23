@@ -244,4 +244,6 @@ final class DefaultEntities
     final public const UNIT = 'unit';
 
     final public const UNIT_TRANSLATION = 'unit_translation';
+
+    final public const USER = 'user';
 }
