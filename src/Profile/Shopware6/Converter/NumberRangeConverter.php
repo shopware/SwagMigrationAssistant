@@ -15,6 +15,7 @@ use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeState
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
@@ -31,6 +32,7 @@ class NumberRangeConverter extends ShopwareConverter
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected EntityRepository $numberRangeStateRepository,
+        private readonly NumberRangeLookup $numberRangeLookup
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -99,8 +101,7 @@ class NumberRangeConverter extends ShopwareConverter
 
     private function checkForExistingNumberRange(array &$converted): void
     {
-        $existingId = $this->mappingService->getNumberRangeUuid($converted['type']['technicalName'], $converted['id'], $this->checksum, $this->migrationContext, $this->context);
-
+        $existingId = $this->numberRangeLookup->get($converted['type']['technicalName'],$this->context);
         if ($existingId === null) {
             return;
         }

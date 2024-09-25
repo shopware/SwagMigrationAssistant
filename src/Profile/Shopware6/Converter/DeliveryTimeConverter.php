@@ -10,13 +10,24 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DeliveryTimeDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class DeliveryTimeConverter extends ShopwareConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly DeliveryTimeLookup $deliveryTimeLookup
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -26,8 +37,7 @@ class DeliveryTimeConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-
-        $converted['id'] = $this->mappingService->getDeliveryTime($this->connectionId, $this->context, $data['min'], $data['max'], $data['unit'], $data['id']);
+        $converted['id'] = $this->deliveryTimeLookup->get($data['min'], $data['max'], $data['unit'], $data['id'], $this->context);
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::DELIVERY_TIME,

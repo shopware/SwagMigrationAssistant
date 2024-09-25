@@ -10,7 +10,9 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseConfigDataSet;
@@ -19,9 +21,26 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 #[Package('services-settings')]
 class DocumentBaseConfigConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
-        return new DocumentBaseConfigConverter($mappingService, $loggingService, $mediaFileService);
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = []
+    ): ConverterInterface {
+        $documentLookup = $this->createMock(DocumentTypeLookup::class);
+
+        foreach ($mappingArray as $mapping) {
+            if ($mapping['entity'] !== DefaultEntities::ORDER_DOCUMENT_TYPE) {
+                $documentLookup->method('get')->willReturn($mapping['newIdentifier']);
+            }
+        }
+
+        return new DocumentBaseConfigConverter(
+            $mappingService,
+            $loggingService,
+            $mediaFileService,
+            $documentLookup
+        );
     }
 
     protected function createDataSet(): DataSet

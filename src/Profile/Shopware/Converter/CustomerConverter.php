@@ -20,6 +20,8 @@ use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\InvalidEmailAddressLog;
@@ -74,6 +76,8 @@ abstract class CustomerConverter extends ShopwareConverter
         LoggingServiceInterface $loggingService,
         protected ValidatorInterface $validator,
         private readonly EntityRepository $salesChannelRepository,
+        private readonly CountryLookup $countryLookup,
+        private readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -237,7 +241,6 @@ abstract class CustomerConverter extends ShopwareConverter
                     $this->oldCustomerId,
                     'defaultpayment'
                 ));
-
                 return new ConvertStruct(null, $oldData);
             }
             $converted['defaultPaymentMethodId'] = $mapping['entityUuid'];
@@ -260,12 +263,7 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['attributes']);
 
         if (isset($data['customerlanguage']['locale'])) {
-            $languageUuid = $this->mappingService->getLanguageUuid(
-                $this->connectionId,
-                $data['customerlanguage']['locale'],
-                $context
-            );
-
+            $languageUuid = $this->languageLookup->get($data['customerlanguage']['locale'], $context);
             if ($languageUuid !== null) {
                 $converted['languageId'] = $languageUuid;
             }
@@ -475,13 +473,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $country = [];
         $countryUuid = null;
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
-            $countryUuid = $this->mappingService->getCountryUuid(
-                $oldCountryData['id'],
-                $oldCountryData['countryiso'],
-                $oldCountryData['iso3'],
-                $this->connectionId,
-                $this->context
-            );
+            $countryUuid = $this->countryLookup->get($oldCountryData['countryiso'], $oldCountryData['iso3'], $this->context);
         }
 
         if ($countryUuid !== null) {
@@ -518,7 +510,7 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     protected function applyCountryTranslation(array &$country, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -542,8 +534,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
+        $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $country['translations'][$languageUuid] = $localeTranslation;
@@ -628,7 +619,7 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     protected function applyCountryStateTranslation(array &$state, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -652,8 +643,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
+        $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $state['translations'][$languageUuid] = $localeTranslation;

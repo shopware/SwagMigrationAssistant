@@ -17,6 +17,8 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -56,7 +58,13 @@ class OrderDocumentConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $mediaFileService = new DummyMediaFileService();
 
-        $this->orderDocumentConverter = new Shopware54OrderDocumentConverter($mappingService, $this->loggingService, $mediaFileService);
+        $this->orderDocumentConverter = new Shopware54OrderDocumentConverter(
+            $mappingService,
+            $this->loggingService,
+            $mediaFileService,
+            $this->createMock(MediaDefaultFolderLookup::class),
+            $this->createMock(DocumentTypeLookup::class)
+        );
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
@@ -262,7 +270,13 @@ class OrderDocumentConverterTest extends TestCase
             $loggingService = new DummyLoggingService();
         }
 
-        $instance = new $converterClass($mappingService, $loggingService, new DummyMediaFileService());
+        $instance = new $converterClass(
+            $mappingService,
+            $loggingService,
+            new DummyMediaFileService(),
+            $this->createMock(MediaDefaultFolderLookup::class),
+            $this->createMock(DocumentTypeLookup::class)
+        );
         static::assertInstanceOf(ShopwareConverter::class, $instance);
 
         return $instance;

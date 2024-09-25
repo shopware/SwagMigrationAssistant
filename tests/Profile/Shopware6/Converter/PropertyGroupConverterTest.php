@@ -20,8 +20,12 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 #[Package('services-settings')]
 class PropertyGroupConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = []
+    ): ConverterInterface {
         return new PropertyGroupConverter($mappingService, $loggingService, new DummyMediaFileService());
     }
 

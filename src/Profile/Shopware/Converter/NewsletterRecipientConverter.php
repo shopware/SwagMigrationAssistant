@@ -14,6 +14,9 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
@@ -38,6 +41,14 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         '_locale',
         'shopId',
     ];
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly LanguageLookup $languageLookup
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function convert(
         array $data,
@@ -113,8 +124,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
         $converted['status'] = $status;
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $context);
-        $converted['languageId'] = $languageUuid;
+        $converted['languageId'] = $this->languageLookup->get($this->locale, $context);
 
         $salesChannelUuid = $this->getSalesChannel($data);
         if ($salesChannelUuid === null) {

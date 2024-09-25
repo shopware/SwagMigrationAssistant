@@ -10,10 +10,17 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
@@ -29,6 +36,8 @@ use Symfony\Component\HttpFoundation\Response;
 #[Package('services-settings')]
 class ProductConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private Shopware55ProductConverter $productConverter;
 
     private DummyMappingService $mappingService;
@@ -42,7 +51,15 @@ class ProductConverterTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->productConverter = new Shopware55ProductConverter($this->mappingService, $this->loggingService, $mediaFileService);
+        $this->productConverter = new Shopware55ProductConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $mediaFileService,
+            $this->getContainer()->get(TaxLookup::class),
+            $this->getContainer()->get(MediaDefaultFolderLookup::class),
+            $this->getContainer()->get(LanguageLookup::class),
+            $this->getContainer()->get(DeliveryTimeLookup::class),
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -71,7 +88,7 @@ class ProductConverterTest extends TestCase
         static::assertTrue($supportsDefinition);
     }
 
-    public function testConvertFFFF(): void
+    public function testConvert(): void
     {
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
 
@@ -89,7 +106,7 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('price', $converted);
         static::assertSame(
             'Hauptartikel mit Kennzeichnung Versandkostenfrei und Hervorhebung',
-            $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
+            \array_shift($converted['translations'])['name']
         );
         static::assertSame([], $converted['categories']);
         static::assertSame($productData[0]['assets'][0]['description'], $converted['media'][0]['media']['alt']);
@@ -177,7 +194,14 @@ class ProductConverterTest extends TestCase
     public function testConvertWithCategory(): void
     {
         $mediaFileService = new DummyMediaFileService();
-        $categoryConverter = new Shopware55CategoryConverter($this->mappingService, $this->loggingService, $mediaFileService);
+        $categoryConverter = new Shopware55CategoryConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $mediaFileService,
+            $this->getContainer()->get(LowestRootCategoryLookup::class),
+            $this->getContainer()->get(DefaultCmsPageLookup::class),
+            $this->getContainer()->get(LanguageLookup::class),
+        );
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $context = Context::createDefaultContext();
@@ -197,7 +221,7 @@ class ProductConverterTest extends TestCase
         static::assertArrayHasKey('price', $converted);
         static::assertSame(
             'Hauptartikel mit Kennzeichnung Versandkostenfrei und Hervorhebung',
-            $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
+            \array_shift($converted['translations'])['name']
         );
         static::assertArrayHasKey('id', $converted['categories'][0]);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -258,8 +282,11 @@ class ProductConverterTest extends TestCase
         static::assertSame($convertedContainer['id'], $converted['parentId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
 
-        static::assertSame('Größe', $converted['options'][0]['group']['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
-        static::assertSame('M', $converted['options'][0]['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']);
+        $groupTranslations = \array_shift($converted['options'][0]['group']['translations']);
+        static::assertSame('Größe', $groupTranslations['name']);
+
+        $optionTranslation = \array_shift($converted['options'][0]['translations']);
+        static::assertSame('M', $optionTranslation['name']);
     }
 
     public function testConvertVariantProductWithSpecialCoverImageConstellation(): void

@@ -10,14 +10,27 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedDocumentTypeLog;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class DocumentBaseConfigConverter extends ShopwareMediaConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected MediaFileServiceInterface $mediaFileService,
+        private readonly DocumentTypeLookup $documentTypeLookup
+    ) {
+        parent::__construct($mappingService, $loggingService, $mediaFileService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -40,7 +53,7 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
     {
         $converted = $data;
 
-        $converted['documentTypeId'] = $this->mappingService->getDocumentTypeUuid($converted['documentType']['technicalName'], $this->context, $this->migrationContext);
+        $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
         if ($converted['documentTypeId'] === null) {
             $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog($this->runId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $data['id'], $data['documentType']['technicalName']));
 
@@ -59,7 +72,7 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
         );
 
         foreach ($converted['salesChannels'] as &$salesChannel) {
-            $salesChannel['documentTypeId'] = $this->mappingService->getDocumentTypeUuid($salesChannel['documentType']['technicalName'], $this->context, $this->migrationContext);
+            $salesChannel['documentTypeId'] = $this->documentTypeLookup->get($salesChannel['documentType']['technicalName'], $this->context);
             unset($salesChannel['documentType']);
         }
         unset($salesChannel);

@@ -16,6 +16,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
@@ -51,7 +53,14 @@ class CustomerConverterTest extends TestCase
 
         $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
 
-        $this->customerConverter = new Shopware55CustomerConverter($this->mappingService, $this->loggingService, $validator, $salesChannelRepo);
+        $this->customerConverter = new Shopware55CustomerConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $validator,
+            $salesChannelRepo,
+            static::getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
+        );
 
         $this->connectionId = Uuid::randomHex();
         $runId = Uuid::randomHex();

@@ -10,14 +10,27 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedMediaDefaultFolderLog;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class MediaFolderConverter extends ShopwareConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly MediaDefaultFolderLookup $mediaFolderLookup,
+        private readonly MediaThumbnailSizeLookup $mediaThumbnailSizeLookup
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -35,8 +48,7 @@ class MediaFolderConverter extends ShopwareConverter
         );
 
         if (isset($converted['defaultFolder'])) {
-            $converted['defaultFolderId'] = $this->mappingService->getDefaultFolderIdByEntity($data['defaultFolder']['entity'], $this->migrationContext, $this->context);
-
+            $converted['defaultFolderId'] = $this->mediaFolderLookup->get($data['defaultFolder']['entity'], $this->context);
             if ($converted['defaultFolderId'] === null) {
                 $this->loggingService->addLogEntry(
                     new UnsupportedMediaDefaultFolderLog(
@@ -54,13 +66,7 @@ class MediaFolderConverter extends ShopwareConverter
 
         if (isset($converted['configuration']['mediaThumbnailSizes'])) {
             foreach ($converted['configuration']['mediaThumbnailSizes'] as $key => $size) {
-                $uuid = $this->mappingService->getThumbnailSizeUuid(
-                    $size['width'],
-                    $size['height'],
-                    $this->migrationContext,
-                    $this->context
-                );
-
+                $uuid = $this->mediaThumbnailSizeLookup->get($size['width'], $size['height'], $this->context);
                 if ($uuid !== null) {
                     $converted['configuration']['mediaThumbnailSizes'][$key]['id'] = $uuid;
 

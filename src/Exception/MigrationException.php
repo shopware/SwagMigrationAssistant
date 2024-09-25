@@ -67,6 +67,7 @@ class MigrationException extends HttpException
 
     public const LOCALE_NOT_FOUND = 'SWAG_MIGRATION__LOCALE_NOT_FOUND';
 
+
     public const UNDEFINED_RUN_STATUS = 'SWAG_MIGRATION__UNDEFINED_RUN_STATUS';
 
     public const NO_FILE_SYSTEM_PERMISSIONS = 'SWAG_MIGRATION__NO_FILE_SYSTEM_PERMISSIONS';
@@ -86,6 +87,8 @@ class MigrationException extends HttpException
     public const DATABASE_CONNECTION_ERROR = 'SWAG_MIGRATION__DATABASE_CONNECTION_ERROR';
 
     public const DATABASE_CONNECTION_ATTRIBUTES_WRONG = 'SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG';
+
+    public const LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND = 'SWAG_MIGRATION__LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
@@ -393,6 +396,7 @@ class MigrationException extends HttpException
         );
     }
 
+
     public static function undefinedRunStatus(string $status): self
     {
         return new self(
@@ -448,6 +452,16 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::COULD_NOT_GENERATE_DOCUMENT,
             'Document could not be generated.'
+        );
+    }
+
+    public static function localeForLanguageLookupNotFound(string $localeCode): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND,
+            'Locale with code: "{{ localeCode }}" for language lookup not found.',
+            ['localeCode' => $localeCode]
         );
     }
 }

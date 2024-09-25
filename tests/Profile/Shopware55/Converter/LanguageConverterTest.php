@@ -10,8 +10,11 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55LanguageConverter;
@@ -23,6 +26,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class LanguageConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private MigrationContext $migrationContext;
 
     private Shopware55LanguageConverter $converter;
@@ -32,7 +37,12 @@ class LanguageConverterTest extends TestCase
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55LanguageConverter(new BasicSettingsMappingService(), $this->loggingService);
+        $this->converter = new Shopware55LanguageConverter(
+            new BasicSettingsMappingService(),
+            $this->loggingService,
+            $this->getContainer()->get(LanguageLookup::class),
+            $this->getContainer()->get(LocaleLookup::class),
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -77,8 +87,16 @@ class LanguageConverterTest extends TestCase
     {
         $languageData = require __DIR__ . '/../../../_fixtures/language_data.php';
 
+        $languageLookupMock = $this->createMock(LanguageLookup::class);
+        $languageLookupMock->method('get')->willReturn('test-uuid');
+
         $context = Context::createDefaultContext();
-        $this->converter = new Shopware55LanguageConverter(new DummyMappingService(), $this->loggingService);
+        $this->converter = new Shopware55LanguageConverter(
+            new DummyMappingService(),
+            $this->loggingService,
+            $languageLookupMock,
+            $this->createMock(LocaleLookup::class)
+        );
         $convertResult = $this->converter->convert($languageData[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
 

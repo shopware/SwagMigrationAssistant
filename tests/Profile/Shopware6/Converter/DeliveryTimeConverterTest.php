@@ -10,7 +10,9 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DeliveryTimeDataSet;
@@ -19,9 +21,33 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 #[Package('services-settings')]
 class DeliveryTimeConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
-        return new DeliveryTimeConverter($mappingService, $loggingService);
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = []
+    ): ConverterInterface {
+        $deliveryTimeLookup = $this->createMock(DeliveryTimeLookup::class);
+
+        $returnMap = [];
+        foreach ($mappingArray as $mapping) {
+            if ($mapping['entityName'] === DefaultEntities::DELIVERY_TIME) {
+                $returnMap[] = $mapping['newIdentifier'];
+                $deliveryTimeLookup->method('get')->willReturn($mapping['newIdentifier']);
+            }
+        }
+
+        while (\count($returnMap) < 1) {
+            $returnMap[] = 'c2b7cb2bc66a47b9a4e4cf60c9f071fb';
+        }
+
+        $deliveryTimeLookup->method('get')->willReturnOnConsecutiveCalls(...$returnMap);
+
+        return new DeliveryTimeConverter(
+            $mappingService,
+            $loggingService,
+            $deliveryTimeLookup
+        );
     }
 
     protected function createDataSet(): DataSet

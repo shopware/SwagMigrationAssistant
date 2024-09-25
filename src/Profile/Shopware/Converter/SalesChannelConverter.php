@@ -24,6 +24,8 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
@@ -55,6 +57,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
         protected EntityRepository $countryRepository,
         protected EntityRepository $salesChannelRepo,
         protected ?EntityRepository $languagePackRepo,
+        private readonly CurrencyLookup $currencyLookup,
+        private readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -110,12 +114,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->mappingIds[] = $customerGroupMapping['id'];
         $converted['customerGroupId'] = $customerGroupUuid;
 
-        $languageUuid = $this->mappingService->getLanguageUuid(
-            $this->connectionId,
-            $data['locale'],
-            $context
-        );
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
@@ -139,12 +138,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             unset($converted['languages']);
         }
 
-        $currencyUuid = $this->mappingService->getCurrencyUuid(
-            $this->connectionId,
-            $data['currency'],
-            $context
-        );
-
+        $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
@@ -258,7 +252,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
      */
     protected function setSalesChannelTranslation(array &$salesChannel, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -280,8 +274,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
+        $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $salesChannel['translations'][$languageUuid] = $localeTranslation;
@@ -418,12 +412,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if (isset($data['children'])) {
             foreach ($data['children'] as $subShop) {
-                $uuid = $this->mappingService->getLanguageUuid(
-                    $this->connectionId,
-                    $subShop['locale'],
-                    $context
-                );
-
+                $uuid = $this->languageLookup->get($subShop['locale'], $context);
                 if ($uuid === null) {
                     continue;
                 }

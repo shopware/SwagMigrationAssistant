@@ -21,6 +21,9 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationType;
 
@@ -32,6 +35,14 @@ abstract class TranslationConverter extends ShopwareConverter
     protected Context $context;
 
     protected string $runId = '';
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly LanguageLookup $languageLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function convert(
         array $data,
@@ -195,8 +206,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $productTranslation['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $productTranslation['languageId'] = $languageUuid;
             $product['translations'][$languageUuid] = $productTranslation;
@@ -275,7 +285,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $productTranslation['id'] = $this->mainMapping['entityUuid'];
         unset($data['id']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
 
         if ($languageUuid !== null) {
             $productTranslation['languageId'] = $languageUuid;
@@ -357,8 +367,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $manufacturerTranslation['languageId'] = $languageUuid;
             $manufacturer['translations'][$languageUuid] = $manufacturerTranslation;
@@ -446,8 +455,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $unitTranslation['languageId'] = $languageUuid;
             $unit['translations'][$languageUuid] = $unitTranslation;
@@ -543,7 +551,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
 
         if ($languageUuid !== null) {
             $categoryTranslation['languageId'] = $languageUuid;
@@ -623,8 +631,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $propertyGroupOptionTranslation['languageId'] = $languageUuid;
             $configuratorOption['translations'][$languageUuid] = $propertyGroupOptionTranslation;
@@ -706,8 +713,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $propertyGroupTranslation['languageId'] = $languageUuid;
             $configuratorOptionGroup['translations'][$languageUuid] = $propertyGroupTranslation;
@@ -784,8 +790,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $propertyValueTranslation['languageId'] = $languageUuid;
             $propertyValue['translations'][$languageUuid] = $propertyValueTranslation;
@@ -863,8 +868,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectkey'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $propertyOptionTranslation['languageId'] = $languageUuid;
             $propertyOption['translations'][$languageUuid] = $propertyOptionTranslation;
@@ -1033,8 +1037,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         unset($data['id'], $data['objecttype'], $data['objectlanguage'], $data['dirty']);
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $this->context);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
         if ($languageUuid !== null) {
             $mediaTranslation['languageId'] = $languageUuid;
             $media['translations'][$languageUuid] = $mediaTranslation;

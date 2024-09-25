@@ -10,8 +10,12 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerGroupDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerGroupConverter;
@@ -22,6 +26,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class CustomerGroupConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private MigrationContext $migrationContext;
 
     private Shopware55CustomerGroupConverter $converter;
@@ -29,7 +35,21 @@ class CustomerGroupConverterTest extends TestCase
     protected function setUp(): void
     {
         $mappingService = new DummyMappingService();
-        $this->converter = new Shopware55CustomerGroupConverter($mappingService, new DummyLoggingService());
+        $locale = new LocaleEntity();
+        $locale->setCode('en-GB');
+
+        $language = new LanguageEntity();
+        $language->setLocale($locale);
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
+        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+
+        $this->converter = new Shopware55CustomerGroupConverter(
+            $mappingService,
+            new DummyLoggingService(),
+            $languageLookup
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -54,7 +74,7 @@ class CustomerGroupConverterTest extends TestCase
         static::assertTrue($supportsDefinition);
     }
 
-    public function testConvert(): void
+    public function testConvertAAA(): void
     {
         $customerGroupData = require __DIR__ . '/../../../_fixtures/customer_group_data.php';
 

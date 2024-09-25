@@ -16,14 +16,20 @@ use Shopware\Core\Checkout\Cart\Price\Struct\QuantityPriceDefinition;
 use Shopware\Core\Checkout\Cart\Tax\Struct\CalculatedTax;
 use Shopware\Core\Checkout\Cart\Tax\Struct\TaxRule;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
@@ -59,16 +65,36 @@ class OrderConverterTest extends TestCase
 
     private MigrationContext $customerMigrationContext;
 
+    private DummyMappingService $mappingService;
+
     protected function setUp(): void
     {
         $this->loggingService = new DummyLoggingService();
-        $mappingService = new DummyMappingService();
+        $this->mappingService = new DummyMappingService();
         $taxCalculator = new TaxCalculator();
 
         $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
 
-        $this->orderConverter = new Shopware55OrderConverter($mappingService, $this->loggingService, $taxCalculator, $salesChannelRepo);
-        $this->customerConverter = new Shopware55CustomerConverter($mappingService, $this->loggingService, Validation::createValidator(), $salesChannelRepo);
+        $currencyLookup = $this->createMock(CurrencyLookup::class);
+        $currencyLookup->method('get')->willReturn('b7d2554b0ce847cd82f3ac9bd1c0dfca');
+        $this->orderConverter = new Shopware55OrderConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $taxCalculator,
+            $salesChannelRepo,
+            $this->getContainer()->get(CountryLookup::class),
+            $currencyLookup,
+            $this->getContainer()->get(LanguageLookup::class)
+        );
+
+        $this->customerConverter = new Shopware55CustomerConverter(
+            $this->mappingService,
+            $this->loggingService,
+            Validation::createValidator(),
+            $salesChannelRepo,
+            $this->createMock(CountryLookup::class),
+            $this->createMock(LanguageLookup::class),
+        );
 
         $connectionId = Uuid::randomHex();
         $runId = Uuid::randomHex();
@@ -97,7 +123,7 @@ class OrderConverterTest extends TestCase
         );
 
         $context = Context::createDefaultContext();
-        $mappingService->getOrCreateMapping(
+        $this->mappingService->getOrCreateMapping(
             $connection->getId(),
             DefaultEntities::SALES_CHANNEL,
             '1',
@@ -107,28 +133,28 @@ class OrderConverterTest extends TestCase
             TestDefaults::SALES_CHANNEL
         );
 
-        $mappingService->getOrCreateMapping($connectionId, OrderStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
-        $mappingService->getOrCreateMapping($connectionId, TransactionStateReader::getMappingName(), '17', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, OrderStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, TransactionStateReader::getMappingName(), '17', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '3', $context, null, [], Uuid::randomHex());
-        $mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '4', $context, null, [], Uuid::randomHex());
-        $mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '5', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '3', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '4', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, PaymentMethodReader::getMappingName(), '5', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'mr', $context, null, [], Uuid::randomHex());
-        $mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'ms', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'mr', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, SalutationReader::getMappingName(), 'ms', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, DeliveryTimeReader::getMappingName(), DeliveryTimeReader::SOURCE_ID, $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, DeliveryTimeReader::getMappingName(), DeliveryTimeReader::SOURCE_ID, $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
-        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+        $this->mappingService->getOrCreateMapping($connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, null, [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
 
-        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, DefaultEntities::SHIPPING_METHOD, '14', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, OrderDeliveryStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, OrderDeliveryStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::MEDIA, 'esd_4', $context, null, [], Uuid::randomHex());
+        $this->mappingService->getOrCreateMapping($connectionId, DefaultEntities::MEDIA, 'esd_4', $context, null, [], Uuid::randomHex());
 
-        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::COUNTRY_STATE, '3', $context, null, [], '019243e2514672debd864b2b979544f4');
+        $this->mappingService->getOrCreateMapping($connectionId, DefaultEntities::COUNTRY_STATE, '3', $context, null, [], '019243e2514672debd864b2b979544f4');
     }
 
     public function testSupports(): void
@@ -657,6 +683,31 @@ class OrderConverterTest extends TestCase
         [$customerData, $orderData] = $this->getFixtureData();
         $context = Context::createDefaultContext();
 
+        $locale = new LocaleEntity();
+        $locale->setCode('de-DE');
+        $locale->setId(Defaults::LANGUAGE_SYSTEM);
+
+        $language = new LanguageEntity();
+        $language->setLocale($locale);
+        $language->setLocaleId($locale->getId());
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
+        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+
+        $currencyLookup = $this->createMock(CurrencyLookup::class);
+        $currencyLookup->method('get')->willReturn('b7d2554b0ce847cd82f3ac9bd1c0dfca');
+
+        $orderConverter = $this->orderConverter = new Shopware55OrderConverter(
+            $this->mappingService,
+            $this->loggingService,
+            new TaxCalculator(),
+            static::getContainer()->get('sales_channel.repository'),
+            $this->getContainer()->get(CountryLookup::class),
+            $currencyLookup,
+            $languageLookup
+        );
+
         $this->customerConverter->convert(
             $customerData[0],
             $context,
@@ -664,7 +715,7 @@ class OrderConverterTest extends TestCase
         );
 
         $orderData[0]['locale'] = 'af-ZA';
-        $convertResult = $this->orderConverter->convert(
+        $convertResult = $orderConverter->convert(
             $orderData[0],
             $context,
             $this->migrationContext

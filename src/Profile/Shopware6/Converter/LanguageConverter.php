@@ -13,13 +13,26 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class LanguageConverter extends ShopwareConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly LanguageLookup $languageLookup,
+        private readonly LocaleLookup $localeLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -29,13 +42,8 @@ class LanguageConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $this->checkDataForDefaultLanguage($data);
-        $languageId = $this->mappingService->getLanguageUuid(
-            $this->connectionId,
-            $data['locale']['code'],
-            $this->context,
-            true
-        );
 
+        $languageId = $this->languageLookup->get($data['locale']['code'], $this->context);
         if ($languageId !== null) {
             $converted['id'] = $languageId;
         }
@@ -46,11 +54,7 @@ class LanguageConverter extends ShopwareConverter
             $converted['id']
         );
 
-        $localeUuid = $this->mappingService->getLocaleUuid(
-            $this->connectionId,
-            $data['locale']['code'],
-            $this->context
-        );
+        $localeUuid = $this->localeLookup->get($data['locale']['code'], $this->context);
         $converted['localeId'] = $localeUuid;
         $converted['translationCodeId'] = $localeUuid;
         unset($converted['locale']);
@@ -72,7 +76,7 @@ class LanguageConverter extends ShopwareConverter
      */
     private function checkDataForDefaultLanguage(array $data): array
     {
-        $defaultLanguage = $this->mappingService->getDefaultLanguage($this->context);
+        $defaultLanguage = $this->languageLookup->getDefaultLanguageEntity($this->context);
         if (!$defaultLanguage instanceof LanguageEntity) {
             return $data;
         }

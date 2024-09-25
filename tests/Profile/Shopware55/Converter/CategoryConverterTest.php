@@ -11,9 +11,15 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Category\CategoryDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
@@ -27,6 +33,8 @@ use Symfony\Component\HttpFoundation\Response;
 #[Package('services-settings')]
 class CategoryConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private Shopware55CategoryConverter $categoryConverter;
 
     private DummyLoggingService $loggingService;
@@ -38,7 +46,14 @@ class CategoryConverterTest extends TestCase
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->categoryConverter = new Shopware55CategoryConverter($mappingService, $this->loggingService, $mediaFileService);
+        $this->categoryConverter = new Shopware55CategoryConverter(
+            $mappingService,
+            $this->loggingService,
+            $mediaFileService,
+            $this->getContainer()->get(LowestRootCategoryLookup::class),
+            $this->getContainer()->get(DefaultCmsPageLookup::class),
+            $this->getContainer()->get(LanguageLookup::class),
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -68,7 +83,27 @@ class CategoryConverterTest extends TestCase
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
         $context = Context::createDefaultContext();
-        $convertResult = $this->categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
+
+        $locale = new LocaleEntity();
+        $locale->setCode('en-GB');
+        $language = new LanguageEntity();
+        $language->setId(DummyMappingService::DEFAULT_LANGUAGE_UUID);
+        $language->setLocale($locale);
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
+        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+
+        $categoryConverter = new Shopware55CategoryConverter(
+            new DummyMappingService(),
+            $this->loggingService,
+            new DummyMediaFileService(),
+            $this->getContainer()->get(LowestRootCategoryLookup::class),
+            $this->getContainer()->get(DefaultCmsPageLookup::class),
+            $languageLookup
+        );
+
+        $convertResult = $categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
         static::assertNotNull($converted);
@@ -84,11 +119,30 @@ class CategoryConverterTest extends TestCase
     {
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
 
+        $locale = new LocaleEntity();
+        $locale->setCode('en-GB');
+        $language = new LanguageEntity();
+        $language->setLocale($locale);
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
+        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $categoryConverter = new Shopware55CategoryConverter(
+            new DummyMappingService(),
+            $this->loggingService,
+            new DummyMediaFileService(),
+            $this->getContainer()->get(LowestRootCategoryLookup::class),
+            $this->getContainer()->get(DefaultCmsPageLookup::class),
+//            $this->getContainer()->get(LanguageLookup::class),
+            $languageLookup
+        );
+
         $context = Context::createDefaultContext();
-        $this->categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
-        $convertResult = $this->categoryConverter->convert($categoryData[3], $context, $this->migrationContext);
+        $categoryConverter->convert($categoryData[0], $context, $this->migrationContext);
+        $convertResult = $categoryConverter->convert($categoryData[3], $context, $this->migrationContext);
 
         $converted = $convertResult->getConverted();
+
         static::assertNotNull($converted);
         static::assertNull($convertResult->getUnmapped());
         static::assertArrayHasKey('id', $converted);

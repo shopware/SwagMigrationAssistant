@@ -10,9 +10,11 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NewsletterRecipientDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -25,6 +27,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class NewsletterRecipientConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private DummyLoggingService $loggingService;
 
     private Shopware55NewsletterRecipientConverter $newsletterReceiverConverter;
@@ -35,7 +39,11 @@ class NewsletterRecipientConverterTest extends TestCase
     {
         $mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter($mappingService, $this->loggingService);
+        $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter(
+            $mappingService,
+            $this->loggingService,
+            $this->getContainer()->get(LanguageLookup::class)
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

@@ -8,10 +8,14 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaFolderConverter;
@@ -22,6 +26,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class MediaFolderConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private MigrationContext $migrationContext;
 
     private Shopware55MediaFolderConverter $converter;
@@ -29,7 +35,12 @@ class MediaFolderConverterTest extends TestCase
     protected function setUp(): void
     {
         $loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55MediaFolderConverter(new DummyMappingService(), $loggingService);
+        $this->converter = new Shopware55MediaFolderConverter(
+            new DummyMappingService(),
+            $loggingService,
+            $this->getContainer()->get(MediaDefaultFolderLookup::class),
+            $this->getContainer()->get(MediaThumbnailSizeLookup::class),
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

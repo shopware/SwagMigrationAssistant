@@ -654,22 +654,9 @@ class MigrationDataWriterTest extends TestCase
     {
         return new MappingService(
             $this->migrationMappingRepo,
-            $this->localeRepo,
-            $this->languageRepo,
-            $this->countryRepo,
-            $this->currencyRepo,
-            static::getContainer()->get('tax.repository'),
-            static::getContainer()->get('number_range.repository'),
-            static::getContainer()->get('rule.repository'),
-            static::getContainer()->get('media_thumbnail_size.repository'),
-            static::getContainer()->get('media_default_folder.repository'),
-            $this->categoryRepo,
-            static::getContainer()->get('cms_page.repository'),
-            $this->deliveryTimeRepo,
-            static::getContainer()->get('document_type.repository'),
-            static::getContainer()->get('country_state.repository'),
+            $this->getContainer()->get('document_type.repository'),
             $this->entityWriter,
-            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             new NullLogger()
         );
     }

@@ -10,13 +10,24 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class CurrencyConverter extends ShopwareConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly CurrencyLookup $currencyLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -27,12 +38,7 @@ class CurrencyConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $currencyId = $this->mappingService->getCurrencyUuidWithoutMapping(
-            $this->connectionId,
-            $data['isoCode'],
-            $this->context
-        );
-
+        $currencyId = $this->currencyLookup->get($data['isoCode'], $this->context);
         if ($currencyId !== null) {
             $converted['id'] = $currencyId;
         }

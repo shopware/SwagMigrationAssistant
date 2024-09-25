@@ -372,23 +372,10 @@ class MigrationDataProcessingTest extends TestCase
     private function createMappingService(): MappingService
     {
         return new MappingService(
-            static::getContainer()->get('swag_migration_mapping.repository'),
-            static::getContainer()->get('locale.repository'),
-            static::getContainer()->get('language.repository'),
-            $this->countryRepo,
-            static::getContainer()->get('currency.repository'),
-            static::getContainer()->get('tax.repository'),
-            static::getContainer()->get('number_range.repository'),
-            static::getContainer()->get('rule.repository'),
-            static::getContainer()->get('media_thumbnail_size.repository'),
-            static::getContainer()->get('media_default_folder.repository'),
-            static::getContainer()->get('category.repository'),
-            static::getContainer()->get('cms_page.repository'),
-            static::getContainer()->get('delivery_time.repository'),
-            static::getContainer()->get('document_type.repository'),
+            $this->getContainer()->get('swag_migration_mapping.repository'),
             static::getContainer()->get('country_state.repository'),
-            static::getContainer()->get(EntityWriter::class),
-            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(EntityWriter::class),
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             new NullLogger()
         );
     }

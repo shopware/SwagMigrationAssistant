@@ -38,6 +38,8 @@ class SalesChannelConverterTest extends ShopwareConverterTest
             $mappingArray = require $fixtureFolderPath . '/mapping.php';
         }
 
+        $this->converter = $this->createConverter($this->mappingService, $this->loggingService, $this->mediaService, $mappingArray);
+
         $this->loadMapping($mappingArray);
 
         $context = Context::createDefaultContext();
@@ -56,8 +58,12 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         static::assertSame($expectedOutput, $output);
     }
 
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = []
+    ): ConverterInterface {
         return new SalesChannelConverter($mappingService, $loggingService);
     }
 

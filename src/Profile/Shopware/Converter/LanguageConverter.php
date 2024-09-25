@@ -12,6 +12,10 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EntityAlreadyExistsRunLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -20,6 +24,15 @@ abstract class LanguageConverter extends ShopwareConverter
     protected Context $context;
 
     protected string $connectionId;
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly LanguageLookup $languageLookup,
+        private readonly LocaleLookup $localeLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function getSourceIdentifier(array $data): string
     {
@@ -37,8 +50,7 @@ abstract class LanguageConverter extends ShopwareConverter
             $this->connectionId = $connection->getId();
         }
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['locale'], $context, true);
-
+        $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid !== null) {
             $this->loggingService->addLogEntry(new EntityAlreadyExistsRunLog(
                 $migrationContext->getRunUuid(),
@@ -61,7 +73,7 @@ abstract class LanguageConverter extends ShopwareConverter
 
         $this->convertValue($converted, 'name', $data, 'language');
 
-        $localeUuid = $this->mappingService->getLocaleUuid($this->connectionId, $data['locale'], $context);
+        $localeUuid = $this->localeLookup->get($data['locale'], $context);
         $converted['localeId'] = $localeUuid;
         $converted['translationCodeId'] = $localeUuid;
 

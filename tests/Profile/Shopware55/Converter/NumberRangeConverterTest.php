@@ -13,6 +13,8 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55NumberRangeConverter;
@@ -34,7 +36,13 @@ class NumberRangeConverterTest extends TestCase
         $numberRangeRepo = static::getContainer()->get('number_range_type.repository');
         $mappingService = new DummyMappingService();
         $loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55NumberRangeConverter($mappingService, $loggingService, $numberRangeRepo);
+        $this->converter = new Shopware55NumberRangeConverter(
+            $mappingService,
+            $loggingService,
+            $numberRangeRepo,
+            $this->getContainer()->get(NumberRangeLookup::class),
+            $this->getContainer()->get(LanguageLookup::class),
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

@@ -15,6 +15,6 @@ return [
         'templatechar' => 'COOKIES',
         'symbol_position' => '0',
         'position' => '0',
-        '_locale' => 'de-DE',
+        '_locale' => 'en-GB',
     ],
 ];

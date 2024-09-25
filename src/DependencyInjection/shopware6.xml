@@ -62,16 +62,20 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -97,6 +101,8 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -142,6 +148,7 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -185,7 +192,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
             <argument type="service" id="number_range_state.repository" />
-
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -281,6 +288,7 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -291,6 +299,7 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 

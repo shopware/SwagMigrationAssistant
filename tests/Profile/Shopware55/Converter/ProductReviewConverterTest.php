@@ -10,9 +10,11 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductReviewDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ProductReviewConverter;
@@ -23,6 +25,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class ProductReviewConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private Shopware55ProductReviewConverter $converter;
 
     private MigrationContext $migrationContext;
@@ -47,7 +51,11 @@ class ProductReviewConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $mappingService = new DummyMappingService();
         $loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55ProductReviewConverter($mappingService, $loggingService);
+        $this->converter = new Shopware55ProductReviewConverter(
+            $mappingService,
+            $loggingService,
+            $this->getContainer()->get(LanguageLookup::class)
+        );
 
         $connectionId = Uuid::randomHex();
         $runId = Uuid::randomHex();

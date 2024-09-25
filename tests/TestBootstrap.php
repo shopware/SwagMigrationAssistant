@@ -23,5 +23,5 @@ return (new TestBootstrapper())
     ->setForceInstallPlugins(true)
     ->addCallingPlugin()
     ->bootstrap()
-    ->setClassLoader(require dirname(__DIR__) . '/vendor/autoload.php')
+    ->setClassLoader(require dirname(__DIR__) . '/../../../vendor/autoload.php')
     ->getClassLoader();

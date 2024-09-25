@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -30,6 +31,7 @@ abstract class MediaConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
+        private readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -128,7 +130,7 @@ abstract class MediaConverter extends ShopwareConverter
 
     protected function getMediaTranslation(array &$media, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -152,8 +154,7 @@ abstract class MediaConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-
+        $languageUuid = $this->languageLookup->get($this->locale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $media['translations'][$languageUuid] = $localeTranslation;

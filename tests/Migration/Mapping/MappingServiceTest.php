@@ -19,7 +19,6 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Locale\LocaleCollection;
-use SwagMigrationAssistant\Exception\LocaleNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -127,39 +126,6 @@ class MappingServiceTest extends TestCase
     {
         $context = Context::createDefaultContext();
         static::assertNull($this->mappingService->getMapping(Uuid::randomHex(), 'product', '12345', $context));
-    }
-
-    public function testLocaleNotFoundException(): void
-    {
-        $context = Context::createDefaultContext();
-
-        try {
-            $this->mappingService->getLanguageUuid(Uuid::randomHex(), 'swagMigrationTestingLocaleCode', $context);
-        } catch (\Exception $e) {
-            /* @var LocaleNotFoundException $e */
-            static::assertInstanceOf(LocaleNotFoundException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-        }
-    }
-
-    public function testGetLanguageUuid(): void
-    {
-        $context = Context::createDefaultContext();
-        $localeCode = 'en-GB';
-
-        $this->mappingService->writeMapping($context);
-        $languageMapping = $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
-        $this->mappingService->writeMapping($context);
-        $response = $this->mappingService->getLanguageUuid($this->connectionId, 'en-GB', $context);
-
-        static::assertSame($languageMapping['entityUuid'], $response);
-    }
-
-    public function testGetCountryUuidWithNoResult(): void
-    {
-        $context = Context::createDefaultContext();
-        $response = $this->mappingService->getCountryUuid('testId', 'testIso', 'testIso3', Uuid::randomHex(), $context);
-        static::assertNull($response);
     }
 
     public function testDeleteMapping(): void
@@ -277,21 +243,8 @@ class MappingServiceTest extends TestCase
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
-            $this->localeRepo,
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
-            $this->getContainer()->get('media_thumbnail_size.repository'),
-            $this->getContainer()->get('media_default_folder.repository'),
-            $this->getContainer()->get('category.repository'),
-            $this->getContainer()->get('cms_page.repository'),
-            $this->getContainer()->get('delivery_time.repository'),
-            $this->getContainer()->get('document_type.repository'),
             $this->getContainer()->get('country_state.repository'),
-            $this->entityWriter,
+            $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             new NullLogger()
         );

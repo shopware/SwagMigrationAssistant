@@ -12,12 +12,15 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
@@ -51,6 +54,8 @@ abstract class NumberRangeConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected EntityRepository $numberRangeTypeRepo,
+        private readonly NumberRangeLookup $numberRangeLookup,
+        private readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -63,6 +68,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         }
 
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
+
             $this->loggingService->addLogEntry(
                 new UnsupportedNumberRangeTypeLog(
                     $migrationContext->getRunUuid(),
@@ -152,7 +158,25 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         // use global number range uuid for products if available
         if ($data['name'] === 'articleordernumber') {
-            $this->mappingService->getNumberRangeUuid('product', $data['id'], $this->checksum, $migrationContext, $context);
+            $productNumberRageUuid = $this->numberRangeLookup->get('product', $context);
+            if ($productNumberRageUuid !== null) {
+                $this->mappingService->updateMapping(
+                    $this->connectionId,
+                    DefaultEntities::NUMBER_RANGE,
+                    $data['id'],
+                    [
+                        'id' => Uuid::randomHex(),
+                        'connectionId' => $this->connectionId,
+                        'entity' => DefaultEntities::NUMBER_RANGE,
+                        'oldIdentifier' => $data['id'],
+                        'entityUuid' => $productNumberRageUuid,
+                        'checksum' => null,
+                        'entityValue' => null,
+                        'additionalData' => null,
+                    ],
+                    $context
+                );
+            }
         }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -196,7 +220,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         array $data,
         Context $context,
     ): void {
-        $language = $this->mappingService->getDefaultLanguage($context);
+        $language = $this->languageLookup->getDefaultLanguageEntity($context);
         if ($language === null) {
             return;
         }
@@ -218,8 +242,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         );
         $localeTranslation['id'] = $mapping['entityUuid'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $data['_locale'], $context);
-
+        $languageUuid = $this->languageLookup->get($data['_locale'], $context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $converted['translations'][$languageUuid] = $localeTranslation;
