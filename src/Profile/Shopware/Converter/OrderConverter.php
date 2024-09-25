@@ -254,17 +254,23 @@ abstract class OrderConverter extends ShopwareConverter
         $converted['stateId'] = $stateMapping['entityUuid'];
         $this->mappingIds[] = $stateMapping['id'];
 
-        $calculatedTax = new CalculatedTax(
-            (float) $data['invoice_shipping'] - $data['invoice_shipping_net'],
-            (float) $data['invoice_shipping_tax_rate'],
-            (float) $data['invoice_shipping']
+        $shippingGross = (float) $data['invoice_shipping'];
+        $shippingNet = (float) $data['invoice_shipping_net'];
+        $shippingTax = $shippingGross - $shippingNet;
+        $calculatedShippingTaxRate = $shippingGross > 0 ? round(($shippingTax / $shippingGross) * 100, 2) : 0.0;
+        $shippingTaxRate = isset($data['invoice_shipping_tax_rate']) ? (float) $data['invoice_shipping_tax_rate'] : $calculatedShippingTaxRate;
+
+        $calculatedShippingTax = new CalculatedTax(
+            $shippingTax,
+            $shippingTaxRate,
+            $shippingGross
         );
 
         $shippingCosts = new CalculatedPrice(
-            (float) $data['invoice_shipping'],
-            (float) $data['invoice_shipping'],
-            new CalculatedTaxCollection([$calculatedTax]),
-            new TaxRuleCollection([new TaxRule((float) $data['invoice_shipping_tax_rate'])])
+            $shippingGross,
+            $shippingGross,
+            new CalculatedTaxCollection([$calculatedShippingTax]),
+            new TaxRuleCollection([new TaxRule($shippingTaxRate)])
         );
 
         if (isset($data['details'])) {
