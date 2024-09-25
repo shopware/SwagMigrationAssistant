@@ -42,7 +42,7 @@ abstract class Converter implements ConverterInterface
 
     public function writeMapping(Context $context): void
     {
-        $this->mappingService->writeMapping($context);
+        $this->mappingService->writeMapping();
     }
 
     public function getMediaUuids(array $converted): ?array

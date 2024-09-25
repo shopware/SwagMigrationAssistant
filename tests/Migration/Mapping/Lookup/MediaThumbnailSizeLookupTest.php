@@ -7,9 +7,9 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Mapping\Lookup;
 
-
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -51,7 +51,7 @@ class MediaThumbnailSizeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{width: int, height: int, expectedResult: ?string}>
+     * @return array<int, array{width: int, height: int, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -72,6 +72,8 @@ class MediaThumbnailSizeLookupTest extends TestCase
         $mediaSizes = $mediaSizeRepository->search(new Criteria(), Context::createDefaultContext());
         $returnData = [];
         foreach ($mediaSizes->getEntities() as $mediaSize) {
+            static::assertInstanceOf(MediaThumbnailSizeEntity::class, $mediaSize);
+
             $returnData[] = [
                 'width' => $mediaSize->getWidth(),
                 'height' => $mediaSize->getHeight(),
@@ -103,7 +105,7 @@ class MediaThumbnailSizeLookupTest extends TestCase
         $databaseData = self::getDatabaseData();
         $cacheData = [];
         foreach ($databaseData as $data) {
-            $cacheData[ \sprintf('%s-%s', $data['width'], $data['height'])] = $data['expectedResult'];
+            $cacheData[\sprintf('%s-%s', $data['width'], $data['height'])] = $data['expectedResult'];
         }
 
         $reflectionProperty->setValue($mediaThumbnailSizeLookup, $cacheData);

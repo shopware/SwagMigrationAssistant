@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Migration\Mapping\Lookup;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -50,7 +51,7 @@ class DocumentTypeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{technicalName: string, expectedResult: ?string}>
+     * @return array<int, array{technicalName: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -71,6 +72,8 @@ class DocumentTypeLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $documentType) {
+            static::assertInstanceOf(DocumentTypeEntity::class, $documentType);
+
             $returnData[] = [
                 'technicalName' => $documentType->getTechnicalName(),
                 'expectedResult' => $documentType->getId(),

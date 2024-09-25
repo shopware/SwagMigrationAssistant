@@ -10,7 +10,9 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlTemplateDataSet;
@@ -23,9 +25,22 @@ class SeoUrlTemplateConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
-        return new SeoUrlTemplateConverter($mappingService, $loggingService);
+        $seoUrlTemplateLookup = $this->createMock(SeoUrlTemplateLookup::class);
+
+        $returnMap = [];
+        static::assertIsArray($mappingArray);
+        foreach ($mappingArray as $mapping) {
+            if ($mapping['entityName'] === DefaultEntities::SEO_URL_TEMPLATE) {
+                $returnMap[] = $mapping['newIdentifier'];
+                $seoUrlTemplateLookup->method('get')->willReturn($mapping['newIdentifier']);
+            }
+        }
+
+        $seoUrlTemplateLookup->method('get')->willReturnOnConsecutiveCalls(...$returnMap);
+
+        return new SeoUrlTemplateConverter($mappingService, $loggingService, $seoUrlTemplateLookup);
     }
 
     protected function createDataSet(): DataSet

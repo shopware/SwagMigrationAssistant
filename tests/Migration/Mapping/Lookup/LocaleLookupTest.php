@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
 
 class LocaleLookupTest extends TestCase
@@ -50,7 +51,7 @@ class LocaleLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{localeCode: string, expectedResult: ?string}>
+     * @return array<int, array{localeCode: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -72,9 +73,11 @@ class LocaleLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list->getEntities() as $locale) {
+            static::assertInstanceOf(LocaleEntity::class, $locale);
+
             $returnData[] = [
                 'localeCode' => $locale->getCode(),
-                'expectedResult' => $locale->getId()
+                'expectedResult' => $locale->getId(),
             ];
         }
 

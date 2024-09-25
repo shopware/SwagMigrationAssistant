@@ -54,8 +54,8 @@ abstract class NumberRangeConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected EntityRepository $numberRangeTypeRepo,
-        private readonly NumberRangeLookup $numberRangeLookup,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly NumberRangeLookup $numberRangeLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -68,7 +68,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
         }
 
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
-
             $this->loggingService->addLogEntry(
                 new UnsupportedNumberRangeTypeLog(
                     $migrationContext->getRunUuid(),
@@ -220,7 +219,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         array $data,
         Context $context,
     ): void {
-        $language = $this->languageLookup->getDefaultLanguageEntity($context);
+        $language = $this->languageLookup->getLanguageEntity($context);
         if ($language === null) {
             return;
         }

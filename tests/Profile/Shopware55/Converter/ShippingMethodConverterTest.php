@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -133,7 +134,7 @@ class ShippingMethodConverterTest extends TestCase
 
         $languageLookup = $this->createMock(LanguageLookup::class);
         $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
 
         $shippingMethodConverter = new Shopware55ShippingMethodConverter(
             $this->mappingService,
@@ -200,11 +201,14 @@ class ShippingMethodConverterTest extends TestCase
         ]));
 
         $result = self::getContainer()->get('country.repository')->search(
-            $criteria, Context::createDefaultContext()
+            $criteria,
+            Context::createDefaultContext()
         )->getEntities();
 
-        $en_uuid = $result->filterByProperty('iso', 'GB')->first()->getId();
-        $de_uuid = $result->filterByProperty('iso', 'DE')->first()->getId();
+        static::assertInstanceOf(CountryCollection::class, $result);
+
+        $en_uuid = $result->filterByProperty('iso', 'GB')->first()?->getId();
+        $de_uuid = $result->filterByProperty('iso', 'DE')->first()?->getId();
 
         return [
             'fromAndToTimeRange' => [
@@ -633,7 +637,7 @@ class ShippingMethodConverterTest extends TestCase
                         [
                             'countryID' => '2',
                             'countryiso' => 'GB',
-                            'iso3' => 'GBR', // Could 'GBK' be a typo?
+                            'iso3' => 'GBR',
                         ],
                     ],
                 ],

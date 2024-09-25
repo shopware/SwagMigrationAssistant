@@ -11,28 +11,32 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Locale\LocaleCollection;
 use Shopware\Core\System\Locale\LocaleEntity;
-use SwagMigrationAssistant\Exception\MigrationException;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class LocaleLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<LocaleCollection> $localeRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $localeRepository
-    ) {}
+        private readonly EntityRepository $localeRepository,
+    ) {
+    }
 
     public function get(string $localeCode, Context $context): ?string
     {
-        if (isset($this->cache[$localeCode])) {
+        if (\array_key_exists($localeCode, $this->cache)) {
             return $this->cache[$localeCode];
         }
 
@@ -42,6 +46,8 @@ class LocaleLookup implements ResetInterface
 
         $result = $this->localeRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof LocaleEntity) {
+            $this->cache[$localeCode] = null;
+
             return null;
         }
 

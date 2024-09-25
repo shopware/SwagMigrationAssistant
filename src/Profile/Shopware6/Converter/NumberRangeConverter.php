@@ -32,7 +32,7 @@ class NumberRangeConverter extends ShopwareConverter
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected EntityRepository $numberRangeStateRepository,
-        private readonly NumberRangeLookup $numberRangeLookup
+        protected readonly NumberRangeLookup $numberRangeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -101,7 +101,7 @@ class NumberRangeConverter extends ShopwareConverter
 
     private function checkForExistingNumberRange(array &$converted): void
     {
-        $existingId = $this->numberRangeLookup->get($converted['type']['technicalName'],$this->context);
+        $existingId = $this->numberRangeLookup->get($converted['type']['technicalName'], $this->context);
         if ($existingId === null) {
             return;
         }

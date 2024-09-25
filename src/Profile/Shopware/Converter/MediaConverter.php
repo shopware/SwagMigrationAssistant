@@ -31,7 +31,7 @@ abstract class MediaConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -43,7 +43,7 @@ abstract class MediaConverter extends ShopwareConverter
 
     public function writeMapping(Context $context): void
     {
-        $this->mappingService->writeMapping($context);
+        $this->mappingService->writeMapping();
     }
 
     public function convert(
@@ -130,7 +130,7 @@ abstract class MediaConverter extends ShopwareConverter
 
     protected function getMediaTranslation(array &$media, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

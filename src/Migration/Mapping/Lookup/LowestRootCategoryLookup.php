@@ -13,18 +13,23 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class LowestRootCategoryLookup implements ResetInterface
 {
     private ?string $cache = null;
 
     /**
      * @param EntityRepository<CategoryCollection> $categoryRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $categoryRepository
-    ) {}
+        private readonly EntityRepository $categoryRepository,
+    ) {
+    }
 
     public function get(Context $context): ?string
     {

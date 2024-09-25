@@ -16,7 +16,6 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
@@ -28,11 +27,12 @@ class LanguageConverter extends ShopwareConverter
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly LanguageLookup $languageLookup,
-        private readonly LocaleLookup $localeLookup,
+        protected readonly LanguageLookup $languageLookup,
+        protected readonly LocaleLookup $localeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -76,7 +76,7 @@ class LanguageConverter extends ShopwareConverter
      */
     private function checkDataForDefaultLanguage(array $data): array
     {
-        $defaultLanguage = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $defaultLanguage = $this->languageLookup->getLanguageEntity($this->context);
         if (!$defaultLanguage instanceof LanguageEntity) {
             return $data;
         }

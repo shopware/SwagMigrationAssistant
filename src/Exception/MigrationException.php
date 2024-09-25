@@ -67,7 +67,6 @@ class MigrationException extends HttpException
 
     public const LOCALE_NOT_FOUND = 'SWAG_MIGRATION__LOCALE_NOT_FOUND';
 
-
     public const UNDEFINED_RUN_STATUS = 'SWAG_MIGRATION__UNDEFINED_RUN_STATUS';
 
     public const NO_FILE_SYSTEM_PERMISSIONS = 'SWAG_MIGRATION__NO_FILE_SYSTEM_PERMISSIONS';
@@ -395,7 +394,6 @@ class MigrationException extends HttpException
             ['localeCode' => $localeCode]
         );
     }
-
 
     public static function undefinedRunStatus(string $status): self
     {

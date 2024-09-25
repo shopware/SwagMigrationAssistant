@@ -44,9 +44,9 @@ abstract class CategoryConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
-        private readonly LowestRootCategoryLookup $lowestRootCategoryLookup,
-        private readonly DefaultCmsPageLookup $defaultCmsPageLookup,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly LowestRootCategoryLookup $lowestRootCategoryLookup,
+        protected readonly DefaultCmsPageLookup $defaultCmsPageLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -240,7 +240,7 @@ abstract class CategoryConverter extends ShopwareConverter
         $originalData = $data;
         $this->convertValue($converted, 'name', $data, 'description');
 
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if (!$language instanceof LanguageEntity) {
             return;
         }
@@ -342,7 +342,7 @@ abstract class CategoryConverter extends ShopwareConverter
      */
     protected function addMediaTranslation(array &$media, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if (!$language instanceof LanguageEntity) {
             return;
         }

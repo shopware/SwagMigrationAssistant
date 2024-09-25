@@ -26,7 +26,7 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
-        private readonly DocumentTypeLookup $documentTypeLookup
+        protected readonly DocumentTypeLookup $documentTypeLookup,
     ) {
         parent::__construct($mappingService, $loggingService, $mediaFileService);
     }

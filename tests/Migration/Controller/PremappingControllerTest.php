@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
@@ -285,6 +286,7 @@ class PremappingControllerTest extends TestCase
             $this->getContainer()->get('country_state.repository'),
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(Connection::class),
             new NullLogger()
         );
     }

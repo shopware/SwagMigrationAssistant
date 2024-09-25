@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
-use _PHPStan_58d202fdd\Composer\Pcre\Preg;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -26,12 +25,14 @@ class CountryConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $countryLookup = $this->createMock(CountryLookup::class);
 
+        static::assertIsArray($mappingArray);
+
         foreach ($mappingArray as $mapping) {
-            if($mapping['entityName'] === DefaultEntities::COUNTRY) {
+            if ($mapping['entityName'] === DefaultEntities::COUNTRY) {
                 $countryLookup->method('get')->willReturn($mapping['newIdentifier']);
             }
         }

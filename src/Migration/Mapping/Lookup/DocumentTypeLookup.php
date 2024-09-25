@@ -13,26 +13,30 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationAssistant\Exception\MigrationException;
+use Shopware\Core\Framework\Log\Package;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class DocumentTypeLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<DocumentTypeCollection> $documentTypeRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $documentTypeRepository
-    ) {}
+        private readonly EntityRepository $documentTypeRepository,
+    ) {
+    }
 
     public function get(string $technicalName, Context $context): ?string
     {
-        if (isset($this->cache[$technicalName])) {
+        if (\array_key_exists($technicalName, $this->cache)) {
             return $this->cache[$technicalName];
         }
 
@@ -41,6 +45,8 @@ class DocumentTypeLookup implements ResetInterface
 
         $result = $this->documentTypeRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof DocumentTypeEntity) {
+            $this->cache[$technicalName] = null;
+
             return null;
         }
 

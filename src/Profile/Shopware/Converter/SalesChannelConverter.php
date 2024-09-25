@@ -57,8 +57,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
         protected EntityRepository $countryRepository,
         protected EntityRepository $salesChannelRepo,
         protected ?EntityRepository $languagePackRepo,
-        private readonly CurrencyLookup $currencyLookup,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly CurrencyLookup $currencyLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -252,7 +252,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
      */
     protected function setSalesChannelTranslation(array &$salesChannel, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

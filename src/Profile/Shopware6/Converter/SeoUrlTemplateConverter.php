@@ -10,13 +10,24 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlTemplateDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class SeoUrlTemplateConverter extends ShopwareConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected readonly SeoUrlTemplateLookup $seoUrlTemplateLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -27,13 +38,12 @@ class SeoUrlTemplateConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $seoUrlTemplateUuid = $this->mappingService->getSeoUrlTemplateUuid(
-            $converted['id'],
-            $converted['salesChannelId'] ?? null,
-            $converted['routeName'],
-            $this->migrationContext,
+        $seoUrlTemplateUuid = $this->seoUrlTemplateLookup->get(
+            $data['salesChannelId'],
+            $data['routeName'],
             $this->context
         );
+
         if ($seoUrlTemplateUuid !== null) {
             $converted['id'] = $seoUrlTemplateUuid;
         }

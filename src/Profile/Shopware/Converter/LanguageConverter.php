@@ -28,8 +28,8 @@ abstract class LanguageConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly LanguageLookup $languageLookup,
-        private readonly LocaleLookup $localeLookup,
+        protected readonly LanguageLookup $languageLookup,
+        protected readonly LocaleLookup $localeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

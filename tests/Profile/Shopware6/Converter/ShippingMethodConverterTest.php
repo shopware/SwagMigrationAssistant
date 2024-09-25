@@ -30,7 +30,7 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         /** @var StaticEntityRepository<ShippingMethodCollection> $shippingMethodRepository */
         $shippingMethodRepository = new StaticEntityRepository([

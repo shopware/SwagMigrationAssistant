@@ -13,28 +13,32 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use SwagMigrationAssistant\Exception\MigrationException;
+use Shopware\Core\Framework\Log\Package;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class MediaThumbnailSizeLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<MediaThumbnailSizeCollection> $thumbnailSizeRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $thumbnailSizeRepository
-    ) {}
+        private readonly EntityRepository $thumbnailSizeRepository,
+    ) {
+    }
 
     public function get(int $width, int $height, Context $context): ?string
     {
         $cacheKey = \sprintf('%s-%s', $width, $height);
 
-        if (isset($this->cache[$cacheKey])) {
+        if (\array_key_exists($cacheKey, $this->cache)) {
             return $this->cache[$cacheKey];
         }
 
@@ -44,6 +48,8 @@ class MediaThumbnailSizeLookup implements ResetInterface
 
         $result = $this->thumbnailSizeRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof MediaThumbnailSizeEntity) {
+            $this->cache[$cacheKey] = null;
+
             return null;
         }
 

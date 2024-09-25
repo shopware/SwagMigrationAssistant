@@ -38,6 +38,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
@@ -168,14 +169,7 @@ trait MigrationServicesTrait
                         $salesChannelRepo,
                         $this->getContainer()->get(CountryLookup::class),
                         $this->getContainer()->get(LanguageLookup::class),
-                    ),
-                    new Shopware55CustomerConverter(
-                        $mappingService,
-                        $loggingService,
-                        $validator,
-                        $salesChannelRepo,
-                        $this->getContainer()->get(CountryLookup::class),
-                        $this->getContainer()->get(LanguageLookup::class),
+                        $this->getContainer()->get(CountryStateLookup::class),
                     ),
                     new Shopware55OrderConverter(
                         $mappingService,
@@ -185,6 +179,7 @@ trait MigrationServicesTrait
                         $this->getContainer()->get(CountryLookup::class),
                         $this->getContainer()->get(CurrencyLookup::class),
                         $this->getContainer()->get(LanguageLookup::class),
+                        $this->getContainer()->get(CountryStateLookup::class),
                     ),
                     new Shopware55SalesChannelConverter(
                         $mappingService,
@@ -204,6 +199,7 @@ trait MigrationServicesTrait
                         $salesChannelRepo,
                         $this->getContainer()->get(CountryLookup::class),
                         $this->getContainer()->get(LanguageLookup::class),
+                        $this->getContainer()->get(CountryStateLookup::class),
                     ),
                 ]
             )

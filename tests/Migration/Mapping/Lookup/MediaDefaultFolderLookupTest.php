@@ -50,7 +50,7 @@ class MediaDefaultFolderLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{entityName: string, expectedResult: ?string}>
+     * @return array<int, array{entityName: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -62,7 +62,7 @@ class MediaDefaultFolderLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{entityName: string, expectedResult: string}>
+     * @return array<int, array{entityName: string, expectedResult: string|null}>
      */
     public static function getDatabaseData(): array
     {
@@ -71,9 +71,11 @@ class MediaDefaultFolderLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list->getEntities() as $mediaFolder) {
+            static::assertInstanceOf(MediaDefaultFolderEntity::class, $mediaFolder);
+
             $returnData[] = [
                 'entityName' => $mediaFolder->getEntity(),
-                'expectedResult' => $mediaFolder->getFolder()->getId(),
+                'expectedResult' => $mediaFolder->getFolder()?->getId(),
             ];
         }
 

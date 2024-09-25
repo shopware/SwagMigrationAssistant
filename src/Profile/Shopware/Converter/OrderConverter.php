@@ -32,6 +32,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -95,10 +96,11 @@ abstract class OrderConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected TaxCalculator $taxCalculator,
-        private readonly EntityRepository $salesChannelRepository,
-        private readonly CountryLookup $countryLookup,
-        private readonly CurrencyLookup $currencyLookup,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly EntityRepository $salesChannelRepository,
+        protected readonly CountryLookup $countryLookup,
+        protected readonly CurrencyLookup $currencyLookup,
+        protected readonly LanguageLookup $languageLookup,
+        protected readonly CountryStateLookup $countryStateLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -573,7 +575,7 @@ abstract class OrderConverter extends ShopwareConverter
         $country = [];
         $countryUuid = null;
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
-            $country['id'] = $this->countryLookup->get($oldCountryData['countryiso'], $oldCountryData['iso3'], $this->context);
+            $countryUuid = $this->countryLookup->get($oldCountryData['countryiso'], $oldCountryData['iso3'], $this->context);
         }
 
         if ($countryUuid !== null) {
@@ -610,7 +612,7 @@ abstract class OrderConverter extends ShopwareConverter
      */
     protected function applyCountryTranslation(array &$country, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -652,24 +654,40 @@ abstract class OrderConverter extends ShopwareConverter
             return [];
         }
 
-        $state = [];
+        $state = ['countryId' => $newCountryId];
 
-        $countryStateUuid = null;
-        if (isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
-            $countryStateUuid = $this->mappingService->getCountryStateUuid(
-                $oldAddressData['stateID'],
-                $oldAddressData['country']['countryiso'],
-                $oldAddressData['state']['shortcode'],
-                $this->connectionId,
-                $this->context
+        if (!isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
+            $this->loggingService->addLogEntry(
+                new UnknownEntityLog(
+                    $this->runId,
+                    DefaultEntities::COUNTRY_STATE,
+                    $oldAddressData['stateID'] ?? 'unknown',
+                    DefaultEntities::ORDER,
+                    $this->oldId
+                )
             );
+
+            return [];
         }
+
+        $countryStateUuid = $this->countryStateLookup->get(
+            $oldAddressData['country']['countryiso'],
+            $oldAddressData['state']['shortcode'],
+            $this->context,
+        );
 
         if ($countryStateUuid !== null) {
             $state['id'] = $countryStateUuid;
 
             return $state;
         }
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::COUNTRY_STATE,
+            $oldAddressData['stateID'],
+            $this->context
+        );
 
         if (!isset(
             $oldAddressData['state']['name'],
@@ -690,17 +708,8 @@ abstract class OrderConverter extends ShopwareConverter
             return [];
         }
 
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::COUNTRY_STATE,
-            $oldAddressData['stateID'],
-            $this->context
-        );
-
         $state['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
-
-        $state['countryId'] = $newCountryId;
 
         $oldStateData = $oldAddressData['state'];
 
@@ -719,7 +728,7 @@ abstract class OrderConverter extends ShopwareConverter
      */
     protected function applyCountryStateTranslation(array &$state, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 
 class NumberRangeLookupTest extends TestCase
@@ -50,7 +51,7 @@ class NumberRangeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{type: string, expectedResult: ?string}>
+     * @return array<int, array{type: string|null, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -62,7 +63,7 @@ class NumberRangeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{type: string, expectedResult: string}>
+     * @return array<int, array{type: string|null, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -74,8 +75,10 @@ class NumberRangeLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list->getEntities() as $numberRange) {
+            static::assertInstanceOf(NumberRangeEntity::class, $numberRange);
+
             $returnData[] = [
-                'type' => $numberRange->getType()->getTechnicalName(),
+                'type' => $numberRange->getType()?->getTechnicalName(),
                 'expectedResult' => $numberRange->getId(),
             ];
         }

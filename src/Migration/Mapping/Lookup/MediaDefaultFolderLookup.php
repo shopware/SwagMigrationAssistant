@@ -14,25 +14,30 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class MediaDefaultFolderLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<MediaDefaultFolderCollection> $mediaFolderRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $mediaFolderRepository
-    ) {}
+        private readonly EntityRepository $mediaFolderRepository,
+    ) {
+    }
 
     public function get(string $entityName, Context $context): ?string
     {
-        if (isset($this->cache[$entityName])) {
+        if (\array_key_exists($entityName, $this->cache)) {
             return $this->cache[$entityName];
         }
 
@@ -41,11 +46,15 @@ class MediaDefaultFolderLookup implements ResetInterface
 
         $result = $this->mediaFolderRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof MediaDefaultFolderEntity) {
+            $this->cache[$entityName] = null;
+
             return null;
         }
 
         $folderResult = $result->getFolder();
         if (!$folderResult instanceof MediaFolderEntity) {
+            $this->cache[$entityName] = null;
+
             return null;
         }
 

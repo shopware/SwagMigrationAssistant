@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -23,7 +24,7 @@ class DeliveryTimeConverter extends ShopwareConverter
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly DeliveryTimeLookup $deliveryTimeLookup
+        protected readonly DeliveryTimeLookup $deliveryTimeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -37,7 +38,15 @@ class DeliveryTimeConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-        $converted['id'] = $this->deliveryTimeLookup->get($data['min'], $data['max'], $data['unit'], $data['id'], $this->context);
+        $converted['id'] = $this->deliveryTimeLookup->get($data['min'], $data['max'], $data['unit'], $this->context);
+
+        if ($converted['id'] === null) {
+            if ($data['id']) {
+                $converted['id'] = $data['id'];
+            } else {
+                $converted['id'] = Uuid::randomHex();
+            }
+        }
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::DELIVERY_TIME,

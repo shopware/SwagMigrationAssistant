@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Services;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
@@ -173,7 +174,7 @@ class MigrationDataProcessingTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $this->context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $this->context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
 
-        $this->mappingService->writeMapping($this->context);
+        $this->mappingService->writeMapping();
     }
 
     public function testFetchMediaDataApiGateway(): void
@@ -336,14 +337,13 @@ class MigrationDataProcessingTest extends TestCase
 
         $this->clearCacheData();
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
+        static::assertCount(4, $data);
+
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $logs = $this->loggingRepo->search(new Criteria(), $context)->getEntities();
 
-        static::assertCount(4, $data);
-
         $countValidLogging = 0;
         $countInvalidLogging = 0;
-
         foreach ($logs as $log) {
             $type = $log->getLevel();
 
@@ -359,13 +359,13 @@ class MigrationDataProcessingTest extends TestCase
 
             ++$countInvalidLogging;
         }
-
         static::assertSame(5, $countValidLogging);
         static::assertSame(0, $countInvalidLogging);
 
         $failureConvertCriteria = new Criteria();
         $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
         $logs = $this->migrationDataRepo->search($failureConvertCriteria, $context);
+
         static::assertSame(2, $logs->getTotal());
     }
 
@@ -376,6 +376,7 @@ class MigrationDataProcessingTest extends TestCase
             static::getContainer()->get('country_state.repository'),
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(Connection::class),
             new NullLogger()
         );
     }

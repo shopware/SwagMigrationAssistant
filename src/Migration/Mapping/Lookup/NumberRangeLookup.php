@@ -11,26 +11,31 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class NumberRangeLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<NumberRangeCollection> $numberRangeRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $numberRangeRepository
-    ) {}
+        private readonly EntityRepository $numberRangeRepository,
+    ) {
+    }
 
     public function get(string $type, Context $context): ?string
     {
-        if (isset($this->cache[$type])) {
+        if (\array_key_exists($type, $this->cache)) {
             return $this->cache[$type];
         }
 
@@ -42,6 +47,8 @@ class NumberRangeLookup implements ResetInterface
 
         $result = $this->numberRangeRepository->searchIds($criteria, $context)->firstId();
         if ($result === null) {
+            $this->cache[$type] = null;
+
             return null;
         }
 

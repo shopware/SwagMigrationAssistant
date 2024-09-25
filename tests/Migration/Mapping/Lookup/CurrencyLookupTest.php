@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\Currency\CurrencyEntity;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 
 class CurrencyLookupTest extends TestCase
@@ -71,6 +72,8 @@ class CurrencyLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $currency) {
+            static::assertInstanceOf(CurrencyEntity::class, $currency);
+
             $returnData[] = [
                 'isoCode' => $currency->getIsoCode(),
                 'expectedResult' => $currency->getId(),

@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;

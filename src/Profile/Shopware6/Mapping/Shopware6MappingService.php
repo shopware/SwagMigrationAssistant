@@ -7,20 +7,16 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Mapping;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 use Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseConfigCollection;
-use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
-use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Content\Cms\Aggregate\CmsPageTranslation\CmsPageTranslationEntity;
 use Shopware\Core\Content\Cms\CmsPageCollection;
 use Shopware\Core\Content\MailTemplate\Aggregate\MailTemplateType\MailTemplateTypeCollection;
 use Shopware\Core\Content\MailTemplate\MailTemplateCollection;
 use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
-use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingCollection;
 use Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingEntity;
-use Shopware\Core\Content\Rule\RuleCollection;
-use Shopware\Core\Content\Seo\SeoUrlTemplate\SeoUrlTemplateCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -32,11 +28,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
-use Shopware\Core\System\Country\CountryCollection;
-use Shopware\Core\System\Currency\CurrencyCollection;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
-use Shopware\Core\System\Language\LanguageCollection;
-use Shopware\Core\System\Locale\LocaleCollection;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\Salutation\SalutationCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
@@ -54,24 +45,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 {
     /**
      * @param EntityRepository<SwagMigrationMappingCollection> $migrationMappingRepo
-     * @param EntityRepository<LocaleCollection> $localeRepository
-     * @param EntityRepository<LanguageCollection> $languageRepository
-     * @param EntityRepository<CountryCollection> $countryRepository
-     * @param EntityRepository<CurrencyCollection> $currencyRepository
      * @param EntityRepository<TaxCollection> $taxRepo
-     * @param EntityRepository<NumberRangeCollection> $numberRangeRepo
-     * @param EntityRepository<RuleCollection> $ruleRepo
-     * @param EntityRepository<MediaThumbnailSizeCollection> $thumbnailSizeRepo
-     * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultRepo
-     * @param EntityRepository<CategoryCollection> $categoryRepo
      * @param EntityRepository<CmsPageCollection> $cmsPageRepo
-     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
-     * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
      * @param EntityRepository<NumberRangeCollection> $numberRangeTypeRepo
      * @param EntityRepository<MailTemplateTypeCollection> $mailTemplateTypeRepo
      * @param EntityRepository<MailTemplateCollection> $mailTemplateRepo
      * @param EntityRepository<SalutationCollection> $salutationRepo
-     * @param EntityRepository<SeoUrlTemplateCollection> $seoUrlTemplateRepo
      * @param EntityRepository<SystemConfigCollection> $systemConfigRepo
      * @param EntityRepository<ProductSortingCollection> $productSortingRepo
      * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepo
@@ -79,30 +58,35 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      * @param EntityRepository<CountryStateCollection> $countryStateRepo
      * @param EntityRepository<TaxRuleCollection> $taxRuleRepo
      * @param EntityRepository<TaxRuleTypeCollection> $taxRuleTypeRepo
+     * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultFolderRepo
      */
     public function __construct(
         EntityRepository $migrationMappingRepo,
         EntityRepository $countryStateRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
+        Connection $connection,
         LoggerInterface $logger,
         private readonly EntityRepository $numberRangeTypeRepo,
         private readonly EntityRepository $mailTemplateTypeRepo,
         private readonly EntityRepository $mailTemplateRepo,
         private readonly EntityRepository $salutationRepo,
-        private readonly EntityRepository $seoUrlTemplateRepo,
         private readonly EntityRepository $systemConfigRepo,
         private readonly EntityRepository $productSortingRepo,
         private readonly EntityRepository $stateMachineStateRepo,
         private readonly EntityRepository $documentBaseConfigRepo,
+        private readonly EntityRepository $taxRepo,
         private readonly EntityRepository $taxRuleRepo,
         private readonly EntityRepository $taxRuleTypeRepo,
+        private readonly EntityRepository $cmsPageRepo,
+        private readonly EntityRepository $mediaDefaultFolderRepo,
     ) {
         parent::__construct(
             $migrationMappingRepo,
             $countryStateRepo,
             $entityWriter,
             $mappingDefinition,
+            $connection,
             $logger
         );
     }
@@ -274,53 +258,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         }
 
         return $salutationId;
-    }
-
-    public function getSeoUrlTemplateUuid(
-        string $oldIdentifier,
-        ?string $salesChannelId,
-        string $routeName,
-        MigrationContextInterface $migrationContext,
-        Context $context,
-    ): ?string {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return null;
-        }
-
-        $connectionId = $connection->getId();
-        $seoUrlTemplateMapping = $this->getMapping($connectionId, DefaultEntities::SEO_URL_TEMPLATE, $oldIdentifier, $context);
-        if ($seoUrlTemplateMapping !== null) {
-            return $seoUrlTemplateMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new MultiFilter(
-                MultiFilter::CONNECTION_AND,
-                [
-                    new EqualsFilter('salesChannelId', $salesChannelId),
-                    new EqualsFilter('routeName', $routeName),
-                ]
-            )
-        );
-        $criteria->setLimit(1);
-
-        $seoUrlTemplateId = $this->seoUrlTemplateRepo->searchIds($criteria, $context)->firstId();
-
-        if ($seoUrlTemplateId !== null) {
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::SEO_URL_TEMPLATE,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $seoUrlTemplateId,
-                ]
-            );
-        }
-
-        return $seoUrlTemplateId;
     }
 
     public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, ?string $salesChannelId, MigrationContextInterface $migrationContext, Context $context): ?string

@@ -25,9 +25,11 @@ class CurrencyConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $currencyLookup = $this->createMock(CurrencyLookup::class);
+
+        static::assertIsArray($mappingArray);
 
         foreach ($mappingArray as $mapping) {
             if ($mapping['entityName'] === DefaultEntities::CURRENCY) {

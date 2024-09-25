@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -85,7 +84,7 @@ class CurrencyConverterTest extends TestCase
         $language->setLocaleId($locale->getId());
 
         $languageLookup = $this->createMock(LanguageLookup::class);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
         $languageLookup->method('get')->willReturn(Defaults::LANGUAGE_SYSTEM);
 
         $this->converter = new Shopware55CurrencyConverter(

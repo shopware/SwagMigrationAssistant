@@ -491,6 +491,7 @@ class MigrationDataWriterTest extends TestCase
 
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
         $criteria = new Criteria();
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
@@ -654,9 +655,10 @@ class MigrationDataWriterTest extends TestCase
     {
         return new MappingService(
             $this->migrationMappingRepo,
-            $this->getContainer()->get('document_type.repository'),
+            $this->getContainer()->get('country_state.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(Connection::class),
             new NullLogger()
         );
     }
@@ -834,7 +836,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '3', $this->context, Uuid::randomHex(), [], $categoryUuid);
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '39', $this->context, Uuid::randomHex(), [], $categoryUuid);
 
-        $this->mappingService->writeMapping($this->context);
+        $this->mappingService->writeMapping();
         $this->clearCacheData();
     }
 }

@@ -23,7 +23,7 @@ class CategoryProductStreamAssociationConverterTest extends ShopwareConverterTes
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         return new CategoryProductStreamAssociationConverter($mappingService, $loggingService);
     }

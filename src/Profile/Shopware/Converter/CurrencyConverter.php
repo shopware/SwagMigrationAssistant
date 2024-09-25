@@ -29,8 +29,8 @@ abstract class CurrencyConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly CurrencyLookup $currencyLookup,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly CurrencyLookup $currencyLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -54,6 +54,18 @@ abstract class CurrencyConverter extends ShopwareConverter
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid !== null) {
+            $currencyMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+            if ($currencyMapping === null) {
+                $this->mappingService->createMapping(
+                    $this->connectionId,
+                    DefaultEntities::CURRENCY,
+                    $data['currency'],
+                    $this->checksum,
+                    null,
+                    $currencyUuid
+                );
+            }
+
             return new ConvertStruct(null, $data);
         }
 
@@ -104,7 +116,7 @@ abstract class CurrencyConverter extends ShopwareConverter
 
     protected function getCurrencyTranslation(array &$currency, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

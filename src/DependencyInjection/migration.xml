@@ -43,6 +43,7 @@
             <argument type="service" id="country_state.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="logger"/>
 
             <tag name="kernel.reset" method="reset"/>
@@ -50,6 +51,11 @@
 
         <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup">
             <argument type="service" id="country.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup">
+            <argument type="service" id="country_state.repository"/>
             <tag name="kernel.reset" method="reset"/>
         </service>
 
@@ -101,6 +107,11 @@
 
         <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup">
             <argument type="service" id="number_range.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup">
+            <argument type="service" id="seo_url_template.repository"/>
             <tag name="kernel.reset" method="reset"/>
         </service>
 

@@ -25,8 +25,8 @@ class MediaFolderConverter extends ShopwareConverter
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly MediaDefaultFolderLookup $mediaFolderLookup,
-        private readonly MediaThumbnailSizeLookup $mediaThumbnailSizeLookup
+        protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
+        protected readonly MediaThumbnailSizeLookup $mediaThumbnailSizeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

@@ -7,10 +7,8 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -29,7 +27,7 @@ class NumberRangeConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $numberRangeLookup = $this->createMock(NumberRangeLookup::class);
 

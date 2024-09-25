@@ -110,7 +110,7 @@ class PremappingService implements PremappingServiceInterface
             }
         }
 
-        $this->mappingService->writeMapping($context);
+        $this->mappingService->writeMapping();
     }
 
     /**

@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\DeliveryTime\DeliveryTimeEntity;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 
 class DeliveryTimeLookupTest extends TestCase
@@ -21,27 +21,21 @@ class DeliveryTimeLookupTest extends TestCase
     use KernelTestBehaviour;
 
     #[DataProvider('getData')]
-    public function testGet(int $minValue, int $maxValue, string $unit, string $name, ?string $expectedResult): void
+    public function testGet(int $minValue, int $maxValue, string $unit, ?string $expectedResult): void
     {
         $deliveryTimeLookup = $this->getDeliveryTimeLookup();
 
-        $result = $deliveryTimeLookup->get($minValue, $maxValue, $unit, $name, Context::createDefaultContext());
-
-        if ($expectedResult === null) {
-            static::assertTrue(Uuid::isValid($result));
-
-            return;
-        }
+        $result = $deliveryTimeLookup->get($minValue, $maxValue, $unit, Context::createDefaultContext());
 
         static::assertSame($expectedResult, $result);
     }
 
     #[DataProvider('getDatabaseData')]
-    public function testGetShouldGetDataFromCache(int $minValue, int $maxValue, string $unit, string $name, ?string $expectedResult): void
+    public function testGetShouldGetDataFromCache(int $minValue, int $maxValue, string $unit, ?string $expectedResult): void
     {
         $deliveryTimeLookup = $this->getMockedDeliveryTimeLookup();
 
-        $result = $deliveryTimeLookup->get($minValue, $maxValue, $unit, $name, Context::createDefaultContext());
+        $result = $deliveryTimeLookup->get($minValue, $maxValue, $unit, Context::createDefaultContext());
 
         static::assertSame($expectedResult, $result);
     }
@@ -61,7 +55,7 @@ class DeliveryTimeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{min: int, max: int, unit: string, name: string, expectedResult: ?string}>
+     * @return array<int, array{min: int, max: int, unit: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -71,7 +65,6 @@ class DeliveryTimeLookupTest extends TestCase
             'min' => 0,
             'max' => 1,
             'unit' => 'Foo-Unit',
-            'name' => 'Foo-Name',
             'expectedResult' => null,
         ];
 
@@ -79,24 +72,21 @@ class DeliveryTimeLookupTest extends TestCase
             'min' => 2,
             'max' => 3,
             'unit' => 'Bar-Unit',
-            'name' => 'Bar-Name',
             'expectedResult' => null,
         ];
 
-        $name = Uuid::randomHex();
         $returnData[] = [
             'min' => 4,
             'max' => 5,
             'unit' => 'Baz-Unit',
-            'name' => $name,
-            'expectedResult' => $name,
+            'expectedResult' => null,
         ];
 
         return $returnData;
     }
 
     /**
-     * @return array<int, array{min: int, max: int, unit: string, name: string, expectedResult: string}>
+     * @return list<array{min: int, max: int, unit: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -105,11 +95,12 @@ class DeliveryTimeLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $deliveryTime) {
+            static::assertInstanceOf(DeliveryTimeEntity::class, $deliveryTime);
+
             $returnData[] = [
                 'min' => $deliveryTime->getMin(),
                 'max' => $deliveryTime->getMax(),
                 'unit' => $deliveryTime->getUnit(),
-                'name' => $deliveryTime->getName(),
                 'expectedResult' => $deliveryTime->getId(),
             ];
         }

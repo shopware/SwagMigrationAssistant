@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 
 class TaxLookupTest extends TestCase
@@ -50,7 +51,7 @@ class TaxLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{taxRate: float, expectedResult: ?string}>
+     * @return array<int, array{taxRate: float, expectedResult: string|null}>
      */
     public static function getData(): array
     {
@@ -64,13 +65,15 @@ class TaxLookupTest extends TestCase
     /**
      * @return array<int, array{taxRate: float, expectedResult: string}>
      */
-    private static function getDatabaseData(): array
+    public static function getDatabaseData(): array
     {
         $taxRepository = static::getContainer()->get('tax.repository');
         $list = $taxRepository->search(new Criteria(), Context::createDefaultContext());
 
         $returnData = [];
         foreach ($list->getEntities() as $tax) {
+            static::assertInstanceOf(TaxEntity::class, $tax);
+
             $returnData[] = [
                 'taxRate' => $tax->getTaxRate(),
                 'expectedResult' => $tax->getId(),

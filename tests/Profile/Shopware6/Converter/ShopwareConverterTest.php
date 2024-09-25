@@ -45,6 +45,7 @@ abstract class ShopwareConverterTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->mappingService = new Dummy6MappingService();
         $this->mediaService = new DummyMediaFileService();
+        $this->converter = $this->createConverter($this->mappingService, $this->loggingService, $this->mediaService);
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -62,8 +63,6 @@ abstract class ShopwareConverterTest extends TestCase
 
     public function testSupports(): void
     {
-        $this->converter = $this->createConverter($this->mappingService, $this->loggingService, $this->mediaService);
-
         $supportsDefinition = $this->converter->supports($this->migrationContext);
 
         static::assertTrue($supportsDefinition, $this->getAssertMessage('Converter does not support migration context.'));
@@ -143,6 +142,9 @@ abstract class ShopwareConverterTest extends TestCase
         }
     }
 
+    /**
+     * @param array<string, array<string, mixed>> $mappingArray
+     */
     abstract protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService, ?array $mappingArray = []): ConverterInterface;
 
     abstract protected function createDataSet(): DataSet;

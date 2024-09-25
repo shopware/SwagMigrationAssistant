@@ -25,7 +25,7 @@ class DefaultCmsPageLookupTest extends TestCase
 
     public function testGet(): void
     {
-        $defaultCmsPageLookup =  new DefaultCmsPageLookup(
+        $defaultCmsPageLookup = new DefaultCmsPageLookup(
             $this->getContainer()->get('cms_page.repository')
         );
 
@@ -99,7 +99,7 @@ class DefaultCmsPageLookupTest extends TestCase
         $criteria->addFilter(new EqualsFilter('locked', true));
 
         $result = $this->getContainer()->get('cms_page.repository')->search($criteria, Context::createDefaultContext())->getEntities()->first();
-
+        static::assertInstanceOf(CmsPageEntity::class, $result);
         static::assertTrue(Uuid::isValid($result->getId()));
 
         return $result->getId();

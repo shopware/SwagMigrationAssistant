@@ -25,8 +25,6 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
 
     public function getSalutationUuid(string $oldIdentifier, string $salutationKey, MigrationContextInterface $migrationContext, Context $context): ?string;
 
-    public function getSeoUrlTemplateUuid(string $oldIdentifier, ?string $salesChannelId, string $routeName, MigrationContextInterface $migrationContext, Context $context): ?string;
-
     public function getSystemConfigUuid(string $oldIdentifier, string $configurationKey, ?string $salesChannelId, MigrationContextInterface $migrationContext, Context $context): ?string;
 
     public function getProductSortingUuid(string $key, Context $context): array;
@@ -37,6 +35,9 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
 
     public function getCmsPageUuidByNames(array $names, Context $context): ?string;
 
+    /**
+     * @param array<string> $names
+     */
     public function mapLockedCmsPageUuidByNameAndType(array $names, string $type, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): void;
 
     public function getTaxUuidByCriteria(string $connectionId, string $sourceId, float $taxRate, string $name, Context $context): ?string;

@@ -7,27 +7,19 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Migration\Mapping;
 
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Language\LanguageEntity;
-use Shopware\Core\System\Locale\LocaleEntity;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
 class DummyMappingService extends MappingService
 {
     final public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';
-    final public const DEFAULT_LOCAL_UUID = '20080911ffff4fffafffffff19830531';
-    final public const DEFAULT_GERMANY_UUID = '20080911ffff4fffafffffff19830511';
-    final public const DEFAULT_UK_UUID = '20080911ffff4fffafffffff19830512';
 
     public function __construct()
     {
@@ -69,7 +61,7 @@ class DummyMappingService extends MappingService
         );
     }
 
-    public function writeMapping(Context $context): void
+    public function writeMapping(): void
     {
     }
 
@@ -120,108 +112,9 @@ class DummyMappingService extends MappingService
         }
     }
 
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
-    {
-        return self::DEFAULT_LANGUAGE_UUID;
-    }
-
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
     {
         return [];
-    }
-
-    public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string
-    {
-        if ($iso === 'DE') {
-            return self::DEFAULT_GERMANY_UUID;
-        }
-
-        if ($iso === 'GB') {
-            return self::DEFAULT_UK_UUID;
-        }
-
-        return null;
-    }
-
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string
-    {
-        $mapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
-
-        if ($mapping !== null) {
-            return $mapping['entityUuid'];
-        }
-
-        return null;
-    }
-
-    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
-    {
-        return Defaults::CURRENCY;
-    }
-
-    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
-    {
-        return null;
-    }
-
-    public function getDefaultAvailabilityRule(Context $context): string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getDefaultLanguage(Context $context): LanguageEntity
-    {
-        $defaultLanguage = new LanguageEntity();
-        $locale = new LocaleEntity();
-        $defaultLanguage->assign([
-            'id' => self::DEFAULT_LANGUAGE_UUID,
-            'locale' => $locale->assign([
-                'id' => self::DEFAULT_LOCAL_UUID,
-                'code' => 'en-GB',
-            ]),
-        ]);
-
-        return $defaultLanguage;
-    }
-
-    public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        return null;
-    }
-
-    public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getLowestRootCategoryUuid(Context $context): ?string
-    {
-        return null;
-    }
-
-    public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
-    {
-        return Uuid::randomHex();
-    }
-
-    public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
-    {
-        return null;
     }
 
     protected function saveMapping(array $mapping): void

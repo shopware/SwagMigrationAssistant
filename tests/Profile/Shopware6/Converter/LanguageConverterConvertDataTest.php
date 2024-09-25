@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
@@ -94,7 +93,7 @@ class LanguageConverterConvertDataTest extends TestCase
         $mappingServiceMock = $this->createMock(Shopware6MappingServiceInterface::class);
 
         $languageLookupMock = $this->createMock(LanguageLookup::class);
-        $languageLookupMock->method('getDefaultLanguageEntity')->willReturn(null);
+        $languageLookupMock->method('getLanguageEntity')->willReturn(null);
 
         $expectedId = 'testID';
 
@@ -121,7 +120,7 @@ class LanguageConverterConvertDataTest extends TestCase
         $mappingServiceMock = $this->createMock(Shopware6MappingServiceInterface::class);
 
         $languageLookupMock = $this->createMock(LanguageLookup::class);
-        $languageLookupMock->method('getDefaultLanguageEntity')->willReturn(new LanguageEntity());
+        $languageLookupMock->method('getLanguageEntity')->willReturn(new LanguageEntity());
 
         $expectedId = 'testID';
 
@@ -143,10 +142,9 @@ class LanguageConverterConvertDataTest extends TestCase
     private function createLanguageConverter(
         ?Shopware6MappingServiceInterface $mappingService = null,
         ?LoggingServiceInterface $loggingService = null,
-        LanguageLookup $languageLookup = null,
-        LocaleLookup $localeLookup = null
+        ?LanguageLookup $languageLookup = null,
+        ?LocaleLookup $localeLookup = null,
     ): LanguageConverter {
-
         return new LanguageConverter(
             $mappingService ?? new Dummy6MappingService(),
             $loggingService ?? $this->createMock(LoggingServiceInterface::class),

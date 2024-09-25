@@ -92,7 +92,7 @@ class CategoryConverterTest extends TestCase
 
         $languageLookup = $this->createMock(LanguageLookup::class);
         $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
 
         $categoryConverter = new Shopware55CategoryConverter(
             new DummyMappingService(),
@@ -126,14 +126,14 @@ class CategoryConverterTest extends TestCase
 
         $languageLookup = $this->createMock(LanguageLookup::class);
         $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
         $categoryConverter = new Shopware55CategoryConverter(
             new DummyMappingService(),
             $this->loggingService,
             new DummyMediaFileService(),
             $this->getContainer()->get(LowestRootCategoryLookup::class),
             $this->getContainer()->get(DefaultCmsPageLookup::class),
-//            $this->getContainer()->get(LanguageLookup::class),
+            //            $this->getContainer()->get(LanguageLookup::class),
             $languageLookup
         );
 

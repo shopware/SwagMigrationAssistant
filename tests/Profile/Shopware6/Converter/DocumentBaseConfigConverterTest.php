@@ -25,9 +25,11 @@ class DocumentBaseConfigConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $documentLookup = $this->createMock(DocumentTypeLookup::class);
+
+        static::assertIsArray($mappingArray);
 
         foreach ($mappingArray as $mapping) {
             if ($mapping['entity'] !== DefaultEntities::ORDER_DOCUMENT_TYPE) {

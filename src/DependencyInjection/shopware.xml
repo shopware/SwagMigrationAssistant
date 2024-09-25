@@ -83,8 +83,9 @@
 
         <!-- Shopware Converter Base classes -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter"
-                 parent="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
-        </service>
+                 parent="SwagMigrationAssistant\Migration\Converter\Converter"
+                 abstract="true"
+        ></service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter"
                  parent="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true"/>
@@ -159,6 +160,7 @@
             <argument type="service" id="sales_channel.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter"
@@ -168,6 +170,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter"

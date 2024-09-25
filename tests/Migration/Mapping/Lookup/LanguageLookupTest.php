@@ -66,7 +66,7 @@ class LanguageLookupTest extends TestCase
         $context = ContextMock::createDefaultContext();
         $context->setLangaugeIdChain([$languageId]);
 
-        $result = $languageLookup->getDefaultLanguageEntity($context);
+        $result = $languageLookup->getLanguageEntity($context);
 
         if ($expectedResult === null) {
             static::assertNull($result);
@@ -85,7 +85,7 @@ class LanguageLookupTest extends TestCase
         $context = ContextMock::createDefaultContext();
         $context->setLangaugeIdChain([$languageId]);
 
-        $result = $languageLookup->getDefaultLanguageEntity($context);
+        $result = $languageLookup->getLanguageEntity($context);
 
         static::assertInstanceOf(LanguageEntity::class, $result);
         static::assertSame($expectedResult, $result->getId());
@@ -110,7 +110,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{localeCode: string, expectedResult: ?string}>
+     * @return array<int, array{localeCode: string|null, expectedResult: ?string}>
      */
     public static function getData(): array
     {
@@ -122,7 +122,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{localeCode: string, expectedResult: string}>
+     * @return array<int, array{localeCode: string|null, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -133,9 +133,11 @@ class LanguageLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $language) {
+            static::assertInstanceOf(LanguageEntity::class, $language);
+
             $returnData[] = [
-                'localeCode' => $language->getLocale()->getCode(),
-                'expectedResult' => $language->getId()
+                'localeCode' => $language->getLocale()?->getCode(),
+                'expectedResult' => $language->getId(),
             ];
         }
 
@@ -143,7 +145,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{languageId: string, expectedResult: string}>
+     * @return array<int, array{languageId: string, expectedResult: string|null}>
      */
     public static function getLanguageIdData(): array
     {
@@ -152,20 +154,22 @@ class LanguageLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $language) {
+            static::assertInstanceOf(LanguageEntity::class, $language);
+
             $returnData[] = [
                 'languageId' => $language->getId(),
-                'expectedResult' => $language->getId()
+                'expectedResult' => $language->getId(),
             ];
         }
 
         $returnData[] = [
             'languageId' => Uuid::randomHex(),
-            'expectedResult' => null
+            'expectedResult' => null,
         ];
 
         $returnData[] = [
             'languageId' => Uuid::randomHex(),
-            'expectedResult' => null
+            'expectedResult' => null,
         ];
 
         return $returnData;
@@ -181,9 +185,11 @@ class LanguageLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $language) {
+            static::assertInstanceOf(LanguageEntity::class, $language);
+
             $returnData[] = [
                 'languageId' => $language->getId(),
-                'expectedResult' => $language->getId()
+                'expectedResult' => $language->getId(),
             ];
         }
 
@@ -221,7 +227,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{localeCode: string, expectedResult: string}>
+     * @return array<string, string>
      */
     private function getCacheData(): array
     {
@@ -235,7 +241,7 @@ class LanguageLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{languageId: string, expectedResult: string}>
+     * @return array<string, LanguageEntity>
      */
     public function getDefaultLanguageCacheData(): array
     {
@@ -244,6 +250,7 @@ class LanguageLookupTest extends TestCase
 
         $defaultLanguageCacheData = [];
         foreach ($list as $language) {
+            static::assertInstanceOf(LanguageEntity::class, $language);
             $defaultLanguageCacheData[$language->getId()] = $language;
         }
 

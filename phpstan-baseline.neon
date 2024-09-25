@@ -1056,22 +1056,12 @@ parameters:
 			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:mapLockedCmsPageUuidByNameAndType\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:getCmsPageUuidByNames\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:getProductSortingUuid\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:mapLockedCmsPageUuidByNameAndType\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
 

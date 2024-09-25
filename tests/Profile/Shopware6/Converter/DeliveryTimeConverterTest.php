@@ -25,9 +25,11 @@ class DeliveryTimeConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $deliveryTimeLookup = $this->createMock(DeliveryTimeLookup::class);
+
+        static::assertIsArray($mappingArray);
 
         $returnMap = [];
         foreach ($mappingArray as $mapping) {

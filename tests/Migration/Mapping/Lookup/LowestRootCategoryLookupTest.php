@@ -83,8 +83,11 @@ class LowestRootCategoryLookupTest extends TestCase
         $criteria->addFilter(new EqualsFilter('parentId', null));
 
         $searchResult = $categoryRepository->search($criteria, Context::createDefaultContext());
-        $result = $searchResult->getEntities()->sortByPosition()->last();
-        static::assertInstanceof(CategoryEntity::class, $result);
+        $list = $searchResult->getEntities();
+        static::assertInstanceOf(CategoryCollection::class, $list);
+
+        $result = $list->sortByPosition()->last();
+        static::assertInstanceOf(CategoryEntity::class, $result);
 
         return $result->getId();
     }

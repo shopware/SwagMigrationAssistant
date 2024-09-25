@@ -15,11 +15,14 @@ class ContextMock extends Context
 {
     public static function createDefaultContext(?ContextSource $source = null): self
     {
-        $source ??= new SystemSource();
+        $source = new SystemSource();
 
         return new self($source);
     }
 
+    /**
+     * @param non-empty-array<string> $chain
+     */
     public function setLangaugeIdChain(array $chain): void
     {
         $this->languageIdChain = $chain;

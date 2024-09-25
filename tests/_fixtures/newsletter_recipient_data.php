@@ -31,6 +31,6 @@ return [
             'deleted' => null,
         ],
         'shopId' => '1',
-        '_locale' => 'en-GB', // could 'en_GB' happen here?
+        '_locale' => 'en-GB',
     ],
 ];

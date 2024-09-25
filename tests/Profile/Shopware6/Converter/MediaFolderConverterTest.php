@@ -26,10 +26,12 @@ class MediaFolderConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $mediaDefaultFolderLookup = $this->createMock(MediaDefaultFolderLookup::class);
         $mediaThumbnailSizeLookup = $this->createMock(MediaThumbnailSizeLookup::class);
+
+        static::assertIsArray($mappingArray);
 
         $thumbnailSizeReturnMap = [];
         foreach ($mappingArray as $mapping) {
@@ -45,7 +47,7 @@ class MediaFolderConverterTest extends ShopwareConverterTest
         // This is a fix for the test "02-NewThumbnailSize" where the third thumbnail size is a new one
         // use array_unshift because the 1x1 thumbnail size is the first one in the lookup
         while (\count($thumbnailSizeReturnMap) < 3) {
-            array_unshift($thumbnailSizeReturnMap,null);
+            array_unshift($thumbnailSizeReturnMap, null);
         }
 
         $mediaThumbnailSizeLookup->method('get')->willReturnOnConsecutiveCalls(...$thumbnailSizeReturnMap);

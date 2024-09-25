@@ -46,7 +46,7 @@ class Dummy6MappingService extends Shopware6MappingService
 
     public function getMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?array
     {
-        return $this->mappings[\md5($entityName . $oldIdentifier)] ?? null;
+        return $this->mappings[$entityName . $oldIdentifier] ?? null;
     }
 
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult
@@ -97,7 +97,7 @@ class Dummy6MappingService extends Shopware6MappingService
         }
     }
 
-    public function writeMapping(Context $context): void
+    public function writeMapping(): void
     {
         if (empty($this->writeArray)) {
             return;
@@ -376,6 +376,16 @@ class Dummy6MappingService extends Shopware6MappingService
         }
 
         return null;
+    }
+
+    public function mapLockedCmsPageUuidByNameAndType(
+        array $names,
+        string $type,
+        string $oldIdentifier,
+        string $connectionId,
+        MigrationContextInterface $migrationContext,
+        Context $context,
+    ): void {
     }
 
     public function getLowestRootCategoryUuid(Context $context): ?string

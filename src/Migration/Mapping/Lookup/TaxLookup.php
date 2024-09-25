@@ -11,30 +11,34 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Tax\TaxCollection;
 use Shopware\Core\System\Tax\TaxEntity;
-use SwagMigrationAssistant\Exception\MigrationException;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class TaxLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<int|string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<TaxCollection> $taxRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $taxRepository
-    ) {}
+        private readonly EntityRepository $taxRepository,
+    ) {
+    }
 
     public function get(float $taxRate, Context $context): ?string
     {
         $cacheKey = (string) $taxRate;
 
-        if (isset($this->cache[$cacheKey])) {
+        if (\array_key_exists($cacheKey, $this->cache)) {
             return $this->cache[$cacheKey];
         }
 
@@ -44,6 +48,8 @@ class TaxLookup implements ResetInterface
 
         $result = $this->taxRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof TaxEntity) {
+            $this->cache[$cacheKey] = null;
+
             return null;
         }
 

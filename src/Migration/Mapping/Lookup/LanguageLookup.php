@@ -11,37 +11,42 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Exception\MigrationException;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class LanguageLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
-     * @var array<string, LanguageEntity>
+     * @var array<string, LanguageEntity|null>
      */
     private array $defaultLanguageCache = [];
 
     /**
-     * @param EntityRepository<LanguageCollection> $anguageRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     *
+     * @internal
      */
     public function __construct(
         private readonly EntityRepository $languageRepository,
-        private readonly LocaleLookup $localeLookup
-    ) {}
+        private readonly LocaleLookup $localeLookup,
+    ) {
+    }
 
     /**
      * @throws MigrationException
      */
     public function get(string $localeCode, Context $context): ?string
     {
-        if (isset($this->cache[$localeCode])) {
+        if (\array_key_exists($localeCode, $this->cache)) {
             return $this->cache[$localeCode];
         }
 
@@ -52,6 +57,8 @@ class LanguageLookup implements ResetInterface
 
         $language = $this->getLanguage($localeUuid, $context);
         if (!$language instanceof LanguageEntity) {
+            $this->cache[$localeCode] = null;
+
             return null;
         }
 
@@ -60,11 +67,11 @@ class LanguageLookup implements ResetInterface
         return $language->getId();
     }
 
-    public function getDefaultLanguageEntity(Context $context): ?LanguageEntity
+    public function getLanguageEntity(Context $context): ?LanguageEntity
     {
         $languageUuid = $context->getLanguageId();
 
-        if ($this->defaultLanguageCache[$languageUuid] instanceof LanguageEntity) {
+        if (isset($this->defaultLanguageCache[$languageUuid]) && $this->defaultLanguageCache[$languageUuid] instanceof LanguageEntity) {
             return $this->defaultLanguageCache[$languageUuid];
         }
 
@@ -74,6 +81,8 @@ class LanguageLookup implements ResetInterface
         $language = $this->languageRepository->search($criteria, $context)->first();
 
         if (!$language instanceof LanguageEntity) {
+            $this->defaultLanguageCache[$languageUuid] = null;
+
             return null;
         }
 

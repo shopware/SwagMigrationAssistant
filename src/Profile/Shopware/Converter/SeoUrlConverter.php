@@ -32,7 +32,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

@@ -12,18 +12,18 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class CountryConverter extends ShopwareConverter
 {
     public function __construct(
-        MappingServiceInterface $mappingService,
+        Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly CountryLookup $countryLookup
+        protected readonly CountryLookup $countryLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
+use Shopware\Core\System\Country\CountryEntity;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 
 class CountryLookupTest extends TestCase
@@ -49,7 +50,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso: string, iso3: string, expectedResult: ?string}>
+     * @return array<int, array{iso: string|null, iso3: string|null, expectedResult: string|null}>
      */
     public static function getTestData(): array
     {
@@ -61,7 +62,7 @@ class CountryLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{iso: string, iso3: string, expectedResult: ?string}>
+     * @return array<int, array{iso: string|null, iso3: string|null, expectedResult: string|null}>
      */
     public static function getDatabaseData(): array
     {
@@ -70,6 +71,8 @@ class CountryLookupTest extends TestCase
 
         $returnData = [];
         foreach ($list as $country) {
+            static::assertInstanceOf(CountryEntity::class, $country);
+
             $returnData[] = [
                 'iso' => $country->getIso(),
                 'iso3' => $country->getIso3(),

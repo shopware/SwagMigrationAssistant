@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -31,7 +30,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly LanguageLookup $languageLookup
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -89,7 +88,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

@@ -32,8 +32,8 @@ abstract class MediaFolderConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly MediaDefaultFolderLookup $mediaFolderLookup,
-        private readonly MediaThumbnailSizeLookup $mediaThumbnailSizeLookup
+        protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
+        protected readonly MediaThumbnailSizeLookup $mediaThumbnailSizeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -139,7 +139,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
 
     public function writeMapping(Context $context): void
     {
-        $this->mappingService->writeMapping($context);
+        $this->mappingService->writeMapping();
     }
 
     protected function getConfiguration(array &$setting, MigrationContextInterface $migrationContext): array

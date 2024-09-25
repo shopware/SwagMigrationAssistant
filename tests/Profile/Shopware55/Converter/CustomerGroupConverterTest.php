@@ -43,7 +43,7 @@ class CustomerGroupConverterTest extends TestCase
 
         $languageLookup = $this->createMock(LanguageLookup::class);
         $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
 
         $this->converter = new Shopware55CustomerGroupConverter(
             $mappingService,
@@ -74,7 +74,7 @@ class CustomerGroupConverterTest extends TestCase
         static::assertTrue($supportsDefinition);
     }
 
-    public function testConvertAAA(): void
+    public function testConvert(): void
     {
         $customerGroupData = require __DIR__ . '/../../../_fixtures/customer_group_data.php';
 

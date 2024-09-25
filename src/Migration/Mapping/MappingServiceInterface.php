@@ -81,8 +81,6 @@ interface MappingServiceInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
 
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string;
-
     /**
      * @return string[]
      */
@@ -90,7 +88,7 @@ interface MappingServiceInterface
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void;
 
-    public function writeMapping(Context $context): void;
+    public function writeMapping(): void;
 
     /**
      * @return EntitySearchResult<SwagMigrationMappingCollection>

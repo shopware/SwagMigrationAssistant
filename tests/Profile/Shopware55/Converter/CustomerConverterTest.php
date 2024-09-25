@@ -10,6 +10,8 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -17,6 +19,7 @@ use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -59,7 +62,8 @@ class CustomerConverterTest extends TestCase
             $validator,
             $salesChannelRepo,
             static::getContainer()->get(CountryLookup::class),
-            static::getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(CountryStateLookup::class),
         );
 
         $this->connectionId = Uuid::randomHex();
@@ -497,12 +501,16 @@ class CustomerConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
+        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertArrayHasKey('countryState', $converted['addresses'][0]);
         static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
-        static::assertSame('019243e2514672debd864b2b979544f4', $converted['addresses'][0]['countryState']['id']);
+        static::assertSame($expectedStateId, $converted['addresses'][0]['countryState']['id']);
     }
 
     public function testConvertExistingCountryStateWithoutMapping(): void
@@ -520,13 +528,16 @@ class CustomerConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
+        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('addresses', $converted);
         static::assertArrayHasKey('countryState', $converted['addresses'][0]);
         static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
-        static::assertSame('Nordrhein-Westfalen', $converted['addresses'][0]['countryState']['name']);
-        static::assertSame('NW', $converted['addresses'][0]['countryState']['shortCode']);
+        static::assertSame($expectedStateId, $converted['addresses'][0]['countryState']['id']);
     }
 
     public function testConvertNotExistingCountryStateWithoutMapping(): void

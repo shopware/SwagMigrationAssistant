@@ -12,11 +12,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-class DeliveryTimeLookup implements ResetInterface
+class CountryStateLookup implements ResetInterface
 {
     /**
      * @var array<string, string|null>
@@ -24,35 +24,38 @@ class DeliveryTimeLookup implements ResetInterface
     private array $cache = [];
 
     /**
-     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepository
+     * @param EntityRepository<CountryStateCollection> $countryStateRepository
      *
      * @internal
      */
     public function __construct(
-        private readonly EntityRepository $deliveryTimeRepository,
+        private readonly EntityRepository $countryStateRepository,
     ) {
     }
 
-    public function get(int $minValue, int $maxValue, string $unit, Context $context): ?string
+    public function get(string $countryIso, string $countryStateCode, Context $context): ?string
     {
-        $cacheKey = \sprintf('%d-%d-%s', $minValue, $maxValue, $unit);
+        $cacheKey = \sprintf('%s-%s', $countryIso, $countryStateCode);
+
         if (\array_key_exists($cacheKey, $this->cache)) {
             return $this->cache[$cacheKey];
         }
 
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('min', $minValue));
-        $criteria->addFilter(new EqualsFilter('max', $maxValue));
-        $criteria->addFilter(new EqualsFilter('unit', $unit));
+        $criteria->addFilter(new EqualsFilter('shortCode', $countryIso . '-' . $countryStateCode));
+        $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
         $criteria->setLimit(1);
 
-        $result = $this->deliveryTimeRepository->searchIds($criteria, $context);
+        $countryStateUuid = $this->countryStateRepository->searchIds($criteria, $context)->firstId();
+        if ($countryStateUuid === null) {
+            $this->cache[$cacheKey] = null;
 
-        $deliveryTimeUuid = $result->firstId();
+            return null;
+        }
 
-        $this->cache[$cacheKey] = $deliveryTimeUuid;
+        $this->cache[$cacheKey] = $countryStateUuid;
 
-        return $deliveryTimeUuid;
+        return $countryStateUuid;
     }
 
     public function reset(): void

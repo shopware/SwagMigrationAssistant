@@ -11,27 +11,32 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Symfony\Contracts\Service\ResetInterface;
 
+#[Package('services-settings')]
 class CurrencyLookup implements ResetInterface
 {
     /**
-     * @var array<string, string>
+     * @var array<string, string|null>
      */
     private array $cache = [];
 
     /**
      * @param EntityRepository<CurrencyCollection> $currencyRepository
+     *
+     * @internal
      */
     public function __construct(
-        private readonly EntityRepository $currencyRepository
-    ) {}
+        private readonly EntityRepository $currencyRepository,
+    ) {
+    }
 
     public function get(string $isoCode, Context $context): ?string
     {
-        if (isset($this->cache[$isoCode])) {
+        if (\array_key_exists($isoCode, $this->cache)) {
             return $this->cache[$isoCode];
         }
 
@@ -41,6 +46,8 @@ class CurrencyLookup implements ResetInterface
 
         $result = $this->currencyRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof CurrencyEntity) {
+            $this->cache[$isoCode] = null;
+
             return null;
         }
 

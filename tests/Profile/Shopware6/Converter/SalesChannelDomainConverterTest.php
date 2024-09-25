@@ -23,7 +23,7 @@ class SalesChannelDomainConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         return new SalesChannelDomainConverter($mappingService, $loggingService);
     }

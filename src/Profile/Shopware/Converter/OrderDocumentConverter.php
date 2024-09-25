@@ -43,8 +43,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
-        private readonly MediaDefaultFolderLookup $mediaFolderLookup,
-        private readonly DocumentTypeLookup $documentTypeLookup
+        protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
+        protected readonly DocumentTypeLookup $documentTypeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

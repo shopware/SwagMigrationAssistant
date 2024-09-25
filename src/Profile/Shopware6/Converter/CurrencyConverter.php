@@ -23,7 +23,7 @@ class CurrencyConverter extends ShopwareConverter
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly CurrencyLookup $currencyLookup,
+        protected readonly CurrencyLookup $currencyLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

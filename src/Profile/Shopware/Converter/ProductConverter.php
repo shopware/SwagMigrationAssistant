@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -70,16 +71,16 @@ abstract class ProductConverter extends ShopwareConverter
 
     protected string $connectionName;
 
-    protected ?string $currencyUuid;
+    protected ?string $currencyUuid = null;
 
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
-        private readonly TaxLookup $taxLookup,
-        private readonly MediaDefaultFolderLookup $mediaFolderLookup,
-        private readonly LanguageLookup $languageLookup,
-        private readonly DeliveryTimeLookup $deliveryTimeLookup,
+        protected readonly TaxLookup $taxLookup,
+        protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
+        protected readonly LanguageLookup $languageLookup,
+        protected readonly DeliveryTimeLookup $deliveryTimeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -596,12 +597,37 @@ abstract class ProductConverter extends ShopwareConverter
                 }
             }
 
+            $mapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::DELIVERY_TIME,
+                $shippingTime,
+                $this->context
+            );
+
+            if ($mapping !== null) {
+                $convertedDeliveryTime['id'] = $mapping['entityUuid'];
+
+                return $convertedDeliveryTime;
+            }
+
             $convertedDeliveryTime['id'] = $this->deliveryTimeLookup->get(
                 $convertedDeliveryTime['min'],
                 $convertedDeliveryTime['max'],
                 $convertedDeliveryTime['unit'],
-                $convertedDeliveryTime['name'],
                 $this->context
+            );
+
+            if ($convertedDeliveryTime['id'] === null) {
+                $convertedDeliveryTime['id'] = Uuid::randomHex();
+            }
+
+            $this->mappingService->createMapping(
+                $this->connectionId,
+                DefaultEntities::DELIVERY_TIME,
+                $shippingTime,
+                null,
+                null,
+                $convertedDeliveryTime['id'],
             );
 
             return $convertedDeliveryTime;
@@ -626,7 +652,7 @@ abstract class ProductConverter extends ShopwareConverter
         $options = [];
 
         $shouldBeTranslated = true;
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             $shouldBeTranslated = false;
         } else {
@@ -714,7 +740,7 @@ abstract class ProductConverter extends ShopwareConverter
      */
     private function applyManufacturerTranslation(array &$manufacturer, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -803,7 +829,7 @@ abstract class ProductConverter extends ShopwareConverter
      */
     private function applyUnitTranslation(array &$unit, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -1079,7 +1105,7 @@ abstract class ProductConverter extends ShopwareConverter
      */
     private function applyMediaTranslation(array &$media, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -1412,7 +1438,7 @@ abstract class ProductConverter extends ShopwareConverter
             $converted['metaDescription'] = \mb_substr($converted['metaDescription'], 0, 255);
         }
 
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

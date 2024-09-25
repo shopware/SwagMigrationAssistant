@@ -35,7 +35,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -192,7 +192,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      */
     protected function setMediaTranslation(array &$media, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -274,7 +274,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      */
     protected function setTranslation(array &$data, array &$converted): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

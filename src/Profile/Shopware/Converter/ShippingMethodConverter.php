@@ -80,8 +80,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly CountryLookup $countryLookup,
-        private readonly LanguageLookup $languageLookup,
+        protected readonly CountryLookup $countryLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -258,7 +258,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      */
     protected function addShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
-        $language = $this->languageLookup->getDefaultLanguageEntity($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -627,7 +627,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $data
-     * @param Rules                $rule
+     * @param Rules $rule
      *
      * @return list<array<string, mixed>>
      */
@@ -875,7 +875,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, array<array<string, string>|string>|int|string> $ruleData
-     * @param MainOrContainer                                               $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setWeekdayCondition(
         array &$ruleData,
@@ -924,7 +924,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, array<array<string, string>|string>|int|string> $ruleData
-     * @param MainOrContainer                                               $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setBindTimeCondition(
         array &$ruleData,
@@ -979,7 +979,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param MainOrContainer      $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setLastStockCondition(
         array &$ruleData,
@@ -1017,7 +1017,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param MainOrContainer      $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setOtherConditions(
         array $ruleData,
@@ -1064,7 +1064,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param MainOrContainer      $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setShippingCountries(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
@@ -1113,7 +1113,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param MainOrContainer      $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setPaymentMethods(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
@@ -1169,7 +1169,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param MainOrContainer      $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setExcludedCategories(array &$ruleData, string $hash, int &$position, array &$mainOrContainer): void
     {
@@ -1225,7 +1225,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $ruleData
-     * @param MainOrContainer      $mainOrContainer
+     * @param MainOrContainer $mainOrContainer
      */
     private function setFreeShipping(
         array &$ruleData,

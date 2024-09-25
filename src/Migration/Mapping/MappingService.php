@@ -7,7 +7,9 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -16,7 +18,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
@@ -48,6 +49,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
         protected EntityRepository $countryStateRepo,
         protected EntityWriterInterface $entityWriter,
         protected EntityDefinition $mappingDefinition,
+        protected Connection $connection,
         protected LoggerInterface $logger,
     ) {
     }
@@ -110,41 +112,41 @@ class MappingService implements MappingServiceInterface, ResetInterface
         string $oldIdentifier,
         Context $context,
     ): ?array {
-        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
-            return $this->mappings[\md5($entityName . $oldIdentifier)];
+        $cacheKey = $entityName . $oldIdentifier;
+        if (isset($this->mappings[$cacheKey])) {
+            return $this->mappings[$cacheKey];
         }
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-        $criteria->addFilter(new EqualsFilter('entity', $entityName));
-        $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
-        $criteria->setLimit(1);
-
-        $result = $this->migrationMappingRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $element = $result->getEntities()->first();
-
-            if ($element === null) {
-                return null;
-            }
-
-            $mapping = [
-                'id' => $element->getId(),
-                'connectionId' => $element->getConnectionId(),
-                'entity' => $element->getEntity(),
-                'oldIdentifier' => $element->getOldIdentifier(),
-                'entityUuid' => $element->getEntityUuid(),
-                'entityValue' => $element->getEntityValue(),
-                'checksum' => $element->getChecksum(),
-                'additionalData' => $element->getAdditionalData(),
-            ];
-            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
-
-            return $mapping;
+        $sql = 'SELECT id,
+                       connection_id AS connectionId,
+                       entity,
+                       old_identifier AS oldIdentifier,
+                       entity_uuid AS entityUuid,
+                       entity_value AS entityValue,
+                       checksum,
+                       additional_data AS additionalData
+                FROM swag_migration_mapping
+                WHERE connection_id = :connectionId
+                    AND entity = :entity
+                    AND old_identifier = :oldIdentifier;';
+        $mapping = $this->connection->fetchAssociative($sql, ['connectionId' => Uuid::fromHexToBytes($connectionId), 'entity' => $entityName, 'oldIdentifier' => $oldIdentifier]);
+        if ($mapping === false) {
+            return null;
         }
 
-        return null;
+        $mapping['id'] = Uuid::fromBytesToHex($mapping['id']);
+        $mapping['connectionId'] = Uuid::fromBytesToHex($mapping['connectionId']);
+        $mapping['entityUuid'] = Uuid::fromBytesToHex($mapping['entityUuid']);
+        $mapping['additionalData'] = \json_decode($mapping['additionalData'], true);
+
+        // PHPStan does not recognize that fetchAssociative returns all required fields. We should move to a Mapping object.
+        $mapping['oldIdentifier'] = $mapping['oldIdentifier'] === null ? null : (string) $mapping['oldIdentifier'];
+        $mapping['entityValue'] = $mapping['entityValue'] === null ? null : (string) $mapping['entityValue'];
+        $mapping['checksum'] = $mapping['checksum'] === null ? null : (string) $mapping['checksum'];
+
+        $this->mappings[$cacheKey] = $mapping;
+
+        return $mapping;
     }
 
     public function createMapping(
@@ -222,7 +224,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
             foreach ($elements as $mapping) {
                 $entityName = $mapping->getEntity();
                 $oldIdentifier = $mapping->getOldIdentifier();
-                $this->mappings[\md5($entityName . $oldIdentifier)] = [
+                $this->mappings[$entityName . $oldIdentifier] = [
                     'id' => $mapping->getId(),
                     'connectionId' => $mapping->getConnectionId(),
                     'entity' => $entityName,
@@ -237,7 +239,6 @@ class MappingService implements MappingServiceInterface, ResetInterface
         }
     }
 
-    // TODO HERE?
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array
     {
         $criteria = new Criteria();
@@ -254,11 +255,11 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return $entityUuids;
     }
 
-    // TODO HERE?
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
-            return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
+        $cacheKey = $entityName . $oldIdentifier;
+        if (isset($this->mappings[$cacheKey])) {
+            return $this->mappings[$cacheKey]['entityValue'];
         }
 
         $criteria = new Criteria();
@@ -288,7 +289,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
             ];
-            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
+            $this->mappings[$cacheKey] = $mapping;
 
             return $value;
         }
@@ -327,11 +328,11 @@ class MappingService implements MappingServiceInterface, ResetInterface
         );
     }
 
-    // TODO HERE?
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        if (isset($this->mappings[\md5($entityName . $identifier)])) {
-            return $this->mappings[\md5($entityName . $identifier)];
+        $cacheKey = $entityName . $identifier;
+        if (isset($this->mappings[$cacheKey])) {
+            return $this->mappings[$cacheKey];
         }
 
         $criteria = new Criteria();
@@ -348,7 +349,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
             }
         }
 
-        $this->mappings[\md5($entityName . $identifier)] = $uuidList;
+        $this->mappings[$cacheKey] = $uuidList;
 
         return $uuidList;
     }
@@ -382,56 +383,53 @@ class MappingService implements MappingServiceInterface, ResetInterface
         }
     }
 
-    public function writeMapping(Context $context): void
+    public function writeMapping(): void
     {
         if (empty($this->writeArray)) {
             return;
         }
 
         try {
-            $this->entityWriter->upsert(
-                $this->mappingDefinition,
-                $this->writeArray,
-                WriteContext::createFromContext($context)
-            );
+            $isFirstInsert = true;
+            $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_uuid, entity_value, checksum, additional_data, created_at) VALUES ';
+            $insertParams = [];
+            $updateSql = ' ON DUPLICATE KEY
+                       UPDATE entity = VALUES(entity),
+                       old_identifier = VALUES(old_identifier),
+                       entity_uuid = VALUES(entity_uuid),
+                       entity_value = VALUES(entity_value),
+                       checksum = VALUES(checksum),
+                       additional_data = VALUES(additional_data),
+                       updated_at = VALUES(created_at);';
+            foreach ($this->writeArray as $index => $writeMapping) {
+                if ($isFirstInsert) {
+                    $isFirstInsert = false;
+                } else {
+                    $insertSql .= ', ';
+                }
+
+                $insertSql .= \sprintf('(:id%d, :connectionId%d, :entity%d, :oldIdentifier%d, :entityUuid%d, :entityValue%d, :checksum%d, :additionalData%d, :createdAt%d)', $index, $index, $index, $index, $index, $index, $index, $index, $index);
+
+                $insertParams['id' . $index] = Uuid::fromHexToBytes($writeMapping['id']);
+                $insertParams['connectionId' . $index] = Uuid::fromHexToBytes($writeMapping['connectionId']);
+                $insertParams['entity' . $index] = $writeMapping['entity'];
+                $insertParams['oldIdentifier' . $index] = $writeMapping['oldIdentifier'];
+                $insertParams['entityUuid' . $index] = $writeMapping['entityUuid'] === null ? null : Uuid::fromHexToBytes($writeMapping['entityUuid']);
+                $insertParams['entityValue' . $index] = $writeMapping['entityValue'];
+                $insertParams['checksum' . $index] = $writeMapping['checksum'];
+                $insertParams['additionalData' . $index] = \json_encode($writeMapping['additionalData']);
+                $insertParams['createdAt' . $index] = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+            }
+
+            $this->connection->executeStatement($insertSql . $updateSql, $insertParams);
         } catch (\Exception) {
-            $this->writePerEntry($context);
+            $this->writePerEntry();
         } finally {
             $this->writeArray = [];
             // This should not really be necessary
             // but removing it could increase memory usage / needs profiling
             $this->mappings = [];
         }
-    }
-
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string
-    {
-        $countryStateMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
-
-        if ($countryStateMapping !== null) {
-            return $countryStateMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('shortCode', $countryIso . '-' . $countryStateCode));
-        $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
-        $criteria->setLimit(1);
-
-        $countryStateUuid = $this->countryStateRepo->searchIds($criteria, $context)->firstId();
-
-        if ($countryStateUuid !== null) {
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::COUNTRY_STATE,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $countryStateUuid,
-                ]
-            );
-        }
-
-        return $countryStateUuid;
     }
 
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
@@ -465,7 +463,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
+        $this->mappings[$entity . $oldIdentifier] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
@@ -473,7 +471,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[\md5($entity . $oldIdentifier)][] = $mapping;
+        $this->mappings[$entity . $oldIdentifier][] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
@@ -505,15 +503,33 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return false;
     }
 
-    private function writePerEntry(Context $context): void
+    private function writePerEntry(): void
     {
         foreach ($this->writeArray as $mapping) {
             try {
-                $this->entityWriter->upsert(
-                    $this->mappingDefinition,
-                    [$mapping],
-                    WriteContext::createFromContext($context)
-                );
+                $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_uuid, entity_value, checksum, additional_data, created_at)
+                                VALUES (:id, :connectionId, :entity, :oldIdentifier, :entityUuid, :entityValue, :checksum, :additionalData, :createdAt)
+                                ON DUPLICATE KEY
+                       UPDATE entity = VALUES(entity),
+                       old_identifier = VALUES(old_identifier),
+                       entity_uuid = VALUES(entity_uuid),
+                       entity_value = VALUES(entity_value),
+                       checksum = VALUES(checksum),
+                       additional_data = VALUES(additional_data),
+                       updated_at = VALUES(created_at);';
+
+                $insertParams = [];
+                $insertParams['id'] = Uuid::fromHexToBytes($mapping['id']);
+                $insertParams['connectionId'] = Uuid::fromHexToBytes($mapping['connectionId']);
+                $insertParams['entity'] = $mapping['entity'];
+                $insertParams['oldIdentifier'] = $mapping['oldIdentifier'];
+                $insertParams['entityUuid'] = $mapping['entityUuid'] === null ? null : Uuid::fromHexToBytes($mapping['entityUuid']);
+                $insertParams['entityValue'] = $mapping['entityValue'];
+                $insertParams['checksum'] = $mapping['checksum'];
+                $insertParams['additionalData'] = \json_encode($mapping['additionalData']);
+                $insertParams['createdAt'] = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+
+                $this->connection->executeStatement($insertSql, $insertParams);
             } catch (\Exception $e) {
                 $this->logger->error(
                     'SwagMigrationAssistant: Error while writing migration mapping',

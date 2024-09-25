@@ -13,10 +13,7 @@ use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Content\Property\Aggregate\PropertyGroupOption\PropertyGroupOptionDefinition;
 use Shopware\Core\Content\Property\PropertyGroupDefinition;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -32,7 +29,6 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
@@ -77,7 +73,7 @@ class TranslationConverterTest extends TestCase
 
         $languageLookup = $this->createMock(LanguageLookup::class);
         $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
 
         $this->translationConverter = new Shopware55TranslationConverter(
             $this->mappingService,
@@ -654,7 +650,7 @@ class TranslationConverterTest extends TestCase
 
         $languageLookup = $this->createMock(LanguageLookup::class);
         $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
-        $languageLookup->method('getDefaultLanguageEntity')->willReturn($language);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
 
         $productMapping = $this->mappingService->createMapping($this->connectionId, ProductDataSet::getEntity(), 'SW10006', null, null, Uuid::randomHex());
         $translationMapping = $this->mappingService->createMapping($this->connectionId, TranslationDataSet::getEntity(), '666', null, null, Uuid::randomHex());

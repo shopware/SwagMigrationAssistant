@@ -24,7 +24,7 @@ class DocumentConverterTest extends ShopwareConverterTest
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
-        ?array $mappingArray = []
+        ?array $mappingArray = [],
     ): ConverterInterface {
         $documentTypeLookup = $this->createMock(DocumentTypeLookup::class);
         $documentTypeLookup->method('get')->willReturn('41248655c60c4dd58cde43f14cd4f149');
