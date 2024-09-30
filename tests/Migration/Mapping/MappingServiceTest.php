@@ -290,6 +290,7 @@ class MappingServiceTest extends TestCase
             $this->getContainer()->get('cms_page.repository'),
             $this->getContainer()->get('delivery_time.repository'),
             $this->getContainer()->get('document_type.repository'),
+            $this->getContainer()->get('country_state.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             new NullLogger()

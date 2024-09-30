@@ -53,6 +53,7 @@
             <argument type="service" id="cms_page.repository"/>
             <argument type="service" id="delivery_time.repository"/>
             <argument type="service" id="document_type.repository"/>
+            <argument type="service" id="country_state.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
             <argument type="service" id="logger"/>

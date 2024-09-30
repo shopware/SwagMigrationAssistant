@@ -95,6 +95,8 @@ interface MappingServiceInterface
 
     public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string;
 
+    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string;
+
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string;
 
     public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string;

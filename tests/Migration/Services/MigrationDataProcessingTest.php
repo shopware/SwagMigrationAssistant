@@ -386,6 +386,7 @@ class MigrationDataProcessingTest extends TestCase
             static::getContainer()->get('cms_page.repository'),
             static::getContainer()->get('delivery_time.repository'),
             static::getContainer()->get('document_type.repository'),
+            static::getContainer()->get('country_state.repository'),
             static::getContainer()->get(EntityWriter::class),
             static::getContainer()->get(SwagMigrationMappingDefinition::class),
             new NullLogger()

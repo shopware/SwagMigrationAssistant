@@ -95,6 +95,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         EntityRepository $cmsPageRepo,
         EntityRepository $deliveryTimeRepo,
         EntityRepository $documentTypeRepo,
+        EntityRepository $countryStateRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
         LoggerInterface $logger,
@@ -107,7 +108,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         private readonly EntityRepository $productSortingRepo,
         private readonly EntityRepository $stateMachineStateRepo,
         private readonly EntityRepository $documentBaseConfigRepo,
-        private readonly EntityRepository $countryStateRepo,
         private readonly EntityRepository $taxRuleRepo,
         private readonly EntityRepository $taxRuleTypeRepo
     ) {
@@ -126,6 +126,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
             $cmsPageRepo,
             $deliveryTimeRepo,
             $documentTypeRepo,
+            $countryStateRepo,
             $entityWriter,
             $mappingDefinition,
             $logger
@@ -558,37 +559,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
 
             return;
         }
-    }
-
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryIso3, string $countryStateCode, string $connectionId, Context $context): ?string
-    {
-        $countryStateMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
-
-        if ($countryStateMapping !== null) {
-            return $countryStateMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('shortCode', $countryStateCode));
-        $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
-        $criteria->addFilter(new EqualsFilter('country.iso3', $countryIso3));
-        $criteria->setLimit(1);
-
-        $countryStateUuid = $this->countryStateRepo->searchIds($criteria, $context)->firstId();
-
-        if ($countryStateUuid !== null) {
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::COUNTRY_STATE,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $countryStateUuid,
-                ]
-            );
-        }
-
-        return $countryStateUuid;
     }
 
     public function getTaxUuidByCriteria(string $connectionId, string $sourceId, float $taxRate, string $name, Context $context): ?string

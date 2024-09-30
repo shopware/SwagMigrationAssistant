@@ -420,9 +420,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $newAddress['customerId'] = $this->mainMapping['entityUuid'];
             $newAddress['country'] = $this->getCountry($address['country']);
-            if (isset($address['state'])) {
-                $newAddress['countryState'] = $this->getCountryState($address['state'], $newAddress['country']);
-            }
+            $newAddress['countryState'] = $this->getCountryState($address, $newAddress['country']['id']);
 
             $this->convertValue($newAddress, 'firstName', $address, 'firstname');
             $this->convertValue($newAddress, 'lastName', $address, 'lastname');
@@ -549,23 +547,44 @@ abstract class CustomerConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, mixed> $oldStateData
-     * @param array<string, mixed> $newCountryData
+     * @param array<string, mixed> $oldAddressData
      *
      * @return array<string, mixed>
      */
-    protected function getCountryState(array $oldStateData, array $newCountryData): array
+    protected function getCountryState(array $oldAddressData, string $newCountryId): array
     {
+        if (!isset($oldAddressData['stateID'])) {
+            return [];
+        }
+
         $state = [];
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::COUNTRY_STATE,
-            $oldStateData['id'],
-            $this->context
-        );
-        $state['id'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        $state['countryId'] = $newCountryData['id'];
+
+        $countryStateUuid = null;
+        if (isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
+            $countryStateUuid = $this->mappingService->getCountryStateUuid(
+                $oldAddressData['stateID'],
+                $oldAddressData['country']['countryiso'],
+                $oldAddressData['state']['shortcode'],
+                $this->connectionId,
+                $this->context
+            );
+        }
+
+        if ($countryStateUuid !== null) {
+            $state['id'] = $countryStateUuid;
+        } else {
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::COUNTRY_STATE,
+                $oldAddressData['stateID'],
+                $this->context
+            );
+            $state['id'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
+            $state['countryId'] = $newCountryId;
+        }
+
+        $oldStateData = $oldAddressData['state'];
 
         $this->applyCountryStateTranslation($state, $oldStateData);
         $this->convertValue($state, 'name', $oldStateData, 'name');
