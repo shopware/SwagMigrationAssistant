@@ -24,7 +24,7 @@ abstract class AbstractWriter implements WriterInterface
 
     public function __construct(
         protected EntityWriterInterface $entityWriter,
-        protected EntityDefinition $definition
+        protected EntityDefinition $definition,
     ) {
     }
 

@@ -38,7 +38,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
         EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
         private readonly LoggingServiceInterface $loggingService,
-        Connection $dbalConnection
+        Connection $dbalConnection,
     ) {
         parent::__construct($dbalConnection, $mediaFileRepo);
     }
@@ -57,7 +57,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload
+        array $workload,
     ): array {
         $mappedWorkload = [];
         foreach ($workload as $work) {
@@ -94,7 +94,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
         array $media,
         array $mappedWorkload,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): array {
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
@@ -147,7 +147,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
     private function persistFileToMedia(
         string $sourcePath,
         array $media,
-        Context $context
+        Context $context,
     ): void {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($sourcePath, $media): void {
             $fileExtension = \pathinfo($sourcePath, \PATHINFO_EXTENSION);

@@ -38,7 +38,7 @@ class IndexingProcessor extends AbstractProcessor
         RunTransitionServiceInterface $runTransitionService,
         private readonly TagAwareAdapterInterface $cache,
         private readonly EntityIndexerRegistry $indexer,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -57,7 +57,7 @@ class IndexingProcessor extends AbstractProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
         SwagMigrationRunEntity $run,
-        MigrationProgress $progress
+        MigrationProgress $progress,
     ): void {
         $this->cache->clear();
         $this->indexer->index(true);

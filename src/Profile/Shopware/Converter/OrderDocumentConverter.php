@@ -40,7 +40,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -275,7 +275,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return match ($sourceDocumentType) {
             'cancellation' => 'storno',
             'credit' => 'credit_note',
-            default => $sourceDocumentType
+            default => $sourceDocumentType,
         };
     }
 }

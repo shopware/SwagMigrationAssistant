@@ -20,7 +20,7 @@ class ConvertStruct extends Struct
     public function __construct(
         private readonly ?array $converted,
         private readonly ?array $unmapped,
-        private readonly ?string $mappingUuid = null
+        private readonly ?string $mappingUuid = null,
     ) {
     }
 

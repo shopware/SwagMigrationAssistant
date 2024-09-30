@@ -39,7 +39,7 @@ class MigrationContext extends Struct implements MigrationContextInterface
         string $runUuid = '',
         ?DataSet $dataSet = null,
         int $offset = 0,
-        int $limit = 0
+        int $limit = 0,
     ) {
         $this->profile = $profile;
         $this->connection = $connection;

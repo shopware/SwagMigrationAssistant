@@ -17,7 +17,7 @@ class DummyMediaFileProcessorService extends MediaFileProcessorService
 {
     public function processMediaFiles(
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): int {
         return 0;
     }

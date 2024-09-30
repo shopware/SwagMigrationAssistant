@@ -19,7 +19,7 @@ class WriteExceptionRunLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         private readonly array $error,
-        ?string $dataId = null
+        ?string $dataId = null,
     ) {
         parent::__construct($runId, $entity, $dataId);
     }

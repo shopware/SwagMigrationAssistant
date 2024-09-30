@@ -17,7 +17,7 @@ class UnsupportedDocumentTypeLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $technicalName
+        private readonly string $technicalName,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

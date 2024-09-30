@@ -19,7 +19,7 @@ class DisplayWarning extends Struct
     public function __construct(
         protected string $snippetKey,
         protected array $snippetArguments = [],
-        protected int $pluralizationCount = 0
+        protected int $pluralizationCount = 0,
     ) {
     }
 

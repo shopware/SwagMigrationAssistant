@@ -17,7 +17,7 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $shippingMethodId
+        private readonly string $shippingMethodId,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

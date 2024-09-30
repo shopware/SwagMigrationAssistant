@@ -16,7 +16,7 @@ class UnsupportedObjectType extends BaseRunLogEntry
         string $runId,
         private readonly string $type,
         string $entity,
-        string $sourceId
+        string $sourceId,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

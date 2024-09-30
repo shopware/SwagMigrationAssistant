@@ -47,7 +47,7 @@ class DataSelectionStruct extends Struct
         protected int $position,
         protected bool $processMediaFiles = false,
         protected string $dataType = self::BASIC_DATA_TYPE,
-        protected bool $requiredSelection = false
+        protected bool $requiredSelection = false,
     ) {
         $entityNameArray = [];
         foreach ($dataSets as $dataSet) {

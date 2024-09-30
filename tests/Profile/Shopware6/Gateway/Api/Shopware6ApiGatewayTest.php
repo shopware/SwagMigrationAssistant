@@ -271,7 +271,7 @@ class Shopware6ApiGatewayTest extends TestCase
         string $selfDefaultCurrency,
         string $sourceDefaultCurrency,
         string $selfDefaultLocale,
-        string $sourceDefaultLocale
+        string $sourceDefaultLocale,
     ): Shopware6ApiGateway {
         $readerRegistry = new ReaderRegistry([]);
         $environmentReader = $this->createStub(EnvironmentReader::class);

@@ -17,7 +17,7 @@ class DeactivatedPackLanguageLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $languageId
+        private readonly string $languageId,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

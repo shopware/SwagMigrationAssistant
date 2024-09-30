@@ -17,7 +17,7 @@ class ExceptionRunLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         private readonly \Throwable $exception,
-        ?string $sourceId = null
+        ?string $sourceId = null,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

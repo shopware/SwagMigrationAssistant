@@ -16,7 +16,7 @@ class PremappingEntityStruct extends Struct
     public function __construct(
         protected string $sourceId,
         protected string $description,
-        protected string $destinationUuid
+        protected string $destinationUuid,
     ) {
     }
 

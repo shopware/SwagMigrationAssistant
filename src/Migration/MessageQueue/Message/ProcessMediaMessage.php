@@ -21,7 +21,7 @@ class ProcessMediaMessage implements AsyncMessageInterface
         private array $mediaFileIds,
         private string $runId,
         private string $entityName,
-        private Context $context
+        private Context $context,
     ) {
     }
 

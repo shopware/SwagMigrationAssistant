@@ -36,7 +36,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         EntityRepository $migrationMediaFileRepo,
         RunTransitionServiceInterface $runTransitionService,
         private readonly MediaFileProcessorServiceInterface $mediaFileProcessorService,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -55,7 +55,7 @@ class MediaProcessingProcessor extends AbstractProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
         SwagMigrationRunEntity $run,
-        MigrationProgress $progress
+        MigrationProgress $progress,
     ): void {
         $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 

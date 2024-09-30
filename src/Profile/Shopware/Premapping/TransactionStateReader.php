@@ -49,7 +49,7 @@ class TransactionStateReader extends AbstractPremappingReader
     public function __construct(
         private readonly EntityRepository $stateMachineRepo,
         private readonly EntityRepository $stateMachineStateRepo,
-        private readonly GatewayRegistryInterface $gatewayRegistry
+        private readonly GatewayRegistryInterface $gatewayRegistry,
     ) {
     }
 

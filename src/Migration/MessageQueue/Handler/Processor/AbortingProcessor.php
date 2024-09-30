@@ -37,7 +37,7 @@ class AbortingProcessor extends AbstractProcessor
         EntityRepository $migrationMediaFileRepo,
         RunTransitionServiceInterface $runTransitionService,
         private readonly RunServiceInterface $runService,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -56,7 +56,7 @@ class AbortingProcessor extends AbstractProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
         SwagMigrationRunEntity $run,
-        MigrationProgress $progress
+        MigrationProgress $progress,
     ): void {
         $connection = $migrationContext->getConnection();
         if ($connection === null) {

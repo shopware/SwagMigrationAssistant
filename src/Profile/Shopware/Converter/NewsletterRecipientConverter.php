@@ -42,7 +42,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContextInterface $migrationContext
+        MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->runId = $migrationContext->getRunUuid();
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);

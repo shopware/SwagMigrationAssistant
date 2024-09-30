@@ -47,7 +47,7 @@ class SalutationReader extends AbstractPremappingReader
      */
     public function __construct(
         private readonly EntityRepository $salutationRepo,
-        private readonly GatewayRegistryInterface $gatewayRegistry
+        private readonly GatewayRegistryInterface $gatewayRegistry,
     ) {
     }
 

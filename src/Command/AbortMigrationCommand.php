@@ -25,7 +25,7 @@ class AbortMigrationCommand extends Command
 {
     public function __construct(
         private readonly RunServiceInterface $runService,
-        ?string $name = null
+        ?string $name = null,
     ) {
         parent::__construct($name);
     }

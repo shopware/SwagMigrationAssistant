@@ -16,7 +16,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
         private readonly string $runId,
         private readonly string $entity,
         private readonly string $profileName,
-        private readonly string $gatewayName
+        private readonly string $gatewayName,
     ) {
     }
 

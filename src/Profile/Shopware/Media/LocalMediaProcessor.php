@@ -43,7 +43,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         private readonly FileSaver $fileSaver,
         private readonly LoggingServiceInterface $loggingService,
         private readonly iterable $resolver,
-        Connection $dbalConnection
+        Connection $dbalConnection,
     ) {
         parent::__construct($dbalConnection, $mediaFileRepo);
     }
@@ -115,7 +115,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         array $media,
         array $mappedWorkload,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): array {
         $processedMedia = [];
         $failedMedia = [];
@@ -213,7 +213,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         string $fileExtension,
         array $mappedWorkload,
         array &$failedMedia,
-        Context $context
+        Context $context,
     ): void {
         $mediaId = $media['media_id'];
         $mimeType = \mime_content_type($filePath);

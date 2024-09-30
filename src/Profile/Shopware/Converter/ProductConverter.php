@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -71,7 +72,7 @@ abstract class ProductConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -117,7 +118,7 @@ abstract class ProductConverter extends ShopwareConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContextInterface $migrationContext
+        MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
         $this->context = $context;
@@ -633,14 +634,14 @@ abstract class ProductConverter extends ShopwareConverter
             $optionMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
-                \hash('md5', \mb_strtolower($option['name'] . '_' . $option['group']['name'])),
+                Hasher::hash(\mb_strtolower($option['name'] . '_' . $option['group']['name']), 'md5'),
                 $this->context
             );
             $this->mappingIds[] = $optionMapping['id'];
             $optionGroupMapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::PROPERTY_GROUP,
-                \hash('md5', \mb_strtolower($option['group']['name'])),
+                Hasher::hash(\mb_strtolower($option['group']['name']), 'md5'),
                 $this->context
             );
             $this->mappingIds[] = $optionGroupMapping['id'];
@@ -1175,7 +1176,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION,
-            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])) . ':' . $this->locale,
+            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5') . ':' . $this->locale,
             $this->context
         );
         $localeOptionTranslation['id'] = $mapping['entityUuid'];
@@ -1187,7 +1188,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_TRANSLATION,
-            \hash('md5', \mb_strtolower($data['group']['name'])) . ':' . $this->locale,
+            Hasher::hash(\mb_strtolower($data['group']['name']), 'md5') . ':' . $this->locale,
             $this->context
         );
         $localeGroupTranslation['id'] = $mapping['entityUuid'];

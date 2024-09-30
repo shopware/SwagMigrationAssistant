@@ -19,7 +19,7 @@ abstract class ShopwareMediaConverter extends ShopwareConverter
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

@@ -26,7 +26,7 @@ class MediaFolderWriter extends AbstractWriter
     public function __construct(
         EntityWriterInterface $entityWriter,
         EntityDefinition $definition,
-        private readonly EntityRepository $mediaFolderRepo
+        private readonly EntityRepository $mediaFolderRepo,
     ) {
         parent::__construct($entityWriter, $definition);
     }

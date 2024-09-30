@@ -109,7 +109,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         private readonly EntityRepository $stateMachineStateRepo,
         private readonly EntityRepository $documentBaseConfigRepo,
         private readonly EntityRepository $taxRuleRepo,
-        private readonly EntityRepository $taxRuleTypeRepo
+        private readonly EntityRepository $taxRuleTypeRepo,
     ) {
         parent::__construct(
             $migrationMappingRepo,
@@ -307,7 +307,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         ?string $salesChannelId,
         string $routeName,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): ?string {
         $connection = $migrationContext->getConnection();
         if ($connection === null) {
@@ -517,7 +517,7 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
         string $oldIdentifier,
         string $connectionId,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): void {
         $cmsPageMapping = $this->getMapping($connectionId, DefaultEntities::CMS_PAGE, $oldIdentifier, $context);
 

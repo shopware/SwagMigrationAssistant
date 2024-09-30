@@ -23,6 +23,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Exception\MigrationException;
@@ -38,8 +39,6 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\OrderStateReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 abstract class OrderConverter extends ShopwareConverter
@@ -94,7 +93,7 @@ abstract class OrderConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected TaxCalculator $taxCalculator,
-        private readonly EntityRepository $salesChannelRepository
+        private readonly EntityRepository $salesChannelRepository,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -105,7 +104,7 @@ abstract class OrderConverter extends ShopwareConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContextInterface $migrationContext
+        MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
         $this->oldId = $data['id'];
@@ -371,7 +370,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
         unset($data['locale']);
 
-        $converted['deepLinkCode'] = \md5($converted['id']);
+        $converted['deepLinkCode'] = Hasher::hash($converted['id'], 'md5');
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
@@ -534,8 +533,12 @@ abstract class OrderConverter extends ShopwareConverter
         $address['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $address['country'] = $this->getCountry($address['country']);
-        $address['countryState'] = $this->getCountryState($address, $address['country']['id']);
+        $address['country'] = $this->getCountry($originalData['country']);
+
+        $countryState = $this->getCountryState($originalData, $address['country']['id']);
+        if (!empty($countryState)) {
+            $address['countryState'] = $countryState;
+        }
 
         $salutationUuid = $this->getSalutation($originalData['salutation']);
         if ($salutationUuid === null) {
@@ -669,17 +672,21 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($countryStateUuid !== null) {
             $state['id'] = $countryStateUuid;
-        } else {
-            $mapping = $this->mappingService->getOrCreateMapping(
-                $this->connectionId,
-                DefaultEntities::COUNTRY_STATE,
-                $oldAddressData['stateID'],
-                $this->context
-            );
-            $state['id'] = $mapping['entityUuid'];
-            $this->mappingIds[] = $mapping['id'];
-            $state['countryId'] = $newCountryId;
+
+            return $state;
         }
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::COUNTRY_STATE,
+            $oldAddressData['stateID'],
+            $this->context
+        );
+
+        $state['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
+
+        $state['countryId'] = $newCountryId;
 
         $oldStateData = $oldAddressData['state'];
 
@@ -709,10 +716,9 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         $localeTranslation = [];
-        $translation = [];
-        $translation['countryStateId'] = $state['id'];
+        $localeTranslation['countryStateId'] = $state['id'];
 
-        $this->convertValue($translation, 'name', $data, 'name');
+        $this->convertValue($localeTranslation, 'name', $data, 'name');
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

@@ -17,7 +17,7 @@ class InvalidEmailAddressLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $email
+        private readonly string $email,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

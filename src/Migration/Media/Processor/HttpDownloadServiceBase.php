@@ -19,6 +19,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Exception\InconsistentCriteriaIdsException;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
@@ -305,13 +306,13 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
 
             return;
         }
-        $fileHash = \hash_file('md5', $filePath);
+        $fileHash = Hasher::hashFile($filePath, 'md5');
         $mediaFile = new MediaFile(
             $filePath,
             $mimeType,
             $fileExtension,
             $fileSize,
-            $fileHash === false ? null : $fileHash
+            $fileHash
         );
         $name = \preg_replace('/[^a-zA-Z0-9_-]+/', '-', \mb_strtolower($name)) ?? $uuid;
 

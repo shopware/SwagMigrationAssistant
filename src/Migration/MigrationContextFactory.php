@@ -33,7 +33,7 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
         private readonly GatewayRegistryInterface $gatewayRegistry,
         private readonly DataSetRegistryInterface $dataSetRegistry,
         private readonly EntityRepository $generalSettingRepository,
-        private readonly EntityRepository $migrationConnectionRepository
+        private readonly EntityRepository $migrationConnectionRepository,
     ) {
     }
 
@@ -41,7 +41,7 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
         SwagMigrationRunEntity $run,
         int $offset = 0,
         int $limit = 0,
-        string $entity = ''
+        string $entity = '',
     ): ?MigrationContextInterface {
         $connection = $run->getConnection();
         if ($connection === null) {
@@ -78,7 +78,7 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
     }
 
     public function createByConnection(
-        SwagMigrationConnectionEntity $connection
+        SwagMigrationConnectionEntity $connection,
     ): MigrationContextInterface {
         $profile = $this->profileRegistry->getProfile(
             $connection->getProfileName()

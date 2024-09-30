@@ -25,7 +25,7 @@ class ProductProvider extends AbstractProvider
      */
     public function __construct(
         private readonly EntityRepository $productRepo,
-        private readonly RouterInterface $router
+        private readonly RouterInterface $router,
     ) {
     }
 

@@ -20,7 +20,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 final class ThemeAssignHandler
 {
     public function __construct(
-        private readonly RunServiceInterface $runService
+        private readonly RunServiceInterface $runService,
     ) {
     }
 

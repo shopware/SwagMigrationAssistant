@@ -33,7 +33,7 @@ final class MigrationProcessHandler
     public function __construct(
         private readonly EntityRepository $migrationRunRepo,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
-        private readonly MigrationProcessorRegistry $processorRegistry
+        private readonly MigrationProcessorRegistry $processorRegistry,
     ) {
     }
 

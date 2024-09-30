@@ -73,7 +73,7 @@ abstract class CustomerConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected ValidatorInterface $validator,
-        private readonly EntityRepository $salesChannelRepository
+        private readonly EntityRepository $salesChannelRepository,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -86,7 +86,7 @@ abstract class CustomerConverter extends ShopwareConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContextInterface $migrationContext
+        MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
         $oldData = $data;
@@ -420,7 +420,11 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $newAddress['customerId'] = $this->mainMapping['entityUuid'];
             $newAddress['country'] = $this->getCountry($address['country']);
-            $newAddress['countryState'] = $this->getCountryState($address, $newAddress['country']['id']);
+
+            $countryState = $this->getCountryState($address, $newAddress['country']['id']);
+            if (!empty($countryState)) {
+                $newAddress['countryState'] = $countryState;
+            }
 
             $this->convertValue($newAddress, 'firstName', $address, 'firstname');
             $this->convertValue($newAddress, 'lastName', $address, 'lastname');
@@ -553,16 +557,16 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     protected function getCountryState(array $oldAddressData, string $newCountryId): array
     {
-        if (!isset($oldAddressData['stateID'])) {
+        if (!isset($oldAddressData['state_id'])) {
             return [];
         }
 
         $state = [];
 
         $countryStateUuid = null;
-        if (isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
+        if (isset($oldAddressData['state_id'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
             $countryStateUuid = $this->mappingService->getCountryStateUuid(
-                $oldAddressData['stateID'],
+                $oldAddressData['state_id'],
                 $oldAddressData['country']['countryiso'],
                 $oldAddressData['state']['shortcode'],
                 $this->connectionId,
@@ -572,17 +576,21 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if ($countryStateUuid !== null) {
             $state['id'] = $countryStateUuid;
-        } else {
-            $mapping = $this->mappingService->getOrCreateMapping(
-                $this->connectionId,
-                DefaultEntities::COUNTRY_STATE,
-                $oldAddressData['stateID'],
-                $this->context
-            );
-            $state['id'] = $mapping['entityUuid'];
-            $this->mappingIds[] = $mapping['id'];
-            $state['countryId'] = $newCountryId;
+
+            return $state;
         }
+
+        $mapping = $this->mappingService->getOrCreateMapping(
+            $this->connectionId,
+            DefaultEntities::COUNTRY_STATE,
+            $oldAddressData['state_id'],
+            $this->context
+        );
+
+        $state['id'] = $mapping['entityUuid'];
+        $this->mappingIds[] = $mapping['id'];
+
+        $state['countryId'] = $newCountryId;
 
         $oldStateData = $oldAddressData['state'];
 
@@ -612,7 +620,7 @@ abstract class CustomerConverter extends ShopwareConverter
         }
 
         $localeTranslation = [];
-        $localeTranslation['categoryId'] = $data['id'];
+        $localeTranslation['countryStateId'] = $state['id'];
 
         $this->convertValue($localeTranslation, 'name', $data, 'name');
 
@@ -622,6 +630,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+        $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);

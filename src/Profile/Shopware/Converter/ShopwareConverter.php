@@ -38,7 +38,7 @@ abstract class ShopwareConverter extends Converter
         string $newKey,
         array &$sourceData,
         string $sourceKey,
-        string $castType = self::TYPE_STRING
+        string $castType = self::TYPE_STRING,
     ): void {
         if (isset($sourceData[$sourceKey]) && $sourceData[$sourceKey] !== '') {
             switch ($castType) {
@@ -131,7 +131,7 @@ abstract class ShopwareConverter extends Converter
         string $entityName,
         string $connectionName,
         array $excludeList = [],
-        ?Context $context = null
+        ?Context $context = null,
     ): ?array {
         $result = [];
         // remove unwanted characters from connection name

@@ -39,7 +39,7 @@ class DummyMappingService extends MappingService
         string $oldIdentifier,
         Context $context,
         ?array $additionalData = null,
-        ?string $newUuid = null
+        ?string $newUuid = null,
     ): void {
         $uuid = Uuid::randomHex();
         if ($newUuid !== null) {
@@ -153,7 +153,6 @@ class DummyMappingService extends MappingService
 
         return $oldIdentifier;
     }
-
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
     {

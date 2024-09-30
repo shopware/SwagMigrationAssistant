@@ -36,7 +36,7 @@ abstract class TranslationConverter extends ShopwareConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContextInterface $migrationContext
+        MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
         $this->context = $context;

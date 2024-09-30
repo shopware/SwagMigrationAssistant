@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -31,7 +32,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         private readonly MediaFileServiceInterface $mediaFileService,
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
-        private readonly MappingServiceInterface $mappingService
+        private readonly MappingServiceInterface $mappingService,
     ) {
     }
 
@@ -81,7 +82,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         array $data,
         ConverterInterface $converter,
         MigrationContextInterface $migrationContext,
-        DataSet $dataSet
+        DataSet $dataSet,
     ): array {
         $runUuid = $migrationContext->getRunUuid();
 
@@ -137,7 +138,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
 
         foreach ($data as $dataSet) {
             $mappedData[$converter->getSourceIdentifier($dataSet)] = $dataSet;
-            $checksums[$converter->getSourceIdentifier($dataSet)] = \md5(\serialize($dataSet));
+            $checksums[$converter->getSourceIdentifier($dataSet)] = Hasher::hash(\serialize($dataSet), 'md5');
         }
 
         $connection = $migrationContext->getConnection();

@@ -17,7 +17,7 @@ class UnsupportedMediaDefaultFolderLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $defaultEntity
+        private readonly string $defaultEntity,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

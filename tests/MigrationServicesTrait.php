@@ -72,7 +72,7 @@ trait MigrationServicesTrait
         EntityRepository $loggingRepo,
         EntityRepository $currencyRepository,
         EntityRepository $languageRepository,
-        ReaderRegistryInterface $readerRegistry
+        ReaderRegistryInterface $readerRegistry,
     ): MigrationDataFetcherInterface {
         $loggingService = new LoggingService(
             $loggingRepo,
@@ -111,7 +111,7 @@ trait MigrationServicesTrait
         EntityRepository $paymentRepo,
         EntityRepository $shippingRepo,
         EntityRepository $countryRepo,
-        EntityRepository $salesChannelRepo
+        EntityRepository $salesChannelRepo,
     ): MigrationDataConverterInterface {
         $loggingService = new LoggingService(
             $loggingRepo,
@@ -158,7 +158,7 @@ trait MigrationServicesTrait
         EntityRepository $stateMachineRepository,
         EntityRepository $stateMachineStateRepository,
         int $oldStateId,
-        Context $context
+        Context $context,
     ): ?string {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderDeliveryStates::STATE_MACHINE));
@@ -225,7 +225,7 @@ trait MigrationServicesTrait
         EntityRepository $stateMachineRepository,
         EntityRepository $stateMachineStateRepository,
         int $oldStateId,
-        Context $context
+        Context $context,
     ): ?string {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('technicalName', OrderTransactionStates::STATE_MACHINE));

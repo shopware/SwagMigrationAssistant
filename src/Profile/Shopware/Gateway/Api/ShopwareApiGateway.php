@@ -42,7 +42,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         private readonly TableReaderInterface $tableReader,
         private readonly TableCountReaderInterface $tableCountReader,
         private readonly EntityRepository $currencyRepository,
-        private readonly EntityRepository $languageRepository
+        private readonly EntityRepository $languageRepository,
     ) {
     }
 

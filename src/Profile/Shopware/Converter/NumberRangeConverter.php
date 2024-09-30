@@ -50,7 +50,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected EntityRepository $numberRangeTypeRepo
+        protected EntityRepository $numberRangeTypeRepo,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -194,7 +194,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
     protected function setNumberRangeTranslation(
         array &$converted,
         array $data,
-        Context $context
+        Context $context,
     ): void {
         $language = $this->mappingService->getDefaultLanguage($context);
         if ($language === null) {

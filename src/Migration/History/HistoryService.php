@@ -41,13 +41,13 @@ class HistoryService implements HistoryServiceInterface
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly EntityRepository $runRepo,
-        private readonly Connection $connection
+        private readonly Connection $connection,
     ) {
     }
 
     public function getGroupedLogsOfRun(
         string $runUuid,
-        Context $context
+        Context $context,
     ): array {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));

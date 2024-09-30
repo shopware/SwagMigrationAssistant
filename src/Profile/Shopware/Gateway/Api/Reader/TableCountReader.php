@@ -23,7 +23,7 @@ class TableCountReader implements TableCountReaderInterface
 {
     public function __construct(
         private readonly ConnectionFactoryInterface $connectionFactory,
-        private readonly LoggingService $loggingService
+        private readonly LoggingService $loggingService,
     ) {
     }
 

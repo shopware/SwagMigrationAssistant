@@ -50,7 +50,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         private readonly MappingServiceInterface $mappingService,
         private readonly MediaService $mediaService,
         private readonly ConnectionFactoryInterface $connectionFactory,
-        Connection $dbalConnection
+        Connection $dbalConnection,
     ) {
         parent::__construct($dbalConnection, $migrationMediaFileRepo);
     }
@@ -65,7 +65,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload
+        array $workload,
     ): array {
         $mappedWorkload = [];
         $documentIds = [];
@@ -271,7 +271,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         string $uuid,
         array $additionalData,
         array &$failureUuids,
-        ?RequestException $clientException = null
+        ?RequestException $clientException = null,
     ): void {
         $mappedWorkload = $oldWorkload;
         $mappedWorkload->setAdditionalData($additionalData);

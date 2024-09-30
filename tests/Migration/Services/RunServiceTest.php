@@ -275,7 +275,7 @@ class RunServiceTest extends TestCase
     private function createRunService(
         MockObject&TrackingEventClient $trackingEventClient,
         MockObject&MessageBusInterface $messageBus,
-        MockObject&PremappingService $premappingService
+        MockObject&PremappingService $premappingService,
     ): RunService {
         /** @var StaticEntityRepository<SwagMigrationDataCollection> $migrationDataRepository */
         $migrationDataRepository = new StaticEntityRepository([]);

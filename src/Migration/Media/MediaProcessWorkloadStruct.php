@@ -35,7 +35,7 @@ class MediaProcessWorkloadStruct extends Struct
         string $state = self::IN_PROGRESS_STATE,
         array $additionalData = [],
         int $errorCount = 0,
-        int $currentOffset = 0
+        int $currentOffset = 0,
     ) {
         $this->mediaId = $mediaId;
         $this->runId = $runId;

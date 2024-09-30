@@ -15,7 +15,7 @@ class CannotConvertEntity extends BaseRunLogEntry
     public function __construct(
         string $runId,
         string $entity,
-        string $sourceId
+        string $sourceId,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

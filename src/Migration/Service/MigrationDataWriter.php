@@ -41,7 +41,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         private readonly MediaFileServiceInterface $mediaFileService,
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
-        private readonly EntityRepository $mappingRepo
+        private readonly EntityRepository $mappingRepo,
     ) {
     }
 
@@ -146,7 +146,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         string $entityName,
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): void {
         $writeErrors = $this->extractWriteErrorsWithIndex($exception);
         $currentWriter = $this->writerRegistry->getWriter($entityName);
@@ -205,7 +205,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         string $entityName,
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): void {
         foreach ($converted as $dataId => $entity) {
             try {
@@ -232,7 +232,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     private function removeChecksumsOfUnwrittenData(
         array $updateWrittenData,
         array $mappingIds,
-        Context $context
+        Context $context,
     ): void {
         $mappingsRequireUpdate = [];
         foreach ($updateWrittenData as $dataId => $data) {
