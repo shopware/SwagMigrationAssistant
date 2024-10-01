@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media\Strategy;
 
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -46,7 +45,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
         $path = \ltrim($path, '/');
         $pathElements = \explode('/', $path);
         $pathInfo = \pathinfo($path);
-        $md5hash = Hasher::hash($path, 'md5');
+        $md5hash = \md5($path);
 
         if (empty($pathInfo['extension'])) {
             return '';

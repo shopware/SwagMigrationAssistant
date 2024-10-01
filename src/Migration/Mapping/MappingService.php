@@ -25,7 +25,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use Shopware\Core\System\Country\CountryCollection;
@@ -154,8 +153,8 @@ class MappingService implements MappingServiceInterface, ResetInterface
         string $oldIdentifier,
         Context $context,
     ): ?array {
-        if (isset($this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')])) {
-            return $this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')];
+        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+            return $this->mappings[\md5($entityName . $oldIdentifier)];
         }
 
         $criteria = new Criteria();
@@ -183,7 +182,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
             ];
-            $this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')] = $mapping;
+            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
 
             return $mapping;
         }
@@ -266,7 +265,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
             foreach ($elements as $mapping) {
                 $entityName = $mapping->getEntity();
                 $oldIdentifier = $mapping->getOldIdentifier();
-                $this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')] = [
+                $this->mappings[\md5($entityName . $oldIdentifier)] = [
                     'id' => $mapping->getId(),
                     'connectionId' => $mapping->getConnectionId(),
                     'entity' => $entityName,
@@ -299,8 +298,8 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        if (isset($this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')])) {
-            return $this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')]['entityValue'];
+        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+            return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
         }
 
         $criteria = new Criteria();
@@ -330,7 +329,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
             ];
-            $this->mappings[Hasher::hash($entityName . $oldIdentifier, 'md5')] = $mapping;
+            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
 
             return $value;
         }
@@ -371,8 +370,8 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        if (isset($this->mappings[Hasher::hash($entityName . $identifier, 'md5')])) {
-            return $this->mappings[Hasher::hash($entityName . $identifier, 'md5')];
+        if (isset($this->mappings[\md5($entityName . $identifier)])) {
+            return $this->mappings[\md5($entityName . $identifier)];
         }
 
         $criteria = new Criteria();
@@ -389,7 +388,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
             }
         }
 
-        $this->mappings[Hasher::hash($entityName . $identifier, 'md5')] = $uuidList;
+        $this->mappings[\md5($entityName . $identifier)] = $uuidList;
 
         return $uuidList;
     }
@@ -979,7 +978,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[Hasher::hash($entity . $oldIdentifier, 'md5')] = $mapping;
+        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
@@ -987,7 +986,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[Hasher::hash($entity . $oldIdentifier, 'md5')][] = $mapping;
+        $this->mappings[\md5($entity . $oldIdentifier)][] = $mapping;
         $this->writeArray[] = $mapping;
     }
 

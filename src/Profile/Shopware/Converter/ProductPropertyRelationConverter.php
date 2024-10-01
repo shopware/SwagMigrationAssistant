@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -66,7 +65,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         $optionMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
-            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
+            \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
             $context
         );
 

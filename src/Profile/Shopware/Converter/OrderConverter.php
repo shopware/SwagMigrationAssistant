@@ -23,7 +23,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Exception\MigrationException;
@@ -370,7 +369,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
         unset($data['locale']);
 
-        $converted['deepLinkCode'] = Hasher::hash($converted['id'], 'md5');
+        $converted['deepLinkCode'] = \md5($converted['id']);
 
         // Legacy data which don't need a mapping or there is no equivalent field
         unset(
