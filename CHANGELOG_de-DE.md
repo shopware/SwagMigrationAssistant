@@ -1,6 +1,11 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-1033 - Die Migration der SEO-Hauptkategorie für Produkte mit SW5 oder SW6 als Quellsystem wurde hinzugefügt
 - MIG-1049 - Das Setzen der `connection`-Eigenschaft in `SwagMigrationMappingEntity` ist jetzt optional
+- MIG-1039 - Für Kunden- und Bestelladressen werden jetzt auch die Bundesländer migriert
+- MIG-1039 - [BREAKING] Neue Methode `getCountryStateUuid` zu `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` hinzugefügt
+- MIG-1039 - [BREAKING] Neuer Konstruktorparameter `EntityRepository $countryStateRepo` zu `SwagMigrationAssistant\Migration\Mapping\MappingService` hinzugefügt
+- MIG-1039 - [BREAKING] Methode `getCountryStateUuid` aus `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und ihrer Standardimplementierung `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` entfernt.
+
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten
