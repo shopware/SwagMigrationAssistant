@@ -157,7 +157,7 @@ class Dummy6MappingService extends Shopware6MappingService
             return $mapping['entityUuid'];
         }
 
-        return $oldIdentifier;
+        return null;
     }
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string

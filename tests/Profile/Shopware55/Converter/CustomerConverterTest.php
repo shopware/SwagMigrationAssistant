@@ -90,6 +90,8 @@ class CustomerConverterTest extends TestCase
 
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '1', $context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_GROUP, '2', $context, Uuid::randomHex(), [], 'cfbd5018d38d41d8adca10d94fc8bdd6');
+
+        $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::COUNTRY_STATE, '3', $context, null, [], '019243e2514672debd864b2b979544f4');
     }
 
     public function testSupports(): void
@@ -470,5 +472,83 @@ class CustomerConverterTest extends TestCase
         static::assertNull($convertResult->getUnmapped());
         static::assertIsArray($converted);
         static::assertNotNull($converted['boundSalesChannelId']);
+    }
+
+    public function testConvertCountryStateWithMapping(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayHasKey('countryState', $converted['addresses'][0]);
+        static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
+        static::assertSame('019243e2514672debd864b2b979544f4', $converted['addresses'][0]['countryState']['id']);
+    }
+
+    public function testConvertExistingCountryStateWithoutMapping(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][0]['state_id'] = '9999';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayHasKey('countryState', $converted['addresses'][0]);
+        static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
+        static::assertSame('Nordrhein-Westfalen', $converted['addresses'][0]['countryState']['name']);
+        static::assertSame('NW', $converted['addresses'][0]['countryState']['shortCode']);
+    }
+
+    public function testConvertNotExistingCountryStateWithoutMapping(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][0]['state_id'] = '9999';
+        unset($customerData['addresses'][0]['state']);
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayNotHasKey('countryStateId', $converted['addresses'][0]);
+
+        $logs = $this->loggingService->getLoggingArray();
+
+        static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_COUNTRY_STATE_ENTITY_UNKNOWN');
+        static::assertSame($logs[0]['parameters']['sourceId'], '9999');
+        static::assertSame($logs[0]['parameters']['entity'], DefaultEntities::COUNTRY_STATE);
+        static::assertSame($logs[0]['parameters']['requiredForSourceId'], $customerData['id']);
+        static::assertSame($logs[0]['parameters']['requiredForEntity'], DefaultEntities::CUSTOMER);
     }
 }

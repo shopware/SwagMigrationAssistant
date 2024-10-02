@@ -675,6 +675,25 @@ abstract class OrderConverter extends ShopwareConverter
             return $state;
         }
 
+        if (!isset(
+            $oldAddressData['state']['name'],
+            $oldAddressData['state']['shortcode'],
+            $oldAddressData['state']['position'],
+            $oldAddressData['state']['active']
+        )) {
+            $this->loggingService->addLogEntry(
+                new UnknownEntityLog(
+                    $this->runId,
+                    DefaultEntities::COUNTRY_STATE,
+                    $oldAddressData['stateID'],
+                    DefaultEntities::ORDER,
+                    $this->oldId
+                )
+            );
+
+            return [];
+        }
+
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::COUNTRY_STATE,

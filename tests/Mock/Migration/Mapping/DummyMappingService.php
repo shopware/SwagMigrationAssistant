@@ -151,7 +151,7 @@ class DummyMappingService extends MappingService
             return $mapping['entityUuid'];
         }
 
-        return $oldIdentifier;
+        return null;
     }
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string

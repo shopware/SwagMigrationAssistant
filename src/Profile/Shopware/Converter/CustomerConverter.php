@@ -580,6 +580,25 @@ abstract class CustomerConverter extends ShopwareConverter
             return $state;
         }
 
+        if (!isset(
+            $oldAddressData['state']['name'],
+            $oldAddressData['state']['shortcode'],
+            $oldAddressData['state']['position'],
+            $oldAddressData['state']['active']
+        )) {
+            $this->loggingService->addLogEntry(
+                new UnknownEntityLog(
+                    $this->runId,
+                    DefaultEntities::COUNTRY_STATE,
+                    $oldAddressData['state_id'],
+                    DefaultEntities::CUSTOMER,
+                    $this->oldCustomerId
+                )
+            );
+
+            return [];
+        }
+
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::COUNTRY_STATE,
