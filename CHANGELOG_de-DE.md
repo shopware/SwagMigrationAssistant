@@ -5,6 +5,7 @@
 - MIG-1039 - [BREAKING] Neue Methode `getCountryStateUuid` zu `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` hinzugefügt
 - MIG-1039 - [BREAKING] Neuer Konstruktorparameter `EntityRepository $countryStateRepo` zu `SwagMigrationAssistant\Migration\Mapping\MappingService` hinzugefügt
 - MIG-1039 - [BREAKING] Methode `getCountryStateUuid` aus `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und ihrer Standardimplementierung `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` entfernt.
+- MIG-1050 - Optimiert die Migration von SEO-URLs durch Verwendung der `SeoUrlPersister::updateSeoUrls`-Methode
 
 
 # 13.2.0

@@ -35,6 +35,10 @@ class SeoUrlConverter extends ShopwareConverter
 
     protected function convertData(array $data): ConvertStruct
     {
+        if (isset($data['isModified']) && $data['isModified'] === false) {
+            return new ConvertStruct(null, $data);
+        }
+
         $converted = $data;
 
         if (isset($converted['foreignKey'])) {
