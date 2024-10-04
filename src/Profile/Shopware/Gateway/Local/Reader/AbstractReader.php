@@ -129,7 +129,7 @@ abstract class AbstractReader implements ReaderInterface
         int $offset = 0,
         int $limit = 250,
         array $orderBy = [],
-        array $where = []
+        array $where = [],
     ): array {
         $query = $this->connection->createQueryBuilder();
 

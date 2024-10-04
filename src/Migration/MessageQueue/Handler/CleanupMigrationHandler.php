@@ -22,7 +22,7 @@ final class CleanupMigrationHandler
 {
     public function __construct(
         private readonly Connection $connection,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
     }
 

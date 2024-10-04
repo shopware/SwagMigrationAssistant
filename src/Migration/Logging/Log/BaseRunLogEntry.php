@@ -15,7 +15,7 @@ abstract class BaseRunLogEntry implements LogEntryInterface
     public function __construct(
         protected string $runId,
         protected ?string $entity = null,
-        protected ?string $sourceId = null
+        protected ?string $sourceId = null,
     ) {
     }
 

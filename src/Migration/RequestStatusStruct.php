@@ -16,7 +16,7 @@ class RequestStatusStruct extends Struct
     public function __construct(
         protected string $code = '',
         protected string $message = 'No error.',
-        protected bool $isWarning = false
+        protected bool $isWarning = false,
     ) {
     }
 

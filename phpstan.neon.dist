@@ -63,6 +63,11 @@ parameters:
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
 
+        - # ToDo remove when bumping min shopware version
+            message: "#^Do not use .* function, use class .* instead\\.$#"
+            paths:
+                - src/**/*.php
+
         # ToDo: fix platform deprecations for v6.7.0.0
         - message: """
                 #^Call to deprecated method getName\\(\\) of class Shopware\\\\Core\\\\System\\\\StateMachine\\\\Aggregation\\\\StateMachineState\\\\StateMachineStateEntity\\:

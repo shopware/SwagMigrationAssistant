@@ -37,7 +37,7 @@ abstract class ShopwareConverter extends Converter
 
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -96,7 +96,7 @@ abstract class ShopwareConverter extends Converter
     protected function getOrCreateMappingIdFacade(
         string $entityName,
         string $oldIdentifier,
-        ?string $newIdentifier = null
+        ?string $newIdentifier = null,
     ): ?string {
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -119,7 +119,7 @@ abstract class ShopwareConverter extends Converter
     protected function getOrCreateMappingMainCompleteFacade(
         string $entityName,
         string $oldIdentifier,
-        ?string $newIdentifier = null
+        ?string $newIdentifier = null,
     ): array {
         return $this->mappingService->getOrCreateMapping(
             $this->connectionId,

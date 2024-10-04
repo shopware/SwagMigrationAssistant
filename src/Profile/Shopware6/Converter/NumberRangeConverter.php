@@ -30,7 +30,7 @@ class NumberRangeConverter extends ShopwareConverter
     public function __construct(
         Shopware6MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected EntityRepository $numberRangeStateRepository
+        protected EntityRepository $numberRangeStateRepository,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

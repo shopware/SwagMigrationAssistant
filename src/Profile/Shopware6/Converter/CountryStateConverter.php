@@ -27,7 +27,7 @@ class CountryStateConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $countryStateUuid = $this->mappingService->getCountryStateUuid($data['id'], $data['country']['iso'], $data['country']['iso3'], $data['shortCode'], $this->connectionId, $this->context);
+        $countryStateUuid = $this->mappingService->getCountryStateUuid($data['id'], $data['country']['iso'], $data['shortCode'], $this->connectionId, $this->context);
         unset($converted['country']);
 
         if ($countryStateUuid !== null) {

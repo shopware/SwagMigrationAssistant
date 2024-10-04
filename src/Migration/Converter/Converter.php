@@ -34,7 +34,7 @@ abstract class Converter implements ConverterInterface
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
     ) {
         $this->mappingService = $mappingService;
         $this->loggingService = $loggingService;

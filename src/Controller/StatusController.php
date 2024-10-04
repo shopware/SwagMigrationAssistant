@@ -43,7 +43,7 @@ class StatusController extends AbstractController
         private readonly ProfileRegistryInterface $profileRegistry,
         private readonly GatewayRegistryInterface $gatewayRegistry,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
-        private readonly EntityRepository $generalSettingRepo
+        private readonly EntityRepository $generalSettingRepo,
     ) {
     }
 

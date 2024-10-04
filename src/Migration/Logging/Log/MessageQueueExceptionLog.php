@@ -16,7 +16,7 @@ class MessageQueueExceptionLog extends BaseRunLogEntry
     public function __construct(
         string $runId,
         private readonly \Throwable $exception,
-        private int $exceptionCount
+        private int $exceptionCount,
     ) {
         parent::__construct($runId);
     }

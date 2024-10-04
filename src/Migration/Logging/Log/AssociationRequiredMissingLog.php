@@ -16,7 +16,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $requiredFor
+        private readonly string $requiredFor,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

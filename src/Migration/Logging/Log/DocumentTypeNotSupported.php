@@ -16,7 +16,7 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
     public function __construct(
         string $runId,
         string $sourceId,
-        private readonly string $type
+        private readonly string $type,
     ) {
         parent::__construct($runId, DefaultEntities::ORDER_DOCUMENT, $sourceId);
     }

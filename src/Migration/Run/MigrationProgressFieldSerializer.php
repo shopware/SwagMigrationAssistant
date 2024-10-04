@@ -26,7 +26,7 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
         Field $field,
         EntityExistence $existence,
         KeyValuePair $data,
-        WriteParameterBag $parameters
+        WriteParameterBag $parameters,
     ): \Generator {
         $value = $data->getValue();
         if ($value instanceof MigrationProgress) {

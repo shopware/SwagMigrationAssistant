@@ -20,7 +20,7 @@ class PremappingStruct extends Struct
     public function __construct(
         protected string $entity,
         protected array $mapping,
-        protected array $choices = []
+        protected array $choices = [],
     ) {
     }
 

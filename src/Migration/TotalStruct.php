@@ -15,7 +15,7 @@ class TotalStruct extends Struct
 {
     public function __construct(
         protected string $entityName,
-        protected int $total = 0
+        protected int $total = 0,
     ) {
     }
 

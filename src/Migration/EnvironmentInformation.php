@@ -30,7 +30,7 @@ class EnvironmentInformation extends Struct
         protected string $targetSystemCurrency = '',
         protected string $sourceSystemCurrency = '',
         protected string $sourceSystemLocale = '',
-        protected string $targetSystemLocale = ''
+        protected string $targetSystemLocale = '',
     ) {
     }
 

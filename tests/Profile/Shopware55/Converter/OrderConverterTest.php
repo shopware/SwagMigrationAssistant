@@ -127,6 +127,8 @@ class OrderConverterTest extends TestCase
         $mappingService->getOrCreateMapping($connectionId, OrderDeliveryStateReader::getMappingName(), '0', $context, null, [], Uuid::randomHex());
 
         $mappingService->getOrCreateMapping($connectionId, DefaultEntities::MEDIA, 'esd_4', $context, null, [], Uuid::randomHex());
+
+        $mappingService->getOrCreateMapping($connectionId, DefaultEntities::COUNTRY_STATE, '3', $context, null, [], '019243e2514672debd864b2b979544f4');
     }
 
     public function testSupports(): void
@@ -726,6 +728,112 @@ class OrderConverterTest extends TestCase
         static::assertNotNull($convertedSecond);
 
         static::assertNotSame($convertedFirst['orderCustomer']['customerId'], $convertedSecond['orderCustomer']['customerId']);
+    }
+
+    public function testConvertCountryStateWithMapping(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $orderData = $orderData[0];
+
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayHasKey('countryState', $converted['addresses'][0]);
+        static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
+        static::assertSame('019243e2514672debd864b2b979544f4', $converted['addresses'][0]['countryState']['id']);
+
+        static::assertArrayHasKey('deliveries', $converted);
+        static::assertArrayHasKey('shippingOrderAddress', $converted['deliveries'][0]);
+        static::assertArrayHasKey('countryState', $converted['deliveries'][0]['shippingOrderAddress']);
+        static::assertArrayHasKey('id', $converted['deliveries'][0]['shippingOrderAddress']['countryState']);
+        static::assertSame('019243e2514672debd864b2b979544f4', $converted['deliveries'][0]['shippingOrderAddress']['countryState']['id']);
+    }
+
+    public function testConvertExistingCountryStateWithoutMapping(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $orderData = $orderData[0];
+        $orderData['billingaddress']['stateID'] = '9999';
+
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayHasKey('countryState', $converted['addresses'][0]);
+        static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
+        static::assertSame('Nordrhein-Westfalen', $converted['addresses'][0]['countryState']['name']);
+        static::assertSame('NW', $converted['addresses'][0]['countryState']['shortCode']);
+    }
+
+    public function testConvertNotExistingCountryStateWithoutMapping(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $orderData = $orderData[0];
+        $orderData['billingaddress']['stateID'] = '9999';
+        unset($orderData['billingaddress']['state']);
+
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[0],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayNotHasKey('countryState', $converted['addresses'][0]);
+
+        $logs = $this->loggingService->getLoggingArray();
+
+        static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_COUNTRY_STATE_ENTITY_UNKNOWN');
+        static::assertSame($logs[0]['parameters']['sourceId'], '9999');
+        static::assertSame($logs[0]['parameters']['entity'], DefaultEntities::COUNTRY_STATE);
+        static::assertSame($logs[0]['parameters']['requiredForSourceId'], $orderData['id']);
+        static::assertSame($logs[0]['parameters']['requiredForEntity'], DefaultEntities::ORDER);
     }
 
     /**

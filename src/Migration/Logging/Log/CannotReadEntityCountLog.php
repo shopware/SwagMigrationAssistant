@@ -18,7 +18,7 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
         private readonly string $table,
         private readonly ?string $condition,
         private readonly string $exceptionCode,
-        private readonly string $exceptionMessage
+        private readonly string $exceptionMessage,
     ) {
         parent::__construct($runUuid, $entity);
     }

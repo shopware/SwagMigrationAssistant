@@ -37,7 +37,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         EntityRepository $mediaFileRepo,
         private readonly MediaService $mediaService,
         private readonly LoggingServiceInterface $loggingService,
-        Connection $dbalConnection
+        Connection $dbalConnection,
     ) {
         parent::__construct($dbalConnection, $mediaFileRepo);
     }
@@ -52,7 +52,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
     public function process(
         MigrationContextInterface $migrationContext,
         Context $context,
-        array $workload
+        array $workload,
     ): array {
         $mappedWorkload = [];
         foreach ($workload as $work) {
@@ -89,7 +89,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         array $media,
         array $mappedWorkload,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): array {
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
@@ -142,7 +142,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
     private function persistFileToMedia(
         string $sourcePath,
         array $media,
-        Context $context
+        Context $context,
     ): void {
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use ($sourcePath, $media): void {
             $fileExtension = \pathinfo($sourcePath, \PATHINFO_EXTENSION);

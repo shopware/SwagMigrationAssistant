@@ -16,7 +16,7 @@ class DataSetNotFoundLog extends BaseRunLogEntry
         string $runUuid,
         string $entity,
         string $sourceId,
-        private readonly string $profileName
+        private readonly string $profileName,
     ) {
         parent::__construct($runUuid, $entity, $sourceId);
     }

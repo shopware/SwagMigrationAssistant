@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 class DummyRunTransitionService implements RunTransitionServiceInterface
 {
     public function __construct(
-        private MigrationStep $activeStep
+        private MigrationStep $activeStep,
     ) {
     }
 

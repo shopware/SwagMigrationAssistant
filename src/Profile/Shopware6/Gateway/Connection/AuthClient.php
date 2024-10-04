@@ -32,7 +32,7 @@ class AuthClient implements HttpClientInterface
         private readonly Client $apiClient,
         private readonly EntityRepository $connectionRepository,
         private readonly MigrationContextInterface $migrationContext,
-        private readonly Context $context
+        private readonly Context $context,
     ) {
     }
 

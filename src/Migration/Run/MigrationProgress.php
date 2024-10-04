@@ -37,7 +37,7 @@ final class MigrationProgress extends Struct
         string $currentEntity,
         int $currentEntityProgress,
         int $exceptionCount = 0,
-        bool $isAborted = false
+        bool $isAborted = false,
     ) {
         $this->progress = $progress;
         $this->total = $total;

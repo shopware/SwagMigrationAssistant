@@ -15,7 +15,7 @@ class MappingDeltaResult extends Struct
 {
     public function __construct(
         private readonly array $migrationData = [],
-        private readonly array $preloadIds = []
+        private readonly array $preloadIds = [],
     ) {
     }
 

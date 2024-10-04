@@ -31,7 +31,7 @@ class PremappingFieldSerializer extends JsonFieldSerializer
         Field $field,
         EntityExistence $existence,
         KeyValuePair $data,
-        WriteParameterBag $parameters
+        WriteParameterBag $parameters,
     ): \Generator {
         if (!$field instanceof PremappingField) {
             throw MigrationException::invalidSerializerField(PremappingField::class, $field);

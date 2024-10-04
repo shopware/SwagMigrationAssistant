@@ -172,7 +172,7 @@ return [
             'city' => 'Schöppingen',
             'phone' => '',
             'countryID' => '2',
-            'stateID' => null,
+            'stateID' => '3',
             'additional_address_line1' => '',
             'additional_address_line2' => '',
             'title' => '',
@@ -201,6 +201,14 @@ return [
                 'iso3' => 'DEU',
                 'display_state_in_registration' => '0',
                 'force_state_in_registration' => '0',
+            ],
+            'state' => [
+                'id' => '3',
+                'countryID' => '2',
+                'name' => 'Nordrhein-Westfalen',
+                'shortcode' => 'NW',
+                'position' => '0',
+                'active' => '1',
             ],
         ],
         'payment' => [

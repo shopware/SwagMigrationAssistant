@@ -33,7 +33,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

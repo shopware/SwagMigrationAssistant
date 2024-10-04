@@ -17,7 +17,7 @@ class UnknownEntityLog extends BaseRunLogEntry
         string $entity,
         string $sourceId,
         private readonly string $requiredForEntity,
-        private readonly string $requiredForSourceId
+        private readonly string $requiredForSourceId,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

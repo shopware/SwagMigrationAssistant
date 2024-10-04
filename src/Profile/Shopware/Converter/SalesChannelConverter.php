@@ -54,7 +54,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         protected EntityRepository $shippingMethodRepo,
         protected EntityRepository $countryRepository,
         protected EntityRepository $salesChannelRepo,
-        protected ?EntityRepository $languagePackRepo
+        protected ?EntityRepository $languagePackRepo,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

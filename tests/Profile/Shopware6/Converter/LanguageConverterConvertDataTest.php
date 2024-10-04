@@ -135,7 +135,7 @@ class LanguageConverterConvertDataTest extends TestCase
 
     private function createLanguageConverter(
         ?Shopware6MappingServiceInterface $mappingService = null,
-        ?LoggingServiceInterface $loggingService = null
+        ?LoggingServiceInterface $loggingService = null,
     ): LanguageConverter {
         if ($mappingService === null) {
             $mappingService = new Dummy6MappingService();

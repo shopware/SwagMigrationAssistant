@@ -21,7 +21,7 @@ class MigrationProgressField extends JsonField
 {
     public function __construct(
         string $storageName,
-        string $propertyName
+        string $propertyName,
     ) {
         parent::__construct($storageName, $propertyName, [
             (new IntField('progress', 'progress'))->addFlags(new Required()),

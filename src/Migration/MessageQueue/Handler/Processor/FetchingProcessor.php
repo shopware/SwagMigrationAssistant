@@ -38,7 +38,7 @@ class FetchingProcessor extends AbstractProcessor
         RunTransitionServiceInterface $runTransitionService,
         private readonly MigrationDataFetcherInterface $migrationDataFetcher,
         private readonly MigrationDataConverterInterface $migrationDataConverter,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -57,7 +57,7 @@ class FetchingProcessor extends AbstractProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
         SwagMigrationRunEntity $run,
-        MigrationProgress $progress
+        MigrationProgress $progress,
     ): void {
         $runId = $migrationContext->getRunUuid();
         $totalCountOfCurrentEntity = $progress->getDataSets()->getTotalByEntityName($progress->getCurrentEntity());

@@ -17,7 +17,7 @@ class FieldReassignedRunLog extends BaseRunLogEntry
         string $entity,
         string $sourceId,
         private readonly string $emptyField,
-        private readonly string $replacementField
+        private readonly string $replacementField,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

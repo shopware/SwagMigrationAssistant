@@ -1,6 +1,10 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-1033 - Added the migration of SEO main category for products with SW5 or SW6 as a source system
 - MIG-1049 - Made `connection` property of `SwagMigrationMappingEntity` optional
+- MIG-1039 - Fix the migration of country states in the order and customer converters
+- MIG-1039 - [BREAKING] Added new method `getCountryStateUuid` to `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
+- MIG-1039 - [BREAKING] Added new constructor parameter `EntityRepository $countryStateRepo` to `SwagMigrationAssistant\Migration\Mapping\MappingService`
+- MIG-1039 - [BREAKING] Removed method `getCountryStateUuid` from `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and its default implementation `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data

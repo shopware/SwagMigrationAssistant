@@ -71,7 +71,7 @@ abstract class ProductConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected MediaFileServiceInterface $mediaFileService
+        protected MediaFileServiceInterface $mediaFileService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -117,7 +117,7 @@ abstract class ProductConverter extends ShopwareConverter
     public function convert(
         array $data,
         Context $context,
-        MigrationContextInterface $migrationContext
+        MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
         $this->context = $context;

@@ -23,7 +23,7 @@ class LoggingService implements LoggingServiceInterface
      */
     public function __construct(
         private readonly EntityRepository $loggingRepo,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
     ) {
     }
 

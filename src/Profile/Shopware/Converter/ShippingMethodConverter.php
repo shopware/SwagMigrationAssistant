@@ -77,7 +77,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     public function __construct(
         MappingServiceInterface $mappingService,
-        LoggingServiceInterface $loggingService
+        LoggingServiceInterface $loggingService,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -877,7 +877,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     private function setWeekdayCondition(
         array &$ruleData,
         string $hash,
-        array &$mainOrContainer
+        array &$mainOrContainer,
     ): void {
         if (!isset($ruleData['bind_weekday_from']) && !isset($ruleData['bind_weekday_to'])) {
             return;
@@ -927,7 +927,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         array &$ruleData,
         string $hash,
         int &$position,
-        array &$mainOrContainer
+        array &$mainOrContainer,
     ): void {
         if (!isset($ruleData['bind_time_from']) && !isset($ruleData['bind_time_to'])) {
             return;
@@ -982,7 +982,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         array &$ruleData,
         string $hash,
         int &$position,
-        array &$mainOrContainer
+        array &$mainOrContainer,
     ): void {
         if (!isset($ruleData['bind_laststock']) || (int) $ruleData['bind_laststock'] !== 1) {
             return;
@@ -1020,7 +1020,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         array $ruleData,
         string $hash,
         int &$position,
-        array &$mainOrContainer
+        array &$mainOrContainer,
     ): void {
         $mainAndContainerUuid = $mainOrContainer['children'][0]['id'];
         $mainRuleUuid = $mainOrContainer['ruleId'];
@@ -1229,7 +1229,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         array &$ruleData,
         string $hash,
         int &$position,
-        array &$mainOrContainer
+        array &$mainOrContainer,
     ): void {
         if (!isset($ruleData['bind_shippingfree']) || (int) $ruleData['bind_shippingfree'] !== 1) {
             return;

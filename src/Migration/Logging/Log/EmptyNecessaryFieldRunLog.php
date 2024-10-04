@@ -16,7 +16,7 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $emptyField
+        private readonly string $emptyField,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

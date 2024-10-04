@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 class StockStorageDecorator extends AbstractStockStorage
 {
     public function __construct(
-        private readonly AbstractStockStorage $innerStockStorage
+        private readonly AbstractStockStorage $innerStockStorage,
     ) {
     }
 

@@ -52,7 +52,7 @@ class Shopware54OrderDocumentConverter extends OrderDocumentConverter
             '2' => 'delivery_note',
             '3' => 'credit_note',
             '4' => 'storno',
-            default => $this->createName($data['name'])
+            default => $this->createName($data['name']),
         };
 
         return parent::getDocumentType($data);

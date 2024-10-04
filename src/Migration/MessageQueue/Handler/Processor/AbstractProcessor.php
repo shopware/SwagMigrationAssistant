@@ -39,7 +39,7 @@ abstract class AbstractProcessor implements MigrationProcessorInterface
          * @var EntityRepository<SwagMigrationMediaFileCollection>
          */
         protected readonly EntityRepository $migrationMediaFileRepo,
-        protected readonly RunTransitionServiceInterface $runTransitionService
+        protected readonly RunTransitionServiceInterface $runTransitionService,
     ) {
     }
 

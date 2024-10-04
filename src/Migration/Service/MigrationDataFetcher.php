@@ -20,7 +20,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
 {
     public function __construct(
         private readonly GatewayRegistryInterface $gatewayRegistry,
-        private readonly LoggingServiceInterface $loggingService
+        private readonly LoggingServiceInterface $loggingService,
     ) {
     }
 

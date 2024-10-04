@@ -36,7 +36,7 @@ class WritingProcessor extends AbstractProcessor
         EntityRepository $migrationMediaFileRepo,
         RunTransitionServiceInterface $runTransitionService,
         private readonly MigrationDataWriterInterface $migrationDataWriter,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -55,7 +55,7 @@ class WritingProcessor extends AbstractProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
         SwagMigrationRunEntity $run,
-        MigrationProgress $progress
+        MigrationProgress $progress,
     ): void {
         $writeTotal = $this->migrationDataWriter->writeData($migrationContext, $context);
 

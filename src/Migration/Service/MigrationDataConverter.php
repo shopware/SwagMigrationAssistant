@@ -31,7 +31,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         private readonly MediaFileServiceInterface $mediaFileService,
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
-        private readonly MappingServiceInterface $mappingService
+        private readonly MappingServiceInterface $mappingService,
     ) {
     }
 
@@ -81,7 +81,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         array $data,
         ConverterInterface $converter,
         MigrationContextInterface $migrationContext,
-        DataSet $dataSet
+        DataSet $dataSet,
     ): array {
         $runUuid = $migrationContext->getRunUuid();
 

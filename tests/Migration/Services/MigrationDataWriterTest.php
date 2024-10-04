@@ -667,6 +667,7 @@ class MigrationDataWriterTest extends TestCase
             static::getContainer()->get('cms_page.repository'),
             $this->deliveryTimeRepo,
             static::getContainer()->get('document_type.repository'),
+            static::getContainer()->get('country_state.repository'),
             $this->entityWriter,
             static::getContainer()->get(SwagMigrationMappingDefinition::class),
             new NullLogger()

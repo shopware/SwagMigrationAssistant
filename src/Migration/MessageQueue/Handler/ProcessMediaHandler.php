@@ -42,7 +42,7 @@ final class ProcessMediaHandler
         private readonly EntityRepository $migrationRunRepo,
         private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
         private readonly LoggingServiceInterface $loggingService,
-        private readonly MigrationContextFactoryInterface $migrationContextFactory
+        private readonly MigrationContextFactoryInterface $migrationContextFactory,
     ) {
     }
 
@@ -110,7 +110,7 @@ final class ProcessMediaHandler
         Context $context,
         MigrationContextInterface $migrationContext,
         MediaFileProcessorInterface $processor,
-        array $workload
+        array $workload,
     ): void {
         for ($i = 0; $i < self::MEDIA_ERROR_THRESHOLD; ++$i) {
             $errorWorkload = [];

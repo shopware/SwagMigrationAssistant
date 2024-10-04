@@ -16,7 +16,7 @@ class CannotConvertChildEntity extends BaseRunLogEntry
         string $runId,
         string $entity,
         private readonly string $parentEntity,
-        private readonly string $parentSourceId
+        private readonly string $parentSourceId,
     ) {
         parent::__construct($runId, $entity, null);
     }

@@ -38,7 +38,7 @@ class CleanUpProcessor extends AbstractProcessor
         EntityRepository $migrationMediaFileRepo,
         RunTransitionServiceInterface $runTransitionService,
         private readonly Connection $dbalConnection,
-        private readonly MessageBusInterface $bus
+        private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
             $migrationRunRepo,
@@ -57,7 +57,7 @@ class CleanUpProcessor extends AbstractProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
         SwagMigrationRunEntity $run,
-        MigrationProgress $progress
+        MigrationProgress $progress,
     ): void {
         $deleteCount = $this->removeMigrationData();
 

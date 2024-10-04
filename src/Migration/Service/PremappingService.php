@@ -37,7 +37,7 @@ class PremappingService implements PremappingServiceInterface
         private readonly PremappingReaderRegistryInterface $mappingReaderRegistry,
         private readonly MappingServiceInterface $mappingService,
         private readonly EntityRepository $mappingRepo,
-        private readonly EntityRepository $connectionRepo
+        private readonly EntityRepository $connectionRepo,
     ) {
     }
 

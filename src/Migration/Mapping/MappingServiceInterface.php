@@ -46,7 +46,7 @@ interface MappingServiceInterface
         string $connectionId,
         string $entityName,
         string $oldIdentifier,
-        Context $context
+        Context $context,
     ): ?array;
 
     /**
@@ -69,7 +69,7 @@ interface MappingServiceInterface
         string $entityName,
         string $oldIdentifier,
         array $updateData,
-        Context $context
+        Context $context,
     ): array;
 
     public function createListItemMapping(
@@ -78,7 +78,7 @@ interface MappingServiceInterface
         string $oldIdentifier,
         Context $context,
         ?array $additionalData = null,
-        ?string $newUuid = null
+        ?string $newUuid = null,
     ): void;
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
@@ -94,6 +94,8 @@ interface MappingServiceInterface
     public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string;
 
     public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string;
+
+    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string;
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string;
 

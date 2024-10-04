@@ -37,7 +37,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
         protected EntityWriterInterface $entityWriter,
         protected EntityDefinition $mediaFileDefinition,
         protected ConverterRegistryInterface $converterRegistry,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
     ) {
     }
 

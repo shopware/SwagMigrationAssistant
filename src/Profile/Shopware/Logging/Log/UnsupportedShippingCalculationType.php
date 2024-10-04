@@ -17,7 +17,7 @@ class UnsupportedShippingCalculationType extends BaseRunLogEntry
         string $runId,
         string $entity,
         string $sourceId,
-        private readonly string $type
+        private readonly string $type,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

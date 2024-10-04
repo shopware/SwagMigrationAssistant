@@ -29,7 +29,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         private readonly MessageBusInterface $messageBus,
         private readonly DataSetRegistry $dataSetRegistry,
         private readonly LoggingService $loggingService,
-        private readonly Connection $dbalConnection
+        private readonly Connection $dbalConnection,
     ) {
     }
 
@@ -136,7 +136,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
      */
     private function logDataSetNotFoundException(
         MigrationContextInterface $migrationContext,
-        array $mediaFile
+        array $mediaFile,
     ): void {
         $connection = $migrationContext->getConnection();
 

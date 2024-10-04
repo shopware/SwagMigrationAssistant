@@ -26,6 +26,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
@@ -70,6 +71,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
      * @param EntityRepository<CmsPageCollection> $cmsPageRepo
      * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
      * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
+     * @param EntityRepository<CountryStateCollection> $countryStateRepo
      */
     public function __construct(
         protected EntityRepository $migrationMappingRepo,
@@ -86,9 +88,10 @@ class MappingService implements MappingServiceInterface, ResetInterface
         protected EntityRepository $cmsPageRepo,
         protected EntityRepository $deliveryTimeRepo,
         protected EntityRepository $documentTypeRepo,
+        protected EntityRepository $countryStateRepo,
         protected EntityWriterInterface $entityWriter,
         protected EntityDefinition $mappingDefinition,
-        protected LoggerInterface $logger
+        protected LoggerInterface $logger,
     ) {
     }
 
@@ -148,7 +151,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
         string $connectionId,
         string $entityName,
         string $oldIdentifier,
-        Context $context
+        Context $context,
     ): ?array {
         if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
             return $this->mappings[\md5($entityName . $oldIdentifier)];
@@ -218,7 +221,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
         string $entityName,
         string $oldIdentifier,
         array $updateData,
-        Context $context
+        Context $context,
     ): array {
         $mapping = $this->getMapping($connectionId, $entityName, $oldIdentifier, $context);
 
@@ -340,7 +343,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
         string $oldIdentifier,
         Context $context,
         ?array $additionalData = null,
-        ?string $newUuid = null
+        ?string $newUuid = null,
     ): void {
         $uuid = Uuid::randomHex();
         if ($newUuid !== null) {
@@ -620,6 +623,36 @@ class MappingService implements MappingServiceInterface, ResetInterface
         }
 
         return null;
+    }
+
+    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string
+    {
+        $countryStateMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
+
+        if ($countryStateMapping !== null) {
+            return $countryStateMapping['entityUuid'];
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('shortCode', $countryIso . '-' . $countryStateCode));
+        $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
+        $criteria->setLimit(1);
+
+        $countryStateUuid = $this->countryStateRepo->searchIds($criteria, $context)->firstId();
+
+        if ($countryStateUuid !== null) {
+            $this->saveMapping(
+                [
+                    'id' => Uuid::randomHex(),
+                    'connectionId' => $connectionId,
+                    'entity' => DefaultEntities::COUNTRY_STATE,
+                    'oldIdentifier' => $oldIdentifier,
+                    'entityUuid' => $countryStateUuid,
+                ]
+            );
+        }
+
+        return $countryStateUuid;
     }
 
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string

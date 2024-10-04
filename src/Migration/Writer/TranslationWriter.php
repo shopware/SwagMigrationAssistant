@@ -19,7 +19,7 @@ class TranslationWriter implements WriterInterface
 {
     public function __construct(
         private readonly EntityWriterInterface $entityWriter,
-        private readonly DefinitionInstanceRegistry $registry
+        private readonly DefinitionInstanceRegistry $registry,
     ) {
     }
 

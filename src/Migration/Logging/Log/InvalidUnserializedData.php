@@ -17,7 +17,7 @@ class InvalidUnserializedData extends BaseRunLogEntry
         string $entity,
         string $sourceId,
         private readonly string $unserializedEntity,
-        private readonly string $serializedData
+        private readonly string $serializedData,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }

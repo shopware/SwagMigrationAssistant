@@ -149,6 +149,17 @@ class Dummy6MappingService extends Shopware6MappingService
         return null;
     }
 
+    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string
+    {
+        $mapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
+
+        if ($mapping !== null) {
+            return $mapping['entityUuid'];
+        }
+
+        return null;
+    }
+
     public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
     {
         $currencyMapping = $this->getMapping($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
@@ -240,7 +251,7 @@ class Dummy6MappingService extends Shopware6MappingService
         string $type,
         string $oldIdentifier,
         MigrationContextInterface $migrationContext,
-        Context $context
+        Context $context,
     ): ?string {
         $connection = $migrationContext->getConnection();
         if ($connection === null) {
@@ -470,17 +481,6 @@ class Dummy6MappingService extends Shopware6MappingService
         }
 
         return null;
-    }
-
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryIso3, string $countryStateCode, string $connectionId, Context $context): ?string
-    {
-        $mapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
-
-        if ($mapping !== null) {
-            return $mapping['entityUuid'];
-        }
-
-        return $oldIdentifier;
     }
 
     private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool

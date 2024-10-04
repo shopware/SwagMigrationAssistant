@@ -24,7 +24,7 @@ class DocumentProvider extends AbstractProvider
      */
     public function __construct(
         private readonly EntityRepository $documentRepo,
-        private readonly RouterInterface $router
+        private readonly RouterInterface $router,
     ) {
     }
 

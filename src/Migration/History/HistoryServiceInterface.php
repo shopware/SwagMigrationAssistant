@@ -15,7 +15,7 @@ interface HistoryServiceInterface
 {
     public function getGroupedLogsOfRun(
         string $runUuid,
-        Context $context
+        Context $context,
     ): array;
 
     /**

@@ -39,8 +39,6 @@ interface Shopware6MappingServiceInterface extends MappingServiceInterface
 
     public function mapLockedCmsPageUuidByNameAndType(array $names, string $type, string $oldIdentifier, string $connectionId, MigrationContextInterface $migrationContext, Context $context): void;
 
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryIso3, string $countryStateCode, string $connectionId, Context $context): ?string;
-
     public function getTaxUuidByCriteria(string $connectionId, string $sourceId, float $taxRate, string $name, Context $context): ?string;
 
     public function getTaxRuleUuidByCriteria(string $connectionId, string $sourceId, string $taxId, string $countryId, string $taxRuleTypeId, Context $context): ?string;

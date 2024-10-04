@@ -39,6 +39,11 @@ return [
         'newIdentifier' => '793d37407690486fa3dc0f72cde3e5fc',
     ],
     [
+        'entityName' => DefaultEntities::COUNTRY_STATE,
+        'oldIdentifier' => '019243e2514c71e491389bd966855419',
+        'newIdentifier' => '019243e2514672debd864b2b979544f4',
+    ],
+    [
         'entityName' => DefaultEntities::STATE_MACHINE_STATE,
         'oldIdentifier' => '5195a80dc2f0447187cd6cb9a3e77079',
         'newIdentifier' => '775b8a01d83841369cf3c58d22481a3d',

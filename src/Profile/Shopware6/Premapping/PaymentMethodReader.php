@@ -49,7 +49,7 @@ class PaymentMethodReader extends AbstractPremappingReader
      */
     public function __construct(
         protected EntityRepository $paymentMethodRepo,
-        private readonly GatewayRegistryInterface $gatewayRegistry
+        private readonly GatewayRegistryInterface $gatewayRegistry,
     ) {
     }
 

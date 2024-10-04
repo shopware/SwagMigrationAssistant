@@ -15,7 +15,7 @@ class PremappingChoiceStruct extends Struct
 {
     public function __construct(
         protected string $uuid,
-        protected string $description
+        protected string $description,
     ) {
     }
 

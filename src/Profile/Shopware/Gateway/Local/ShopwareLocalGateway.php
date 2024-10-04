@@ -43,7 +43,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         private readonly TableReaderInterface $localTableReader,
         private readonly ConnectionFactoryInterface $connectionFactory,
         private readonly EntityRepository $currencyRepository,
-        private readonly EntityRepository $languageRepository
+        private readonly EntityRepository $languageRepository,
     ) {
     }
 

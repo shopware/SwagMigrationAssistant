@@ -373,7 +373,7 @@ SQL;
         string $runUuid,
         SwagMigrationConnectionEntity $connection,
         Context $context,
-        array $dataSelectionIds
+        array $dataSelectionIds,
     ): void {
         $credentials = $connection->getCredentialFields();
 
@@ -391,7 +391,7 @@ SQL;
 
     private function calculateRunProgress(
         EnvironmentInformation $environmentInformation,
-        DataSelectionCollection $dataSelectionCollection
+        DataSelectionCollection $dataSelectionCollection,
     ): MigrationProgress {
         $dataSetCollection = $this->calculateToBeFetchedTotals($environmentInformation, $dataSelectionCollection);
         $overallTotal = 0;
@@ -470,7 +470,7 @@ SQL;
         array $credentials,
         EnvironmentInformation $environmentInformation,
         MigrationProgress $runProgress,
-        Context $context
+        Context $context,
     ): void {
         $this->migrationRunRepo->update(
             [

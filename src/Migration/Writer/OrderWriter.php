@@ -20,7 +20,7 @@ class OrderWriter extends AbstractWriter
     public function __construct(
         EntityWriterInterface $entityWriter,
         EntityDefinition $definition,
-        private readonly StructNormalizer $structNormalizer
+        private readonly StructNormalizer $structNormalizer,
     ) {
         parent::__construct($entityWriter, $definition);
     }
