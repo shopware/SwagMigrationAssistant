@@ -71,9 +71,6 @@ class StartMigrationCommand extends Command
         return Command::SUCCESS;
     }
 
-    /**
-     * @psalm-suppress PossiblyInvalidArgument
-     */
     private function validateDataSelections(InputInterface $input): bool
     {
         $dataSelections = $input->getArgument('dataSelections');

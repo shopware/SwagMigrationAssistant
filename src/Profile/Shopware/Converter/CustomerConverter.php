@@ -209,9 +209,6 @@ abstract class CustomerConverter extends ShopwareConverter
         unset($data['customerGroupId'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
-            /**
-             * @psalm-suppress PossiblyInvalidArgument
-             */
             $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
 
             if ($defaultPaymentMethodUuid === null) {
