@@ -396,11 +396,6 @@ parameters:
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Api/Reader/EnvironmentReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableCountReader\\:\\:logExceptions\\(\\) has parameter \\$exceptionArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
@@ -939,11 +934,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareMediaConverter\\:\\:updateMediaAssociation\\(\\) has parameter \\$mediaArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Gateway\\\\Api\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$client\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest has an uninitialized property \\$environmentService\\. Give it default value or assign it in the constructor\\.$#"

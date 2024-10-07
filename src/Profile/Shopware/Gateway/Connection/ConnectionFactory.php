@@ -22,7 +22,7 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 {
     private ?Connection $externalConnection = null;
 
-    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = true): ?HttpClientInterface
+    public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
     {
         $connection = $migrationContext->getConnection();
 
@@ -39,7 +39,6 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
         $options = [
             'base_uri' => $credentials['endpoint'] . '/api/',
             'auth' => [$credentials['apiUser'], $credentials['apiKey'], 'digest'],
-            'verify' => $verify,
         ];
 
         return new HttpSimpleClient($options);

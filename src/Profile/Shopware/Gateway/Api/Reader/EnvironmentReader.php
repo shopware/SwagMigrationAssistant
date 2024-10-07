@@ -30,8 +30,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
 {
     private ?HttpClientInterface $client = null;
 
-    private MigrationContextInterface $migrationContext;
-
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
     }
@@ -41,7 +39,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->migrationContext = $migrationContext;
         $this->client = $this->connectionFactory->createApiClient($migrationContext);
 
         $information = [
@@ -55,107 +52,50 @@ class EnvironmentReader implements EnvironmentReaderInterface
             return $information;
         }
 
-        if ($this->doSecureCheck($information)) {
-            return $information;
-        }
+        try {
+            $this->checkConnection();
 
-        $requestStatus = $information['requestStatus'];
-
-        if ($requestStatus->getCode() === MigrationException::sslRequired()->getErrorCode()) {
-            $requestStatus->setIsWarning(false);
-
-            return $information;
-        }
-
-        if ($this->doInsecureCheck($information)) {
-            return $information;
-        }
-
-        if ($this->doShopwareCheck($information)) {
-            return $information;
+            $information['environmentInformation'] = $this->getEnvironmentInformation();
+        } catch (ShopwareHttpException $e) {
+            $information['requestStatus'] = new RequestStatusStruct($e->getErrorCode(), $e->getMessage());
         }
 
         return $information;
     }
 
-    /**
-     * @param ReadArray $information
-     */
-    private function doSecureCheck(array &$information): bool
+    private function checkConnection(): void
     {
-        if ($this->client === null) {
-            return false;
+        try {
+            $result = $this->doRequest('version');
+        } catch (ClientException|GuzzleRequestException $e) {
+            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
         }
 
-        try {
-            $information['environmentInformation'] = $this->readData($this->client, true);
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
-            return true;
-        } catch (ShopwareHttpException $eVerified) {
-            $information['requestStatus'] = new RequestStatusStruct($eVerified->getErrorCode(), $eVerified->getMessage(), true);
-
-            return false;
+        if (!isset($arrayResult['success']) || $arrayResult['success'] === false) {
+            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
         }
     }
 
     /**
-     * @param ReadArray $information
+     * @return array<string, mixed>
      */
-    private function doInsecureCheck(array &$information): bool
+    private function getEnvironmentInformation(): array
     {
         if ($this->client === null) {
-            return false;
+            return [];
         }
 
         try {
-            $information['environmentInformation'] = $this->readData($this->client);
-
-            return true;
-        } catch (ShopwareHttpException) {
-            return false;
-        }
-    }
-
-    /**
-     * @param ReadArray $information
-     */
-    private function doShopwareCheck(array &$information): bool
-    {
-        if ($this->client === null) {
-            return false;
-        }
-
-        try {
-            if ($this->checkForShopware($this->client)) {
+            $result = $this->doRequest('SwagMigrationEnvironment');
+        } catch (ClientException $e) {
+            if ($e->getCode() === SymfonyResponse::HTTP_NOT_FOUND) {
                 throw MigrationShopwareProfileException::pluginNotInstalled();
             }
 
             throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
-        } catch (ShopwareHttpException $eOther) {
-            $information['requestStatus'] = new RequestStatusStruct($eOther->getErrorCode(), $eOther->getMessage());
-
-            return true;
-        }
-    }
-
-    /**
-     * @throws MigrationException
-     *
-     * @return array<string, mixed>
-     */
-    private function readData(HttpClientInterface $apiClient, bool $verified = false): array
-    {
-        if ($verified) {
-            $apiClient = $this->connectionFactory->createApiClient($this->migrationContext, $verified);
-        }
-
-        if ($apiClient === null) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
-        }
-
-        $result = $this->doSecureRequest($apiClient, 'SwagMigrationEnvironment');
-
-        if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
+        } catch (GuzzleRequestException $e) {
             throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
         }
 
@@ -168,42 +108,20 @@ class EnvironmentReader implements EnvironmentReaderInterface
         return $arrayResult['data'];
     }
 
-    private function checkForShopware(HttpClientInterface $apiClient): bool
+    private function doRequest(string $endpoint): ResponseInterface
     {
-        $result = $this->doSecureRequest($apiClient, 'version');
-
-        if ($result->getStatusCode() === SymfonyResponse::HTTP_NOT_FOUND) {
-            return false;
-        }
-
-        if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
+        if ($this->client === null) {
             throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
         }
 
-        $arrayResult = \json_decode($result->getBody()->getContents(), true);
-
-        if (!isset($arrayResult['success'])
-            || (isset($arrayResult['success']) && $arrayResult['success'] === false)
-        ) {
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
-     * @throws MigrationException
-     */
-    private function doSecureRequest(HttpClientInterface $apiClient, string $endpoint): ResponseInterface
-    {
         try {
-            return $apiClient->get($endpoint);
+            return $this->client->get($endpoint);
         } catch (ClientException $e) {
-            if ($e->getCode() === 401) {
+            if ($e->getCode() === SymfonyResponse::HTTP_UNAUTHORIZED) {
                 throw MigrationException::invalidConnectionAuthentication($endpoint);
             }
 
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
+            throw $e;
         } catch (GuzzleRequestException $e) {
             $response = $e->getResponse();
             if ($response !== null && \mb_strpos($response->getBody()->getContents(), 'SSL required')) {
@@ -214,7 +132,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
                 throw MigrationException::requestCertificateInvalid($e->getHandlerContext()['url']);
             }
 
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
+            throw $e;
         } catch (ConnectException $e) {
             throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
         }

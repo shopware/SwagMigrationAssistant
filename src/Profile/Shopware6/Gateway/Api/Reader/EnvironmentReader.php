@@ -25,7 +25,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 #[Package('services-settings')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
-    private ?HttpClientInterface $client;
+    private ?HttpClientInterface $client = null;
 
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
@@ -49,73 +49,26 @@ class EnvironmentReader implements EnvironmentReaderInterface
             return $information;
         }
 
-        if ($this->doSecureCheck($information)) {
-            return $information;
-        }
-
-        $requestStatus = $information['requestStatus'];
-
-        if ($requestStatus->getCode() === MigrationException::sslRequired()->getErrorCode()) {
-            $requestStatus->setIsWarning(false);
-
-            return $information;
-        }
-
-        if ($this->doInsecureCheck($information)) {
-            return $information;
+        try {
+            $information['environmentInformation'] = $this->getEnvironment();
+        } catch (ShopwareHttpException $e) {
+            $information['requestStatus'] = new RequestStatusStruct($e->getErrorCode(), $e->getMessage(), false);
         }
 
         return $information;
     }
 
     /**
-     * @param ReadArray $information
-     */
-    private function doSecureCheck(array &$information): bool
-    {
-        try {
-            $information['environmentInformation'] = $this->readData(true);
-
-            return true;
-        } catch (ShopwareHttpException $eVerified) {
-            $information['requestStatus'] = new RequestStatusStruct($eVerified->getErrorCode(), $eVerified->getMessage(), false);
-
-            return false;
-        }
-    }
-
-    /**
-     * @param ReadArray $information
-     */
-    private function doInsecureCheck(array &$information): bool
-    {
-        try {
-            $information['environmentInformation'] = $this->readData();
-
-            return true;
-        } catch (ShopwareHttpException $eUnverified) {
-            $information['requestStatus'] = new RequestStatusStruct($eUnverified->getErrorCode(), $eUnverified->getMessage(), false);
-
-            return false;
-        }
-    }
-
-    /**
      * @return array<string, mixed>
      */
-    private function readData(bool $verified = false): array
+    private function getEnvironment(): array
     {
         if ($this->client === null) {
             return [];
         }
 
         try {
-            $result = $this->client->get(
-                'get-environment',
-                [
-                    'verify' => $verified,
-                ]
-            );
+            $result = $this->client->get('get-environment');
 
             if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
                 throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
