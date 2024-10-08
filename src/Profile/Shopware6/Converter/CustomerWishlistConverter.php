@@ -43,6 +43,11 @@ class CustomerWishlistConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
+        // products association could be empty and thus this array key might not be set
+        if (!isset($data['products'])) {
+            return new ConvertStruct(null, $data);
+        }
+
         $products = [];
         foreach ($converted['products'] as $product) {
             $productMapping = $this->getMappingIdFacade(DefaultEntities::PRODUCT, $product['productId']);

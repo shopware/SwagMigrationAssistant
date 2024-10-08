@@ -62,14 +62,15 @@
   - [BREAKING] Ändert die Signatur der Methode `writeMapping` von `public function writeMapping(Context $context): void;` zu `public function writeMapping(): void;` im `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und alle die es implementieren.
   - [BREAKING] Entfernt die Konstruktorparameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`,  `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` von `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 - MIG-1033 - Die Migration der SEO-Hauptkategorie für Produkte mit SW5 oder SW6 als Quellsystem wurde hinzugefügt
-- MIG-1049 - Das Setzen der `connection`-Eigenschaft in `SwagMigrationMappingEntity` ist jetzt optional
 - MIG-1039 - Für Kunden- und Bestelladressen werden jetzt auch die Bundesländer migriert
 - MIG-1039 - [BREAKING] Neue Methode `getCountryStateUuid` zu `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` hinzugefügt
 - MIG-1039 - [BREAKING] Neuer Konstruktorparameter `EntityRepository $countryStateRepo` zu `SwagMigrationAssistant\Migration\Mapping\MappingService` hinzugefügt
 - MIG-1039 - [BREAKING] Methode `getCountryStateUuid` aus `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und ihrer Standardimplementierung `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` entfernt.
+- MIG-1049 - Das Setzen der `connection`-Eigenschaft in `SwagMigrationMappingEntity` ist jetzt optional
 - MIG-1050 - Optimiert die Migration von SEO-URLs durch Verwendung der `SeoUrlPersister::updateSeoUrls`-Methode
 - MIG-1052 - Die Migration der „Von Admin erstellt“-Flags bei Kunden und Bestellungen wurde behoben
 - MIG-1052 - Premapping für Administrations-Benutzer mit automatischer Vorauswahl hinzugefügt, wenn der Benutzername identisch ist
+- MIG-1061 - Die Migration von Wunschlisten von SW6 nach SW6 mit einer leeren Produkt-Liste wurde behoben
 - MIG-1062 - Die Migration von Produktbewertungen von SW6 nach SW6 mit fehlenden zugehörigen Kunden wurde behoben
 - MIG-1063 - Verbesserung der Migration von Newsletter-Empfängern ohne Anrededaten von SW6 nach SW6
 
