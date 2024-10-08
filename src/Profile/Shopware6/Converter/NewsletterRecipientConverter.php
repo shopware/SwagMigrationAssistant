@@ -33,9 +33,14 @@ class NewsletterRecipientConverter extends ShopwareConverter
             $converted['id']
         );
 
+        // required associations
         $converted['languageId'] = $this->getMappingIdFacade(DefaultEntities::LANGUAGE, $data['languageId']);
         $converted['salesChannelId'] = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['salesChannelId']);
-        $converted['salutationId'] = $this->getMappingIdFacade(DefaultEntities::SALUTATION, $data['salutationId']);
+
+        // optional associations
+        if (isset($data['salutationId'])) {
+            $converted['salutationId'] = $this->getMappingIdFacade(DefaultEntities::SALUTATION, $data['salutationId']);
+        }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id']);
     }
