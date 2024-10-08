@@ -70,6 +70,7 @@
 - MIG-1050 - Optimiert die Migration von SEO-URLs durch Verwendung der `SeoUrlPersister::updateSeoUrls`-Methode
 - MIG-1052 - Die Migration der „Von Admin erstellt“-Flags bei Kunden und Bestellungen wurde behoben
 - MIG-1052 - Premapping für Administrations-Benutzer mit automatischer Vorauswahl hinzugefügt, wenn der Benutzername identisch ist
+- MIG-1062 - Die Migration von Produktbewertungen von SW6 nach SW6 mit fehlenden zugehörigen Kunden wurde behoben
 - MIG-1063 - Verbesserung der Migration von Newsletter-Empfängern ohne Anrededaten von SW6 nach SW6
 
 # 13.2.0

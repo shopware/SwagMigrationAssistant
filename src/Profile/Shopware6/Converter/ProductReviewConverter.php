@@ -33,10 +33,15 @@ class ProductReviewConverter extends ShopwareConverter
             $converted['id']
         );
 
-        $converted['languageId'] = $this->getMappingIdFacade(DefaultEntities::LANGUAGE, $data['languageId']);
+        // required associations
         $converted['productId'] = $this->getMappingIdFacade(DefaultEntities::PRODUCT, $data['productId']);
-        $converted['customerId'] = $this->getMappingIdFacade(DefaultEntities::CUSTOMER, $data['customerId']);
         $converted['salesChannelId'] = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['salesChannelId']);
+        $converted['languageId'] = $this->getMappingIdFacade(DefaultEntities::LANGUAGE, $data['languageId']);
+
+        // nullable associations
+        if (isset($data['customerId'])) {
+            $converted['customerId'] = $this->getMappingIdFacade(DefaultEntities::CUSTOMER, $data['customerId']);
+        }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }

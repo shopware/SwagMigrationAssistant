@@ -70,6 +70,7 @@
 - MIG-1050 - Improves the migration of SEO URLs by using the `SeoUrlPersister::updateSeoUrls` method
 - MIG-1052 - Fixed migration of "created by admin" flags on customers and orders
 - MIG-1052 - Added premapping for administration users with preselection when the username is identical
+- MIG-1062 - Fix the migration of product reviews from SW6 to SW6 with missing associated customer
 - MIG-1063 - Fix the migration of newsletter recipients from SW6 to SW6 with missing salutation association
 
 # 13.2.0
