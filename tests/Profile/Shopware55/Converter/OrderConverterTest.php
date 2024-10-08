@@ -836,6 +836,35 @@ class OrderConverterTest extends TestCase
         static::assertSame($logs[0]['parameters']['requiredForEntity'], DefaultEntities::ORDER);
     }
 
+    public function testConvertWithShippingTaxRateNotSet(): void
+    {
+        [$customerData, $orderData] = $this->getFixtureData();
+        $context = Context::createDefaultContext();
+
+        $this->customerConverter->convert(
+            $customerData[1],
+            $context,
+            $this->customerMigrationContext
+        );
+
+        $convertResult = $this->orderConverter->convert(
+            $orderData[2],
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        $deliveryShippingCosts = $converted['deliveries'][0]['shippingCosts'] ?? null;
+        static::assertInstanceOf(CalculatedPrice::class, $deliveryShippingCosts);
+        static::assertSame(200.0, $deliveryShippingCosts->getTotalPrice());
+        $calculatedTax = $deliveryShippingCosts->getCalculatedTaxes()->first();
+        static::assertInstanceOf(CalculatedTax::class, $calculatedTax);
+        static::assertSame(20.0, $calculatedTax->getTaxRate());
+        static::assertSame(40.0, $calculatedTax->getTax());
+    }
+
     /**
      * @return array{0: list<array<string, mixed>>, 1: list<array<string, mixed>>}
      */
