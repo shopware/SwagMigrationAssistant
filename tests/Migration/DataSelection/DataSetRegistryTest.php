@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -58,7 +57,10 @@ class DataSetRegistryTest extends TestCase
         $dataSets = $this->dataSetRegistry->getDataSets($migrationContext);
 
         static::assertNotEmpty($dataSets);
-        static::assertInstanceOf(DataSet::class, $dataSets[5]);
+
+        foreach ($dataSets as $dataSet) {
+            static::assertTrue($dataSet->supports($migrationContext));
+        }
     }
 
     public function testDataSetNotFound(): void

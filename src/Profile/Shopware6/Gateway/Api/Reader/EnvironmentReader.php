@@ -53,15 +53,12 @@ class EnvironmentReader implements EnvironmentReaderInterface
             return $information;
         }
 
-        if (isset($information['requestStatus'])) {
-            $requestStatus = $information['requestStatus'];
-            \assert($requestStatus instanceof RequestStatusStruct);
+        $requestStatus = $information['requestStatus'];
 
-            if ($requestStatus->getCode() === MigrationException::sslRequired()->getErrorCode()) {
-                $requestStatus->setIsWarning(false);
+        if ($requestStatus->getCode() === MigrationException::sslRequired()->getErrorCode()) {
+            $requestStatus->setIsWarning(false);
 
-                return $information;
-            }
+            return $information;
         }
 
         if ($this->doInsecureCheck($information)) {

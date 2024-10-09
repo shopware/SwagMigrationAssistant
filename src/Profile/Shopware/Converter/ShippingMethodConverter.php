@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
 /**
  * @phpstan-type Rules array{id: string, name: string, priority: int, moduleTypes: array<string, array<string>>, conditions: array<mixed>}|array{}
- * @phpstan-type MainOrContainer array{id: string, ruleId: string, type: string, position: int, children: list<array{id: string, ruleId: string, parentId: string, type: string, position: int}>}
+ * @phpstan-type MainOrContainer array{id: string, ruleId: string, type: string, position: int, children: list<array{id: string, ruleId: string, parentId: string, type: string, position: int, children?: list<array<string, mixed>>}>}
  */
 #[Package('services-settings')]
 abstract class ShippingMethodConverter extends ShopwareConverter
