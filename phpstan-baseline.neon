@@ -1091,16 +1091,6 @@ parameters:
 			path: tests/Mock/Migration/Writer/DummyWriter.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$dataArray type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\ApiEnvironmentReaderTest\\:\\:\\$error type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Profile/Shopware/Gateway/ApiEnvironmentReaderTest.php
-
-		-
 			message: "#^Parameter \\#3 \\$body of class GuzzleHttp\\\\Psr7\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, string\\|false given\\.$#"
 			count: 1
 			path: tests/Profile/Shopware/Gateway/ApiReaderTest.php

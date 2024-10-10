@@ -1,4 +1,6 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
+- [BREAKING] MIG-1053 - Möglichkeit zum Setzen des Flags „Verify“ für den Guzzle-API-Client entfernt. Dies ist jetzt standardmäßig immer wahr.
+- [BREAKING] MIG-1053 - Die EnvironmentReader-Klassen von Shopware 5 und Shopware 6 wurden überarbeitet, um mehr Informationen zu Ausnahmen bereitzustellen.
 - MIG-894 - Verbessert die Mapping Performance der Migration, was zu einem deutlich schnelleren Konvertierungsvorgang führt.
   - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup` hinzu, um die Methode `getCountryUuid` zu ersetzen.
   - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup` hinzu, um die Methode `getCountryStateUuid` zu ersetzen.

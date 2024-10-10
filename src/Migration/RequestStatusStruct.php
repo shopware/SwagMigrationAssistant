@@ -13,11 +13,18 @@ use Shopware\Core\Framework\Struct\Struct;
 #[Package('services-settings')]
 class RequestStatusStruct extends Struct
 {
+    protected ?string $errorFile = null;
+
+    protected ?int $errorLine = null;
+
     public function __construct(
         protected string $code = '',
         protected string $message = 'No error.',
         protected bool $isWarning = false,
+        ?\Throwable $exception = null,
     ) {
+        $this->errorFile = $exception !== null ? $exception->getFile() : null;
+        $this->errorLine = $exception !== null ? $exception->getLine() : null;
     }
 
     public function getIsWarning(): bool
@@ -48,5 +55,25 @@ class RequestStatusStruct extends Struct
     public function setMessage(string $message): void
     {
         $this->message = $message;
+    }
+
+    public function getErrorFile(): ?string
+    {
+        return $this->errorFile;
+    }
+
+    public function setErrorFile(?string $errorFile): void
+    {
+        $this->errorFile = $errorFile;
+    }
+
+    public function getErrorLine(): ?int
+    {
+        return $this->errorLine;
+    }
+
+    public function setErrorLine(?int $errorLine): void
+    {
+        $this->errorLine = $errorLine;
     }
 }

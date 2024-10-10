@@ -8,11 +8,9 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
 use GuzzleHttp\Exception\ClientException;
-use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException as GuzzleRequestException;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
@@ -46,36 +44,18 @@ class EnvironmentReader implements EnvironmentReaderInterface
             'requestStatus' => new RequestStatusStruct(),
         ];
 
-        if ($this->client === null) {
-            $information['requestStatus'] = new RequestStatusStruct('SWAG-EMPTY-CREDENTIALS', 'Empty credentials');
-
-            return $information;
-        }
-
         try {
-            $this->checkConnection();
-
             $information['environmentInformation'] = $this->getEnvironmentInformation();
-        } catch (ShopwareHttpException $e) {
-            $information['requestStatus'] = new RequestStatusStruct($e->getErrorCode(), $e->getMessage());
+        } catch (\Throwable $e) {
+            $information['requestStatus'] = new RequestStatusStruct(
+                method_exists($e, 'getErrorCode') ? $e->getErrorCode() : MigrationException::API_CONNECTION_ERROR,
+                $e->getMessage(),
+                false,
+                $e
+            );
         }
 
         return $information;
-    }
-
-    private function checkConnection(): void
-    {
-        try {
-            $result = $this->doRequest('version');
-        } catch (ClientException|GuzzleRequestException $e) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
-        }
-
-        $arrayResult = \json_decode($result->getBody()->getContents(), true);
-
-        if (!isset($arrayResult['success']) || $arrayResult['success'] === false) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
-        }
     }
 
     /**
@@ -83,26 +63,43 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     private function getEnvironmentInformation(): array
     {
-        if ($this->client === null) {
-            return [];
-        }
-
         try {
-            $result = $this->doRequest('SwagMigrationEnvironment');
+            $data = $this->getEnvironmentData();
         } catch (ClientException $e) {
             if ($e->getCode() === SymfonyResponse::HTTP_NOT_FOUND) {
+                $this->checkVersion();
+
                 throw MigrationShopwareProfileException::pluginNotInstalled();
             }
 
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
-        } catch (GuzzleRequestException $e) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
+            throw $e;
         }
+
+        return $data;
+    }
+
+    private function checkVersion(): void
+    {
+        $result = $this->doRequest('version');
+
+        $arrayResult = \json_decode($result->getBody()->getContents(), true);
+
+        if (!isset($arrayResult['success']) || $arrayResult['success'] === false) {
+            throw MigrationException::apiConnectionError('The version endpoint did not return success');
+        }
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getEnvironmentData(): array
+    {
+        $result = $this->doRequest('SwagMigrationEnvironment');
 
         $arrayResult = \json_decode($result->getBody()->getContents(), true);
 
         if (!isset($arrayResult['data'])) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
+            throw MigrationException::apiConnectionError('The environment endpoint did not return data');
         }
 
         return $arrayResult['data'];
@@ -111,7 +108,9 @@ class EnvironmentReader implements EnvironmentReaderInterface
     private function doRequest(string $endpoint): ResponseInterface
     {
         if ($this->client === null) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
+            throw MigrationException::apiConnectionError(
+                'Could not create API client. Could be due to empty credentials or invalid connection.'
+            );
         }
 
         try {
@@ -133,8 +132,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
             }
 
             throw $e;
-        } catch (ConnectException $e) {
-            throw MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
         }
     }
 }

@@ -3021,6 +3021,8 @@ Environment information {JSON}:
     ],
     "requestStatus": {
         "extensions": [],
+        "errorFile": null,
+        "errorLine": null,
         "code": "",
         "message": "No error.",
         "isWarning": false

@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\ShopwareHttpException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
@@ -43,16 +42,15 @@ class EnvironmentReader implements EnvironmentReaderInterface
             'requestStatus' => new RequestStatusStruct(),
         ];
 
-        if ($this->client === null) {
-            $information['requestStatus'] = new RequestStatusStruct('SWAG-EMPTY-CREDENTIALS', 'Empty credentials');
-
-            return $information;
-        }
-
         try {
             $information['environmentInformation'] = $this->getEnvironment();
-        } catch (ShopwareHttpException $e) {
-            $information['requestStatus'] = new RequestStatusStruct($e->getErrorCode(), $e->getMessage(), false);
+        } catch (\Throwable $e) {
+            $information['requestStatus'] = new RequestStatusStruct(
+                method_exists($e, 'getErrorCode') ? $e->getErrorCode() : MigrationException::API_CONNECTION_ERROR,
+                $e->getMessage(),
+                false,
+                $e
+            );
         }
 
         return $information;
@@ -64,14 +62,16 @@ class EnvironmentReader implements EnvironmentReaderInterface
     private function getEnvironment(): array
     {
         if ($this->client === null) {
-            return [];
+            throw MigrationException::apiConnectionError(
+                'Could not create API client. Could be due to empty credentials or invalid connection.'
+            );
         }
 
         try {
             $result = $this->client->get('get-environment');
 
             if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
-                throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
+                throw MigrationException::apiConnectionError('The response status code was not 200.');
             }
 
             return \json_decode($result->getBody()->getContents(), true);
@@ -80,7 +80,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
                 throw MigrationException::invalidConnectionAuthentication('get-data');
             }
 
-            throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
+            throw $e;
         } catch (RequestException $e) {
             if ($e->getRequest()->getUri()->getPath() === '/api/oauth/token') {
                 // something went wrong with authentication.
@@ -96,7 +96,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
                 throw MigrationException::requestCertificateInvalid($e->getHandlerContext()['url']);
             }
 
-            throw MigrationException::gatewayRead('Shopware 6 API Environment Call');
+            throw $e;
         }
     }
 }
