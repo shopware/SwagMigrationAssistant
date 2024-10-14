@@ -73,6 +73,8 @@
 - MIG-1061 - Die Migration von Wunschlisten von SW6 nach SW6 mit einer leeren Produkt-Liste wurde behoben
 - MIG-1062 - Die Migration von Produktbewertungen von SW6 nach SW6 mit fehlenden zugehörigen Kunden wurde behoben
 - MIG-1063 - Verbesserung der Migration von Newsletter-Empfängern ohne Anrededaten von SW6 nach SW6
+- MIG-1070 - Unterstützung der Migration von Freitextfeldern des Typs combobox die keine vordefinierten Optionen besitzen, wurde hinzugefügt
+
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

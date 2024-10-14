@@ -73,6 +73,7 @@
 - MIG-1061 - Fix the migration of customer wishlists from SW6 to SW6 with empty product list
 - MIG-1062 - Fix the migration of product reviews from SW6 to SW6 with missing associated customer
 - MIG-1063 - Fix the migration of newsletter recipients from SW6 to SW6 with missing salutation association
+- MIG-1070 - Supports migration of attributes of type combobox that do not have predefined options
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data

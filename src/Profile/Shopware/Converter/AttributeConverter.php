@@ -21,11 +21,17 @@ abstract class AttributeConverter extends Converter
 
     protected string $connectionName;
 
+    /**
+     * @param array<string,mixed> $data
+     */
     public function getSourceIdentifier(array $data): string
     {
         return $data['name'];
     }
 
+    /**
+     * @param array<string,mixed> $data
+     */
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
@@ -115,6 +121,11 @@ abstract class AttributeConverter extends Converter
 
     abstract protected function getCustomFieldEntityName(): string;
 
+    /**
+     * @param array<string,mixed> $data
+     *
+     * @return array<mixed>|array{}
+     */
     protected function getCustomFieldConfiguration(array $data): array
     {
         $locale = (string) \str_replace('_', '-', $data['_locale']);
@@ -161,6 +172,11 @@ abstract class AttributeConverter extends Converter
         return $attributeData;
     }
 
+    /**
+     * @param array<string,mixed> $data
+     *
+     * @return array<mixed>|array{}
+     */
     protected function getConfiguredCustomFieldData(array $data, string $locale): array
     {
         $attributeData = ['componentName' => 'sw-field'];
@@ -246,13 +262,17 @@ abstract class AttributeConverter extends Converter
 
         if ($data['configuration']['column_type'] === 'combobox') {
             $options = [];
-            foreach (\json_decode($data['configuration']['array_store'], true, 512, \JSON_THROW_ON_ERROR) as $keyValue) {
-                $options[] = [
-                    'value' => $keyValue['key'],
-                    'label' => [
-                        $locale => $keyValue['value'],
-                    ],
-                ];
+            $arrayStore = $data['configuration']['array_store'];
+
+            if (!empty($arrayStore)) {
+                foreach (\json_decode($arrayStore, true, 512, \JSON_THROW_ON_ERROR) as $keyValue) {
+                    $options[] = [
+                        'value' => $keyValue['key'],
+                        'label' => [
+                            $locale => $keyValue['value'],
+                        ],
+                    ];
+                }
             }
 
             $attributeData['componentName'] = 'sw-single-select';
@@ -266,6 +286,9 @@ abstract class AttributeConverter extends Converter
         return [];
     }
 
+    /**
+     * @param array<string,mixed> $data
+     */
     private function getCustomFieldType(array $data): string
     {
         if (isset($data['configuration'])) {
