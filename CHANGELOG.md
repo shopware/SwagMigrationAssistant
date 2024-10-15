@@ -68,6 +68,8 @@
 - MIG-1039 - [BREAKING] Added new constructor parameter `EntityRepository $countryStateRepo` to `SwagMigrationAssistant\Migration\Mapping\MappingService`
 - MIG-1039 - [BREAKING] Removed method `getCountryStateUuid` from `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and its default implementation `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 - MIG-1050 - Improves the migration of SEO URLs by using the `SeoUrlPersister::updateSeoUrls` method
+- MIG-1052 - Fixed migration of "created by admin" flags on customers and orders
+- MIG-1052 - Added premapping for administration users with preselection when the username is identical
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data

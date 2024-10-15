@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Service;
 
+use Shopware\Core\Framework\Api\Context\SystemSource;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -30,6 +31,8 @@ use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 #[Package('services-settings')]
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
+    protected Context $writeContext;
+
     /**
      * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepo
      * @param EntityRepository<SwagMigrationMappingCollection> $mappingRepo
@@ -43,6 +46,14 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         private readonly EntityDefinition $dataDefinition,
         private readonly EntityRepository $mappingRepo,
     ) {
+        // write / upsert entities only with this single context,
+        // otherwise the migration behaves differently when started in the administration
+        // vs. started via CLI
+        //
+        // The AdminApiSource contains the (admin) userId (who started the migration)
+        // and that is automatically attached to CreatedBy and UpdatedBy DAL fields
+        // which is not what we want during the migration
+        $this->writeContext = new Context(new SystemSource());
     }
 
     public function writeData(MigrationContextInterface $migrationContext, Context $context): int
@@ -91,7 +102,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         try {
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
-            $currentWriter->writeData(\array_values($converted), $context);
+            $currentWriter->writeData(\array_values($converted), $this->writeContext);
         } catch (WriterNotFoundException $writerNotFoundException) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
@@ -140,6 +151,10 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         return $migrationData->getTotal();
     }
 
+    /**
+     * @param array<string, mixed> $converted
+     * @param array<string, mixed> $updateWrittenData
+     */
     private function handleWriteException(
         WriteException $exception,
         array $converted,
@@ -178,12 +193,15 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         try {
-            $currentWriter->writeData($newData, $context);
+            $currentWriter->writeData($newData, $this->writeContext);
         } catch (\Throwable $exception) {
             $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext, $context);
         }
     }
 
+    /**
+     * @return array<int, mixed>
+     */
     private function extractWriteErrorsWithIndex(WriteException $exception): array
     {
         $writeErrors = [];
@@ -200,6 +218,10 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         return $writeErrors;
     }
 
+    /**
+     * @param array<string, mixed> $converted
+     * @param array<string, mixed> $updateWrittenData
+     */
     private function writePerEntity(
         array $converted,
         string $entityName,
@@ -210,7 +232,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         foreach ($converted as $dataId => $entity) {
             try {
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
-                $currentWriter->writeData([$entity], $context);
+                $currentWriter->writeData([$entity], $this->writeContext);
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $migrationContext->getRunUuid(),
@@ -228,6 +250,9 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     /**
      * Remove hashes from mapping entry of datasets which could
      * not be written, so that they won´t be skipped in next conversion.
+     *
+     * @param array<string, mixed> $updateWrittenData
+     * @param array<string, string> $mappingIds
      */
     private function removeChecksumsOfUnwrittenData(
         array $updateWrittenData,

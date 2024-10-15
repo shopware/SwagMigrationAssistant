@@ -579,6 +579,12 @@
             <tag name="shopware.migration.pre_mapping_reader"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Profile\Shopware6\Premapping\UserReader">
+            <argument type="service" id="user.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <tag name="shopware.migration.pre_mapping_reader"/>
+        </service>
+
         <!-- API reader -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\CategoryAssociationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\ApiReader">

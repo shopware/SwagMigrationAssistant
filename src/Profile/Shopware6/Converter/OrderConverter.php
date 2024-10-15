@@ -145,9 +145,20 @@ class OrderConverter extends ShopwareConverter
             $converted['price']['rawTotal'] = $converted['price']['totalPrice'];
         }
 
+        if (isset($data['createdById'])) {
+            $converted['createdById'] = $this->getMappingIdFacade(DefaultEntities::USER, $data['createdById']);
+        }
+
+        if (isset($data['updatedById'])) {
+            $converted['updatedById'] = $this->getMappingIdFacade(DefaultEntities::USER, $data['updatedById']);
+        }
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<mixed> $lineItems
+     */
     private function updateLineItems(array &$lineItems): void
     {
         foreach ($lineItems as &$converted) {

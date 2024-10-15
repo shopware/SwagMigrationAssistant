@@ -370,7 +370,8 @@
           "delivery_time": "Lieferzeiten",
           "salesChannel": "Newsletter-Verkaufskanal",
           "newsletter_status": "Newsletter-Status",
-          "shipping_availability_rule": "Versandartverfügbarkeit"
+          "shipping_availability_rule": "Versandartverfügbarkeit",
+          "user": "Administration Benutzer"
         }
       },
       "loadingScreenCard": {

@@ -68,6 +68,8 @@
 - MIG-1039 - [BREAKING] Neuer Konstruktorparameter `EntityRepository $countryStateRepo` zu `SwagMigrationAssistant\Migration\Mapping\MappingService` hinzugefügt
 - MIG-1039 - [BREAKING] Methode `getCountryStateUuid` aus `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und ihrer Standardimplementierung `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` entfernt.
 - MIG-1050 - Optimiert die Migration von SEO-URLs durch Verwendung der `SeoUrlPersister::updateSeoUrls`-Methode
+- MIG-1052 - Die Migration der „Von Admin erstellt“-Flags bei Kunden und Bestellungen wurde behoben
+- MIG-1052 - Premapping für Administrations-Benutzer mit automatischer Vorauswahl hinzugefügt, wenn der Benutzername identisch ist
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten
