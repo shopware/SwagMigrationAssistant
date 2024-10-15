@@ -62,14 +62,15 @@
   - [BREAKING] Change signature of function `writeMapping` from `public function writeMapping(Context $context): void;` to `public function writeMapping(): void;` in `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors.
   - [BREAKING] Removed constructor parameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`,  `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` from `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 - MIG-1033 - Added the migration of SEO main category for products with SW5 or SW6 as a source system
-- MIG-1049 - Made `connection` property of `SwagMigrationMappingEntity` optional
 - MIG-1039 - Fix the migration of country states in the order and customer converters
 - MIG-1039 - [BREAKING] Added new method `getCountryStateUuid` to `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
 - MIG-1039 - [BREAKING] Added new constructor parameter `EntityRepository $countryStateRepo` to `SwagMigrationAssistant\Migration\Mapping\MappingService`
 - MIG-1039 - [BREAKING] Removed method `getCountryStateUuid` from `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and its default implementation `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
+- MIG-1049 - Made `connection` property of `SwagMigrationMappingEntity` optional
 - MIG-1050 - Improves the migration of SEO URLs by using the `SeoUrlPersister::updateSeoUrls` method
 - MIG-1052 - Fixed migration of "created by admin" flags on customers and orders
 - MIG-1052 - Added premapping for administration users with preselection when the username is identical
+- MIG-1061 - Fix the migration of customer wishlists from SW6 to SW6 with empty product list
 - MIG-1062 - Fix the migration of product reviews from SW6 to SW6 with missing associated customer
 - MIG-1063 - Fix the migration of newsletter recipients from SW6 to SW6 with missing salutation association
 
