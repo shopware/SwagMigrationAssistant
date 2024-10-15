@@ -13,6 +13,9 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -25,6 +28,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
         '_locale',
         'articleID',
     ];
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected readonly LanguageLookup $languageLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
@@ -134,12 +145,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
         unset($data['shop_id'], $data['mainShopId']);
 
-        $converted['languageId'] = $this->mappingService->getLanguageUuid(
-            $connectionId,
-            $mainLocale,
-            $context
-        );
-
+        $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
         if ($converted['languageId'] === null) {
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(

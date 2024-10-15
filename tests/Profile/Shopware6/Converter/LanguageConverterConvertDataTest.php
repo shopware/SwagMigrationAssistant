@@ -16,6 +16,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
@@ -89,7 +91,9 @@ class LanguageConverterConvertDataTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = $this->createMigrationContext();
         $mappingServiceMock = $this->createMock(Shopware6MappingServiceInterface::class);
-        $mappingServiceMock->method('getDefaultLanguage')->willReturn(null);
+
+        $languageLookupMock = $this->createMock(LanguageLookup::class);
+        $languageLookupMock->method('getLanguageEntity')->willReturn(null);
 
         $expectedId = 'testID';
 
@@ -100,7 +104,7 @@ class LanguageConverterConvertDataTest extends TestCase
             ],
         ];
 
-        $languageConverter = $this->createLanguageConverter($mappingServiceMock);
+        $languageConverter = $this->createLanguageConverter($mappingServiceMock, null, $languageLookupMock);
         $result = $languageConverter->convert($data, $context, $migrationContext);
         $converted = $result->getConverted() ?? [];
 
@@ -114,7 +118,9 @@ class LanguageConverterConvertDataTest extends TestCase
         $migrationContext = $this->createMigrationContext();
 
         $mappingServiceMock = $this->createMock(Shopware6MappingServiceInterface::class);
-        $mappingServiceMock->method('getDefaultLanguage')->willReturn(new LanguageEntity());
+
+        $languageLookupMock = $this->createMock(LanguageLookup::class);
+        $languageLookupMock->method('getLanguageEntity')->willReturn(new LanguageEntity());
 
         $expectedId = 'testID';
 
@@ -136,16 +142,15 @@ class LanguageConverterConvertDataTest extends TestCase
     private function createLanguageConverter(
         ?Shopware6MappingServiceInterface $mappingService = null,
         ?LoggingServiceInterface $loggingService = null,
+        ?LanguageLookup $languageLookup = null,
+        ?LocaleLookup $localeLookup = null,
     ): LanguageConverter {
-        if ($mappingService === null) {
-            $mappingService = new Dummy6MappingService();
-        }
-
-        if ($loggingService === null) {
-            $loggingService = $this->createMock(LoggingServiceInterface::class);
-        }
-
-        return new LanguageConverter($mappingService, $loggingService);
+        return new LanguageConverter(
+            $mappingService ?? new Dummy6MappingService(),
+            $loggingService ?? $this->createMock(LoggingServiceInterface::class),
+            $languageLookup ?? $this->getContainer()->get(LanguageLookup::class),
+            $localeLookup ?? $this->getContainer()->get(LocaleLookup::class)
+        );
     }
 
     private function createMigrationContext(): MigrationContext

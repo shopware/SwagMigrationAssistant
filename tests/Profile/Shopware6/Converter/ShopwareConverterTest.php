@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
@@ -27,6 +28,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 #[Package('services-settings')]
 abstract class ShopwareConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     protected DummyLoggingService $loggingService;
 
     protected Dummy6MappingService $mappingService;
@@ -35,7 +38,7 @@ abstract class ShopwareConverterTest extends TestCase
 
     protected MigrationContext $migrationContext;
 
-    private DummyMediaFileService $mediaService;
+    protected DummyMediaFileService $mediaService;
 
     protected function setUp(): void
     {
@@ -100,6 +103,8 @@ abstract class ShopwareConverterTest extends TestCase
             $mediaFileArray = require $fixtureFolderPath . '/media.php';
         }
 
+        $this->converter = $this->createConverter($this->mappingService, $this->loggingService, $this->mediaService, $mappingArray);
+
         $this->loadMapping($mappingArray);
 
         $context = Context::createDefaultContext();
@@ -137,7 +142,10 @@ abstract class ShopwareConverterTest extends TestCase
         }
     }
 
-    abstract protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface;
+    /**
+     * @param array<string, array<string, mixed>> $mappingArray
+     */
+    abstract protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService, ?array $mappingArray = []): ConverterInterface;
 
     abstract protected function createDataSet(): DataSet;
 

@@ -14,6 +14,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -34,6 +35,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -190,7 +192,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      */
     protected function setMediaTranslation(array &$media, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -214,8 +216,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
-
+        $languageUuid = $this->languageLookup->get($this->locale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $media['translations'][$languageUuid] = $localeTranslation;
@@ -273,7 +274,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
      */
     protected function setTranslation(array &$data, array &$converted): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }

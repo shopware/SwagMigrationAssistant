@@ -15,6 +15,8 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
@@ -78,6 +80,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
+        protected readonly CountryLookup $countryLookup,
+        protected readonly LanguageLookup $languageLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -254,7 +258,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      */
     protected function addShippingMethodTranslation(array &$shippingMethod, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -280,8 +284,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
-
+        $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $shippingMethod['translations'][$languageUuid] = $localeTranslation;
@@ -1080,13 +1083,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $countries = [];
         foreach ($ruleData['shippingCountries'] as $country) {
-            $country = $this->mappingService->getCountryUuid($country['countryID'], $country['countryiso'], $country['iso3'], $this->connectionId, $this->context);
-
-            if ($country === null) {
+            $countryUuid = $this->countryLookup->get($country['countryiso'], $country['iso3'], $this->context);
+            if ($countryUuid === null) {
                 continue;
             }
 
-            $countries[] = $country;
+            $countries[] = $countryUuid;
         }
 
         if (empty($countries)) {

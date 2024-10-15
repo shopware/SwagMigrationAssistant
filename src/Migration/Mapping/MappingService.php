@@ -7,14 +7,9 @@
 
 namespace SwagMigrationAssistant\Migration\Mapping;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\LoggerInterface;
-use Shopware\Core\Checkout\Document\Aggregate\DocumentType\DocumentTypeCollection;
-use Shopware\Core\Content\Category\CategoryCollection;
-use Shopware\Core\Content\Cms\CmsPageCollection;
-use Shopware\Core\Content\Cms\CmsPageDefinition;
-use Shopware\Core\Content\Media\Aggregate\MediaDefaultFolder\MediaDefaultFolderCollection;
-use Shopware\Core\Content\Media\Aggregate\MediaThumbnailSize\MediaThumbnailSizeCollection;
-use Shopware\Core\Content\Rule\RuleCollection;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -23,22 +18,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
-use Shopware\Core\System\Country\CountryCollection;
-use Shopware\Core\System\Currency\CurrencyCollection;
-use Shopware\Core\System\DeliveryTime\DeliveryTimeCollection;
-use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
-use Shopware\Core\System\Locale\LocaleCollection;
-use Shopware\Core\System\NumberRange\NumberRangeCollection;
-use Shopware\Core\System\Tax\TaxCollection;
-use SwagMigrationAssistant\Exception\LocaleNotFoundException;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
@@ -58,39 +42,14 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     /**
      * @param EntityRepository<SwagMigrationMappingCollection> $migrationMappingRepo
-     * @param EntityRepository<LocaleCollection> $localeRepository
-     * @param EntityRepository<LanguageCollection> $languageRepository
-     * @param EntityRepository<CountryCollection> $countryRepository
-     * @param EntityRepository<CurrencyCollection> $currencyRepository
-     * @param EntityRepository<TaxCollection> $taxRepo
-     * @param EntityRepository<NumberRangeCollection> $numberRangeRepo
-     * @param EntityRepository<RuleCollection> $ruleRepo
-     * @param EntityRepository<MediaThumbnailSizeCollection> $thumbnailSizeRepo
-     * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultFolderRepo
-     * @param EntityRepository<CategoryCollection> $categoryRepo
-     * @param EntityRepository<CmsPageCollection> $cmsPageRepo
-     * @param EntityRepository<DeliveryTimeCollection> $deliveryTimeRepo
-     * @param EntityRepository<DocumentTypeCollection> $documentTypeRepo
      * @param EntityRepository<CountryStateCollection> $countryStateRepo
      */
     public function __construct(
         protected EntityRepository $migrationMappingRepo,
-        protected EntityRepository $localeRepository,
-        protected EntityRepository $languageRepository,
-        protected EntityRepository $countryRepository,
-        protected EntityRepository $currencyRepository,
-        protected EntityRepository $taxRepo,
-        protected EntityRepository $numberRangeRepo,
-        protected EntityRepository $ruleRepo,
-        protected EntityRepository $thumbnailSizeRepo,
-        protected EntityRepository $mediaDefaultFolderRepo,
-        protected EntityRepository $categoryRepo,
-        protected EntityRepository $cmsPageRepo,
-        protected EntityRepository $deliveryTimeRepo,
-        protected EntityRepository $documentTypeRepo,
         protected EntityRepository $countryStateRepo,
         protected EntityWriterInterface $entityWriter,
         protected EntityDefinition $mappingDefinition,
+        protected Connection $connection,
         protected LoggerInterface $logger,
     ) {
     }
@@ -153,41 +112,41 @@ class MappingService implements MappingServiceInterface, ResetInterface
         string $oldIdentifier,
         Context $context,
     ): ?array {
-        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
-            return $this->mappings[\md5($entityName . $oldIdentifier)];
+        $cacheKey = $entityName . $oldIdentifier;
+        if (isset($this->mappings[$cacheKey])) {
+            return $this->mappings[$cacheKey];
         }
 
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-        $criteria->addFilter(new EqualsFilter('entity', $entityName));
-        $criteria->addFilter(new EqualsFilter('oldIdentifier', $oldIdentifier));
-        $criteria->setLimit(1);
-
-        $result = $this->migrationMappingRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $element = $result->getEntities()->first();
-
-            if ($element === null) {
-                return null;
-            }
-
-            $mapping = [
-                'id' => $element->getId(),
-                'connectionId' => $element->getConnectionId(),
-                'entity' => $element->getEntity(),
-                'oldIdentifier' => $element->getOldIdentifier(),
-                'entityUuid' => $element->getEntityUuid(),
-                'entityValue' => $element->getEntityValue(),
-                'checksum' => $element->getChecksum(),
-                'additionalData' => $element->getAdditionalData(),
-            ];
-            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
-
-            return $mapping;
+        $sql = 'SELECT id,
+                       connection_id AS connectionId,
+                       entity,
+                       old_identifier AS oldIdentifier,
+                       entity_uuid AS entityUuid,
+                       entity_value AS entityValue,
+                       checksum,
+                       additional_data AS additionalData
+                FROM swag_migration_mapping
+                WHERE connection_id = :connectionId
+                    AND entity = :entity
+                    AND old_identifier = :oldIdentifier;';
+        $mapping = $this->connection->fetchAssociative($sql, ['connectionId' => Uuid::fromHexToBytes($connectionId), 'entity' => $entityName, 'oldIdentifier' => $oldIdentifier]);
+        if ($mapping === false) {
+            return null;
         }
 
-        return null;
+        $mapping['id'] = Uuid::fromBytesToHex($mapping['id']);
+        $mapping['connectionId'] = Uuid::fromBytesToHex($mapping['connectionId']);
+        $mapping['entityUuid'] = Uuid::fromBytesToHex($mapping['entityUuid']);
+        $mapping['additionalData'] = \json_decode($mapping['additionalData'], true);
+
+        // PHPStan does not recognize that fetchAssociative returns all required fields. We should move to a Mapping object.
+        $mapping['oldIdentifier'] = $mapping['oldIdentifier'] === null ? null : (string) $mapping['oldIdentifier'];
+        $mapping['entityValue'] = $mapping['entityValue'] === null ? null : (string) $mapping['entityValue'];
+        $mapping['checksum'] = $mapping['checksum'] === null ? null : (string) $mapping['checksum'];
+
+        $this->mappings[$cacheKey] = $mapping;
+
+        return $mapping;
     }
 
     public function createMapping(
@@ -265,7 +224,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
             foreach ($elements as $mapping) {
                 $entityName = $mapping->getEntity();
                 $oldIdentifier = $mapping->getOldIdentifier();
-                $this->mappings[\md5($entityName . $oldIdentifier)] = [
+                $this->mappings[$entityName . $oldIdentifier] = [
                     'id' => $mapping->getId(),
                     'connectionId' => $mapping->getConnectionId(),
                     'entity' => $entityName,
@@ -298,8 +257,9 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        if (isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
-            return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
+        $cacheKey = $entityName . $oldIdentifier;
+        if (isset($this->mappings[$cacheKey])) {
+            return $this->mappings[$cacheKey]['entityValue'];
         }
 
         $criteria = new Criteria();
@@ -329,7 +289,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
                 'checksum' => $element->getChecksum(),
                 'additionalData' => $element->getAdditionalData(),
             ];
-            $this->mappings[\md5($entityName . $oldIdentifier)] = $mapping;
+            $this->mappings[$cacheKey] = $mapping;
 
             return $value;
         }
@@ -370,8 +330,9 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        if (isset($this->mappings[\md5($entityName . $identifier)])) {
-            return $this->mappings[\md5($entityName . $identifier)];
+        $cacheKey = $entityName . $identifier;
+        if (isset($this->mappings[$cacheKey])) {
+            return $this->mappings[$cacheKey];
         }
 
         $criteria = new Criteria();
@@ -388,7 +349,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
             }
         }
 
-        $this->mappings[\md5($entityName . $identifier)] = $uuidList;
+        $this->mappings[$cacheKey] = $uuidList;
 
         return $uuidList;
     }
@@ -422,465 +383,53 @@ class MappingService implements MappingServiceInterface, ResetInterface
         }
     }
 
-    public function writeMapping(Context $context): void
+    public function writeMapping(): void
     {
         if (empty($this->writeArray)) {
             return;
         }
 
         try {
-            $this->entityWriter->upsert(
-                $this->mappingDefinition,
-                $this->writeArray,
-                WriteContext::createFromContext($context)
-            );
+            $isFirstInsert = true;
+            $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_uuid, entity_value, checksum, additional_data, created_at) VALUES ';
+            $insertParams = [];
+            $updateSql = ' ON DUPLICATE KEY
+                       UPDATE entity = VALUES(entity),
+                       old_identifier = VALUES(old_identifier),
+                       entity_uuid = VALUES(entity_uuid),
+                       entity_value = VALUES(entity_value),
+                       checksum = VALUES(checksum),
+                       additional_data = VALUES(additional_data),
+                       updated_at = VALUES(created_at);';
+            foreach ($this->writeArray as $index => $writeMapping) {
+                if ($isFirstInsert) {
+                    $isFirstInsert = false;
+                } else {
+                    $insertSql .= ', ';
+                }
+
+                $insertSql .= \sprintf('(:id%d, :connectionId%d, :entity%d, :oldIdentifier%d, :entityUuid%d, :entityValue%d, :checksum%d, :additionalData%d, :createdAt%d)', $index, $index, $index, $index, $index, $index, $index, $index, $index);
+
+                $insertParams['id' . $index] = Uuid::fromHexToBytes($writeMapping['id']);
+                $insertParams['connectionId' . $index] = Uuid::fromHexToBytes($writeMapping['connectionId']);
+                $insertParams['entity' . $index] = $writeMapping['entity'];
+                $insertParams['oldIdentifier' . $index] = $writeMapping['oldIdentifier'];
+                $insertParams['entityUuid' . $index] = $writeMapping['entityUuid'] === null ? null : Uuid::fromHexToBytes($writeMapping['entityUuid']);
+                $insertParams['entityValue' . $index] = $writeMapping['entityValue'];
+                $insertParams['checksum' . $index] = $writeMapping['checksum'];
+                $insertParams['additionalData' . $index] = \json_encode($writeMapping['additionalData']);
+                $insertParams['createdAt' . $index] = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+            }
+
+            $this->connection->executeStatement($insertSql . $updateSql, $insertParams);
         } catch (\Exception) {
-            $this->writePerEntry($context);
+            $this->writePerEntry();
         } finally {
             $this->writeArray = [];
             // This should not really be necessary
             // but removing it could increase memory usage / needs profiling
             $this->mappings = [];
         }
-    }
-
-    public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string
-    {
-        $cmsPageMapping = $this->getMapping($connectionId, CmsPageDefinition::ENTITY_NAME, 'default_cms_page', $context);
-        if ($cmsPageMapping !== null) {
-            return $cmsPageMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('type', 'product_list'));
-        $criteria->addFilter(new EqualsFilter('locked', true));
-
-        $cmsPage = $this->cmsPageRepo->search($criteria, $context)->getEntities()->first();
-
-        if ($cmsPage === null) {
-            return null;
-        }
-
-        $uuid = $cmsPage->getId();
-
-        $this->saveMapping(
-            [
-                'id' => Uuid::randomHex(),
-                'connectionId' => $connectionId,
-                'entity' => CmsPageDefinition::ENTITY_NAME,
-                'oldIdentifier' => 'default_cms_page',
-                'entityUuid' => $uuid,
-                'entityValue' => null,
-                'checksum' => null,
-                'additionalData' => null,
-            ]
-        );
-
-        return $uuid;
-    }
-
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string
-    {
-        if (!$withoutMapping && isset($this->languageData[$localeCode])) {
-            return $this->languageData[$localeCode];
-        }
-
-        $languageUuid = $this->searchLanguageInMapping($localeCode, $context);
-        if (!$withoutMapping && $languageUuid !== null) {
-            return $languageUuid;
-        }
-
-        $localeUuid = $this->searchLocale($localeCode, $context);
-
-        $languageUuid = $this->searchLanguageByLocale($localeUuid, $context);
-
-        if ($languageUuid === null) {
-            return $languageUuid;
-        }
-        $this->languageData[$localeCode] = $languageUuid;
-
-        return $languageUuid;
-    }
-
-    public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string
-    {
-        if (isset($this->locales[$localeCode])) {
-            return $this->locales[$localeCode];
-        }
-
-        $localeMapping = $this->getMapping($connectionId, DefaultEntities::LOCALE, $localeCode, $context);
-
-        if ($localeMapping !== null) {
-            $this->locales[$localeCode] = $localeMapping['entityUuid'];
-
-            return (string) $localeMapping['entityUuid'];
-        }
-
-        $localeUuid = $this->searchLocale($localeCode, $context);
-        $this->locales[$localeCode] = $localeUuid;
-
-        return $localeUuid;
-    }
-
-    public function getDefaultLanguage(Context $context): ?LanguageEntity
-    {
-        if (!empty($this->defaultLanguageData)) {
-            return $this->defaultLanguageData;
-        }
-
-        $languageUuid = $context->getLanguageId();
-
-        $criteria = new Criteria([$languageUuid]);
-        $criteria->addAssociation('locale');
-
-        $language = $this->languageRepository->search($criteria, $context)->first();
-
-        if (!$language instanceof LanguageEntity) {
-            return null;
-        }
-
-        $this->defaultLanguageData = $language;
-
-        return $language;
-    }
-
-    public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string
-    {
-        $deliveryTimeMapping = $this->getMapping($connectionId, DefaultEntities::DELIVERY_TIME, $name, $context);
-
-        if ($deliveryTimeMapping !== null) {
-            return (string) $deliveryTimeMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('min', $minValue));
-        $criteria->addFilter(new EqualsFilter('max', $maxValue));
-        $criteria->addFilter(new EqualsFilter('unit', $unit));
-        $criteria->setLimit(1);
-
-        $result = $this->deliveryTimeRepo->searchIds($criteria, $context);
-
-        $deliveryTimeUuid = $result->firstId();
-
-        if ($deliveryTimeUuid === null) {
-            $deliveryTimeUuid = Uuid::isValid($name) ? $name : Uuid::randomHex();
-        }
-
-        $this->saveMapping(
-            [
-                'id' => Uuid::randomHex(),
-                'connectionId' => $connectionId,
-                'entity' => DefaultEntities::DELIVERY_TIME,
-                'oldIdentifier' => $name,
-                'entityUuid' => $deliveryTimeUuid,
-                'entityValue' => null,
-                'checksum' => null,
-                'additionalData' => null,
-            ]
-        );
-
-        return $deliveryTimeUuid;
-    }
-
-    public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string
-    {
-        $countryMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY, $oldIdentifier, $context);
-
-        if ($countryMapping !== null) {
-            return $countryMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('iso', $iso));
-        $criteria->addFilter(new EqualsFilter('iso3', $iso3));
-        $criteria->setLimit(1);
-
-        $result = $this->countryRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $element = $result->getEntities()->first();
-
-            if ($element === null) {
-                return null;
-            }
-
-            $countryUuid = $element->getId();
-
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::COUNTRY,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $countryUuid,
-                    'entityValue' => null,
-                    'checksum' => null,
-                    'additionalData' => null,
-                ]
-            );
-
-            return $countryUuid;
-        }
-
-        return null;
-    }
-
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string
-    {
-        $countryStateMapping = $this->getMapping($connectionId, DefaultEntities::COUNTRY_STATE, $oldIdentifier, $context);
-
-        if ($countryStateMapping !== null) {
-            return $countryStateMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('shortCode', $countryIso . '-' . $countryStateCode));
-        $criteria->addFilter(new EqualsFilter('country.iso', $countryIso));
-        $criteria->setLimit(1);
-
-        $countryStateUuid = $this->countryStateRepo->searchIds($criteria, $context)->firstId();
-
-        if ($countryStateUuid !== null) {
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::COUNTRY_STATE,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $countryStateUuid,
-                ]
-            );
-        }
-
-        return $countryStateUuid;
-    }
-
-    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string
-    {
-        $currencyMapping = $this->getMapping($connectionId, DefaultEntities::CURRENCY, $oldIsoCode, $context);
-
-        if ($currencyMapping !== null) {
-            return $currencyMapping['entityUuid'];
-        }
-
-        $currencyUuid = $this->getCurrencyUuidWithoutMapping($connectionId, $oldIsoCode, $context);
-        if ($currencyUuid !== null) {
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::CURRENCY,
-                    'oldIdentifier' => $oldIsoCode,
-                    'entityUuid' => $currencyUuid,
-                    'entityValue' => null,
-                    'checksum' => null,
-                    'additionalData' => null,
-                ]
-            );
-        }
-
-        return $currencyUuid;
-    }
-
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('isoCode', $oldIsoCode));
-        $criteria->setLimit(1);
-
-        $result = $this->currencyRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $element = $result->getEntities()->first();
-
-            if ($element === null) {
-                return null;
-            }
-
-            return $element->getId();
-        }
-
-        return null;
-    }
-
-    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string
-    {
-        $taxMapping = $this->getMapping($connectionId, DefaultEntities::TAX, (string) $taxRate, $context);
-
-        if ($taxMapping !== null) {
-            return $taxMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
-        $criteria->setLimit(1);
-
-        $result = $this->taxRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $tax = $result->getEntities()->first();
-
-            if ($tax === null) {
-                return null;
-            }
-
-            $taxUuid = $tax->getId();
-
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::TAX,
-                    'oldIdentifier' => (string) $taxRate,
-                    'entityUuid' => $taxUuid,
-                    'entityValue' => null,
-                    'checksum' => null,
-                    'additionalData' => null,
-                ]
-            );
-
-            return $taxUuid;
-        }
-
-        return null;
-    }
-
-    public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return null;
-        }
-
-        $connectionId = $connection->getId();
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter(
-            'number_range.type.technicalName',
-            $type
-        ));
-
-        $result = $this->numberRangeRepo->searchIds($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $numberRangeId = $result->firstId();
-
-            if ($numberRangeId === null) {
-                return null;
-            }
-
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::NUMBER_RANGE,
-                    'oldIdentifier' => $oldIdentifier,
-                    'entityUuid' => $numberRangeId,
-                    'checksum' => $checksum,
-                    'entityValue' => null,
-                    'additionalData' => null,
-                ]
-            );
-
-            return $numberRangeId;
-        }
-
-        return null;
-    }
-
-    public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return null;
-        }
-
-        $connectionId = $connection->getId();
-        $defaultFolderMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_DEFAULT_FOLDER, $entityName, $context);
-
-        if ($defaultFolderMapping !== null) {
-            return $defaultFolderMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('entity', $entityName));
-
-        $result = $this->mediaDefaultFolderRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $mediaDefaultFolder = $result->getEntities()->first();
-            if ($mediaDefaultFolder === null) {
-                return null;
-            }
-
-            $mediaDefaultFolder = $mediaDefaultFolder->getFolder();
-            if ($mediaDefaultFolder === null) {
-                return null;
-            }
-
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::MEDIA_DEFAULT_FOLDER,
-                    'oldIdentifier' => $entityName,
-                    'entityUuid' => $mediaDefaultFolder->getId(),
-                    'entityValue' => null,
-                    'checksum' => null,
-                    'additionalData' => null,
-                ]
-            );
-
-            return $mediaDefaultFolder->getId();
-        }
-
-        return null;
-    }
-
-    public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string
-    {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return null;
-        }
-        $connectionId = $connection->getId();
-
-        $sizeString = $width . '-' . $height;
-        $thumbnailSizeMapping = $this->getMapping($connectionId, DefaultEntities::MEDIA_THUMBNAIL_SIZE, $sizeString, $context);
-
-        if ($thumbnailSizeMapping !== null) {
-            return $thumbnailSizeMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('width', $width));
-        $criteria->addFilter(new EqualsFilter('height', $height));
-
-        $result = $this->thumbnailSizeRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $thumbnailSize = $result->getEntities()->first();
-
-            if ($thumbnailSize === null) {
-                return null;
-            }
-
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connectionId,
-                    'entity' => DefaultEntities::MEDIA_THUMBNAIL_SIZE,
-                    'oldIdentifier' => $sizeString,
-                    'entityUuid' => $thumbnailSize->getId(),
-                    'entityValue' => null,
-                    'checksum' => null,
-                    'additionalData' => null,
-                ]
-            );
-
-            return $thumbnailSize->getId();
-        }
-
-        return null;
     }
 
     public function getMigratedSalesChannelUuids(string $connectionId, Context $context): array
@@ -910,75 +459,11 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return $uuids;
     }
 
-    public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string
-    {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return null;
-        }
-
-        $connectionId = $connection->getId();
-        $documentTypeMapping = $this->getMapping($connectionId, DefaultEntities::ORDER_DOCUMENT_TYPE, $technicalName, $context);
-
-        if ($documentTypeMapping !== null) {
-            return $documentTypeMapping['entityUuid'];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('technicalName', $technicalName));
-
-        $result = $this->documentTypeRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $documentType = $result->getEntities()->first();
-
-            if ($documentType === null) {
-                return null;
-            }
-
-            $this->saveMapping(
-                [
-                    'id' => Uuid::randomHex(),
-                    'connectionId' => $connection->getId(),
-                    'entity' => DefaultEntities::ORDER_DOCUMENT_TYPE,
-                    'oldIdentifier' => $technicalName,
-                    'entityUuid' => $documentType->getId(),
-                    'entityValue' => null,
-                    'checksum' => null,
-                    'additionalData' => null,
-                ]
-            );
-
-            return $documentType->getId();
-        }
-
-        return null;
-    }
-
-    public function getLowestRootCategoryUuid(Context $context): ?string
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('parentId', null));
-
-        $result = $this->categoryRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $collection = $result->getEntities();
-            $last = $collection->sortByPosition()->last();
-
-            if ($last !== null) {
-                return $last->getId();
-            }
-        }
-
-        return null;
-    }
-
     protected function saveMapping(array $mapping): void
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
+        $this->mappings[$entity . $oldIdentifier] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
@@ -986,7 +471,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[\md5($entity . $oldIdentifier)][] = $mapping;
+        $this->mappings[$entity . $oldIdentifier][] = $mapping;
         $this->writeArray[] = $mapping;
     }
 
@@ -1018,70 +503,33 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return false;
     }
 
-    private function searchLanguageInMapping(string $localeCode, Context $context): ?string
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('entity', DefaultEntities::LANGUAGE));
-        $criteria->addFilter(new EqualsFilter('oldIdentifier', $localeCode));
-        $criteria->setLimit(1);
-
-        $result = $this->migrationMappingRepo->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            return $result->getEntities()->first()?->getEntityUuid();
-        }
-
-        return null;
-    }
-
-    /**
-     * @throws LocaleNotFoundException
-     */
-    private function searchLocale(string $localeCode, Context $context): string
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('code', $localeCode));
-        $criteria->setLimit(1);
-
-        $result = $this->localeRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            $element = $result->getEntities()->first();
-
-            if ($element === null) {
-                throw MigrationException::localeNotFound($localeCode);
-            }
-
-            return $element->getId();
-        }
-
-        throw MigrationException::localeNotFound($localeCode);
-    }
-
-    private function searchLanguageByLocale(string $localeUuid, Context $context): ?string
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('localeId', $localeUuid));
-        $criteria->setLimit(1);
-
-        $result = $this->languageRepository->search($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            return $result->getEntities()->first()?->getId();
-        }
-
-        return null;
-    }
-
-    private function writePerEntry(Context $context): void
+    private function writePerEntry(): void
     {
         foreach ($this->writeArray as $mapping) {
             try {
-                $this->entityWriter->upsert(
-                    $this->mappingDefinition,
-                    [$mapping],
-                    WriteContext::createFromContext($context)
-                );
+                $insertSql = 'INSERT INTO swag_migration_mapping (id, connection_id, entity, old_identifier, entity_uuid, entity_value, checksum, additional_data, created_at)
+                                VALUES (:id, :connectionId, :entity, :oldIdentifier, :entityUuid, :entityValue, :checksum, :additionalData, :createdAt)
+                                ON DUPLICATE KEY
+                       UPDATE entity = VALUES(entity),
+                       old_identifier = VALUES(old_identifier),
+                       entity_uuid = VALUES(entity_uuid),
+                       entity_value = VALUES(entity_value),
+                       checksum = VALUES(checksum),
+                       additional_data = VALUES(additional_data),
+                       updated_at = VALUES(created_at);';
+
+                $insertParams = [];
+                $insertParams['id'] = Uuid::fromHexToBytes($mapping['id']);
+                $insertParams['connectionId'] = Uuid::fromHexToBytes($mapping['connectionId']);
+                $insertParams['entity'] = $mapping['entity'];
+                $insertParams['oldIdentifier'] = $mapping['oldIdentifier'];
+                $insertParams['entityUuid'] = $mapping['entityUuid'] === null ? null : Uuid::fromHexToBytes($mapping['entityUuid']);
+                $insertParams['entityValue'] = $mapping['entityValue'];
+                $insertParams['checksum'] = $mapping['checksum'];
+                $insertParams['additionalData'] = \json_encode($mapping['additionalData']);
+                $insertParams['createdAt'] = (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT);
+
+                $this->connection->executeStatement($insertSql, $insertParams);
             } catch (\Exception $e) {
                 $this->logger->error(
                     'SwagMigrationAssistant: Error while writing migration mapping',

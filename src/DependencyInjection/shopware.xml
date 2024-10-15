@@ -83,8 +83,9 @@
 
         <!-- Shopware Converter Base classes -->
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter"
-                 parent="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
-        </service>
+                 parent="SwagMigrationAssistant\Migration\Converter\Converter"
+                 abstract="true"
+        ></service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter"
                  parent="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true"/>
@@ -110,6 +111,10 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductOptionRelationConverter"
@@ -122,6 +127,7 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CategoryAttributeConverter" abstract="true"
@@ -131,38 +137,56 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\MediaFolderConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\MediaConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="validator"/>
             <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="Shopware\Core\Checkout\Cart\Tax\TaxCalculator"/>
             <argument type="service" id="sales_channel.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupAttributeConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\AttributeConverter" abstract="true"/>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerWishlistConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
@@ -170,18 +194,27 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
             <argument type="service" id="number_range_type.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CurrencyConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\SalesChannelConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
@@ -190,19 +223,30 @@
             <argument type="service" id="country.repository"/>
             <argument type="service" id="sales_channel.repository"/>
             <argument type="service" id="swag_language_pack_language.repository" on-invalid="null"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\ProductReviewConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\SeoUrlConverter"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>
+                 parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
+        </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CrossSellingConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true"/>

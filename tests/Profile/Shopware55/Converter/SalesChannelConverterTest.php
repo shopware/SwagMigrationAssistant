@@ -15,6 +15,8 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
@@ -44,6 +46,9 @@ class SalesChannelConverterTest extends TestCase
         $salesChannelRepo = static::getContainer()->get('sales_channel.repository');
         $this->dbalConnection = static::getContainer()->get(Connection::class);
 
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->willReturn(Uuid::randomHex());
+
         $this->mappingService = new DummyMappingService();
         $loggingService = new DummyLoggingService();
         $this->converter = new Shopware55SalesChannelConverter(
@@ -53,7 +58,9 @@ class SalesChannelConverterTest extends TestCase
             $shippingMethodRepo,
             $countryRepo,
             $salesChannelRepo,
-            null
+            null,
+            $this->getContainer()->get(CurrencyLookup::class),
+            $languageLookup,
         );
 
         $runId = Uuid::randomHex();

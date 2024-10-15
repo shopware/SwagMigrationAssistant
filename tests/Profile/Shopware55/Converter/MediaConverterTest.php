@@ -10,8 +10,10 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55MediaConverter;
@@ -23,6 +25,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 #[Package('services-settings')]
 class MediaConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private Shopware55MediaConverter $mediaConverter;
 
     private MigrationContext $migrationContext;
@@ -31,7 +35,12 @@ class MediaConverterTest extends TestCase
     {
         $mediaFileService = new DummyMediaFileService();
         $mappingService = new DummyMappingService();
-        $this->mediaConverter = new Shopware55MediaConverter($mappingService, new DummyLoggingService(), $mediaFileService);
+        $this->mediaConverter = new Shopware55MediaConverter(
+            $mappingService,
+            new DummyLoggingService(),
+            $mediaFileService,
+            $this->getContainer()->get(LanguageLookup::class)
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();

@@ -246,7 +246,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             null,
             $mediaId
         );
-        $this->mappingService->writeMapping($context);
+        $this->mappingService->writeMapping();
 
         $this->documentRepository->update(
             [

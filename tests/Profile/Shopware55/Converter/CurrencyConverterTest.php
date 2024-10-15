@@ -8,10 +8,16 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CurrencyConverter;
@@ -23,6 +29,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class CurrencyConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private DummyLoggingService $loggingService;
 
     private Shopware55CurrencyConverter $converter;
@@ -36,7 +44,12 @@ class CurrencyConverterTest extends TestCase
         $mappingService = new CurrencyMappingService();
         $this->context = Context::createDefaultContext();
         $this->loggingService = new DummyLoggingService();
-        $this->converter = new Shopware55CurrencyConverter($mappingService, $this->loggingService);
+        $this->converter = new Shopware55CurrencyConverter(
+            $mappingService,
+            $this->loggingService,
+            $this->createMock(CurrencyLookup::class),
+            $this->createMock(LanguageLookup::class)
+        );
 
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
@@ -62,20 +75,40 @@ class CurrencyConverterTest extends TestCase
 
     public function testConvert(): void
     {
+        $locale = new LocaleEntity();
+        $locale->setCode('de-DE');
+        $locale->setId(Defaults::LANGUAGE_SYSTEM);
+
+        $language = new LanguageEntity();
+        $language->setLocale($locale);
+        $language->setLocaleId($locale->getId());
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
+        $languageLookup->method('get')->willReturn(Defaults::LANGUAGE_SYSTEM);
+
+        $this->converter = new Shopware55CurrencyConverter(
+            new CurrencyMappingService(),
+            $this->loggingService,
+            $this->createMock(CurrencyLookup::class),
+            $languageLookup
+        );
+
         $currencyData = require __DIR__ . '/../../../_fixtures/currency_data.php';
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
         $this->converter->writeMapping($this->context);
         $converted = $convertResult->getConverted();
-        $defaultLanguage = DummyMappingService::DEFAULT_LANGUAGE_UUID;
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('translations', $converted);
-        static::assertSame('COC', $converted['translations'][$defaultLanguage]['shortName']);
-        static::assertSame('Kekse', $converted['translations'][$defaultLanguage]['name']);
-        static::assertSame($defaultLanguage, $converted['translations'][$defaultLanguage]['languageId']);
+
+        $translations = \array_shift($converted['translations']);
+        static::assertSame('COC', $translations['shortName']);
+        static::assertSame('Kekse', $translations['name']);
+        static::assertSame($this->context->getLanguageId(), $translations['languageId']);
 
         static::assertSame('COC', $converted['shortName']);
         static::assertSame('COC', $converted['isoCode']);
@@ -93,8 +126,18 @@ class CurrencyConverterTest extends TestCase
 
     public function testConvertWhichExists(): void
     {
-        $this->converter = new Shopware55CurrencyConverter(new DummyMappingService(), $this->loggingService);
         $currencyData = require __DIR__ . '/../../../_fixtures/currency_data.php';
+
+        $currencyLookup = $this->createMock(CurrencyLookup::class);
+        $currencyLookup->method('get')->willReturn(Defaults::CURRENCY);
+
+        $this->converter = new Shopware55CurrencyConverter(
+            new DummyMappingService(),
+            $this->loggingService,
+            $currencyLookup,
+            $this->createMock(LanguageLookup::class)
+        );
+
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 
         static::assertNull($convertResult->getConverted());

@@ -26,8 +26,12 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 #[Package('services-settings')]
 class ShippingMethodConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = [],
+    ): ConverterInterface {
         /** @var StaticEntityRepository<ShippingMethodCollection> $shippingMethodRepository */
         $shippingMethodRepository = new StaticEntityRepository([
             new IdSearchResult(

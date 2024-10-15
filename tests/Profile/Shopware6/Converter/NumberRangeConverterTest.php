@@ -7,13 +7,12 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
-use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
@@ -24,12 +23,20 @@ class NumberRangeConverterTest extends ShopwareConverterTest
 {
     use KernelTestBehaviour;
 
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
-        /** @var EntityRepository<NumberRangeStateCollection> $numberRangeRepo */
-        $numberRangeRepo = $this->getContainer()->get('number_range_state.repository');
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = [],
+    ): ConverterInterface {
+        $numberRangeLookup = $this->createMock(NumberRangeLookup::class);
 
-        return new NumberRangeConverter($mappingService, $loggingService, $numberRangeRepo);
+        return new NumberRangeConverter(
+            $mappingService,
+            $loggingService,
+            $this->getContainer()->get('number_range_state.repository'),
+            $numberRangeLookup
+        );
     }
 
     protected function createDataSet(): DataSet

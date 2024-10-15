@@ -11,6 +11,10 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -21,6 +25,15 @@ abstract class CurrencyConverter extends ShopwareConverter
     protected Context $context;
 
     protected string $connectionId;
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected readonly CurrencyLookup $currencyLookup,
+        protected readonly LanguageLookup $languageLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function getSourceIdentifier(array $data): string
     {
@@ -39,8 +52,20 @@ abstract class CurrencyConverter extends ShopwareConverter
             $this->connectionId = $connection->getId();
         }
 
-        $currencyUuid = $this->mappingService->getCurrencyUuid($this->connectionId, $data['currency'], $context);
+        $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid !== null) {
+            $currencyMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+            if ($currencyMapping === null) {
+                $this->mappingService->createMapping(
+                    $this->connectionId,
+                    DefaultEntities::CURRENCY,
+                    $data['currency'],
+                    $this->checksum,
+                    null,
+                    $currencyUuid
+                );
+            }
+
             return new ConvertStruct(null, $data);
         }
 
@@ -91,7 +116,7 @@ abstract class CurrencyConverter extends ShopwareConverter
 
     protected function getCurrencyTranslation(array &$currency, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -114,8 +139,8 @@ abstract class CurrencyConverter extends ShopwareConverter
         );
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->mainLocale, $this->context);
 
+        $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $currency['translations'][$languageUuid] = $localeTranslation;

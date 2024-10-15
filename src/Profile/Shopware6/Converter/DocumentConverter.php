@@ -10,14 +10,27 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedDocumentTypeLog;
+use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class DocumentConverter extends ShopwareMediaConverter
 {
+    public function __construct(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected MediaFileServiceInterface $mediaFileService,
+        protected readonly DocumentTypeLookup $documentTypeLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService, $mediaFileService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -48,7 +61,7 @@ class DocumentConverter extends ShopwareMediaConverter
             $converted['id']
         );
 
-        $converted['documentTypeId'] = $this->mappingService->getDocumentTypeUuid($converted['documentType']['technicalName'], $this->context, $this->migrationContext);
+        $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
         if ($converted['documentTypeId'] === null) {
             $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog($this->runId, DefaultEntities::ORDER_DOCUMENT, $data['id'], $data['documentType']['technicalName']));
 

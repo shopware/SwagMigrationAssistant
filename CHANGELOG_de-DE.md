@@ -1,4 +1,66 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-894 - Verbessert die Mapping Performance der Migration, was zu einem deutlich schnelleren Konvertierungsvorgang führt.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup` hinzu, um die Methode `getCountryUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup` hinzu, um die Methode `getCountryStateUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup` hinzu, um die Methode `getCurrencyUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup` hinzu, um die Methode `getDefaultCmsPageUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup` hinzu, um die Methode `getDeliveryTime` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup` hinzu, um die Methode `getDocumentTypeUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup` hinzu, um die Methode `getLanguageUuid` and `getDefaultLanguage` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup` hinzu, um die Methode `getLocaleUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup` hinzu, um die Methode `getLowestRootCategoryUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup` hinzu, um die Methode `getDefaultFolderIdByEntity` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup` hinzu, um die Methode `getThumbnailSizeUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup` hinzu, um die Methode `getNumberRangeUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup` hinzu, um die Methode `getTaxUuid` zu ersetzen.
+  - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup` hinzu, um die Methode `getSeoUrlTemplateUuid` zu ersetzen.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LowestRootCategoryLookup $lowestRootCategoryLookup`. `DefaultCmsPageLookup $defaultCmsPageLookup`, `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\CategoryConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CurrencyLookup $currencyLookup`, `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\CurrencyConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CountryLookup $countryLookup`, `LanguageLookup $languageLookup`, `CountryStateLookup $countryStateLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\CustomerConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup`, `LocaleLookup $localeLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\MediaConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `MediaDefaultFolderLookup $mediaFolderLookup`, `MediaThumbnailSizeLookup $mediaThumbnailSizeLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\MediaFolderConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `NumberRangeLookup $numberRangeLookup`, `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CountryLookup $countryLookup`, `CurrencyLookup $currencyLookup`, `LanguageLookup $languageLookup`, `CountryStateLookup $countryStateLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `MediaDefaultFolderLookup $mediaFolderLookup`, `DocumentTypeLookup $documentTypeLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `TaxLookup $taxLookup`, `MediaDefaultFolderLookup $mediaFolderLookup`, `LanguageLookup $languageLookup`, `DeliveryTimeLookup $deliveryTimeLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\ProductConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\ProductReviewConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CurrencyLookup $currencyLookup`, `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\SalesChannelConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\SeoUrlConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CountryLookup $countryLookup`, `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup` zu `SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CountryLookup $countryLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CountryStateLookup $countryStateLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `CurrencyLookup $currencyLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `DeliveryTimeLookup $deliveryTimeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `DocumentTypeLookup $documentTypeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `DocumentTypeLookup $documentTypeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `LanguageLookup $languageLookup`, `LocaleLookup $localeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `MediaDefaultFolderLookup $mediaFolderLookup`, `MediaThumbnailSizeLookup $mediaThumbnailSizeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `NumberRangeLookup $numberRangeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `SeoUrlTemplateLookup $seoUrlTemplateLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter` hinzu.
+  - [BREAKING] Fügt weitere Konstruktorparameter `Connection $connection` zu `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` hinzu.
+  - [BREAKING] Entfernt die Methode `getDefaultCmsPageUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getLanguageUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getLocaleUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getDefaultLanguage` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup::getDefaultLanguageEntity()`.
+  - [BREAKING] Entfernt die Methode `getDeliveryTime` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getCountryUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getCountryStateUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getCurrencyUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getCurrencyUuidWithoutMapping` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getTaxUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getNumberRangeUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getDefaultFolderIdByEntity` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getThumbnailSizeUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getDocumentTypeUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getLowestRootCategoryUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup::get()`.
+  - [BREAKING] Entfernt die Methode `getSeoUrlTemplateUuid` vom `SwagMigrationAssistant\Migration\Mapping\Shopware6MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup::get()`.
+  - [BREAKING] Ändert die Signatur der Methode `writeMapping` von `public function writeMapping(Context $context): void;` zu `public function writeMapping(): void;` im `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und alle die es implementieren.
+  - [BREAKING] Entfernt die Konstruktorparameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`,  `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` von `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 - MIG-1033 - Die Migration der SEO-Hauptkategorie für Produkte mit SW5 oder SW6 als Quellsystem wurde hinzugefügt
 - MIG-1049 - Das Setzen der `connection`-Eigenschaft in `SwagMigrationMappingEntity` ist jetzt optional
 - MIG-1039 - Für Kunden- und Bestelladressen werden jetzt auch die Bundesländer migriert
@@ -6,7 +68,6 @@
 - MIG-1039 - [BREAKING] Neuer Konstruktorparameter `EntityRepository $countryStateRepo` zu `SwagMigrationAssistant\Migration\Mapping\MappingService` hinzugefügt
 - MIG-1039 - [BREAKING] Methode `getCountryStateUuid` aus `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und ihrer Standardimplementierung `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` entfernt.
 - MIG-1050 - Optimiert die Migration von SEO-URLs durch Verwendung der `SeoUrlPersister::updateSeoUrls`-Methode
-
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

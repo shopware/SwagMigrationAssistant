@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
@@ -19,9 +20,21 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 #[Package('services-settings')]
 class DocumentConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
-        return new DocumentConverter($mappingService, $loggingService, $mediaFileService);
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = [],
+    ): ConverterInterface {
+        $documentTypeLookup = $this->createMock(DocumentTypeLookup::class);
+        $documentTypeLookup->method('get')->willReturn('41248655c60c4dd58cde43f14cd4f149');
+
+        return new DocumentConverter(
+            $mappingService,
+            $loggingService,
+            $mediaFileService,
+            $documentTypeLookup
+        );
     }
 
     protected function createDataSet(): DataSet

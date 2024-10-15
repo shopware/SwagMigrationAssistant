@@ -10,10 +10,19 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\OrFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use Shopware\Core\System\Country\CountryCollection;
+use Shopware\Core\System\Language\LanguageEntity;
+use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
@@ -29,6 +38,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 #[Package('services-settings')]
 class ShippingMethodConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private const SW5_CALCULATION_TYPE_QUANTITY = 2;
 
     private const SW5_CALCULATION_TYPE_PRICE = 1;
@@ -51,7 +62,12 @@ class ShippingMethodConverterTest extends TestCase
     {
         $this->mappingService = new DummyMappingService();
         $this->loggingService = new DummyLoggingService();
-        $this->shippingMethodConverter = new Shopware55ShippingMethodConverter($this->mappingService, $this->loggingService);
+        $this->shippingMethodConverter = new Shopware55ShippingMethodConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $this->getContainer()->get(CountryLookup::class),
+            $this->getContainer()->get(LanguageLookup::class)
+        );
 
         $runId = Uuid::randomHex();
         $this->connection = new SwagMigrationConnectionEntity();
@@ -110,7 +126,24 @@ class ShippingMethodConverterTest extends TestCase
     {
         $shippingMethodData = require __DIR__ . '/../../../_fixtures/shipping_method_data.php';
 
-        $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
+        $locale = new LocaleEntity();
+        $locale->setCode('en-GB');
+
+        $language = new LanguageEntity();
+        $language->setLocale($locale);
+
+        $languageLookup = $this->createMock(LanguageLookup::class);
+        $languageLookup->method('get')->willReturn(DummyMappingService::DEFAULT_LANGUAGE_UUID);
+        $languageLookup->method('getLanguageEntity')->willReturn($language);
+
+        $shippingMethodConverter = new Shopware55ShippingMethodConverter(
+            $this->mappingService,
+            $this->loggingService,
+            $this->getContainer()->get(CountryLookup::class),
+            $languageLookup
+        );
+
+        $convertResult = $shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $converted = $convertResult->getConverted();
         static::assertIsArray($converted);
 
@@ -161,6 +194,22 @@ class ShippingMethodConverterTest extends TestCase
      */
     public static function conditionDataProvider(): array
     {
+        $criteria = new Criteria();
+        $criteria->addFilter(new OrFilter([
+            new EqualsFilter('iso', 'DE'),
+            new EqualsFilter('iso', 'GB'),
+        ]));
+
+        $result = self::getContainer()->get('country.repository')->search(
+            $criteria,
+            Context::createDefaultContext()
+        )->getEntities();
+
+        static::assertInstanceOf(CountryCollection::class, $result);
+
+        $en_uuid = $result->filterByProperty('iso', 'GB')->first()?->getId();
+        $de_uuid = $result->filterByProperty('iso', 'DE')->first()?->getId();
+
         return [
             'fromAndToTimeRange' => [
                 'bindValues' => [
@@ -588,7 +637,7 @@ class ShippingMethodConverterTest extends TestCase
                         [
                             'countryID' => '2',
                             'countryiso' => 'GB',
-                            'iso3' => 'GBK',
+                            'iso3' => 'GBR',
                         ],
                     ],
                 ],
@@ -599,8 +648,8 @@ class ShippingMethodConverterTest extends TestCase
                         'value' => [
                             'operator' => '=',
                             'countryIds' => [
-                                DummyMappingService::DEFAULT_GERMANY_UUID,
-                                DummyMappingService::DEFAULT_UK_UUID,
+                                $de_uuid,
+                                $en_uuid,
                             ],
                         ],
                     ],

@@ -9,10 +9,15 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware54\Converter;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
@@ -23,6 +28,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 class ProductConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     public function testConvertShouldConvertSeoMainCategories(): void
     {
         $loggerMock = $this->createMock(LoggingServiceInterface::class);
@@ -43,7 +50,15 @@ class ProductConverterTest extends TestCase
         $mappingServiceMock->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '51', $context, null, [], Uuid::randomHex());
         $mappingServiceMock->getOrCreateMapping($connection->getId(), DefaultEntities::CURRENCY, 'EUR', $context, null, [], Uuid::randomHex());
 
-        $converter = new Shopware54ProductConverter($mappingServiceMock, $loggerMock, $mediaFileServiceMock);
+        $converter = new Shopware54ProductConverter(
+            $mappingServiceMock,
+            $loggerMock,
+            $mediaFileServiceMock,
+            $this->getContainer()->get(TaxLookup::class),
+            $this->getContainer()->get(MediaDefaultFolderLookup::class),
+            $this->getContainer()->get(LanguageLookup::class),
+            $this->getContainer()->get(DeliveryTimeLookup::class),
+        );
 
         $data = require __DIR__ . '/_fixtures/product_with_seo_main_category.php';
 

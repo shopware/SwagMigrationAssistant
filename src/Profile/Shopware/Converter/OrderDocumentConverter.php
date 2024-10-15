@@ -19,6 +19,8 @@ use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -41,6 +43,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
+        protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
+        protected readonly DocumentTypeLookup $documentTypeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -191,13 +195,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
     {
         $documentType = [];
         $mappedKey = $this->mapDocumentType($data['key']);
-
-        $documentTypeUuid = $this->mappingService->getDocumentTypeUuid(
-            $mappedKey,
-            $this->context,
-            $this->migrationContext
-        );
-
+        $documentTypeUuid = $this->documentTypeLookup->get($mappedKey, $this->context);
         if ($documentTypeUuid !== null) {
             $documentType['id'] = $documentTypeUuid;
 
@@ -257,12 +255,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $newMedia['private'] = true;
         $this->convertValue($newMedia, 'title', $data, 'hash');
 
-        $albumUuid = $this->mappingService->getDefaultFolderIdByEntity(
-            DocumentDefinition::ENTITY_NAME,
-            $this->migrationContext,
-            $this->context
-        );
-
+        $albumUuid = $this->mediaFolderLookup->get(DocumentDefinition::ENTITY_NAME, $this->context);
         if ($albumUuid !== null) {
             $newMedia['mediaFolderId'] = $albumUuid;
         }

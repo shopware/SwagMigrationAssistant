@@ -11,6 +11,9 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('services-settings')]
@@ -23,6 +26,14 @@ abstract class CustomerGroupConverter extends ShopwareConverter
     protected string $locale;
 
     protected string $connectionName;
+
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected readonly LanguageLookup $languageLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
@@ -77,7 +88,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
 
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void
     {
-        $language = $this->mappingService->getDefaultLanguage($this->context);
+        $language = $this->languageLookup->getLanguageEntity($this->context);
         if ($language === null) {
             return;
         }
@@ -101,7 +112,7 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->mappingService->getLanguageUuid($this->connectionId, $this->locale, $this->context);
+        $languageUuid = $this->languageLookup->get($this->locale, $this->context);
         $localeTranslation['languageId'] = $languageUuid;
 
         if (isset($customerGroup['customFields'])) {

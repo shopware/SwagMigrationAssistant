@@ -87,6 +87,8 @@ class MigrationException extends HttpException
 
     public const DATABASE_CONNECTION_ATTRIBUTES_WRONG = 'SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG';
 
+    public const LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND = 'SWAG_MIGRATION__LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -448,6 +450,16 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::COULD_NOT_GENERATE_DOCUMENT,
             'Document could not be generated.'
+        );
+    }
+
+    public static function localeForLanguageLookupNotFound(string $localeCode): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND,
+            'Locale with code: "{{ localeCode }}" for language lookup not found.',
+            ['localeCode' => $localeCode]
         );
     }
 }

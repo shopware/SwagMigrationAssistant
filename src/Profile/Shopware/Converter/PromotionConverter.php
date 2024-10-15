@@ -42,7 +42,7 @@ abstract class PromotionConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        private readonly EntityRepository $salesChannelRepository,
+        protected readonly EntityRepository $salesChannelRepository,
     ) {
         parent::__construct($mappingService, $loggingService);
     }

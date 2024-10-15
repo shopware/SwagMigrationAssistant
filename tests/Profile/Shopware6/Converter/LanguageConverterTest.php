@@ -11,17 +11,32 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
+use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
 
 #[Package('services-settings')]
 class LanguageConverterTest extends ShopwareConverterTest
 {
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
-        return new LanguageConverter($mappingService, $loggingService);
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = [],
+    ): ConverterInterface {
+        $localeLookup = $this->createMock(LocaleLookup::class);
+        $localeLookup->method('get')->willReturn(Dummy6MappingService::FALLBACK_LOCALE_UUID_FOR_EVERY_CODE);
+
+        return new LanguageConverter(
+            $mappingService,
+            $loggingService,
+            $this->getContainer()->get(LanguageLookup::class),
+            $localeLookup
+        );
     }
 
     protected function createDataSet(): DataSet

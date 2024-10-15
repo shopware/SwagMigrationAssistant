@@ -10,8 +10,6 @@ namespace SwagMigrationAssistant\Migration\Mapping;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\Language\LanguageEntity;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
  * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
@@ -83,32 +81,6 @@ interface MappingServiceInterface
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
 
-    public function getDefaultCmsPageUuid(string $connectionId, Context $context): ?string;
-
-    public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string;
-
-    public function getLocaleUuid(string $connectionId, string $localeCode, Context $context): string;
-
-    public function getDefaultLanguage(Context $context): ?LanguageEntity;
-
-    public function getDeliveryTime(string $connectionId, Context $context, int $minValue, int $maxValue, string $unit, string $name): string;
-
-    public function getCountryUuid(string $oldIdentifier, string $iso, string $iso3, string $connectionId, Context $context): ?string;
-
-    public function getCountryStateUuid(string $oldIdentifier, string $countryIso, string $countryStateCode, string $connectionId, Context $context): ?string;
-
-    public function getCurrencyUuid(string $connectionId, string $oldIsoCode, Context $context): ?string;
-
-    public function getCurrencyUuidWithoutMapping(string $connectionId, string $oldIsoCode, Context $context): ?string;
-
-    public function getTaxUuid(string $connectionId, float $taxRate, Context $context): ?string;
-
-    public function getNumberRangeUuid(string $type, string $oldIdentifier, string $checksum, MigrationContextInterface $migrationContext, Context $context): ?string;
-
-    public function getDefaultFolderIdByEntity(string $entityName, MigrationContextInterface $migrationContext, Context $context): ?string;
-
-    public function getThumbnailSizeUuid(int $width, int $height, MigrationContextInterface $migrationContext, Context $context): ?string;
-
     /**
      * @return string[]
      */
@@ -116,11 +88,7 @@ interface MappingServiceInterface
 
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void;
 
-    public function writeMapping(Context $context): void;
-
-    public function getDocumentTypeUuid(string $technicalName, Context $context, MigrationContextInterface $migrationContext): ?string;
-
-    public function getLowestRootCategoryUuid(Context $context): ?string;
+    public function writeMapping(): void;
 
     /**
      * @return EntitySearchResult<SwagMigrationMappingCollection>

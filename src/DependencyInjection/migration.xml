@@ -22,8 +22,8 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Converter\Converter" abstract="true">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry">
@@ -31,33 +31,92 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MigrationContextFactory">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
             <argument type="service" id="swag_migration_general_setting.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Mapping\MappingService">
             <argument type="service" id="swag_migration_mapping.repository"/>
-            <argument type="service" id="locale.repository"/>
-            <argument type="service" id="language.repository"/>
-            <argument type="service" id="country.repository"/>
-            <argument type="service" id="currency.repository"/>
-            <argument type="service" id="tax.repository"/>
-            <argument type="service" id="number_range.repository" />
-            <argument type="service" id="rule.repository"/>
-            <argument type="service" id="media_thumbnail_size.repository"/>
-            <argument type="service" id="media_default_folder.repository"/>
-            <argument type="service" id="category.repository"/>
-            <argument type="service" id="cms_page.repository"/>
-            <argument type="service" id="delivery_time.repository"/>
-            <argument type="service" id="document_type.repository"/>
             <argument type="service" id="country_state.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="logger"/>
 
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup">
+            <argument type="service" id="country.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup">
+            <argument type="service" id="country_state.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup">
+            <argument type="service" id="currency.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup">
+            <argument type="service" id="cms_page.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup">
+            <argument type="service" id="delivery_time.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup">
+            <argument type="service" id="document_type.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup">
+            <argument type="service" id="language.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup">
+            <argument type="service" id="locale.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup">
+            <argument type="service" id="category.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup">
+            <argument type="service" id="media_default_folder.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup">
+            <argument type="service" id="media_thumbnail_size.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup">
+            <argument type="service" id="number_range.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup">
+            <argument type="service" id="seo_url_template.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup">
+            <argument type="service" id="tax.repository"/>
             <tag name="kernel.reset" method="reset"/>
         </service>
 
@@ -76,7 +135,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="Shopware\Core\Framework\Store\Services\TrackingEventClient"/>
             <argument type="service" id="messenger.bus.shopware"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
         </service>
@@ -225,8 +284,9 @@
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandler">
             <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory" />
-            <argument type="service" id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service"
+                      id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry"/>
 
             <tag name="messenger.message_handler"/>
         </service>
@@ -304,7 +364,8 @@
 
         <service id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator"
                  decorates="Shopware\Core\Content\Product\Stock\StockStorage">
-            <argument type="service" id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator.inner"/>
+            <argument type="service"
+                      id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator.inner"/>
         </service>
     </services>
 </container>

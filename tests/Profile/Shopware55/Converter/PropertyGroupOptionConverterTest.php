@@ -10,10 +10,15 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
@@ -29,6 +34,8 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 #[Package('services-settings')]
 class PropertyGroupOptionConverterTest extends TestCase
 {
+    use KernelTestBehaviour;
+
     private DummyMappingService $mappingService;
 
     private DummyLoggingService $loggingService;
@@ -57,13 +64,18 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->propertyGroupOptionConverter = new Shopware55PropertyGroupOptionConverter(
             $this->mappingService,
             $this->loggingService,
-            $mediaFileService
+            $mediaFileService,
+            $this->getContainer()->get(LanguageLookup::class)
         );
 
         $this->productConverter = new Shopware55ProductConverter(
             $this->mappingService,
             $this->loggingService,
-            $mediaFileService
+            $mediaFileService,
+            $this->getContainer()->get(TaxLookup::class),
+            $this->getContainer()->get(MediaDefaultFolderLookup::class),
+            $this->getContainer()->get(LanguageLookup::class),
+            $this->getContainer()->get(DeliveryTimeLookup::class)
         );
 
         $this->optionRelationConverter = new Shopware55ProductOptionRelationConverter(
@@ -115,16 +127,21 @@ class PropertyGroupOptionConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('group', $converted);
+
         static::assertArrayHasKey('translations', $converted);
+        $translations = \array_shift($converted['translations']);
         static::assertSame(
             '16%',
-            $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
+            $translations['name']
         );
+
         static::assertArrayHasKey('translations', $converted['group']);
+        $groupTranslations = \array_shift($converted['group']['translations']);
         static::assertSame(
             'Alkoholgehalt',
-            $converted['group']['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID]['name']
+            $groupTranslations['name']
         );
+
         static::assertCount(0, $this->loggingService->getLoggingArray());
         static::assertSame($propertyData[10]['media']['name'], $converted['media']['title']);
         static::assertSame($propertyData[10]['media']['description'], $converted['media']['alt']);

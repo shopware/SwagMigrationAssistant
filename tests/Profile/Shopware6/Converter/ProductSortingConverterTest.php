@@ -35,8 +35,12 @@ class ProductSortingConverterTest extends ShopwareConverterTest
         }
     }
 
-    protected function createConverter(Shopware6MappingServiceInterface $mappingService, LoggingServiceInterface $loggingService, MediaFileServiceInterface $mediaFileService): ConverterInterface
-    {
+    protected function createConverter(
+        Shopware6MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        MediaFileServiceInterface $mediaFileService,
+        ?array $mappingArray = [],
+    ): ConverterInterface {
         return new ProductSortingConverter($mappingService, $loggingService);
     }
 

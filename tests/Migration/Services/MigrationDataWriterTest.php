@@ -491,6 +491,7 @@ class MigrationDataWriterTest extends TestCase
 
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
+
         $criteria = new Criteria();
         $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
 
@@ -654,22 +655,10 @@ class MigrationDataWriterTest extends TestCase
     {
         return new MappingService(
             $this->migrationMappingRepo,
-            $this->localeRepo,
-            $this->languageRepo,
-            $this->countryRepo,
-            $this->currencyRepo,
-            static::getContainer()->get('tax.repository'),
-            static::getContainer()->get('number_range.repository'),
-            static::getContainer()->get('rule.repository'),
-            static::getContainer()->get('media_thumbnail_size.repository'),
-            static::getContainer()->get('media_default_folder.repository'),
-            $this->categoryRepo,
-            static::getContainer()->get('cms_page.repository'),
-            $this->deliveryTimeRepo,
-            static::getContainer()->get('document_type.repository'),
-            static::getContainer()->get('country_state.repository'),
+            $this->getContainer()->get('country_state.repository'),
             $this->entityWriter,
-            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(Connection::class),
             new NullLogger()
         );
     }
@@ -847,7 +836,7 @@ class MigrationDataWriterTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '3', $this->context, Uuid::randomHex(), [], $categoryUuid);
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CATEGORY, '39', $this->context, Uuid::randomHex(), [], $categoryUuid);
 
-        $this->mappingService->writeMapping($this->context);
+        $this->mappingService->writeMapping();
         $this->clearCacheData();
     }
 }

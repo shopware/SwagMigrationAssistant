@@ -105,7 +105,7 @@ return [
         'customer_scope' => '0',
         'default' => '0',
         'active' => '1',
-        'locale' => 'bn-IN',
+        'locale' => 'en-GB',
         'currency' => 'EUR',
         '_locale' => 'de-DE',
         'children' => [

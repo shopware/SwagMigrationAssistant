@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
+use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
@@ -282,22 +283,10 @@ class PremappingControllerTest extends TestCase
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
-            $this->getContainer()->get('locale.repository'),
-            $this->getContainer()->get('language.repository'),
-            $this->getContainer()->get('country.repository'),
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('tax.repository'),
-            $this->getContainer()->get('number_range.repository'),
-            $this->getContainer()->get('rule.repository'),
-            $this->getContainer()->get('media_thumbnail_size.repository'),
-            $this->getContainer()->get('media_default_folder.repository'),
-            $this->getContainer()->get('category.repository'),
-            $this->getContainer()->get('cms_page.repository'),
-            $this->getContainer()->get('delivery_time.repository'),
-            $this->getContainer()->get('document_type.repository'),
             $this->getContainer()->get('country_state.repository'),
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
+            $this->getContainer()->get(Connection::class),
             new NullLogger()
         );
     }
