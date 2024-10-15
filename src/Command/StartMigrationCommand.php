@@ -57,7 +57,7 @@ class StartMigrationCommand extends Command
         try {
             $this->runService->startMigrationRun($this->dataSelectionNames, $context);
         } catch (MigrationIsAlreadyRunningException $exception) {
-            $output->writeln('Migration is already running, please use migration:get-status to check the progress.');
+            $output->writeln('Migration is already running, please use `migration:get-progress` to check the progress.');
 
             return Command::FAILURE;
         } catch (PremappingIsIncompleteException $exception) {
