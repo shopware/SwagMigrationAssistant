@@ -113,9 +113,6 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
         $this->saveWrittenFlag($mediaUuids, $migrationContext, $context);
     }
 
-    /**
-     * @psalm-suppress TypeDoesNotContainType
-     */
     private function checkMediaIdsForDuplicates(Context $context): void
     {
         if (empty($this->writeArray)) {

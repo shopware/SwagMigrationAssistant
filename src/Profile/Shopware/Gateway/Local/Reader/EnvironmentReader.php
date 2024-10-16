@@ -112,9 +112,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
         return $result;
     }
 
-    /**
-     * @psalm-suppress MissingParamType
-     */
     private function buildArrayFromChunks(array &$array, array $path, string $fieldKey, mixed $value): void
     {
         $key = \array_shift($path);

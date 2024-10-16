@@ -37,9 +37,6 @@ abstract class AbstractReader implements ReaderInterface
         return null;
     }
 
-    /**
-     * @psalm-suppress RedundantConditionGivenDocblockType
-     */
     final protected function setConnection(MigrationContextInterface $migrationContext): void
     {
         if ($this->connection instanceof Connection && $this->connection->isConnected()) {

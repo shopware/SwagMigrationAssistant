@@ -52,9 +52,6 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             }
 
             if ($currentDataSet::getEntity() !== $mediaFile['entity']) {
-                /*
-                 * @psalm-suppress PossiblyNullArgument
-                 */
                 $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
 
                 try {

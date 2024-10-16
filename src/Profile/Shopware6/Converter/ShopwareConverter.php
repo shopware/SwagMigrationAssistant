@@ -21,8 +21,6 @@ use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInte
 abstract class ShopwareConverter extends Converter
 {
     /**
-     * @psalm-suppress NonInvariantDocblockPropertyType
-     *
      * @var Shopware6MappingServiceInterface
      */
     protected MappingServiceInterface $mappingService;
