@@ -283,7 +283,6 @@ class PremappingControllerTest extends TestCase
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
-            $this->getContainer()->get('country_state.repository'),
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             $this->getContainer()->get(Connection::class),

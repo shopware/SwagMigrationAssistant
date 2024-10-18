@@ -20,7 +20,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use Symfony\Contracts\Service\ResetInterface;
@@ -42,11 +41,9 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     /**
      * @param EntityRepository<SwagMigrationMappingCollection> $migrationMappingRepo
-     * @param EntityRepository<CountryStateCollection> $countryStateRepo
      */
     public function __construct(
         protected EntityRepository $migrationMappingRepo,
-        protected EntityRepository $countryStateRepo,
         protected EntityWriterInterface $entityWriter,
         protected EntityDefinition $mappingDefinition,
         protected Connection $connection,
@@ -297,63 +294,6 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return null;
     }
 
-    public function createListItemMapping(
-        string $connectionId,
-        string $entityName,
-        string $oldIdentifier,
-        Context $context,
-        ?array $additionalData = null,
-        ?string $newUuid = null,
-    ): void {
-        $uuid = Uuid::randomHex();
-        if ($newUuid !== null) {
-            $uuid = $newUuid;
-
-            if ($this->isUuidDuplicate($connectionId, $entityName, $oldIdentifier, $newUuid, $context)) {
-                return;
-            }
-        }
-
-        $this->saveListMapping(
-            [
-                'id' => Uuid::randomHex(),
-                'connectionId' => $connectionId,
-                'entity' => $entityName,
-                'oldIdentifier' => $oldIdentifier,
-                'entityUuid' => $uuid,
-                'entityValue' => null,
-                'checksum' => null,
-                'additionalData' => $additionalData,
-            ]
-        );
-    }
-
-    public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
-    {
-        $cacheKey = $entityName . $identifier;
-        if (isset($this->mappings[$cacheKey])) {
-            return $this->mappings[$cacheKey];
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-        $criteria->addFilter(new EqualsFilter('entity', $entityName));
-        $criteria->addFilter(new EqualsFilter('oldIdentifier', $identifier));
-
-        $result = $this->migrationMappingRepo->search($criteria, $context);
-
-        $uuidList = [];
-        if ($result->getTotal() > 0) {
-            foreach ($result->getEntities() as $entity) {
-                $uuidList[] = $entity->getEntityUuid();
-            }
-        }
-
-        $this->mappings[$cacheKey] = $uuidList;
-
-        return $uuidList;
-    }
-
     public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
     {
         foreach ($this->writeArray as $key => $writeMapping) {
@@ -473,34 +413,6 @@ class MappingService implements MappingServiceInterface, ResetInterface
         $oldIdentifier = $mapping['oldIdentifier'];
         $this->mappings[$entity . $oldIdentifier][] = $mapping;
         $this->writeArray[] = $mapping;
-    }
-
-    private function isUuidDuplicate(string $connectionId, string $entityName, string $id, string $uuid, Context $context): bool
-    {
-        foreach ($this->writeArray as $item) {
-            if (
-                $item['connectionId'] === $connectionId
-                && $item['entity'] === $entityName
-                && $item['oldIdentifier'] === $id
-                && $item['entityUuid'] === $uuid
-            ) {
-                return true;
-            }
-        }
-
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('connectionId', $connectionId));
-        $criteria->addFilter(new EqualsFilter('entity', $entityName));
-        $criteria->addFilter(new EqualsFilter('oldIdentifier', $id));
-        $criteria->addFilter(new EqualsFilter('entityUuid', $uuid));
-
-        $result = $this->migrationMappingRepo->searchIds($criteria, $context);
-
-        if ($result->getTotal() > 0) {
-            return true;
-        }
-
-        return false;
     }
 
     private function writePerEntry(): void

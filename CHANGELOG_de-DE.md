@@ -74,7 +74,9 @@
 - MIG-1062 - Die Migration von Produktbewertungen von SW6 nach SW6 mit fehlenden zugehörigen Kunden wurde behoben
 - MIG-1063 - Verbesserung der Migration von Newsletter-Empfängern ohne Anrededaten von SW6 nach SW6
 - MIG-1070 - Unterstützung der Migration von Freitextfeldern des Typs combobox die keine vordefinierten Optionen besitzen, wurde hinzugefügt
-
+- MIG-1071 - Funktionen, die nur bei der Magento-Migration verwendet werden, wurden in das Magento-Plugin verschoben
+    - [BREAKING] Entfernt die Methode `createListItemMapping` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und verschiebt sie in das `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
+    - [BREAKING] Entfernt die Methode `getUuidList` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und verschiebt sie in das `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

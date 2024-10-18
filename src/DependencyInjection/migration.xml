@@ -40,7 +40,6 @@
 
         <service id="SwagMigrationAssistant\Migration\Mapping\MappingService">
             <argument type="service" id="swag_migration_mapping.repository"/>
-            <argument type="service" id="country_state.repository"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>

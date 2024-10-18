@@ -373,7 +373,6 @@ class MigrationDataProcessingTest extends TestCase
     {
         return new MappingService(
             $this->getContainer()->get('swag_migration_mapping.repository'),
-            static::getContainer()->get('country_state.repository'),
             $this->getContainer()->get(EntityWriter::class),
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             $this->getContainer()->get(Connection::class),
