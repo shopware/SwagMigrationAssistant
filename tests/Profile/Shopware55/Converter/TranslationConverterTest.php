@@ -596,7 +596,7 @@ class TranslationConverterTest extends TestCase
         static::assertNotNull($converted);
 
         static::assertSame(PropertyGroupDefinition::class, $converted['entityDefinitionClass']);
-        static::assertSame('Size', $converted['translations'][$defaultLanguage]['optionName']);
+        static::assertSame('Size', $converted['translations'][$defaultLanguage]['name']);
     }
 
     public function testConvertProductWithoutLocale(): void
