@@ -74,6 +74,9 @@
 - MIG-1062 - Fix the migration of product reviews from SW6 to SW6 with missing associated customer
 - MIG-1063 - Fix the migration of newsletter recipients from SW6 to SW6 with missing salutation association
 - MIG-1070 - Supports migration of attributes of type combobox that do not have predefined options
+- MIG-1071 - Moved functions which are only used in the magento migration plugin to the magento plugin
+  - [BREAKING] Removed method `createListItemMapping` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and move it to `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
+  - [BREAKING] Removed method `getUuidList` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and move it to `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data

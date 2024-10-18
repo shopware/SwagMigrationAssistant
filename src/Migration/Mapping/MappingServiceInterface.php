@@ -70,17 +70,6 @@ interface MappingServiceInterface
         Context $context,
     ): array;
 
-    public function createListItemMapping(
-        string $connectionId,
-        string $entityName,
-        string $oldIdentifier,
-        Context $context,
-        ?array $additionalData = null,
-        ?string $newUuid = null,
-    ): void;
-
-    public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array;
-
     /**
      * @return string[]
      */

@@ -55,7 +55,7 @@ For the full copyright and license information, please view the LICENSE
 file that was distributed with this source code.', 'separate' => 'bottom', 'location' => 'after_declare_strict', 'comment_type' => 'comment'],
     ])
     ->setUsingCache(true)
-    ->setCacheFile(Path::join($_SERVER['SHOPWARE_TOOL_CACHE_ECS'] ?? __DIR__, 'migration_assistant.cache'))
+    ->setCacheFile(Path::join($_SERVER['SHOPWARE_TOOL_CACHE_ECS'] ?? __DIR__, '/var/cache/php-cs-fixer.cache'))
     ->setFinder(
         (new Finder())
             ->in([__DIR__ . '/src', __DIR__ . '/tests'])

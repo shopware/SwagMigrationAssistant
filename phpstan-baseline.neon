@@ -81,17 +81,7 @@ parameters:
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:createListItemMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getUuidList\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
@@ -151,17 +141,7 @@ parameters:
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:createListItemMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getUuidList\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 

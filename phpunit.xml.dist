@@ -4,7 +4,7 @@
          xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.5/phpunit.xsd"
          bootstrap="tests/TestBootstrap.php"
          executionOrder="random"
-         cacheDirectory=".phpunit.cache">
+         cacheDirectory="var/cache/.phpunit.cache">
     <coverage/>
 
     <php>

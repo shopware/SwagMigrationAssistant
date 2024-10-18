@@ -27,7 +27,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\System\Country\Aggregate\CountryState\CountryStateCollection;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\Salutation\SalutationCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
@@ -55,14 +54,12 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
      * @param EntityRepository<ProductSortingCollection> $productSortingRepo
      * @param EntityRepository<StateMachineStateCollection> $stateMachineStateRepo
      * @param EntityRepository<DocumentBaseConfigCollection> $documentBaseConfigRepo
-     * @param EntityRepository<CountryStateCollection> $countryStateRepo
      * @param EntityRepository<TaxRuleCollection> $taxRuleRepo
      * @param EntityRepository<TaxRuleTypeCollection> $taxRuleTypeRepo
      * @param EntityRepository<MediaDefaultFolderCollection> $mediaDefaultFolderRepo
      */
     public function __construct(
         EntityRepository $migrationMappingRepo,
-        EntityRepository $countryStateRepo,
         EntityWriterInterface $entityWriter,
         EntityDefinition $mappingDefinition,
         Connection $connection,
@@ -83,7 +80,6 @@ class Shopware6MappingService extends MappingService implements Shopware6Mapping
     ) {
         parent::__construct(
             $migrationMappingRepo,
-            $countryStateRepo,
             $entityWriter,
             $mappingDefinition,
             $connection,

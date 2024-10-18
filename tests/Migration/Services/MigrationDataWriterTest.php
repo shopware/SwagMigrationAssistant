@@ -655,7 +655,6 @@ class MigrationDataWriterTest extends TestCase
     {
         return new MappingService(
             $this->migrationMappingRepo,
-            $this->getContainer()->get('country_state.repository'),
             $this->entityWriter,
             $this->getContainer()->get(SwagMigrationMappingDefinition::class),
             $this->getContainer()->get(Connection::class),
