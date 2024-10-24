@@ -1083,7 +1083,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $countries = [];
         foreach ($ruleData['shippingCountries'] as $country) {
-            $countryUuid = $this->countryLookup->get($country['countryiso'], $country['iso3'], $this->context);
+            $countryUuid = $this->countryLookup->getByIso3($country['iso3'], $this->context);
             if ($countryUuid === null) {
                 continue;
             }

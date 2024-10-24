@@ -18,10 +18,10 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
 
@@ -90,7 +90,7 @@ class LanguageConverterConvertDataTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = $this->createMigrationContext();
-        $mappingServiceMock = $this->createMock(Shopware6MappingServiceInterface::class);
+        $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
 
         $languageLookupMock = $this->createMock(LanguageLookup::class);
         $languageLookupMock->method('getLanguageEntity')->willReturn(null);
@@ -117,7 +117,7 @@ class LanguageConverterConvertDataTest extends TestCase
         $context = Context::createDefaultContext();
         $migrationContext = $this->createMigrationContext();
 
-        $mappingServiceMock = $this->createMock(Shopware6MappingServiceInterface::class);
+        $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
 
         $languageLookupMock = $this->createMock(LanguageLookup::class);
         $languageLookupMock->method('getLanguageEntity')->willReturn(new LanguageEntity());
@@ -140,7 +140,7 @@ class LanguageConverterConvertDataTest extends TestCase
     }
 
     private function createLanguageConverter(
-        ?Shopware6MappingServiceInterface $mappingService = null,
+        ?MappingServiceInterface $mappingService = null,
         ?LoggingServiceInterface $loggingService = null,
         ?LanguageLookup $languageLookup = null,
         ?LocaleLookup $localeLookup = null,

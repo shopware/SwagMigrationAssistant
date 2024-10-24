@@ -22,25 +22,6 @@
             <tag name="shopware.migration.gateway"/>
         </service>
 
-        <!-- Shopware6 MappingService -->
-        <service id="SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService"
-                 parent="SwagMigrationAssistant\Migration\Mapping\MappingService">
-            <argument type="service" id="number_range_type.repository"/>
-            <argument type="service" id="mail_template_type.repository"/>
-            <argument type="service" id="mail_template.repository"/>
-            <argument type="service" id="salutation.repository"/>
-            <argument type="service" id="system_config.repository"/>
-            <argument type="service" id="product_sorting.repository"/>
-            <argument type="service" id="state_machine_state.repository"/>
-            <argument type="service" id="document_base_config.repository"/>
-            <argument type="service" id="country_state.repository"/>
-            <argument type="service" id="tax.repository"/>
-            <argument type="service" id="tax_rule.repository"/>
-            <argument type="service" id="tax_rule_type.repository"/>
-            <argument type="service" id="cms_page.repository"/>
-            <argument type="service" id="media_default_folder.repository"/>
-        </service>
-
         <!-- Shopware 6 major profile -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile">
             <argument>%kernel.shopware_version%</argument>
@@ -49,7 +30,7 @@
 
         <!-- Shopware Converter classes -->
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter" abstract="true">
-            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
         </service>
 
@@ -116,11 +97,14 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleTypeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -136,6 +120,7 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -173,6 +158,7 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -197,11 +183,14 @@
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
             <argument type="service" id="number_range_state.repository" />
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -253,21 +242,25 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\CmsPageLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -305,6 +298,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
@@ -1049,7 +1043,7 @@
             <argument type="service" id="document.repository"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
             <argument type="service" id="Shopware\Core\Content\Media\MediaService"/>
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactory"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>

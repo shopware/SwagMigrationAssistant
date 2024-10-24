@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +20,14 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class SalutationConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        protected readonly SalutationLookup $salutationLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -27,7 +38,12 @@ class SalutationConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $salutationUuid = $this->mappingService->getSalutationUuid($data['id'], $data['salutationKey'], $this->migrationContext, $this->context);
+        $salutationMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALUTATION, $data['id'], $this->context);
+        if ($salutationMapping !== null) {
+            $salutationUuid = $salutationMapping['entityUuid'];
+        } else {
+            $salutationUuid = $this->salutationLookup->get($data['salutationKey'], $this->context);
+        }
 
         if ($salutationUuid !== null) {
             $converted['id'] = $salutationUuid;

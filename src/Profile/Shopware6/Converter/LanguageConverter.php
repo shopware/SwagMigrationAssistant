@@ -16,16 +16,16 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class LanguageConverter extends ShopwareConverter
 {
     public function __construct(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected readonly LanguageLookup $languageLookup,
         protected readonly LocaleLookup $localeLookup,

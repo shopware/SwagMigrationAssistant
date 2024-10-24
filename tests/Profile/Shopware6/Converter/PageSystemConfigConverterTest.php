@@ -8,24 +8,43 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PageSystemConfigDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 class PageSystemConfigConverterTest extends ShopwareConverterTest
 {
+    use KernelTestBehaviour;
+
     protected function createConverter(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
-        return new PageSystemConfigConverter($mappingService, $loggingService);
+        $systemConfigLookup = $this->createMock(SystemConfigLookup::class);
+
+        static::assertIsArray($mappingArray);
+
+        foreach ($mappingArray as $mapping) {
+            if ($mapping['entityName'] === DefaultEntities::SYSTEM_CONFIG) {
+                $systemConfigLookup->method('get')->willReturn($mapping['newIdentifier']);
+            }
+        }
+
+        return new PageSystemConfigConverter(
+            $mappingService,
+            $loggingService,
+            $systemConfigLookup
+        );
     }
 
     protected function createDataSet(): DataSet

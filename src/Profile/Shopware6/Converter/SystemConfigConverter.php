@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SystemConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +20,14 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class SystemConfigConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly SystemConfigLookup $systemConfigLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -27,8 +38,7 @@ class SystemConfigConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $systemConfigUuid = $this->mappingService->getSystemConfigUuid($data['id'], $data['configurationKey'], $data['salesChannelId'] ?? null, $this->migrationContext, $this->context);
-
+        $systemConfigUuid = $this->systemConfigLookup->get($data['configurationKey'], $data['salesChannelId'], $this->context);
         if ($systemConfigUuid !== null) {
             $converted['id'] = $systemConfigUuid;
         }

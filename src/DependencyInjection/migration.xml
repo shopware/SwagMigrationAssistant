@@ -48,6 +48,7 @@
             <tag name="kernel.reset" method="reset"/>
         </service>
 
+        <!-- Shopware Lookup services -->
         <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup">
             <argument type="service" id="country.repository"/>
             <tag name="kernel.reset" method="reset"/>
@@ -116,6 +117,61 @@
 
         <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup">
             <argument type="service" id="tax.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup">
+            <argument type="service" id="mail_template_type.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup">
+            <argument type="service" id="mail_template.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup">
+            <argument type="service" id="number_range_type.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup">
+            <argument type="service" id="salutation.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup">
+            <argument type="service" id="state_machine_state.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup">
+            <argument type="service" id="system_config.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup">
+            <argument type="service" id="document_base_config.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\CmsPageLookup">
+            <argument type="service" id="cms_page.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleLookup">
+            <argument type="service" id="tax_rule.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleTypeLookup">
+            <argument type="service" id="tax_rule_type.repository"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup">
+            <argument type="service" id="product_sorting.repository"/>
             <tag name="kernel.reset" method="reset"/>
         </service>
 

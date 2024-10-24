@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductSortingDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +20,14 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class ProductSortingConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly ProductSortingLookup $productSortingLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -26,10 +37,7 @@ class ProductSortingConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-        [$productSortingUuid, $isLocked] = $this->mappingService->getProductSortingUuid(
-            $data['key'],
-            $this->context
-        );
+        $productSortingUuid = $this->productSortingLookup->get($data['key'], $this->context);
 
         if ($productSortingUuid !== null) {
             $converted['id'] = $productSortingUuid;
@@ -41,7 +49,7 @@ class ProductSortingConverter extends ShopwareConverter
             $converted['id']
         );
 
-        if ($isLocked) {
+        if ($this->productSortingLookup->getIsLocked($data['key'], $this->context)) {
             return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }
 

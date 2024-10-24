@@ -12,21 +12,23 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedDocumentTypeLog;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class DocumentBaseConfigConverter extends ShopwareMediaConverter
 {
     public function __construct(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected MediaFileServiceInterface $mediaFileService,
         protected readonly DocumentTypeLookup $documentTypeLookup,
+        protected readonly GlobalDocumentBaseConfigLookup $globalDocumentBaseConfigLookup,
     ) {
         parent::__construct($mappingService, $loggingService, $mediaFileService);
     }
@@ -62,7 +64,10 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
         unset($converted['documentType']);
 
         if ($data['global']) {
-            $converted['id'] = $this->mappingService->getGlobalDocumentBaseConfigUuid($data['id'], $converted['documentTypeId'], $this->connectionId, $this->migrationContext, $this->context);
+            $converted['id'] = $this->globalDocumentBaseConfigLookup->get($converted['documentTypeId'], $this->context);
+            if ($converted['id'] === null) {
+                $converted['id'] = $data['id'];
+            }
         }
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(

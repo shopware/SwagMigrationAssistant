@@ -13,16 +13,16 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 class CountryConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
@@ -33,7 +33,7 @@ class CountryConverterTest extends ShopwareConverterTest
 
         foreach ($mappingArray as $mapping) {
             if ($mapping['entityName'] === DefaultEntities::COUNTRY) {
-                $countryLookup->method('get')->willReturn($mapping['newIdentifier']);
+                $countryLookup->method('getByIso3')->willReturn($mapping['newIdentifier']);
             }
         }
 

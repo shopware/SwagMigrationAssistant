@@ -10,6 +10,10 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxRuleDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +21,15 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class TaxRuleConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly TaxRuleLookup $taxRuleLookup,
+        private readonly TaxRuleTypeLookup $taxRuleTypeLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -45,22 +58,39 @@ class TaxRuleConverter extends ShopwareConverter
         }
         $converted['countryId'] = $countryId;
 
-        $taxRuleTypeId = $this->mappingService->getTaxRuleTypeUuidByCriteria(
+        $taxRuleTypeMapping = $this->mappingService->getMapping(
             $this->connectionId,
+            DefaultEntities::TAX_RULE_TYPE,
             $converted['taxRuleTypeId'],
-            $converted['type']['technicalName'] ?? '',
             $this->context
         );
+
+        if ($taxRuleTypeMapping) {
+            $taxRuleTypeUuid = $taxRuleTypeMapping['entityUuid'];
+        } else {
+            $taxRuleTypeUuid = $this->taxRuleTypeLookup->get(
+                $converted['type']['technicalName'] ?? '',
+                $this->context
+            );
+
+            $this->mappingService->createMapping(
+                $this->connectionId,
+                DefaultEntities::TAX_RULE_TYPE,
+                $data['type']['id'],
+                $this->checksum,
+                null,
+                $taxRuleTypeUuid,
+            );
+        }
+
         // new types can not be created due to write protection on technical name
-        if ($taxRuleTypeId === null) {
+        if ($taxRuleTypeUuid === null) {
             return new ConvertStruct(null, $converted);
         }
         unset($converted['type']);
-        $converted['taxRuleTypeId'] = $taxRuleTypeId;
+        $converted['taxRuleTypeId'] = $taxRuleTypeUuid;
 
-        $taxRuleId = $this->mappingService->getTaxRuleUuidByCriteria(
-            $this->connectionId,
-            $converted['id'],
+        $taxRuleId = $this->taxRuleLookup->get(
             $converted['taxId'],
             $converted['countryId'],
             $converted['taxRuleTypeId'],

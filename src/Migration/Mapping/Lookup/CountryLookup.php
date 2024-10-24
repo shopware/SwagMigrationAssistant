@@ -34,27 +34,46 @@ class CountryLookup implements ResetInterface
     ) {
     }
 
-    public function get(string $iso, string $iso3, Context $context): ?string
+    public function getByIso2(string $iso, Context $context): ?string
     {
-        $cacheKey = \sprintf('%s-%s', $iso, $iso3);
-
-        if (\array_key_exists($cacheKey, $this->cache)) {
-            return $this->cache[$cacheKey];
+        if (\array_key_exists($iso, $this->cache)) {
+            return $this->cache[$iso];
         }
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('iso', $iso));
+        $criteria->setLimit(1);
+
+        $result = $this->countryRepository->search($criteria, $context)->getEntities()->first();
+        if (!$result instanceof CountryEntity) {
+            $this->cache[$iso] = null;
+
+            return null;
+        }
+
+        $this->cache[$iso] = $result->getId();
+
+        return $result->getId();
+    }
+
+    public function getByIso3(string $iso3, Context $context): ?string
+    {
+        if (\array_key_exists($iso3, $this->cache)) {
+            return $this->cache[$iso3];
+        }
+
+        $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('iso3', $iso3));
         $criteria->setLimit(1);
 
         $result = $this->countryRepository->search($criteria, $context)->getEntities()->first();
         if (!$result instanceof CountryEntity) {
-            $this->cache[$cacheKey] = null;
+            $this->cache[$iso3] = null;
 
             return null;
         }
 
-        $this->cache[$cacheKey] = $result->getId();
+        $this->cache[$iso3] = $result->getId();
 
         return $result->getId();
     }

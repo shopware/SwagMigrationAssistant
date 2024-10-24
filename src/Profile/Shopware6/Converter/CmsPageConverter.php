@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CmsPageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CmsPageDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +20,14 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class CmsPageConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly CmsPageLookup $cmsPageLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -29,13 +40,24 @@ class CmsPageConverter extends ShopwareConverter
 
         // handle locked default layouts
         if (isset($converted['locked']) && $converted['locked'] === true) {
-            $this->mappingService->mapLockedCmsPageUuidByNameAndType(
+            $cmsPageMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CMS_PAGE, $data['id'], $this->context);
+            if ($cmsPageMapping !== null) {
+                return new ConvertStruct(null, $data, $cmsPageMapping['id']);
+            }
+
+            $cmpPageUuid = $this->cmsPageLookup->getLockedByNamesAndType(
                 \array_column($converted['translations'], 'name'),
                 $converted['type'],
-                $data['id'],
-                $this->connectionId,
-                $this->migrationContext,
                 $this->context
+            );
+
+            $this->mappingService->createMapping(
+                $this->connectionId,
+                DefaultEntities::CMS_PAGE,
+                $data['id'],
+                $this->checksum,
+                null,
+                $cmpPageUuid,
             );
 
             return new ConvertStruct(null, $data);
@@ -108,7 +130,7 @@ class CmsPageConverter extends ShopwareConverter
     {
         $names = \array_column($converted['translations'], 'name');
         $names[] = $converted['name'];
-        $duplicatePageUuid = $this->mappingService->getCmsPageUuidByNames($names, $this->context);
+        $duplicatePageUuid = $this->cmsPageLookup->getByNames($names, $this->context);
         $isDuplicated = $duplicatePageUuid !== null && $converted['id'] !== $duplicatePageUuid;
 
         if (isset($converted['translations'])) {

@@ -47,11 +47,6 @@ class CountryStateLookup implements ResetInterface
         $criteria->setLimit(1);
 
         $countryStateUuid = $this->countryStateRepository->searchIds($criteria, $context)->firstId();
-        if ($countryStateUuid === null) {
-            $this->cache[$cacheKey] = null;
-
-            return null;
-        }
 
         $this->cache[$cacheKey] = $countryStateUuid;
 

@@ -46,9 +46,7 @@ class DeliveryTimeLookup implements ResetInterface
         $criteria->addFilter(new EqualsFilter('unit', $unit));
         $criteria->setLimit(1);
 
-        $result = $this->deliveryTimeRepository->searchIds($criteria, $context);
-
-        $deliveryTimeUuid = $result->firstId();
+        $deliveryTimeUuid = $this->deliveryTimeRepository->searchIds($criteria, $context)->firstId();
 
         $this->cache[$cacheKey] = $deliveryTimeUuid;
 

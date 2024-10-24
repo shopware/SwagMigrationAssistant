@@ -42,7 +42,6 @@
   - [BREAKING] Fügt weitere Konstruktorparameter `MediaDefaultFolderLookup $mediaFolderLookup`, `MediaThumbnailSizeLookup $mediaThumbnailSizeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter` hinzu.
   - [BREAKING] Fügt weitere Konstruktorparameter `NumberRangeLookup $numberRangeLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter` hinzu.
   - [BREAKING] Fügt weitere Konstruktorparameter `SeoUrlTemplateLookup $seoUrlTemplateLookup` zu `\SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter` hinzu.
-  - [BREAKING] Fügt weitere Konstruktorparameter `Connection $connection` zu `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` hinzu.
   - [BREAKING] Entfernt die Methode `getDefaultCmsPageUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup::get()`.
   - [BREAKING] Entfernt die Methode `getLanguageUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup::get()`.
   - [BREAKING] Entfernt die Methode `getLocaleUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup::get()`.
@@ -58,14 +57,12 @@
   - [BREAKING] Entfernt die Methode `getThumbnailSizeUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup::get()`.
   - [BREAKING] Entfernt die Methode `getDocumentTypeUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup::get()`.
   - [BREAKING] Entfernt die Methode `getLowestRootCategoryUuid` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup::get()`.
-  - [BREAKING] Entfernt die Methode `getSeoUrlTemplateUuid` vom `SwagMigrationAssistant\Migration\Mapping\Shopware6MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\Lookup\SeoUrlTemplateLookup::get()`.
   - [BREAKING] Ändert die Signatur der Methode `writeMapping` von `public function writeMapping(Context $context): void;` zu `public function writeMapping(): void;` im `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und alle die es implementieren.
   - [BREAKING] Entfernt die Konstruktorparameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`,  `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` von `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 - MIG-1033 - Die Migration der SEO-Hauptkategorie für Produkte mit SW5 oder SW6 als Quellsystem wurde hinzugefügt
 - MIG-1039 - Für Kunden- und Bestelladressen werden jetzt auch die Bundesländer migriert
 - MIG-1039 - [BREAKING] Neue Methode `getCountryStateUuid` zu `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` hinzugefügt
 - MIG-1039 - [BREAKING] Neuer Konstruktorparameter `EntityRepository $countryStateRepo` zu `SwagMigrationAssistant\Migration\Mapping\MappingService` hinzugefügt
-- MIG-1039 - [BREAKING] Methode `getCountryStateUuid` aus `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und ihrer Standardimplementierung `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService` entfernt.
 - MIG-1049 - Das Setzen der `connection`-Eigenschaft in `SwagMigrationMappingEntity` ist jetzt optional
 - MIG-1050 - Optimiert die Migration von SEO-URLs durch Verwendung der `SeoUrlPersister::updateSeoUrls`-Methode
 - MIG-1052 - Die Migration der „Von Admin erstellt“-Flags bei Kunden und Bestellungen wurde behoben
@@ -78,7 +75,86 @@
 - MIG-1071 - Funktionen, die nur bei der Magento-Migration verwendet werden, wurden in das Magento-Plugin verschoben
     - [BREAKING] Entfernt die Methode `createListItemMapping` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und verschiebt sie in das `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
     - [BREAKING] Entfernt die Methode `getUuidList` vom `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und verschiebt sie in das `\Swag\MigrationMagento\Migration\Mapping\MagentoMappingServiceInterface`.
-
+- MIG-1072 - Umzug in die neue Lookup-Servicestruktur
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\CmsPageLookup` hinzu, um die Methoden `getCmsPageUuidByNames` and `mapLockedCmsPageUuidByNameAndType`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup` hinzu, um die Methode `getGlobalDocumentBaseConfigUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup` hinzu, um die Methode `getMailTemplateTypeUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup` hinzu, um die Methode `getNumberRangeTypeUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup` hinzu, um die Methode `getProductSortingUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\SalutationLookup` hinzu, um die Methode `getSalutationUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup` hinzu, um die Methode `getStateMachineStateUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\SystemConfigLookup` hinzu, um die Methode `getSystemConfigUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup` hinzu, um die Methode `getSystemDefaultMailTemplateUuid`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleLookup` hinzu, um die Methode `getTaxRuleUuidByCriteria`  zu ersetzen.
+    - Fügt die neue Klasse `SwagMigrationAssistant\Migration\Mapping\Lookup\TaxRuleTypeLookup` hinzu, um die Methode `getTaxRuleTypeUuidByCriteria`  zu ersetzen.
+    - [BREAKING] Fügt weitere Konstruktorparameter `CmsPageLookup $cmsPageLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `CountryLookup $countryLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `CountryStateLookup $countryStateLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `CurrencyLookup $currencyLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `DeliveryTimeLookup $deliveryTimeLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `DocumentTypeLookup $documentTypeLookup`, `GlobalDocumentBaseConfigLookup $globalDocumentBaseConfigLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `DocumentTypeLookup $documentTypeLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `MailTemplateTypeLookup $mailTemplateTypeLookup`, `SystemDefaultMailTemplateLookup $systemDefaultMailTemplateLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `NumberRangeTypeLookup $numberRangeTypeLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `StateMachineStateLookup $stateMachineStateLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `SystemConfigLookup $systemConfigLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `ProductSortingLookup $productSortingLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `SalutationLookup $salutationLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `SeoUrlTemplateLookup $seoUrlTemplateLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `SystemConfigLookup $systemConfigLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter` hinzu.
+    - [BREAKING] Fügt weitere Konstruktorparameter `TaxLookup $taxLookup` zu `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter` hinzu.
+    - [BREAKING] Ändert Konstruktorparameter von `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` zu `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` in folgenden Dateien:
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryAssociationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryProductStreamAssociationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerGroupConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomerWishlistConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentInheritanceConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MediaConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderInheritanceConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\NewsletterRecipientConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductManufacturerConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductReviewConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductSortingConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\PromotionConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelDomainConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlTemplateConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SnippetSetConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\SystemConfigConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter`
+        - `SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter`
+    - [BREAKING] Entfernt `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und die Services in `SwagMigrationAssistant\Migration\Mapping\Lookup`.
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

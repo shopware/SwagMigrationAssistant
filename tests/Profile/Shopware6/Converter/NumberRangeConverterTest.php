@@ -11,12 +11,14 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 class NumberRangeConverterTest extends ShopwareConverterTest
@@ -24,18 +26,28 @@ class NumberRangeConverterTest extends ShopwareConverterTest
     use KernelTestBehaviour;
 
     protected function createConverter(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
         $numberRangeLookup = $this->createMock(NumberRangeLookup::class);
+        $numberRangeTypeLookup = $this->createMock(NumberRangeTypeLookup::class);
+
+        static::assertIsArray($mappingArray);
+
+        foreach ($mappingArray as $mapping) {
+            if ($mapping['entityName'] === DefaultEntities::NUMBER_RANGE_TYPE) {
+                $numberRangeTypeLookup->method('get')->willReturn($mapping['newIdentifier']);
+            }
+        }
 
         return new NumberRangeConverter(
             $mappingService,
             $loggingService,
             $this->getContainer()->get('number_range_state.repository'),
-            $numberRangeLookup
+            $numberRangeLookup,
+            $numberRangeTypeLookup
         );
     }
 
