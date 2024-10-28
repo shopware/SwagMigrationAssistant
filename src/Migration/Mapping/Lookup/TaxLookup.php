@@ -25,6 +25,11 @@ class TaxLookup implements ResetInterface
     private array $cache = [];
 
     /**
+     * @var array<string, float|null>
+     */
+    private array $taxRateCache = [];
+
+    /**
      * @param EntityRepository<TaxCollection> $taxRepository
      *
      * @internal
@@ -77,8 +82,27 @@ class TaxLookup implements ResetInterface
         return $taxRateUuid;
     }
 
+    public function getTaxRate(string $uuid, Context $context): ?float
+    {
+        if (\array_key_exists($uuid, $this->taxRateCache)) {
+            return $this->taxRateCache[$uuid];
+        }
+
+        $tax = $this->taxRepository->search(new Criteria([$uuid]), $context)->getEntities()->first();
+        if (!$tax instanceof TaxEntity) {
+            $this->taxRateCache[$uuid] = null;
+
+            return null;
+        }
+
+        $this->taxRateCache[$uuid] = $tax->getTaxRate();
+
+        return $this->taxRateCache[$uuid];
+    }
+
     public function reset(): void
     {
         $this->cache = [];
+        $this->taxRateCache = [];
     }
 }
