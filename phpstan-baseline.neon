@@ -961,26 +961,6 @@ parameters:
 			path: src/Profile/Shopware6/Gateway/Api/Reader/EnvironmentReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:getCmsPageUuidByNames\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingService\\:\\:getProductSortingUuid\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:getCmsPageUuidByNames\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Mapping\\\\Shopware6MappingServiceInterface\\:\\:getProductSortingUuid\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Mapping/Shopware6MappingServiceInterface.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest has an uninitialized property \\$environmentService\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: tests/DataProvider/Service/EnvironmentServiceTest.php
@@ -1066,17 +1046,7 @@ parameters:
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getCmsPageUuidByNames\\(\\) has parameter \\$names with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getProductSortingUuid\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 

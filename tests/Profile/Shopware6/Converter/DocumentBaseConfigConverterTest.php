@@ -13,21 +13,23 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentBaseConfigConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseConfigDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 class DocumentBaseConfigConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
         $documentLookup = $this->createMock(DocumentTypeLookup::class);
+        $documentBaseConfigLookup = $this->createMock(GlobalDocumentBaseConfigLookup::class);
 
         static::assertIsArray($mappingArray);
 
@@ -35,13 +37,18 @@ class DocumentBaseConfigConverterTest extends ShopwareConverterTest
             if ($mapping['entity'] !== DefaultEntities::ORDER_DOCUMENT_TYPE) {
                 $documentLookup->method('get')->willReturn($mapping['newIdentifier']);
             }
+
+            if ($mapping['entityName'] === DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG) {
+                $documentBaseConfigLookup->method('get')->willReturn($mapping['newIdentifier']);
+            }
         }
 
         return new DocumentBaseConfigConverter(
             $mappingService,
             $loggingService,
             $mediaFileService,
-            $documentLookup
+            $documentLookup,
+            $documentBaseConfigLookup
         );
     }
 

@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +20,14 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class TaxConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly TaxLookup $taxLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -26,13 +37,7 @@ class TaxConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-        $taxId = $this->mappingService->getTaxUuidByCriteria(
-            $this->connectionId,
-            $data['id'],
-            (float) $data['taxRate'],
-            $data['name'],
-            $this->context
-        );
+        $taxId = $this->taxLookup->getByTaxRateAndName((float) $data['taxRate'], $data['name'], $this->context);
 
         if ($taxId !== null) {
             $converted['id'] = $taxId;

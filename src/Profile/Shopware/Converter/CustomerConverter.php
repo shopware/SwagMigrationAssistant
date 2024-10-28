@@ -473,7 +473,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $country = [];
         $countryUuid = null;
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
-            $countryUuid = $this->countryLookup->get($oldCountryData['countryiso'], $oldCountryData['iso3'], $this->context);
+            $countryUuid = $this->countryLookup->getByIso3($oldCountryData['iso3'], $this->context);
         }
 
         if ($countryUuid !== null) {

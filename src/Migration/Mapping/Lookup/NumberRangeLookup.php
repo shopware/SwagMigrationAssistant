@@ -46,11 +46,6 @@ class NumberRangeLookup implements ResetInterface
         ));
 
         $result = $this->numberRangeRepository->searchIds($criteria, $context)->firstId();
-        if ($result === null) {
-            $this->cache[$type] = null;
-
-            return null;
-        }
 
         $this->cache[$type] = $result;
 

@@ -10,22 +10,38 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\CmsPageLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CmsPageConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CmsPageDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 class CmsPageConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
-        return new CmsPageConverter($mappingService, $loggingService);
+        $cmsPageLookup = $this->createMock(CmsPageLookup::class);
+
+        static::assertIsArray($mappingArray);
+
+        foreach ($mappingArray as $mapping) {
+            if ($mapping['entityName'] === DefaultEntities::CMS_PAGE) {
+                $cmsPageLookup->method('getByNames')->willReturn($mapping['newIdentifier']);
+            }
+        }
+
+        return new CmsPageConverter(
+            $mappingService,
+            $loggingService,
+            $cmsPageLookup
+        );
     }
 
     protected function createDataSet(): DataSet

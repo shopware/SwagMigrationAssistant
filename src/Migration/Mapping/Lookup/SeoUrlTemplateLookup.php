@@ -56,11 +56,6 @@ class SeoUrlTemplateLookup implements ResetInterface
         $criteria->setLimit(1);
 
         $seoUrlTemplateId = $this->seoUrlTemplateRepository->searchIds($criteria, $context)->firstId();
-        if ($seoUrlTemplateId === null) {
-            $this->cache[$cacheKey] = null;
-
-            return null;
-        }
 
         $this->cache[$cacheKey] = $seoUrlTemplateId;
 

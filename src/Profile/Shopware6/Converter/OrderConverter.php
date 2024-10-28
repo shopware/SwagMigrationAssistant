@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -17,6 +20,14 @@ use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 #[Package('services-settings')]
 class OrderConverter extends ShopwareConverter
 {
+    public function __construct(
+        MappingServiceInterface $mappingService,
+        LoggingServiceInterface $loggingService,
+        private readonly StateMachineStateLookup $stateMachineStateLookup,
+    ) {
+        parent::__construct($mappingService, $loggingService);
+    }
+
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile()->getName() === Shopware6MajorProfile::PROFILE_NAME
@@ -53,23 +64,21 @@ class OrderConverter extends ShopwareConverter
             $converted['orderCustomer']['salutationId']
         );
 
-        $converted['stateId'] = $this->mappingService->getStateMachineStateUuid(
-            $converted['stateId'],
+        $converted['stateId'] = $this->stateMachineStateLookup->get(
             $converted['stateMachineState']['technicalName'],
             $converted['stateMachineState']['stateMachine']['technicalName'],
-            $this->migrationContext,
             $this->context
         );
+
         unset($converted['stateMachineState']);
 
         foreach ($converted['deliveries'] as &$delivery) {
-            $delivery['stateId'] = $this->mappingService->getStateMachineStateUuid(
-                $delivery['stateId'],
+            $delivery['stateId'] = $this->stateMachineStateLookup->get(
                 $delivery['stateMachineState']['technicalName'],
                 $delivery['stateMachineState']['stateMachine']['technicalName'],
-                $this->migrationContext,
                 $this->context
             );
+
             unset($delivery['stateMachineState']);
 
             if (isset($delivery['shippingOrderAddress']['countryStateId'])) {
@@ -82,13 +91,12 @@ class OrderConverter extends ShopwareConverter
         unset($delivery);
 
         foreach ($converted['transactions'] as &$transaction) {
-            $transaction['stateId'] = $this->mappingService->getStateMachineStateUuid(
-                $transaction['stateId'],
+            $transaction['stateId'] = $this->stateMachineStateLookup->get(
                 $transaction['stateMachineState']['technicalName'],
                 $transaction['stateMachineState']['stateMachine']['technicalName'],
-                $this->migrationContext,
                 $this->context
             );
+
             unset($transaction['stateMachineState']);
         }
         unset($transaction);

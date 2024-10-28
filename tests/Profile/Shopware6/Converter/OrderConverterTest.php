@@ -11,21 +11,35 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\StateMachineStateLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 
 #[Package('services-settings')]
 class OrderConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
-        return new OrderConverter($mappingService, $loggingService);
+        $stateMachineStateLookup = $this->createMock(StateMachineStateLookup::class);
+
+        $stateMachineStateLookup->method('get')
+            ->willReturnOnConsecutiveCalls(
+                '665b8a01d83841369cf3c58d22481a3d',
+                '775b8a01d83841369cf3c58d22481a3d',
+                '555b8a01d83841369cf3c58d22481a3d'
+            );
+
+        return new OrderConverter(
+            $mappingService,
+            $loggingService,
+            $stateMachineStateLookup
+        );
     }
 
     protected function createDataSet(): DataSet

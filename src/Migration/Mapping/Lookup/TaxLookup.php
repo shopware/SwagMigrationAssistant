@@ -58,6 +58,25 @@ class TaxLookup implements ResetInterface
         return $result->getId();
     }
 
+    public function getByTaxRateAndName(float $taxRate, string $name, Context $context): ?string
+    {
+        $cacheKey = $taxRate . '-' . $name;
+        if (\array_key_exists($cacheKey, $this->cache)) {
+            return $this->cache[$cacheKey];
+        }
+
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('taxRate', $taxRate));
+        $criteria->addFilter(new EqualsFilter('name', $name));
+        $criteria->setLimit(1);
+
+        $taxRateUuid = $this->taxRepository->searchIds($criteria, $context)->firstId();
+
+        $this->cache[$cacheKey] = $taxRateUuid;
+
+        return $taxRateUuid;
+    }
+
     public function reset(): void
     {
         $this->cache = [];

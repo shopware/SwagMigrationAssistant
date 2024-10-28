@@ -12,16 +12,16 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
+use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('services-settings')]
 class CountryConverter extends ShopwareConverter
 {
     public function __construct(
-        Shopware6MappingServiceInterface $mappingService,
+        MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
         protected readonly CountryLookup $countryLookup,
     ) {
@@ -37,7 +37,7 @@ class CountryConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-        $countryUuid = $this->countryLookup->get($data['iso'], $data['iso3'], $this->context);
+        $countryUuid = $this->countryLookup->getByIso3($data['iso3'], $this->context);
         if ($countryUuid !== null) {
             $converted['id'] = $countryUuid;
         }
