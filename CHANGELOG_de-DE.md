@@ -155,6 +155,7 @@
         - `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter`
         - `SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter`
     - [BREAKING] Entfernt `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` und allen die es implementieren. Nutze stattdessen `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` und die Services in `SwagMigrationAssistant\Migration\Mapping\Lookup`.
+- MIG-1077 - Optimierter Datenabruf unter Berücksichtigung der übergebenen Batch-Werte
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

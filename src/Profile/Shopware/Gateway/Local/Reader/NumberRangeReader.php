@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -33,7 +34,7 @@ class NumberRangeReader extends AbstractReader
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
-        $numberRanges = $this->fetchNumberRanges();
+        $numberRanges = $this->fetchNumberRanges($migrationContext->getOffset(), $migrationContext->getLimit());
         $prefix = \unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
 
         if (!$prefix) {
@@ -63,15 +64,20 @@ class NumberRangeReader extends AbstractReader
         return new TotalStruct(DefaultEntities::NUMBER_RANGE, $total);
     }
 
-    private function fetchNumberRanges(): array
+    /**
+     * @return array<int, array<string,mixed>>
+     */
+    private function fetchNumberRanges(int $offset, int $limit): array
     {
+        $ids = $this->fetchIdentifiers('s_order_number', $offset, $limit);
+
         $query = $this->connection->createQueryBuilder()
             ->select('*')
-            ->from('s_order_number');
+            ->from('s_order_number')
+            ->where('id IN (:ids)')
+            ->setParameter('ids', $ids, ArrayParameterType::STRING);
 
-        $query->executeQuery();
-
-        return $query->fetchAllAssociative();
+        return $query->executeQuery()->fetchAllAssociative();
     }
 
     private function fetchPrefix(): string

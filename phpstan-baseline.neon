@@ -496,11 +496,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerWishlistReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerWishlistReader.php
-
-		-
 			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader has an uninitialized property \\$connection\\. Give it default value or assign it in the constructor\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
@@ -686,11 +681,6 @@ parameters:
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NumberRangeReader\\:\\:fetchNumberRanges\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/NumberRangeReader.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderDocumentReader\\:\\:fetchDocuments\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
@@ -734,11 +724,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PropertyGroupOptionReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\SalesChannelReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware/Gateway/Local/Reader/SalesChannelReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchExcludedCategories\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"

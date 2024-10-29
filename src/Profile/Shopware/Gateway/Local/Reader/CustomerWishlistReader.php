@@ -54,6 +54,9 @@ class CustomerWishlistReader extends AbstractReader
         return new TotalStruct(DefaultEntities::CUSTOMER_WISHLIST, $total);
     }
 
+    /**
+     * @return array<int, array<string,mixed>>|array{}
+     */
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
         $ids = $this->fetchIdentifiers('s_order_notes', $migrationContext->getOffset(), $migrationContext->getLimit());
@@ -65,6 +68,7 @@ class CustomerWishlistReader extends AbstractReader
         $query->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id');
         $query->addSelect('subshopID');
 
+        $query->where('note.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
         $query->addOrderBy('note.id');
 
