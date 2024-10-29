@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -34,7 +35,7 @@ class SalesChannelReader extends AbstractReader
     public function read(MigrationContextInterface $migrationContext): array
     {
         $this->setConnection($migrationContext);
-        $fetchedSalesChannels = $this->fetchData();
+        $fetchedSalesChannels = $this->fetchData($migrationContext->getOffset(), $migrationContext->getLimit());
         $salesChannels = $this->mapData($fetchedSalesChannels, [], ['shop', 'locale', 'currency']);
 
         // represents the main language of the migrated shop
@@ -66,8 +67,12 @@ class SalesChannelReader extends AbstractReader
         return new TotalStruct(DefaultEntities::SALES_CHANNEL, $total);
     }
 
-    private function fetchData(): array
+    /**
+     * @return array<mixed>
+     */
+    private function fetchData(int $offset, int $limit): array
     {
+        $ids = $this->fetchIdentifiers('s_core_shops', $offset, $limit);
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_core_shops', 'shop');
@@ -80,6 +85,8 @@ class SalesChannelReader extends AbstractReader
         $query->leftJoin('shop', 's_core_currencies', 'currency', 'shop.currency_id = currency.id');
         $query->addSelect('currency.currency');
 
+        $query->where('shop.id IN (:ids)');
+        $query->setParameter('ids', $ids, ArrayParameterType::STRING);
         $query->orderBy('shop.main_id');
 
         return FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());

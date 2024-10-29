@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\NumberRangeReader;
@@ -73,5 +74,24 @@ class NumberRangeReaderTest extends TestCase
         static::assertNotNull($totalStruct);
         static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
         static::assertSame(9, $totalStruct->getTotal());
+    }
+
+    public function testReadReturnsLimitedBatchSize(): void
+    {
+        $totalStruct = $this->numberRangeReader->readTotal($this->migrationContext);
+        static::assertInstanceOf(TotalStruct::class, $totalStruct);
+        static::assertGreaterThan(4, $totalStruct->getTotal());
+
+        $migrationContext = new MigrationContext(
+            new Shopware55Profile(),
+            $this->connection,
+            $this->runId,
+            new NumberRangeDataSet(),
+            0,
+            4
+        );
+
+        $data = $this->numberRangeReader->read($migrationContext);
+        static::assertCount(4, $data);
     }
 }

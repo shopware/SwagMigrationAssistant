@@ -155,6 +155,7 @@
     - `SwagMigrationAssistant\Profile\Shopware6\Converter\TaxRuleConverter`
     - `SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter`
   - [BREAKING] Removed `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and implementors. Use `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and services in `SwagMigrationAssistant\Migration\Mapping\Lookup` instead.
+- MIG-1077 - Optimized repository query to respect specified batch sizes
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
