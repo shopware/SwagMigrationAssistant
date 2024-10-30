@@ -92,6 +92,8 @@ class MigrationException extends HttpException
 
     public const INVALID_WRITE_CONTEXT = 'SWAG_MIGRATION__INVALID_WRITE_CONTEXT';
 
+    public const API_CONNECTION_ERROR = 'SWAG_MIGRATION__API_CONNECTION_ERROR';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -120,6 +122,15 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::DATABASE_CONNECTION_ATTRIBUTES_WRONG,
             'Database connection does not have the right attributes and they can not be set.'
+        );
+    }
+
+    public static function apiConnectionError(string $message): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::API_CONNECTION_ERROR,
+            $message
         );
     }
 

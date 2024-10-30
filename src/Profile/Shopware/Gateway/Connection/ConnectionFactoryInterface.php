@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('services-settings')]
 interface ConnectionFactoryInterface
 {
-    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?HttpClientInterface;
+    public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface;
 
     public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection;
 }

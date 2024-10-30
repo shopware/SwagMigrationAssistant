@@ -1,4 +1,6 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
+- [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.
+- [BREAKING] MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.
 - MIG-894 - Optimizes the mapping performance for the migration which results in a significantly faster converting step.
   - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup` to replace the removed method `getCountryUuid`
   - Added new class `SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup` to replace the removed method `getCountryStateUuid`

@@ -97,12 +97,10 @@ class ShopwareApiGatewayTest extends TestCase
             $this->getContainer()->get('language.repository')
         );
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
-        $errorException = MigrationException::gatewayRead('Shopware 5.5 Api SwagMigrationEnvironment');
 
         static::assertSame($response->getTotals(), []);
         static::assertNotNull($response->getRequestStatus());
-        static::assertSame($response->getRequestStatus()->getCode(), $errorException->getErrorCode());
-        static::assertSame($response->getRequestStatus()->getMessage(), $errorException->getMessage());
+        static::assertSame($response->getRequestStatus()->getCode(), MigrationException::API_CONNECTION_ERROR);
         static::assertFalse($response->getRequestStatus()->getIsWarning());
     }
 

@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway;
+namespace SwagMigrationAssistant\Test\Profile\Shopware6\Gateway\Api\Reader;
 
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\ConnectException;
@@ -22,19 +22,18 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
-use SwagMigrationAssistant\Profile\Shopware\Exception\MigrationShopwareProfileException;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
 #[Package('services-settings')]
 #[CoversClass(EnvironmentReader::class)]
-class ApiEnvironmentReaderTest extends TestCase
+class EnvironmentReaderTest extends TestCase
 {
     public function testEmptyClientReturnsRequestStatus(): void
     {
-        $connectionFactory = $this->createMock(ConnectionFactory::class);
+        $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
         $connectionFactory
             ->method('createApiClient')
             ->willReturn(null);
@@ -42,7 +41,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $environmentReader = new EnvironmentReader($connectionFactory);
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile()
+            new Shopware6MajorProfile('6.6.0')
         );
 
         $response = $environmentReader->read($migrationContext);
@@ -81,10 +80,10 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile()
+            new Shopware6MajorProfile('6.6.0')
         );
 
-        $connectionFactory = $this->createMock(ConnectionFactory::class);
+        $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
         $connectionFactory
             ->method('createApiClient')
             ->willReturn($client);
@@ -121,7 +120,7 @@ class ApiEnvironmentReaderTest extends TestCase
                 new Response(SymfonyResponse::HTTP_UNAUTHORIZED),
             ],
             'expectedErrorCode' => MigrationException::INVALID_CONNECTION_AUTHENTICATION,
-            'expectedMessage' => 'Invalid connection authentication for the request: "SwagMigrationEnvironment"',
+            'expectedMessage' => 'Invalid connection authentication for the request: "get-data"',
             'shouldHaveException' => true,
         ];
 
@@ -130,7 +129,7 @@ class ApiEnvironmentReaderTest extends TestCase
                 new RequestException(
                     'SSL required',
                     new Request('GET', 'version'),
-                    new Response(SymfonyResponse::HTTP_UPGRADE_REQUIRED, [], 'Error: SSL required: "version"')
+                    new Response(SymfonyResponse::HTTP_UPGRADE_REQUIRED, [], 'Error: SSL required: "get-data"')
                 ),
             ],
             'expectedErrorCode' => MigrationException::SSL_REQUIRED,
@@ -142,14 +141,23 @@ class ApiEnvironmentReaderTest extends TestCase
             'responses' => [
                 new RequestException(
                     'Invalid certificate',
-                    new Request('GET', 'version'),
+                    new Request('GET', 'get-data'),
                     null,
                     null,
-                    ['errno' => 60, 'url' => 'version']
+                    ['errno' => 60, 'url' => 'get-data']
                 ),
             ],
             'expectedErrorCode' => MigrationException::REQUEST_CERTIFICATE_INVALID,
-            'expectedMessage' => 'The following cURL request failed with an SSL certificate problem: "version"',
+            'expectedMessage' => 'The following cURL request failed with an SSL certificate problem: "get-data"',
+            'shouldHaveException' => true,
+        ];
+
+        yield 'getting environment fails with RequestException for auth' => [
+            'responses' => [
+                new RequestException('Could not connect', new Request('GET', '/api/oauth/token')),
+            ],
+            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_AUTHENTICATION,
+            'expectedMessage' => 'Invalid connection authentication for the request: "get-data"',
             'shouldHaveException' => true,
         ];
 
@@ -192,31 +200,12 @@ class ApiEnvironmentReaderTest extends TestCase
             'expectedMessage' => null, // we don't care about the exact message, it's guzzle specific
             'shouldHaveException' => true,
         ];
-
-        yield 'getting environment fails without data' => [
-            'responses' => [
-                new Response(SymfonyResponse::HTTP_OK, [], 'nothing'),
-            ],
-            'expectedErrorCode' => MigrationException::API_CONNECTION_ERROR,
-            'expectedMessage' => 'The environment endpoint did not return data',
-            'shouldHaveException' => true,
-        ];
-
-        yield 'getting environment fails with 404' => [
-            'responses' => [
-                new Response(SymfonyResponse::HTTP_NOT_FOUND),
-                new Response(SymfonyResponse::HTTP_OK, [], (string) json_encode(['success' => true])),
-            ],
-            'expectedErrorCode' => MigrationShopwareProfileException::PLUGIN_NOT_INSTALLED,
-            'expectedMessage' => 'The required plugin is not installed in the source shop system. Please look up the documentation for this gateway.',
-            'shouldHaveException' => true,
-        ];
     }
 
     public function testGetsEnvironmentInformation(): void
     {
         $mock = new MockHandler([
-            new Response(200, [], (string) json_encode(['data' => ['version' => 'test']])),
+            new Response(200, [], (string) json_encode(['version' => 'test'])),
         ]);
 
         $handler = HandlerStack::create($mock);
@@ -230,10 +219,10 @@ class ApiEnvironmentReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile()
+            new Shopware6MajorProfile('6.6.0')
         );
 
-        $connectionFactory = $this->createMock(ConnectionFactory::class);
+        $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
         $connectionFactory
             ->method('createApiClient')
             ->willReturn($client);

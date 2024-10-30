@@ -22,7 +22,7 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 {
     private ?Connection $externalConnection = null;
 
-    public function createApiClient(MigrationContextInterface $migrationContext, bool $verify = false): ?HttpClientInterface
+    public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
     {
         $connection = $migrationContext->getConnection();
 
