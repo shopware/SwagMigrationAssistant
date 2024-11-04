@@ -72,6 +72,27 @@ class CustomerWishlistReaderTest extends LocalConnectionTestCase
         static::assertCount(2, $wishlist);
     }
 
+    public function testFetchWillReturnOnlyValidOrderNotes(): void
+    {
+        $migrationContext = $this->getMigrationContext();
+
+        $sql = \file_get_contents(__DIR__ . '/_fixtures/order_notes_with_invalid_data.sql');
+        static::assertIsString($sql);
+
+        $this->connection->executeStatement($sql);
+
+        $wishlistItems = $this->connection->executeQuery('SELECT `sUniqueID` FROM s_order_notes')->fetchAllAssociative();
+        static::assertCount(3, $wishlistItems);
+        static::assertSame('unique-id-invalid-wishlist-item', $wishlistItems[2]['sUniqueID']);
+
+        $wishlist = $this->customerWishlistReader->read($migrationContext);
+        static::assertCount(2, $wishlist);
+
+        foreach ($wishlist as $wishListItem) {
+            static::assertNotSame('unique-id-invalid-wishlist-item', $wishListItem['sUniqueID']);
+        }
+    }
+
     public function testReadTotal(): void
     {
         $migrationContext = $this->getMigrationContext();
