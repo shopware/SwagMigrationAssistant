@@ -59,7 +59,8 @@ class CustomerWishlistReader extends AbstractReader
      */
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_order_notes', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiersWithRelations($migrationContext->getOffset(), $migrationContext->getLimit());
+
         $query = $this->connection->createQueryBuilder();
 
         $query->from('s_order_notes', 'note');
@@ -75,5 +76,24 @@ class CustomerWishlistReader extends AbstractReader
         $query->executeQuery();
 
         return $query->fetchAllAssociative();
+    }
+
+    /**
+     * @return string[]
+     */
+    private function fetchIdentifiersWithRelations(int $offset = 0, int $limit = 250)
+    {
+        $query = $this->connection->createQueryBuilder();
+
+        $query->select('note.id');
+        $query->from('s_order_notes', 'note');
+        $query->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id');
+
+        $query->addOrderBy('note.id');
+
+        $query->setFirstResult($offset);
+        $query->setMaxResults($limit);
+
+        return $query->fetchFirstColumn();
     }
 }
