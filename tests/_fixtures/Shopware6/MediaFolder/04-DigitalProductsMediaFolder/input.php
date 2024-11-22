@@ -6,15 +6,19 @@
  */
 
 return [
-    'id' => '604126aee2d749d88e3b62801461e163',
-    'name' => 'Document Media',
+    'id' => '00000000000000000000000000000000',
+    'defaultFolder' => [
+        'id' => '0193640f7691705bb01444f564d0af48',
+        'associationFields' => '["productDownloads"]',
+        'entity' => 'product_download',
+    ],
+    'name' => 'Product downloads',
     'configuration' => [
-        'id' => '5875e071ffae4724b41aaa64098078df',
+        'id' => '0193640f7691705bb01444f56447ac4f',
         'createThumbnails' => 1,
         'thumbnailQuality' => 80,
         'keepAspectRatio' => 1,
         'private' => 1,
     ],
     'useParentConfiguration' => 0,
-    'parentId' => null,
 ];

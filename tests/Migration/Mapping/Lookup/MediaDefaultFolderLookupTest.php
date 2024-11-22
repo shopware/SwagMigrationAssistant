@@ -66,8 +66,8 @@ class MediaDefaultFolderLookupTest extends TestCase
      */
     public static function getDatabaseData(): array
     {
-        $mediaFolderRepository = self::getContainer()->get('media_default_folder.repository');
-        $list = $mediaFolderRepository->search(new Criteria(), Context::createDefaultContext());
+        $mediaDefaultFolderRepository = self::getContainer()->get('media_default_folder.repository');
+        $list = $mediaDefaultFolderRepository->search(new Criteria(), Context::createDefaultContext());
 
         $returnData = [];
         foreach ($list->getEntities() as $mediaFolder) {

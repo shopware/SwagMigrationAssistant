@@ -158,6 +158,7 @@
     - `SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter`
   - [BREAKING] Removed `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and implementors. Use `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and services in `SwagMigrationAssistant\Migration\Mapping\Lookup` instead.
 - MIG-1077 - Optimized repository query to respect specified batch sizes
+- MIG-1087 - Fixed an issue for the migration of media folders from SW6->SW6, where the default folder id was set wrongly. This includes changes to the way the folder structure is migrated
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data
