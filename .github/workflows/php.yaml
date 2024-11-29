@@ -1,0 +1,61 @@
+name: PHP Checks
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - trunk
+  pull_request:
+    paths:
+      - composer.json
+      - src/**/*.php
+      - tests/**/*.php
+
+jobs:
+  codestyle_php:
+    name: Codestyle PHP
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shopware/github-actions/cs-fixer@main
+        with:
+          rules: ""
+
+  phpstan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shopware/github-actions/setup-extension@main
+        env:
+          DATABASE_URL: mysql://root@127.0.0.1/shopware
+        with:
+          extensionName: ${{ github.event.repository.name }}
+          install: true
+          install-admin: true
+          install-storefront: true
+          extraRepositories: |
+            {
+              "${{ github.event.repository.name }}": {
+                "type": "path",
+                "url": "custom/plugins/${{ github.event.repository.name }}",
+                "symlink": true
+              }
+            }
+      - name: Create phpstan.neon
+        working-directory: custom/plugins/${{ github.event.repository.name }}
+        shell: bash
+        run: |
+          printf "parameters:\n  tmpDir: ${GITHUB_WORKSPACE}/var/phpstan\nincludes:\n  - phpstan.neon.dist" > phpstan.neon
+      - name: PHPStan cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/var/phpstan
+          key: ${{ runner.OS }}-${{ github.repository }}-phpstan-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.OS }}-${{ github.repository }}-phpstan-
+      - name: Build PHPStan Bootstrap
+        shell: bash
+        run: php ${GITHUB_WORKSPACE}/src/Core/DevOps/StaticAnalyze/phpstan-bootstrap.php
+      - name: Run PHPStan
+        shell: bash
+        run: |
+          symfony composer -d custom/plugins/${{ github.event.repository.name }} dump-autoload --dev
+          symfony composer -d custom/plugins/${{ github.event.repository.name }} run phpstan
