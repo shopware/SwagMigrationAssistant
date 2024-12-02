@@ -47,7 +47,7 @@ class MediaFolderConverter extends ShopwareConverter
             $converted['id']
         );
 
-        if ($converted['id'] === '00000000000000000000000000000000') {
+        if ($converted['id'] === str_repeat('0', 32)) {
             // edge case for hidden download products media folder
             // this doesn't need to be migrated, just map the files into it
             // otherwise the code below would lead to a self-referential parentId

@@ -9,25 +9,13 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class OrderDocumentAttributeReader extends AttributeReader implements ReaderInterface
+class OrderDocumentAttributeReader extends AttributeReader
 {
-    public function supportsTotal(MigrationContextInterface $migrationContext): bool
-    {
-        return false;
-    }
-
-    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
-    {
-        return null;
-    }
-
     public function supports(MigrationContextInterface $migrationContext): bool
     {
         return $migrationContext->getProfile() instanceof ShopwareProfileInterface

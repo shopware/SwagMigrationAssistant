@@ -446,11 +446,15 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
+
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
+
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader" abstract="true"
@@ -465,21 +469,25 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CategoryReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CurrencyReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\NewsletterRecipientReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerGroupReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerGroupAttributeReader"
@@ -490,6 +498,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerAttributeReader"
@@ -500,6 +509,7 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\LanguageReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ManufacturerAttributeReader"
@@ -510,111 +520,129 @@
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaAlbumReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\NumberRangeReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderAttributeReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader">
             <tag name="shopware.migration.reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductOptionRelationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductPropertyRelationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductAttributeReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader">
             <tag name="shopware.migration.reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductPriceAttributeReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader">
             <tag name="shopware.migration.reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\PropertyGroupOptionReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\SalesChannelReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TranslationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderDocumentReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderDocumentAttributeReader"
-                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader">
             <tag name="shopware.migration.reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ShippingMethodReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReviewReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\SeoUrlReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CrossSellingReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MainVariantRelationReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\PromotionReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerWishlistReader"
                  parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <tag name="shopware.migration.reader"/>
+            <tag name="kernel.reset" method="reset"/>
         </service>
 
         <!-- Shopware Dataselections -->
