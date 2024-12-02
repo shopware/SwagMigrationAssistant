@@ -76,11 +76,6 @@ parameters:
 			path: src/Migration/Mapping/MappingDeltaResult.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService has an uninitialized property \\$defaultLanguageData\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/Mapping/MappingService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
@@ -244,11 +239,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\MessageQueue\\\\OrderCountIndexer\\:\\:updateCustomer\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Migration/MessageQueue/OrderCountIndexer.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\MigrationContext has an uninitialized property \\$gateway\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Migration/MigrationContext.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress\\:\\:setEntities\\(\\) has parameter \\$entities with no value type specified in iterable type array\\.$#"
@@ -489,6 +479,41 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroups\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$array with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:buildArrayFromChunks\\(\\) has parameter \\$path with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:getAdditionalData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:mapData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:mapData\\(\\) has parameter \\$pathsToRemove with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:mapData\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
+
+		-
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\EnvironmentReader\\:\\:mapData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			count: 1
+			path: src/Profile/Shopware/Gateway/Local/Reader/EnvironmentReader.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:appendAssociatedData\\(\\) has parameter \\$locales with no value type specified in iterable type array\\.$#"
@@ -831,11 +856,6 @@ parameters:
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter has an uninitialized property \\$sourceDefaultCurrencyUuid\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter\\:\\:checkDefaultCurrency\\(\\) has parameter \\$source with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ProductConverter.php
@@ -866,39 +886,9 @@ parameters:
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$context\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$mappingService\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$migrationContext\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverter has an uninitialized property \\$runId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ShopwareConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareMediaConverter\\:\\:updateMediaAssociation\\(\\) has parameter \\$mediaArray with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest has an uninitialized property \\$environmentService\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: tests/DataProvider/Service/EnvironmentServiceTest.php
 
 		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest\\:\\:provideEnvironments\\(\\) return type has no value type specified in iterable type array\\.$#"
@@ -914,11 +904,6 @@ parameters:
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Converter\\\\ConverterRegistryTest\\:\\:converterProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Migration/Converter/ConverterRegistryTest.php
-
-		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Migration\\\\Mapping\\\\MappingServiceTest has an uninitialized property \\$connectionId\\. Give it default value or assign it in the constructor\\.$#"
-			count: 1
-			path: tests/Migration/Mapping/MappingServiceTest.php
 
 		-
 			message: "#^Call to deprecated method getMockForAbstractClass\\(\\) of class PHPUnit\\\\Framework\\\\TestCase\\.$#"
