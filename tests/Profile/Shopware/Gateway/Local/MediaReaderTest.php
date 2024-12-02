@@ -10,11 +10,11 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
@@ -24,7 +24,7 @@ class MediaReaderTest extends TestCase
 {
     use LocalCredentialTrait;
 
-    private AbstractReader $mediaReader;
+    private ReaderInterface $mediaReader;
 
     private MigrationContext $migrationContext;
 

@@ -11,13 +11,14 @@ use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class NewsletterRecipientReader extends AbstractReader
+class NewsletterRecipientReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -34,16 +35,14 @@ class NewsletterRecipientReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
-        $ids = $this->fetchIdentifiers('s_campaigns_mailaddresses', $migrationContext->getOffset(), $migrationContext->getLimit());
-        $fetchedRecipients = $this->fetchData($ids);
+        $ids = $this->fetchIdentifiers($migrationContext, 's_campaigns_mailaddresses', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $fetchedRecipients = $this->fetchData($ids, $migrationContext);
 
         $newsletterData = $this->mapData($fetchedRecipients, [], ['recipient']);
 
-        $shopsByCustomer = $this->getShopsAndLocalesByCustomer($ids);
-        $defaultShop = $this->getDefaultShopAndLocaleByGroupId();
-        $shops = $this->getShopsAndLocalesByGroupId();
+        $shopsByCustomer = $this->getShopsAndLocalesByCustomer($ids, $migrationContext);
+        $defaultShop = $this->getDefaultShopAndLocaleByGroupId($migrationContext);
+        $shops = $this->getShopsAndLocalesByGroupId($migrationContext);
 
         foreach ($newsletterData as &$item) {
             if (\is_array($item) && isset($item['customer'], $shopsByCustomer[$item['id']][0]['shopId']) && $item['customer'] === '1') {
@@ -61,9 +60,9 @@ class NewsletterRecipientReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_campaigns_mailaddresses')
             ->executeQuery()
@@ -98,15 +97,16 @@ class NewsletterRecipientReader extends AbstractReader
         $item['_locale'] = \str_replace('_', '-', $shop['locale']);
     }
 
-    private function fetchData(array $ids): array
+    private function fetchData(array $ids, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_campaigns_mailaddresses', 'recipient');
-        $this->addTableSelection($query, 's_campaigns_mailaddresses', 'recipient');
+        $this->addTableSelection($query, 's_campaigns_mailaddresses', 'recipient', $migrationContext);
 
         $query->leftJoin('recipient', 's_campaigns_maildata', 'recipient_address', 'recipient.email = recipient_address.email');
-        $this->addTableSelection($query, 's_campaigns_maildata', 'recipient_address');
+        $this->addTableSelection($query, 's_campaigns_maildata', 'recipient_address', $migrationContext);
 
         $query->where('recipient.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
@@ -116,9 +116,10 @@ class NewsletterRecipientReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
-    private function getDefaultShopAndLocaleByGroupId(): array
+    private function getDefaultShopAndLocaleByGroupId(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->addSelect('config.value as groupID');
         $query->addSelect('shop.id as shopId');
@@ -136,9 +137,10 @@ class NewsletterRecipientReader extends AbstractReader
         return $this->getGroupedResult($shops);
     }
 
-    private function getShopsAndLocalesByGroupId(): array
+    private function getShopsAndLocalesByGroupId(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->addSelect('config_values.value as groupID');
         $query->addSelect('shop.id as shopId');
@@ -158,9 +160,10 @@ class NewsletterRecipientReader extends AbstractReader
         return $this->getGroupedResult($shops);
     }
 
-    private function getShopsAndLocalesByCustomer(array $ids): array
+    private function getShopsAndLocalesByCustomer(array $ids, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->addSelect('addresses.id as addressId');
         $query->addSelect('shop.id as shopId');

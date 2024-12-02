@@ -22,18 +22,18 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 {
     private ?Connection $externalConnection = null;
 
-    public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
+    public function createApiClient(MigrationContextInterface $migrationContext): HttpClientInterface
     {
         $connection = $migrationContext->getConnection();
 
         if ($connection === null) {
-            return null;
+            throw MigrationException::noConnectionFound();
         }
 
         $credentials = $connection->getCredentialFields();
 
         if (empty($credentials)) {
-            return null;
+            throw MigrationException::invalidConnectionCredentials();
         }
 
         $options = [
@@ -44,10 +44,15 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
         return new HttpSimpleClient($options);
     }
 
-    public function createDatabaseConnection(MigrationContextInterface $migrationContext): ?Connection
+    public function createDatabaseConnection(MigrationContextInterface $migrationContext): Connection
     {
-        if ($this->externalConnection !== null) {
+        if ($this->externalConnection instanceof Connection) {
             $this->ensureConnectionAttributes($this->externalConnection);
+
+            \assert(
+                $this->externalConnection instanceof Connection,
+                '$this->externalConnection should not be null at this point'
+            );
 
             return $this->externalConnection;
         }
@@ -55,13 +60,13 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
         $connection = $migrationContext->getConnection();
 
         if ($connection === null) {
-            return null;
+            throw MigrationException::noConnectionFound();
         }
 
         $credentials = $connection->getCredentialFields();
 
         if ($credentials === null) {
-            return null;
+            throw MigrationException::invalidConnectionCredentials();
         }
 
         $connectionParams = [
@@ -83,11 +88,20 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
         $this->externalConnection = DriverManager::getConnection($connectionParams);
         $this->ensureConnectionAttributes($this->externalConnection);
 
+        \assert(
+            $this->externalConnection instanceof Connection,
+            '$this->externalConnection should not be null at this point'
+        );
+
         return $this->externalConnection;
     }
 
     public function reset(): void
     {
+        if ($this->externalConnection instanceof Connection) {
+            $this->externalConnection->close();
+        }
+
         $this->externalConnection = null;
     }
 

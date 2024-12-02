@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class OrderDocumentReader extends AbstractReader
+class OrderDocumentReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,10 +34,9 @@ class OrderDocumentReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $documents = $this->mapData($this->fetchDocuments($migrationContext), [], ['document']);
 
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($documents as &$document) {
             $document['_locale'] = \str_replace('_', '-', $locale);
@@ -47,9 +47,9 @@ class OrderDocumentReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_documents')
             ->executeQuery()
@@ -60,18 +60,19 @@ class OrderDocumentReader extends AbstractReader
 
     private function fetchDocuments(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_order_documents', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers($migrationContext, 's_order_documents', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $connection = $this->getConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder();
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_order_documents', 'document');
-        $this->addTableSelection($query, 's_order_documents', 'document');
+        $this->addTableSelection($query, 's_order_documents', 'document', $migrationContext);
 
         $query->leftJoin('document', 's_order_documents_attributes', 'attributes', 'document.id = attributes.documentID');
-        $this->addTableSelection($query, 's_order_documents_attributes', 'attributes');
+        $this->addTableSelection($query, 's_order_documents_attributes', 'attributes', $migrationContext);
 
         $query->leftJoin('document', 's_core_documents', 'document_documenttype', 'document.type = document_documenttype.id');
-        $this->addTableSelection($query, 's_core_documents', 'document_documenttype');
+        $this->addTableSelection($query, 's_core_documents', 'document_documenttype', $migrationContext);
 
         $query->where('document.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);

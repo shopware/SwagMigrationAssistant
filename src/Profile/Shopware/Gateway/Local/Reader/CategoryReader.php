@@ -9,13 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class CategoryReader extends AbstractReader
+class CategoryReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -32,22 +33,20 @@ class CategoryReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
         $fetchedCategories = $this->fetchData($migrationContext);
-        $mainCategoryLocales = $this->fetchMainCategoryLocales();
+        $mainCategoryLocales = $this->fetchMainCategoryLocales($migrationContext);
 
         $categories = $this->mapData($fetchedCategories, [], ['category', 'categorypath', 'previousSiblingId', 'categoryPosition']);
-        $resultSet = $this->generateAllLocales($categories, $mainCategoryLocales);
+        $resultSet = $this->generateAllLocales($categories, $mainCategoryLocales, $migrationContext);
 
         return $this->cleanupResultSet($resultSet);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_categories')
             ->where('path IS NOT NULL AND parent IS NOT NULL')
@@ -59,16 +58,17 @@ class CategoryReader extends AbstractReader
 
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
         $query->from('s_categories', 'category');
-        $this->addTableSelection($query, 's_categories', 'category');
+        $this->addTableSelection($query, 's_categories', 'category', $migrationContext);
         $query->addSelect('REPLACE(category.path, "|", "") as categorypath');
 
         $query->leftJoin('category', 's_categories_attributes', 'attributes', 'category.id = attributes.categoryID');
-        $this->addTableSelection($query, 's_categories_attributes', 'attributes');
+        $this->addTableSelection($query, 's_categories_attributes', 'attributes', $migrationContext);
 
         $query->leftJoin('category', 's_media', 'asset', 'category.mediaID = asset.id');
-        $this->addTableSelection($query, 's_media', 'asset');
+        $this->addTableSelection($query, 's_media', 'asset', $migrationContext);
 
         $query->leftJoin(
             'category',
@@ -115,11 +115,11 @@ class CategoryReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
-    private function generateAllLocales(array $categories, array $mainCategoryLocales): array
+    private function generateAllLocales(array $categories, array $mainCategoryLocales, MigrationContextInterface $migrationContext): array
     {
         $resultSet = [];
-        $ignoredCategories = $this->getIgnoredCategories();
-        $defaultLocale = \str_replace('_', '-', $this->getDefaultShopLocale());
+        $ignoredCategories = $this->getIgnoredCategories($migrationContext);
+        $defaultLocale = \str_replace('_', '-', $this->getDefaultShopLocale($migrationContext));
 
         foreach ($categories as $category) {
             $locale = '';
@@ -149,9 +149,9 @@ class CategoryReader extends AbstractReader
         return $resultSet;
     }
 
-    private function getIgnoredCategories(): array
+    private function getIgnoredCategories(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $query = $this->getConnection($migrationContext)->createQueryBuilder();
 
         $query->addSelect('category.id');
         $query->from('s_categories', 'category');
@@ -161,9 +161,9 @@ class CategoryReader extends AbstractReader
         return $query->fetchFirstColumn();
     }
 
-    private function fetchMainCategoryLocales(): array
+    private function fetchMainCategoryLocales(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $query = $this->getConnection($migrationContext)->createQueryBuilder();
 
         $query->from('s_core_shops', 'shop');
         $query->addSelect('shop.category_id');

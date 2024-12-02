@@ -9,13 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class CurrencyReader extends AbstractReader
+class CurrencyReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -32,12 +33,10 @@ class CurrencyReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
         $currencies = $this->fetchData($migrationContext);
 
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($currencies as &$currency) {
             $currency['_locale'] = \str_replace('_', '-', $locale);
@@ -51,9 +50,9 @@ class CurrencyReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_currencies')
             ->executeQuery()
@@ -64,9 +63,11 @@ class CurrencyReader extends AbstractReader
 
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+
+        $query = $connection->createQueryBuilder();
         $query->from('s_core_currencies', 'currency');
-        $this->addTableSelection($query, 's_core_currencies', 'currency');
+        $this->addTableSelection($query, 's_core_currencies', 'currency', $migrationContext);
 
         $query->addOrderBy('standard', 'DESC');
         $query->setFirstResult($migrationContext->getOffset());

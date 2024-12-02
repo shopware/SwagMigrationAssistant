@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class TranslationReader extends AbstractReader
+class TranslationReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,8 +34,7 @@ class TranslationReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-        $fetchedTranslations = $this->fetchTranslations($migrationContext->getOffset(), $migrationContext->getLimit());
+        $fetchedTranslations = $this->fetchTranslations($migrationContext->getOffset(), $migrationContext->getLimit(), $migrationContext);
 
         $resultSet = $this->mapData(
             $fetchedTranslations,
@@ -47,9 +47,9 @@ class TranslationReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_translations')
             ->executeQuery()
@@ -58,14 +58,15 @@ class TranslationReader extends AbstractReader
         return new TotalStruct(DefaultEntities::TRANSLATION, $total);
     }
 
-    private function fetchTranslations(int $offset, int $limit): array
+    private function fetchTranslations(int $offset, int $limit, MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_core_translations', $offset, $limit);
+        $ids = $this->fetchIdentifiers($migrationContext, 's_core_translations', $offset, $limit);
 
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_core_translations', 'translation');
-        $this->addTableSelection($query, 's_core_translations', 'translation');
+        $this->addTableSelection($query, 's_core_translations', 'translation', $migrationContext);
 
         $query->innerJoin('translation', 's_core_shops', 'shop', 'shop.id = translation.objectlanguage');
         $query->leftJoin('shop', 's_core_locales', 'locale', 'locale.id = shop.locale_id');

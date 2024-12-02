@@ -9,23 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 
 #[Package('services-settings')]
-class TableReader implements TableReaderInterface
+class TableReader extends AbstractReader implements TableReaderInterface
 {
-    public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
-    {
-    }
-
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
-        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
-
-        if ($connection === null) {
-            return [];
-        }
+        $connection = $this->getConnection($migrationContext);
 
         $query = $connection->createQueryBuilder();
         $query->select('*');

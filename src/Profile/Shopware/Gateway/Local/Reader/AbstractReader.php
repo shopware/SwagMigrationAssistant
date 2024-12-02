@@ -10,51 +10,33 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('services-settings')]
-abstract class AbstractReader implements ReaderInterface
+abstract class AbstractReader implements ResetInterface
 {
-    /**
-     * @var Connection
-     */
-    protected $connection;
+    private ?Connection $cachedConnection = null;
 
-    public function __construct(protected ConnectionFactoryInterface $connectionFactory)
+    public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)
     {
     }
 
-    public function supportsTotal(MigrationContextInterface $migrationContext): bool
+    final protected function getConnection(MigrationContextInterface $migrationContext): Connection
     {
-        return false;
-    }
-
-    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
-    {
-        return null;
-    }
-
-    final protected function setConnection(MigrationContextInterface $migrationContext): void
-    {
-        if ($this->connection instanceof Connection && $this->connection->isConnected()) {
-            return;
+        if ($this->cachedConnection instanceof Connection && $this->cachedConnection->isConnected()) {
+            return $this->cachedConnection;
         }
 
-        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
+        $this->cachedConnection = $this->connectionFactory->createDatabaseConnection($migrationContext);
 
-        if ($connection === null) {
-            return;
-        }
-
-        $this->connection = $connection;
+        return $this->cachedConnection;
     }
 
-    final protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias): void
+    final protected function addTableSelection(QueryBuilder $query, string $table, string $tableAlias, MigrationContextInterface $migrationContext): void
     {
-        $columns = $this->connection->createSchemaManager()->listTableColumns($table);
+        $columns = $this->getConnection($migrationContext)->createSchemaManager()->listTableColumns($table);
 
         foreach ($columns as $column) {
             $selection = \str_replace(
@@ -122,13 +104,14 @@ abstract class AbstractReader implements ReaderInterface
      * @return array<int|string>
      */
     final protected function fetchIdentifiers(
+        MigrationContextInterface $migrationContext,
         string $table,
         int $offset = 0,
         int $limit = 250,
         array $orderBy = [],
         array $where = [],
     ): array {
-        $query = $this->connection->createQueryBuilder();
+        $query = $this->getConnection($migrationContext)->createQueryBuilder();
 
         $query->select('id');
         $query->from($table);
@@ -149,9 +132,9 @@ abstract class AbstractReader implements ReaderInterface
         return $query->fetchFirstColumn();
     }
 
-    final protected function getDefaultShopLocale(): string
+    final protected function getDefaultShopLocale(MigrationContextInterface $migrationContext): string
     {
-        $result = $this->connection->createQueryBuilder()
+        $result = $this->getConnection($migrationContext)->createQueryBuilder()
             ->select('locale.locale')
             ->from('s_core_locales', 'locale')
             ->innerJoin('locale', 's_core_shops', 'shop', 'locale.id = shop.locale_id')
@@ -198,5 +181,14 @@ abstract class AbstractReader implements ReaderInterface
         }
 
         return $dataSet::getEntity();
+    }
+
+    public function reset(): void
+    {
+        if ($this->cachedConnection instanceof Connection) {
+            $this->cachedConnection->close();
+        }
+
+        $this->cachedConnection = null;
     }
 }

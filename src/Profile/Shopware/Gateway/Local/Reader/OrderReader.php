@@ -11,13 +11,14 @@ use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class OrderReader extends AbstractReader
+class OrderReader extends AbstractReader implements ReaderInterface
 {
     /**
      * @var array<int, string>
@@ -39,7 +40,6 @@ class OrderReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetchedOrders = $this->fetchOrders($migrationContext);
 
         $this->orderIds = \array_column($fetchedOrders, 'ordering.id');
@@ -49,7 +49,8 @@ class OrderReader extends AbstractReader
                 $fetchedOrders,
                 [],
                 ['ordering']
-            )
+            ),
+            $migrationContext
         );
 
         return $this->cleanupResultSet($resultSet);
@@ -57,9 +58,9 @@ class OrderReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order')
             ->where('status != -1')
@@ -75,56 +76,58 @@ class OrderReader extends AbstractReader
     private function fetchOrders(MigrationContextInterface $migrationContext): array
     {
         $ids = $this->fetchIdentifiers(
+            $migrationContext,
             's_order',
             $migrationContext->getOffset(),
             $migrationContext->getLimit(),
             ['id'],
             ['status != -1']
         );
+        $connection = $this->getConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder();
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_order', 'ordering');
-        $this->addTableSelection($query, 's_order', 'ordering');
+        $this->addTableSelection($query, 's_order', 'ordering', $migrationContext);
 
         $query->leftJoin('ordering', 's_order_attributes', 'attributes', 'ordering.id = attributes.orderID');
-        $this->addTableSelection($query, 's_order_attributes', 'attributes');
+        $this->addTableSelection($query, 's_order_attributes', 'attributes', $migrationContext);
 
         $query->leftJoin('ordering', 's_user', 'customer', 'customer.id = ordering.userID');
-        $this->addTableSelection($query, 's_user', 'customer');
+        $this->addTableSelection($query, 's_user', 'customer', $migrationContext);
 
         $query->leftJoin('ordering', 's_core_states', 'orderstatus', 'orderstatus.group = "state" AND ordering.status = orderstatus.id');
-        $this->addTableSelection($query, 's_core_states', 'orderstatus');
+        $this->addTableSelection($query, 's_core_states', 'orderstatus', $migrationContext);
 
         $query->leftJoin('ordering', 's_core_states', 'paymentstatus', 'paymentstatus.group = "payment" AND ordering.cleared = paymentstatus.id');
-        $this->addTableSelection($query, 's_core_states', 'paymentstatus');
+        $this->addTableSelection($query, 's_core_states', 'paymentstatus', $migrationContext);
 
         $query->leftJoin('ordering', 's_order_billingaddress', 'billingaddress', 'ordering.id = billingaddress.orderID');
-        $this->addTableSelection($query, 's_order_billingaddress', 'billingaddress');
+        $this->addTableSelection($query, 's_order_billingaddress', 'billingaddress', $migrationContext);
 
         $query->leftJoin('billingaddress', 's_order_billingaddress_attributes', 'billingaddress_attributes', 'billingaddress.id = billingaddress_attributes.billingID');
-        $this->addTableSelection($query, 's_order_billingaddress_attributes', 'billingaddress_attributes');
+        $this->addTableSelection($query, 's_order_billingaddress_attributes', 'billingaddress_attributes', $migrationContext);
 
         $query->leftJoin('billingaddress', 's_core_countries', 'billingaddress_country', 'billingaddress.countryID = billingaddress_country.id');
-        $this->addTableSelection($query, 's_core_countries', 'billingaddress_country');
+        $this->addTableSelection($query, 's_core_countries', 'billingaddress_country', $migrationContext);
 
         $query->leftJoin('billingaddress', 's_core_countries_states', 'billingaddress_state', 'billingaddress.stateID = billingaddress_state.id');
-        $this->addTableSelection($query, 's_core_countries_states', 'billingaddress_state');
+        $this->addTableSelection($query, 's_core_countries_states', 'billingaddress_state', $migrationContext);
 
         $query->leftJoin('ordering', 's_order_shippingaddress', 'shippingaddress', 'ordering.id = shippingaddress.orderID');
-        $this->addTableSelection($query, 's_order_shippingaddress', 'shippingaddress');
+        $this->addTableSelection($query, 's_order_shippingaddress', 'shippingaddress', $migrationContext);
 
         $query->leftJoin('shippingaddress', 's_order_shippingaddress_attributes', 'shippingaddress_attributes', 'shippingaddress.id = shippingaddress_attributes.shippingID');
-        $this->addTableSelection($query, 's_order_shippingaddress_attributes', 'shippingaddress_attributes');
+        $this->addTableSelection($query, 's_order_shippingaddress_attributes', 'shippingaddress_attributes', $migrationContext);
 
         $query->leftJoin('shippingaddress', 's_core_countries', 'shippingaddress_country', 'shippingaddress.countryID = shippingaddress_country.id');
-        $this->addTableSelection($query, 's_core_countries', 'shippingaddress_country');
+        $this->addTableSelection($query, 's_core_countries', 'shippingaddress_country', $migrationContext);
 
         $query->leftJoin('shippingaddress', 's_core_countries_states', 'shippingaddress_state', 'shippingaddress.stateID = shippingaddress_state.id');
-        $this->addTableSelection($query, 's_core_countries_states', 'shippingaddress_state');
+        $this->addTableSelection($query, 's_core_countries_states', 'shippingaddress_state', $migrationContext);
 
         $query->leftJoin('ordering', 's_core_paymentmeans', 'payment', 'payment.id = ordering.paymentID');
-        $this->addTableSelection($query, 's_core_paymentmeans', 'payment');
+        $this->addTableSelection($query, 's_core_paymentmeans', 'payment', $migrationContext);
 
         $query->leftJoin('ordering', 's_core_shops', 'languageshop', 'languageshop.id = ordering.language');
         $query->leftJoin('languageshop', 's_core_locales', 'language', 'language.id = languageshop.locale_id');
@@ -143,14 +146,14 @@ class OrderReader extends AbstractReader
      *
      * @return array<mixed>
      */
-    private function appendAssociatedData(array $orders): array
+    private function appendAssociatedData(array $orders, MigrationContextInterface $migrationContext): array
     {
-        $orderEsd = $this->getOrderEsd();
-        $orderDetails = $this->getOrderDetails();
-        $orderDocuments = $this->getOrderDocuments();
+        $orderEsd = $this->getOrderEsd($migrationContext);
+        $orderDetails = $this->getOrderDetails($migrationContext);
+        $orderDocuments = $this->getOrderDocuments($migrationContext);
 
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($orders as &$order) {
             $order['_locale'] = \str_replace('_', '-', $locale);
@@ -174,19 +177,20 @@ class OrderReader extends AbstractReader
     /**
      * @return array<mixed>
      */
-    private function getOrderDetails(): array
+    private function getOrderDetails(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_order_details', 'detail');
         $query->select('detail.orderID');
-        $this->addTableSelection($query, 's_order_details', 'detail');
+        $this->addTableSelection($query, 's_order_details', 'detail', $migrationContext);
 
         $query->leftJoin('detail', 's_order_details_attributes', 'attributes', 'detail.id = attributes.detailID');
-        $this->addTableSelection($query, 's_order_details_attributes', 'attributes');
+        $this->addTableSelection($query, 's_order_details_attributes', 'attributes', $migrationContext);
 
         $query->leftJoin('detail', 's_core_tax', 'tax', 'tax.id = detail.taxID');
-        $this->addTableSelection($query, 's_core_tax', 'tax');
+        $this->addTableSelection($query, 's_core_tax', 'tax', $migrationContext);
 
         $query->where('detail.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
@@ -199,13 +203,14 @@ class OrderReader extends AbstractReader
     /**
      * @return array<mixed>
      */
-    private function getOrderEsd(): array
+    private function getOrderEsd(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->select('esd.orderID, esd.orderdetailsID');
         $query->from('s_order_esd', 'esd');
-        $this->addTableSelection($query, 's_order_esd', 'esd');
+        $this->addTableSelection($query, 's_order_esd', 'esd', $migrationContext);
 
         $query->where('esd.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);
@@ -215,7 +220,7 @@ class OrderReader extends AbstractReader
 
         $result = [];
         $esdArray = $this->mapData($fetchedEsd, [], ['esd']);
-        $esdConfig = $this->getEsdConfig();
+        $esdConfig = $this->getEsdConfig($migrationContext);
 
         foreach ($esdArray as $key => $esdOrder) {
             foreach ($esdOrder as $esd) {
@@ -229,9 +234,10 @@ class OrderReader extends AbstractReader
         return $result;
     }
 
-    private function getEsdConfig(): ?string
+    private function getEsdConfig(MigrationContextInterface $migrationContext): ?string
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->select('ifnull(currentConfig.value, defaultConfig.value) as configValue');
         $query->from('s_core_config_elements', 'defaultConfig');
@@ -247,19 +253,20 @@ class OrderReader extends AbstractReader
     /**
      * @return array<mixed>
      */
-    private function getOrderDocuments(): array
+    private function getOrderDocuments(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_order_documents', 'document');
         $query->select('document.orderID');
-        $this->addTableSelection($query, 's_order_documents', 'document');
+        $this->addTableSelection($query, 's_order_documents', 'document', $migrationContext);
 
         $query->leftJoin('document', 's_order_documents_attributes', 'attributes', 'document.id = attributes.documentID');
-        $this->addTableSelection($query, 's_order_documents_attributes', 'attributes');
+        $this->addTableSelection($query, 's_order_documents_attributes', 'attributes', $migrationContext);
 
         $query->leftJoin('document', 's_core_documents', 'documenttype', 'document.type = documenttype.id');
-        $this->addTableSelection($query, 's_core_documents', 'documenttype');
+        $this->addTableSelection($query, 's_core_documents', 'documenttype', $migrationContext);
 
         $query->where('document.orderID IN (:ids)');
         $query->setParameter('ids', $this->orderIds, ArrayParameterType::INTEGER);

@@ -9,13 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class MainVariantRelationReader extends AbstractReader
+class MainVariantRelationReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -32,16 +33,14 @@ class MainVariantRelationReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
         return $this->fetchMainVariantRelations($migrationContext);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles')
             ->where('main_detail_id IS NOT NULL')
@@ -54,7 +53,9 @@ class MainVariantRelationReader extends AbstractReader
 
     private function fetchMainVariantRelations(MigrationContextInterface $migrationContext): array
     {
-        return $this->connection->createQueryBuilder()
+        $connection = $this->getConnection($migrationContext);
+
+        return $connection->createQueryBuilder()
             ->addSelect('articles.id, details.ordernumber')
             ->from('s_articles', 'articles')
             ->innerJoin('articles', 's_articles_details', 'details', 'details.id = articles.main_detail_id')

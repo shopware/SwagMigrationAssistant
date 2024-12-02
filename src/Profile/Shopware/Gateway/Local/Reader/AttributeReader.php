@@ -35,10 +35,12 @@ use Doctrine\DBAL\Types\TimeType;
 use Doctrine\DBAL\Types\Types;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\TotalStruct;
 
 #[Package('services-settings')]
-abstract class AttributeReader extends AbstractReader
+abstract class AttributeReader extends AbstractReader implements ReaderInterface
 {
     private const BUILTIN_TYPES_MAP = [
         AsciiStringType::class => Types::ASCII_STRING,
@@ -66,26 +68,36 @@ abstract class AttributeReader extends AbstractReader
         TimeImmutableType::class => Types::TIME_IMMUTABLE,
     ];
 
-    public function read(MigrationContextInterface $migrationContext): array
+    public function supportsTotal(MigrationContextInterface $migrationContext): bool
     {
-        $this->setConnection($migrationContext);
-        $table = $this->getAttributeTable();
-
-        return $this->getAttributeConfiguration($table);
+        return false;
     }
 
-    abstract protected function getAttributeTable(): string;
+    public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
+    {
+        return null;
+    }
+
+    public function read(MigrationContextInterface $migrationContext): array
+    {
+        $table = $this->getAttributeTable($migrationContext);
+
+        return $this->getAttributeConfiguration($table, $migrationContext);
+    }
+
+    abstract protected function getAttributeTable(MigrationContextInterface $migrationContext): string;
 
     /**
      * @return list<array{name: string, type: string, _locale: string, configuration: array<string, string|mixed|null>|null}>
      */
-    private function getAttributeConfiguration(string $table): array
+    private function getAttributeConfiguration(string $table, MigrationContextInterface $migrationContext): array
     {
-        $columns = $this->getTableColumns($table);
-        $foreignKeys = $this->getTableForeignKeys($table);
+        $columns = $this->getTableColumns($table, $migrationContext);
+        $foreignKeys = $this->getTableForeignKeys($table, $migrationContext);
         $columns = $this->cleanupColumns($columns, $foreignKeys);
 
-        $query = $this->connection->createQueryBuilder()
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder()
             ->select('config.column_name, config.*')
             ->from('s_attribute_configuration', 'config')
             ->where('config.table_name = :table')
@@ -102,7 +114,7 @@ WHERE namespace = 'backend/attribute_columns'
 AND name LIKE :table
 SQL;
 
-        $attributeConfigTranslations = $this->connection->executeQuery(
+        $attributeConfigTranslations = $connection->executeQuery(
             $sql,
             [
                 'pos' => $table,
@@ -111,7 +123,7 @@ SQL;
         )->fetchAllAssociative();
 
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         // extract field translations and add them to config
         foreach ($attributeConfigTranslations as $translation) {
@@ -151,17 +163,17 @@ SQL;
     /**
      * @return array<Column>
      */
-    private function getTableColumns(string $table): array
+    private function getTableColumns(string $table, MigrationContextInterface $migrationContext): array
     {
-        return $this->connection->createSchemaManager()->listTableColumns($table);
+        return $this->getConnection($migrationContext)->createSchemaManager()->listTableColumns($table);
     }
 
     /**
      * @return array<ForeignKeyConstraint>
      */
-    private function getTableForeignKeys(string $table): array
+    private function getTableForeignKeys(string $table, MigrationContextInterface $migrationContext): array
     {
-        return $this->connection->createSchemaManager()->listTableForeignKeys($table);
+        return $this->getConnection($migrationContext)->createSchemaManager()->listTableForeignKeys($table);
     }
 
     /**

@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class ProductReviewReader extends AbstractReader
+class ProductReviewReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,7 +34,6 @@ class ProductReviewReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetchedReviews = $this->fetchReviews($migrationContext);
         $fetchedReviews = $this->mapData($fetchedReviews, [], ['vote', 'mainShopId']);
 
@@ -46,9 +46,9 @@ class ProductReviewReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_articles_vote')
             ->executeQuery()
@@ -59,12 +59,13 @@ class ProductReviewReader extends AbstractReader
 
     private function fetchReviews(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_articles_vote', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers($migrationContext, 's_articles_vote', $migrationContext->getOffset(), $migrationContext->getLimit());
 
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_articles_vote', 'vote');
-        $this->addTableSelection($query, 's_articles_vote', 'vote');
+        $this->addTableSelection($query, 's_articles_vote', 'vote', $migrationContext);
 
         $query->leftJoin('vote', 's_core_shops', 'shop', 'shop.id = vote.shop_id OR (vote.shop_id IS NULL AND shop.default = 1)');
         $query->addSelect('shop.id as mainShopId');

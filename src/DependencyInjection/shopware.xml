@@ -443,11 +443,13 @@
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader">
+        <service id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader"
+                 parent="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader">
             <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory"/>
         </service>
 

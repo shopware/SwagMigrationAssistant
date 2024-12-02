@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class CustomerWishlistReader extends AbstractReader
+class CustomerWishlistReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,7 +34,6 @@ class CustomerWishlistReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetched = $this->fetchData($migrationContext);
         $fetched = $this->mapData($fetched, [], ['note', 'subshopID']);
 
@@ -42,9 +42,9 @@ class CustomerWishlistReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_notes', 'note')
             ->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id')
@@ -59,12 +59,13 @@ class CustomerWishlistReader extends AbstractReader
      */
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiersWithRelations($migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiersWithRelations($migrationContext, $migrationContext->getOffset(), $migrationContext->getLimit());
+        $connection = $this->getConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder();
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_order_notes', 'note');
-        $this->addTableSelection($query, 's_order_notes', 'note');
+        $this->addTableSelection($query, 's_order_notes', 'note', $migrationContext);
 
         $query->innerJoin('note', 's_user', 'customer', 'note.userID = customer.id');
         $query->addSelect('subshopID');
@@ -81,9 +82,10 @@ class CustomerWishlistReader extends AbstractReader
     /**
      * @return string[]
      */
-    private function fetchIdentifiersWithRelations(int $offset = 0, int $limit = 250)
+    private function fetchIdentifiersWithRelations(MigrationContextInterface $migrationContext, int $offset = 0, int $limit = 250)
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->select('note.id');
         $query->from('s_order_notes', 'note');

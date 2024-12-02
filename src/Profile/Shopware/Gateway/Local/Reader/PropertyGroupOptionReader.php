@@ -9,13 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class PropertyGroupOptionReader extends AbstractReader
+class PropertyGroupOptionReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -32,10 +33,9 @@ class PropertyGroupOptionReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetchedConfiguratorOptions = $this->fetchData($migrationContext);
         $options = $this->mapData($fetchedConfiguratorOptions, [], ['property']);
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($options as &$option) {
             $option['_locale'] = \str_replace('_', '-', $locale);
@@ -47,7 +47,7 @@ class PropertyGroupOptionReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
         $sql = <<<SQL
 SELECT
@@ -67,7 +67,7 @@ FROM
         FROM s_article_configurator_options AS opt
     ) AS result
 SQL;
-        $statement = $this->connection->prepare($sql);
+        $statement = $connection->prepare($sql);
         $result = $statement->executeQuery();
         $total = (int) $result->fetchOne();
 
@@ -76,6 +76,7 @@ SQL;
 
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
+        $connection = $this->getConnection($migrationContext);
         $sql = <<<SQL
 SELECT
            'property' AS "property.type",
@@ -123,7 +124,7 @@ UNION
 ORDER BY "property.type", "property.id" LIMIT :limit OFFSET :offset
 SQL;
 
-        $statement = $this->connection->prepare($sql);
+        $statement = $connection->prepare($sql);
         $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
         $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
 

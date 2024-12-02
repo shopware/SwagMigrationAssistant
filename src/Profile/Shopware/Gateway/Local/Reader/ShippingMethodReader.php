@@ -11,13 +11,14 @@ use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class ShippingMethodReader extends AbstractReader
+class ShippingMethodReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -34,13 +35,12 @@ class ShippingMethodReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-        $ids = $this->fetchIdentifiers('s_premium_dispatch', $migrationContext->getOffset(), $migrationContext->getLimit());
-        $fetchedShippingMethods = $this->fetchShippingMethods($ids);
-        $fetchedShippingCosts = $this->fetchShippingCosts($ids);
-        $shippingCountries = $this->fetchShippingCountries($ids);
-        $paymentMethods = $this->fetchPaymentMethods($ids);
-        $excludedCategories = $this->fetchExcludedCategories($ids);
+        $ids = $this->fetchIdentifiers($migrationContext, 's_premium_dispatch', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $fetchedShippingMethods = $this->fetchShippingMethods($ids, $migrationContext);
+        $fetchedShippingCosts = $this->fetchShippingCosts($ids, $migrationContext);
+        $shippingCountries = $this->fetchShippingCountries($ids, $migrationContext);
+        $paymentMethods = $this->fetchPaymentMethods($ids, $migrationContext);
+        $excludedCategories = $this->fetchExcludedCategories($ids, $migrationContext);
 
         $resultSet = $this->mapData(
             $fetchedShippingMethods,
@@ -48,7 +48,7 @@ class ShippingMethodReader extends AbstractReader
             ['dispatch']
         );
 
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
         foreach ($resultSet as &$item) {
             if (isset($fetchedShippingCosts[$item['id']])) {
                 $item['shippingCosts'] = $fetchedShippingCosts[$item['id']];
@@ -71,9 +71,9 @@ class ShippingMethodReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_premium_dispatch')
             ->executeQuery()
@@ -82,21 +82,22 @@ class ShippingMethodReader extends AbstractReader
         return new TotalStruct(DefaultEntities::SHIPPING_METHOD, $total);
     }
 
-    private function fetchShippingMethods(array $shippingMethodIds): array
+    private function fetchShippingMethods(array $shippingMethodIds, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_premium_dispatch', 'dispatch');
-        $this->addTableSelection($query, 's_premium_dispatch', 'dispatch');
+        $this->addTableSelection($query, 's_premium_dispatch', 'dispatch', $migrationContext);
 
         $query->leftJoin('dispatch', 's_core_shops', 'shop', 'dispatch.multishopID = shop.id');
-        $this->addTableSelection($query, 's_core_shops', 'shop');
+        $this->addTableSelection($query, 's_core_shops', 'shop', $migrationContext);
 
         $query->leftJoin('dispatch', 's_core_customergroups', 'customerGroup', 'dispatch.customergroupID = customerGroup.id');
-        $this->addTableSelection($query, 's_core_customergroups', 'customerGroup');
+        $this->addTableSelection($query, 's_core_customergroups', 'customerGroup', $migrationContext);
 
         $query->leftJoin('dispatch', 's_core_tax', 'tax', 'dispatch.tax_calculation = tax.id');
-        $this->addTableSelection($query, 's_core_tax', 'tax');
+        $this->addTableSelection($query, 's_core_tax', 'tax', $migrationContext);
 
         $query->where('dispatch.id IN (:ids)');
         $query->setParameter('ids', $shippingMethodIds, ArrayParameterType::STRING);
@@ -106,13 +107,14 @@ class ShippingMethodReader extends AbstractReader
         return $query->executeQuery()->fetchAllAssociative();
     }
 
-    private function fetchShippingCosts(array $shippingMethodIds): array
+    private function fetchShippingCosts(array $shippingMethodIds, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_premium_shippingcosts', 'shippingcosts');
         $query->addSelect('shippingcosts.dispatchID as dispatchId');
-        $this->addTableSelection($query, 's_premium_shippingcosts', 'shippingcosts');
+        $this->addTableSelection($query, 's_premium_shippingcosts', 'shippingcosts', $migrationContext);
 
         $query->leftJoin('shippingcosts', 's_core_currencies', 'currency', 'currency.standard = 1');
         $query->addSelect('currency.currency as currencyShortName');
@@ -127,9 +129,10 @@ class ShippingMethodReader extends AbstractReader
         return $this->mapData($fetchedShippingCosts, [], ['shippingcosts', 'currencyShortName']);
     }
 
-    private function fetchShippingCountries(array $shippingMethodIds): array
+    private function fetchShippingCountries(array $shippingMethodIds, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_premium_dispatch_countries', 'shippingcountries');
         $query->addSelect('shippingcountries.dispatchID, shippingcountries.countryID');
@@ -144,9 +147,10 @@ class ShippingMethodReader extends AbstractReader
         return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
-    private function fetchPaymentMethods(array $shippingMethodIds): array
+    private function fetchPaymentMethods(array $shippingMethodIds, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_premium_dispatch_paymentmeans', 'paymentMethods');
         $query->addSelect('paymentMethods.dispatchID, paymentMethods.paymentID');
@@ -158,9 +162,10 @@ class ShippingMethodReader extends AbstractReader
         return FetchModeHelper::group($query->executeQuery()->fetchAllAssociative());
     }
 
-    private function fetchExcludedCategories(array $shippingMethodIds): array
+    private function fetchExcludedCategories(array $shippingMethodIds, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_premium_dispatch_categories', 'categories');
         $query->addSelect('categories.dispatchID, categories.categoryID');
