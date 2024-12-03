@@ -13,7 +13,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     DatabaseCredentials,
     EntityCounter,
     MediaProcessObserver,
- }) => {
+}) => {
     const page = MigrationUser.page;
     await page.goto('/admin#/swag/migration/index/main');
     await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
@@ -27,7 +27,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     });
 
     await test.step('Setup connection to local SW5 database', async () => {
-        await page.getByRole('button', { name: 'Create initial connection' }).click();
+        await page.getByRole('button', { name: 'Create initia connection' }).click();
         await page.getByRole('button', { name: 'Start', exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByPlaceholder('Enter name').fill('sw5local');
