@@ -1,16 +1,9 @@
 includes:
     - phpstan-baseline.neon
-    - %ShopwareRoot%/vendor/phpstan/phpstan/conf/bleedingEdge.neon
-    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/extension.neon
-    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/rules.neon
+    - %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/PHPStan/common.neon
 
 parameters:
-    level: 8
     tmpDir: var/cache/phpstan
-    treatPhpDocTypesAsCertain: false
-    checkFunctionNameCase: true
-    checkInternalClassCaseSensitivity: true
-    checkUninitializedProperties: true
     paths:
         - src
         - tests
@@ -26,20 +19,11 @@ parameters:
     type_perfect:
         narrow_return: true
         narrow_param: true
-        no_mixed: true
-        null_over_false: true
 
     ignoreErrors:
         - message: '#Service ".*" is private#'
           paths:
               - tests/**/*Test.php
-
-        - # PHPStan does not recognize correctly that the properties are initialized in a private method called in the setUp method
-            message: '#Access to an uninitialized property SwagMigrationAssistant\\Test.*(mappingService|connection|runId)#'
-            paths:
-                - tests/Migration/Controller/StatusControllerTest.php
-                - tests/Migration/Services/MigrationDataWriterTest.php
-                - tests/Profile/Shopware/Gateway/Local/
 
         - # Ignore hash functions rule for the following files because we use it in another context
             message: '#Do not use .* function, use class Shopware\\Core\\Framework\\Util\\Hasher instead#'
@@ -55,24 +39,6 @@ parameters:
                 - src/Profile/Shopware/Media/Strategy/Md5StrategyResolver.php
                 - src/Migration/Converter/Converter.php
 
-        -  # The properties are never uninitialized. They are assigned in the convert method.
-            message: '#Class SwagMigrationAssistant\\Profile\\Shopware6{0,1}\\Converter|Media\\.* has an uninitialized property .*. Give it default value or assign it in the constructor.$#'
-            paths:
-                - src/Profile/Shopware/Converter
-                - src/Profile/Shopware6/Media
-
-        - # Entity properties initialized and handled by our DAL.
-            message: "#^Class SwagMigrationAssistant\\\\.+ has an uninitialized property \\$.+\\. Give it default value or assign it in the constructor\\.$#"
-            paths:
-                - src/Migration/Logging/SwagMigrationLoggingEntity.php
-                - src/Migration/Run/EntityProgress.php
-                - src/Migration/Run/RunProgress.php
-                - src/Migration/Run/SwagMigrationRunEntity.php
-                - src/Migration/Setting/GeneralSettingEntity.php
-                - src/Migration/Data/SwagMigrationDataEntity.php
-                - src/Migration/Mapping/SwagMigrationMappingEntity.php
-                - src/Migration/Media/SwagMigrationMediaFileEntity.php
-
         - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
@@ -87,7 +53,6 @@ parameters:
               - src/Profile/Shopware/Premapping/OrderDeliveryStateReader.php
               - src/Profile/Shopware/Premapping/OrderStateReader.php
               - src/Profile/Shopware/Premapping/TransactionStateReader.php
-
         - message: """
                 #^Call to deprecated method getData\\(\\) of class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Indexing\\\\EntityIndexingMessage\\:
                 tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Will return native type$#
@@ -103,10 +68,6 @@ parameters:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
               - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
 
-services:
-    -   # register the class, so we can decorate it, but don't tag it as a rule, so only our decorator is used by PHPStan
-        class: Symplify\PHPStanRules\Rules\NoReturnSetterMethodRule
-
 rules:
     # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
@@ -117,21 +78,3 @@ rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\PackageAnnotationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DomainExceptionRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\NoAfterStatementRule
-
-    # rules from https://github.com/symplify/phpstan-rules
-    # domain
-    - Symplify\PHPStanRules\Rules\Enum\RequireUniqueEnumConstantRule
-    - Symplify\PHPStanRules\Rules\PreventParentMethodVisibilityOverrideRule
-
-    # explicit naming
-    - Symplify\PHPStanRules\Rules\ForbiddenMultipleClassLikeInOneFileRule
-
-    - Symplify\PHPStanRules\Rules\Complexity\ForbiddenArrayMethodCallRule
-
-    # complexity rules
-    - Symplify\PHPStanRules\Rules\NoDynamicNameRule
-
-    # naming rules
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Symplify\NoReturnSetterMethodWithFluentSettersRule
-    - Symplify\PHPStanRules\Rules\UppercaseConstantRule
-    - Symplify\PHPStanRules\Rules\CheckClassNamespaceFollowPsr4Rule
