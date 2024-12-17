@@ -23,7 +23,7 @@ class CategoryAttributeReader extends AttributeReader
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::CATEGORY_CUSTOM_FIELD;
     }
 
-    protected function getAttributeTable(): string
+    protected function getAttributeTable(MigrationContextInterface $migrationContext): string
     {
         return 's_categories_attributes';
     }

@@ -11,13 +11,14 @@ use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class CustomerGroupReader extends AbstractReader
+class CustomerGroupReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -34,17 +35,15 @@ class CustomerGroupReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
         $fetchedCustomerGroups = $this->fetchCustomerGroups($migrationContext);
         $groupIds = \array_column($fetchedCustomerGroups, 'customerGroup.id');
         $customerGroups = $this->mapData($fetchedCustomerGroups, [], ['customerGroup']);
 
-        $fetchedDiscounts = $this->fetchCustomerGroupDiscounts($groupIds);
+        $fetchedDiscounts = $this->fetchCustomerGroupDiscounts($groupIds, $migrationContext);
         $discounts = $this->mapData($fetchedDiscounts, [], ['discount']);
 
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($customerGroups as &$customerGroup) {
             $customerGroup['_locale'] = \str_replace('_', '-', $locale);
@@ -59,9 +58,9 @@ class CustomerGroupReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_customergroups')
             ->executeQuery()
@@ -72,15 +71,16 @@ class CustomerGroupReader extends AbstractReader
 
     private function fetchCustomerGroups(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_core_customergroups', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers($migrationContext, 's_core_customergroups', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $connection = $this->getConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder();
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_core_customergroups', 'customerGroup');
-        $this->addTableSelection($query, 's_core_customergroups', 'customerGroup');
+        $this->addTableSelection($query, 's_core_customergroups', 'customerGroup', $migrationContext);
 
         $query->leftJoin('customerGroup', 's_core_customergroups_attributes', 'customerGroup_attributes', 'customerGroup.id = customerGroup_attributes.customerGroupID');
-        $this->addTableSelection($query, 's_core_customergroups_attributes', 'customerGroup_attributes');
+        $this->addTableSelection($query, 's_core_customergroups_attributes', 'customerGroup_attributes', $migrationContext);
 
         $query->where('customerGroup.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
@@ -92,13 +92,14 @@ class CustomerGroupReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
-    private function fetchCustomerGroupDiscounts(array $groupIds): array
+    private function fetchCustomerGroupDiscounts(array $groupIds, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_core_customergroups_discounts', 'discount');
         $query->addSelect(['groupID']);
-        $this->addTableSelection($query, 's_core_customergroups_discounts', 'discount');
+        $this->addTableSelection($query, 's_core_customergroups_discounts', 'discount', $migrationContext);
 
         $query->where('groupID IN (:ids)');
         $query->setParameter('ids', $groupIds, ArrayParameterType::STRING);

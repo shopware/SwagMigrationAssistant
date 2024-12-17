@@ -23,7 +23,7 @@ class CustomerGroupAttributeReader extends AttributeReader
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::CUSTOMER_GROUP_CUSTOM_FIELD;
     }
 
-    protected function getAttributeTable(): string
+    protected function getAttributeTable(MigrationContextInterface $migrationContext): string
     {
         return 's_core_customergroups_attributes';
     }

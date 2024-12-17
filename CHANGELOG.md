@@ -158,6 +158,38 @@
     - `SwagMigrationAssistant\Profile\Shopware6\Converter\UnitConverter`
   - [BREAKING] Removed `SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingServiceInterface` and implementors. Use `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and services in `SwagMigrationAssistant\Migration\Mapping\Lookup` instead.
 - MIG-1077 - Optimized repository query to respect specified batch sizes
+- MIG-1087 - Fixed an issue for the migration of media folders from SW6->SW6, where the default folder id was set wrongly. This includes changes to the way the folder structure is migrated
+  - [BREAKING] Removed `ReaderInterface` from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader`. All Reader classes extending this class now have to implement that interface themselves
+  - [BREAKING] Removed `$connection` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader`. It is now private and can be retrieved by calling `getConnection`
+  - [BREAKING] Changed `$connectionFactory` property in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to private
+  - [BREAKING] Removed `setConnection` method from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader`. Use `getConnection` instead
+  - [BREAKING] Changed `addTableSelection` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to include `MigrationContextInterface` as last parameter
+  - [BREAKING] Changed `fetchIdentifiers` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to include `MigrationContextInterface` as first parameter
+  - [BREAKING] Changed `getDefaultShopLocale` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AbstractReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\AttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CategoryAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerGroupAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ManufacturerAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\OrderDocumentAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `getAttributeTable` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductPriceAttributeReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed return type of `createApiClient` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory` to never return null. It might throw an `MigrationException` instead
+  - [BREAKING] Changed return type of `createDatabaseConnection` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory` to never return null. It might throw an `MigrationException` instead
+  - [BREAKING] Changed return type of `createApiClient` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface` to never return null. It might throw an `MigrationException` instead
+  - [BREAKING] Changed return type of `createDatabaseConnection` method in `\SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface` to never return null. It might throw an `MigrationException` instead
+  - [BREAKING] Changed `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader` to extend from `AbstractReader`
+  - [BREAKING] Removed `$connection` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
+  - [BREAKING] Removed `$connectionFactory` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
+  - [BREAKING] Changed `getDefaultCurrency` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader` to include `MigrationContextInterface` as parameter
+  - [BREAKING] Changed `fetchData` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductPropertyRelationReader` to be private instead of public
+  - [BREAKING] Changed `getEsdConfig` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of public
+  - [BREAKING] Changed `fetchMainCategoryShops` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of public
+  - [BREAKING] Changed `appendAssociatedData` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of protected
+  - [BREAKING] Changed `buildIdentifierMappings` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of protected
+  - [BREAKING] Changed `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader` to extend from `AbstractReader`
+  - [BREAKING] Removed `$connectionFactory` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data

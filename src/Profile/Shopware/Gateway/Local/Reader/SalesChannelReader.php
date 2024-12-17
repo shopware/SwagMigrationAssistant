@@ -11,13 +11,14 @@ use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class SalesChannelReader extends AbstractReader
+class SalesChannelReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -34,12 +35,11 @@ class SalesChannelReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-        $fetchedSalesChannels = $this->fetchData($migrationContext->getOffset(), $migrationContext->getLimit());
+        $fetchedSalesChannels = $this->fetchData($migrationContext->getOffset(), $migrationContext->getLimit(), $migrationContext);
         $salesChannels = $this->mapData($fetchedSalesChannels, [], ['shop', 'locale', 'currency']);
 
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($salesChannels as $key => &$salesChannel) {
             $salesChannel['locale'] = \str_replace('_', '-', $salesChannel['locale']);
@@ -56,9 +56,9 @@ class SalesChannelReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_shops')
             ->executeQuery()
@@ -70,14 +70,15 @@ class SalesChannelReader extends AbstractReader
     /**
      * @return array<mixed>
      */
-    private function fetchData(int $offset, int $limit): array
+    private function fetchData(int $offset, int $limit, MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_core_shops', $offset, $limit);
-        $query = $this->connection->createQueryBuilder();
+        $ids = $this->fetchIdentifiers($migrationContext, 's_core_shops', $offset, $limit);
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_core_shops', 'shop');
         $query->addSelect('shop.id as identifier');
-        $this->addTableSelection($query, 's_core_shops', 'shop');
+        $this->addTableSelection($query, 's_core_shops', 'shop', $migrationContext);
 
         $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
         $query->addSelect('locale.locale');

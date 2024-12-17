@@ -33,5 +33,5 @@ return [
         ],
     ],
     'useParentConfiguration' => 1,
-    'defaultFolderId' => 'c2187cd37ca445c2a000104cfa8a13d5',
+    'parentId' => 'c2187cd37ca445c2a000104cfa8a13d5',
 ];

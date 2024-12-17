@@ -23,7 +23,7 @@ class CustomerAttributeReader extends AttributeReader
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::CUSTOMER_CUSTOM_FIELD;
     }
 
-    protected function getAttributeTable(): string
+    protected function getAttributeTable(MigrationContextInterface $migrationContext): string
     {
         return 's_user_attributes';
     }

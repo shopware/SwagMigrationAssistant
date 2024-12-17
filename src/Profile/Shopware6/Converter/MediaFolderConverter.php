@@ -47,9 +47,17 @@ class MediaFolderConverter extends ShopwareConverter
             $converted['id']
         );
 
+        if ($converted['id'] === str_repeat('0', 32)) {
+            // edge case for hidden download products media folder
+            // this doesn't need to be migrated, just map the files into it
+            // otherwise the code below would lead to a self-referential parentId
+            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+        }
+
         if (isset($converted['defaultFolder'])) {
-            $converted['defaultFolderId'] = $this->mediaFolderLookup->get($data['defaultFolder']['entity'], $this->context);
-            if ($converted['defaultFolderId'] === null) {
+            $converted['parentId'] = $this->mediaFolderLookup->get($data['defaultFolder']['entity'], $this->context);
+
+            if ($converted['parentId'] === null) {
                 $this->loggingService->addLogEntry(
                     new UnsupportedMediaDefaultFolderLog(
                         $this->migrationContext->getRunUuid(),
@@ -58,9 +66,11 @@ class MediaFolderConverter extends ShopwareConverter
                         $data['defaultFolder']['entity']
                     )
                 );
-                unset($converted['defaultFolderId']);
             }
 
+            // there can only be one default folder for each entity
+            // so it doesn't make sense to migrate these, instead it will be a child folder (see parentId above)
+            unset($converted['defaultFolderId']);
             unset($converted['defaultFolder']);
         }
 

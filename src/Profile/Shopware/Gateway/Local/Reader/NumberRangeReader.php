@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class NumberRangeReader extends AbstractReader
+class NumberRangeReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,15 +34,14 @@ class NumberRangeReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-        $numberRanges = $this->fetchNumberRanges($migrationContext->getOffset(), $migrationContext->getLimit());
-        $prefix = \unserialize($this->fetchPrefix(), ['allowed_classes' => false]);
+        $numberRanges = $this->fetchNumberRanges($migrationContext->getOffset(), $migrationContext->getLimit(), $migrationContext);
+        $prefix = \unserialize($this->fetchPrefix($migrationContext), ['allowed_classes' => false]);
 
         if (!$prefix) {
             $prefix = '';
         }
 
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($numberRanges as &$numberRange) {
             $numberRange['_locale'] = \str_replace('_', '-', $locale);
@@ -53,9 +53,9 @@ class NumberRangeReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_order_number')
             ->executeQuery()
@@ -67,11 +67,12 @@ class NumberRangeReader extends AbstractReader
     /**
      * @return array<int, array<string,mixed>>
      */
-    private function fetchNumberRanges(int $offset, int $limit): array
+    private function fetchNumberRanges(int $offset, int $limit, MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_order_number', $offset, $limit);
+        $ids = $this->fetchIdentifiers($migrationContext, 's_order_number', $offset, $limit);
+        $connection = $this->getConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder()
+        $query = $connection->createQueryBuilder()
             ->select('*')
             ->from('s_order_number')
             ->where('id IN (:ids)')
@@ -80,9 +81,11 @@ class NumberRangeReader extends AbstractReader
         return $query->executeQuery()->fetchAllAssociative();
     }
 
-    private function fetchPrefix(): string
+    private function fetchPrefix(MigrationContextInterface $migrationContext): string
     {
-        $prefix = $this->connection->createQueryBuilder()
+        $connection = $this->getConnection($migrationContext);
+
+        $prefix = $connection->createQueryBuilder()
             ->select('value')
             ->from('s_core_config_elements')
             ->where('name = "backendautoordernumberprefix"')

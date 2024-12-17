@@ -25,10 +25,6 @@ class TableReader implements TableReaderInterface
     {
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
-        if ($client === null) {
-            return [];
-        }
-
         $result = $client->get(
             'SwagMigrationDynamic',
             [

@@ -77,13 +77,7 @@ abstract class LocalConnectionTestCase extends TestCase
 
     protected function getExternalConnection(): Connection
     {
-        $connection = $this->getConnectionFactory()->createDatabaseConnection($this->getMigrationContext());
-
-        if (!$connection instanceof Connection) {
-            throw new \RuntimeException('Connection could not be created');
-        }
-
-        return $connection;
+        return $this->getConnectionFactory()->createDatabaseConnection($this->getMigrationContext());
     }
 
     protected function getConnectionFactory(): ConnectionFactory

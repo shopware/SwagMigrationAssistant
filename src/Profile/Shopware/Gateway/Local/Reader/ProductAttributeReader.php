@@ -23,7 +23,7 @@ class ProductAttributeReader extends AttributeReader
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT_CUSTOM_FIELD;
     }
 
-    protected function getAttributeTable(): string
+    protected function getAttributeTable(MigrationContextInterface $migrationContext): string
     {
         return 's_articles_attributes';
     }

@@ -40,10 +40,6 @@ abstract class ApiReader implements ReaderInterface
         $queryParams = \array_merge($queryParams, $this->getExtraParameters());
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
-        if ($client === null) {
-            return [];
-        }
-
         $result = $client->get(
             $this->getApiRoute(),
             [

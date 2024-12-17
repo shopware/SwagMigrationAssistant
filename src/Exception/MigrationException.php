@@ -54,6 +54,8 @@ class MigrationException extends HttpException
 
     public const INVALID_CONNECTION_AUTHENTICATION = 'SWAG_MIGRATION__INVALID_CONNECTION_AUTHENTICATION';
 
+    public const INVALID_CONNECTION_CREDENTIALS = 'SWAG_MIGRATION__INVALID_CONNECTION_CREDENTIALS';
+
     public const SSL_REQUIRED = 'SWAG_MIGRATION__SSL_REQUIRED';
 
     public const REQUEST_CERTIFICATE_INVALID = 'SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID';
@@ -181,6 +183,15 @@ class MigrationException extends HttpException
             self::INVALID_CONNECTION_AUTHENTICATION,
             'Invalid connection authentication for the request: "{{ url }}"',
             ['url' => $url]
+        );
+    }
+
+    public static function invalidConnectionCredentials(): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::INVALID_CONNECTION_CREDENTIALS,
+            'Invalid or missing connection credentials',
         );
     }
 

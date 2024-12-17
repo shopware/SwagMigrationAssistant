@@ -71,23 +71,9 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
-        $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
         $profile = $migrationContext->getProfile();
-
-        if ($connection === null) {
-            $error = MigrationException::databaseConnectionError();
-
-            return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '-',
-                [],
-                [],
-                new RequestStatusStruct($error->getErrorCode(), $error->getMessage())
-            );
-        }
-
         try {
+            $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
             $connection->connect();
         } catch (\Throwable $e) {
             $error = MigrationException::databaseConnectionError();
@@ -101,7 +87,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
                 new RequestStatusStruct($error->getErrorCode(), $error->getMessage())
             );
         }
-        $connection->close();
+
         $environmentData = $this->localEnvironmentReader->read($migrationContext);
 
         $targetSystemCurrency = $this->currencyRepository->search(new Criteria([Defaults::CURRENCY]), $context)->get(Defaults::CURRENCY);

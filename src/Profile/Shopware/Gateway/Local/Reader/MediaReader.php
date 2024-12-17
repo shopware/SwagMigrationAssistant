@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class MediaReader extends AbstractReader
+class MediaReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,7 +34,6 @@ class MediaReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetchedMedia = $this->fetchData($migrationContext);
 
         $media = $this->mapData(
@@ -42,16 +42,16 @@ class MediaReader extends AbstractReader
             ['asset']
         );
 
-        $resultSet = $this->prepareMedia($media);
+        $resultSet = $this->prepareMedia($media, $migrationContext);
 
         return $this->cleanupResultSet($resultSet);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_media')
             ->executeQuery()
@@ -62,14 +62,15 @@ class MediaReader extends AbstractReader
 
     private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_media', $migrationContext->getOffset(), $migrationContext->getLimit());
-        $query = $this->connection->createQueryBuilder();
+        $ids = $this->fetchIdentifiers($migrationContext, 's_media', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_media', 'asset');
-        $this->addTableSelection($query, 's_media', 'asset');
+        $this->addTableSelection($query, 's_media', 'asset', $migrationContext);
 
         $query->leftJoin('asset', 's_media_attributes', 'attributes', 'asset.id = attributes.mediaID');
-        $this->addTableSelection($query, 's_media_attributes', 'attributes');
+        $this->addTableSelection($query, 's_media_attributes', 'attributes', $migrationContext);
 
         $query->where('asset.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
@@ -81,10 +82,10 @@ class MediaReader extends AbstractReader
         return $query->fetchAllAssociative();
     }
 
-    private function prepareMedia(array $media): array
+    private function prepareMedia(array $media, MigrationContextInterface $migrationContext): array
     {
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($media as &$mediaData) {
             $mediaData['_locale'] = \str_replace('_', '-', $locale);

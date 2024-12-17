@@ -89,6 +89,13 @@ parameters:
               - src/Profile/Shopware/Premapping/TransactionStateReader.php
 
         - message: """
+                #^Call to deprecated method getData\\(\\) of class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Indexing\\\\EntityIndexingMessage\\:
+                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Will return native type$#
+          """
+          paths:
+              - src/Migration/MessageQueue/OrderCountIndexer.php
+
+        - message: """
                 #^Fetching class constant class of deprecated class Shopware\\\\Core\\\\Checkout\\\\Payment\\\\Cart\\\\PaymentHandler\\\\CashPayment:
                 tag:v6.7.0 - reason:becomes-internal$#
           """

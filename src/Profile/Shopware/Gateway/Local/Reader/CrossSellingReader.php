@@ -9,13 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class CrossSellingReader extends AbstractReader
+class CrossSellingReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -32,8 +33,6 @@ class CrossSellingReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
         $fetchedCrossSelling = $this->fetchData($migrationContext);
         $this->enrichWithPositionData($fetchedCrossSelling, $migrationContext->getOffset());
 
@@ -42,7 +41,7 @@ class CrossSellingReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
         $sql = <<<SQL
 SELECT
@@ -55,13 +54,15 @@ FROM
     ) AS result
 SQL;
 
-        $total = (int) $this->connection->executeQuery($sql)->fetchOne();
+        $total = (int) $connection->executeQuery($sql)->fetchOne();
 
         return new TotalStruct(DefaultEntities::CROSS_SELLING, $total);
     }
 
     protected function fetchData(MigrationContextInterface $migrationContext): array
     {
+        $connection = $this->getConnection($migrationContext);
+
         $sql = <<<SQL
 SELECT * FROM (
     SELECT
@@ -79,7 +80,7 @@ SELECT * FROM (
 ORDER BY cross_selling.type, cross_selling.articleID LIMIT :limit OFFSET :offset
 SQL;
 
-        $statement = $this->connection->prepare($sql);
+        $statement = $connection->prepare($sql);
         $statement->bindValue('accessory', DefaultEntities::CROSS_SELLING_ACCESSORY, \PDO::PARAM_STR);
         $statement->bindValue('similar', DefaultEntities::CROSS_SELLING_SIMILAR, \PDO::PARAM_STR);
         $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);

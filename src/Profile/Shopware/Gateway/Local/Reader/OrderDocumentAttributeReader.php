@@ -23,7 +23,7 @@ class OrderDocumentAttributeReader extends AttributeReader
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::ORDER_DOCUMENT_CUSTOM_FIELD;
     }
 
-    protected function getAttributeTable(): string
+    protected function getAttributeTable(MigrationContextInterface $migrationContext): string
     {
         return 's_order_documents_attributes';
     }

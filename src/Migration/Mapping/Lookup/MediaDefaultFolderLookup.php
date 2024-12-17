@@ -35,6 +35,9 @@ class MediaDefaultFolderLookup implements ResetInterface
     ) {
     }
 
+    /**
+     * Returns the Uuid of the media_folder, which has the corresponding matching media_default_folder (by entityName)
+     */
     public function get(string $entityName, Context $context): ?string
     {
         if (\array_key_exists($entityName, $this->cache)) {

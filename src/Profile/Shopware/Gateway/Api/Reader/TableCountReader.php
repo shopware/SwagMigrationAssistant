@@ -31,10 +31,6 @@ class TableCountReader implements TableCountReaderInterface
     {
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
-        if ($client === null) {
-            return [];
-        }
-
         $result = $client->get(
             'SwagMigrationTotals'
         );

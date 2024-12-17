@@ -23,7 +23,7 @@ class ManufacturerAttributeReader extends AttributeReader
             && $this->getDataSetEntity($migrationContext) === DefaultEntities::PRODUCT_MANUFACTURER_CUSTOM_FIELD;
     }
 
-    protected function getAttributeTable(): string
+    protected function getAttributeTable(MigrationContextInterface $migrationContext): string
     {
         return 's_articles_supplier_attributes';
     }

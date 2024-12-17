@@ -157,6 +157,7 @@
             "SWAG_MIGRATION__GATEWAY_READ": "Could not connect to the server. Please check the given shop domain.",
             "SWAG_MIGRATION__GATEWAY_READ__HINT": "If you're having trouble connecting, it might be worth checking the currently installed curl version on your server and updating it.",
             "SWAG_MIGRATION__INVALID_CONNECTION_AUTHENTICATION": "Your credentials are incorrect. Please check them and try again.",
+            "SWAG_MIGRATION__INVALID_CONNECTION_CREDENTIALS": "The access data for the connection to the source system do not exist or are incorrect. Please check them and try again.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "The required plugin “Migration Connector” is not installed in Shopware 5. Please install the free plugin and try again.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED__HINT": "If you already installed the “Migration Connector” and cleared the cache in the Shopware 5 backend (Configuration > Cache/performance), try deleting your Shopware 5 cache folder (var/cache) manually.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Database connection could not be established.",

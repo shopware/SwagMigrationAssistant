@@ -9,13 +9,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class ProductPropertyRelationReader extends AbstractReader
+class ProductPropertyRelationReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -32,7 +33,6 @@ class ProductPropertyRelationReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetchedProductProperties = $this->fetchData($migrationContext);
 
         $resultSet = $this->mapData($fetchedProductProperties, [], ['identifier', 'type', 'filter', 'name', 'value', 'productId']);
@@ -42,7 +42,7 @@ class ProductPropertyRelationReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
         $sql = <<<SQL
 SELECT COUNT(*)
@@ -50,26 +50,27 @@ FROM s_filter_values filter_value
 INNER JOIN s_filter_articles filter_products ON filter_value.id = filter_products.valueID;
 SQL;
 
-        $total = (int) $this->connection->executeQuery($sql)->fetchOne();
+        $total = (int) $connection->executeQuery($sql)->fetchOne();
 
         return new TotalStruct(DefaultEntities::PRODUCT_PROPERTY_RELATION, $total);
     }
 
-    public function fetchData(MigrationContextInterface $migrationContext): array
+    private function fetchData(MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_filter_values', 'filter_value');
         $query->addSelect('"property" AS type');
         $query->addSelect('value AS name');
-        $this->addTableSelection($query, 's_filter_values', 'filter_value');
+        $this->addTableSelection($query, 's_filter_values', 'filter_value', $migrationContext);
 
         $query->innerJoin('filter_value', 's_filter_articles', 'filter_product', 'filter_value.id = filter_product.valueID');
         $query->addSelect('MD5(CONCAT(filter_value.id, filter_product.articleID)) AS identifier');
         $query->addSelect('filter_product.articleID AS productId');
 
         $query->leftJoin('filter_value', 's_filter_options', 'filter_value_group', 'filter_value_group.id = filter_value.optionID');
-        $this->addTableSelection($query, 's_filter_options', 'filter_value_group');
+        $this->addTableSelection($query, 's_filter_options', 'filter_value_group', $migrationContext);
 
         $query->setFirstResult($migrationContext->getOffset());
         $query->setMaxResults($migrationContext->getLimit());

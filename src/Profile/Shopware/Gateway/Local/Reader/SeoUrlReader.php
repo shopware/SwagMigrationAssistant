@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class SeoUrlReader extends AbstractReader
+class SeoUrlReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool
     {
@@ -33,7 +34,6 @@ class SeoUrlReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
         $fetchedSeoUrls = $this->fetchSeoUrls($migrationContext);
         $seoUrls = $this->mapData($fetchedSeoUrls, [], ['url']);
         $seoUrls = $this->extractTypeInformation($seoUrls);
@@ -47,9 +47,9 @@ class SeoUrlReader extends AbstractReader
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_core_rewrite_urls')
             ->executeQuery()
@@ -63,12 +63,13 @@ class SeoUrlReader extends AbstractReader
      */
     private function fetchSeoUrls(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_core_rewrite_urls', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers($migrationContext, 's_core_rewrite_urls', $migrationContext->getOffset(), $migrationContext->getLimit());
 
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_core_rewrite_urls', 'url');
-        $this->addTableSelection($query, 's_core_rewrite_urls', 'url');
+        $this->addTableSelection($query, 's_core_rewrite_urls', 'url', $migrationContext);
 
         $query->leftJoin('url', 's_core_shops', 'shop', 'shop.id = url.subshopID');
         $query->leftJoin('shop', 's_core_locales', 'locale', 'shop.locale_id = locale.id');
@@ -79,7 +80,7 @@ class SeoUrlReader extends AbstractReader
 
         $query->executeQuery();
 
-        if ($this->isRouterToLower()) {
+        if ($this->isRouterToLower($migrationContext)) {
             return $this->prepareSeoUrl($query->fetchAllAssociative());
         }
 
@@ -104,9 +105,10 @@ class SeoUrlReader extends AbstractReader
     /**
      * @return bool
      */
-    private function isRouterToLower()
+    private function isRouterToLower(MigrationContextInterface $migrationContext)
     {
-        $useUrlToLower = $this->connection->createQueryBuilder()
+        $connection = $this->getConnection($migrationContext);
+        $useUrlToLower = $connection->createQueryBuilder()
             ->select(['cv.value'])
             ->from('s_core_config_values', 'cv')
             ->innerJoin('cv', 's_core_config_elements', 'ce', 'cv.element_id = ce.id')

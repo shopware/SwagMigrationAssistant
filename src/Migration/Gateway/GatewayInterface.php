@@ -23,7 +23,7 @@ interface GatewayInterface
     /**
      * Identifier for a gateway registry
      */
-    public function supports(MigrationContextInterface $context): bool;
+    public function supports(MigrationContextInterface $migrationContext): bool;
 
     /**
      * Reads the given entity type from via context from its connection and returns the data

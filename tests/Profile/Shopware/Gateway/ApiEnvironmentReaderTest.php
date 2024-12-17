@@ -37,7 +37,7 @@ class ApiEnvironmentReaderTest extends TestCase
         $connectionFactory = $this->createMock(ConnectionFactory::class);
         $connectionFactory
             ->method('createApiClient')
-            ->willReturn(null);
+            ->willThrowException(MigrationException::apiConnectionError('Could not create API client. Could be due to empty credentials or invalid connection.'));
 
         $environmentReader = new EnvironmentReader($connectionFactory);
 

@@ -11,13 +11,14 @@ use Doctrine\DBAL\ArrayParameterType;
 use Shopware\Core\Framework\DataAbstractionLayer\Doctrine\FetchModeHelper;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('services-settings')]
-class CustomerReader extends AbstractReader
+class CustomerReader extends AbstractReader implements ReaderInterface
 {
     /**
      * @var int
@@ -39,22 +40,20 @@ class CustomerReader extends AbstractReader
 
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->setConnection($migrationContext);
-
         $fetchedCustomers = $this->fetchCustomers($migrationContext);
         $ids = \array_column($fetchedCustomers, 'customer.id');
 
         $customers = $this->mapData($fetchedCustomers, [], ['customer', 'customerGroupId']);
-        $resultSet = $this->assignAssociatedData($customers, $ids);
+        $resultSet = $this->assignAssociatedData($customers, $ids, $migrationContext);
 
         return $this->cleanupResultSet($resultSet);
     }
 
     public function readTotal(MigrationContextInterface $migrationContext): ?TotalStruct
     {
-        $this->setConnection($migrationContext);
+        $connection = $this->getConnection($migrationContext);
 
-        $total = (int) $this->connection->createQueryBuilder()
+        $total = (int) $connection->createQueryBuilder()
             ->select('COUNT(*)')
             ->from('s_user')
             ->executeQuery()
@@ -68,30 +67,31 @@ class CustomerReader extends AbstractReader
      */
     private function fetchCustomers(MigrationContextInterface $migrationContext): array
     {
-        $ids = $this->fetchIdentifiers('s_user', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $ids = $this->fetchIdentifiers($migrationContext, 's_user', $migrationContext->getOffset(), $migrationContext->getLimit());
+        $connection = $this->getConnection($migrationContext);
 
-        $query = $this->connection->createQueryBuilder();
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_user', 'customer');
-        $this->addTableSelection($query, 's_user', 'customer');
+        $this->addTableSelection($query, 's_user', 'customer', $migrationContext);
 
         $query->leftJoin('customer', 's_user_attributes', 'attributes', 'customer.id = attributes.userID');
-        $this->addTableSelection($query, 's_user_attributes', 'attributes');
+        $this->addTableSelection($query, 's_user_attributes', 'attributes', $migrationContext);
 
         $query->leftJoin('customer', 's_core_customergroups', 'customer_group', 'customer.customergroup = customer_group.groupkey');
         $query->addSelect('customer_group.id as customerGroupId');
 
         $query->leftJoin('customer', 's_core_paymentmeans', 'defaultpayment', 'customer.paymentID = defaultpayment.id');
-        $this->addTableSelection($query, 's_core_paymentmeans', 'defaultpayment');
+        $this->addTableSelection($query, 's_core_paymentmeans', 'defaultpayment', $migrationContext);
 
         $query->leftJoin('defaultpayment', 's_core_paymentmeans_attributes', 'defaultpayment_attributes', 'defaultpayment.id = defaultpayment_attributes.paymentmeanID');
-        $this->addTableSelection($query, 's_core_paymentmeans_attributes', 'defaultpayment_attributes');
+        $this->addTableSelection($query, 's_core_paymentmeans_attributes', 'defaultpayment_attributes', $migrationContext);
 
         $query->leftJoin('customer', 's_core_locales', 'customerlanguage', 'customer.language = customerlanguage.id');
-        $this->addTableSelection($query, 's_core_locales', 'customerlanguage');
+        $this->addTableSelection($query, 's_core_locales', 'customerlanguage', $migrationContext);
 
         $query->leftJoin('customer', 's_core_shops', 'shop', 'customer.subshopID = shop.id');
-        $this->addTableSelection($query, 's_core_shops', 'shop');
+        $this->addTableSelection($query, 's_core_shops', 'shop', $migrationContext);
 
         $query->where('customer.id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::STRING);
@@ -109,16 +109,16 @@ class CustomerReader extends AbstractReader
      *
      * @return array<int, array<string, mixed>>
      */
-    private function assignAssociatedData(array $customers, array $ids): array
+    private function assignAssociatedData(array $customers, array $ids, MigrationContextInterface $migrationContext): array
     {
-        $customerAddresses = $this->fetchCustomerAdresses($ids);
+        $customerAddresses = $this->fetchCustomerAdresses($ids, $migrationContext);
         $addresses = $this->mapData($customerAddresses, [], ['address']);
 
-        $fetchedPaymentData = $this->fetchPaymentData($ids);
+        $fetchedPaymentData = $this->fetchPaymentData($ids, $migrationContext);
         $paymentData = $this->mapData($fetchedPaymentData, [], ['paymentdata']);
 
         // represents the main language of the migrated shop
-        $locale = $this->getDefaultShopLocale();
+        $locale = $this->getDefaultShopLocale($migrationContext);
 
         foreach ($customers as &$customer) {
             $customer['_locale'] = \str_replace('_', '-', $locale);
@@ -142,22 +142,23 @@ class CustomerReader extends AbstractReader
      *
      * @return array<string, array<int, array<string, string|null>>>
      */
-    private function fetchCustomerAdresses(array $ids): array
+    private function fetchCustomerAdresses(array $ids, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_user_addresses', 'address');
         $query->addSelect('address.user_id');
-        $this->addTableSelection($query, 's_user_addresses', 'address');
+        $this->addTableSelection($query, 's_user_addresses', 'address', $migrationContext);
 
         $query->leftJoin('address', 's_user_addresses_attributes', 'address_attributes', 'address.id = address_attributes.address_id');
-        $this->addTableSelection($query, 's_user_addresses_attributes', 'address_attributes');
+        $this->addTableSelection($query, 's_user_addresses_attributes', 'address_attributes', $migrationContext);
 
         $query->leftJoin('address', 's_core_countries', 'country', 'address.country_id = country.id');
-        $this->addTableSelection($query, 's_core_countries', 'country');
+        $this->addTableSelection($query, 's_core_countries', 'country', $migrationContext);
 
         $query->leftJoin('address', 's_core_countries_states', 'state', 'address.state_id = state.id');
-        $this->addTableSelection($query, 's_core_countries_states', 'state');
+        $this->addTableSelection($query, 's_core_countries_states', 'state', $migrationContext);
 
         $query->where('address.user_id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);
@@ -170,13 +171,14 @@ class CustomerReader extends AbstractReader
      *
      * @return array<string, array<int, array<string, string|null>>>
      */
-    private function fetchPaymentData(array $ids): array
+    private function fetchPaymentData(array $ids, MigrationContextInterface $migrationContext): array
     {
-        $query = $this->connection->createQueryBuilder();
+        $connection = $this->getConnection($migrationContext);
+        $query = $connection->createQueryBuilder();
 
         $query->from('s_core_payment_data', 'paymentdata');
         $query->addSelect('paymentdata.user_id');
-        $this->addTableSelection($query, 's_core_payment_data', 'paymentdata');
+        $this->addTableSelection($query, 's_core_payment_data', 'paymentdata', $migrationContext);
 
         $query->where('paymentdata.user_id IN (:ids)');
         $query->setParameter('ids', $ids, ArrayParameterType::INTEGER);

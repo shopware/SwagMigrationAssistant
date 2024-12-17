@@ -37,14 +37,13 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
-        $this->client = $this->connectionFactory->createApiClient($migrationContext);
-
         $information = [
             'environmentInformation' => [],
             'requestStatus' => new RequestStatusStruct(),
         ];
 
         try {
+            $this->client = $this->connectionFactory->createApiClient($migrationContext);
             $information['environmentInformation'] = $this->getEnvironmentInformation();
         } catch (\Throwable $e) {
             $information['requestStatus'] = new RequestStatusStruct(
