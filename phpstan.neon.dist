@@ -43,10 +43,6 @@ parameters:
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
 
-        - # Add a native type with next refactoring
-            message: '#Native type for property ".*" is missing#'
-            path: src/Profile/Shopware/Gateway/Local/Reader/AbstractReader.php
-
         # ToDo: fix platform deprecations for v6.7.0.0
         - message: """
                 #^Call to deprecated method getName\\(\\) of class Shopware\\\\Core\\\\System\\\\StateMachine\\\\Aggregation\\\\StateMachineState\\\\StateMachineStateEntity\\:
@@ -71,7 +67,6 @@ parameters:
           paths:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
               - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
-        - message: '#Call to deprecated method getData\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\Indexing\\EntityIndexingMessage#'
 
 rules:
     # Shopware core rules
