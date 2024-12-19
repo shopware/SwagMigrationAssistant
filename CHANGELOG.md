@@ -190,6 +190,7 @@
   - [BREAKING] Changed `buildIdentifierMappings` method of `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader` to be private instead of protected
   - [BREAKING] Changed `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader` to extend from `AbstractReader`
   - [BREAKING] Removed `$connectionFactory` property from `\SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\TableReader`. it can be retrieved by calling `getConnection` from the parent `AbstractReader`
+- MIG-1091 - Fixed small errors in the service container definition
 
 # 13.2.0
 - MIG-1035 - Changed the premapping assignment in the administration, which should fix issues with assignment on later pagination pages and changes getting lost with newly selected data

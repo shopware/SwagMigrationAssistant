@@ -160,6 +160,7 @@
 - MIG-1077 - Optimierter Datenabruf unter Berücksichtigung der übergebenen Batch-Werte
 - MIG-1087 - Es wurde ein Problem bei der Migration von Medienordnern von SW6->SW6 behoben, bei dem die Standardordner-ID falsch gesetzt war. Dies beinhaltet Änderungen an der Art und Weise, wie die Ordnerstruktur migriert wird
   - ToDo: technical (breaking) changes will be moved to an Upgrade.md before next release, no point in translating these 
+- MIG-1091 - Kleine Fehler in der Service-Container-Definition behoben
 
 # 13.2.0
 - MIG-1035 - Die Premapping-Zuweisung im Admin wurde geändert, wodurch Probleme mit der Zuweisung auf späteren Paginierungsseiten und dem Verlust von Änderungen bei neu ausgewählten Daten behoben sein sollten

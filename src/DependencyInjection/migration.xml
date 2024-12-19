@@ -245,7 +245,7 @@
             <argument type="tagged" tag="shopware.migration.media_file_processor"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase">
+        <service id="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase" abstract="true">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
@@ -344,10 +344,6 @@
                       id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry"/>
 
             <tag name="messenger.message_handler"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Migration\Service\EntityPartialIndexerService">
-            <argument type="tagged" tag="shopware.entity_indexer"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\OrderCountIndexer"
