@@ -133,7 +133,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
         $mapping['id'] = Uuid::fromBytesToHex($mapping['id']);
         $mapping['connectionId'] = Uuid::fromBytesToHex($mapping['connectionId']);
-        $mapping['entityUuid'] = Uuid::fromBytesToHex($mapping['entityUuid']);
+        $mapping['entityUuid'] = $mapping['entityUuid'] === null ? null : Uuid::fromBytesToHex($mapping['entityUuid']);
         $mapping['additionalData'] = \json_decode($mapping['additionalData'], true);
 
         // PHPStan does not recognize that fetchAssociative returns all required fields. We should move to a Mapping object.
