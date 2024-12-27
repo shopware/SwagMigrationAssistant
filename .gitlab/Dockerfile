@@ -11,8 +11,6 @@ WORKDIR /src
 
 COPY . /src/custom/plugins/SwagMigrationAssistant
 
-RUN git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@gitlab.shopware.com/shopware/6/services/testdata.git /src/custom/plugins/SwagMigrationAssistant/tests/testData
-
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN /src/vendor/bin/composer -d /src/custom/plugins/SwagMigrationAssistant require --no-update 'shopware/core:*' \
