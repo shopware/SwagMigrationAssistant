@@ -52,10 +52,7 @@ jobs:
             }
       - name: Clone TestData
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests
-        run: |
-          # TODO: As soon as the TestData gets migrated to GH use octo-sts
-          git clone https://${{ secrets.TESTDATA_CLONE_TOKEN }}@gitlab.shopware.com/shopware/6/services/testdata.git testData
-          mysql -uroot < testData/Migration/sw55.sql
+        run: mysql -uroot < testData/sw55.sql
       - name: Run PHPUnit
         working-directory: custom/plugins/${{ github.event.repository.name }}
         run: php -d pcov.enabled=1 -d pcov.directory=${PWD} -d pcov.exclude='~(vendor|tests|node_modules)~' ${GITHUB_WORKSPACE}/vendor/bin/phpunit --configuration phpunit.xml.dist
@@ -117,9 +114,7 @@ jobs:
         run: |
           composer run build:js:admin
           cd custom/plugins/${{ github.event.repository.name }}/tests
-          # TODO: As soon as the TestData gets migrated to GH use octo-sts
-          git clone https://${{ secrets.TESTDATA_CLONE_TOKEN }}@gitlab.shopware.com/shopware/6/services/testdata.git testData
-          mysql -uroot < testData/Migration/sw55.sql
+          mysql -uroot < testData/sw55.sql
       - name: Install playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
         run: |

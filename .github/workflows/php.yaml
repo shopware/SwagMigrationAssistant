@@ -57,5 +57,5 @@ jobs:
       - name: Run PHPStan
         shell: bash
         run: |
-          symfony composer -d custom/plugins/${{ github.event.repository.name }} dump-autoload --dev
-          symfony composer -d custom/plugins/${{ github.event.repository.name }} run phpstan
+          composer -d custom/plugins/${{ github.event.repository.name }} dump-autoload --dev
+          composer -d custom/plugins/${{ github.event.repository.name }} run phpstan
