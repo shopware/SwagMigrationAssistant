@@ -120,7 +120,18 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps
+#      - name: Run Playwright with reporting
+#        working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
+#        run: |
+#          npx pwc --project-id ${{ secrets.CURRENTS_PROJECT_ID }} --key ${{ secrets.CURRENTS_RECORD_KEY }} --ci-build-id ${{ github.repository }}-${{ github.run_id }}-${{ matrix.PLATFORM_BRANCH }}-${{ github.run_attempt }}  -- --trace=on
       - name: Run Playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
-        run: |
-          npx pwc --project-id ${{ secrets.CURRENTS_PROJECT_ID }} --key ${{ secrets.CURRENTS_RECORD_KEY }} --ci-build-id ${{ github.repository }}-${{ github.run_id }}-${{ matrix.PLATFORM_BRANCH }}-${{ github.run_attempt }}
+        run: npx playwright test --trace=on
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: e2e-${{ github.event.repository.name }}-${{ github.sha }}
+          path:
+            custom/plugins/${{ github.event.repository.name }}/tests/acceptance/test-results/
+            custom/plugins/${{ github.event.repository.name }}/tests/acceptance/playwright-report/
+          retention-days: 3
