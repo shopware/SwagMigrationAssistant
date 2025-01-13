@@ -3,7 +3,7 @@ import MigrationApiService from './api/swag-migration.api.service';
 const { Application } = Shopware;
 
 /**
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  * @private
  */
 

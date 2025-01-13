@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductFeatureSetConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductFeatureSetDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductFeatureSetConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

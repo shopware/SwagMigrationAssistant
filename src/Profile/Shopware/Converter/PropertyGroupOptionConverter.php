@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class PropertyGroupOptionConverter extends ShopwareConverter
 {
     protected string $connectionId;

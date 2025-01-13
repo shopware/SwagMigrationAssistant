@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware56LanguageConverter extends LanguageConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

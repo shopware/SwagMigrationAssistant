@@ -31,7 +31,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Media\Strategy\StrategyResolverInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**

@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Test\Mock\Migration\Logging;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyLoggingService extends LoggingService
 {
     public function __construct()

@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\ProductPriceAttributeConve
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPriceAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware55ProductPriceAttributeConverter extends ProductPriceAttributeConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

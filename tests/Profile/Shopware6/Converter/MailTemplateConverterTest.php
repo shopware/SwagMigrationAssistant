@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\MailTemplateConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MailTemplateConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

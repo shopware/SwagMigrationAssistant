@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloa
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LocalProductDownloadProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**

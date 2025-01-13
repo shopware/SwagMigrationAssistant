@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductAttributeConverterTest extends TestCase
 {
     private Shopware57ProductAttributeConverter $converter;

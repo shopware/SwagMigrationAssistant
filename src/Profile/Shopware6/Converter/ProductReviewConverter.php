@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductReviewDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductReviewConverter extends ShopwareConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

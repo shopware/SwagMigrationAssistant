@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedMailTemplateT
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MailTemplateConverter extends ShopwareMediaConverter
 {
     public function __construct(

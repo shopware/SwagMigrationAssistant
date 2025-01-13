@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProfileRegistryTest extends TestCase
 {
     private ProfileRegistryInterface $profileRegistry;

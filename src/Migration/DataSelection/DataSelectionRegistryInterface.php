@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface DataSelectionRegistryInterface
 {
     public function getDataSelections(MigrationContextInterface $migrationContext, EnvironmentInformation $environmentInformation): DataSelectionCollection;

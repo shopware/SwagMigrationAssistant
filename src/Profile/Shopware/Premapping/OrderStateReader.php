@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSe
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class OrderStateReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'order_state';

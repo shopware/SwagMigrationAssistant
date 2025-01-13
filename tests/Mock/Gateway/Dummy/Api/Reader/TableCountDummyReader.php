@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TableCountDummyReader extends TableCountReader
 {
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array

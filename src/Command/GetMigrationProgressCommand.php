@@ -18,7 +18,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 #[AsCommand(
     name: 'migration:get-progress',
     description: 'Shows the current progress of a migration',

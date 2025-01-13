@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Profile;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProfileRegistry implements ProfileRegistryInterface
 {
     /**

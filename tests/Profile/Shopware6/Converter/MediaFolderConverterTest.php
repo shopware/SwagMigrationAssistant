@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\MediaFolderConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFolderConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

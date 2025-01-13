@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
     public function __construct(private readonly HistoryServiceInterface $historyService)

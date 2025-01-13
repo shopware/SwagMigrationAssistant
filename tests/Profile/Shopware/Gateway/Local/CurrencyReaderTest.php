@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CurrencyReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CurrencyReaderTest extends TestCase
 {
     use LocalCredentialTrait;

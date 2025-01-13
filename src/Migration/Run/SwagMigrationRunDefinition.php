@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationRunDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'swag_migration_run';

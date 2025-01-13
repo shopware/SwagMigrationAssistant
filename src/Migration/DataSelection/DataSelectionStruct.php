@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Struct\Struct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\TotalStruct;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DataSelectionStruct extends Struct
 {
     final public const BASIC_DATA_TYPE = 'basicData';

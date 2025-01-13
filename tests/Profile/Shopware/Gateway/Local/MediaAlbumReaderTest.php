@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaAlbumReade
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaAlbumReaderTest extends TestCase
 {
     use LocalCredentialTrait;

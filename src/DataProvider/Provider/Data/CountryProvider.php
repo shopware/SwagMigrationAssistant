@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Country\CountryCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CountryProvider extends AbstractProvider
 {
     /**

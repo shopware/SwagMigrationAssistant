@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationDataFetcher implements MigrationDataFetcherInterface
 {
     public function __construct(

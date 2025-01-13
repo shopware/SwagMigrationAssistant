@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Writer;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CategoryWriter extends AbstractWriter
 {
     public function supports(): string

@@ -18,7 +18,7 @@ use Shopware\Core\System\Tax\TaxCollection;
 use Shopware\Core\System\Tax\TaxEntity;
 use SwagMigrationAssistant\Test\Mock\DataProvider\DummyDataProvider;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class AbstractDataProviderTest extends TestCase
 {
     private DummyDataProvider $dataProvider;

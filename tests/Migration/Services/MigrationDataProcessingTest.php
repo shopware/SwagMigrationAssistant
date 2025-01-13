@@ -54,7 +54,7 @@ use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 /**
  * Combines tests for data fetching and converting
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationDataProcessingTest extends TestCase
 {
     use IntegrationTestBehaviour;

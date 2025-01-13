@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Plugin\Composer\Factory;
 use Symfony\Component\Finder\Finder;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DeprecatedTagTest extends TestCase
 {
     /**

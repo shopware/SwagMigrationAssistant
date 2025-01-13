@@ -40,7 +40,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PremappingControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;

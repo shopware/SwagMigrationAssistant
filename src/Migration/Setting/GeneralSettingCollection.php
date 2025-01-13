@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Log\Package;
  * @method GeneralSettingEntity|null first()
  * @method GeneralSettingEntity|null last()
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class GeneralSettingCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

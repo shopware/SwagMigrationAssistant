@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class FetchingProcessorTest extends TestCase
 {
     private FetchingProcessor $processor;

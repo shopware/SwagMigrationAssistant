@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\DocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DocumentConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

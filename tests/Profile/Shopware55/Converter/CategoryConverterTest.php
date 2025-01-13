@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CategoryConverterTest extends TestCase
 {
     use KernelTestBehaviour;

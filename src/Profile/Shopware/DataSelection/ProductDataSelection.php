@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupO
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'products';

@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class FetchingProcessor extends AbstractProcessor
 {
     /**

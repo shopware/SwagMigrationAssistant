@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PaymentMethodReaderTest extends TestCase
 {
     use KernelTestBehaviour;

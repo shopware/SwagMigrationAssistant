@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\SeoUrlReader;
 use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SeoUrlReaderTest extends LocalConnectionTestCase
 {
     public function testRead(): void

@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\DeliveryTimeConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DeliveryTimeDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DeliveryTimeConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

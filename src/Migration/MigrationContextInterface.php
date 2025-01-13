@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface MigrationContextInterface
 {
     public function getProfile(): ProfileInterface;

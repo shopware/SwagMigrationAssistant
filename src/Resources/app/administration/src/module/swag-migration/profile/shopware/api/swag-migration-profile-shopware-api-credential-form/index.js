@@ -6,7 +6,7 @@ const API_KEY_INVALID_ERROR_CODE = 'SWAG_MIGRATION_INVALID_API_KEY';
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-profile-shopware-api-credential-form', {
     template,

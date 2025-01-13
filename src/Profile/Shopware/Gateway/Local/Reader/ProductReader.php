@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductReader extends AbstractReader implements ReaderInterface
 {
     private ParameterBag $productMapping;

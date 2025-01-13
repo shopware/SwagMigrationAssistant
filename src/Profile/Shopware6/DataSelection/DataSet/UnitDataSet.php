@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class UnitDataSet extends DataSet
 {
     public static function getEntity(): string

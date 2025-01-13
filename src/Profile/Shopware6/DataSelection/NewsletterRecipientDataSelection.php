@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NewsletterRecipientDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class NewsletterRecipientDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'newsletterRecipient';

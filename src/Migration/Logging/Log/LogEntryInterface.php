@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface LogEntryInterface
 {
     final public const LOG_LEVEL_INFO = 'info';

@@ -4,7 +4,7 @@ const { Component } = Shopware;
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.extend('swag-migration-index', 'swag-migration-base', {
     template,

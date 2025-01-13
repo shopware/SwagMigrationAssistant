@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CountryStateConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CountryStateDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CountryStateConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

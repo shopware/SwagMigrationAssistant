@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\ManufacturerAttributeConve
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ManufacturerAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware55ManufacturerAttributeConverter extends ManufacturerAttributeConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

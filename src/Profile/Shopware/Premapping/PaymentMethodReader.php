@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\WishlistDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PaymentMethodReader extends AbstractPremappingReader
 {
     public const SOURCE_ID = 'default_payment_method';

@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductStreamConverter extends ShopwareConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

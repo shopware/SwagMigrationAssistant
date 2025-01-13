@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class ShopwareMediaConverter extends ShopwareConverter
 {
     public function __construct(

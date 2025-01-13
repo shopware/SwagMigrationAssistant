@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Struct\Collection;
 /**
  * @template-extends Collection<DataSelectionStruct>
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DataSelectionCollection extends Collection
 {
     public function sortByPosition(): void

@@ -14,7 +14,7 @@ const CONNECTION_NAME_ERRORS = Object.freeze({
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  *
  * Note:
  * This component should not inherit from another component, because Rufus is overriding it and NEXT-36774 breaks it then.

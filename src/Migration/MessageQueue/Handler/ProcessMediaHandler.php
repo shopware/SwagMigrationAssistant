@@ -30,7 +30,7 @@ use Symfony\Component\Messenger\Attribute\AsMessageHandler;
  * @internal
  */
 #[AsMessageHandler]
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 final class ProcessMediaHandler
 {
     final public const MEDIA_ERROR_THRESHOLD = 3;

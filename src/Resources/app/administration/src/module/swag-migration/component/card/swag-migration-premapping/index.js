@@ -7,7 +7,7 @@ const { debounce } = Shopware.Utils;
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-premapping', {
     template,

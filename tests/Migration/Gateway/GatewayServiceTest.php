@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class GatewayServiceTest extends TestCase
 {
     private GatewayRegistryInterface $gatewayRegistry;

@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductSortingDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductSortingConverter extends ShopwareConverter
 {
     public function __construct(

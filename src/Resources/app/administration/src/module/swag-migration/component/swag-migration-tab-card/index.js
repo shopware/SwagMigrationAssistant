@@ -15,7 +15,7 @@ const { Component } = Shopware;
  * </swag-migration-tab-card>
  *
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-tab-card', {
     template,

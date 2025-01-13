@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentD
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CustomerAndOrderDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'customersOrders';

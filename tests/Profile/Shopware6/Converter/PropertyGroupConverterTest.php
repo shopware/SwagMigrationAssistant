@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Converter\PropertyGroupConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PropertyGroupDataSet;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PropertyGroupConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

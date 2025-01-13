@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyProfile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DataSetRegistryTest extends TestCase
 {
     use KernelTestBehaviour;

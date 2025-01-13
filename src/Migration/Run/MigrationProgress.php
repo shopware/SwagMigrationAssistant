@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Struct\Struct;
 /**
  * @internal
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 final class MigrationProgress extends Struct
 {
     protected int $progress;

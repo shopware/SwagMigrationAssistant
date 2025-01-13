@@ -17,7 +17,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaDeletedSubscriber implements EventSubscriberInterface
 {
     /**

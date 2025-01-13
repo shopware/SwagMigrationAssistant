@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class EnvironmentDummyReader extends EnvironmentReader
 {
     /**

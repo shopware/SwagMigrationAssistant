@@ -24,7 +24,7 @@ use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MappingService implements MappingServiceInterface, ResetInterface
 {
     protected array $migratedSalesChannels = [];

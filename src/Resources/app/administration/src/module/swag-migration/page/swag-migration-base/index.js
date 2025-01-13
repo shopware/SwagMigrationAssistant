@@ -6,7 +6,7 @@ const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-base', {
     template,

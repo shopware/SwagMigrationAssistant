@@ -6,7 +6,7 @@ const ShopwareError = Shopware.Classes.ShopwareError;
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-wizard-page-connection-create', {
     template,

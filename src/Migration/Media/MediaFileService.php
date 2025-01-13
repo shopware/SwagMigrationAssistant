@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFileService implements MediaFileServiceInterface, ResetInterface
 {
     protected array $writeArray = [];

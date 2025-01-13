@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 
 #[AsMessageHandler]
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 /**
  * @internal
  */

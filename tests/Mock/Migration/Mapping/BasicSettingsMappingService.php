@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class BasicSettingsMappingService extends DummyMappingService
 {
     public function getLanguageUuid(string $connectionId, string $localeCode, Context $context, bool $withoutMapping = false): ?string

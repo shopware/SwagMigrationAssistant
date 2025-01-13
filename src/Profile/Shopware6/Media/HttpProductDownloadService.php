@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HttpProductDownloadService extends HttpDownloadServiceBase
 {
     /**

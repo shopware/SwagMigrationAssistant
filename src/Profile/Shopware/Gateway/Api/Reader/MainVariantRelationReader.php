@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MainVariantRelationReader extends ApiReader
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\NewsletterRecipientDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class NewsletterRecipientStatusReader extends AbstractPremappingReader
 {
     public const SOURCE_ID = 'default_newsletter_recipient_status';

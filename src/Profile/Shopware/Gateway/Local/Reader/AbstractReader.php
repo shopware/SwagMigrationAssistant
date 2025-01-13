@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class AbstractReader implements ResetInterface
 {
     private ?Connection $cachedConnection = null;

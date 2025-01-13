@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class CategoryConverter extends ShopwareConverter
 {
     protected string $connectionId;

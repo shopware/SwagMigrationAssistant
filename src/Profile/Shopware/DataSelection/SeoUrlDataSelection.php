@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SeoUrlDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'seoUrls';

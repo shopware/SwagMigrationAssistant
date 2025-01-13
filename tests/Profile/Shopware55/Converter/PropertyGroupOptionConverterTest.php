@@ -31,7 +31,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyMediaFileService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PropertyGroupOptionConverterTest extends TestCase
 {
     use KernelTestBehaviour;

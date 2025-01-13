@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TotalReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware6ApiGateway implements ShopwareGatewayInterface
 {
     final public const GATEWAY_NAME = 'api';

@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class ApiReader implements ReaderInterface
 {
     public function __construct(private readonly ConnectionFactoryInterface $connectionFactory)

@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyMappingService extends MappingService
 {
     final public const DEFAULT_LANGUAGE_UUID = '20080911ffff4fffafffffff19830531';

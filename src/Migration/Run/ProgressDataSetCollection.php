@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Struct\Collection;
  *
  * @extends Collection<ProgressDataSet>
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProgressDataSetCollection extends Collection
 {
     /**

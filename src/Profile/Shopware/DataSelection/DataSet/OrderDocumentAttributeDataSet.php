@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class OrderDocumentAttributeDataSet extends DataSet
 {
     public static function getEntity(): string

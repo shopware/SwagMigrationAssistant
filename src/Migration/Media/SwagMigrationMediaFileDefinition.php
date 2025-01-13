@@ -22,7 +22,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationMediaFileDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'swag_migration_media_file';

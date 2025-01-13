@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Media\DummyHttpMediaDownloadServi
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFileProcessorRegistryTest extends TestCase
 {
     private MediaFileProcessorRegistryInterface $processorRegistry;

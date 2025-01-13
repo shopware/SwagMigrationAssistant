@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\NewsletterRecipientConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NewsletterRecipientDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class NewsletterRecipientConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

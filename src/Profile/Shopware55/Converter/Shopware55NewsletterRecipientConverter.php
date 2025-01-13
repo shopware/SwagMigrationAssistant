@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\NewsletterRecipientConvert
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NewsletterRecipientDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware55NewsletterRecipientConverter extends NewsletterRecipientConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

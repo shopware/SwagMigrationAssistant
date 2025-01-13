@@ -52,7 +52,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validation;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class OrderConverterTest extends TestCase
 {
     use KernelTestBehaviour;

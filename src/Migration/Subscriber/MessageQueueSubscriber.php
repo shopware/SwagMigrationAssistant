@@ -25,7 +25,7 @@ use Symfony\Component\Messenger\Event\WorkerMessageFailedEvent;
 use Symfony\Component\Messenger\Event\WorkerMessageHandledEvent;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MessageQueueSubscriber implements EventSubscriberInterface
 {
     private const MAX_EXCEPTION_COUNT = 3;

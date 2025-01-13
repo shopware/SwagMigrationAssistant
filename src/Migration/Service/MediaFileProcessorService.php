@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
     final public const MESSAGE_SIZE = 5;

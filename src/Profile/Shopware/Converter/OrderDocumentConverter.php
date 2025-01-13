@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class OrderDocumentConverter extends ShopwareConverter
 {
     protected string $oldId;

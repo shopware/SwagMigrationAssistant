@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\ProductPropertyRelationCon
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductPropertyRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware57ProductPropertyRelationConverter extends ProductPropertyRelationConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

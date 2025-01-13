@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 /**
  * @phpstan-type MappingStruct array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface MappingServiceInterface
 {
     public function getUuidsByEntity(string $connectionId, string $entityName, Context $context): array;

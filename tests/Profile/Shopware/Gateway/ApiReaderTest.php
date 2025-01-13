@@ -21,7 +21,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ApiReaderTest extends TestCase
 {
     public function testRead(): void

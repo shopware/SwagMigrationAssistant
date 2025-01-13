@@ -11,7 +11,7 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class RunTransitionService implements RunTransitionServiceInterface
 {
     public function __construct(

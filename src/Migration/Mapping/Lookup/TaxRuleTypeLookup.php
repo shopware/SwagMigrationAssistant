@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Tax\Aggregate\TaxRuleType\TaxRuleTypeCollection;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TaxRuleTypeLookup implements ResetInterface
 {
     /**

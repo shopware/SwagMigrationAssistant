@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationDataConverter implements MigrationDataConverterInterface
 {
     public function __construct(

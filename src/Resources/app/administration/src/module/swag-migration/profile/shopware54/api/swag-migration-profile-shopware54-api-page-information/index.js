@@ -2,7 +2,7 @@ const { Component } = Shopware;
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.extend(
     'swag-migration-profile-shopware54-api-page-information',

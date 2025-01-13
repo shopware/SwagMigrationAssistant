@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 use GuzzleHttp\Exception\RequestException;
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CannotGetFileRunLog extends BaseRunLogEntry
 {
     public function __construct(

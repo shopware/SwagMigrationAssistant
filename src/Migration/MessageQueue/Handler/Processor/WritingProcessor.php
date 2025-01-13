@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class WritingProcessor extends AbstractProcessor
 {
     /**

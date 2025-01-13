@@ -70,7 +70,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 use Symfony\Component\Validator\Validation;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 trait MigrationServicesTrait
 {
     use KernelTestBehaviour;

@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\TranslationConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware54TranslationConverter extends TranslationConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware54OrderConverter extends OrderConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 enum MigrationStep: string
 {
     case IDLE = 'idle';

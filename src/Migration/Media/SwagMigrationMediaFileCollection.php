@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Log\Package;
  * @method SwagMigrationMediaFileEntity|null first()
  * @method SwagMigrationMediaFileEntity|null last()
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationMediaFileCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

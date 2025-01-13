@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PremappingField extends JsonField
 {
     public function __construct(

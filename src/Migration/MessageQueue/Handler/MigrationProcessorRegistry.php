@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MigrationProcessorInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 /**
  * @internal
  */

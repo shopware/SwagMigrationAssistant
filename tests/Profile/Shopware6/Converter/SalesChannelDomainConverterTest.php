@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SalesChannelDomainConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalesChannelDomainDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SalesChannelDomainConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

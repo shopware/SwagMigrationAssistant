@@ -16,7 +16,7 @@ use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 #[AsCommand(
     name: 'migration:abort',
     description: 'Abort the current migration',

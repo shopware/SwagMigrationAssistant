@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SeoUrlTemplateWriter extends AbstractWriter
 {
     public function supports(): string

@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class EnvironmentReader extends AbstractReader implements EnvironmentReaderInterface
 {
     /**

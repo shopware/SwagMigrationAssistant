@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentAttributeConv
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentAttributeDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware55OrderDocumentAttributeConverter extends OrderDocumentAttributeConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

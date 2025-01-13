@@ -13,7 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LoggingService implements LoggingServiceInterface
 {
     protected array $logging = [];

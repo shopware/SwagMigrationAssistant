@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\PageSystemConfigConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PageSystemConfigDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PageSystemConfigConverterTest extends ShopwareConverterTest
 {
     use KernelTestBehaviour;

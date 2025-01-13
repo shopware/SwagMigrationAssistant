@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\MediaReader;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaReaderTest extends TestCase
 {
     use LocalCredentialTrait;

@@ -16,7 +16,7 @@ use Shopware\Core\System\Locale\LocaleCollection;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LocaleLookup implements ResetInterface
 {
     /**

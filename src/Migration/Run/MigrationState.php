@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Struct\Struct;
 /**
  * @internal
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 final class MigrationState extends Struct
 {
     protected MigrationStep $step;

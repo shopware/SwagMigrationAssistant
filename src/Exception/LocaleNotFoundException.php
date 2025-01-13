@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Exception;
 
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LocaleNotFoundException extends MigrationException
 {
 }

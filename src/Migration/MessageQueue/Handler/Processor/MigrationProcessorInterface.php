@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface MigrationProcessorInterface
 {
     public function supports(MigrationStep $step): bool;

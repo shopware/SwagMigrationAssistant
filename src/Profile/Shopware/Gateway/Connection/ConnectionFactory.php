@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 {
     private ?Connection $externalConnection = null;

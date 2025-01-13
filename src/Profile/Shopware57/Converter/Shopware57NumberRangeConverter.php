@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\NumberRangeConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware57NumberRangeConverter extends NumberRangeConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

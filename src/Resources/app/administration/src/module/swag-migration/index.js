@@ -10,7 +10,7 @@ const { Module, State } = Shopware;
 State.registerModule('swagMigration', MigrationStore);
 
 /**
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  * @private
  */
 Module.register('swag-migration', {

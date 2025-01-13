@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CleanUpProcessorTest extends TestCase
 {
     private CleanUpProcessor $processor;

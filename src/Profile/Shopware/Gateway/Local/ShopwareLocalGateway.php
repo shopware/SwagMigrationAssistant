@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ShopwareLocalGateway implements ShopwareGatewayInterface
 {
     final public const GATEWAY_NAME = 'local';

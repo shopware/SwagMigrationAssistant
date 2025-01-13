@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\RuleConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\RuleDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class RuleConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

@@ -6,7 +6,7 @@ const { debug } = Shopware.Utils;
  * See swag-migration-wizard as an example.
  *
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Mixin.register('swag-wizard', {
     inject: [

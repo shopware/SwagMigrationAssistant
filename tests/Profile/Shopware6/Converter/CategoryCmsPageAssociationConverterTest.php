@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CategoryCmsPageAssociationConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CategoryCmsPageAssociationDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CategoryCmsPageAssociationConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

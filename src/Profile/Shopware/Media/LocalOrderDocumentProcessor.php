@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentD
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**

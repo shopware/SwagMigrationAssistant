@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface DataSelectionInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool;

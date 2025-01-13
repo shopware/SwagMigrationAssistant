@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationRunEntity extends Entity
 {
     use EntityIdTrait;

@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Converter\LanguageConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LanguageConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(
