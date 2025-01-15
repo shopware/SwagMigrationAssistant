@@ -67,6 +67,10 @@ parameters:
           paths:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
               - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
+        - message: """
+                #^Call to deprecated method scope\\(\\) of class Shopware\\\\Core\\\\Framework\\\\Context\\:
+                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Return type will be native$#
+          """
 
 rules:
     # Shopware core rules

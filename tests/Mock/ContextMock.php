@@ -21,7 +21,7 @@ class ContextMock extends Context
     }
 
     /**
-     * @param non-empty-array<string> $chain
+     * @param non-empty-list<string> $chain
      */
     public function setLangaugeIdChain(array $chain): void
     {
