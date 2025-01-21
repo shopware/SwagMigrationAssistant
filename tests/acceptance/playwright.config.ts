@@ -54,7 +54,8 @@ export default defineConfig({
         /* Base URL to use in actions like `await page.goto('/')`. */
         baseURL: process.env.APP_URL,
         trace: 'on',
-        video: 'off',
+        video: 'on',
+        screenshot: 'on',
     },
 
     // We abuse this to wait for the external webserver

@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 /**
  * @internal
  */
-#[Package('core')]
+#[Package('fundamentals@after-sales')]
 class Migration1717400987UpdateStatusToStepColumnForRun extends MigrationStep
 {
     public function getCreationTimestamp(): int
