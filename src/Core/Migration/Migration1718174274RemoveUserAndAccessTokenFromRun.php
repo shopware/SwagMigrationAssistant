@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 /**
  * @internal
  */
-#[Package('core')]
+#[Package('fundamentals@after-sales')]
 class Migration1718174274RemoveUserAndAccessTokenFromRun extends MigrationStep
 {
     public function getCreationTimestamp(): int

@@ -13,7 +13,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     DatabaseCredentials,
     EntityCounter,
     MediaProcessObserver,
- }) => {
+}) => {
     const page = MigrationUser.page;
     await page.goto('/admin#/swag/migration/index/main');
     await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
@@ -52,7 +52,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     });
 
     await test.step('Prepare the migration', async () => {
-        await page.getByRole('link', { name: 'Data selection' }).click();
+        await page.getByRole('tab', { name: 'Data selection' }).click();
         await page.getByLabel('Yes, I would like to continue').check();
         await page.locator('.sw-grid__cell-content').first().click();
 
@@ -131,7 +131,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     });
 
     await test.step('Inspect the migration history', async () => {
-        await page.getByRole('link', { name: 'History' }).click();
+        await page.getByRole('tab', { name: 'History' }).click();
         await page.getByRole('row', { name: 'sw5local' }).locator('button').click();
         await page.getByRole('link', { name: 'Show details' }).click();
         await expect(page.getByLabel('Migration details').getByText('sw5local')).toBeVisible();

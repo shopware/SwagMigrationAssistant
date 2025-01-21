@@ -23,9 +23,10 @@
     "typescript": "^5.4.5"
   },
   "dependencies": {
-    "@playwright/test": "1.44.0",
-    "@shopware-ag/acceptance-test-suite": "1.1.4",
-    "@shopware/api-client": "^0.0.0-canary-20230823113412",
+    "@playwright/test": "^1.49.0",
+    "@currents/playwright": "^1.9.0",
+    "@shopware-ag/acceptance-test-suite": "4.1.0",
+    "@shopware/api-client": "0.5.0",
     "dotenv": "^16.4.5"
   },
   "author": "shopware AG",
