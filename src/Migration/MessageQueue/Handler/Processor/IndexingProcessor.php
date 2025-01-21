@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class IndexingProcessor extends AbstractProcessor
 {
     /**

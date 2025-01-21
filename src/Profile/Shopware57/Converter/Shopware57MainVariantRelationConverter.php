@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\MainVariantRelationConvert
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MainVariantRelationDataSet;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware57MainVariantRelationConverter extends MainVariantRelationConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

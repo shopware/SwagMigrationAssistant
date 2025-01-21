@@ -21,7 +21,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationContextFactory implements MigrationContextFactoryInterface
 {
     /**

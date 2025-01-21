@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyRunTransitionService implements RunTransitionServiceInterface
 {
     public function __construct(

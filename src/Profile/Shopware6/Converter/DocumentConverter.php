@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentDataS
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedDocumentTypeLog;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DocumentConverter extends ShopwareMediaConverter
 {
     public function __construct(

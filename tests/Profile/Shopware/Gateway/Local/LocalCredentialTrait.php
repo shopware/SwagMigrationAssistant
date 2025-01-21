@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Shopware5DatabaseConnection;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 trait LocalCredentialTrait
 {
     protected SwagMigrationConnectionEntity $connection;

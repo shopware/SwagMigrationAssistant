@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Migration\Writer\DummyWriter;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class WriterRegistryTest extends TestCase
 {
     private WriterRegistryInterface $writerRegistry;

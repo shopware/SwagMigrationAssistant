@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationType;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class TranslationConverter extends ShopwareConverter
 {
     protected string $connectionId = '';

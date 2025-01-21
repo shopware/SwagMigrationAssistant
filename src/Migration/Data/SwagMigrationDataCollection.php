@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 /**
  * @extends EntityCollection<SwagMigrationDataEntity>
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationDataCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

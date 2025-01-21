@@ -29,7 +29,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Shopware6ApiGateway;
 use SwagMigrationAssistant\Profile\Shopware6\Premapping\UserReader;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class UserReaderTest extends TestCase
 {
     use KernelTestBehaviour;

@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationMappingEntity extends Entity
 {
     use EntityIdTrait;

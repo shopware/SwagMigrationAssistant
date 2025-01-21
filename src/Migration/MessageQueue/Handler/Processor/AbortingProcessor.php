@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class AbortingProcessor extends AbstractProcessor
 {
     /**

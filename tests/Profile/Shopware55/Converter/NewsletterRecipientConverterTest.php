@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class NewsletterRecipientConverterTest extends TestCase
 {
     use KernelTestBehaviour;

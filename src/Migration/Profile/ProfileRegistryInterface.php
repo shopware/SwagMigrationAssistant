@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Profile;
 
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface ProfileRegistryInterface
 {
     /**

@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSe
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PromotionDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PromotionDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'promotions';

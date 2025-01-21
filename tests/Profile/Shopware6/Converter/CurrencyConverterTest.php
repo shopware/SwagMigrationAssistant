@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CurrencyConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CurrencyDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CurrencyConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

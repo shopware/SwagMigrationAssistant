@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\ProductReader;
 use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductReaderTest extends LocalConnectionTestCase
 {
     public function testReadEsdProduct(): void

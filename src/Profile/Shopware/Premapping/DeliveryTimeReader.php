@@ -21,7 +21,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DeliveryTimeReader extends AbstractPremappingReader
 {
     public const SOURCE_ID = 'default_delivery_time';

@@ -17,7 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Indexing\EntityIndexingMessage;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class OrderCountIndexer extends CustomerIndexer
 {
     public function __construct(

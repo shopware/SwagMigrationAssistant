@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\CustomerAndOrderDataS
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class UserReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'user';

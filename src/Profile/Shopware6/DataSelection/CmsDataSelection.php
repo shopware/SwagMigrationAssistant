@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CmsPageDataSe
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\PageSystemConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CmsDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'cms';

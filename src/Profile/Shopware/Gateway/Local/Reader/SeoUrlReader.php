@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SeoUrlReader extends AbstractReader implements ReaderInterface
 {
     public function supports(MigrationContextInterface $migrationContext): bool

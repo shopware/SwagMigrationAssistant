@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DataSelectionRegistryTest extends TestCase
 {
     private DataSelectionRegistry $dataSelectionRegistry;

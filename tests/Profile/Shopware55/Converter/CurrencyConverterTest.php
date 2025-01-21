@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\CurrencyMappingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CurrencyConverterTest extends TestCase
 {
     use KernelTestBehaviour;

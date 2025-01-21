@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Language\LanguageCollection;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class EnvironmentService implements EnvironmentServiceInterface
 {
     /**

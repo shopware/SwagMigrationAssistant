@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware54OrderDocumentConverter extends OrderDocumentConverter
 {
     private const PREFIX = 'migration_';

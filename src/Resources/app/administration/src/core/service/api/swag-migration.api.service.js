@@ -2,7 +2,7 @@ const ApiService = Shopware.Classes.ApiService;
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 export const MIGRATION_STEP = Object.freeze({
     IDLE: 'idle',
@@ -17,7 +17,7 @@ export const MIGRATION_STEP = Object.freeze({
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 class MigrationApiService extends ApiService {
     constructor(httpClient, loginService, apiEndpoint = 'migration') {
@@ -240,6 +240,6 @@ class MigrationApiService extends ApiService {
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 export default MigrationApiService;

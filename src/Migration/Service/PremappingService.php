@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 /**
  * @phpstan-type PremappingArrayStructure array<array{entity: string, mapping: list<array{sourceId: string, description: string, destinationUuid: string}>}>
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class PremappingService implements PremappingServiceInterface
 {
     /**

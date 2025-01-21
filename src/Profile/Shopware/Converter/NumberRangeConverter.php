@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class NumberRangeConverter extends ShopwareConverter
 {
     /**

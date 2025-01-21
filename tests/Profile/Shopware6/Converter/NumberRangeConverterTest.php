@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\NumberRangeConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class NumberRangeConverterTest extends ShopwareConverterTest
 {
     use KernelTestBehaviour;

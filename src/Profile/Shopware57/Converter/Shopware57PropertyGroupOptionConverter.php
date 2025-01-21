@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConvert
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupOptionDataSet;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware57PropertyGroupOptionConverter extends PropertyGroupOptionConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

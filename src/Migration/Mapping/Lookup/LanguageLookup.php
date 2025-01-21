@@ -17,7 +17,7 @@ use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Exception\MigrationException;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LanguageLookup implements ResetInterface
 {
     /**

@@ -131,7 +131,7 @@ use SwagMigrationAssistant\Profile\Shopware57\Converter\Shopware57TranslationCon
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ConverterRegistryTest extends TestCase
 {
     use KernelTestBehaviour;

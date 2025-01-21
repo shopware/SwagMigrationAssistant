@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\TaxConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TaxConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

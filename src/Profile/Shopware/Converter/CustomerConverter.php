@@ -31,7 +31,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class CustomerConverter extends ShopwareConverter
 {
     protected string $connectionId;

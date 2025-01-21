@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 #[AsCommand(
     name: 'migration:start',
     description: 'Migrate the data of your selected source to Shopware 6. Before you execute this command

@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LoggingServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;

@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader\TableCountDummyRea
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ShopwareApiGatewayTest extends TestCase
 {
     use KernelTestBehaviour;

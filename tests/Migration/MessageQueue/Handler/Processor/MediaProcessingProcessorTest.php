@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 use function PHPUnit\Framework\once;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaProcessingProcessorTest extends TestCase
 {
     private MediaProcessingProcessor $processor;

@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDa
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\SalesChannelReader;
 use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SalesChannelReaderDataFixtureTest extends LocalConnectionTestCase
 {
     private SalesChannelReader $salesChannelReader;

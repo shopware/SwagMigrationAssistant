@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\DataProvider\Provider;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProviderRegistry implements ProviderRegistryInterface
 {
     /**

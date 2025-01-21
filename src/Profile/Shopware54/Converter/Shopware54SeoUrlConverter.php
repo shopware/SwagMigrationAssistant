@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\SeoUrlConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware54SeoUrlConverter extends SeoUrlConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\CrossSellingConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CrossSellingDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware55CrossSellingConverter extends CrossSellingConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

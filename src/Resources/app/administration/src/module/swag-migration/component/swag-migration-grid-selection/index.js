@@ -5,7 +5,7 @@ const { Component, Mixin } = Shopware;
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-grid-selection', {
     template,

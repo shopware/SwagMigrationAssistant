@@ -21,7 +21,7 @@ use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 /**
  * @phpstan-type ReadArray array{environmentInformation: array<string, mixed>, requestStatus: RequestStatusStruct}
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class EnvironmentReader implements EnvironmentReaderInterface
 {
     private ?HttpClientInterface $client = null;

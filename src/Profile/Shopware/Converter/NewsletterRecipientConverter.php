@@ -21,7 +21,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatusReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class NewsletterRecipientConverter extends ShopwareConverter
 {
     protected Context $context;

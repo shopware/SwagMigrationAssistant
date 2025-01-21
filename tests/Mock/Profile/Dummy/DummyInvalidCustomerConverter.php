@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55CustomerConverter;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyInvalidCustomerConverter extends Shopware55CustomerConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

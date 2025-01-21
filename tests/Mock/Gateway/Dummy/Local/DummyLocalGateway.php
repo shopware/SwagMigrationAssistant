@@ -24,7 +24,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDat
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyLocalGateway implements GatewayInterface
 {
     final public const GATEWAY_NAME = 'local';

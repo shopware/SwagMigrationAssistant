@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataS
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\Dummy6MappingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LanguageConverterConvertDataTest extends TestCase
 {
     use IntegrationTestBehaviour;

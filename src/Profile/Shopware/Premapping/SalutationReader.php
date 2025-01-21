@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\WishlistDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SalutationReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'salutation';

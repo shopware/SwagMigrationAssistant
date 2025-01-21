@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class RequestStatusStruct extends Struct
 {
     protected ?string $errorFile = null;

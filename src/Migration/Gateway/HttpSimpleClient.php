@@ -12,7 +12,7 @@ use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HttpSimpleClient implements HttpClientInterface
 {
     protected Client $client;

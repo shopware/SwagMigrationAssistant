@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CustomFieldSetConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSetDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CustomFieldSetConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

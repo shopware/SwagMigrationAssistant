@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 /**
  * @internal
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class StockStorageDecorator extends AbstractStockStorage
 {
     public function __construct(

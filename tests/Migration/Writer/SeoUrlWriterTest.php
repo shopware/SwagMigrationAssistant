@@ -25,7 +25,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Core\System\SalesChannel\SalesChannelEntity;
 use SwagMigrationAssistant\Migration\Writer\SeoUrlWriter;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SeoUrlWriterTest extends TestCase
 {
     private EntityWriterInterface $entityWriter;

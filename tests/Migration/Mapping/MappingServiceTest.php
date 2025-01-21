@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\NewsletterRecipientStatus
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Contracts\Service\ResetInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MappingServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;

@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Writer;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface WriterRegistryInterface
 {
     /**

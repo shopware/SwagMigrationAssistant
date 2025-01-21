@@ -17,7 +17,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyHttpDownloadService extends HttpDownloadServiceBase
 {
     public function __construct(

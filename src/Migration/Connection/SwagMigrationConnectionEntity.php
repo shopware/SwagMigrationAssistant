@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationConnectionEntity extends Entity
 {
     use EntityIdTrait;

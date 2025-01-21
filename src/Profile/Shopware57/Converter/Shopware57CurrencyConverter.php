@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\CurrencyConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CurrencyDataSet;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware57CurrencyConverter extends CurrencyConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

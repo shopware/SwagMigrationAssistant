@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TableReader extends AbstractReader implements TableReaderInterface
 {
     public function read(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

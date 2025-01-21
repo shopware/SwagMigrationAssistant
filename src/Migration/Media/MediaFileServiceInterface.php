@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface MediaFileServiceInterface
 {
     public function writeMediaFile(Context $context): void;

@@ -9,7 +9,7 @@ const migrationGeneralSettingRepository = repositoryFactory.create('swag_migrati
  * The vuex store for handling all global data that is needed for the migration process.
  * @module
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 export default {
     namespaced: true,

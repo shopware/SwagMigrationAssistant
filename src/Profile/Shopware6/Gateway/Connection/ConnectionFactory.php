@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollectio
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ConnectionFactory implements ConnectionFactoryInterface
 {
     private const DEFAULT_API_ENDPOINT = 'api/_action/data-provider/';

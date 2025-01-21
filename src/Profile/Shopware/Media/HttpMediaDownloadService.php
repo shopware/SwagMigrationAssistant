@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HttpMediaDownloadService extends HttpDownloadServiceBase
 {
     public function supports(MigrationContextInterface $migrationContext): bool

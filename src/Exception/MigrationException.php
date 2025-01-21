@@ -13,7 +13,7 @@ use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationException extends HttpException
 {
     final public const GATEWAY_READ = 'SWAG_MIGRATION__GATEWAY_READ';

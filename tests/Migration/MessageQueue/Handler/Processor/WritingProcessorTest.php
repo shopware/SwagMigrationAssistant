@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataWriter;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class WritingProcessorTest extends TestCase
 {
     private WritingProcessor $processor;

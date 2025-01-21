@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorServiceInterface;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaProcessingProcessor extends AbstractProcessor
 {
     /**

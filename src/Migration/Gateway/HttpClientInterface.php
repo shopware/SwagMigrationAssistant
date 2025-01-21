@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Log\Package;
  * wrapper around the guzzle client to allow for easy replacement in different situations (like auth or unauthenticated)
  * and mocking
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface HttpClientInterface
 {
     /**

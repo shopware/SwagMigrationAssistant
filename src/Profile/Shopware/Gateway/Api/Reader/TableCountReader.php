@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactory
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TableCountReader implements TableCountReaderInterface
 {
     public function __construct(

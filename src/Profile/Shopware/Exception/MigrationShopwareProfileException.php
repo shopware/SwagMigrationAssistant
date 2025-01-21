@@ -11,7 +11,7 @@ use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\HttpFoundation\Response;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationShopwareProfileException extends HttpException
 {
     public const PLUGIN_NOT_INSTALLED = 'SWAG_MIGRATION__PLUGIN_NOT_INSTALLED';

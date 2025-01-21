@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationContext extends Struct implements MigrationContextInterface
 {
     final public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';

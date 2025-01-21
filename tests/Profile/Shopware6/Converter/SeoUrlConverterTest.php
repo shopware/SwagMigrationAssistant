@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SeoUrlConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\CustomerAndOrderDataSe
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TransactionStateReader extends AbstractPremappingReader
 {
     private const MAPPING_NAME = 'transaction_state';

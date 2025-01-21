@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use Symfony\Component\HttpFoundation\Request;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HistoryControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;

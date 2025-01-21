@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface GatewayInterface
 {
     public function getName(): string;

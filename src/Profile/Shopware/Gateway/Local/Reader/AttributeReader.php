@@ -39,7 +39,7 @@ use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class AttributeReader extends AbstractReader implements ReaderInterface
 {
     private const BUILTIN_TYPES_MAP = [

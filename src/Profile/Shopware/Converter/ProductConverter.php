@@ -31,7 +31,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class ProductConverter extends ShopwareConverter
 {
     final public const MAIN_PRODUCT_TYPE = 1;

@@ -21,7 +21,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\NumberRangeDat
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class BasicSettingsDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'basicSettings';

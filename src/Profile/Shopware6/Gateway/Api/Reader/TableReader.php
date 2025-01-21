@@ -14,7 +14,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactor
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class TableReader implements TableReaderInterface
 {
     public function __construct(private readonly ConnectionFactory $connectionFactory)

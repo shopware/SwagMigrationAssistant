@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ProductStreamFilterInheritanceConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ProductStreamFilterInheritanceDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductStreamFilterInheritanceConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

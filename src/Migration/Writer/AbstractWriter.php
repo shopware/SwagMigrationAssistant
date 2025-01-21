@@ -17,7 +17,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationAssistant\Exception\MigrationException;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class AbstractWriter implements WriterInterface
 {
     public const EXTENSION_NAME = 'writeEventSource';

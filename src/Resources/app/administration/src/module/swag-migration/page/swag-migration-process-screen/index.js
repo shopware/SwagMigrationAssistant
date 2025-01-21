@@ -26,7 +26,7 @@ const UI_COMPONENT_INDEX = Object.freeze({
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     template,

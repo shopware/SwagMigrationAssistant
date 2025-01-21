@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
 {
     /**

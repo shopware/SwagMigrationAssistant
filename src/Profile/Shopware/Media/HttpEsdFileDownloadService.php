@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HttpEsdFileDownloadService extends HttpDownloadServiceBase
 {
     private const API_ENDPOINT = 'SwagMigrationEsdFiles/';

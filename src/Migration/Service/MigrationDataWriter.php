@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationDataWriter implements MigrationDataWriterInterface
 {
     protected Context $writeContext;

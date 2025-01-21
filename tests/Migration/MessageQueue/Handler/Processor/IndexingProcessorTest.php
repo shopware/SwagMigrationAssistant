@@ -28,7 +28,7 @@ use Symfony\Component\Cache\Adapter\TagAwareAdapterInterface;
 
 use function PHPUnit\Framework\once;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class IndexingProcessorTest extends TestCase
 {
     private IndexingProcessor $processor;

@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 /**
  * @phpstan-type Media list<array{'id': string, 'run_id': string, 'media_id': string, 'uri': string, 'file_size': string, 'file_name': string}>
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class BaseMediaService
 {
     /**

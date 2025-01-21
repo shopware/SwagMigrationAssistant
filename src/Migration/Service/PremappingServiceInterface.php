@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Premapping\PremappingStruct;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface PremappingServiceInterface
 {
     /**

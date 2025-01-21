@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HistoryService implements HistoryServiceInterface
 {
     private const LOG_FETCH_LIMIT = 50;

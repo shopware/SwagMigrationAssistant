@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class HttpDownloadServiceBaseTest extends TestCase
 {
     private string $runId;

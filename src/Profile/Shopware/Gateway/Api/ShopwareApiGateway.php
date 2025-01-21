@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ShopwareApiGateway implements ShopwareGatewayInterface
 {
     final public const GATEWAY_NAME = 'api';

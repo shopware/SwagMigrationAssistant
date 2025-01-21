@@ -13,7 +13,7 @@ const BADGE_TYPE = Object.freeze({
 
 /**
  * @private
- * @package services-settings
+ * @sw-package fundamentals@after-sales
  */
 Component.register('swag-migration-shop-information', {
     template,

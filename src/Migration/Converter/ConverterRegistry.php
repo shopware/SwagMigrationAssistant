@@ -12,7 +12,7 @@ use SwagMigrationAssistant\Exception\ConverterNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ConverterRegistry implements ConverterRegistryInterface
 {
     /**

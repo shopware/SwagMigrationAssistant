@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SalutationConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SalutationDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SalutationConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTy
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class NumberRangeConverter extends ShopwareConverter
 {
     /**

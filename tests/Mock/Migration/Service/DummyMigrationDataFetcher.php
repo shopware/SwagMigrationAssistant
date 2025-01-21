@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyMigrationDataFetcher extends MigrationDataFetcher
 {
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation

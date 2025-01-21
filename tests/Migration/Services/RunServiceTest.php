@@ -55,7 +55,7 @@ use SwagMigrationAssistant\Test\Mock\Migration\Run\DummyRunTransitionService;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class RunServiceTest extends TestCase
 {
     /**

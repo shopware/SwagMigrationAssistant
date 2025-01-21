@@ -17,7 +17,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class AbstractWriterTest extends TestCase
 {
     private AbstractWriter $abstractWriter;

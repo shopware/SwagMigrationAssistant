@@ -12,7 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Storefront\Theme\ThemeService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyThemeService extends ThemeService
 {
     public function __construct(private readonly EntityRepository $themeSalesChannelRepository)

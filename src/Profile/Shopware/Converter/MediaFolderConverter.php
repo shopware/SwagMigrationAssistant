@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class MediaFolderConverter extends ShopwareConverter
 {
     protected Context $context;

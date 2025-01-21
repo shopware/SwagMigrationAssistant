@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface ShopwareProfileInterface extends ProfileInterface
 {
 }

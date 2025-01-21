@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileService;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFileServiceTest extends TestCase
 {
     /**

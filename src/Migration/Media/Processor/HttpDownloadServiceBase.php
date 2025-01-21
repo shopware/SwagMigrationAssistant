@@ -35,7 +35,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 /**
  * @phpstan-import-type Media from BaseMediaService
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class HttpDownloadServiceBase extends BaseMediaService implements MediaFileProcessorInterface
 {
     /**

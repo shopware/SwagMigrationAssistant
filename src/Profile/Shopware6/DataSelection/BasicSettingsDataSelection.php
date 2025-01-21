@@ -37,7 +37,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SystemConfigD
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\UnitDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class BasicSettingsDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'basicSettings';

@@ -17,7 +17,7 @@ use Shopware\Core\Framework\Struct\ArrayStruct;
 use SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator;
 use SwagMigrationAssistant\Migration\Writer\AbstractWriter;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class StockStorageDecoratorTest extends TestCase
 {
     private StockStorage&MockObject $stockStorage;

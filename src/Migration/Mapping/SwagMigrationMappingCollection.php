@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Log\Package;
  * @method SwagMigrationMappingEntity|null first()
  * @method SwagMigrationMappingEntity|null last()
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationMappingCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

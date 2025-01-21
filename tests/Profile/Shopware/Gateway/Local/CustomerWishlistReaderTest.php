@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerWishli
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\CustomerWishlistReader;
 use SwagMigrationAssistant\Test\LocalConnectionTestCase;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CustomerWishlistReaderTest extends LocalConnectionTestCase
 {
     private CustomerWishlistReader $customerWishlistReader;

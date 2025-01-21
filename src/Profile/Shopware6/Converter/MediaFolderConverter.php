@@ -19,7 +19,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDa
 use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\UnsupportedMediaDefaultFolderLog;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MediaFolderConverter extends ShopwareConverter
 {
     public function __construct(

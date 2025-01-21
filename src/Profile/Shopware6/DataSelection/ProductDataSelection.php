@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\TaxRuleDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ProductDataSelection implements DataSelectionInterface
 {
     final public const IDENTIFIER = 'products';

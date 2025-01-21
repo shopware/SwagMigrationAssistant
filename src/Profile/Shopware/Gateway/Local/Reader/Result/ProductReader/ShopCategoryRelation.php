@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 /**
  * @internal
  */
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ShopCategoryRelation
 {
     private string $shopId;

@@ -18,7 +18,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderInterface;
 use SwagMigrationAssistant\Exception\MigrationException;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class AbstractProvider implements ProviderInterface
 {
     protected const FORBIDDEN_EXACT_KEYS = ['createdAt', 'updatedAt', 'extensions', 'versionId', '_uniqueIdentifier', 'translated'];

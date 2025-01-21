@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Run\PremappingField;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationConnectionDefinition extends EntityDefinition
 {
     final public const ENTITY_NAME = 'swag_migration_connection';

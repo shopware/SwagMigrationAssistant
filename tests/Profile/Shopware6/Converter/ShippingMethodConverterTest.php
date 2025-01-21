@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\ShippingMethodDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ShippingMethodConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

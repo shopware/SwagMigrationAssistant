@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\MediaConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware57MediaConverter extends MediaConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

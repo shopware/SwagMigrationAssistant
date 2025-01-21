@@ -29,7 +29,7 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentService;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class EnvironmentServiceTest extends TestCase
 {
     private EnvironmentServiceInterface $environmentService;

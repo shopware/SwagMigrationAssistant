@@ -32,7 +32,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 use SwagMigrationAssistant\Test\Profile\Shopware\DataSet\FooDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class LocalGatewayTest extends TestCase
 {
     use KernelTestBehaviour;

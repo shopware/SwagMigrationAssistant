@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Converter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class ConvertStruct extends Struct
 {
     /**

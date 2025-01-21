@@ -29,7 +29,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class MigrationProcessHandlerTest extends TestCase
 {
     private MigrationProcessHandler $migrationProcessHandler;

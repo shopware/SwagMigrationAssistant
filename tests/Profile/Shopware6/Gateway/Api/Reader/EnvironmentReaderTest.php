@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\ConnectionFactor
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 #[CoversClass(EnvironmentReader::class)]
 class EnvironmentReaderTest extends TestCase
 {

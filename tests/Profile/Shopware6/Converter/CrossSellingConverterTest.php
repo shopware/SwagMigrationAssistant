@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\CrossSellingConverter;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CrossSellingDataSet;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class CrossSellingConverterTest extends ShopwareConverterTest
 {
     protected function createConverter(

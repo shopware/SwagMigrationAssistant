@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface RunTransitionServiceInterface
 {
     /**

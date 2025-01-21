@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface LoggingServiceInterface
 {
     public function addLogEntry(LogEntryInterface $logEntry): void;

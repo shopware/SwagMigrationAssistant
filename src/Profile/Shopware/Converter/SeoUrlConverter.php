@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedSeoUrlType;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class SeoUrlConverter extends ShopwareConverter
 {
     protected const TYPE_CATEGORY = 'cat';

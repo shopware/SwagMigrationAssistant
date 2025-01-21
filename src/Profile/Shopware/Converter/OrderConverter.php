@@ -43,7 +43,7 @@ use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\TransactionStateReader;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class OrderConverter extends ShopwareConverter
 {
     private const BILLING_ADDRESS = 'billing';

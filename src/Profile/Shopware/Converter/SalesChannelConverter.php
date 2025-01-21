@@ -32,7 +32,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDa
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class SalesChannelConverter extends ShopwareConverter
 {
     protected string $mainLocale;

@@ -43,7 +43,7 @@ use SwagMigrationAssistant\Migration\Service\PremappingServiceInterface;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use Symfony\Component\Messenger\MessageBusInterface;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class RunService implements RunServiceInterface
 {
     private const TRACKING_EVENT_MIGRATION_STARTED = 'Migration started';

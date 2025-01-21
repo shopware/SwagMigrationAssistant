@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Profile\Shopware\Converter\OrderDocumentConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDocumentDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class Shopware55OrderDocumentConverter extends OrderDocumentConverter
 {
     public function supports(MigrationContextInterface $migrationContext): bool

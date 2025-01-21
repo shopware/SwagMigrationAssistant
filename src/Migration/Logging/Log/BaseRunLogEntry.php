@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class BaseRunLogEntry implements LogEntryInterface
 {
     public function __construct(

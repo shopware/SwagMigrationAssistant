@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Writer;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 interface WriterInterface
 {
     /**

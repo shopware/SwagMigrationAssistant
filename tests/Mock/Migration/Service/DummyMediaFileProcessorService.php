@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyMediaFileProcessorService extends MediaFileProcessorService
 {
     public function processMediaFiles(

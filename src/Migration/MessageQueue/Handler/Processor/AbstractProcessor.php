@@ -23,7 +23,7 @@ use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 abstract class AbstractProcessor implements MigrationProcessorInterface
 {
     public function __construct(

@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Tax\TaxCollection;
 use SwagMigrationAssistant\DataProvider\Provider\Data\AbstractProvider;
 
-#[Package('services-settings')]
+#[Package('fundamentals@after-sales')]
 class DummyDataProvider extends AbstractProvider
 {
     public function getIdentifier(): string
