@@ -11,7 +11,6 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -328,7 +327,7 @@ class MappingServiceTest extends TestCase
         static::assertArrayHasKey('entityUuid', $retrievedMapping);
         static::assertSame($entityUuid, $retrievedMapping['entityUuid']);
         static::assertArrayHasKey('additionalData', $retrievedMapping);
-        static::assertSame(null, $retrievedMapping['additionalData']);
+        static::assertNull($retrievedMapping['additionalData']);
     }
 
     /**
