@@ -11,6 +11,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -293,6 +294,41 @@ class MappingServiceTest extends TestCase
                 }
             }
         }
+    }
+
+    public function testGetMappingWithNullAdditionalData(): void
+    {
+        $entity = DefaultEntities::PRODUCT;
+        $oldIdentifier = '42';
+        $entityUuid = Uuid::randomHex();
+
+        $conn = $this->getContainer()->get(Connection::class);
+        $qb = $conn->createQueryBuilder();
+        $rowsAffected = $qb->insert('swag_migration_mapping')
+            ->values([
+                'id' => ':id',
+                'connection_id' => ':connection_id',
+                'entity' => ':entity',
+                'old_identifier' => ':old_identifier',
+                'entity_uuid' => ':entity_uuid',
+                'created_at' => 'NOW()',
+                // 'additional_data' left with NULL, some older shops might have this data
+            ])
+            ->setParameter('id', Uuid::randomBytes())
+            ->setParameter('connection_id', Uuid::fromHexToBytes($this->connectionId))
+            ->setParameter('entity', $entity)
+            ->setParameter('old_identifier', $oldIdentifier)
+            ->setParameter('entity_uuid', Uuid::fromHexToBytes($entityUuid))
+        ->executeStatement();
+        static::assertSame(1, $rowsAffected);
+
+        // This call shouldn't throw TypeError: json_decode(): Argument #1 ($json) must be of type string, null given
+        $retrievedMapping = $this->mappingService->getMapping($this->connectionId, $entity, $oldIdentifier, Context::createDefaultContext());
+
+        static::assertArrayHasKey('entityUuid', $retrievedMapping);
+        static::assertSame($entityUuid, $retrievedMapping['entityUuid']);
+        static::assertArrayHasKey('additionalData', $retrievedMapping);
+        static::assertSame(null, $retrievedMapping['additionalData']);
     }
 
     /**
