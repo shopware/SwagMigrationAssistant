@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 6.6.x # Todo MIG-1093: switch back to trunk (6.7)
+      - trunk
   pull_request:
     paths:
       - src/Resources/app/administration
@@ -30,6 +30,7 @@ jobs:
       - uses: shopware/github-actions/setup-extension@main
         with:
           extensionName: ${{ github.event.repository.name }}
+          shopwareVersion: "6.6.x" # Todo MIG-1093: switch back to trunk (6.7)
           install: true
           install-admin: true
           install-storefront: false

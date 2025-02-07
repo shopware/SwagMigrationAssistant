@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - 6.6.x # Todo MIG-1093: switch back to trunk (6.7)
+      - trunk
   pull_request:
     paths:
       - composer.json
@@ -28,6 +28,7 @@ jobs:
           DATABASE_URL: mysql://root@127.0.0.1/shopware
         with:
           extensionName: ${{ github.event.repository.name }}
+          shopwareVersion: "6.6.x" # Todo MIG-1093: switch back to trunk (6.7)
           install: true
           install-admin: true
           install-storefront: true
