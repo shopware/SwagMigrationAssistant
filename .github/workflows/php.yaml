@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - trunk
+      - 6.6.x # Todo MIG-1093: switch back to trunk (6.7)
   pull_request:
     paths:
       - composer.json
