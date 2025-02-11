@@ -324,6 +324,7 @@ class MappingServiceTest extends TestCase
         // This call shouldn't throw TypeError: json_decode(): Argument #1 ($json) must be of type string, null given
         $retrievedMapping = $this->mappingService->getMapping($this->connectionId, $entity, $oldIdentifier, Context::createDefaultContext());
 
+        static::assertNotNull($retrievedMapping);
         static::assertArrayHasKey('entityUuid', $retrievedMapping);
         static::assertSame($entityUuid, $retrievedMapping['entityUuid']);
         static::assertArrayHasKey('additionalData', $retrievedMapping);
