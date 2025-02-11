@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        PLATFORM_BRANCH: ["v6.6.1.0", "trunk"]
+        PLATFORM_BRANCH: ["v6.6.1.0", "6.6.x"] # Todo MIG-1093: switch back to trunk (6.7)
     steps:
       - uses: shopware/github-actions/setup-extension@main
         with:
@@ -50,7 +50,7 @@ jobs:
                 "symlink": true
               }
             }
-      - name: Clone TestData
+      - name: Import SW5 TestData DB
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests
         run: mysql -uroot < testData/sw55.sql
       - name: Run PHPUnit
@@ -63,6 +63,7 @@ jobs:
       - uses: shopware/github-actions/setup-extension@main
         with:
           extensionName: ${{ github.event.repository.name }}
+          shopwareVersion: "6.6.x" # Todo MIG-1093: switch back to trunk (6.7)
           install: true
           install-admin: true
           install-storefront: true
@@ -82,7 +83,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        PLATFORM_BRANCH: ["v6.6.1.0", "trunk"]
+        PLATFORM_BRANCH: ["v6.6.1.0", "6.6.x"] # Todo MIG-1093: switch back to trunk (6.7)
     services:
       mysql:
         image: mysql:8.0
@@ -97,6 +98,7 @@ jobs:
       - uses: shopware/github-actions/setup-extension@main
         with:
           extensionName: ${{ github.event.repository.name }}
+          shopwareVersion: ${{ matrix.PLATFORM_BRANCH }}
           install: true
           install-admin: true
           install-storefront: true
