@@ -71,6 +71,8 @@ parameters:
                 #^Call to deprecated method scope\\(\\) of class Shopware\\\\Core\\\\Framework\\\\Context\\:
                 tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Return type will be native$#
           """
+        - message: '#^Call to deprecated method(.|\n)+tag:v6\.7\.0#'
+        - message: '#^Instantiation of deprecated class(.|\n)+tag:v6\.7\.0#'
 
 rules:
     # Shopware core rules

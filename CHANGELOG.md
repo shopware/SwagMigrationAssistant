@@ -1,3 +1,6 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1096 - Fix `json_decode` with `null` run exceptions that occurred with mappings of old migration runs (older assistant versions)
+
 # 14.0.0
 - Moved technical and breaking changes to https://github.com/shopware/SwagMigrationAssistant/blob/trunk/UPGRADE.md
 - MIG-894 - Optimizes the mapping performance for the migration which results in a significantly faster converting step.
