@@ -101,6 +101,15 @@ class CustomerWishlistConverterTest extends TestCase
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
+
+        static::assertArrayHasKey('products', $converted);
+
+        $wishlistProducts = $converted['products'];
+        static::assertCount(1, $wishlistProducts);
+        static::assertArrayHasKey(0, $wishlistProducts);
+
+        $wishlistProduct = $wishlistProducts[0];
+        static::assertArrayHasKey('id', $wishlistProduct);
     }
 
     public function testConvertWithoutCustomer(): void

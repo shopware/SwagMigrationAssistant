@@ -62,6 +62,8 @@ final class DefaultEntities
 
     final public const CUSTOMER_WISHLIST = 'customer_wishlist';
 
+    final public const CUSTOMER_WISHLIST_PRODUCT = 'customer_wishlist_product';
+
     final public const DELIVERY_TIME = 'delivery_time';
 
     final public const LANGUAGE = 'language';

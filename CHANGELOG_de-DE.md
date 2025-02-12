@@ -1,3 +1,6 @@
+# REPLACE_GLOBAL_WITH_NEXT_VERSION
+- MIG-1082 - Behebt einen Fehler bei wiederholender Migration von Kundenwunschlisten von SW5 nach SW6
+
 # 14.0.0
 - Technische Änderungen und Breaking-Changes wurden nach https://github.com/shopware/SwagMigrationAssistant/blob/trunk/UPGRADE.md umgezogen
 - MIG-894 - Verbessert die Mapping Performance der Migration, was zu einem deutlich schnelleren Konvertierungsvorgang führt.
