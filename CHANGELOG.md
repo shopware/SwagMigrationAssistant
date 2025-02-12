@@ -1,5 +1,6 @@
 # REPLACE_GLOBAL_WITH_NEXT_VERSION
 - MIG-1082 - Fixes an error with repeated migration of customer wish lists from SW5 to SW6
+- MIG-1096 - Fix `json_decode` with `null` run exceptions that occurred with mappings of old migration runs (older assistant versions)
 
 # 14.0.0
 - Moved technical and breaking changes to https://github.com/shopware/SwagMigrationAssistant/blob/trunk/UPGRADE.md

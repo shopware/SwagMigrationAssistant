@@ -901,11 +901,6 @@ parameters:
 			path: tests/Mock/DummyCollection.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyThemeService\\:\\:__construct\\(\\) has parameter \\$themeSalesChannelRepository with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
-			count: 1
-			path: tests/Mock/DummyThemeService.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Api\\\\Reader\\\\ApiDummyReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
 			count: 1
 			path: tests/Mock/Gateway/Dummy/Api/Reader/ApiDummyReader.php
