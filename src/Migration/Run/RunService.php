@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
@@ -198,7 +199,7 @@ SQL;
         $this->dbalConnection->executeStatement(
             $sql,
             [$connectionUuid],
-            [\PDO::PARAM_STR]
+            [ParameterType::STRING]
         );
     }
 
@@ -570,7 +571,7 @@ SQL;
         $this->dbalConnection->executeStatement(
             $sql,
             [$runUuid, $connectionId],
-            [\PDO::PARAM_STR, \PDO::PARAM_STR]
+            [ParameterType::STRING, ParameterType::STRING]
         );
     }
 }

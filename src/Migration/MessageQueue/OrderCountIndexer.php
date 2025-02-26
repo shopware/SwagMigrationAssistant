@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\MessageQueue;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Checkout\Customer\DataAbstractionLayer\CustomerIndexer;
 use Shopware\Core\Checkout\Order\OrderStates;
 use Shopware\Core\Defaults;
@@ -117,10 +118,10 @@ class OrderCountIndexer extends CustomerIndexer
               WHERE `customer`.`id` = :id',
                 $data,
                 [
-                    'order_count' => \PDO::PARAM_INT,
-                    'order_total_amount' => \PDO::PARAM_STR,
-                    'last_order_date' => \PDO::PARAM_STR,
-                    'id' => \PDO::PARAM_STR,
+                    'order_count' => ParameterType::INTEGER,
+                    'order_total_amount' => ParameterType::STRING,
+                    'last_order_date' => ParameterType::STRING,
+                    'id' => ParameterType::STRING,
                 ]
             );
         }

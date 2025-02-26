@@ -109,7 +109,7 @@ class SeoUrlReader extends AbstractReader implements ReaderInterface
     {
         $connection = $this->getConnection($migrationContext);
         $useUrlToLower = $connection->createQueryBuilder()
-            ->select(['cv.value'])
+            ->select('cv.value')
             ->from('s_core_config_values', 'cv')
             ->innerJoin('cv', 's_core_config_elements', 'ce', 'cv.element_id = ce.id')
             ->where('ce.name = "routerToLower"')

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
@@ -125,8 +126,8 @@ ORDER BY "property.type", "property.id" LIMIT :limit OFFSET :offset
 SQL;
 
         $statement = $connection->prepare($sql);
-        $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
-        $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
+        $statement->bindValue('limit', $migrationContext->getLimit(), ParameterType::INTEGER);
+        $statement->bindValue('offset', $migrationContext->getOffset(), ParameterType::INTEGER);
 
         $result = $statement->executeQuery();
 

@@ -98,7 +98,7 @@ class CustomerGroupReader extends AbstractReader implements ReaderInterface
         $query = $connection->createQueryBuilder();
 
         $query->from('s_core_customergroups_discounts', 'discount');
-        $query->addSelect(['groupID']);
+        $query->addSelect('groupID');
         $this->addTableSelection($query, 's_core_customergroups_discounts', 'discount', $migrationContext);
 
         $query->where('groupID IN (:ids)');
