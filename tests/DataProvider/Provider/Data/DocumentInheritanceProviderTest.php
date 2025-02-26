@@ -68,7 +68,6 @@ class DocumentInheritanceProviderTest extends TestCase
         $documentEntity->setDocumentNumber($documentData['documentNumber'] ?? 'SW10101');
         $documentEntity->setDocumentTypeId($documentData['documentTypeId'] ?? Uuid::randomHex());
         $documentEntity->setDocumentMediaFileId($documentData['documentMediaFileId'] ?? Uuid::randomHex());
-        $documentEntity->setFileType('pdf');
         $documentEntity->setOrderId($documentData['orderId'] ?? Uuid::randomHex());
         $documentEntity->setSent($documentData['send'] ?? false);
         $documentEntity->setStatic($documentData['static'] ?? false);

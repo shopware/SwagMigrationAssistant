@@ -139,7 +139,7 @@ class OrderDeliveryStateReader extends AbstractPremappingReader
         foreach ($states as $state) {
             $id = $state->getId();
             $this->preselectionDictionary[$state->getTechnicalName()] = $id;
-            $choices[] = new PremappingChoiceStruct($id, $state->getName());
+            $choices[] = new PremappingChoiceStruct($id, $state->getName() ?? $state->getTechnicalName());
             $this->choiceUuids[$id] = $id;
         }
 
