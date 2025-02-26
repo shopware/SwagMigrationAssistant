@@ -311,7 +311,7 @@ class MigrationDataWriterTest extends TestCase
             $this->dbConnection,
             new LoggingService($this->loggingRepo, new NullLogger()),
             static::getContainer()->get(TrackingEventClient::class),
-            static::getContainer()->get('messenger.bus.shopware'),
+            static::getContainer()->get('messenger.default_bus'),
             $migrationContextFactoryMock,
             $premappingService,
             static::getContainer()->get(RunTransitionService::class),
