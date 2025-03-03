@@ -11,7 +11,7 @@ return [
     [
         'entityName' => DefaultEntities::SYSTEM_CONFIG,
         'oldIdentifier' => '2fdf49fd31384c7baff4d36797b08681',
-        'newIdentifier' => '91f23b8a27c845c39ce4a2ea1187b3b9',
+        'newIdentifier' => '91f23b8a27c845c39ce4a2ea1187b3b1',
     ],
     [
         'entityName' => DefaultEntities::SALES_CHANNEL,
