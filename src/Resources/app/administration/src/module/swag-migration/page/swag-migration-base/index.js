@@ -2,7 +2,7 @@ import template from './swag-migration-base.html.twig';
 import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Component, State } = Shopware;
-const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
+const { mapVuexState, mapVuexGetters } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -30,14 +30,14 @@ Component.register('swag-migration-base', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'environmentInformation',
             'connectionId',
             'isLoading',
             'dataSelectionTableData',
         ]),
 
-        ...mapGetters({
+        ...mapVuexGetters({
             isMigrationAllowed: 'swagMigration/isMigrationAllowed',
         }),
     },

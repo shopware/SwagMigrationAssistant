@@ -2,7 +2,7 @@ import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.scss';
 
 const { Component, State } = Shopware;
-const { mapState } = Shopware.Component.getComponentHelper();
+const { mapVuexState } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -17,7 +17,7 @@ Component.register('swag-migration-data-selector', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'environmentInformation',
             'dataSelectionTableData',
             'dataSelectionIds',

@@ -2,7 +2,7 @@ import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
 const { Component, State } = Shopware;
-const { mapState } = Shopware.Component.getComponentHelper();
+const { mapVuexState } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -19,7 +19,7 @@ Component.register('swag-migration-confirm-warning', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'environmentInformation',
         ]),
 

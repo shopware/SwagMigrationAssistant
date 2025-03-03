@@ -2,7 +2,7 @@ import template from './swag-migration-premapping.html.twig';
 import './swag-migration-premapping.scss';
 
 const { Component, State } = Shopware;
-const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
+const { mapVuexState, mapVuexGetters } = Shopware.Component.getComponentHelper();
 const { debounce } = Shopware.Utils;
 
 /**
@@ -25,12 +25,12 @@ Component.register('swag-migration-premapping', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'premapping',
             'dataSelectionIds',
         ]),
 
-        ...mapGetters('swagMigration', [
+        ...mapVuexGetters('swagMigration', [
             'isPremappingValid',
         ]),
     },

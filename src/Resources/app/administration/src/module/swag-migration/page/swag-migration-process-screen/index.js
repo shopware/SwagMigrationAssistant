@@ -3,7 +3,7 @@ import './swag-migration-process-screen.scss';
 import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Component, State } = Shopware;
-const { mapState } = Shopware.Component.getComponentHelper();
+const { mapVuexState } = Shopware.Component.getComponentHelper();
 
 const MIGRATION_STATE_POLLING_INTERVAL = 1000; // ms
 
@@ -65,7 +65,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'isLoading',
             'dataSelectionIds',
         ]),

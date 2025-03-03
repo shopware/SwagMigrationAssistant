@@ -2,7 +2,7 @@ import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
 const { Component, Mixin, State } = Shopware;
-const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
+const { mapVuexState, mapVuexGetters } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
 
@@ -55,13 +55,13 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'connectionId',
             'environmentInformation',
             'lastConnectionCheck',
         ]),
 
-        ...mapGetters([
+        ...mapVuexGetters([
             'adminLocaleLanguage',
             'adminLocaleRegion',
         ]),

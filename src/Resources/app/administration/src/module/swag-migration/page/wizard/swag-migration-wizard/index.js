@@ -5,7 +5,7 @@ import { MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.a
 const { Component, Mixin, State } = Shopware;
 const { Criteria } = Shopware.Data;
 const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
-const { mapState } = Shopware.Component.getComponentHelper();
+const { mapVuexState } = Shopware.Component.getComponentHelper();
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
@@ -61,7 +61,7 @@ Component.register('swag-migration-wizard', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapVuexState('swagMigration', [
             'connectionId',
         ]),
 
