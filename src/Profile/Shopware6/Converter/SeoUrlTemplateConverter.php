@@ -39,7 +39,7 @@ class SeoUrlTemplateConverter extends ShopwareConverter
         $converted = $data;
 
         $seoUrlTemplateUuid = $this->seoUrlTemplateLookup->get(
-            $data['salesChannelId'],
+            $data['salesChannelId'] ?? null,
             $data['routeName'],
             $this->context
         );

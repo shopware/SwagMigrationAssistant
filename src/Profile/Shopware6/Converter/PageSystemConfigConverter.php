@@ -38,7 +38,7 @@ class PageSystemConfigConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        $systemConfigUuid = $this->systemConfigLookup->get($data['configurationKey'], $data['salesChannelId'], $this->context);
+        $systemConfigUuid = $this->systemConfigLookup->get($data['configurationKey'], $data['salesChannelId'] ?? null, $this->context);
         if ($systemConfigUuid !== null) {
             $converted['id'] = $systemConfigUuid;
         }
