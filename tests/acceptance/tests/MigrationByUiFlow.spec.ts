@@ -54,7 +54,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     await test.step('Prepare the migration', async () => {
         await page.getByTitle('Data selection').click();
         await page.getByLabel('Yes, I would like to continue').check();
-        await page.locator('.sw-grid__cell-content').first().click();
+        await page.locator('.sw-grid__cell-content input').first().click();
 
         // wait for loading state to finish
         await expect(page.locator('.sw-loader-element')).toHaveCount(0);
@@ -68,11 +68,11 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             await tab.click();
 
             // go through each select input and select the first available option for each
-            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column select');
+            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column .mt-select__select-indicator');
             await premappingItems.evaluateAll(async list => {
                 for await (const item of list) {
-                    item.selectedIndex = 1;
-                    item.dispatchEvent(new Event('change'));
+                    item.click();
+                    await page.locator('.mt-select-result').first().click();
                     await new Promise(resolve => setTimeout(resolve, 150));
                 }
             });
