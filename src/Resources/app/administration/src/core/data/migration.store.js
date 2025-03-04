@@ -66,7 +66,7 @@ export default {
             });
         },
 
-        isMigrationAllowed(state, getters) {
+        isMigrationAllowed(state) {
             const tableDataIds = state.dataSelectionTableData.map((data) => {
                 if (data.requiredSelection === false) {
                     return data.id;
@@ -81,7 +81,7 @@ export default {
             return migrationAllowedByDataSelection &&
                 migrationAllowedByEnvironment &&
                 !state.isLoading &&
-                getters.isPremappingValid &&
+                state.isPremappingValid &&
                 state.warningConfirmed;
         },
     },

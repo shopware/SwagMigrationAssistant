@@ -2,6 +2,7 @@ import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
 const { Component, Store } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -18,9 +19,9 @@ Component.register('swag-migration-confirm-warning', {
     },
 
     computed: {
-        environmentInformation() {
-            return Shopware.Store.get('swagMigration').environmentInformation;
-        },
+        ...mapState(() => Store.get('swagMigration'), [
+            'environmentInformation',
+        ]),
 
         hasDifferentCurrency() {
             return this.sourceSystemCurrency !== this.targetSystemCurrency;
