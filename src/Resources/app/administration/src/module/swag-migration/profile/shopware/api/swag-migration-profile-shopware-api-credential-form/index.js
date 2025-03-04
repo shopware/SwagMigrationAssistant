@@ -11,6 +11,8 @@ const API_KEY_INVALID_ERROR_CODE = 'SWAG_MIGRATION_INVALID_API_KEY';
 Component.register('swag-migration-profile-shopware-api-credential-form', {
     template,
 
+emits: ['onChildRouteReadyChanged', 'onCredentialsChanged'],
+
     props: {
         credentials: {
             type: Object,

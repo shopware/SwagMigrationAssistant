@@ -9,6 +9,8 @@ const { Component } = Shopware;
 Component.register('swag-migration-profile-shopware6major-api-credential-form', {
     template,
 
+emits: ['onChildRouteReadyChanged', 'onCredentialsChanged'],
+
     props: {
         credentials: {
             type: Object,

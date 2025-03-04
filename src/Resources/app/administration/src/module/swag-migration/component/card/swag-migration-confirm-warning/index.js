@@ -1,8 +1,7 @@
 import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
-const { Component, State } = Shopware;
-const { mapVuexState } = Shopware.Component.getComponentHelper();
+const { Component, Store } = Shopware;
 
 /**
  * @private
@@ -19,9 +18,9 @@ Component.register('swag-migration-confirm-warning', {
     },
 
     computed: {
-        ...mapVuexState('swagMigration', [
-            'environmentInformation',
-        ]),
+        environmentInformation() {
+            return Shopware.Store.get('swagMigration').environmentInformation;
+        },
 
         hasDifferentCurrency() {
             return this.sourceSystemCurrency !== this.targetSystemCurrency;
@@ -63,7 +62,7 @@ Component.register('swag-migration-confirm-warning', {
         },
 
         onCheckboxValueChanged() {
-            State.commit('swagMigration/setWarningConfirmed', this.isContinuable);
+            Store.get('swagMigration').setWarningConfirmed(this.isContinuable);
         },
     },
 });

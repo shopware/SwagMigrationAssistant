@@ -5,9 +5,9 @@ import './extension';
 import './profile';
 import MigrationStore from '../../core/data/migration.store';
 
-const { Module, State } = Shopware;
+const { Module, Store } = Shopware;
 
-State.registerModule('swagMigration', MigrationStore);
+Store.register('swagMigration', MigrationStore);
 
 /**
  * @sw-package fundamentals@after-sales

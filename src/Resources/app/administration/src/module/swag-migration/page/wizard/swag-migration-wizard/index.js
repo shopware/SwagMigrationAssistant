@@ -2,10 +2,10 @@ import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
 import { MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.api.service';
 
-const { Component, Mixin, State } = Shopware;
+const { Component, Mixin, Store } = Shopware;
 const { Criteria } = Shopware.Data;
 const SSL_REQUIRED_ERROR_CODE = 'SWAG_MIGRATION__SSL_REQUIRED';
-const { mapVuexState } = Shopware.Component.getComponentHelper();
+const { mapState } = Shopware.Component.getComponentHelper();
 
 const CONNECTION_NAME_ERRORS = Object.freeze({
     NAME_TO_SHORT: 'SWAG_MIGRATION_CONNECTION_NAME_TO_SHORT',
@@ -61,7 +61,7 @@ Component.register('swag-migration-wizard', {
     },
 
     computed: {
-        ...mapVuexState('swagMigration', [
+        ...mapState(() => Store.get('swagMigration'), [
             'connectionId',
         ]),
 
@@ -224,7 +224,7 @@ Component.register('swag-migration-wizard', {
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-            await State.dispatch('swagMigration/init', forceFullStateReload);
+            await Store.get('swagMigration').init(forceFullStateReload);
             this.storesInitializing = false;
         },
 
@@ -306,17 +306,17 @@ Component.register('swag-migration-wizard', {
         doConnectionCheck() {
             this.isLoading = true;
             return this.migrationApiService.checkConnection(this.connection.id).then((connectionCheckResponse) => {
-                State.commit('swagMigration/setConnectionId', this.connection.id);
+                Store.get('swagMigration').setConnectionId(this.connection.id);
                 this.isLoading = false;
 
                 if (!connectionCheckResponse) {
                     this.onResponseError(-1);
                     return;
                 }
-                State.commit('swagMigration/setEnvironmentInformation', connectionCheckResponse);
-                State.commit('swagMigration/setDataSelectionIds', []);
-                State.commit('swagMigration/setPremapping', []);
-                State.commit('swagMigration/setDataSelectionTableData', []);
+                Store.get('swagMigration').setEnvironmentInformation(connectionCheckResponse);
+                Store.get('swagMigration').setDataSelectionIds([]);
+                Store.get('swagMigration').setPremapping([]);
+                Store.get('swagMigration').setDataSelectionTableData([]);
 
                 if (connectionCheckResponse.requestStatus === undefined) {
                     this.navigateToRoute(this.routes.credentialsSuccess);
@@ -344,11 +344,11 @@ Component.register('swag-migration-wizard', {
                 this.navigateToRoute(this.routes.credentialsSuccess);
             }).catch((error) => {
                 this.isLoading = false;
-                State.commit('swagMigration/setConnectionId', this.connection.id);
-                State.commit('swagMigration/setEnvironmentInformation', {});
-                State.commit('swagMigration/setDataSelectionIds', []);
-                State.commit('swagMigration/setPremapping', []);
-                State.commit('swagMigration/setDataSelectionTableData', []);
+                Store.get('swagMigration').setConnectionId(this.connection.id);
+                Store.get('swagMigration').setEnvironmentInformation({});
+                Store.get('swagMigration').setDataSelectionIds([]);
+                Store.get('swagMigration').setPremapping([]);
+                Store.get('swagMigration').setDataSelectionTableData([]);
                 this.onResponseError(error.response.data.errors[0].code);
             });
         },
@@ -578,11 +578,11 @@ Component.register('swag-migration-wizard', {
             return new Promise((resolve, reject) => {
                 this.isLoading = true;
 
-                State.commit('swagMigration/setConnectionId', connection.id);
-                State.commit('swagMigration/setEnvironmentInformation', {});
-                State.commit('swagMigration/setDataSelectionIds', []);
-                State.commit('swagMigration/setPremapping', []);
-                State.commit('swagMigration/setDataSelectionTableData', []);
+                Store.get('swagMigration').setConnectionId(connection.id);
+                Store.get('swagMigration').setEnvironmentInformation({});
+                Store.get('swagMigration').setDataSelectionIds([]);
+                Store.get('swagMigration').setPremapping([]);
+                Store.get('swagMigration').setDataSelectionTableData([]);
 
                 const criteria = new Criteria(1, 1);
 

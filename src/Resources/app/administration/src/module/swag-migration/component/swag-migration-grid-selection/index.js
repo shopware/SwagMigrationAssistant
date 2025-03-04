@@ -10,6 +10,8 @@ const { Component, Mixin } = Shopware;
 Component.register('swag-migration-grid-selection', {
     template,
 
+emits: ['update:value'],
+
     mixins: [
         Mixin.getByName('listing'),
     ],

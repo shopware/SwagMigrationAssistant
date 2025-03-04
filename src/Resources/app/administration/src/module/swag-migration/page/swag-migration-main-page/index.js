@@ -2,7 +2,6 @@ import template from './swag-migration-main-page.html.twig';
 import './swag-migration-main-page.scss';
 
 const { Component } = Shopware;
-const { mapVuexState } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -18,11 +17,17 @@ Component.register('swag-migration-main-page', {
     },
 
     computed: {
-        ...mapVuexState('swagMigration', [
-            'environmentInformation',
-            'connectionId',
-            'isLoading',
-        ]),
+        environmentInformation() {
+            return Shopware.Store.get('swagMigration').environmentInformation;
+        },
+
+        connectionId() {
+            return Shopware.Store.get('swagMigration').connectionId;
+        },
+
+        isLoading() {
+            return Shopware.Store.get('swagMigration').isLoading;
+        },
 
         displayWarnings() {
             return this.environmentInformation.displayWarnings;
