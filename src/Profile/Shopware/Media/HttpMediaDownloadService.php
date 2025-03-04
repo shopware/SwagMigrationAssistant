@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use GuzzleHttp\Promise\PromiseInterface;
-use GuzzleHttp\Promise;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;

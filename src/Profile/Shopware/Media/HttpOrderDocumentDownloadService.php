@@ -7,9 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
-use GuzzleHttp\Promise\PromiseInterface;
 use Doctrine\DBAL\Connection;
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\PromiseInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
