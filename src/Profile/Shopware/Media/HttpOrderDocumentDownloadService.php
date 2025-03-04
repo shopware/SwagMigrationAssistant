@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Promise;
 use Shopware\Core\Content\Media\File\FileSaver;
@@ -63,7 +64,7 @@ class HttpOrderDocumentDownloadService extends HttpDownloadServiceBase
         return $this->connectionFactory->createApiClient($migrationContext);
     }
 
-    protected function httpRequest(HttpClientInterface $client, array $additionalData): Promise\PromiseInterface
+    protected function httpRequest(HttpClientInterface $client, array $additionalData): PromiseInterface
     {
         return $client->getAsync(self::DOCUMENTS_URI . $additionalData['uri']);
     }

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\Media\Processor;
 
+use GuzzleHttp\Promise\PromiseInterface;
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Promise;
@@ -222,7 +223,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
      *
      * @param array<string, mixed> $additionalData
      */
-    protected function httpRequest(HttpClientInterface $client, array $additionalData): Promise\PromiseInterface
+    protected function httpRequest(HttpClientInterface $client, array $additionalData): PromiseInterface
     {
         return $client->getAsync($additionalData['uri']);
     }
@@ -265,7 +266,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         return $promises;
     }
 
-    private function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, HttpClientInterface $client): ?Promise\PromiseInterface
+    private function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, HttpClientInterface $client): ?PromiseInterface
     {
         $additionalData = $workload->getAdditionalData();
 
