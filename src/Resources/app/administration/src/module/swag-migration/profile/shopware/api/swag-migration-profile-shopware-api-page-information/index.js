@@ -29,7 +29,7 @@ Component.register('swag-migration-profile-shopware-api-page-information', {
         },
 
         locale() {
-            return Shopware.State.get('session').currentLocale ?? '';
+            return Shopware.Store.get('session').currentLocale ?? '';
         },
     },
 });
