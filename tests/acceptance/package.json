@@ -25,7 +25,7 @@
   "dependencies": {
     "@playwright/test": "^1.49.0",
     "@currents/playwright": "^1.9.0",
-    "@shopware-ag/acceptance-test-suite": "4.1.0",
+    "@shopware-ag/acceptance-test-suite": "^11.9.3",
     "@shopware/api-client": "0.5.0",
     "dotenv": "^16.4.5"
   },
