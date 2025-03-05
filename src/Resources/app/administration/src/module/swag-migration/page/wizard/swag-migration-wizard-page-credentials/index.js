@@ -9,7 +9,7 @@ const { Component } = Shopware;
 Component.register('swag-migration-wizard-page-credentials', {
     template,
 
-emits: ['onCredentialsChanged', 'onChildRouteReadyChanged', 'onTriggerPrimaryClick'],
+    emits: ['onCredentialsChanged', 'onChildRouteReadyChanged', 'onTriggerPrimaryClick'],
 
     props: {
         credentialsComponent: {

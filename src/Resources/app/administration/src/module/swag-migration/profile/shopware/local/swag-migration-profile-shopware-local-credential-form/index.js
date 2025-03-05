@@ -9,7 +9,7 @@ const { Component } = Shopware;
 Component.register('swag-migration-profile-shopware-local-credential-form', {
     template,
 
-emits: ['onChildRouteReadyChanged', 'onCredentialsChanged'],
+    emits: ['onChildRouteReadyChanged', 'onCredentialsChanged'],
 
     props: {
         credentials: {
