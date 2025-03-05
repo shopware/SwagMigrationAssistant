@@ -15,10 +15,13 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     MediaProcessObserver,
 }) => {
     const page = MigrationUser.page;
-    await page.goto('/admin#/swag/migration/index/main');
+    await page.goto('/admin');
     await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
 
     await test.step('Discover that no connection is setup', async () => {
+        await expect(page.getByText('Open Migration Assistant')).toBeVisible();
+        await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
+
         await expect(page.getByText('No connection')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Start migration' })).toBeDisabled();
         await expect(page.locator('.swag-migration-shop-information__connection-status')).toHaveText('Not connected');
