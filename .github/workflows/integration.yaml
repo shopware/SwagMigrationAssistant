@@ -35,7 +35,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        PLATFORM_BRANCH: ["v6.6.1.0", "trunk"]
+        PLATFORM_BRANCH: ["trunk"] # TODO add min version 6.7.0 here when trunk becomes > 6.7.0
     steps:
       - uses: shopware/github-actions/setup-extension@main
         with:
@@ -82,7 +82,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        PLATFORM_BRANCH: ["v6.6.1.0", "trunk"]
+        PLATFORM_BRANCH: ["trunk"] # TODO add min version 6.7.0 here when trunk becomes > 6.7.0
     services:
       mysql:
         image: mysql:8.0
