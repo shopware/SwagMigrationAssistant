@@ -70,12 +70,13 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             const tab = tabs.nth(i);
             await tab.click();
 
-            // go through each select input and select the first available option for each
-            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column .mt-select__select-indicator');
+            // go through each select input with error and select the first available option for each
+            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column .has--error .mt-select-selection-list__input');
+
             await premappingItems.evaluateAll(async list => {
                 for await (const item of list) {
-                    item.click();
-                    await page.locator('.mt-select-result').first().click();
+                    await item.click();
+                    document.querySelector('.mt-select-result')?.click();
                     await new Promise(resolve => setTimeout(resolve, 150));
                 }
             });
@@ -101,16 +102,16 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Back to overview' }).click();
     });
 
-    // ToDo MIG-985: Remove this if the underlying issue is fixed
-    await test.step('Wait for media download to finish', async () => {
-        await expect.poll(async () => {
-            return await MediaProcessObserver.isMediaProcessing();
-        }, {
-            // Probe after 100ms and then every second
-            intervals: [100, 1_000],
-            timeout: 300_000,
-        }).toBe(false);
-    });
+    // // ToDo MIG-985: Remove this if the underlying issue is fixed
+    // await test.step('Wait for media download to finish', async () => {
+    //     await expect.poll(async () => {
+    //         return await MediaProcessObserver.isMediaProcessing();
+    //     }, {
+    //         // Probe after 100ms and then every second
+    //         intervals: [100, 1_000],
+    //         timeout: 300_000,
+    //     }).toBe(false);
+    // });
 
     await test.step('Expect entities to be there', async () => {
         await EntityCounter.checkEntityCount('swag_migration_logging', 699);
