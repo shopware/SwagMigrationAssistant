@@ -3,7 +3,7 @@
         <div v-if="!isLoading">
 
             {% block swag_migration_history_detail_errors_grid %}
-                <mt-data-table v-if="migrationErrors.length > 0"
+                <sw-data-grid v-if="migrationErrors.length > 0"
                               identifier="swag-migration-history-detail-errors"
                               :data-source="migrationErrors"
                               :columns="columns"
@@ -43,7 +43,7 @@
                                            @page-change="onPageChange" />
                         </template>
                     {% endblock %}
-                </mt-data-table>
+                </sw-data-grid>
             {% endblock %}
 
             {% block swag_migration_history_detail_errors_noError %}

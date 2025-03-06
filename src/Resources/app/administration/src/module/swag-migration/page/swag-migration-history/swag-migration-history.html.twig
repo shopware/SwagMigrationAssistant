@@ -6,7 +6,7 @@
         <template #grid>
 
             {% block swag_migration_history_grid %}
-                <mt-data-table v-if="migrationRuns.length > 0"
+                <sw-data-grid v-if="migrationRuns.length > 0"
                               identifier="swag-migration-history"
                               :data-source="migrationRuns"
                               :columns="migrationColumns"
@@ -80,7 +80,7 @@
                         </template>
                     {% endblock %}
 
-                </mt-data-table>
+                </sw-data-grid>
             {% endblock %}
 
             {% block swag_migration_history_no_data %}

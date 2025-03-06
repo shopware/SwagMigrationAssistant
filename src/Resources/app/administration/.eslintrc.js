@@ -184,6 +184,7 @@ module.exports = {
                 'vue/no-deprecated-slot-attribute': ['error'],
                 'vue/no-deprecated-slot-scope-attribute': ['error'],
                 // 'sw-deprecation-rules/no-twigjs-blocks': 'error',
+                // TODO: Make this error when all components are migrated to meteor
                 'sw-deprecation-rules/no-deprecated-components': ['warn'],
                 'sw-deprecation-rules/no-deprecated-component-usage': ['warn'],
                 'vue/no-useless-template-attributes': 'error',
