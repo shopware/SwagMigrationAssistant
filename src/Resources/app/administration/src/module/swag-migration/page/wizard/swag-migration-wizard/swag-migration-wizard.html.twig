@@ -40,12 +40,13 @@ class="swag-migration-wizard__placeholder"></div>
                     {% block swag_migration_wizard_footer %}
                         {% block swag_migration_wizard_arrow %}
                             <div class="swag-migration-wizard__left-actions">
-                                <sw-button v-show="buttonBackVisible"
+                                <mt-button v-show="buttonBackVisible"
+                                           variant="secondary"
                                            class="swag-migration-wizard__buttonBack"
                                            size="small"
                                            @click="onButtonBackClick">
                                     {{ $tc(buttonBackSnippet) }}
-                                </sw-button>
+                                </mt-button>
                             </div>
                         {% endblock %}
 
@@ -53,20 +54,21 @@ class="swag-migration-wizard__placeholder"></div>
                             <div class="swag-migration-wizard__right-actions">
 
                                 {% block swag_migration_wizard_actions_previous %}
-                                    <sw-button v-show="buttonSecondaryVisible"
+                                    <mt-button v-show="buttonSecondaryVisible"
+                                               variant="secondary"
                                                size="small"
                                                @click="onButtonSecondaryClick">
                                         {{ $tc(buttonSecondarySnippet) }}
-                                    </sw-button>
+                                    </mt-button>
                                 {% endblock %}
 
                                 {% block swag_migration_wizard_actions_next %}
-                                    <sw-button size="small"
+                                    <mt-button size="small"
                                                variant="primary"
                                                :disabled="buttonPrimaryDisabled"
                                                @click="onButtonPrimaryClick">
                                         {{ $tc(buttonPrimarySnippet) }}
-                                    </sw-button>
+                                    </mt-button>
                                 {% endblock %}
                             </div>
                         {% endblock %}

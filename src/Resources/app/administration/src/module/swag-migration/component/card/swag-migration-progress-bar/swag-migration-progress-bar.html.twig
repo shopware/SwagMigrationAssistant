@@ -15,10 +15,10 @@
 
                         {% block swag_migration_progress_bar_left_bubble %}
                             <div class="swag-migration-progress-bar__bubble swag-migration-progress-bar__bubble--active">
-                                <sw-icon class="swag-migration-progress-bar__icon"
+                                <mt-icon class="swag-migration-progress-bar__icon"
                                          name="regular-circle-xs"
                                          size="16px"
-                                         small />
+                                />
                             </div>
                         {% endblock %}
 
@@ -34,8 +34,8 @@
                     <div class="swag-migration-progress-bar__center-bar">
 
                         {% block swag_migration_progress_bar_progress_bar %}
-                            <sw-progress-bar class="swag-migration-progress-bar__progress-bar"
-                                             :value="value"
+                            <mt-progress-bar class="swag-migration-progress-bar__progress-bar"
+                                             :modelValue="value"
                                              :max-value="maxValue" />
                         {% endblock %}
 
@@ -52,10 +52,10 @@
 
                         {% block swag_migration_progress_bar_right_bubble %}
                             <div :class="rightPointClasses">
-                                <sw-icon class="swag-migration-progress-bar__icon"
+                                <mt-icon class="swag-migration-progress-bar__icon"
                                          name="regular-checkmark-xs"
                                          size="16px"
-                                         small />
+                                />
                             </div>
                         {% endblock %}
 

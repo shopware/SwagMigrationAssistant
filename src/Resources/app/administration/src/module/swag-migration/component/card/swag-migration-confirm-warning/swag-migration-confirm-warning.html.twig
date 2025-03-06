@@ -2,7 +2,7 @@
     <div class="swag-migration-confirm-warning">
 
         {% block swag_migration_confirm_warning_card %}
-            <sw-card
+            <mt-card
                 v-if="hasDifferentCurrency"
                 class="swag-migration-confirm-warning__card"
                 position-identifier="swag-migration-confirm-warning__card"
@@ -10,7 +10,7 @@
 
                 {% block swag_migration_confirm_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
-                        <sw-icon class="swag-migration-confirm-warning__bubble-icon"
+                        <mt-icon class="swag-migration-confirm-warning__bubble-icon"
                                  name="regular-exclamation-triangle"
                                  size="36px"
                                  decorative />
@@ -30,12 +30,12 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_warning_alert %}
-                    <sw-alert
+                    <mt-alert
                         variant="error"
                         class="swag-migration-confirm-warning__alert"
                     >
                         {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.info') }}
-                    </sw-alert>
+                    </mt-alert>
                 {% endblock %}
 
                 {% block swag_migration_confirm_warning_question %}
@@ -45,16 +45,16 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_warning_checkbox %}
-                    <sw-checkbox-field v-model:value="isCurrencyChecked"
-                                       class="swag-migration-confirm-warning__checkbox"
-                                       :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                       @update:value="onCheckboxValueChanged" />
+                    <mt-checkbox v-model:checked="isCurrencyChecked"
+                                 class="swag-migration-confirm-warning__checkbox"
+                                 label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                 @update:checked="onCheckboxValueChanged" />
                 {% endblock %}
-            </sw-card>
+            </mt-card>
         {% endblock %}
 
         {% block swag_migration_confirm_language_warning_card %}
-            <sw-card
+            <mt-card
                 v-if="hasDifferentLanguage"
                 class="swag-migration-confirm-warning__card"
                 position-identifier="swag-migration-confirm-warning__card"
@@ -62,7 +62,7 @@
 
                 {% block swag_migration_confirm_language_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
-                        <sw-icon class="swag-migration-confirm-warning__bubble-icon"
+                        <mt-icon class="swag-migration-confirm-warning__bubble-icon"
                                  name="regular-exclamation-triangle"
                                  size="36px"
                                  decorative />
@@ -82,12 +82,12 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_language_warning_alert %}
-                    <sw-alert
+                    <mt-alert
                         variant="error"
                         class="swag-migration-confirm-warning__alert"
                     >
                         {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.info') }}
-                    </sw-alert>
+                    </mt-alert>
                 {% endblock %}
 
                 {% block swag_migration_confirm_language_warning_question %}
@@ -97,12 +97,12 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_language_warning_checkbox %}
-                    <sw-checkbox-field v-model:value="isLanguageChecked"
-                                       class="swag-migration-confirm-warning__checkbox"
-                                       :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                       @update:value="onCheckboxValueChanged" />
+                    <mt-checkbox v-model:checked="isLanguageChecked"
+                                 class="swag-migration-confirm-warning__checkbox"
+                                 label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                 @update:checked="onCheckboxValueChanged" />
                 {% endblock %}
-            </sw-card>
+            </mt-card>
         {% endblock %}
     </div>
 {% endblock %}

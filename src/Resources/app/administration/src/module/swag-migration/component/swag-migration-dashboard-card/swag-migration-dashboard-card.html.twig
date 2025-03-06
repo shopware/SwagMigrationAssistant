@@ -1,5 +1,5 @@
 {% block swag_migration_dashboard_card %}
-    <sw-card class="swag-migration-dashboard-card"
+    <mt-card class="swag-migration-dashboard-card"
              position-identifier="swag-migration-dashboard-card">
 
         {% block swag_migration_dashboard_card_wrapper %}
@@ -39,10 +39,11 @@
                                             {% endblock %}
 
                                             {%  block swag_migration_dashboard_card_button %}
-                                                <sw-button variant="primary"
-                                                           :router-link="{ name: 'swag.migration.index.main'}">
+                                                <mt-button variant="primary"
+                                                           @click="this.$router.push('swag.migration.index.main')"
+                                                >
                                                     {{ $tc('swag-migration.dashboard.button') }}
-                                                </sw-button>
+                                                </mt-button>
                                             {%  endblock %}
                                         </div>
                                     {% endblock %}
@@ -60,5 +61,5 @@
                 </sw-container>
             {% endblock %}
         {% endblock %}
-    </sw-card>
+    </mt-card>
 {% endblock %}

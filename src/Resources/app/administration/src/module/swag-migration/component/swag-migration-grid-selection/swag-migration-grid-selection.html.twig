@@ -24,10 +24,9 @@
                                     v-model="item.destinationUuid"
                                     class="swag-migration-grid-selection__choice-field"
                                     :class="getClassesAfterValidation(item)"
-                                    @update:modelValue="onInput"
                                     :options="selectOptions"
-                                >
-                                </mt-select>
+                                    @update:modelValue="onInput"
+                                />
                             {% endblock %}
                         </sw-grid-column>
                     {% endblock %}

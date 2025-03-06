@@ -11,9 +11,9 @@
             <div v-if="selectable"
                  class="sw-grid-column">
                 <div class="sw-grid__cell-content">
-                    <sw-checkbox-field :value="isSelected(item.id)"
-                                       :disabled="isDisabled(item)"
-                                       @update:value="selectItem($event, item)" />
+                    <mt-checkbox :checked="isSelected(item.id)"
+                                 :disabled="isDisabled(item)"
+                                 @update:checked="selectItem($event, item)" />
                 </div>
             </div>
         {% endblock %}

@@ -47,11 +47,11 @@
                                              class="swag-migration-history-detail__shop-domain">
                                                         <span class="swag-migration-history-detail__shop-domain-prefix"
                                                               :class="shopUrlPrefixClass">
-                                                            <sw-icon v-if="sslActive"
+                                                            <mt-icon v-if="sslActive"
                                                                      class="swag-migration-history-detail__shop-domain-prefix-icon"
                                                                      name="regular-lock"
                                                                      size="12px" />
-                                                            <sw-icon v-else
+                                                            <mt-icon v-else
                                                                      class="swag-migration-history-detail__shop-domain-prefix-icon"
                                                                      name="regular-lock-open-s"
                                                                      size="12px" />
@@ -130,10 +130,11 @@
 
             {% block swag_migration_history_detail_footer %}
                 <template #modal-footer>
-                    <sw-button size="small"
+                    <mt-button size="small"
+                               variant="secondary"
                                @click="onCloseModal">
                         {{ $tc('swag-migration.history.detailPage.close') }}
-                    </sw-button>
+                    </mt-button>
                 </template>
             {% endblock %}
         </sw-modal>

@@ -18,18 +18,18 @@
 
                 {% block swag_migration_wizard_page_create_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <sw-alert v-if="profileHint">
+                        <mt-alert v-if="profileHint">
                             {{ profileHint }}
-                        </sw-alert>
+                        </mt-alert>
 
-                        <sw-text-field v-model:value="selection.connectionName"
+                        <mt-text-field v-model:modelValue="selection.connectionName"
                                        v-autofocus
                                        :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
                                        :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
                                        validation="required"
                                        :help-text="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
                                        :error="connectionNameError"
-                                       @update:value="onChangeConnectionName"
+                                       @update:modelValue="onChangeConnectionName"
                         />
 
                         <sw-single-select v-model:value="selection.profile"
@@ -56,7 +56,7 @@
                                             {{ $tc('swag-migration.wizard.pages.connectionCreate.profileInstall') }}
                                         </div>
                                         <div>
-                                            <sw-icon name="regular-chevron-right-xs"
+                                            <mt-icon name="regular-chevron-right-xs"
                                                      size="16" />
                                         </div>
                                     </div>

@@ -2,7 +2,7 @@
     <div class="swag-migration-loading-screen">
 
         {% block swag_migration_loading_screen_card %}
-            <sw-card
+            <mt-card
                 class="swag-migration-loading-screen__card"
                 position-identifier="swag-migration-loading-screen__card"
             >
@@ -35,7 +35,7 @@
                                     :max-value="total" />
                         {% endblock %}
 
-                        <sw-alert variant="info"
+                        <mt-alert variant="info"
                                   class="swag-migration-loading-screen__notice">
                             {{ $tc('swag-migration.index.loadingScreenCard.notice') }}
                             <a class="link"
@@ -43,10 +43,10 @@
                                target="_blank">
                                 {{ $tc('swag-migration.index.loadingScreenCard.documentationLinkText') }}
                             </a>
-                        </sw-alert>
+                        </mt-alert>
                     </div>
                 {% endblock %}
-            </sw-card>
+            </mt-card>
         {% endblock %}
     </div>
 {% endblock %}

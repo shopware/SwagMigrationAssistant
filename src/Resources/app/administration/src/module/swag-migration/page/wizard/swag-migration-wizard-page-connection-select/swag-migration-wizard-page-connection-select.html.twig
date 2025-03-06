@@ -17,12 +17,12 @@
 
                 {% block swag_migration_wizard_page_select_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <sw-select-field
-                                         v-model:value="selectedConnectionId"
+                        <mt-select
+                                         v-model:modelValue="selectedConnectionId"
                                          :options="connections"
                                          :label="$tc('swag-migration.wizard.pages.connectionSelect.connectionLabel')"
                                          :placeholder="$tc('swag-migration.wizard.pages.connectionSelect.connectionPlaceholder')"
-                                         @update:value="onConnectionSelected"
+                                         @update:modelValue="onConnectionSelected"
                         />
                     </div>
                 {% endblock %}

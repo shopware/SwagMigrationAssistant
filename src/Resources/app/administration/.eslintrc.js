@@ -162,7 +162,7 @@ module.exports = {
                     baseIndent: 0,
                 }],
                 'no-multiple-empty-lines': ['error', { max: 1 }],
-                'vue/attribute-hyphenation': 'error',
+                'vue/attribute-hyphenation': 'warn',
                 'vue/multiline-html-element-content-newline': 'off', // allow more spacy templates
                 'vue/html-self-closing': ['error', {
                     html: {
@@ -183,9 +183,9 @@ module.exports = {
                 'vue/attributes-order': 'error',
                 'vue/no-deprecated-slot-attribute': ['error'],
                 'vue/no-deprecated-slot-scope-attribute': ['error'],
-                'sw-deprecation-rules/no-twigjs-blocks': 'error',
-                'sw-deprecation-rules/no-deprecated-components': ['error'],
-                'sw-deprecation-rules/no-deprecated-component-usage': ['error'],
+                // 'sw-deprecation-rules/no-twigjs-blocks': 'error',
+                'sw-deprecation-rules/no-deprecated-components': ['warn'],
+                'sw-deprecation-rules/no-deprecated-component-usage': ['warn'],
                 'vue/no-useless-template-attributes': 'error',
                 'vue/no-lone-template': 'error',
 

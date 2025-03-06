@@ -2,7 +2,7 @@
     <div class="swag-migration-premapping">
 
         {% block swag_migration_premapping_unfilled_card %}
-            <sw-card
+            <mt-card
                 v-if="!isPremappingValid"
                 class="swag-migration-premapping__unfilled-card"
                 position-identifier="swag-migration-premapping"
@@ -21,23 +21,23 @@
                 {% endblock %}
 
                 {% block swag_migration_premapping_unfilled_alert %}
-                    <sw-alert v-if="!isPremappingValid"
+                    <mt-alert v-if="!isPremappingValid"
                               class="swag-migration-premapping__alert"
                               variant="error">
                         {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
-                    </sw-alert>
+                    </mt-alert>
                 {% endblock %}
-            </sw-card>
+            </mt-card>
         {% endblock %}
 
         {% block swag_migration_premapping_success_card %}
-            <sw-card v-if="!isLoading && isPremappingValid"
+            <mt-card v-if="!isLoading && isPremappingValid"
                      class="swag-migration-premapping__success-card"
                      position-identifier="swag-migration-premapping__success-card">
 
                 {% block swag_migration_premapping_success_bubble %}
                     <div class="swag-migration-premapping__success-bubble">
-                        <sw-icon class="swag-migration-premapping__success-icon"
+                        <mt-icon class="swag-migration-premapping__success-icon"
                                  name="regular-checkmark"
                                  size="36px"
                                  decorative />
@@ -55,7 +55,7 @@
                         {{ $tc('swag-migration.index.premappingCard.validCaption') }}
                     </div>
                 {% endblock %}
-            </sw-card>
+            </mt-card>
         {% endblock %}
 
         {% block swag_migration_premapping_unfilled_mapping %}
@@ -75,13 +75,13 @@
             </swag-migration-tab-card>
         {% endblock %}
 
-        <sw-card v-if="isLoading"
+        <mt-card v-if="isLoading"
                  class="swag-migration-premapping__loading-card"
                  position-identifier="swag-migration-premapping__loading-card">
             <div>
 
                 {% block swag_migration_premapping_loader %}
-                    <sw-loader class="swag-migration-premapping__loader" />
+                    <mt-loader class="swag-migration-premapping__loader" />
                 {% endblock %}
 
                 {% block swag_migration_premapping_loading_title %}
@@ -96,6 +96,6 @@
                     </div>
                 {% endblock %}
             </div>
-        </sw-card>
+        </mt-card>
     </div>
 {% endblock %}

@@ -3,12 +3,12 @@
 
         {% block swag_migration_data_selector_warnings %}
             <div class="swag-migration-data-selector__warnings">
-                <sw-alert v-for="warning in displayWarnings"
+                <mt-alert v-for="warning in displayWarnings"
                           :key="warning.snippetKey"
                           class="swag-migration-data-selector__warning"
                           variant="warning">
                     {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
-                </sw-alert>
+                </mt-alert>
             </div>
         {% endblock %}
 
@@ -16,7 +16,7 @@
             <swag-migration-confirm-warning class="swag-migration-process-screen__confirm-warning" />
         {% endblock %}
 
-        <sw-card
+        <mt-card
             v-if="dataSelectionTableData.length > 0"
             :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
             position-identifier="swag-migration-data-selector"
@@ -61,9 +61,9 @@
                     </swag-migration-grid-extended>
                 </template>
             {% endblock %}
-        </sw-card>
+        </mt-card>
 
-        <sw-card v-else
+        <mt-card v-else
                  class="swag-migration-data-selector"
                  position-identifier="swag-migration-data-selector-no-data">
 
@@ -74,7 +74,7 @@
                     </p>
                 </div>
             {% endblock %}
-        </sw-card>
+        </mt-card>
 
         <swag-migration-premapping />
     </div>

@@ -135,7 +135,7 @@ Component.register('swag-migration-shop-information', {
 
         profile() {
             return this.connection === null || this.connection.profile === undefined ? '' :
-
+                // eslint-disable-next-line max-len
                 `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
         },
 

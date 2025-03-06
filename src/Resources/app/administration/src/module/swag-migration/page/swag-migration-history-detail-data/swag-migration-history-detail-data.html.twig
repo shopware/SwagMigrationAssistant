@@ -3,7 +3,7 @@
         <div v-if="!isLoading">
 
             {% block swag_migration_history_detail_data_grid %}
-                <sw-data-grid v-if="migrationData.length > 0"
+                <mt-data-table v-if="migrationData.length > 0"
                               identifier="swag-migration-history-detail-data"
                               :data-source="migrationData"
                               :columns="columns"
@@ -37,7 +37,7 @@
                                            @page-change="onPageChange" />
                         </template>
                     {% endblock %}
-                </sw-data-grid>
+                </mt-data-table>
             {% endblock %}
 
             {% block swag_migration_history_detail_data_noData %}
@@ -51,7 +51,7 @@
         {% block swag_migration_history_detail_data_noError__loader %}
             <div v-if="isLoading"
                  class="swag-migration-history-detail-data__loading-placeholder"></div>
-            <sw-loader v-if="isLoading" />
+            <mt-loader v-if="isLoading" />
         {% endblock %}
     </div>
 {% endblock %}

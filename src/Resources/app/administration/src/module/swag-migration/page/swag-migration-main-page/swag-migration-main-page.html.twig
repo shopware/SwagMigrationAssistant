@@ -11,12 +11,12 @@
                             :key="warning.snippetKey"
                         >
 
-                            <sw-alert
+                            <mt-alert
                                 class="swag-migration-index-main-page__warning"
                                 variant="warning"
                             >
                                 {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
-                            </sw-alert>
+                            </mt-alert>
                         </template>
                     </div>
                 {% endblock %}
@@ -32,7 +32,7 @@
         {% endblock %}
 
         {% block swag_migration_index_main_page_loader %}
-            <sw-loader v-if="isLoading" />
+            <mt-loader v-if="isLoading" />
         {% endblock %}
     </div>
 {% endblock %}

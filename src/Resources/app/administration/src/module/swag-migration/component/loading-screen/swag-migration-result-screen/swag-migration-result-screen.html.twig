@@ -2,7 +2,7 @@
     <div>
 
         {% block swag_migration_result_screen_card %}
-            <sw-card class="swag-migration-result-screen"
+            <mt-card class="swag-migration-result-screen"
                      position-identifier="swag-migration-result-screen">
 
                 {% block swag_migration_result_screen_content %}
@@ -10,7 +10,7 @@
 
                         {% block swag_migration_result_screen_icon %}
                             <div class="swag-migration-result-screen__bubble">
-                                <sw-icon class="swag-migration-result-screen__icon"
+                                <mt-icon class="swag-migration-result-screen__icon"
                                          name="regular-thumbs-up"
                                          size="36px"
                                          decorative />
@@ -27,23 +27,23 @@
                         {% endblock %}
                     </div>
                 {% endblock %}
-            </sw-card>
+            </mt-card>
         {% endblock %}
 
-        <sw-card
+        <mt-card
             position-identifier="swag-migration-result-screen__log-summary"
             :is-loading="!latestRun"
             :title="$tc('swag-migration.index.loadingScreenCard.result.logSummary')"
         >
-            <sw-alert>
+            <mt-alert>
                 {{ $tc('swag-migration.index.loadingScreenCard.result.historyHint') }}
-            </sw-alert>
+            </mt-alert>
 
             <swag-migration-history-detail-errors
                 v-if="latestRun"
                 :migration-run="latestRun"
             />
-        </sw-card>
+        </mt-card>
 
     </div>
 {% endblock %}
