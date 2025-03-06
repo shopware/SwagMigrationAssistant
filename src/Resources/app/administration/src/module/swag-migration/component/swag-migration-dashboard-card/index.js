@@ -15,4 +15,10 @@ Component.register('swag-migration-dashboard-card', {
             return Shopware.Filter.getByName('asset');
         },
     },
+
+    methods: {
+        goToMigrationIndexPage() {
+            this.$router.push({ name: 'swag.migration.index' });
+        },
+    },
 });

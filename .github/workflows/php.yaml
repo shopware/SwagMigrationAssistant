@@ -10,6 +10,7 @@ on:
       - composer.json
       - src/**/*.php
       - tests/**/*.php
+      - .github/workflows/php.yml
 
 jobs:
   codestyle_php:

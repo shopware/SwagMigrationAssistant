@@ -9,6 +9,7 @@ on:
     paths:
       - src/Resources/app/administration/**
       - tests/Jest/**
+      - .github/workflows/admin.yml
   workflow_call:
 
 jobs:
@@ -16,10 +17,23 @@ jobs:
     name: ESLint
     runs-on: ubuntu-latest
     steps:
-      - uses: shopware/github-actions/eslint@main
+      - uses: shopware/github-actions/setup-extension@main
         with:
           extensionName: ${{ github.event.repository.name }}
-          projectPath: tests/Jest
+          install: true
+          install-admin: true
+          install-storefront: false
+          extraRepositories: |
+            {
+              "${{ github.event.repository.name }}": {
+                "type": "path",
+                "url": "custom/plugins/${{ github.event.repository.name }}",
+                "symlink": true
+              }
+            }
+      - run: |
+          composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
+          composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint
 
   jest:
     name: Jest
