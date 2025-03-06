@@ -2,3 +2,4 @@
 /static
 *.spec.vue2.js
 *.fixtures.js
+*.eslintrc.js
