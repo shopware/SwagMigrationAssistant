@@ -7,8 +7,8 @@ on:
       - trunk
   pull_request:
     paths:
-      - src/Resources/app/administration
-      - tests/Jest
+      - src/Resources/app/administration/**
+      - tests/Jest/**
   workflow_call:
 
 jobs:
