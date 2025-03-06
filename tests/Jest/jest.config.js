@@ -64,8 +64,10 @@ module.exports = {
     moduleNameMapper: {
         vue$: '@vue/compat/dist/vue.cjs.js',
         '^\@shopware-ag\/meteor-admin-sdk\/es\/(.*)': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/@shopware-ag/meteor-admin-sdk/umd/$1`,
+        '^\@shopware-ag\/meteor-component-library$': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/@shopware-ag/meteor-component-library/dist/common/index.js`,
         '^@administration(.*)$': `${process.env.ADMIN_PATH}/src$1`,
         '^SwagMigrationAssistant/(.*)$': '<rootDir>/src/Resources/app/administration/src/$1',
+        'vue-i18n$': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/vue-i18n/dist/vue-i18n.cjs.js`,
     },
 
     transformIgnorePatterns: [
