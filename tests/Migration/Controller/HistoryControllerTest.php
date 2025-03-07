@@ -131,6 +131,7 @@ class HistoryControllerTest extends TestCase
         static::assertJson($response->getContent());
 
         $json = \json_decode($response->getContent(), true);
+        static::assertIsArray($json);
         static::assertArrayHasKey('total', $json);
         static::assertArrayHasKey('items', $json);
         static::assertArrayHasKey('downloadUrl', $json);
