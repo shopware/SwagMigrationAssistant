@@ -22,14 +22,14 @@
                             {{ profileHint }}
                         </mt-alert>
 
-                        <mt-text-field v-model:modelValue="selection.connectionName"
+                        <mt-text-field v-model:model-value="selection.connectionName"
                                        v-autofocus
                                        :label="$tc('swag-migration.wizard.pages.connectionCreate.connectionLabel')"
                                        :placeholder="$tc('swag-migration.wizard.pages.connectionCreate.connectionPlaceholder')"
                                        validation="required"
                                        :help-text="$tc('swag-migration.wizard.pages.connectionCreate.connectionTooltip')"
                                        :error="connectionNameError"
-                                       @update:modelValue="onChangeConnectionName"
+                                       @update:model-value="onChangeConnectionName"
                         />
 
                         <sw-single-select v-model:value="selection.profile"
