@@ -47,7 +47,7 @@
                 {% block swag_migration_confirm_warning_checkbox %}
                     <mt-checkbox v-model:checked="isCurrencyChecked"
                                  class="swag-migration-confirm-warning__checkbox"
-                                 label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                 :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
                                  @update:checked="onCheckboxValueChanged" />
                 {% endblock %}
             </mt-card>
@@ -99,7 +99,7 @@
                 {% block swag_migration_confirm_language_warning_checkbox %}
                     <mt-checkbox v-model:checked="isLanguageChecked"
                                  class="swag-migration-confirm-warning__checkbox"
-                                 label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                                 :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
                                  @update:checked="onCheckboxValueChanged" />
                 {% endblock %}
             </mt-card>
