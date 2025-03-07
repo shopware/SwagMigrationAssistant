@@ -122,8 +122,8 @@ class TaxLookupTest extends TestCase
     public static function getGetByTaxRateAndNameData(): array
     {
         $returnData = self::getGetByTaxRateAndNameDatabaseData();
-        $returnData[] = ['taxRate' => 0.11, '' => 'Foo', 'expectedResult' => null];
-        $returnData[] = ['taxRate' => 0.21, '' => 'Bar', 'expectedResult' => null];
+        $returnData[] = ['taxRate' => 0.11, 'name' => 'Foo', 'expectedResult' => null];
+        $returnData[] = ['taxRate' => 0.21, 'name' => 'Bar', 'expectedResult' => null];
 
         return $returnData;
     }
