@@ -98,7 +98,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             await expect(step).toHaveClass(/sw-step-item--success/, { timeout: 300_000 }); // 5 min. as really long timeout to wait for each step
         }
 
-        await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: MIGRATION_LOADING_TIMEOUT });
+        await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: 300_000 });
         await page.getByRole('button', { name: 'Back to overview' }).click();
     });
 
