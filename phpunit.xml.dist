@@ -5,7 +5,8 @@
          bootstrap="tests/TestBootstrap.php"
          executionOrder="random"
          cacheDirectory="var/cache/.phpunit.cache"
-         displayDetailsOnTestsThatTriggerWarnings="true">
+         displayDetailsOnTestsThatTriggerWarnings="true"
+         failOnWarning="true">
     <coverage/>
 
     <php>
