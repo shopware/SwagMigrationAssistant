@@ -10,6 +10,7 @@ async function createWrapper(props = {}) {
             props,
             global: {
                 stubs: {
+                    'mt-progress-bar': true,
                 },
             },
         },
