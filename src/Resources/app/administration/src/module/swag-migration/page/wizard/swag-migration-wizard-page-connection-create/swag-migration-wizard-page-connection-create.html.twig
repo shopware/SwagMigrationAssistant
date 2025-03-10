@@ -18,9 +18,9 @@
 
                 {% block swag_migration_wizard_page_create_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <mt-alert v-if="profileHint">
+                        <mt-banner v-if="profileHint">
                             {{ profileHint }}
-                        </mt-alert>
+                        </mt-banner>
 
                         <mt-text-field v-model:model-value="selection.connectionName"
                                        v-autofocus

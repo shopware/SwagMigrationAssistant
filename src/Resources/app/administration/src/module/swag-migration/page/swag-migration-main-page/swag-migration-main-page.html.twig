@@ -11,12 +11,12 @@
                             :key="warning.snippetKey"
                         >
 
-                            <mt-alert
+                            <mt-banner
                                 class="swag-migration-index-main-page__warning"
                                 variant="warning"
                             >
                                 {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
-                            </mt-alert>
+                            </mt-banner>
                         </template>
                     </div>
                 {% endblock %}

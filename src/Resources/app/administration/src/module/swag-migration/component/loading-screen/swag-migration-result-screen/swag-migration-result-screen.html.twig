@@ -35,9 +35,9 @@
             :is-loading="!latestRun"
             :title="$tc('swag-migration.index.loadingScreenCard.result.logSummary')"
         >
-            <mt-alert>
+            <mt-banner>
                 {{ $tc('swag-migration.index.loadingScreenCard.result.historyHint') }}
-            </mt-alert>
+            </mt-banner>
 
             <swag-migration-history-detail-errors
                 v-if="latestRun"

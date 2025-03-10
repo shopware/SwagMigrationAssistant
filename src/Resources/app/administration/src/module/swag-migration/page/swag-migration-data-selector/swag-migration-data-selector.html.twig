@@ -3,12 +3,12 @@
 
         {% block swag_migration_data_selector_warnings %}
             <div class="swag-migration-data-selector__warnings">
-                <mt-alert v-for="warning in displayWarnings"
+                <mt-banner v-for="warning in displayWarnings"
                           :key="warning.snippetKey"
                           class="swag-migration-data-selector__warning"
                           variant="warning">
                     {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
-                </mt-alert>
+                </mt-banner>
             </div>
         {% endblock %}
 

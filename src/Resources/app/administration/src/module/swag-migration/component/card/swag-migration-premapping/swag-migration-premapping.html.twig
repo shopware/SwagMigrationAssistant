@@ -21,11 +21,11 @@
                 {% endblock %}
 
                 {% block swag_migration_premapping_unfilled_alert %}
-                    <mt-alert v-if="!isPremappingValid"
+                    <mt-banner v-if="!isPremappingValid"
                               class="swag-migration-premapping__alert"
                               variant="error">
                         {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
-                    </mt-alert>
+                    </mt-banner>
                 {% endblock %}
             </mt-card>
         {% endblock %}
