@@ -162,7 +162,7 @@ module.exports = {
                     baseIndent: 0,
                 }],
                 'no-multiple-empty-lines': ['error', { max: 1 }],
-                'vue/attribute-hyphenation': 'warn',
+                'vue/attribute-hyphenation': 'error',
                 'vue/multiline-html-element-content-newline': 'off', // allow more spacy templates
                 'vue/html-self-closing': ['error', {
                     html: {
@@ -183,7 +183,8 @@ module.exports = {
                 'vue/attributes-order': 'error',
                 'vue/no-deprecated-slot-attribute': ['error'],
                 'vue/no-deprecated-slot-scope-attribute': ['error'],
-                // 'sw-deprecation-rules/no-twigjs-blocks': 'error',
+                'sw-deprecation-rules/no-twigjs-blocks': 'error',
+                // eslint-disable-next-line no-warning-comments
                 // TODO: Make this error when all components are migrated to meteor
                 'sw-deprecation-rules/no-deprecated-components': ['warn'],
                 'sw-deprecation-rules/no-deprecated-component-usage': ['warn'],
