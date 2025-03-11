@@ -23,7 +23,7 @@
                 {% block swag_migration_premapping_unfilled_alert %}
                     <mt-banner v-if="!isPremappingValid"
                               class="swag-migration-premapping__alert"
-                              variant="error">
+                              variant="critical">
                         {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
                     </mt-banner>
                 {% endblock %}

@@ -6,7 +6,7 @@
                 <mt-banner v-for="warning in displayWarnings"
                           :key="warning.snippetKey"
                           class="swag-migration-data-selector__warning"
-                          variant="warning">
+                          variant="attention">
                     {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
                 </mt-banner>
             </div>
