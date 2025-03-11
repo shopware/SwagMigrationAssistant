@@ -89,6 +89,7 @@ class MediaFileService implements MediaFileServiceInterface, ResetInterface
         foreach ($converted as $dataId => $entity) {
             if (!isset($updateWrittenData[$dataId])) {
                 unset($converted[$dataId]);
+                continue;
             }
 
             if ($updateWrittenData[$dataId]['written'] === true) {

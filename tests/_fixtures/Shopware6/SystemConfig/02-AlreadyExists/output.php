@@ -6,7 +6,7 @@
  */
 
 return [
-    'id' => '91f23b8a27c845c39ce4a2ea1187b3b9',
+    'id' => '91f23b8a27c845c39ce4a2ea1187b3b1',
     'configurationKey' => 'core.cart.maxQuantity',
     'configurationValue' => '100',
     'salesChannelId' => '91f23b8a27c845c39ce4a2ea1187b3b9',
