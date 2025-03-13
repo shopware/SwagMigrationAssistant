@@ -1,4 +1,4 @@
-# REPLACE_GLOBAL_WITH_NEXT_VERSION
+# 14.1.0
 - MIG-1082 - Behebt einen Fehler bei wiederholender Migration von Kundenwunschlisten von SW5 nach SW6
 - MIG-1096 - Beseitigt `json_decode` mit `null` Run Exceptions, die bei Mappings von alten Migrationsläufen auftraten (ältere Assistant-Versionen)
 
