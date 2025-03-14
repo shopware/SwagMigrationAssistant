@@ -1,0 +1,25 @@
+{
+  "base": "/bundles/swagmigrationassistant/administration/",
+  "entryPoints": {
+    "swag-migration-assistant": {
+      "css": [
+        "/bundles/swagmigrationassistant/administration/css/swag-migration-assistant.css"
+      ],
+      "dynamic": [],
+      "js": [
+        "/bundles/swagmigrationassistant/administration/js/swag-migration-assistant.js"
+      ],
+      "legacy": false,
+      "preload": []
+    }
+  },
+  "legacy": false,
+  "metadatas": {},
+  "version": [
+    "7.0.4",
+    7,
+    0,
+    4
+  ],
+  "viteServer": null
+}

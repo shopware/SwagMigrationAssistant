@@ -1,0 +1,11 @@
+{
+  "main.js": {
+    "file": "js/swag-migration-assistant.js",
+    "name": "swag-migration-assistant",
+    "src": "main.js",
+    "isEntry": true,
+    "css": [
+      "css/swag-migration-assistant.css"
+    ]
+  }
+}
