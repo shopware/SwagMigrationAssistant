@@ -34,7 +34,7 @@ class DocumentBaseConfigConverterTest extends ShopwareConverterTest
         static::assertIsArray($mappingArray);
 
         foreach ($mappingArray as $mapping) {
-            if ($mapping['entity'] !== DefaultEntities::ORDER_DOCUMENT_TYPE) {
+            if ($mapping['entityName'] === DefaultEntities::ORDER_DOCUMENT_TYPE) {
                 $documentLookup->method('get')->willReturn($mapping['newIdentifier']);
             }
 
