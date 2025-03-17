@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
+use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderInterface;
@@ -81,10 +82,10 @@ ORDER BY cross_selling.type, cross_selling.articleID LIMIT :limit OFFSET :offset
 SQL;
 
         $statement = $connection->prepare($sql);
-        $statement->bindValue('accessory', DefaultEntities::CROSS_SELLING_ACCESSORY, \PDO::PARAM_STR);
-        $statement->bindValue('similar', DefaultEntities::CROSS_SELLING_SIMILAR, \PDO::PARAM_STR);
-        $statement->bindValue('limit', $migrationContext->getLimit(), \PDO::PARAM_INT);
-        $statement->bindValue('offset', $migrationContext->getOffset(), \PDO::PARAM_INT);
+        $statement->bindValue('accessory', DefaultEntities::CROSS_SELLING_ACCESSORY, ParameterType::STRING);
+        $statement->bindValue('similar', DefaultEntities::CROSS_SELLING_SIMILAR, ParameterType::STRING);
+        $statement->bindValue('limit', $migrationContext->getLimit(), ParameterType::INTEGER);
+        $statement->bindValue('offset', $migrationContext->getOffset(), ParameterType::INTEGER);
 
         $result = $statement->executeQuery();
 

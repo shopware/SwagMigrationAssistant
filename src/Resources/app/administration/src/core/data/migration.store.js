@@ -6,7 +6,7 @@ const repositoryFactory = Shopware.Service('repositoryFactory');
 const migrationGeneralSettingRepository = repositoryFactory.create('swag_migration_general_setting');
 
 /**
- * The vuex store for handling all global data that is needed for the migration process.
+ * The pinia store for handling all global data that is needed for the migration process.
  * @module
  * @private
  * @sw-package fundamentals@after-sales
@@ -14,7 +14,7 @@ const migrationGeneralSettingRepository = repositoryFactory.create('swag_migrati
 export default {
     namespaced: true,
 
-    state: {
+    state: () => ({
         /**
          * The id of the currently selected connection to a source system.
          */
@@ -55,44 +55,73 @@ export default {
          * Will also be set to true if there are no warnings.
          */
         warningConfirmed: false,
+    }),
+
+    getters: {
+        isPremappingValid(state) {
+            return !state.premapping.some((group) => {
+                return group.mapping.some((mapping) => {
+                    return mapping.destinationUuid === null || mapping.destinationUuid === '';
+                });
+            });
+        },
+
+        isMigrationAllowed(state) {
+            const tableDataIds = state.dataSelectionTableData.map((data) => {
+                if (data.requiredSelection === false) {
+                    return data.id;
+                }
+
+                return null;
+            });
+
+            const migrationAllowedByDataSelection = state.dataSelectionIds.some(id => tableDataIds.includes(id));
+            const migrationAllowedByEnvironment = state.environmentInformation?.migrationDisabled === false;
+
+            return migrationAllowedByDataSelection &&
+                migrationAllowedByEnvironment &&
+                !state.isLoading &&
+                state.isPremappingValid &&
+                state.warningConfirmed;
+        },
     },
 
-    mutations: {
-        setConnectionId(state, id) {
-            state.connectionId = id;
+    actions: {
+        setConnectionId(id) {
+            this.connectionId = id;
         },
 
-        setEnvironmentInformation(state, environmentInformation) {
-            state.environmentInformation = environmentInformation;
+        setEnvironmentInformation(environmentInformation) {
+            this.environmentInformation = environmentInformation;
         },
 
-        setLastConnectionCheck(state, date) {
-            state.lastConnectionCheck = date;
+        setLastConnectionCheck(date) {
+            this.lastConnectionCheck = date;
         },
 
-        setIsLoading(state, isLoading) {
-            state.isLoading = isLoading;
+        setIsLoading(isLoading) {
+            this.isLoading = isLoading;
         },
 
-        setDataSelectionIds(state, newIds) {
-            state.dataSelectionIds = newIds;
+        setDataSelectionIds(newIds) {
+            this.dataSelectionIds = newIds;
         },
 
-        setDataSelectionTableData(state, newTableData) {
-            state.dataSelectionTableData = newTableData;
+        setDataSelectionTableData(newTableData) {
+            this.dataSelectionTableData = newTableData;
         },
 
         // merges the existing premapping (in the state) with the newly provided one.
         // resets the state premapping if an empty array is passed as an argument.
-        setPremapping(state, newPremapping) {
+        setPremapping(newPremapping) {
             if (newPremapping === undefined || newPremapping === null || newPremapping.length < 1) {
-                state.premapping = [];
+                this.premapping = [];
                 return;
             }
 
             newPremapping.forEach((group) => {
                 // the premapping is grouped by entity, find the corresponding group in the state
-                let existingGroup = state.premapping.find(
+                let existingGroup = this.premapping.find(
                     (existingGroupItem) => existingGroupItem.entity === group.entity,
                 );
 
@@ -104,7 +133,7 @@ export default {
                         mapping: [],
                     };
                     // and add it to the state premapping groups
-                    state.premapping.push(existingGroup);
+                    this.premapping.push(existingGroup);
                 } else {
                     // in case the group already exists, override the choices by the latest ones received from the server
                     existingGroup.choices = group.choices;
@@ -141,126 +170,97 @@ export default {
             });
         },
 
-        setWarningConfirmed(state, confirmed) {
-            state.warningConfirmed = confirmed;
-        },
-    },
-
-    getters: {
-        isPremappingValid(state) {
-            return !state.premapping.some((group) => {
-                return group.mapping.some((mapping) => {
-                    return mapping.destinationUuid === null || mapping.destinationUuid === '';
-                });
-            });
+        setWarningConfirmed(confirmed) {
+            this.warningConfirmed = confirmed;
         },
 
-        isMigrationAllowed(state, getters) {
-            const tableDataIds = state.dataSelectionTableData.map((data) => {
-                if (data.requiredSelection === false) {
-                    return data.id;
-                }
+        async init(forceFullStateReload = false) {
+            this.isLoading = true;
 
-                return null;
-            });
-
-            const migrationAllowedByDataSelection = state.dataSelectionIds.some(id => tableDataIds.includes(id));
-            const migrationAllowedByEnvironment = state.environmentInformation?.migrationDisabled === false;
-
-            return migrationAllowedByDataSelection &&
-                migrationAllowedByEnvironment &&
-                !state.isLoading &&
-                getters.isPremappingValid &&
-                state.warningConfirmed;
-        },
-    },
-
-    actions: {
-        async init({ commit, dispatch }, forceFullStateReload = false) {
-            commit('setIsLoading', true);
-
-            const connectionIdChanged = await dispatch('fetchConnectionId');
-            await dispatch('fetchEnvironmentInformation'); // always get the latest environment information
+            const connectionIdChanged = await this.fetchConnectionId();
+            await this.fetchEnvironmentInformation(); // Always fetch latest environment info
 
             if (forceFullStateReload || connectionIdChanged) {
-                // first clear old user input
-                commit('setPremapping', []);
-                commit('setDataSelectionIds', []);
-                commit('setWarningConfirmed', false);
-                // then fetch new data
-                await dispatch('fetchDataSelectionIds');
+                // First, clear old user input
+                this.premapping = [];
+                this.dataSelectionIds = [];
+                this.warningConfirmed = false;
+
+                // Then fetch new data
+                await this.fetchDataSelectionIds();
             }
 
-            commit('setIsLoading', false);
+            this.isLoading = false;
         },
 
         /**
          * @returns {Promise<boolean>} whether the connection id has changed to a new valid one
          */
-        async fetchConnectionId({ state, commit, dispatch }) {
+        async fetchConnectionId() {
             try {
                 const criteria = new Criteria(1, 1);
                 const settings = await migrationGeneralSettingRepository.search(criteria, Shopware.Context.api);
+
                 if (settings.length === 0) {
                     return false;
                 }
 
-                const connectionId = settings.first().selectedConnectionId;
-                if (connectionId === state.connectionId) {
+                const newConnectionId = settings.first().selectedConnectionId;
+                if (newConnectionId === this.connectionId) {
                     return false;
                 }
 
-                commit('setConnectionId', connectionId);
+                this.connectionId = newConnectionId;
                 return true;
             } catch (e) {
-                await dispatch('notification/createNotification', {
-                    variant: 'error',
-                    title: Shopware.Snippet.tc('global.default.error'),
-                    message: Shopware.Snippet.tc('swag-migration.api-error.fetchConnectionId'),
-                }, { root: true });
-                commit('setConnectionId', null);
+                await this.createErrorNotification('swag-migration.api-error.fetchConnectionId');
+                this.connectionId = null;
                 return false;
             }
         },
 
-        async fetchEnvironmentInformation({ state, commit, dispatch }) {
-            commit('setEnvironmentInformation', {});
-            if (state.connectionId === null) {
+        async fetchEnvironmentInformation() {
+            this.environmentInformation = {};
+
+            if (this.connectionId === null) {
                 return;
             }
 
             try {
-                const connectionCheckResponse = await migrationApiService.checkConnection(state.connectionId);
-                commit('setEnvironmentInformation', connectionCheckResponse);
-                commit('setLastConnectionCheck', new Date());
+                this.environmentInformation = await migrationApiService.checkConnection(this.connectionId);
+                this.lastConnectionCheck = new Date();
             } catch (e) {
-                await dispatch('notification/createNotification', {
-                    variant: 'error',
-                    title: Shopware.Snippet.tc('global.default.error'),
-                    message: Shopware.Snippet.tc('swag-migration.api-error.checkConnection'),
-                }, { root: true });
+                await this.createErrorNotification('swag-migration.api-error.checkConnection');
             }
         },
 
-        async fetchDataSelectionIds({ state, commit, dispatch }) {
-            commit('setDataSelectionTableData', []);
-            if (state.connectionId === null) {
+        async fetchDataSelectionIds() {
+            this.dataSelectionTableData = [];
+
+            if (this.connectionId === null) {
                 return;
             }
 
             try {
-                const dataSelection = await migrationApiService.getDataSelection(state.connectionId);
-                commit('setDataSelectionTableData', dataSelection);
-                const selectedIds = dataSelection.filter(selection => selection.requiredSelection)
+                const dataSelection = await migrationApiService.getDataSelection(this.connectionId);
+                this.dataSelectionTableData = dataSelection;
+                this.dataSelectionIds = dataSelection.filter(selection => selection.requiredSelection)
                     .map(selection => selection.id);
-                commit('setDataSelectionIds', selectedIds);
             } catch (e) {
-                await dispatch('notification/createNotification', {
+                await this.createErrorNotification('swag-migration.api-error.getDataSelection');
+            }
+        },
+
+        async createErrorNotification(errorMessageKey) {
+            await this.$patch(() => {
+                // Assuming notification system exists
+                // Replace this with how notifications are handled in your system
+                Shopware.State.dispatch('notification/createNotification', {
                     variant: 'error',
                     title: Shopware.Snippet.tc('global.default.error'),
-                    message: Shopware.Snippet.tc('swag-migration.api-error.getDataSelection'),
-                }, { root: true });
-            }
+                    message: Shopware.Snippet.tc(errorMessageKey),
+                });
+            });
         },
     },
 };

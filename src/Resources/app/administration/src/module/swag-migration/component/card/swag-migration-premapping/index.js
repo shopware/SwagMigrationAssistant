@@ -1,8 +1,8 @@
 import template from './swag-migration-premapping.html.twig';
 import './swag-migration-premapping.scss';
 
-const { Component, State } = Shopware;
-const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
+const { Component, Store } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 const { debounce } = Shopware.Utils;
 
 /**
@@ -25,12 +25,9 @@ Component.register('swag-migration-premapping', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapState(() => Store.get('swagMigration'), [
             'premapping',
             'dataSelectionIds',
-        ]),
-
-        ...mapGetters('swagMigration', [
             'isPremappingValid',
         ]),
     },
@@ -43,15 +40,15 @@ Component.register('swag-migration-premapping', {
 
     methods: {
         fetchPremapping() {
-            State.commit('swagMigration/setIsLoading', true);
+            Store.get('swagMigration').setIsLoading(true);
             this.isLoading = true;
 
             return this.migrationApiService.generatePremapping(this.dataSelectionIds)
                 .then((premapping) => {
-                    State.commit('swagMigration/setPremapping', premapping);
+                    Store.get('swagMigration').setPremapping(premapping);
                     return this.savePremapping();
                 }).finally(() => {
-                    State.commit('swagMigration/setIsLoading', false);
+                    Store.get('swagMigration').setIsLoading(false);
                     this.isLoading = false;
                 });
         },
@@ -77,10 +74,10 @@ Component.register('swag-migration-premapping', {
         },
 
         onPremappingChanged() {
-            State.commit('swagMigration/setIsLoading', true);
+            Store.get('swagMigration').setIsLoading(true);
             debounce(async () => {
                 await this.savePremapping();
-                State.commit('swagMigration/setIsLoading', false);
+                Store.get('swagMigration').setIsLoading(false);
             }, 500)();
         },
     },

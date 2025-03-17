@@ -7,7 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\PromiseInterface;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
@@ -38,7 +38,7 @@ class HttpMediaDownloadService extends HttpDownloadServiceBase
         return new HttpSimpleClient();
     }
 
-    protected function httpRequest(HttpClientInterface $client, array $additionalData): Promise\PromiseInterface
+    protected function httpRequest(HttpClientInterface $client, array $additionalData): PromiseInterface
     {
         return $client->getAsync(
             $additionalData['uri'],

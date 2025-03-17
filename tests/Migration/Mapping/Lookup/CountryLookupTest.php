@@ -38,11 +38,11 @@ class CountryLookupTest extends TestCase
     }
 
     #[DataProvider('getIso3DatabaseData')]
-    public function testGetByIso2ShouldGetDataFromCache(string $iso2, ?string $expectedResult): void
+    public function testGetByIso2ShouldGetDataFromCache(string $iso3, ?string $expectedResult): void
     {
         $countryLookup = $this->getMockedCountryLookup();
 
-        static::assertSame($expectedResult, $countryLookup->getByIso3($iso2, Context::createDefaultContext()));
+        static::assertSame($expectedResult, $countryLookup->getByIso2($iso3, Context::createDefaultContext()));
     }
 
     #[DataProvider('getIso3DatabaseData')]

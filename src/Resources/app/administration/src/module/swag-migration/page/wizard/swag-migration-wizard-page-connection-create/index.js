@@ -16,6 +16,8 @@ Component.register('swag-migration-wizard-page-connection-create', {
         migrationApiService: 'migrationApiService',
     },
 
+    emits: ['onIsLoadingChanged', 'onProfileSelected', 'onChangeConnectionName', 'onChildRouteReadyChanged'],
+
     props: {
         connectionNameErrorCode: {
             type: String,

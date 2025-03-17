@@ -12,9 +12,9 @@ parameters:
         - tests/Jest
         - tests/acceptance
     symfony:
-        constant_hassers: false
+        constantHassers: false
         # the placeholder "%ShopwareHashedCacheDir%" will be replaced on execution by bin/phpstan-config-generator.php script
-        container_xml_path: '../../..%ShopwareHashedCacheDir%/%ShopwareKernelClass%DevDebugContainer.xml'
+        containerXmlPath: '../../..%ShopwareHashedCacheDir%/%ShopwareKernelClass%DevDebugContainer.xml'
         consoleApplicationLoader: %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/console-application.php
     type_perfect:
         narrow_return: true
@@ -43,37 +43,6 @@ parameters:
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
 
-        # ToDo: fix platform deprecations for v6.7.0.0
-        - message: """
-                #^Call to deprecated method getName\\(\\) of class Shopware\\\\Core\\\\System\\\\StateMachine\\\\Aggregation\\\\StateMachineState\\\\StateMachineStateEntity\\:
-                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Will also return null
-                return type will be \\?string in v6\\.7\\.0\\.0$#
-          """
-          paths:
-              - src/Profile/Shopware/Premapping/OrderDeliveryStateReader.php
-              - src/Profile/Shopware/Premapping/OrderStateReader.php
-              - src/Profile/Shopware/Premapping/TransactionStateReader.php
-        - message: """
-                #^Call to deprecated method getData\\(\\) of class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Indexing\\\\EntityIndexingMessage\\:
-                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Will return native type$#
-          """
-          paths:
-              - src/Migration/MessageQueue/OrderCountIndexer.php
-
-        - message: """
-                #^Fetching class constant class of deprecated class Shopware\\\\Core\\\\Checkout\\\\Payment\\\\Cart\\\\PaymentHandler\\\\CashPayment:
-                tag:v6.7.0 - reason:becomes-internal$#
-          """
-          paths:
-              - src/Profile/Shopware/Premapping/PaymentMethodReader.php
-              - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
-        - message: """
-                #^Call to deprecated method scope\\(\\) of class Shopware\\\\Core\\\\Framework\\\\Context\\:
-                tag\\:v6\\.7\\.0 \\- reason\\:return\\-type\\-change \\- Return type will be native$#
-          """
-        - message: '#^Call to deprecated method(.|\n)+tag:v6\.7\.0#'
-        - message: '#^Instantiation of deprecated class(.|\n)+tag:v6\.7\.0#'
-
 rules:
     # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
@@ -83,4 +52,4 @@ rules:
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DecorationPatternRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\PackageAnnotationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\DomainExceptionRule
-    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\NoAfterStatementRule
+    - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Migration\NoAfterStatementRule

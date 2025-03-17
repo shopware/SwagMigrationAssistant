@@ -105,7 +105,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
         $query = $connection->createQueryBuilder();
 
         $query->from('s_core_shops', 'shop');
-        $query->addSelect(['IFNULL(shop.main_id, shop.id) AS shopId', 'shop.category_id as categoryId']);
+        $query->addSelect('IFNULL(shop.main_id, shop.id) AS shopId', 'shop.category_id as categoryId');
 
         return $query->executeQuery()->fetchAllAssociative();
     }
@@ -195,7 +195,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
         // Just select subshop main categories and ignore language shops
         $connection = $this->getConnection($migrationContext);
         $query = $connection->createQueryBuilder();
-        $query->select(['seoCategory.article_id', 'seoCategory.shop_id as shopId', 'seoCategory.category_id as categoryId'])
+        $query->select('seoCategory.article_id', 'seoCategory.shop_id as shopId', 'seoCategory.category_id as categoryId')
             ->from('s_articles_categories_seo', 'seoCategory')
             ->join('seoCategory', 's_core_shops', 'shop', 'shop.id = seoCategory.shop_id')
             ->where('article_id IN (:ids)')
@@ -314,7 +314,7 @@ class ProductReader extends AbstractReader implements ReaderInterface
         $query->from('s_articles_categories', 'product_category');
 
         $query->leftJoin('product_category', 's_categories', 'category', 'category.id = product_category.categoryID');
-        $query->addSelect(['product_category.articleID', 'product_category.categoryID as id, category.path']);
+        $query->addSelect('product_category.articleID', 'product_category.categoryID as id, category.path');
 
         $query->where('product_category.articleID IN (:ids)');
         $query->setParameter('ids', $productIds, ArrayParameterType::INTEGER);

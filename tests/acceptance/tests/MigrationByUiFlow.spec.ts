@@ -15,10 +15,13 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     MediaProcessObserver,
 }) => {
     const page = MigrationUser.page;
-    await page.goto('/admin#/swag/migration/index/main');
+    await page.goto('/admin');
     await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
 
     await test.step('Discover that no connection is setup', async () => {
+        await expect(page.getByText('Open Migration Assistant')).toBeVisible();
+        await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
+
         await expect(page.getByText('No connection')).toBeVisible();
         await expect(page.getByRole('button', { name: 'Start migration' })).toBeDisabled();
         await expect(page.locator('.swag-migration-shop-information__connection-status')).toHaveText('Not connected');
@@ -54,7 +57,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     await test.step('Prepare the migration', async () => {
         await page.getByTitle('Data selection').click();
         await page.getByLabel('Yes, I would like to continue').check();
-        await page.locator('.sw-grid__cell-content').first().click();
+        await page.locator('.sw-grid__cell-content input').first().click();
 
         // wait for loading state to finish
         await expect(page.locator('.sw-loader-element')).toHaveCount(0);
@@ -67,12 +70,13 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             const tab = tabs.nth(i);
             await tab.click();
 
-            // go through each select input and select the first available option for each
-            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column select');
+            // go through each select input with error and select the first available option for each
+            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column .has--error .mt-select-selection-list__input');
+
             await premappingItems.evaluateAll(async list => {
                 for await (const item of list) {
-                    item.selectedIndex = 1;
-                    item.dispatchEvent(new Event('change'));
+                    await item.click();
+                    document.querySelector('.mt-select-result')?.click();
                     await new Promise(resolve => setTimeout(resolve, 150));
                 }
             });
@@ -94,7 +98,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             await expect(step).toHaveClass(/sw-step-item--success/, { timeout: 300_000 }); // 5 min. as really long timeout to wait for each step
         }
 
-        await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: MIGRATION_LOADING_TIMEOUT });
+        await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: 300_000 });
         await page.getByRole('button', { name: 'Back to overview' }).click();
     });
 

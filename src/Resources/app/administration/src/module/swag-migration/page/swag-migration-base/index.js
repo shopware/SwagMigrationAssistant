@@ -1,8 +1,8 @@
 import template from './swag-migration-base.html.twig';
 import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
 
-const { Component, State } = Shopware;
-const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
+const { Component, Store } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -30,16 +30,13 @@ Component.register('swag-migration-base', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapState(() => Store.get('swagMigration'), [
             'environmentInformation',
             'connectionId',
             'isLoading',
             'dataSelectionTableData',
+            'isMigrationAllowed',
         ]),
-
-        ...mapGetters({
-            isMigrationAllowed: 'swagMigration/isMigrationAllowed',
-        }),
     },
 
     created() {
@@ -69,13 +66,13 @@ Component.register('swag-migration-base', {
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-            await State.dispatch('swagMigration/init', forceFullStateReload);
+            await Store.get('swagMigration').init(forceFullStateReload);
             this.storesInitializing = false;
         },
 
         onMigrate() {
             // navigate to process screen
-            State.commit('swagMigration/setIsLoading', true);
+            Store.get('swagMigration').setIsLoading(true);
             this.$router.push({ name: 'swag.migration.processScreen' });
         },
     },

@@ -55,29 +55,29 @@ class DeliveryTimeLookupTest extends TestCase
     }
 
     /**
-     * @return array<int, array{min: int, max: int, unit: string, expectedResult: string|null}>
+     * @return array<int, array{minValue: int, maxValue: int, unit: string, expectedResult: string|null}>
      */
     public static function getData(): array
     {
         $returnData = self::getDatabaseData();
 
         $returnData[] = [
-            'min' => 0,
-            'max' => 1,
+            'minValue' => 0,
+            'maxValue' => 1,
             'unit' => 'Foo-Unit',
             'expectedResult' => null,
         ];
 
         $returnData[] = [
-            'min' => 2,
-            'max' => 3,
+            'minValue' => 2,
+            'maxValue' => 3,
             'unit' => 'Bar-Unit',
             'expectedResult' => null,
         ];
 
         $returnData[] = [
-            'min' => 4,
-            'max' => 5,
+            'minValue' => 4,
+            'maxValue' => 5,
             'unit' => 'Baz-Unit',
             'expectedResult' => null,
         ];
@@ -86,7 +86,7 @@ class DeliveryTimeLookupTest extends TestCase
     }
 
     /**
-     * @return list<array{min: int, max: int, unit: string, expectedResult: string}>
+     * @return list<array{minValue: int, maxValue: int, unit: string, expectedResult: string}>
      */
     public static function getDatabaseData(): array
     {
@@ -98,8 +98,8 @@ class DeliveryTimeLookupTest extends TestCase
             static::assertInstanceOf(DeliveryTimeEntity::class, $deliveryTime);
 
             $returnData[] = [
-                'min' => $deliveryTime->getMin(),
-                'max' => $deliveryTime->getMax(),
+                'minValue' => $deliveryTime->getMin(),
+                'maxValue' => $deliveryTime->getMax(),
                 'unit' => $deliveryTime->getUnit(),
                 'expectedResult' => $deliveryTime->getId(),
             ];
@@ -129,7 +129,7 @@ class DeliveryTimeLookupTest extends TestCase
         $databaseData = self::getDatabaseData();
         $cacheData = [];
         foreach ($databaseData as $data) {
-            $cacheData[\sprintf('%d-%d-%s', $data['min'], $data['max'], $data['unit'])] = $data['expectedResult'];
+            $cacheData[\sprintf('%d-%d-%s', $data['minValue'], $data['maxValue'], $data['unit'])] = $data['expectedResult'];
         }
 
         $reflectionProperty->setValue($deliveryTimeLookup, $cacheData);

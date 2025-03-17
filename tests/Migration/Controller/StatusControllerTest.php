@@ -181,7 +181,7 @@ class StatusControllerTest extends TestCase
                 static::getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo, new NullLogger()),
                 static::getContainer()->get(TrackingEventClient::class),
-                static::getContainer()->get('messenger.bus.shopware'),
+                static::getContainer()->get('messenger.default_bus'),
                 static::getContainer()->get(MigrationContextFactory::class),
                 static::getContainer()->get(PremappingService::class),
                 static::getContainer()->get(RunTransitionService::class),

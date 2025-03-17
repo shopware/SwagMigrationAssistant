@@ -10,6 +10,8 @@ const { Component, Mixin } = Shopware;
 Component.register('swag-migration-grid-selection', {
     template,
 
+    emits: ['update:value'],
+
     mixins: [
         Mixin.getByName('listing'),
     ],
@@ -31,12 +33,22 @@ Component.register('swag-migration-grid-selection', {
             disableRouteParams: true,
             limit: 10,
             paginationSteps: [10, 20, 30, 50],
+            selectOptions: [],
         };
     },
 
     watch: {
-        choices() {
-            this.getList();
+        choices: {
+            handler(newChoices) {
+                if (!newChoices) return;
+
+                this.selectOptions = newChoices.map((choice) => ({
+                    label: choice.description,
+                    value: choice.uuid,
+                }));
+            },
+            deep: true,
+            immediate: true,
         },
         mapping() {
             this.getList();

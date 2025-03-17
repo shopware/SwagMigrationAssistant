@@ -59,7 +59,7 @@ class CleanUpProcessor extends AbstractProcessor
         SwagMigrationRunEntity $run,
         MigrationProgress $progress,
     ): void {
-        $deleteCount = $this->removeMigrationData();
+        $deleteCount = (int) $this->removeMigrationData();
 
         if ($deleteCount <= 0) {
             $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::INDEXING);
@@ -69,7 +69,7 @@ class CleanUpProcessor extends AbstractProcessor
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
-    private function removeMigrationData(): int
+    private function removeMigrationData(): int|string
     {
         return (new QueryBuilder($this->dbalConnection))
             ->delete(SwagMigrationDataDefinition::ENTITY_NAME)

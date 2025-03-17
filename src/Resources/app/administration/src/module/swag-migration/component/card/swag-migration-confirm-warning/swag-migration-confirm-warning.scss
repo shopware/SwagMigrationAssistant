@@ -42,15 +42,15 @@
         padding-bottom: 32px;
     }
 
-    .swag-migration-confirm-warning__checkbox .sw-field--checkbox__content {
+    .swag-migration-confirm-warning__checkbox .mt-field--checkbox__content {
         display: flex;
         justify-content: center;
 
-        .sw-field {
+        .mt-field {
             width: auto;
         }
 
-        .sw-field__label label {
+        .mt-field__label label {
             flex-grow: 0;
         }
     }

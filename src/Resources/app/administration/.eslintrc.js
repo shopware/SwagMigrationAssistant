@@ -183,13 +183,10 @@ module.exports = {
                 'vue/attributes-order': 'error',
                 'vue/no-deprecated-slot-attribute': ['error'],
                 'vue/no-deprecated-slot-scope-attribute': ['error'],
-                'sw-deprecation-rules/no-twigjs-blocks': 'error',
                 // eslint-disable-next-line no-warning-comments
-                // ToDo MIG-987: activate this two rules again
-                // @deprecated v.6.7.0.0 - will be error in v.6.7
-                'sw-deprecation-rules/no-deprecated-components': 'off', // ['warn', 'disableFix'],
-                // @deprecated v.6.7.0.0 - will be error in v.6.7
-                'sw-deprecation-rules/no-deprecated-component-usage': 'off', // ['warn', 'disableFix'],
+                // TODO: Make this error when all components are migrated to meteor
+                'sw-deprecation-rules/no-deprecated-components': ['warn'],
+                'sw-deprecation-rules/no-deprecated-component-usage': ['warn'],
                 'vue/no-useless-template-attributes': 'error',
                 'vue/no-lone-template': 'error',
 

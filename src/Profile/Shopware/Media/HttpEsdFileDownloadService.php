@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\Connection;
-use GuzzleHttp\Promise;
+use GuzzleHttp\Promise\PromiseInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
@@ -63,7 +63,7 @@ class HttpEsdFileDownloadService extends HttpDownloadServiceBase
         return $this->connectionFactory->createApiClient($migrationContext);
     }
 
-    protected function httpRequest(HttpClientInterface $client, array $additionalData): Promise\PromiseInterface
+    protected function httpRequest(HttpClientInterface $client, array $additionalData): PromiseInterface
     {
         return $client->getAsync(
             self::API_ENDPOINT . \base64_encode($additionalData['uri']),

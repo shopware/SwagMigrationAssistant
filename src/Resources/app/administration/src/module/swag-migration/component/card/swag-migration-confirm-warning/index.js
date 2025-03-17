@@ -1,7 +1,7 @@
 import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
-const { Component, State } = Shopware;
+const { Component, Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
 /**
@@ -19,7 +19,7 @@ Component.register('swag-migration-confirm-warning', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapState(() => Store.get('swagMigration'), [
             'environmentInformation',
         ]),
 
@@ -63,7 +63,7 @@ Component.register('swag-migration-confirm-warning', {
         },
 
         onCheckboxValueChanged() {
-            State.commit('swagMigration/setWarningConfirmed', this.isContinuable);
+            Store.get('swagMigration').setWarningConfirmed(this.isContinuable);
         },
     },
 });

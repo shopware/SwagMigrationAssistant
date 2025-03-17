@@ -20,24 +20,13 @@
                                         :label="$tc('swag-migration.index.premappingCard.newAssignmentTitle')">
 
                             {% block swag_migration_grid_selection_grid_column_choice_field %}
-                                <sw-select-field
-                                    v-model:value="item.destinationUuid"
+                                <mt-select
+                                    v-model="item.destinationUuid"
                                     class="swag-migration-grid-selection__choice-field"
                                     :class="getClassesAfterValidation(item)"
-                                    @update:value="onInput"
-                                >
-                                    <option
-                                        class="sw-field--select__placeholder-option"
-                                        :value="''"
-                                    >
-                                        {{ $tc('swag-migration.index.premappingCard.placeholder') }}
-                                    </option>
-                                    <option v-for="choice in choices"
-                                            :key="choice.uuid"
-                                            :value="choice.uuid">
-                                        {{ choice.description }}
-                                    </option>
-                                </sw-select-field>
+                                    :options="selectOptions"
+                                    @update:model-value="onInput"
+                                />
                             {% endblock %}
                         </sw-grid-column>
                     {% endblock %}

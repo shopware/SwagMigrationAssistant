@@ -51,11 +51,11 @@ class LanguageLookupTest extends TestCase
     }
 
     #[DataProvider('getDatabaseData')]
-    public function testGetShouldGetDataFromCache(string $technicalName, ?string $expectedResult): void
+    public function testGetShouldGetDataFromCache(string $localeCode, ?string $expectedResult): void
     {
         $documentTypeLookup = $this->getMockedLanguageLookup();
 
-        static::assertSame($expectedResult, $documentTypeLookup->get($technicalName, Context::createDefaultContext()));
+        static::assertSame($expectedResult, $documentTypeLookup->get($localeCode, Context::createDefaultContext()));
     }
 
     #[DataProvider('getLanguageIdData')]

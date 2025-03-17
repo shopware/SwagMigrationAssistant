@@ -1,19 +1,23 @@
-import originalStore from 'SwagMigrationAssistant/core/data/migration.store';
+import MigrationStore from 'SwagMigrationAssistant/core/data/migration.store';
 
-const { cloneDeep } = Shopware.Utils.object;
+const { Store } = Shopware;
+
+Store.register('swagMigration', MigrationStore);
 
 describe('core/data/migration.store', () => {
-    it('Empty premapping should be valid', async () => {
-        const store = cloneDeep(originalStore);
+    const store = Store.get('swagMigration');
 
-        expect(store.state.premapping).toStrictEqual([]);
-        expect(store.getters.isPremappingValid(store.state)).toBe(true);
+    beforeEach(() => {
+        store.$reset();
+    });
+
+    it('Empty premapping should be valid', async () => {
+        expect(store.premapping).toStrictEqual([]);
+        expect(store.isPremappingValid).toBe(true);
     });
 
     it('Premapping with missing assignment should be invalid', async () => {
-        const store = cloneDeep(originalStore);
-
-        store.mutations.setPremapping(store.state, [
+        store.setPremapping([
             {
                 entity: 'payment_method',
                 choices: [
@@ -41,14 +45,12 @@ describe('core/data/migration.store', () => {
             },
         ]);
 
-        expect(store.getters.isPremappingValid(store.state)).toBe(false);
+        expect(store.isPremappingValid).toBe(false);
     });
 
     it('setPremapping should only add mappings and not remove any', async () => {
-        const store = cloneDeep(originalStore);
-
         // initial set of premapping, e.g. first received by generate-premapping backend call
-        store.mutations.setPremapping(store.state, [
+        store.setPremapping([
             {
                 entity: 'payment_method',
                 choices: [
@@ -68,7 +70,7 @@ describe('core/data/migration.store', () => {
         ]);
 
         // second set of premapping, e.g. by second generate-premapping backend call after the data selection changed
-        store.mutations.setPremapping(store.state, [
+        store.setPremapping([
             {
                 entity: 'payment_method',
                 choices: [
@@ -97,7 +99,7 @@ describe('core/data/migration.store', () => {
         ]);
 
         // compare final state
-        expect(store.state.premapping).toStrictEqual([
+        expect(store.premapping).toStrictEqual([
             {
                 entity: 'payment_method',
                 choices: [

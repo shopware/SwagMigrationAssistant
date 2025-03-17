@@ -1,8 +1,8 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
 
-const { Component, Mixin, State } = Shopware;
-const { mapState, mapGetters } = Shopware.Component.getComponentHelper();
+const { Component, Mixin, Store } = Shopware;
+const { mapState } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
 
@@ -55,13 +55,10 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
-        ...mapState('swagMigration', [
+        ...mapState(() => Store.get('swagMigration'), [
             'connectionId',
             'environmentInformation',
             'lastConnectionCheck',
-        ]),
-
-        ...mapGetters([
             'adminLocaleLanguage',
             'adminLocaleRegion',
         ]),
@@ -333,7 +330,7 @@ Component.register('swag-migration-shop-information', {
         },
 
         onClickRefreshConnection() {
-            return State.dispatch('swagMigration/init', true);
+            return Store.get('swagMigration').init(true);
         },
     },
 });

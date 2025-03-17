@@ -159,6 +159,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
+        $converted['technicalName'] = 'migrated_' . $data['id'];
+
         $this->addShippingMethodTranslation($converted, $data);
         $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
         $this->convertValue($converted, 'name', $data, 'name');

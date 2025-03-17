@@ -1,7 +1,7 @@
 {
     "name": "swag/migration-assistant",
     "description": "Migration plugin for shopware/platform",
-    "version": "14.1.0",
+    "version": "15.0.0",
     "type": "shopware-platform-plugin",
     "license": "MIT",
     "authors": [
@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "shopware/core": "~6.6.1"
+        "shopware/core": "~6.7"
     },
     "extra": {
         "shopware-plugin-class": "SwagMigrationAssistant\\SwagMigrationAssistant",

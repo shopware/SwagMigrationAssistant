@@ -1,22 +1,23 @@
 {% block swag_migration_shop_information %}
-    <sw-card
+    <mt-card
         class="swag-migration-shop-information"
         :title="$tc('swag-migration.index.shopInfoCard.cardTitle')"
         position-identifier="swag-migration-shop-information"
     >
         <template #header-right>
-            <sw-button
+            <mt-button
                 v-tooltip="{ message: $tc('swag-migration.index.shopInfoCard.refreshTooltip') }"
                 class="swag-migration-shop-information__refresh-connection"
                 size="x-small"
                 square
+                variant="secondary"
                 @click="onClickRefreshConnection"
             >
-                <sw-icon
+                <mt-icon
                     name="regular-redo-s"
-                    small
+                    size="16px"
                 />
-            </sw-button>
+            </mt-button>
         </template>
 
         {% block swag_migration_shop_information_content %}
@@ -57,11 +58,11 @@
                                                  class="swag-migration-shop-information__shop-domain">
                                                 <span class="swag-migration-shop-information__shop-domain-prefix"
                                                       :class="shopUrlPrefixClass">
-                                                    <sw-icon v-if="sslActive"
+                                                    <mt-icon v-if="sslActive"
                                                              class="swag-migration-shop-information__shop-domain-prefix-icon"
                                                              name="regular-lock"
                                                              size="12px" />
-                                                    <sw-icon v-else
+                                                    <mt-icon v-else
                                                              class="swag-migration-shop-information__shop-domain-prefix-icon"
                                                              name="regular-lock-open-s"
                                                              size="12px" />
@@ -74,27 +75,30 @@
 
                                                 {% block swag_migration_shop_information_actions_editSettings %}
                                                     <template v-if="!connection">
-                                                        <sw-button size="small"
+                                                        <mt-button size="small"
+                                                                   variant="secondary"
                                                                    @click="onClickCreateInitialConnection">
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonCreateInitialConnection') }}
-                                                        </sw-button>
+                                                        </mt-button>
                                                     </template>
                                                     <template v-else>
-                                                        <sw-button size="small"
+                                                        <mt-button size="small"
+                                                                   variant="secondary"
                                                                    @click="onClickEditConnectionCredentials">
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
-                                                        </sw-button>
+                                                        </mt-button>
                                                     </template>
                                                 {% endblock %}
 
                                                 {% block swag_migration_shop_information_actions_contextMenu %}
                                                     <sw-context-button v-if="connection">
                                                         <template #button>
-                                                            <sw-button size="small"
-                                                                       square>
-                                                                <sw-icon name="solid-ellipsis-h-s"
-                                                                         small />
-                                                            </sw-button>
+                                                            <mt-button size="small"
+                                                                       variant="secondary"
+                                                                       square
+                                                            >
+                                                                <mt-icon name="solid-ellipsis-h-s" />
+                                                            </mt-button>
                                                         </template>
 
                                                         {% block swag_migration_shop_information_actions_createConnectionItem %}
@@ -250,20 +254,21 @@
                             <template #modal-footer>
 
                                 {% block swag_migration_shop_information_remove_credentials_confirm_modal_abort %}
-                                    <sw-button size="small"
+                                    <mt-button size="small"
+                                               variant="secondary"
                                                :disabled="confirmModalIsLoading"
                                                @click="showRemoveCredentialsConfirmModal = false">
                                         {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.abortButtonText') }}
-                                    </sw-button>
+                                    </mt-button>
                                 {% endblock %}
 
                                 {% block swag_migration_shop_information_remove_credentials_confirm_modal_confirm %}
-                                    <sw-button size="small"
+                                    <mt-button size="small"
                                                variant="primary"
                                                :disabled="confirmModalIsLoading"
                                                @click="onClickRemoveConnectionCredentials">
                                         {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.confirmButtonText') }}
-                                    </sw-button>
+                                    </mt-button>
                                 {% endblock %}
                             </template>
                         {% endblock %}
@@ -294,20 +299,21 @@
                             <template #modal-footer>
 
                                 {% block swag_migration_shop_information_reset_checksums_confirm_modal_abort %}
-                                    <sw-button size="small"
+                                    <mt-button size="small"
+                                               variant="secondary"
                                                :disabled="confirmModalIsLoading"
                                                @click="showResetChecksumsConfirmModal = false">
                                         {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.abortButtonText') }}
-                                    </sw-button>
+                                    </mt-button>
                                 {% endblock %}
 
                                 {% block swag_migration_shop_information_reset_checksums_confirm_modal_confirm %}
-                                    <sw-button size="small"
+                                    <mt-button size="small"
                                                variant="primary"
                                                :disabled="confirmModalIsLoading"
                                                @click="onClickResetChecksums">
                                         {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.confirmButtonText') }}
-                                    </sw-button>
+                                    </mt-button>
                                 {% endblock %}
                             </template>
                         {% endblock %}
@@ -323,7 +329,7 @@
 
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_icon %}
                             <div class="swag-migration-shop-information__reset-confirm-modal-icon-wrapper">
-                                <sw-icon class="swag-migration-shop-information__confirm-modal-icon"
+                                <mt-icon class="swag-migration-shop-information__confirm-modal-icon"
                                          name="regular-trophy"
                                          color="#37D046"
                                          size="40" />
@@ -352,20 +358,21 @@
                         <template #modal-footer>
 
                             {% block swag_migration_shop_information_reset_migration_confirm_modal_abort %}
-                                <sw-button size="small"
+                                <mt-button size="small"
+                                           variant="secondary"
                                            :disabled="confirmModalIsLoading"
                                            @click="onCloseResetModal">
                                     {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.abortButtonText') }}
-                                </sw-button>
+                                </mt-button>
                             {% endblock %}
 
                             {% block swag_migration_shop_information_reset_migration_confirm_modal_confirm %}
-                                <sw-button size="small"
+                                <mt-button size="small"
                                            variant="primary"
                                            :disabled="confirmModalIsLoading"
                                            @click="onClickResetMigration">
                                     {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.confirmButtonText') }}
-                                </sw-button>
+                                </mt-button>
                             {% endblock %}
                         </template>
                         {% endblock %}
@@ -373,5 +380,5 @@
                 {% endblock %}
             </template>
         {% endblock %}
-    </sw-card>
+    </mt-card>
 {% endblock %}
