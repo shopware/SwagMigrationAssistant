@@ -9,15 +9,18 @@ on:
 
 jobs:
   danger:
+    name: Danger Check
     runs-on: ubuntu-latest
-    if: ${{ !github.event.act }}
+    if: github.event_name == 'pull_request'
     steps:
-      - name: Clone
-        uses: actions/checkout@v1
-
-      - name: Danger
-        uses: shyim/danger-php@0.3.4
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+      - name: Run Danger PHP
+        uses: docker://ghcr.io/shyim/danger-php:latest
+        with:
+          args: ci
         env:
+          GITHUB_REPOSITORY: ${{ github.repository }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GITHUB_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
 
