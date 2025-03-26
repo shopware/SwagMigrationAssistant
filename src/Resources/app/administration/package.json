@@ -26,6 +26,7 @@
     "@babel/preset-typescript": "^7.24.1",
     "@babel/register": "^7.23.7",
     "@shopware-ag/eslint-config-base": "^2.0.0",
+    "@shopware-ag/stylelint-plugin-meteor": "^1.0.0",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
     "babel-jest": "^29.7.0",
