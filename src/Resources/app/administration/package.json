@@ -46,6 +46,7 @@
     "eslint-plugin-sw-test-rules": "file:../../../../../../../src/Administration/Resources/app/administration/eslint-rules/test-rules",
     "eslint-plugin-twig-vue": "file:../../../../../../../src/Administration/Resources/app/administration/twigVuePlugin",
     "eslint-plugin-vue": "^9.26.0",
-    "eslint-plugin-vuejs-accessibility": "^2.3.0"
+    "eslint-plugin-vuejs-accessibility": "^2.3.0",
+    "stylelint": "^16.16.0"
   }
 }
