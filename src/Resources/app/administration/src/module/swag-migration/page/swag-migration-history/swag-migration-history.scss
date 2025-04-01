@@ -30,7 +30,7 @@
 
 .swag-migration-history__run-clear-confirm-modal {
     .sw-modal__body {
-        padding: 32px;
+        padding: var(--scale-size-32);
     }
 
     .swag-migration-history__run-clear-confirm-modal-content {
@@ -39,7 +39,7 @@
 
     .swag-migration-history__run-clear-confirm-modal-content-hint {
         text-align: center;
-        padding-top: 32px;
+        padding-top: var(--scale-size-32);
         font-weight: 600;
     }
 }

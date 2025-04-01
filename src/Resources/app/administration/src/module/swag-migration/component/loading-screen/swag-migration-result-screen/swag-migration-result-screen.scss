@@ -13,7 +13,7 @@
     }
 
     .swag-migration-result-screen__caption {
-        margin: 0 135px 24px 135px;
+        margin: 0 135px var(--scale-size-24) 135px;
         font-size: $font-size-xxs;
         color: $color-darkgray-200;
     }
@@ -26,10 +26,10 @@
     }
 
     .swag-migration-result-screen__bubble {
-        margin: 12px auto 20px auto;
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
+        margin: var(--scale-size-12) auto var(--scale-size-20) auto;
+        width: var(--scale-size-72);
+        height: var(--scale-size-72);
+        border-radius: var(--border-radius-round);
         background-color: $color-emerald-50;
         flex-shrink: 0;
         display: flex;
@@ -59,7 +59,7 @@
     }
 
     .swag-migration-result-survey__caption {
-        margin: 10px 60px 24px 60px;
+        margin: var(--scale-size-10) 60px var(--scale-size-24) 60px;
         font-size: $font-size-xxs;
         color: $color-darkgray-200;
     }
@@ -69,7 +69,7 @@
     }
 
     .swag-migration-result-survey__icon {
-        margin-top: 12px;
-        width: 22px;
+        margin-top: var(--scale-size-12);
+        width: var(--scale-size-22);
     }
 }

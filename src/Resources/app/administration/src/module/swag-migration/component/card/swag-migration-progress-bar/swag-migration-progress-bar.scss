@@ -8,7 +8,7 @@
   }
 
   .swag-migration-progress-bar__progress-bar {
-    margin-top: 12px;
+    margin-top: var(--scale-size-12);
   }
 
   .mt-progress-bar__progress-label {
@@ -16,9 +16,9 @@
   }
 
   .swag-migration-progress-bar__bubble {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
+    width: var(--scale-size-32);
+    height: var(--scale-size-32);
+    border-radius: var(--border-radius-round);
     flex-shrink: 0;
     display: flex;
     align-items: center;
@@ -30,7 +30,7 @@
     display:flex;
     flex-direction: column;
     align-items: center;
-    top: 30px;
+    top: var(--scale-size-30);
     font-size: 14px;
     font-weight: 600;
   }
@@ -64,7 +64,7 @@
   }
 
   .swag-migration-progress-bar__caption {
-    margin-top: 12px;
+    margin-top: var(--scale-size-12);
     font-size: 14px;
     text-align: center;
   }

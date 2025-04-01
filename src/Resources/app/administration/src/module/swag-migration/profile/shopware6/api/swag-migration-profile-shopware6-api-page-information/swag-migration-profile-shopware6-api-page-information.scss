@@ -4,28 +4,28 @@
     .swag-migration-profile-shopware6-api-page-information__icon {
         pointer-events: none;
         display: inline-block;
-        margin-bottom: 16px;
+        margin-bottom: var(--scale-size-16);
 
         .sw-settings-item__icon {
             margin: 0;
-            padding: 12px;
-            border-radius: $border-radius-default;
+            padding: var(--scale-size-12);
+            border-radius: var(--border-radius-xs);
             background-color: $color-neutrals-slate-100;
         }
     }
 
     .swag-migration-profile-shopware6-api-page-information__card {
         border: 1px solid $color-gray-300;
-        border-radius: $border-radius-lg;
-        padding: 16px;
-        margin-bottom: 24px;
+        border-radius: var(--border-radius-m);
+        padding: var(--scale-size-16);
+        margin-bottom: var(--scale-size-24);
 
         .information__header {
             margin-bottom: 0;
         }
 
         .swag-migration-wizard__link {
-            margin-top: 12px;
+            margin-top: var(--scale-size-12);
         }
     }
 }

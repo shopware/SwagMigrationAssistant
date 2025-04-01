@@ -2,15 +2,15 @@
     .swag-migration-process-screen__step-display {
         position: absolute;
         padding-right: 50px;
-        top: 40px;
+        top: var(--scale-size-40);
         left: calc(50% - 450px);
         transform: translate(-100%, 0);
 
         @media screen and (max-width: 1600px) {
             position: static;
             transform: none;
-            padding: 0 0 10px 0;
-            margin: 13px 0 16px 0;
+            padding: 0 0 var(--scale-size-10) 0;
+            margin: 13px 0 var(--scale-size-16) 0;
             text-align: center;
 
             .sw-step-item {
@@ -30,7 +30,7 @@
                 .sw-step-item__description {
                     white-space: nowrap;
                     padding-left: 0;
-                    padding-top: 10px;
+                    padding-top: var(--scale-size-10);
                 }
             }
         }
@@ -62,7 +62,7 @@
 
     .sw-card {
         .sw-card__title {
-            margin-bottom: 12px;
+            margin-bottom: var(--scale-size-12);
             font-size: 18px;
             line-height: 24px;
 
@@ -78,7 +78,7 @@
 .swag-migration-index-modal-abort-migration-confirm-dialog {
 
     .sw-modal__body {
-        padding: 32px;
+        padding: var(--scale-size-32);
     }
 
     .swag-migration-index-modal-abort-migration-confirm-dialog-content {
@@ -88,6 +88,6 @@
     .swag-migration-index-modal-abort-migration-confirm-dialog-hint {
         text-align: center;
         font-weight: 600;
-        padding-top: 32px;
+        padding-top: var(--scale-size-32);
     }
 }

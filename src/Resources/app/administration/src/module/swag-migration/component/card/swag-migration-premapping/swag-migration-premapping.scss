@@ -7,10 +7,10 @@
     }
 
     .swag-migration-premapping__success-bubble {
-        margin: 12px auto 20px auto;
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
+        margin: var(--scale-size-12) auto var(--scale-size-20) auto;
+        width: var(--scale-size-72);
+        height: var(--scale-size-72);
+        border-radius: var(--border-radius-round);
         background-color: $color-emerald-50;
         flex-shrink: 0;
         display: flex;
@@ -51,7 +51,7 @@
 
     .sw-loader.swag-migration-premapping__loader {
         position: relative;
-        margin: 12px auto 42px auto;
+        margin: var(--scale-size-12) auto 42px auto;
 
         .sw-loader__container {
             transform: translate(-50%);
@@ -69,11 +69,11 @@
     }
 
     .swag-migration-premapping__filled-tab-card {
-        margin-top: 40px;
+        margin-top: var(--scale-size-40);
     }
 
     .swag-migration-premapping__unfilled-card {
-        margin-top: 40px;
+        margin-top: var(--scale-size-40);
         text-align: center;
         font-size: 14px;
     }
@@ -81,13 +81,13 @@
     .swag-migration-premapping__unfilled-title {
         font-size: 18px;
         font-weight: 600;
-        margin-top: 10px;
+        margin-top: var(--scale-size-10);
         margin-bottom: 5px;
     }
 
     .swag-migration-premapping__unfilled-caption {
         color: $color-gray-500;
-        margin-bottom: 10px;
+        margin-bottom: var(--scale-size-10);
     }
 
     .swag-migration-premapping__tab-card {

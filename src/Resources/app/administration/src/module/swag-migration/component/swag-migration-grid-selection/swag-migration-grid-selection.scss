@@ -2,7 +2,7 @@
     .swag-migration-grid-selection__choice-column {
         .sw-grid__cell-content {
             justify-content: normal;
-            padding: 0 8px;
+            padding: 0 var(--scale-size-8);
         }
     }
 }
