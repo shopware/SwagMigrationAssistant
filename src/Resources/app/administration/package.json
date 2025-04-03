@@ -8,7 +8,8 @@
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue,.html,.html.twig .",
     "lint-fix": "npm run lint -- --fix",
-    "lint:css": "stylelint ./**/*.scss"
+    "lint:scss": "stylelint ./**/*.scss",
+    "lint:scss-fix": "npm run lint:scss -- --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
