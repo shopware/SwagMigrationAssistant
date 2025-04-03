@@ -23,13 +23,13 @@
         margin: 0 10% 0 10%;
 
         .sw-progress-bar {
-            padding: 0 10px 0 10px;
+            padding: 0 var(--scale-size-10) 0 var(--scale-size-10);
         }
     }
 
     .swag-migration-loading-screen__progress-bar-title {
         text-align: center;
-        margin: 15px auto 10px auto;
+        margin: 15px auto var(--scale-size-10) auto;
         font-size: $font-size-xxs;
     }
 
@@ -52,7 +52,7 @@
         position: absolute;
         display: block;
         left: 15px;
-        top: 14px;
+        top: var(--scale-size-14);
     }
 
     .swag-migration-loading-screen__notice {

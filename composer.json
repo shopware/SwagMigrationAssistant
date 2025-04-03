@@ -62,12 +62,17 @@
         "admin:lint": [
             "@npm:jest run lint",
             "@npm:admin run lint",
-            "@npm:acceptance run lint"
+            "@npm:acceptance run lint",
+            "@npm:admin run lint:scss"
         ],
         "admin:lint:fix": [
             "@npm:jest run lint-fix",
             "@npm:admin run lint-fix",
-            "@npm:acceptance run lint-fix"
+            "@npm:acceptance run lint-fix",
+            "@npm:admin run lint:scss-fix"
+        ],
+        "admin:lint:scss": [
+            "@npm:admin run lint:scss"
         ],
         "admin:unit": "@npm:jest run unit",
         "admin:unit:watch": "@npm:jest run unit-watch",

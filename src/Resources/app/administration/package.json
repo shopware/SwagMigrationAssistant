@@ -7,7 +7,9 @@
   "license": "MIT",
   "scripts": {
     "lint": "eslint --ext .js,.ts,.vue,.html,.html.twig .",
-    "lint-fix": "npm run lint -- --fix"
+    "lint-fix": "npm run lint -- --fix",
+    "lint:scss": "stylelint ./**/*.scss",
+    "lint:scss-fix": "npm run lint:scss -- --fix"
   },
   "devDependencies": {
     "@babel/core": "^7.24.5",
@@ -26,6 +28,7 @@
     "@babel/preset-typescript": "^7.24.1",
     "@babel/register": "^7.23.7",
     "@shopware-ag/eslint-config-base": "^2.0.0",
+    "@shopware-ag/stylelint-plugin-meteor": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
     "babel-jest": "^29.7.0",
@@ -46,6 +49,8 @@
     "eslint-plugin-sw-test-rules": "file:../../../../../../../src/Administration/Resources/app/administration/eslint-rules/test-rules",
     "eslint-plugin-twig-vue": "file:../../../../../../../src/Administration/Resources/app/administration/twigVuePlugin",
     "eslint-plugin-vue": "^9.26.0",
-    "eslint-plugin-vuejs-accessibility": "^2.3.0"
+    "eslint-plugin-vuejs-accessibility": "^2.3.0",
+    "stylelint": "^16.16.0",
+    "stylelint-define-config": "^16.15.0"
   }
 }

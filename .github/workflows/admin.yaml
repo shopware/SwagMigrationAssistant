@@ -35,6 +35,28 @@ jobs:
           composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
           composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint
 
+  stylelint:
+    name: Stylelint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: shopware/github-actions/setup-extension@main
+        with:
+          extensionName: ${{ github.event.repository.name }}
+          install: true
+          install-admin: true
+          install-storefront: false
+          extraRepositories: |
+            {
+              "${{ github.event.repository.name }}": {
+                "type": "path",
+                "url": "custom/plugins/${{ github.event.repository.name }}",
+                "symlink": true
+              }
+            }
+      - run: |
+          composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
+          composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint:scss
+
   jest:
     name: Jest
     runs-on: ubuntu-latest

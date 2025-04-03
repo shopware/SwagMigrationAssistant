@@ -7,10 +7,10 @@
     }
 
     .swag-migration-confirm-warning__bubble {
-        margin: 12px auto 20px auto;
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
+        margin: var(--scale-size-12) auto var(--scale-size-20) auto;
+        width: var(--scale-size-72);
+        height: var(--scale-size-72);
+        border-radius: var(--border-radius-round);
         background-color: $color-pumpkin-spice-50;
         flex-shrink: 0;
         display: flex;
@@ -34,12 +34,12 @@
     }
 
     .swag-migration-confirm-warning__text {
-        padding-bottom: 24px;
+        padding-bottom: var(--scale-size-24);
     }
 
     .swag-migration-confirm-warning__question {
         font-weight: 600;
-        padding-bottom: 32px;
+        padding-bottom: var(--scale-size-32);
     }
 
     .swag-migration-confirm-warning__checkbox .mt-field--checkbox__content {

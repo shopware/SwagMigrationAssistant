@@ -9,7 +9,7 @@
 
     .swag-migration-wizard__content {
         max-width: 520px;
-        margin: 8px auto 60px auto;
+        margin: var(--scale-size-8) auto 60px auto;
     }
 
     .swag-migration-wizard__content-information {
@@ -17,11 +17,11 @@
     }
 
     h3.swag-migration-wizard__information-header {
-        margin-bottom: 12px;
+        margin-bottom: var(--scale-size-12);
     }
 
     .swag-migration-wizard__link {
-        margin-top: 20px;
+        margin-top: var(--scale-size-20);
 
         a {
             font-weight: 600;
@@ -32,18 +32,18 @@
 
     .swag-migration-wizard__illustration {
         width: 219px;
-        margin-bottom: 40px;
+        margin-bottom: var(--scale-size-40);
     }
 
     .swag-migration-wizard__plugin {
         width: 84px;
-        margin-bottom: 24px;
-        margin-top: 10px;
+        margin-bottom: var(--scale-size-24);
+        margin-top: var(--scale-size-10);
     }
 
     .swag-migration-wizard__form {
         width: 80%;
-        margin: 40px auto 30px auto;
+        margin: var(--scale-size-40) auto var(--scale-size-30) auto;
     }
 
     &.sw-modal {
@@ -69,10 +69,10 @@
     }
 
     .swag-migration-wizard__bubble {
-        margin: 4px auto 20px auto;
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
+        margin: var(--scale-size-4) auto var(--scale-size-20) auto;
+        width: var(--scale-size-72);
+        height: var(--scale-size-72);
+        border-radius: var(--border-radius-round);
         background-color: $color-emerald-50;
         flex-shrink: 0;
         display: flex;

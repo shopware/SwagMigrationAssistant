@@ -2,7 +2,7 @@
 
 .swag-migration-dashboard-card {
     .sw-card__content {
-        margin-top: 24px;
+        margin-top: var(--scale-size-24);
     }
 
     .swag-migration-dashboard-card__title {
@@ -12,14 +12,14 @@
     .swag-migration-dashboard-card__headline {
         font-size: $font-size-m;
         font-weight: 600;
-        margin-bottom: 10px;
+        margin-bottom: var(--scale-size-10);
     }
 
     .swag-migration-dashboard-card__information {
         font-size: $font-size-xxs;
         font-weight: normal;
         width: 440px;
-        margin-bottom: 26px;
+        margin-bottom: var(--scale-size-26);
         line-height: 22px;
     }
 

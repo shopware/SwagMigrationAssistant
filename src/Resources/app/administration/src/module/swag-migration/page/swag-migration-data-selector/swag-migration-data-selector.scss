@@ -3,7 +3,7 @@
 .swag-migration-data-selector {
     .swag-migration-data-selector__warning {
         max-width: 800px;
-        margin: 0 auto 40px auto;
+        margin: 0 auto var(--scale-size-40) auto;
         color: $color-darkgray-200;
 
         @media screen and (max-width: 1360px) {
@@ -14,7 +14,7 @@
     .swag-migration-index-data-selector__tou {
         font-size: $font-size-xxs;
         display: block;
-        margin: 20px 38px 20px 38px;
+        margin: var(--scale-size-20) 38px var(--scale-size-20) 38px;
     }
 
     .swag-migration-index-data-selector__no-data {
@@ -40,8 +40,8 @@
     }
 
     .swag-migration-data-selector__help-text-placeholder {
-        width: 14px;
-        height: 14px;
+        width: var(--scale-size-14);
+        height: var(--scale-size-14);
         margin-left: 5px;
     }
 

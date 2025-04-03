@@ -3,7 +3,7 @@
 .swag-migration-index-main-page {
     .swag-migration-index-main-page__warning {
         max-width: 800px;
-        margin: 0 auto 40px auto;
+        margin: 0 auto var(--scale-size-40) auto;
         color: $color-darkgray-200;
 
         @media screen and (max-width: 1360px) {

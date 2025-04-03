@@ -11,7 +11,7 @@
     }
 
     .swag-migration-history-detail__connection-info {
-        padding-left: 16px;
+        padding-left: var(--scale-size-16);
         line-height: 22px;
         font-size: $font-size-xxs;
     }
@@ -34,11 +34,11 @@
         white-space: nowrap;
         font-size: 12px;
         line-height: 19px;
-        padding-right: 16px;
+        padding-right: var(--scale-size-16);
     }
 
     .swag-migration-history-detail__run-status-label {
-        margin-top: 4px;
+        margin-top: var(--scale-size-4);
     }
 
     .swag-migration-history-detail__run-timestamp-value,
@@ -67,6 +67,6 @@
     }
 
     .swag-migration-history-detail__body {
-        padding-top: 16px;
+        padding-top: var(--scale-size-16);
     }
 }

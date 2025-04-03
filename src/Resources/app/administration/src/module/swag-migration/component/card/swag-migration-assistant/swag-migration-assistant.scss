@@ -5,20 +5,20 @@
         font-size: 32px;
         text-align: center;
         margin: 0;
-        padding-top: 10px;
+        padding-top: var(--scale-size-10);
     }
 
     .swag-migration-assistant__paragraph {
         text-align: center;
         width: 80%;
-        margin: 80px auto 0 auto;
+        margin: var(--scale-size-80) auto 0 auto;
 
         &:first-of-type {
-            margin-top: 64px;
+            margin-top: var(--scale-size-64);
         }
 
         &:last-of-type {
-            margin-top: 40px;
+            margin-top: var(--scale-size-40);
         }
     }
 
@@ -26,12 +26,12 @@
         width: 136px;
         display: block;
         margin: 0 auto;
-        padding-bottom: 16px;
+        padding-bottom: var(--scale-size-16);
     }
 
     h5.swag-migration-assistant__title {
         font-weight: 600;
-        margin-bottom: 8px;
+        margin-bottom: var(--scale-size-8);
     }
 
     .swag-migration-assistant__content {
