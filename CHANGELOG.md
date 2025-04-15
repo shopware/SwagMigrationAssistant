@@ -1,3 +1,6 @@
+# 15.0.0
+- MIG-1094 - Added compatibility with Shopware version 6.7
+
 # 14.1.0
 - MIG-1082 - Fixes an error with repeated migration of customer wish lists from SW5 to SW6
 - MIG-1096 - Fix `json_decode` with `null` run exceptions that occurred with mappings of old migration runs (older assistant versions)
