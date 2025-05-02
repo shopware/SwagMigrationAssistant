@@ -7,7 +7,7 @@
     <services>
         <service id="SwagMigrationAssistant\Migration\Profile\ProfileRegistry"
                  class="SwagMigrationAssistant\Migration\Profile\ProfileRegistry">
-            <argument type="tagged" tag="shopware.migration.profile"/>
+            <argument type="tagged_iterator" tag="shopware.migration.profile"/>
         </service>
     </services>
 </container>

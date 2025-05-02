@@ -6,7 +6,7 @@
 
     <services>
         <service id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry">
-            <argument type="tagged" tag="shopware.migration.gateway"/>
+            <argument type="tagged_iterator" tag="shopware.migration.gateway"/>
         </service>
     </services>
 </container>

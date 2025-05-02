@@ -27,7 +27,7 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Converter\ConverterRegistry">
-            <argument type="tagged" tag="shopware.migration.converter"/>
+            <argument type="tagged_iterator" tag="shopware.migration.converter"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MigrationContextFactory">
@@ -212,7 +212,7 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry">
-            <argument type="tagged" tag="shopware.migration.reader"/>
+            <argument type="tagged_iterator" tag="shopware.migration.reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataConverter" public="true">
@@ -242,7 +242,7 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry">
-            <argument type="tagged" tag="shopware.migration.media_file_processor"/>
+            <argument type="tagged_iterator" tag="shopware.migration.media_file_processor"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Media\Processor\HttpDownloadServiceBase" abstract="true">
@@ -300,15 +300,15 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry">
-            <argument type="tagged" tag="shopware.migration.data_selection"/>
+            <argument type="tagged_iterator" tag="shopware.migration.data_selection"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry">
-            <argument type="tagged" tag="shopware.migration.data_set"/>
+            <argument type="tagged_iterator" tag="shopware.migration.data_set"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Premapping\PremappingReaderRegistry">
-            <argument type="tagged" tag="shopware.migration.pre_mapping_reader"/>
+            <argument type="tagged_iterator" tag="shopware.migration.pre_mapping_reader"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\PremappingService">
@@ -353,7 +353,7 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry">
-            <argument type="tagged" tag="shopware.migration.processor"/>
+            <argument type="tagged_iterator" tag="shopware.migration.processor"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor" abstract="true">

@@ -42,7 +42,7 @@
             <argument type="service" id="swag_migration_media_file.repository"/>
             <argument type="service" id="Shopware\Core\Content\Media\File\FileSaver"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="tagged" tag="shopware.migration.media_strategy_resolver"/>
+            <argument type="tagged_iterator" tag="shopware.migration.media_strategy_resolver"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.media_file_processor"/>
         </service>
