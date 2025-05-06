@@ -7,7 +7,7 @@
     <services>
         <service id="SwagMigrationAssistant\Migration\Writer\WriterRegistry"
                  class="SwagMigrationAssistant\Migration\Writer\WriterRegistry">
-            <argument type="tagged" tag="shopware.migration.writer"/>
+            <argument type="tagged_iterator" tag="shopware.migration.writer"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Writer\AbstractWriter" abstract="true"/>
