@@ -1,3 +1,6 @@
+# 15.0.1
+- Verwerfungswarnungen für das Argument `tagged` in Dienstdefinitionen behoben
+
 # 15.0.0
 - MIG-1094 - Kompatibilität mit Shopware Version 6.7 hinzugefügt
 
