@@ -1,3 +1,6 @@
+# 15.0.1
+- Fixed deprecation warnings for `tagged` argument in services definitions
+
 # 15.0.0
 - MIG-1094 - Added compatibility with Shopware version 6.7
 
