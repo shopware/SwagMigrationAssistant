@@ -43,6 +43,12 @@ parameters:
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
 
+        - # TODO remove this for 6.8 compatibility
+            message: '#Fetching class constant class of deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
+            paths:
+                - src/Profile/Shopware/Premapping/PaymentMethodReader.php
+                - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
+
 rules:
     # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
