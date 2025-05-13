@@ -35,7 +35,7 @@ class ProductAttributeConverterTest extends TestCase
         $runId = Uuid::randomHex();
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
-        $connection->setName('ConnectionName');
+        $connection->setName('Connection-Name');
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(

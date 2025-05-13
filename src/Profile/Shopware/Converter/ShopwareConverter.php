@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -134,9 +135,8 @@ abstract class ShopwareConverter extends Converter
         ?Context $context = null,
     ): ?array {
         $result = [];
-        // remove unwanted characters from connection name
-        $connectionName = \str_replace(' ', '', $connectionName);
-        $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+
+        $connectionName = ConnectionNameSanitizer::sanitize($connectionName);
 
         foreach ($attributes as $attribute => $value) {
             if (\in_array($attribute, $excludeList, true)) {

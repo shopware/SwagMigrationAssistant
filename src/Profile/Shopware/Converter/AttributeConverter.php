@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -54,9 +55,7 @@ abstract class AttributeConverter extends Converter
         $converted['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $connectionName = $this->connectionName;
-        $connectionName = \str_replace(' ', '', $connectionName);
-        $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+        $connectionName = ConnectionNameSanitizer::sanitize($this->connectionName);
 
         $converted['name'] = 'migration_' . $connectionName . '_' . $this->getCustomFieldEntityName();
         $converted['config'] = [
