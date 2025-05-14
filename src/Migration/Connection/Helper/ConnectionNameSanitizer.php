@@ -18,6 +18,6 @@ class ConnectionNameSanitizer
      */
     public static function sanitize(string $connectionName): string
     {
-        return \preg_replace('/[^a-zA-Z0-9]/', '', \str_replace([' ', '-'], '', $connectionName));
+        return (string) \preg_replace('/[^a-zA-Z0-9]/', '', \str_replace([' ', '-'], '', $connectionName));
     }
 }
