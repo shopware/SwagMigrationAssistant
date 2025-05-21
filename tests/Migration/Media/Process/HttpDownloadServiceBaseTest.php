@@ -260,7 +260,7 @@ class HttpDownloadServiceBaseTest extends TestCase
                 static::assertStringStartsWith('/tmp/', $mediaFile->getFileName());
                 static::assertFileExists($mediaFile->getFileName());
                 static::assertSame($mediaFile->getFileSize(), \filesize($mediaFile->getFileName()));
-                static::assertEquals('jpg', $mediaFile->getFileExtension());
+                static::assertSame('jpg', $mediaFile->getFileExtension());
 
                 static::assertIsString($destination);
                 static::assertStringStartsWith('test', $destination);
@@ -279,7 +279,7 @@ class HttpDownloadServiceBaseTest extends TestCase
 
         $resultWorkload = $httpDownloadServiceBase->process($this->migrationContext, $this->context, $initialWorkload);
         foreach ($resultWorkload as $workload) {
-            static::assertEquals(MediaProcessWorkloadStruct::FINISH_STATE, $workload->getState());
+            static::assertSame(MediaProcessWorkloadStruct::FINISH_STATE, $workload->getState());
         }
     }
 
