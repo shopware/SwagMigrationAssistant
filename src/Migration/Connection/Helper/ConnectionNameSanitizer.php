@@ -15,6 +15,7 @@ class ConnectionNameSanitizer
     /**
      * Sanitizes the connection name by removing any special characters, hyphens and spaces.
      * Only alphanumeric characters are allowed.
+     * We sometimes use the connection name in places where a unique technical name is needed and e.g. CustomFields
      */
     public static function sanitize(string $connectionName): string
     {
