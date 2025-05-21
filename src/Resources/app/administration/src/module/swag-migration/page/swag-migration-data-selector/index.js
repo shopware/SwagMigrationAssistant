@@ -28,27 +28,11 @@ Component.register('swag-migration-data-selector', {
         },
     },
 
-    created() {
-        this.createdComponent();
-    },
-
     methods: {
-        createdComponent() {
-            this.fetchTableData();
-        },
-
-        fetchTableData() {
-            if (this.dataSelectionTableData.length > 0 && this.dataSelectionIds.length > 0) {
-                if (!this.$refs.tableDataGrid) {
-                    setTimeout(() => {
-                        this.fetchTableData();
-                    }, 10);
-                }
-
-                this.dataSelectionIds.forEach((id) => {
-                    this.$refs.tableDataGrid?.selectItem(true, { id });
-                });
-            }
+        tableDataGridMounted() {
+            this.dataSelectionIds.forEach((id) => {
+                this.$refs.tableDataGrid?.selectItem(true, { id });
+            });
         },
 
         onGridSelectItem(selection) {
