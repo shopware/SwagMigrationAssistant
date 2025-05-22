@@ -16,6 +16,7 @@ use Shopware\Core\Content\Property\PropertyGroupDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Unit\UnitDefinition;
+use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -896,9 +897,7 @@ abstract class TranslationConverter extends ShopwareConverter
             return;
         }
 
-        $connectionName = $connection->getName();
-        $connectionName = \str_replace(' ', '', $connectionName);
-        $connectionName = \preg_replace('/[^A-Za-z0-9\-]/', '', $connectionName);
+        $connectionName = ConnectionNameSanitizer::sanitize($connection->getName());
 
         $isAttribute = \mb_strpos($key, '__attribute_');
         if ($isAttribute !== false) {

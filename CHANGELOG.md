@@ -1,3 +1,7 @@
+# 15.0.2
+- Fixed data selection tab freezing due to infinite loop in SW6.7RC4 or later
+- Fixed connections names containing hyphens causing errors for custom field migration
+
 # 15.0.1
 - Fixed deprecation warnings for `tagged` argument in services definitions
 

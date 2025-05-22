@@ -1,5 +1,6 @@
 {% block sw_grid_body_slot_items %}
     <sw-grid-row :key="item.id"
+                 ref="rowRefs"
                  :class="extendedGridRowClasses(item, index)"
                  :style="columnFlex"
                  :item="item"

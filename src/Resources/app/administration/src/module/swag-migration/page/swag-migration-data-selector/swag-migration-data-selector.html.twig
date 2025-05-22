@@ -30,7 +30,9 @@
                         disabled-attribute="requiredSelection"
                         table
                         @sw-grid-select-item="onGridSelectItem"
-                        @sw-grid-select-all="onGridSelectItem">
+                        @sw-grid-select-all="onGridSelectItem"
+                        @vue:mounted="tableDataGridMounted"
+                    >
                         <template #columns="{ item }">
 
                             {% block swag_migration_data_selector_grid_column_data %}

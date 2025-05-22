@@ -1,3 +1,7 @@
+# 15.0.2
+- Einfrieren des Browsers im Datenauswahl-Tab aufgrund einer Endlosschleife ab SW6.7RC4 behoben
+- Verbindungsnamen mit Bindestrichen, die Fehler bei der Migration benutzerdefinierter Felder verursachen, wurden behoben
+
 # 15.0.1
 - Deprecation-Warnungen für das tagged-Argument in Service-Definitionen behoben
 

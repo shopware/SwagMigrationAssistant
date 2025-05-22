@@ -58,9 +58,12 @@ class NewsletterRecipientReaderTest extends TestCase
 
         $totalStruct = $this->newsletterRecipientReader->readTotal($this->migrationContext);
 
-        static::assertNotNull($this->migrationContext->getDataSet());
         static::assertNotNull($totalStruct);
-        static::assertSame($this->migrationContext->getDataSet()::getEntity(), $totalStruct->getEntityName());
+
+        $dataSet = $this->migrationContext->getDataSet();
+
+        static::assertNotNull($dataSet);
+        static::assertSame($dataSet::getEntity(), $totalStruct->getEntityName());
         static::assertSame(0, $totalStruct->getTotal());
     }
 }
