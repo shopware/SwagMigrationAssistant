@@ -32,12 +32,12 @@ class UserReader extends AbstractPremappingReader
     /**
      * @var string[]
      */
-    private array $destinationUsernameToIdDictionary = [];
+    private array $destinationLabelToIdDictionary = [];
 
     /**
      * @var string[]
      */
-    private array $sourceIdToUsernameDictionary = [];
+    private array $sourceIdToLabelDictionary = [];
 
     /**
      * @var array<string, string>
@@ -89,7 +89,9 @@ class UserReader extends AbstractPremappingReader
 
         $entityData = [];
         foreach ($preMappingData as $data) {
-            $this->sourceIdToUsernameDictionary[$data['id']] = $data['username'];
+            $userSourceName = $this->buildUserSelectionLabel($data['email'] ?? '', $data['username'] ?? '');
+
+            $this->sourceIdToLabelDictionary[$data['id']] = $userSourceName;
 
             if (isset($this->connectionPremappingDictionary[$data['id']])) {
                 $uuid = $this->connectionPremappingDictionary[$data['id']]->getDestinationUuid();
@@ -99,7 +101,7 @@ class UserReader extends AbstractPremappingReader
                 $uuid = '';
             }
 
-            $entityData[] = new PremappingEntityStruct($data['id'], $data['username'], $uuid);
+            $entityData[] = new PremappingEntityStruct($data['id'], $userSourceName, $uuid);
         }
 
         \usort($entityData, function (PremappingEntityStruct $item1, PremappingEntityStruct $item2) {
@@ -115,15 +117,15 @@ class UserReader extends AbstractPremappingReader
     private function getChoices(Context $context): array
     {
         $criteria = new Criteria();
-        $criteria->addSorting(new FieldSorting('username'));
+        $criteria->addSorting(new FieldSorting('email'));
         $adminUsers = $this->adminUserRepo->search($criteria, $context)->getEntities();
 
         $choices = [];
         foreach ($adminUsers as $adminUser) {
             $id = $adminUser->getId();
-            $name = $adminUser->getUsername() ?? '';
-            $this->destinationUsernameToIdDictionary[$name] = $id;
-            $choices[] = new PremappingChoiceStruct($id, $name);
+            $label = $this->buildUserSelectionLabel($adminUser->getEmail(), $adminUser->getUsername());
+            $this->destinationLabelToIdDictionary[$label] = $id;
+            $choices[] = new PremappingChoiceStruct($id, $label);
             $this->choiceUuids[$id] = $id;
         }
 
@@ -136,16 +138,25 @@ class UserReader extends AbstractPremappingReader
     private function setPreselection(array $mapping): void
     {
         foreach ($mapping as $item) {
-            if (!isset($this->sourceIdToUsernameDictionary[$item->getSourceId()]) || $item->getDestinationUuid() !== '') {
+            if (!isset($this->sourceIdToLabelDictionary[$item->getSourceId()]) || $item->getDestinationUuid() !== '') {
                 continue;
             }
 
-            $sourceName = $this->sourceIdToUsernameDictionary[$item->getSourceId()];
-            $preselectionValue = $this->destinationUsernameToIdDictionary[$sourceName] ?? null;
+            $sourceLabel = $this->sourceIdToLabelDictionary[$item->getSourceId()];
+            $preselectionValue = $this->destinationLabelToIdDictionary[$sourceLabel] ?? null;
 
             if ($preselectionValue !== null) {
                 $item->setDestinationUuid($preselectionValue);
             }
         }
+    }
+
+    private function buildUserSelectionLabel(string $email, string $userName): string
+    {
+        if (trim($userName) === '') {
+            return $email;
+        }
+
+        return \sprintf('%s (%s)', $email, $userName);
     }
 }

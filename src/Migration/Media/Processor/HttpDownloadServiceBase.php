@@ -244,7 +244,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
      * @param array<int, array<string, string>> $media
      * @param array<string, MediaProcessWorkloadStruct> $mappedWorkload
      *
-     * @return array<string, Promise\PromiseInterface>
+     * @return array<string, PromiseInterface>
      */
     private function doMediaDownloadRequests(array $media, array &$mappedWorkload, HttpClientInterface $client): array
     {
