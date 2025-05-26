@@ -1,3 +1,6 @@
+# NEXT-RELEASE
+- Übersetzungen von Fehlergruppen behoben, welche Details wie den Entitätsnamen nicht darstellten
+ 
 # 15.0.2
 - Einfrieren des Browsers im Datenauswahl-Tab aufgrund einer Endlosschleife ab SW6.7RC4 behoben
 - Verbindungsnamen mit Bindestrichen, die Fehler bei der Migration benutzerdefinierter Felder verursachen, wurden behoben
