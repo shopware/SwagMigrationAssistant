@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Premapping;
 
+use Couchbase\User;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
@@ -44,6 +45,8 @@ class UserReaderTest extends TestCase
 
     private UserEntity $basicUserMock;
 
+    private UserEntity $emptyUserNameUserMock;
+
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
@@ -58,10 +61,17 @@ class UserReaderTest extends TestCase
         $this->adminUserMock->setId(Uuid::randomHex());
         $this->adminUserMock->setAdmin(true);
         $this->adminUserMock->setUsername('admin');
+        $this->adminUserMock->setEmail('admin@example.com');
 
         $this->basicUserMock = new UserEntity();
         $this->basicUserMock->setId(Uuid::randomHex());
         $this->basicUserMock->setUsername('basicUser');
+        $this->basicUserMock->setEmail('basicUser@example.com');
+
+        $this->emptyUserNameUserMock = new UserEntity();
+        $this->emptyUserNameUserMock->setId(Uuid::randomHex());
+        $this->emptyUserNameUserMock->setUsername('');
+        $this->emptyUserNameUserMock->setEmail('empty-username@example.com');
 
         $premapping = [
             new PremappingStruct(DefaultEntities::USER, [
@@ -76,7 +86,7 @@ class UserReaderTest extends TestCase
         $mock->method('search')->willReturn(new EntitySearchResult(
             UserDefinition::ENTITY_NAME,
             2,
-            new EntityCollection([$this->adminUserMock, $this->basicUserMock]),
+            new EntityCollection([$this->adminUserMock, $this->basicUserMock, $this->emptyUserNameUserMock]),
             null,
             new Criteria(),
             $this->context
@@ -84,9 +94,10 @@ class UserReaderTest extends TestCase
 
         $gatewayMock = $this->createMock(Shopware6ApiGateway::class);
         $gatewayMock->method('readTable')->willReturn([
-            ['id' => '1', 'username' => 'admin'],
-            ['id' => '2', 'username' => 'basicUser'],
-            ['id' => '3', 'username' => 'foobar'],
+            ['id' => '1', 'username' => 'admin', 'email' => 'admin@example.com'],
+            ['id' => '2', 'username' => 'basicUser', 'email' => 'basicUser@example.com'],
+            ['id' => '3', 'username' => 'foobar', 'email' => 'foobar@example.com'],
+            ['id' => '4', 'username' => '', 'email' => 'empty-username@example.com'],
         ]);
 
         $gatewayRegistryMock = $this->createMock(GatewayRegistry::class);
@@ -104,16 +115,19 @@ class UserReaderTest extends TestCase
     {
         $result = $this->reader->getPremapping($this->context, $this->migrationContext);
 
-        static::assertCount(3, $result->getMapping());
-        static::assertCount(2, $result->getChoices());
+        static::assertCount(4, $result->getMapping());
+        static::assertCount(3, $result->getChoices());
 
         $choices = $result->getChoices();
-        static::assertSame('admin', $choices[0]->getDescription());
-        static::assertSame('basicUser', $choices[1]->getDescription());
+        static::assertSame('admin@example.com (admin)', $choices[0]->getDescription());
+        static::assertSame('basicUser@example.com (basicUser)', $choices[1]->getDescription());
+        static::assertSame('empty-username@example.com', $choices[2]->getDescription());
 
         // assert preselection
         static::assertSame($this->adminUserMock->getId(), $result->getMapping()[0]->getDestinationUuid());
         static::assertSame($this->basicUserMock->getId(), $result->getMapping()[1]->getDestinationUuid());
-        static::assertEmpty($result->getMapping()[2]->getDestinationUuid());
+        static::assertSame($this->emptyUserNameUserMock->getId(), $result->getMapping()[2]->getDestinationUuid());
+
+        static::assertEmpty($result->getMapping()[3]->getDestinationUuid());
     }
 }
