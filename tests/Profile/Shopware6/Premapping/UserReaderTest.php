@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Premapping;
 
-use Couchbase\User;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;

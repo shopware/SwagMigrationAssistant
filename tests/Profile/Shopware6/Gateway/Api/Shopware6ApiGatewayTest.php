@@ -274,7 +274,7 @@ class Shopware6ApiGatewayTest extends TestCase
         string $sourceDefaultLocale,
     ): Shopware6ApiGateway {
         $readerRegistry = new ReaderRegistry([]);
-        $environmentReader = $this->createStub(EnvironmentReader::class);
+        $environmentReader = static::createStub(EnvironmentReader::class);
         $environmentReader->method('read')->willReturn([
             'environmentInformation' => [
                 'defaultShopLanguage' => $sourceDefaultLocale,
@@ -326,10 +326,10 @@ class Shopware6ApiGatewayTest extends TestCase
             new LanguageDefinition(),
         );
 
-        $totalReader = $this->createStub(TotalReaderInterface::class);
+        $totalReader = static::createStub(TotalReaderInterface::class);
         $totalReader->method('readTotals')->willReturn([]);
 
-        $tableReader = $this->createStub(TableReaderInterface::class);
+        $tableReader = static::createStub(TableReaderInterface::class);
         $tableReader->method('read')->willReturn([]);
 
         return new Shopware6ApiGateway(
