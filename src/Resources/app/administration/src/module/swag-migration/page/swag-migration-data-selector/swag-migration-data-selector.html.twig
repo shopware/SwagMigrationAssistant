@@ -7,7 +7,7 @@
                           :key="warning.snippetKey"
                           class="swag-migration-data-selector__warning"
                           variant="attention">
-                    {{ $tc(warning.snippetKey, warning.pluralizationCount, warning.snippetArguments) }}
+                    {{ $tc(warning.snippetKey, warning.snippetArguments, warning.pluralizationCount) }}
                 </mt-banner>
             </div>
         {% endblock %}
