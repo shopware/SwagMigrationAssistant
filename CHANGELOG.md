@@ -1,3 +1,6 @@
+# NEXT-RELEASE
+- Fixed translations of error groups missing details like the entity
+
 # 15.0.2
 - Fixed data selection tab freezing due to infinite loop in SW6.7RC4 or later
 - Fixed connections names containing hyphens causing errors for custom field migration
