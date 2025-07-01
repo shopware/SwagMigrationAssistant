@@ -37,7 +37,10 @@ class CustomerConverter extends ShopwareConverter
             $converted['lastPaymentMethodId'] = $this->getMappingIdFacade(DefaultEntities::PAYMENT_METHOD, $converted['lastPaymentMethodId']);
         }
 
-        $converted['defaultPaymentMethodId'] = $this->getMappingIdFacade(DefaultEntities::PAYMENT_METHOD, $converted['defaultPaymentMethodId']);
+        if (isset($converted['defaultPaymentMethodId'])) {
+            $converted['defaultPaymentMethodId'] = $this->getMappingIdFacade(DefaultEntities::PAYMENT_METHOD, $converted['defaultPaymentMethodId']);
+        }
+
         $converted['salutationId'] = $this->getMappingIdFacade(DefaultEntities::SALUTATION, $converted['salutationId']);
         $converted['languageId'] = $this->getMappingIdFacade(DefaultEntities::LANGUAGE, $converted['languageId']);
 
