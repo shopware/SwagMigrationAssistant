@@ -1,6 +1,6 @@
 # 15.0.3
 - Übersetzungen von Fehlergruppen behoben, welche Details wie den Entitätsnamen nicht darstellten
-- Behandlung von Kunden ohne Standardzahlungsmethode in Shopware 6.7 behoben 
+- Fehler bei Kunden ohne Standardzahlungsmethode in SW6.7 Migrationen behoben
 
 # 15.0.2
 - Einfrieren des Browsers im Datenauswahl-Tab aufgrund einer Endlosschleife ab SW6.7RC4 behoben
