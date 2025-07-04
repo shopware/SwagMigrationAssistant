@@ -1,6 +1,7 @@
-# NEXT-RELEASE
+# 15.0.3
 - Übersetzungen von Fehlergruppen behoben, welche Details wie den Entitätsnamen nicht darstellten
- 
+- Fehler bei Kunden ohne Standardzahlungsmethode in SW6.7 Migrationen behoben
+
 # 15.0.2
 - Einfrieren des Browsers im Datenauswahl-Tab aufgrund einer Endlosschleife ab SW6.7RC4 behoben
 - Verbindungsnamen mit Bindestrichen, die Fehler bei der Migration benutzerdefinierter Felder verursachen, wurden behoben

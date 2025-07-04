@@ -1,5 +1,6 @@
-# NEXT-RELEASE
+# 15.0.3
 - Fixed translations of error groups missing details like the entity
+- Fixed handling of customers without default payment method in SW6.7 migrations
 
 # 15.0.2
 - Fixed data selection tab freezing due to infinite loop in SW6.7RC4 or later
