@@ -1,0 +1,11 @@
+{
+  "main.ts": {
+    "file": "assets/swag-migration-assistant-iUIrF6MH.js",
+    "name": "swag-migration-assistant",
+    "src": "main.ts",
+    "isEntry": true,
+    "css": [
+      "assets/swag-migration-assistant-CannFx-L.css"
+    ]
+  }
+}
