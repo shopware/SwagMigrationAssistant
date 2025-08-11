@@ -12,10 +12,9 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Migration\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
-class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
+class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStepshopware
 {
     public const MIGRATION_LOGGING_TABLE = 'swag_migration_logging';
 
@@ -24,8 +23,8 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
         'run_id' => null,
         'level' => null,
         'code' => null,
-        'profile' => 'VARCHAR(255) NOT NULL',
-        'gateway' => 'VARCHAR(255) NOT NULL',
+        'profile_name' => 'VARCHAR(255) NOT NULL',
+        'gateway_name' => 'VARCHAR(255) NOT NULL',
         'user_fixable' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'auto_increment' => null,
         'created_at' => null,

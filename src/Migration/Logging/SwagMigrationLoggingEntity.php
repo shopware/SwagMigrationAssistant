@@ -17,29 +17,61 @@ class SwagMigrationLoggingEntity extends Entity
 {
     use EntityIdTrait;
 
+    protected string $runId;
+
+    protected SwagMigrationRunEntity $run;
+
+    protected string $profileName;
+
+    protected string $gatewayName;
+
     protected string $level;
 
     protected string $code;
 
-    protected string $title;
-
-    protected string $description;
-
-    protected array $parameters;
-
-    protected string $titleSnippet;
-
-    protected string $descriptionSnippet;
-
-    protected ?string $entity;
-
-    protected ?string $sourceId;
-
-    protected ?string $runId;
-
-    protected ?SwagMigrationRunEntity $run;
+    protected bool $userFixable;
 
     protected int $autoIncrement;
+
+    public function getRunId(): string
+    {
+        return $this->runId;
+    }
+
+    public function setRunId(string $runId): void
+    {
+        $this->runId = $runId;
+    }
+
+    public function getRun(): SwagMigrationRunEntity
+    {
+        return $this->run;
+    }
+
+    public function setRun(SwagMigrationRunEntity $run): void
+    {
+        $this->run = $run;
+    }
+
+    public function getProfileName(): string
+    {
+        return $this->profileName;
+    }
+
+    public function setProfileName(string $profileName): void
+    {
+        $this->profileName = $profileName;
+    }
+
+    public function getGatewayName(): string
+    {
+        return $this->gatewayName;
+    }
+
+    public function setGatewayName(string $gatewayName): void
+    {
+        $this->gatewayName = $gatewayName;
+    }
 
     public function getLevel(): string
     {
@@ -61,94 +93,14 @@ class SwagMigrationLoggingEntity extends Entity
         $this->code = $code;
     }
 
-    public function getTitle(): string
+    public function isUserFixable(): bool
     {
-        return $this->title;
+        return $this->userFixable;
     }
 
-    public function setTitle(string $title): void
+    public function setUserFixable(bool $userFixable): void
     {
-        $this->title = $title;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
-    }
-
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return $this->titleSnippet;
-    }
-
-    public function setTitleSnippet(string $titleSnippet): void
-    {
-        $this->titleSnippet = $titleSnippet;
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return $this->descriptionSnippet;
-    }
-
-    public function setDescriptionSnippet(string $descriptionSnippet): void
-    {
-        $this->descriptionSnippet = $descriptionSnippet;
-    }
-
-    public function getEntity(): ?string
-    {
-        return $this->entity;
-    }
-
-    public function setEntity(?string $entity): void
-    {
-        $this->entity = $entity;
-    }
-
-    public function getSourceId(): ?string
-    {
-        return $this->sourceId;
-    }
-
-    public function setSourceId(?string $sourceId): void
-    {
-        $this->sourceId = $sourceId;
-    }
-
-    public function getRunId(): ?string
-    {
-        return $this->runId;
-    }
-
-    public function setRunId(?string $runId): void
-    {
-        $this->runId = $runId;
-    }
-
-    public function getRun(): ?SwagMigrationRunEntity
-    {
-        return $this->run;
-    }
-
-    public function setRun(?SwagMigrationRunEntity $run): void
-    {
-        $this->run = $run;
+        $this->userFixable = $userFixable;
     }
 
     public function getAutoIncrement(): int
