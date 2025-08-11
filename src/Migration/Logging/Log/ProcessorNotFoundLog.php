@@ -20,6 +20,21 @@ class ProcessorNotFoundLog implements LogEntryInterface
     ) {
     }
 
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
+    public function getProfileName(): string
+    {
+        return $this->profileName;
+    }
+
+    public function getGatewayName(): string
+    {
+        return $this->gatewayName;
+    }
+
     public function getLevel(): string
     {
         return self::LOG_LEVEL_ERROR;
@@ -69,7 +84,7 @@ class ProcessorNotFoundLog implements LogEntryInterface
         return null;
     }
 
-    public function getRunId(): ?string
+    public function getRunId(): string
     {
         return $this->runId;
     }

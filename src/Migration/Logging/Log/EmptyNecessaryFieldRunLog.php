@@ -21,6 +21,11 @@ class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
         parent::__construct($runId, $entity, $sourceId);
     }
 
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
     public function getCode(): string
     {
         $entity = $this->getEntity();

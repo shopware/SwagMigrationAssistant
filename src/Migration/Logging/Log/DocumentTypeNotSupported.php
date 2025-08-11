@@ -21,6 +21,11 @@ class DocumentTypeNotSupported extends BaseRunLogEntry
         parent::__construct($runId, DefaultEntities::ORDER_DOCUMENT, $sourceId);
     }
 
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
     public function getLevel(): string
     {
         return self::LOG_LEVEL_WARNING;

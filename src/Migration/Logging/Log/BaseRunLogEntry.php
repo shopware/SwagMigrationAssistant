@@ -14,14 +14,26 @@ abstract class BaseRunLogEntry implements LogEntryInterface
 {
     public function __construct(
         protected string $runId,
+        protected string $profileName,
+        protected string $gatewayName,
         protected ?string $entity = null,
         protected ?string $sourceId = null,
     ) {
     }
 
-    public function getRunId(): ?string
+    public function getRunId(): string
     {
         return $this->runId;
+    }
+
+    public function getProfileName(): string
+    {
+        return $this->profileName;
+    }
+
+    public function getGatewayName(): string
+    {
+        return $this->gatewayName;
     }
 
     public function getEntity(): ?string

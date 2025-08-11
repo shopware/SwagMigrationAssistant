@@ -21,6 +21,11 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
         parent::__construct($runId, $entity, $sourceId);
     }
 
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
     public function getLevel(): string
     {
         return self::LOG_LEVEL_WARNING;

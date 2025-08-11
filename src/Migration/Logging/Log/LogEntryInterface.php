@@ -21,6 +21,14 @@ interface LogEntryInterface
 
     public function getCode(): string;
 
+    public function isUserFixable(): bool;
+
+    public function getRunId(): string;
+
+    public function getProfileName(): string;
+
+    public function getGatewayName(): string;
+
     public function getTitle(): string;
 
     /**
@@ -37,6 +45,4 @@ interface LogEntryInterface
     public function getEntity(): ?string;
 
     public function getSourceId(): ?string;
-
-    public function getRunId(): ?string;
 }

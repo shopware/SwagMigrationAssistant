@@ -21,6 +21,11 @@ class CannotConvertChildEntity extends BaseRunLogEntry
         parent::__construct($runId, $entity, null);
     }
 
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
     public function getLevel(): string
     {
         return self::LOG_LEVEL_WARNING;

@@ -21,6 +21,21 @@ class DebugLog implements LogEntryInterface
     ) {
     }
 
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
+    public function getProfileName(): string
+    {
+        return 'Debug Profile';
+    }
+
+    public function getGatewayName(): string
+    {
+        return 'Debug Gateway';
+    }
+
     public function getLevel(): string
     {
         return self::LOG_LEVEL_DEBUG;
@@ -76,7 +91,7 @@ class DebugLog implements LogEntryInterface
         return null;
     }
 
-    public function getRunId(): ?string
+    public function getRunId(): string
     {
         return $this->runId;
     }
