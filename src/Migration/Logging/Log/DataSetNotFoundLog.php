@@ -13,12 +13,15 @@ use Shopware\Core\Framework\Log\Package;
 class DataSetNotFoundLog extends BaseRunLogEntry
 {
     public function __construct(
-        string $runUuid,
-        string $entity,
-        string $sourceId,
-        private readonly string $profileName,
+        string $runId,
+        string $profileName,
+        string $gatewayName,
     ) {
-        parent::__construct($runUuid, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
     }
 
     public function isUserFixable(): bool
@@ -34,34 +37,5 @@ class DataSetNotFoundLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__DATASET_NOT_FOUND';
-    }
-
-    public function getTitle(): string
-    {
-        return 'DataSet not found';
-    }
-
-    /**
-     * @return array{profileName: string, entity: ?string, sourceId: ?string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'profileName' => $this->profileName,
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'DataSet for profile "%s" and entity "%s" not found. Entity with id "%s" could not be processed.',
-            $args['profileName'],
-            $args['entity'],
-            $args['sourceId']
-        );
     }
 }

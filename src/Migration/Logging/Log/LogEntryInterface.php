@@ -17,32 +17,15 @@ interface LogEntryInterface
     final public const LOG_LEVEL_ERROR = 'error';
     final public const LOG_LEVEL_DEBUG = 'debug';
 
-    public function getLevel(): string;
-
-    public function getCode(): string;
-
-    public function isUserFixable(): bool;
-
     public function getRunId(): string;
 
     public function getProfileName(): string;
 
     public function getGatewayName(): string;
 
-    public function getTitle(): string;
+    public function getLevel(): string;
 
-    /**
-     * @return array<string, mixed>
-     */
-    public function getParameters(): array;
+    public function getCode(): string;
 
-    public function getDescription(): string;
-
-    public function getTitleSnippet(): string;
-
-    public function getDescriptionSnippet(): string;
-
-    public function getEntity(): ?string;
-
-    public function getSourceId(): ?string;
+    public function isUserFixable(): bool;
 }

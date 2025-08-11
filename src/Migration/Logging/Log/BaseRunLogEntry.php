@@ -16,8 +16,6 @@ abstract class BaseRunLogEntry implements LogEntryInterface
         protected string $runId,
         protected string $profileName,
         protected string $gatewayName,
-        protected ?string $entity = null,
-        protected ?string $sourceId = null,
     ) {
     }
 
@@ -34,30 +32,5 @@ abstract class BaseRunLogEntry implements LogEntryInterface
     public function getGatewayName(): string
     {
         return $this->gatewayName;
-    }
-
-    public function getEntity(): ?string
-    {
-        return $this->entity;
-    }
-
-    public function getSourceId(): ?string
-    {
-        return $this->sourceId;
-    }
-
-    public function getSnippetRoot(): string
-    {
-        return 'swag-migration.index.error';
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return \sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return \sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
     }
 }

@@ -16,8 +16,8 @@ class DebugLog implements LogEntryInterface
      * @param array<mixed> $logData
      */
     public function __construct(
+        private readonly string $runId,
         private readonly array $logData,
-        private readonly ?string $runId,
     ) {
     }
 
