@@ -16,6 +16,7 @@ class RunAbortedAutomatically extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly \Throwable $exception,
     ) {
         parent::__construct(

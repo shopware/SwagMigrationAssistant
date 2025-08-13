@@ -17,6 +17,7 @@ class DeactivatedPackLanguageLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $languageId,
     ) {
         parent::__construct(

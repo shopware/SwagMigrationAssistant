@@ -43,7 +43,7 @@ class UserProviderTest extends TestCase
                 new Criteria(),
                 $context
             ),
-        ], new UserDefinition());
+        ]);
 
         $provider = new UserProvider($adminUserRepo);
         $result = $provider->getProvidedData(10, 0, $context);

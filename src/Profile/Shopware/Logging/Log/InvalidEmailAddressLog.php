@@ -17,6 +17,7 @@ class InvalidEmailAddressLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $email,
     ) {
         parent::__construct(

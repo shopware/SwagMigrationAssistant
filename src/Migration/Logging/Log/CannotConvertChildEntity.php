@@ -16,7 +16,9 @@ class CannotConvertChildEntity extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $parentEntity,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $parentSourceId,
     ) {
         parent::__construct(

@@ -17,6 +17,7 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $shippingMethodId,
     ) {
         parent::__construct(

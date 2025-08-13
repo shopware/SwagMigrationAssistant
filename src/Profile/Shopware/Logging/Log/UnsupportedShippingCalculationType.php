@@ -17,6 +17,7 @@ class UnsupportedShippingCalculationType extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $type,
     ) {
         parent::__construct(

@@ -114,8 +114,8 @@ class HistoryService implements HistoryServiceInterface
 
                 foreach ($logChunk->getElements() as $logEntry) {
                     \printf('[%s] %s%s', $logEntry->getLevel(), $logEntry->getCode(), \PHP_EOL);
-                    \printf('%s%s', $logEntry->getTitle(), \PHP_EOL);
-                    \printf('%s%s%s', $logEntry->getDescription(), \PHP_EOL, \PHP_EOL);
+                    \printf('%s%s', $logEntry->getProfileName(), \PHP_EOL);
+                    \printf('%s%s%s', $logEntry->getGatewayName(), \PHP_EOL, \PHP_EOL);
                 }
 
                 $offset += self::LOG_FETCH_LIMIT;

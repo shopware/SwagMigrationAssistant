@@ -21,7 +21,7 @@ class MigrationContext extends Struct implements MigrationContextInterface
 
     private ProfileInterface $profile;
 
-    private SwagMigrationConnectionEntity $connection;
+    private ?SwagMigrationConnectionEntity $connection;
 
     private string $runUuid;
 

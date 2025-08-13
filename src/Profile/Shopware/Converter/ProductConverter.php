@@ -933,8 +933,15 @@ abstract class ProductConverter extends ShopwareConverter
                 ]
             );
 
-            $esdFile['name'] = \pathinfo($esdFile['name'], \PATHINFO_FILENAME);
-            $this->convertValue($newMedia, 'title', $esdFile, 'name');
+            $fileName = \pathinfo($esdFile['name'], \PATHINFO_FILENAME);
+            $sourceData = ['name' => $fileName];
+
+            $this->convertValue(
+                $newMedia,
+                'title',
+                $sourceData,
+                'name'
+            );
 
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {

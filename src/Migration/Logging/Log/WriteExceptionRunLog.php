@@ -19,6 +19,7 @@ class WriteExceptionRunLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly array $error,
     ) {
         parent::__construct(

@@ -16,7 +16,9 @@ class FieldReassignedRunLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $emptyField,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $replacementField,
     ) {
         parent::__construct(

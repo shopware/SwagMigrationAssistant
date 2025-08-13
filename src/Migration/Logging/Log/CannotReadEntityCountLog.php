@@ -16,9 +16,13 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $table,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly ?string $condition,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $exceptionCode,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $exceptionMessage,
     ) {
         parent::__construct(

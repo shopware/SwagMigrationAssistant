@@ -16,7 +16,9 @@ class MessageQueueExceptionLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly \Throwable $exception,
+        /** @phpstan-ignore property.onlyWritten */
         private int $exceptionCount,
     ) {
         parent::__construct(

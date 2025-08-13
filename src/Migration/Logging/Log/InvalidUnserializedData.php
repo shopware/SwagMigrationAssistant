@@ -16,7 +16,9 @@ class InvalidUnserializedData extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $unserializedEntity,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $serializedData,
     ) {
         parent::__construct(

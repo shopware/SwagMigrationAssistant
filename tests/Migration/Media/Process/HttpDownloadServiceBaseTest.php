@@ -25,7 +25,6 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -248,7 +247,6 @@ class HttpDownloadServiceBaseTest extends TestCase
         /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
         $mediaFileRepo = new StaticEntityRepository(
             [],
-            new SwagMigrationMediaFileDefinition()
         );
 
         $fileSaverMock = $this->createMock(FileSaver::class);
@@ -311,7 +309,6 @@ class HttpDownloadServiceBaseTest extends TestCase
         /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
         $mediaFileRepo = new StaticEntityRepository(
             [],
-            new SwagMigrationMediaFileDefinition()
         );
         $fileSaver = $this->createMock(FileSaver::class);
         $httpClient = $this->createHttpClientMock($migrationMedia);

@@ -16,6 +16,7 @@ class AssociationRequiredMissingLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $requiredFor,
     ) {
         parent::__construct(

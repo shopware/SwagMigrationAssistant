@@ -100,7 +100,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             $sourcePath = $installationRoot . '/files/documents/' . $mediaFile['file_name'] . '.pdf';
             $mediaId = $mediaFile['media_id'];
 
-            if (!\file_exists($sourcePath)) {
+            if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                     $mappedWorkload[$mediaId]->getRunId(),

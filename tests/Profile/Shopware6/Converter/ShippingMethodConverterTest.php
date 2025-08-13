@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
-use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\IdSearchResult;
@@ -43,7 +42,7 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
                 new Criteria(),
                 Context::createDefaultContext()
             ),
-        ], new ShippingMethodDefinition());
+        ]);
 
         return new ShippingMethodConverter($mappingService, $loggingService, $mediaFileService, $shippingMethodRepository);
     }

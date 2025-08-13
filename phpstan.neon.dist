@@ -49,6 +49,11 @@ parameters:
                 - src/Profile/Shopware/Premapping/PaymentMethodReader.php
                 - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
 
+        - # TODO remove this for 6.8 compatibility
+            message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityDefinition:#'
+            paths:
+                - tests/**/*Test.php
+
 rules:
     # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule

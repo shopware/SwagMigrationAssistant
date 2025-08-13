@@ -25,7 +25,7 @@ class SwagMigrationRunEntity extends Entity
 
     protected ?string $connectionId = null;
 
-    protected SwagMigrationConnectionEntity $connection;
+    protected ?SwagMigrationConnectionEntity $connection;
 
     protected ?array $totals = null;
 

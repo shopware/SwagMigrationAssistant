@@ -17,7 +17,9 @@ class CannotGetFileRunLog extends BaseRunLogEntry
         string $runId,
         string $profileName,
         string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $uri,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly ?RequestException $requestException = null,
     ) {
         parent::__construct(
