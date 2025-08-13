@@ -63,7 +63,14 @@ class DocumentConverter extends ShopwareMediaConverter
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
         if ($converted['documentTypeId'] === null) {
-            $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog($this->runId, DefaultEntities::ORDER_DOCUMENT, $data['id'], $data['documentType']['technicalName']));
+            $connection = $this->migrationContext->getConnection();
+
+            $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog(
+                $this->runId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
+                $data['documentType']['technicalName']
+            ));
 
             return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }

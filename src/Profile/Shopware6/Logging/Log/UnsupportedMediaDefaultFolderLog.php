@@ -15,11 +15,20 @@ class UnsupportedMediaDefaultFolderLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
         private readonly string $defaultEntity,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,30 +39,5 @@ class UnsupportedMediaDefaultFolderLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Unsupported default media folder';
-    }
-
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'defaultEntity' => $this->defaultEntity,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'Media Folder with source id "%s" could not be converted because of unsupported default folder for entity: %s.',
-            $args['sourceId'],
-            $args['defaultEntity']
-        );
     }
 }
