@@ -78,6 +78,7 @@ class EnvironmentServiceTest extends TestCase
                     Context::createDefaultContext(),
                 ),
             ],
+            new CurrencyDefinition(),
         );
 
         $languageEntity = new LanguageEntity();
@@ -99,6 +100,7 @@ class EnvironmentServiceTest extends TestCase
                     Context::createDefaultContext(),
                 ),
             ],
+            new LanguageDefinition(),
         );
 
         $storeClientStub = static::createStub(StoreClient::class);

@@ -22,9 +22,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
@@ -46,7 +48,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         $this->loggingService = new DummyLoggingService();
         $this->migrationContext = new MigrationContext(
             new Shopware6MajorProfile('6.6.0'),
-            null,
+            new SwagMigrationConnectionEntity(),
             Uuid::randomHex(),
             null,
             0,
@@ -194,20 +196,12 @@ class HttpDownloadServiceBaseTest extends TestCase
         ], $resultWorkload);
         static::assertEquals([
             [
-                'level' => 'warning',
-                'code' => 'SWAG_MIGRATION_CANNOT_GET_MEDIA_FILE',
-                'title' => 'The media file cannot be downloaded / copied',
-                'description' => 'The media file with the uri "' . $mediaFiles[0]['uri'] . '" and media id "' . $mediaFiles[0]['mediaId'] . '" cannot be downloaded / copied. The following request error occurred: Request failed',
-                'parameters' => [
-                    'entity' => 'media',
-                    'sourceId' => $mediaFiles[0]['mediaId'],
-                    'uri' => $mediaFiles[0]['uri'],
-                ],
-                'titleSnippet' => 'swag-migration.index.error.SWAG_MIGRATION_CANNOT_GET_FILE.title',
-                'descriptionSnippet' => 'swag-migration.index.error.SWAG_MIGRATION_CANNOT_GET_FILE.description',
-                'entity' => 'media',
-                'sourceId' => $mediaFiles[0]['mediaId'],
                 'runId' => $this->runId,
+                'level' => 'warning',
+                'code' => 'SWAG_MIGRATION_CANNOT_GET_FILE',
+                'profileName' => '',
+                'gatewayName' => '',
+                'userFixable' => false,
             ],
         ], $this->loggingService->getLoggingArray());
     }
@@ -247,6 +241,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
         $mediaFileRepo = new StaticEntityRepository(
             [],
+            new SwagMigrationMediaFileDefinition(),
         );
 
         $fileSaverMock = $this->createMock(FileSaver::class);
@@ -309,6 +304,7 @@ class HttpDownloadServiceBaseTest extends TestCase
         /** @var StaticEntityRepository<SwagMigrationMediaFileCollection> $mediaFileRepo */
         $mediaFileRepo = new StaticEntityRepository(
             [],
+            new SwagMigrationMediaFileDefinition()
         );
         $fileSaver = $this->createMock(FileSaver::class);
         $httpClient = $this->createHttpClientMock($migrationMedia);

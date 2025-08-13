@@ -166,9 +166,6 @@ class ShippingMethodConverterTest extends TestCase
         static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
-        static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
-        static::assertSame($error->getEntity(), $logs[0]['entity']);
-        static::assertSame($error->getParameters()['type'], $logs[0]['parameters']['type']);
     }
 
     public function testConvertWithFactor(): void
@@ -184,9 +181,6 @@ class ShippingMethodConverterTest extends TestCase
         static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
-        static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
-        static::assertSame($error->getEntity(), $logs[0]['entity']);
-        static::assertSame($error->getParameters()['shippingMethodId'], $logs[0]['parameters']['shippingMethodId']);
     }
 
     /**

@@ -90,8 +90,8 @@ class MessageQueueSubscriber implements EventSubscriberInterface
         $progress->raiseExceptionCount();
         $this->loggingService->addLogEntry(new MessageQueueExceptionLog(
             $run->getId(),
-            $connection->getProfileName(),
-            $connection->getGatewayName(),
+            $connection?->getProfileName() ?? 'unknown',
+            $connection?->getGatewayName() ?? 'unknown',
             $event->getThrowable(),
             $progress->getExceptionCount()
         ));
@@ -106,8 +106,8 @@ class MessageQueueSubscriber implements EventSubscriberInterface
 
             $this->loggingService->addLogEntry(new RunAbortedAutomatically(
                 $run->getId(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
+                $connection?->getProfileName() ?? 'unknown',
+                $connection?->getGatewayName() ?? 'unknown',
                 $event->getThrowable(),
             ));
             $this->loggingService->saveLogging($message->getContext());

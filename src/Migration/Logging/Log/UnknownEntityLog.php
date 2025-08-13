@@ -40,6 +40,6 @@ class UnknownEntityLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_%s_ENTITY_UNKNOWN';
+        return 'SWAG_MIGRATION_ENTITY_UNKNOWN';
     }
 }

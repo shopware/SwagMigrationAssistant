@@ -192,7 +192,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 ));
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
-                $converted['prices'] = $this->getShippingCosts($data, $calculationType, $priceRule);
+                $converted['prices'] = $this->getShippingCosts($migrationContext, $data, $calculationType, $priceRule);
             }
         }
 
@@ -633,9 +633,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      *
      * @return list<array<string, mixed>>
      */
-    protected function getShippingCosts(array $data, int $calculationType, ?array $rule): array
+    protected function getShippingCosts(MigrationContextInterface $migrationContext, array $data, int $calculationType, ?array $rule): array
     {
-        $connection = $this->migrationContext->getConnection();
+        $connection = $migrationContext->getConnection();
 
         $shippingCosts = $data['shippingCosts'];
         $taxRate = 0.0;

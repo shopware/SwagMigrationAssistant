@@ -20,6 +20,7 @@ use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
@@ -44,6 +45,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
+use SwagMigrationAssistant\Migration\Setting\GeneralSettingDefinition;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
@@ -87,7 +89,7 @@ class RunServiceTest extends TestCase
 
         $this->generalSettingRepo = new StaticEntityRepository([
             new GeneralSettingCollection([$generalSettingEntity]),
-        ]);
+        ], new GeneralSettingDefinition());
 
         $connectionEntity = new SwagMigrationConnectionEntity();
         $connectionEntity->setId(Uuid::randomHex());
@@ -96,7 +98,7 @@ class RunServiceTest extends TestCase
 
         $this->connectionRepo = new StaticEntityRepository([
             new SwagMigrationConnectionCollection([$connectionEntity]),
-        ]);
+        ], new SwagMigrationConnectionDefinition());
 
         $run = new SwagMigrationRunEntity();
         $run->setId(Uuid::randomHex());
@@ -117,7 +119,7 @@ class RunServiceTest extends TestCase
             new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([$run]),
-        ]);
+        ], new SwagMigrationRunDefinition());
 
         $this->migrationContextFactory = $this->createMock(MigrationContextFactory::class);
         $this->migrationContextFactory->method('createByConnection')->willReturn(new MigrationContext(
@@ -222,6 +224,7 @@ class RunServiceTest extends TestCase
                     $generalSettingEntity,
                 ]),
             ],
+            new GeneralSettingDefinition(),
         );
 
         $runService = $this->createRunService(

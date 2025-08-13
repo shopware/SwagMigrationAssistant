@@ -25,7 +25,7 @@ class SwagMigrationRunEntity extends Entity
 
     protected ?string $connectionId = null;
 
-    protected ?SwagMigrationConnectionEntity $connection;
+    protected ?SwagMigrationConnectionEntity $connection = null;
 
     protected ?array $totals = null;
 
@@ -49,10 +49,8 @@ class SwagMigrationRunEntity extends Entity
         $this->connectionId = $connectionId;
     }
 
-    public function getConnection(): SwagMigrationConnectionEntity
+    public function getConnection(): ?SwagMigrationConnectionEntity
     {
-        \assert($this->connection instanceof SwagMigrationConnectionEntity);
-
         return $this->connection;
     }
 

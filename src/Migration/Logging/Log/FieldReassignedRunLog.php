@@ -40,6 +40,6 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED';
+        return 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED';
     }
 }

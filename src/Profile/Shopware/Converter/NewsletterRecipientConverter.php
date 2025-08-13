@@ -116,7 +116,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (isset($converted['confirmedAt'])) {
             $status = 'optIn';
         } else {
-            $status = $this->getStatus();
+            $status = $this->getStatus($migrationContext);
         }
 
         if ($status === null) {
@@ -206,7 +206,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return $salesChannelMapping['entityUuid'];
     }
 
-    protected function getStatus(): ?string
+    protected function getStatus(MigrationContextInterface $migrationContext): ?string
     {
         $status = $this->mappingService->getValue(
             $this->connectionId,
@@ -216,7 +216,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
-            $connection = $this->migrationContext->getConnection();
+            $connection = $migrationContext->getConnection();
 
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,

@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
@@ -47,13 +48,14 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
             new AutoIncrementField(),
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
-            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),
             (new StringField('profile_name', 'profileName', 255))->addFlags(new Required()),
             (new StringField('gateway_name', 'gatewayName', 255))->addFlags(new Required()),
             (new StringField('level', 'level', 64))->addFlags(new Required()),
             (new StringField('code', 'code'))->addFlags(new Required()),
             (new BoolField('user_fixable', 'userFixable'))->addFlags(new Required()),
             new CreatedAtField(),
+            new UpdatedAtField(),
+            new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),
         ]);
     }
 }

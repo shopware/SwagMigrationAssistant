@@ -348,9 +348,8 @@ class MigrationDataProcessingTest extends TestCase
             $type = $log->getLevel();
 
             if (
-                ($type === LogEntryInterface::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER')
+                ($type === LogEntryInterface::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED')
+                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD')
             ) {
                 ++$countValidLogging;
 

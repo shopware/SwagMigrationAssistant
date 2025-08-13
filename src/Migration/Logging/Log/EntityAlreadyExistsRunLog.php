@@ -36,6 +36,6 @@ class EntityAlreadyExistsRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_%s_ENTITY_ALREADY_EXISTS';
+        return 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS';
     }
 }

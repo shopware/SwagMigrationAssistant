@@ -29,6 +29,7 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
         'user_fixable' => 'TINYINT(1) NOT NULL DEFAULT 0',
         'auto_increment' => null,
         'created_at' => null,
+        'updated_at' => null,
     ];
 
     public function getCreationTimestamp(): int

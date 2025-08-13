@@ -59,20 +59,8 @@ class HistoryService implements HistoryServiceInterface
                 null,
                 null,
                 new TermsAggregation(
-                    'titleSnippet',
-                    'titleSnippet',
-                    null,
-                    null,
-                    new TermsAggregation(
-                        'entity',
-                        'entity',
-                        null,
-                        null,
-                        new TermsAggregation(
-                            'level',
-                            'level'
-                        )
-                    )
+                    'level',
+                    'level'
                 )
             )
         );
@@ -156,26 +144,20 @@ class HistoryService implements HistoryServiceInterface
 
     private function extractBucketInformation(Bucket $bucket): array
     {
-        /** @var TermsResult $titleResult */
-        $titleResult = $bucket->getResult();
-        $titleBucket = $titleResult->getBuckets()[0];
-
-        /** @var TermsResult $entityResult */
-        $entityResult = $titleBucket->getResult();
-        $entityString = empty($entityResult->getBuckets()) ? '' : $entityResult->getBuckets()[0]->getKey();
-
+        /** @var TermsResult|null $levelResult */
+        $levelResult = $bucket->getResult();
         $levelString = '';
-        if ($entityString !== '') {
-            /** @var TermsResult $levelResult */
-            $levelResult = $entityResult->getBuckets()[0]->getResult();
-            $levelString = empty($levelResult->getBuckets()) ? '' : $levelResult->getBuckets()[0]->getKey();
+
+        if ($levelResult !== null) {
+            $levelBuckets = $levelResult->getBuckets();
+            if (!empty($levelBuckets)) {
+                $levelString = $levelBuckets[0]->getKey();
+            }
         }
 
         return [
             'code' => $bucket->getKey(),
             'count' => $bucket->getCount(),
-            'titleSnippet' => $titleBucket->getKey(),
-            'entity' => $entityString,
             'level' => $levelString,
         ];
     }

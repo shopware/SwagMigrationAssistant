@@ -99,16 +99,12 @@ class HistoryControllerTest extends TestCase
 
         $this->loggingRepo->create([
             [
+                'runId' => $this->runUuid,
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
                 'level' => LogEntryInterface::LOG_LEVEL_ERROR,
                 'code' => 'migration_error_1',
-                'title' => 'Error1',
-                'description' => 'Lorem Ipsum',
-                'parameters' => [],
-                'titleSnippet' => 'Random error snippet',
-                'descriptionSnippet' => 'Lorem Ipsum random error',
-                'entity' => 'product',
-                'sourceId' => Uuid::randomHex(),
-                'runId' => $this->runUuid,
+                'userFixable' => false,
             ],
         ], $this->context);
     }
@@ -162,7 +158,6 @@ class HistoryControllerTest extends TestCase
 
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $result);
         static::assertNotNull($result->first());
-        static::assertSame('Lorem Ipsum', $result->first()->getDescription());
     }
 
     public function testGetPrefixLogInformation(): void

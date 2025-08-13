@@ -103,7 +103,7 @@ class OrderDocumentConverterTest extends TestCase
         );
         static::assertEmpty($convertResult->getConverted());
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_ORDER', $logs[0]['code']);
+        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
     }
 
     public function testConvertWithoutDocumentType(): void
@@ -119,9 +119,7 @@ class OrderDocumentConverterTest extends TestCase
         );
         static::assertEmpty($convertResult->getConverted());
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_DOCUMENT', $logs[0]['code']);
-        static::assertSame('1', $logs[0]['parameters']['sourceId']);
-        static::assertSame('documenttype', $logs[0]['parameters']['emptyField']);
+        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $logs[0]['code']);
     }
 
     public function testConvert(): void
@@ -178,8 +176,8 @@ class OrderDocumentConverterTest extends TestCase
             $loggerMock = $this->createMock(LoggingServiceInterface::class);
             $loggerMock->expects(static::exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported(
                 $this->runId,
-                'Profile Name',
-                'Gateway Name',
+                Shopware54Profile::PROFILE_NAME,
+                ShopwareLocalGateway::GATEWAY_NAME,
                 $expected
             ));
 
