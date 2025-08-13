@@ -160,7 +160,7 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
-        $error = new UnsupportedShippingCalculationType('', DefaultEntities::SHIPPING_METHOD, '15', '5');
+        $error = new UnsupportedShippingCalculationType('', 'Profile name', 'Gateway name', '5');
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());
@@ -178,7 +178,7 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
-        $error = new UnsupportedShippingPriceLog('', DefaultEntities::SHIPPING_METHOD_PRICE, '309', '15');
+        $error = new UnsupportedShippingPriceLog('', 'Profile name', 'Gateway name', '15');
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());

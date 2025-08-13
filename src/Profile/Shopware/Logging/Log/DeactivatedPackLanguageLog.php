@@ -15,11 +15,20 @@ class DeactivatedPackLanguageLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
         private readonly string $languageId,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,34 +39,5 @@ class DeactivatedPackLanguageLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Deactivated pack language';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, packLanguage: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'packLanguage' => $this->languageId,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'Language for %s with source id "%s" has been set to default language. The language with id "%s" is not activated for sales channels by "Language pack" plugin.',
-            $args['entity'],
-            $args['sourceId'],
-            $args['packLanguage']
-        );
     }
 }

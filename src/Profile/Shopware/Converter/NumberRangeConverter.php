@@ -67,24 +67,24 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
 
+        $connection = $migrationContext->getConnection();
+        if ($connection === null) {
+            return new ConvertStruct(null, $data);
+        }
+        $this->connectionId = $connection->getId();
+
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
             $this->loggingService->addLogEntry(
                 new UnsupportedNumberRangeTypeLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::NUMBER_RANGE,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $data['name']
                 )
             );
 
             return new ConvertStruct(null, $data);
         }
-
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return new ConvertStruct(null, $data);
-        }
-        $this->connectionId = $connection->getId();
 
         $converted = [];
         $converted['id'] = $this->getUuid($data, $migrationContext, $context);

@@ -123,8 +123,8 @@ abstract class CustomerConverter extends ShopwareConverter
         if (!$this->checkEmailValidity($data['email'])) {
             $this->loggingService->addLogEntry(new InvalidEmailAddressLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $data['email']
             ));
 

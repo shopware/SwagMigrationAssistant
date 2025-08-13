@@ -186,8 +186,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             ) {
                 $this->loggingService->addLogEntry(new UnsupportedShippingCalculationType(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD,
-                    $this->oldShippingMethod,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $data['calculation']
                 ));
             } else {
@@ -700,8 +700,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
                 $this->loggingService->addLogEntry(new UnsupportedShippingPriceLog(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $shippingCost['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $this->oldShippingMethod
                 ));
 

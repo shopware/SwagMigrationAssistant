@@ -64,10 +64,13 @@ class MailTemplateConverter extends ShopwareMediaConverter
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid === null) {
+                    $connection = $this->migrationContext->getConnection();
+
                     $this->loggingService->addLogEntry(
                         new UnsupportedMailTemplateType(
                             $this->runId,
-                            $data['id'],
+                            $connection->getProfileName(),
+                            $connection->getGatewayName(),
                             $converted['mailTemplateType']['technicalName']
                         )
                     );
