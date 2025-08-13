@@ -91,7 +91,7 @@ class SalesChannelConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $connection = $this->migrationContext->getConnection();
-        static::assertNotNull($connection);
+
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '3', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '39', $context);
@@ -132,7 +132,7 @@ class SalesChannelConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $connection = $this->migrationContext->getConnection();
-        static::assertNotNull($connection);
+
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CUSTOMER_GROUP, '1', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '3', $context);
         $this->mappingService->getOrCreateMapping($connection->getId(), DefaultEntities::CATEGORY, '39', $context);
