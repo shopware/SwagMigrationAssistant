@@ -82,11 +82,19 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             return;
         }
 
+        $connection = $run->getConnection();
+
         /*
          * Raise exception counter and log the exception
          */
         $progress->raiseExceptionCount();
-        $this->loggingService->addLogEntry(new MessageQueueExceptionLog($run->getId(), $event->getThrowable(), $progress->getExceptionCount()));
+        $this->loggingService->addLogEntry(new MessageQueueExceptionLog(
+            $run->getId(),
+            $connection->getProfileName(),
+            $connection->getGatewayName(),
+            $event->getThrowable(),
+            $progress->getExceptionCount()
+        ));
 
         /*
          * Check if run is already in aborting state and failed again there, then set run status to aborted and log the error.
@@ -96,7 +104,12 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             $progress->setIsAborted(true);
             $this->updateRun($run->getId(), $progress, $message->getContext());
 
-            $this->loggingService->addLogEntry(new RunAbortedAutomatically($run->getId(), $event->getThrowable()));
+            $this->loggingService->addLogEntry(new RunAbortedAutomatically(
+                $run->getId(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
+                $event->getThrowable(),
+            ));
             $this->loggingService->saveLogging($message->getContext());
 
             return;

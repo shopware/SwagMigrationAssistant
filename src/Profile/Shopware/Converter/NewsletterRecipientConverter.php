@@ -55,14 +55,20 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext,
     ): ConvertStruct {
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
+
         $this->runId = $migrationContext->getRunUuid();
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 \implode(',', $fields)
             ));
 
@@ -73,12 +79,6 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
@@ -190,10 +190,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if (!isset($salesChannelMapping)) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'salesChannel'
             ));
 
@@ -214,10 +216,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'status'
             ));
         }

@@ -15,7 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -96,6 +95,8 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
         MigrationContextInterface $migrationContext,
         Context $context,
     ): array {
+        $connection = $migrationContext->getConnection();
+
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
         $failedMedia = [];
@@ -108,9 +109,9 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                     $mappedWorkload[$mediaId]->getRunId(),
-                    DefaultEntities::PRODUCT_DOWNLOAD,
-                    $mediaId,
-                    $sourcePath
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
+                    $sourcePath,
                 ));
                 $processedMedia[] = $mediaId;
                 $failedMedia[] = $mediaId;
@@ -131,9 +132,9 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $mappedWorkload[$mediaId]->getRunId(),
-                    DefaultEntities::PRODUCT_DOWNLOAD,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $e,
-                    $mediaId
                 ));
             }
         }

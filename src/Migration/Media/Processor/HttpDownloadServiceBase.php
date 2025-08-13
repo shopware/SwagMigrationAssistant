@@ -62,6 +62,8 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
      */
     public function process(MigrationContextInterface $migrationContext, Context $context, array $workload): array
     {
+        $connection = $migrationContext->getConnection();
+
         // Map workload with uuids as keys
         $mappedWorkload = [];
         foreach ($workload as $work) {
@@ -76,7 +78,8 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         if ($client === null) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
-                $this->getMediaEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 new \Exception('Http download client can not be constructed.')
             ));
             $this->loggingService->saveLogging($context);
@@ -84,7 +87,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             return $workload;
         }
         // Do download requests and store the promises
-        $promises = $this->doMediaDownloadRequests($media, $mappedWorkload, $client);
+        $promises = $this->doMediaDownloadRequests($migrationContext, $media, $mappedWorkload, $client);
 
         // Wait for the requests to complete, even if some of them fail
         /** @var array<string, array{'state': string, 'value': ResponseInterface, 'reason': ?RequestException}> $results */
@@ -119,8 +122,8 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                         $work->getRunId(),
-                        $this->getMediaEntity(),
-                        $work->getMediaId(),
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         $work->getAdditionalData()['uri'],
                         $result['reason'] ?? null
                     ));
@@ -140,8 +143,8 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new TemporaryFileErrorLog(
                     $work->getRunId(),
-                    $this->getMediaEntity(),
-                    $uuid
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                 ));
 
                 continue;
@@ -181,9 +184,9 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->addLogEntry(new ExceptionRunLog(
                         $work->getRunId(),
-                        $this->getMediaEntity(),
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         $e,
-                        $uuid
                     ));
                 } finally {
                     // clear up temp data
@@ -246,7 +249,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
      *
      * @return array<string, PromiseInterface>
      */
-    private function doMediaDownloadRequests(array $media, array &$mappedWorkload, HttpClientInterface $client): array
+    private function doMediaDownloadRequests(MigrationContextInterface $migrationContext, array $media, array &$mappedWorkload, HttpClientInterface $client): array
     {
         $promises = [];
         foreach ($media as $mediaFile) {
@@ -256,7 +259,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $additionalData['uri'] = $mediaFile['uri'];
             $mappedWorkload[$uuid]->setAdditionalData($additionalData);
 
-            $promise = $this->doNormalDownloadRequest($mappedWorkload[$uuid], $client);
+            $promise = $this->doNormalDownloadRequest($migrationContext, $mappedWorkload[$uuid], $client);
 
             if ($promise !== null) {
                 $promises[$uuid] = $promise;
@@ -266,7 +269,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         return $promises;
     }
 
-    private function doNormalDownloadRequest(MediaProcessWorkloadStruct $workload, HttpClientInterface $client): ?PromiseInterface
+    private function doNormalDownloadRequest(MigrationContextInterface $migrationContext, MediaProcessWorkloadStruct $workload, HttpClientInterface $client): ?PromiseInterface
     {
         $additionalData = $workload->getAdditionalData();
 
@@ -276,12 +279,14 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $workload->setCurrentOffset((int) $additionalData['file_size']);
             $workload->setState(MediaProcessWorkloadStruct::FINISH_STATE);
         } catch (\Throwable $exception) {
+            $connection = $migrationContext->getConnection();
+
             // this should never happen because of Promises, but just in case something is wrong with request construction
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $workload->getRunId(),
-                $this->getMediaEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $exception,
-                $workload->getMediaId()
             ));
 
             $promise = null;
@@ -296,16 +301,20 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         // determine correct info about the temporary file, except for the $fileExtension (which can be overridden)
         $fileSize = \filesize($filePath);
         $mimeType = \mime_content_type($filePath);
+
         if ($fileSize === false || $fileSize === 0 || $mimeType === false) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
-                $this->getMediaEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 new \Exception('Downloaded file is empty or could not determine mime type.'),
-                $uuid
             ));
 
             return;
         }
+
         $fileHash = \hash_file('md5', $filePath);
         $mediaFile = new MediaFile(
             $filePath,
@@ -331,11 +340,13 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 } elseif (\in_array($mediaException->getErrorCode(), [MediaException::MEDIA_ILLEGAL_FILE_NAME, MediaException::MEDIA_EMPTY_FILE_NAME], true)) {
                     $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
                 } else {
+                    $connection = $migrationContext->getConnection();
+
                     $this->loggingService->addLogEntry(new ExceptionRunLog(
                         $migrationContext->getRunUuid(),
-                        $this->getMediaEntity(),
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         $mediaException,
-                        $uuid
                     ));
                 }
             }

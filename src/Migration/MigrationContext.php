@@ -21,7 +21,7 @@ class MigrationContext extends Struct implements MigrationContextInterface
 
     private ProfileInterface $profile;
 
-    private ?SwagMigrationConnectionEntity $connection;
+    private SwagMigrationConnectionEntity $connection;
 
     private string $runUuid;
 
@@ -54,8 +54,10 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->profile;
     }
 
-    public function getConnection(): ?SwagMigrationConnectionEntity
+    public function getConnection(): SwagMigrationConnectionEntity
     {
+        \assert($this->connection instanceof SwagMigrationConnectionEntity);
+
         return $this->connection;
     }
 

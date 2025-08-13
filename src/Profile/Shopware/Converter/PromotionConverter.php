@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -87,7 +88,7 @@ abstract class PromotionConverter extends ShopwareConverter
         }
 
         $this->setSalesChannel($data, $converted);
-        $this->setProductNumbers($data);
+        $this->setProductNumbers($data, $connection);
         $this->setDiscount($data, $converted);
         $this->setShippingDiscount($data, $converted);
         $this->setCartRule($data, $converted);
@@ -350,7 +351,7 @@ abstract class PromotionConverter extends ShopwareConverter
     /**
      * @param array<string, mixed> $data
      */
-    private function setProductNumbers(array &$data): void
+    private function setProductNumbers(array &$data, SwagMigrationConnectionEntity $connection): void
     {
         if (!isset($data['restrictarticles'])) {
             return;
@@ -372,8 +373,8 @@ abstract class PromotionConverter extends ShopwareConverter
                     $this->loggingService->addLogEntry(
                         new AssociationRequiredMissingLog(
                             $this->runId,
-                            DefaultEntities::PRODUCT,
-                            $productNumber,
+                            $connection->getProfileName(),
+                            $connection->getGatewayName(),
                             DefaultEntities::PROMOTION
                         )
                     );
@@ -504,11 +505,13 @@ abstract class PromotionConverter extends ShopwareConverter
                 unset($data['bindtosupplier']);
                 $oneRuleAdded = true;
             } else {
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(
                     new AssociationRequiredMissingLog(
                         $this->runId,
-                        DefaultEntities::PRODUCT_MANUFACTURER,
-                        $data['bindtosupplier'],
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         DefaultEntities::PROMOTION_DISCOUNT
                     )
                 );
@@ -559,11 +562,13 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             if ($salesChannelMapping === null) {
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(
                     new AssociationRequiredMissingLog(
                         $this->runId,
-                        DefaultEntities::SALES_CHANNEL,
-                        $data['subshopID'],
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         DefaultEntities::PROMOTION
                     )
                 );
@@ -631,10 +636,12 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER_GROUP,
-                $data['customergroup'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::PROMOTION
             ));
 

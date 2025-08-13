@@ -12,9 +12,10 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Migration\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
-class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStepshopware
+class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
 {
     public const MIGRATION_LOGGING_TABLE = 'swag_migration_logging';
 
@@ -118,15 +119,40 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationSteps
         $indexes = $schemaManager->listTableIndexes(self::MIGRATION_LOGGING_TABLE);
 
         if (isset($indexes['primary'])) {
-            $connection->executeStatement(\sprintf('ALTER TABLE `%s` DROP PRIMARY KEY;', self::MIGRATION_LOGGING_TABLE));
+            $connection->executeStatement(
+                \sprintf(
+                    'ALTER TABLE `%s` DROP PRIMARY KEY;',
+                    self::MIGRATION_LOGGING_TABLE
+                )
+            );
         }
 
-        $connection->executeStatement(\sprintf('ALTER TABLE `%s` ADD PRIMARY KEY (`id`);', self::MIGRATION_LOGGING_TABLE));
-        $this->dropIndexIfExists($connection, self::MIGRATION_LOGGING_TABLE, 'idx.run_id');
-        $connection->executeStatement(\sprintf('ALTER TABLE `%s` ADD INDEX `idx.run_id` (`run_id`);', self::MIGRATION_LOGGING_TABLE));
+        $connection->executeStatement(
+            \sprintf(
+                'ALTER TABLE `%s` ADD PRIMARY KEY (`id`);',
+                self::MIGRATION_LOGGING_TABLE
+            )
+        );
+
+        $this->dropIndexIfExists(
+            $connection,
+            self::MIGRATION_LOGGING_TABLE,
+            'idx.run_id'
+        );
+        $connection->executeStatement(
+            \sprintf(
+                'ALTER TABLE `%s` ADD INDEX `idx.run_id` (`run_id`);',
+                self::MIGRATION_LOGGING_TABLE
+            )
+        );
 
         // ensure foreign key constraint
-        $connection->executeStatement(\sprintf('ALTER TABLE `%s` ADD CONSTRAINT `fk.swag_migration_logging.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;', self::MIGRATION_LOGGING_TABLE));
+        $connection->executeStatement(
+            \sprintf(
+                'ALTER TABLE `%s` ADD CONSTRAINT `fk.swag_migration_logging.run_id` FOREIGN KEY (`run_id`) REFERENCES `swag_migration_run` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE;',
+                self::MIGRATION_LOGGING_TABLE
+            )
+        );
     }
 
     private function dropConstraintIfExists(Connection $connection, string $constraintName): void

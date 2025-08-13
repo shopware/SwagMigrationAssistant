@@ -83,10 +83,9 @@ final class ProcessMediaHandler
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
-        } catch (NoConnectionFoundException $e) {
+        } catch (NoConnectionFoundException) {
             $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
                 $message->getRunId(),
-                $message->getEntityName(),
                 $connection->getProfileName(),
                 $connection->getGatewayName()
             ));
@@ -95,7 +94,8 @@ final class ProcessMediaHandler
         } catch (\Exception $e) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $message->getRunId(),
-                $message->getEntityName(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $e
             ));
 

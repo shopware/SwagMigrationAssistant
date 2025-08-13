@@ -147,10 +147,12 @@ abstract class ShopwareConverter extends Converter
 
             if (empty($newAssociationId)) {
                 if ($logMissing) {
+                    $connection = $this->migrationContext->getConnection();
+
                     $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
                         $this->runId,
-                        $entity,
-                        $oldAssociationId,
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         $sourceEntity
                     ));
                 }

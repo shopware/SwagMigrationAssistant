@@ -67,10 +67,13 @@ class TableCountReader implements TableCountReaderInterface
 
     private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
     {
+        $connection = $migrationContext->getConnection();
+
         foreach ($exceptionArray as $exception) {
             $this->loggingService->addLogEntry(new CannotReadEntityCountLog(
                 $migrationContext->getRunUuid(),
-                $exception['entity'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $exception['table'],
                 $exception['condition'],
                 $exception['code'],

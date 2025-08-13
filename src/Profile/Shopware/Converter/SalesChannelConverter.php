@@ -102,8 +102,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::CUSTOMER_GROUP,
-                    $data['customer_group_id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -119,8 +119,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $data['locale'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -143,8 +143,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::CURRENCY,
-                    $data['currency'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -170,8 +170,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::CATEGORY,
-                    $data['category_id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );

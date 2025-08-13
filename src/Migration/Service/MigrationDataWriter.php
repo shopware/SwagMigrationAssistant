@@ -104,9 +104,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
             $currentWriter->writeData(\array_values($converted), $this->writeContext);
         } catch (WriterNotFoundException $writerNotFoundException) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
-                $dataSet::getEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $writerNotFoundException
             ));
             $this->loggingService->saveLogging($context);
@@ -163,6 +166,8 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         MigrationContextInterface $migrationContext,
         Context $context,
     ): void {
+        $connection = $migrationContext->getConnection();
+
         $writeErrors = $this->extractWriteErrorsWithIndex($exception);
         $currentWriter = $this->writerRegistry->getWriter($entityName);
         $newData = [];
@@ -178,11 +183,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
             $updateWrittenData[$dataId]['written'] = false;
             $updateWrittenData[$dataId]['writeFailure'] = true;
+
             $this->loggingService->addLogEntry(new WriteExceptionRunLog(
                 $migrationContext->getRunUuid(),
-                $entityName,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $writeErrors[$index],
-                $dataId
             ));
 
             ++$index;
@@ -194,7 +200,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
         try {
             $currentWriter->writeData($newData, $this->writeContext);
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext, $context);
         }
     }
@@ -229,6 +235,8 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         MigrationContextInterface $migrationContext,
         Context $context,
     ): void {
+        $connection = $migrationContext->getConnection();
+
         foreach ($converted as $dataId => $entity) {
             try {
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
@@ -236,9 +244,9 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $migrationContext->getRunUuid(),
-                    $entityName,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $exception,
-                    $dataId
                 ));
 
                 $updateWrittenData[$dataId]['written'] = false;

@@ -63,8 +63,8 @@ abstract class CrossSellingConverter extends ShopwareConverter
         if ($sourceProductMapping === null) {
             $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
                 $this->runId,
-                DefaultEntities::PRODUCT,
-                $data['articleID'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $data['type']
             ));
 
@@ -76,8 +76,8 @@ abstract class CrossSellingConverter extends ShopwareConverter
         if ($relatedProductMapping === null) {
             $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
                 $this->runId,
-                DefaultEntities::PRODUCT,
-                $data['relatedarticle'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $data['type']
             ));
 

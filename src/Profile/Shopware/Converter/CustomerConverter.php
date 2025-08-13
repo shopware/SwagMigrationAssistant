@@ -99,13 +99,21 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->migrationContext = $migrationContext;
 
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        $this->connectionName = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+            $this->connectionName = $connection->getName();
+        }
+
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 \implode(',', $fields)
             ));
 
@@ -126,14 +134,6 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -236,8 +236,8 @@ abstract class CustomerConverter extends ShopwareConverter
             if ($mapping === null) {
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     'defaultpayment'
                 ));
 
@@ -298,8 +298,8 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'address data'
             ));
 
@@ -343,10 +343,12 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($paymentMethodMapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                DefaultEntities::PAYMENT_METHOD,
-                $originalData['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::CUSTOMER,
                 $this->oldCustomerId
             ));
@@ -371,10 +373,12 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $fields = $this->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
             if (!empty($fields)) {
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    DefaultEntities::CUSTOMER_ADDRESS,
-                    $address['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     \implode(',', $fields)
                 ));
 
@@ -548,6 +552,8 @@ abstract class CustomerConverter extends ShopwareConverter
      */
     protected function getCountryState(array $oldAddressData, string $newCountryId): array
     {
+        $connection = $this->migrationContext->getConnection();
+
         if (!isset($oldAddressData['state_id'])) {
             return [];
         }
@@ -558,8 +564,8 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new UnknownEntityLog(
                     $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['state_id'] ?? 'unknown',
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::CUSTOMER,
                     $this->oldCustomerId
                 )
@@ -596,8 +602,8 @@ abstract class CustomerConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new UnknownEntityLog(
                     $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['state_id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::CUSTOMER,
                     $this->oldCustomerId
                 )
@@ -669,10 +675,12 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultShippingAddressId'] = $addresses[0]['id'];
             unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
 
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'default billing and shipping address',
                 'first address'
             ));
@@ -689,10 +697,12 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
             unset($originalData['default_shipping_address_id']);
 
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'default shipping address',
                 'default billing address'
             ));
@@ -709,10 +719,12 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
             unset($originalData['default_billing_address_id']);
 
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new FieldReassignedRunLog(
                 $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'default billing address',
                 'default shipping address'
             ));
@@ -729,10 +741,12 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                DefaultEntities::SALUTATION,
-                $salutation,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::CUSTOMER,
                 $this->oldCustomerId
             ));

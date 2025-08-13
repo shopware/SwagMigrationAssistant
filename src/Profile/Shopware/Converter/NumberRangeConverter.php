@@ -93,8 +93,8 @@ abstract class NumberRangeConverter extends ShopwareConverter
         if (empty($converted['typeId'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $migrationContext->getRunUuid(),
-                DefaultEntities::NUMBER_RANGE,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'typeId'
             ));
 

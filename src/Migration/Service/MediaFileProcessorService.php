@@ -45,7 +45,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                 } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
+                    $this->logDataSetNotFoundException($migrationContext);
 
                     continue;
                 }
@@ -59,7 +59,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                     $currentCount = 0;
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                 } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
+                    $this->logDataSetNotFoundException($migrationContext);
 
                     continue;
                 }
@@ -131,22 +131,15 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     /**
      * @param array<string, mixed> $mediaFile
      */
-    private function logDataSetNotFoundException(
-        MigrationContextInterface $migrationContext,
-        array $mediaFile,
-    ): void {
+    private function logDataSetNotFoundException(MigrationContextInterface $migrationContext): void
+    {
         $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return;
-        }
 
         $this->loggingService->addLogEntry(
             new DataSetNotFoundLog(
                 $migrationContext->getRunUuid(),
-                $mediaFile['entity'],
-                $mediaFile['id'],
-                $connection->getProfileName()
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
             )
         );
     }

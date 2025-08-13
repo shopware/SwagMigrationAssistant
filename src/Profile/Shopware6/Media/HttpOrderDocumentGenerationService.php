@@ -91,7 +91,8 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         if ($client === null) {
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $runId,
-                DefaultEntities::ORDER_DOCUMENT_GENERATED,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 new \Exception('Connection to the source system could not be established')
             ));
             $this->loggingService->saveLogging($context);
@@ -282,8 +283,8 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
             $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                 $mappedWorkload->getRunId(),
-                DefaultEntities::ORDER_DOCUMENT,
-                $mappedWorkload->getMediaId(),
+                $this->connection->getProfileName(),
+                $this->connection->getGatewayName(),
                 $mappedWorkload->getAdditionalData()['uri'],
                 $clientException
             ));

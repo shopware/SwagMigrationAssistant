@@ -80,8 +80,8 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         if (!isset($data['group']['name'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'group'
             ));
 
@@ -132,9 +132,12 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function setMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new CannotConvertChildEntity(
                 $this->runId,
-                'property_group_option_media',
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::PROPERTY_GROUP_OPTION,
                 $data['id']
             ));
