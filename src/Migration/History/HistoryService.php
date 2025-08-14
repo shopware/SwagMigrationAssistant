@@ -139,7 +139,7 @@ class HistoryService implements HistoryServiceInterface
             'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
         )->fetchOne();
 
-        return $unprocessedCount !== '0';
+        return (int) $unprocessedCount !== 0;
     }
 
     private function extractBucketInformation(Bucket $bucket): array

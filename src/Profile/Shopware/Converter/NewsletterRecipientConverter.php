@@ -104,7 +104,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $this->convertValue($converted, 'city', $address, 'city');
 
             if (isset($address['salutation'])) {
-                $salutationUuid = $this->getSalutation($address['salutation']);
+                $salutationUuid = $this->getSalutation($address['salutation'], $migrationContext);
                 if ($salutationUuid !== null) {
                     $converted['salutationId'] = $salutationUuid;
                 }
@@ -150,7 +150,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
-    protected function getSalutation(string $salutation): ?string
+    protected function getSalutation(string $salutation, MigrationContextInterface $migrationContext): ?string
     {
         $salutationMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -160,10 +160,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                'salutation',
-                $salutation,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::NEWSLETTER_RECIPIENT,
                 $this->oldNewsletterRecipientId
             ));

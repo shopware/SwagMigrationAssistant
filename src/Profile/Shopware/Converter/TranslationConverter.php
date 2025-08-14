@@ -99,8 +99,8 @@ abstract class TranslationConverter extends ShopwareConverter
         $this->loggingService->addLogEntry(
             new UnsupportedTranslationType(
                 $migrationContext->getRunUuid(),
-                $data['objecttype'],
-                DefaultEntities::TRANSLATION,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $data['id']
             )
         );

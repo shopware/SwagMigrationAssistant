@@ -160,8 +160,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new UnsupportedSeoUrlType(
                     $migrationContext->getRunUuid(),
-                    $data['type'],
-                    DefaultEntities::SEO_URL,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $originalData['id']
                 )
             );
