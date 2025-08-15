@@ -6,8 +6,8 @@ import './profile';
 import './store/migration.store';
 
 /**
- * @sw-package fundamentals@after-sales
  * @private
+ * @sw-package fundamentals@after-sales
  */
 Shopware.Module.register('swag-migration', {
     type: 'plugin',

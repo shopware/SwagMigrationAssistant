@@ -55,7 +55,7 @@ type EnvironmentInformation = {
 
 type DataSelection = {
     id: string;
-    dataSets: [];
+    dataSets: unknown[];
     total: number;
     snippet: string;
     position: number;
@@ -70,7 +70,7 @@ type DataSelection = {
 type PremappingEntity = {
     sourceId: string;
     description: string;
-    destinationUuid: string;
+    destinationUuid: string | null;
 };
 
 type PremappingChoice = {

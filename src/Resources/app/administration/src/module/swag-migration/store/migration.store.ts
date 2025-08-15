@@ -53,6 +53,7 @@ export type MigrationStore = {
 
 /**
  * The pinia store for handling all global data that is needed for the migration process.
+ *
  * @private
  * @sw-package fundamentals@after-sales
  */
@@ -96,7 +97,7 @@ Shopware.Store.register({
     }),
 
     getters: {
-        isPremappingValid() {
+        isPremappingValid(): boolean {
             if (!this.premapping.length) {
                 return false;
             }
@@ -108,7 +109,7 @@ Shopware.Store.register({
             });
         },
 
-        isMigrationAllowed() {
+        isMigrationAllowed(): boolean {
             if (!this.dataSelectionTableData.length) {
                 return false;
             }
@@ -244,7 +245,7 @@ Shopware.Store.register({
             this.isLoading = false;
         },
 
-        async fetchConnectionId() {
+        async fetchConnectionId(): Promise<boolean> {
             try {
                 const criteria = new Criteria(1, 1);
                 const settings = await migrationGeneralSettingRepository.search(criteria, Shopware.Context.api);
@@ -305,8 +306,8 @@ Shopware.Store.register({
 
         async createErrorNotification(errorMessageKey: string) {
             await this.$patch(() => {
-                // Assuming notification system exists
-                // Replace this with how notifications are handled in your system
+                // Assuming a notification system exists.
+                // Replace this with how notifications are handled in your system.
                 Shopware.State.dispatch('notification/createNotification', {
                     variant: 'error',
                     title: Shopware.Snippet.tc('global.default.error'),
