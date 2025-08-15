@@ -2,8 +2,11 @@
  * @sw-package after-sales
  */
 import type { Entity } from '@shopware-ag/admin-extension-sdk/es/data/_internals/Entity';
+import type Repository from 'shopware-administration/src/core/data/repository.data';
 
 type TEntity<T> = Entity<T>;
+
+type TRepository<T> = Repository<T>;
 
 type MigrationStep =
     | 'idle'
@@ -96,6 +99,7 @@ type MigrationCredentials = {
  */
 export {
     TEntity,
+    TRepository,
     MigrationStep,
     MigrationState,
     MigrationProfile,

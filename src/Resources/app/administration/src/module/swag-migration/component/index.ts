@@ -2,7 +2,6 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-
 import './swag-migration-dashboard-card';
 import './card';
 import './swag-migration-grid-extended';

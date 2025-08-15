@@ -2,7 +2,6 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-
 import './swag-migration-base';
 import './swag-migration-index';
 import './swag-migration-main-page';

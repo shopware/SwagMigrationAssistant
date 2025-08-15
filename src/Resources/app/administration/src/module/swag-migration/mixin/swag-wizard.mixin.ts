@@ -1,5 +1,14 @@
-const { Mixin } = Shopware;
 const { debug } = Shopware.Utils;
+
+type Route = {
+    name: string;
+    index: number;
+};
+
+export interface SwagWizardMixinData {
+    routes: Record<string, Route>;
+    currentRoute: Route;
+}
 
 /**
  * Mixin for the navigation logic inside a wizard.
@@ -8,13 +17,13 @@ const { debug } = Shopware.Utils;
  * @private
  * @sw-package fundamentals@after-sales
  */
-Mixin.register('swag-wizard', {
+Shopware.Mixin.register('swag-wizard', {
     inject: [
         'feature',
     ],
-    data() {
+
+    data(): SwagWizardMixinData {
         return {
-            routes: {},
             /* Example routes
             routes: {
                 introduction: {
@@ -38,6 +47,7 @@ Mixin.register('swag-wizard', {
                     index: 2
                 }
             } */
+            routes: {},
             currentRoute: {
                 name: '',
                 index: 0,
@@ -52,7 +62,7 @@ Mixin.register('swag-wizard', {
          *
          * @returns {number}
          */
-        routeIndex() {
+        routeIndex(): number {
             return Math.floor(this.currentRoute.index);
         },
 
@@ -62,8 +72,9 @@ Mixin.register('swag-wizard', {
          *
          * @returns {number}
          */
-        routeCount() {
+        routeCount(): number {
             const routeIndices = [];
+
             Object.keys(this.routes).forEach((routeIndex) => {
                 if (!routeIndices.includes(Math.floor(this.routes[routeIndex].index))) {
                     routeIndices.push(Math.floor(this.routes[routeIndex].index));
@@ -79,8 +90,8 @@ Mixin.register('swag-wizard', {
          *
          * @returns {Object|boolean<false>}
          */
-        routePrevious() {
-            let previousRoute;
+        routePrevious(): Route | false {
+            let previousRoute: Route | undefined;
 
             Object.keys(this.routes).forEach((route) => {
                 if (this.routes[route].index < this.currentRoute.index) {
@@ -99,8 +110,9 @@ Mixin.register('swag-wizard', {
          *
          * @returns {Object|boolean<false>}
          */
-        routeNext() {
-            let nextRoute;
+        routeNext(): Route | false {
+            let nextRoute: Route | undefined;
+
             Object.keys(this.routes).forEach((route) => {
                 if (Math.floor(this.routes[route].index) > this.routeIndex) {
                     if (nextRoute === undefined || Math.floor(this.routes[route].index) < nextRoute.index) {
@@ -117,7 +129,7 @@ Mixin.register('swag-wizard', {
          *
          * @returns {boolean}
          */
-        navigateToPreviousPossible() {
+        navigateToPreviousPossible(): boolean {
             return this.routePrevious !== false;
         },
 
@@ -126,7 +138,7 @@ Mixin.register('swag-wizard', {
          *
          * @returns {boolean}
          */
-        navigateToNextPossible() {
+        navigateToNextPossible(): boolean {
             return this.routeNext !== false;
         },
     },
@@ -153,7 +165,8 @@ Mixin.register('swag-wizard', {
             const routerCurrentRoute = this.$router.currentRoute.value;
 
             // check for current child route
-            let currentRoute;
+            let currentRoute: Route | undefined;
+
             const currentRouteFound = Object.keys(this.routes).some((routeIndex) => {
                 if (this.routes[routeIndex].name === routerCurrentRoute.name) {
                     currentRoute = this.routes[routeIndex];
@@ -173,7 +186,7 @@ Mixin.register('swag-wizard', {
 
         /**
          * Gets called when a route change has happened. This is useful to update texts inside the modal but
-         * outside of the router view (for example headlines, buttons, ...)
+         * outside the router view (for example, headlines, buttons, ...)
          * Note: does not get called on created (to allow loading things from the api first)
          */
         onChildRouteChanged() {
@@ -188,9 +201,11 @@ Mixin.register('swag-wizard', {
          *
          * @param {Object} route
          */
-        navigateToRoute(route) {
-            this.$router.push({ name: route.name }).catch((error) => {
-                console.error(error.message);
+        navigateToRoute(route: Route) {
+            this.$router.push({ name: route.name }).catch((error: unknown) => {
+                if (error instanceof Error) {
+                    console.error(error.message);
+                }
             });
         },
 
@@ -201,7 +216,7 @@ Mixin.register('swag-wizard', {
          *
          * @returns {boolean}
          */
-        navigateToPrevious() {
+        navigateToPrevious(): boolean {
             if (this.navigateToPreviousPossible) {
                 this.navigateToRoute(this.routePrevious);
                 return true;
@@ -217,7 +232,7 @@ Mixin.register('swag-wizard', {
          *
          * @returns {boolean}
          */
-        navigateToNext() {
+        navigateToNext(): boolean {
             if (this.navigateToNextPossible) {
                 this.navigateToRoute(this.routeNext);
                 return true;

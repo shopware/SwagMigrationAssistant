@@ -1,4 +1,4 @@
-import './mixin';
+import './mixin/swag-wizard.mixin';
 import './component';
 import './page';
 import './extension';
