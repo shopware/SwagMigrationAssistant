@@ -5,6 +5,37 @@ import type { Entity } from '@shopware-ag/admin-extension-sdk/es/data/_internals
 
 type TEntity<T> = Entity<T>;
 
+type MigrationStep =
+    | 'idle'
+    | 'fetching'
+    | 'writing'
+    | 'media-processing'
+    | 'cleanup'
+    | 'indexing'
+    | 'waiting-for-approve'
+    | 'aborting'
+    | 'finished'
+    | 'aborted';
+
+type MigrationState = {
+    step: MigrationStep;
+    progress: number;
+    total: number;
+};
+
+type MigrationProfile = {
+    name: string;
+    sourceSystemName: string;
+    version: string;
+    author: string;
+    icon?: string;
+};
+
+type MigrationGateway = {
+    name: string;
+    snippet: string;
+};
+
 type EnvironmentInformation = {
     sourceSystemName?: string;
     migrationDisabled?: boolean;
@@ -36,16 +67,42 @@ type DataSelection = {
     dataSetsRequiredForCount: string[];
 };
 
-type PremappingGroup = {
+type PremappingEntity = {
+    sourceId: string;
+    description: string;
+    destinationUuid: string;
+};
+
+type PremappingChoice = {
+    uuid: string;
+    description: string;
+};
+
+type Premapping = {
     entity: string;
-    mapping: {
-        destinationUuid: string;
-        sourceId: string;
-    }[];
-    choices: unknown;
+    choices: PremappingChoice[];
+    mapping: PremappingEntity[];
+};
+
+type CredentialFields = {
+    [key: string]: {
+        endpoint: string;
+    };
 };
 
 /**
  * @private
  */
-export { TEntity, DataSelection, PremappingGroup, EnvironmentInformation };
+export {
+    TEntity,
+    MigrationStep,
+    MigrationState,
+    MigrationProfile,
+    MigrationGateway,
+    DataSelection,
+    Premapping,
+    PremappingEntity,
+    PremappingChoice,
+    CredentialFields,
+    EnvironmentInformation,
+};

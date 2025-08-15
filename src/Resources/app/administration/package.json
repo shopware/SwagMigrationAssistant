@@ -14,9 +14,7 @@
     "format:fix": "prettier --write \"src/**/*.{js,ts}\" --cache"
   },
   "devDependencies": {
-    "shopware-administration": "file:../../../../../../../src/Administration/Resources/app/administration",
     "@babel/core": "^7.24.5",
-    "@types/node": "^22.10.10",
     "@babel/eslint-parser": "^7.24.5",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-decorators": "^7.24.1",
@@ -31,21 +29,19 @@
     "@babel/preset-env": "^7.24.5",
     "@babel/preset-typescript": "^7.24.1",
     "@babel/register": "^7.23.7",
-    "typescript": "^5.7.3",
-    "typescript-eslint": "^8.21.0",
+    "@eslint/js": "^9.18.0",
     "@shopware-ag/eslint-config-base": "^2.0.0",
     "@shopware-ag/stylelint-plugin-meteor": "^1.1.0",
+    "@types/node": "^22.10.10",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
     "@typescript-eslint/parser": "^7.9.0",
+    "axios": "^1.11.0",
     "babel-jest": "^29.7.0",
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-module-resolver": "^5.0.2",
     "core-js": "^2.6.12",
-    "@eslint/js": "^9.18.0",
     "eslint": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint",
     "eslint-config-prettier": "^9.1.0",
-    "prettier": "^3.4.2",
-    "prettier-plugin-multiline-arrays": "^3.0.6",
     "eslint-import-resolver-webpack": "^0.13.8",
     "eslint-plugin-file-progress": "^1.4.0",
     "eslint-plugin-filename-rules": "^1.3.1",
@@ -60,7 +56,12 @@
     "eslint-plugin-twig-vue": "file:../../../../../../../src/Administration/Resources/app/administration/twigVuePlugin",
     "eslint-plugin-vue": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint-plugin-vue",
     "eslint-plugin-vuejs-accessibility": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint-plugin-vuejs-accessibility",
+    "prettier": "^3.4.2",
+    "prettier-plugin-multiline-arrays": "^3.0.6",
+    "shopware-administration": "file:../../../../../../../src/Administration/Resources/app/administration",
     "stylelint": "^16.16.0",
-    "stylelint-define-config": "^16.15.0"
+    "stylelint-define-config": "^16.15.0",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0"
   }
 }

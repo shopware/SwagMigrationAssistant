@@ -1,10 +1,16 @@
 /**
  * @sw-package after-sales
  */
-import type { MigrationState } from '../module/swag-migration/store/migration.store';
+import type { SubContainer } from '@administration/src/global.types';
+import type { MigrationStore } from '../module/swag-migration/store/migration.store';
+import MigrationApiService from '../core/service/api/swag-migration.api.service';
 
 declare global {
     interface PiniaRootState {
-        swagMigration: MigrationState;
+        swagMigration: MigrationStore;
+    }
+
+    interface ServiceContainer extends SubContainer<'service'> {
+        migrationApiService: MigrationApiService;
     }
 }

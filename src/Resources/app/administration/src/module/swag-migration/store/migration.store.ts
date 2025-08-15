@@ -1,9 +1,10 @@
 import type RepositoryType from '@administration/src/core/data/repository.data';
-import type { DataSelection, EnvironmentInformation, PremappingGroup } from '../../../type/types';
+import type { DataSelection, EnvironmentInformation, Premapping } from '../../../type/types';
+import MigrationApiService from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
 
-const migrationApiService = Shopware.Service('migrationApiService');
+const migrationApiService: MigrationApiService = Shopware.Service('migrationApiService');
 const repositoryFactory = Shopware.Service('repositoryFactory');
 
 const migrationGeneralSettingRepository = repositoryFactory.create(
@@ -13,12 +14,12 @@ const migrationGeneralSettingRepository = repositoryFactory.create(
 /**
  * @private
  */
-export const migrationStateId = 'swagMigration';
+export const migrationStoreId = 'swagMigration';
 
 /**
  * @private
  */
-export type MigrationState = {
+export type MigrationStore = {
     state: {
         connectionId: string | null;
         environmentInformation: EnvironmentInformation;
@@ -26,7 +27,7 @@ export type MigrationState = {
         isLoading: boolean;
         dataSelectionTableData: DataSelection[];
         dataSelectionIds: string[];
-        premapping: PremappingGroup[];
+        premapping: Premapping[];
         warningConfirmed: boolean;
     };
     getters: {
@@ -40,7 +41,7 @@ export type MigrationState = {
         setIsLoading: (isLoading: boolean) => void;
         setDataSelectionIds: (newIds: string[]) => void;
         setDataSelectionTableData: (data: DataSelection[]) => void;
-        setPremapping: (newPremapping: PremappingGroup[]) => void;
+        setPremapping: (newPremapping: Premapping[]) => void;
         setWarningConfirmed: (confirmed: boolean) => void;
         init: (forceFullStateReload?: boolean) => Promise<void>;
         fetchConnectionId: () => Promise<boolean>;
@@ -56,9 +57,9 @@ export type MigrationState = {
  * @sw-package fundamentals@after-sales
  */
 Shopware.Store.register({
-    id: migrationStateId,
+    id: migrationStoreId,
 
-    state: (): MigrationState['state'] => ({
+    state: (): MigrationStore['state'] => ({
         /**
          * The id of the currently selected connection to a source system.
          */
@@ -100,7 +101,7 @@ Shopware.Store.register({
                 return false;
             }
 
-            return !this.premapping.some((group: PremappingGroup) => {
+            return !this.premapping.some((group: Premapping) => {
                 return group.mapping.some((mapping) => {
                     return mapping.destinationUuid === null || mapping.destinationUuid === '';
                 });
@@ -164,7 +165,7 @@ Shopware.Store.register({
 
         // merges the existing premapping (in the state) with the newly provided one.
         // resets the state premapping if an empty array is passed as an argument.
-        setPremapping(newPremapping: PremappingGroup[]) {
+        setPremapping(newPremapping: Premapping[]) {
             if (newPremapping === undefined || newPremapping === null || newPremapping.length < 1) {
                 this.premapping = [];
                 return;
@@ -173,7 +174,7 @@ Shopware.Store.register({
             newPremapping.forEach((group) => {
                 // the premapping is grouped by entity, find the corresponding group in the state
                 let existingGroup = this.premapping.find(
-                    (existingGroupItem: PremappingGroup) => existingGroupItem.entity === group.entity,
+                    (existingGroupItem: Premapping) => existingGroupItem.entity === group.entity,
                 );
 
                 if (!existingGroup) {
@@ -292,6 +293,7 @@ Shopware.Store.register({
 
             try {
                 const dataSelection = await migrationApiService.getDataSelection(this.connectionId);
+
                 this.dataSelectionTableData = dataSelection;
                 this.dataSelectionIds = dataSelection
                     .filter((selection: DataSelection) => selection.requiredSelection)
