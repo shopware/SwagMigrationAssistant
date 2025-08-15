@@ -1,12 +1,24 @@
+import type { PropType } from 'vue';
 import template from './swag-migration-profile-shopware-local-credential-form.html.twig';
 
-const { Component } = Shopware;
+type Credentials = {
+    dbHost: string;
+    dbPort: string;
+    dbUser: string;
+    dbPassword: string;
+    dbName: string;
+    installationRoot: string;
+};
+
+export interface SwagMigrationProfileShopwareLocalCredentialFormData {
+    inputCredentials: Credentials;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-profile-shopware-local-credential-form', {
+Shopware.Component.register('swag-migration-profile-shopware-local-credential-form', {
     template,
 
     emits: [
@@ -16,14 +28,14 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
 
     props: {
         credentials: {
-            type: Object,
+            type: Object as PropType<Credentials>,
             default() {
                 return {};
             },
         },
     },
 
-    data() {
+    data(): SwagMigrationProfileShopwareLocalCredentialFormData {
         return {
             inputCredentials: {
                 dbHost: '',
@@ -39,7 +51,7 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
     watch: {
         credentials: {
             immediate: true,
-            handler(newCredentials) {
+            handler(newCredentials: Credentials | null) {
                 if (newCredentials === null || Object.keys(newCredentials).length < 1) {
                     this.emitCredentials(this.inputCredentials);
                     return;
@@ -52,14 +64,14 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
 
         inputCredentials: {
             deep: true,
-            handler(newInputCredentials) {
+            handler(newInputCredentials: Credentials) {
                 this.emitCredentials(newInputCredentials);
             },
         },
     },
 
     methods: {
-        areCredentialsValid(newInputCredentials) {
+        areCredentialsValid(newInputCredentials: Credentials): boolean {
             return (
                 newInputCredentials.dbHost !== '' &&
                 newInputCredentials.dbPort !== '' &&
@@ -70,11 +82,11 @@ Component.register('swag-migration-profile-shopware-local-credential-form', {
             );
         },
 
-        emitOnChildRouteReadyChanged(isReady) {
+        emitOnChildRouteReadyChanged(isReady: boolean) {
             this.$emit('onChildRouteReadyChanged', isReady);
         },
 
-        emitCredentials(newInputCredentials) {
+        emitCredentials(newInputCredentials: Credentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
             this.emitOnChildRouteReadyChanged(this.areCredentialsValid(newInputCredentials));
         },

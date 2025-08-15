@@ -1,12 +1,10 @@
 import template from './swag-migration-profile-shopware-api-page-information.html.twig';
 
-const { Component } = Shopware;
-
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-profile-shopware-api-page-information', {
+Shopware.Component.register('swag-migration-profile-shopware-api-page-information', {
     template,
 
     computed: {
@@ -14,11 +12,11 @@ Component.register('swag-migration-profile-shopware-api-page-information', {
             return Shopware.Filter.getByName('asset');
         },
 
-        storeLink() {
+        storeLink(): string {
             return `https://store.shopware.com/${this.storeLinkISO}/swag226607479310f/migration-connector.html`;
         },
 
-        storeLinkISO() {
+        storeLinkISO(): string {
             const iso = this.locale.split('-')[0];
 
             if (
@@ -33,8 +31,8 @@ Component.register('swag-migration-profile-shopware-api-page-information', {
             return 'en';
         },
 
-        locale() {
-            return Shopware.Store.get('session').currentLocale ?? '';
+        locale(): string {
+            return Shopware.Store.get('session')?.currentLocale ?? '';
         },
     },
 });

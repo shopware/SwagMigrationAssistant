@@ -36,7 +36,7 @@ type MigrationGateway = {
     snippet: string;
 };
 
-type EnvironmentInformation = {
+type MigrationEnvironmentInformation = {
     sourceSystemName?: string;
     migrationDisabled?: boolean;
     sourceSystemLocale?: string;
@@ -53,7 +53,7 @@ type EnvironmentInformation = {
     };
 };
 
-type DataSelection = {
+type MigrationDataSelection = {
     id: string;
     dataSets: unknown[];
     total: number;
@@ -67,27 +67,28 @@ type DataSelection = {
     dataSetsRequiredForCount: string[];
 };
 
-type PremappingEntity = {
+type MigrationPremappingEntity = {
     sourceId: string;
     description: string;
     destinationUuid: string | null;
 };
 
-type PremappingChoice = {
+type MigrationPremappingChoice = {
     uuid: string;
     description: string;
 };
 
-type Premapping = {
+type MigrationPremapping = {
     entity: string;
-    choices: PremappingChoice[];
-    mapping: PremappingEntity[];
+    choices: MigrationPremappingChoice[];
+    mapping: MigrationPremappingEntity[];
 };
 
-type CredentialFields = {
-    [key: string]: {
-        endpoint: string;
-    };
+type MigrationCredentials = {
+    endpoint: string;
+    apiUser?: string;
+    apiKey?: string;
+    apiPassword?: string;
 };
 
 /**
@@ -99,10 +100,10 @@ export {
     MigrationState,
     MigrationProfile,
     MigrationGateway,
-    DataSelection,
-    Premapping,
-    PremappingEntity,
-    PremappingChoice,
-    CredentialFields,
-    EnvironmentInformation,
+    MigrationDataSelection,
+    MigrationPremapping,
+    MigrationPremappingEntity,
+    MigrationPremappingChoice,
+    MigrationEnvironmentInformation,
+    MigrationCredentials,
 };

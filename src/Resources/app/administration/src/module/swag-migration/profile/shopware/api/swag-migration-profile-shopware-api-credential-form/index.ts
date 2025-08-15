@@ -1,14 +1,25 @@
+import type { PropType } from 'vue';
 import template from './swag-migration-profile-shopware-api-credential-form.html.twig';
 
-const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
 const API_KEY_INVALID_ERROR_CODE = 'SWAG_MIGRATION_INVALID_API_KEY';
+
+type Credentials = {
+    endpoint?: string;
+    apiUser?: string;
+    apiKey?: string;
+};
+
+export interface SwagMigrationProfileShopwareApiCredentialFormData {
+    inputCredentials: Credentials;
+    apiKeyErrorCode: string;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-profile-shopware-api-credential-form', {
+Shopware.Component.register('swag-migration-profile-shopware-api-credential-form', {
     template,
 
     emits: [
@@ -18,14 +29,14 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
 
     props: {
         credentials: {
-            type: Object,
+            type: Object as PropType<Credentials>,
             default() {
                 return {};
             },
         },
     },
 
-    data() {
+    data(): SwagMigrationProfileShopwareApiCredentialFormData {
         return {
             inputCredentials: {
                 endpoint: '',
@@ -37,7 +48,7 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
     },
 
     computed: {
-        apiKeyLength() {
+        apiKeyLength(): number {
             if (this.inputCredentials.apiKey === null) {
                 return 0;
             }
@@ -45,7 +56,7 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
             return this.inputCredentials.apiKey.length;
         },
 
-        apiKeyError() {
+        apiKeyError(): InstanceType<typeof ShopwareError> | null {
             if (this.apiKeyErrorCode === '') {
                 return null;
             }
@@ -64,7 +75,7 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
     watch: {
         credentials: {
             immediate: true,
-            handler(newCredentials) {
+            handler(newCredentials: Credentials | null) {
                 if (newCredentials === null || Object.keys(newCredentials).length < 1) {
                     this.emitCredentials(this.inputCredentials);
                     return;
@@ -77,14 +88,14 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
 
         inputCredentials: {
             deep: true,
-            handler(newInputCredentials) {
+            handler(newInputCredentials: Credentials) {
                 this.emitCredentials(newInputCredentials);
             },
         },
     },
 
     methods: {
-        areCredentialsValid(newInputCredentials) {
+        areCredentialsValid(newInputCredentials: Credentials): boolean {
             return (
                 this.apiKeyValid(newInputCredentials.apiKey) &&
                 this.validateInput(newInputCredentials.endpoint) &&
@@ -94,11 +105,11 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
             );
         },
 
-        validateInput(input) {
+        validateInput(input: string | null): boolean {
             return input !== null && input !== '';
         },
 
-        apiKeyValid(apiKey) {
+        apiKeyValid(apiKey: string | null): boolean {
             if (apiKey === null || apiKey.length < 40 || apiKey.length > 40) {
                 this.apiKeyErrorCode = API_KEY_INVALID_ERROR_CODE;
                 return false;
@@ -108,11 +119,11 @@ Component.register('swag-migration-profile-shopware-api-credential-form', {
             return true;
         },
 
-        emitOnChildRouteReadyChanged(isReady) {
+        emitOnChildRouteReadyChanged(isReady: boolean) {
             this.$emit('onChildRouteReadyChanged', isReady);
         },
 
-        emitCredentials(newInputCredentials) {
+        emitCredentials(newInputCredentials: Credentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
             this.emitOnChildRouteReadyChanged(this.areCredentialsValid(newInputCredentials));
         },

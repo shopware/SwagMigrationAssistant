@@ -1,13 +1,13 @@
 import type { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import type { LoginService } from '@administration/src/core/service/login.service';
 import type {
-    CredentialFields,
-    DataSelection,
-    EnvironmentInformation,
+    MigrationDataSelection,
+    MigrationEnvironmentInformation,
     MigrationGateway,
     MigrationProfile,
     MigrationState,
-    Premapping,
+    MigrationPremapping,
+    MigrationCredentials,
 } from '../../../type/types';
 
 type AdditionalHeaders = Record<string, string>;
@@ -50,7 +50,7 @@ export default class MigrationApiService extends ApiService {
 
     async updateConnectionCredentials(
         connectionId: string,
-        credentialFields: CredentialFields,
+        credentialFields: Record<string, MigrationCredentials>,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<unknown> {
         // @ts-ignore
@@ -75,7 +75,10 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async checkConnection(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<EnvironmentInformation> {
+    async checkConnection(
+        connectionId: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<MigrationEnvironmentInformation> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -95,7 +98,10 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async getDataSelection(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<DataSelection[]> {
+    async getDataSelection(
+        connectionId: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<MigrationDataSelection[]> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -116,7 +122,7 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async generatePremapping(dataSelectionIds: string[]): Promise<Premapping> {
+    async generateMigration(dataSelectionIds: string[]): Promise<MigrationPremapping> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -136,7 +142,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async writePremapping(premapping: Premapping[]): Promise<unknown> {
+    async writePremapping(premapping: MigrationPremapping[]): Promise<unknown> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 

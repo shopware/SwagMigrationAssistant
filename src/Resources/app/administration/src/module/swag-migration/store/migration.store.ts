@@ -1,5 +1,5 @@
 import type RepositoryType from '@administration/src/core/data/repository.data';
-import type { DataSelection, EnvironmentInformation, Premapping } from '../../../type/types';
+import type { MigrationDataSelection, MigrationEnvironmentInformation, MigrationPremapping } from '../../../type/types';
 import MigrationApiService from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
@@ -21,14 +21,14 @@ export const migrationStoreId = 'swagMigration';
  */
 export type MigrationStore = {
     state: {
-        connectionId: string | null;
-        environmentInformation: EnvironmentInformation;
-        lastConnectionCheck: Date | null;
         isLoading: boolean;
-        dataSelectionTableData: DataSelection[];
-        dataSelectionIds: string[];
-        premapping: Premapping[];
         warningConfirmed: boolean;
+        dataSelectionIds: string[];
+        connectionId: string | null;
+        lastConnectionCheck: Date | null;
+        premapping: MigrationPremapping[];
+        dataSelectionTableData: MigrationDataSelection[];
+        environmentInformation: MigrationEnvironmentInformation;
     };
     getters: {
         isPremappingValid: () => boolean;
@@ -36,18 +36,18 @@ export type MigrationStore = {
     };
     actions: {
         setConnectionId: (id: string) => void;
-        setEnvironmentInformation: (environmentInformation: EnvironmentInformation) => void;
-        setLastConnectionCheck: (date: Date) => void;
+        fetchConnectionId: () => Promise<boolean>;
         setIsLoading: (isLoading: boolean) => void;
+        fetchDataSelectionIds: () => Promise<void>;
+        setLastConnectionCheck: (date: Date) => void;
         setDataSelectionIds: (newIds: string[]) => void;
-        setDataSelectionTableData: (data: DataSelection[]) => void;
-        setPremapping: (newPremapping: Premapping[]) => void;
+        fetchEnvironmentInformation: () => Promise<void>;
         setWarningConfirmed: (confirmed: boolean) => void;
         init: (forceFullStateReload?: boolean) => Promise<void>;
-        fetchConnectionId: () => Promise<boolean>;
-        fetchEnvironmentInformation: () => Promise<void>;
-        fetchDataSelectionIds: () => Promise<void>;
+        setPremapping: (newPremapping: MigrationPremapping[]) => void;
         createErrorNotification: (errorMessageKey: string) => Promise<void>;
+        setDataSelectionTableData: (data: MigrationDataSelection[]) => void;
+        setEnvironmentInformation: (environmentInformation: MigrationEnvironmentInformation) => void;
     };
 };
 
@@ -102,7 +102,7 @@ Shopware.Store.register({
                 return false;
             }
 
-            return !this.premapping.some((group: Premapping) => {
+            return !this.premapping.some((group: MigrationPremapping) => {
                 return group.mapping.some((mapping) => {
                     return mapping.destinationUuid === null || mapping.destinationUuid === '';
                 });
@@ -114,7 +114,7 @@ Shopware.Store.register({
                 return false;
             }
 
-            const tableDataIds = this.dataSelectionTableData.map((data: DataSelection) => {
+            const tableDataIds = this.dataSelectionTableData.map((data: MigrationDataSelection) => {
                 if (!data.requiredSelection) {
                     return data.id;
                 }
@@ -140,7 +140,7 @@ Shopware.Store.register({
             this.connectionId = id;
         },
 
-        setEnvironmentInformation(environmentInformation: EnvironmentInformation) {
+        setEnvironmentInformation(environmentInformation: MigrationEnvironmentInformation) {
             this.environmentInformation = environmentInformation;
         },
 
@@ -156,7 +156,7 @@ Shopware.Store.register({
             this.dataSelectionIds = newIds;
         },
 
-        setDataSelectionTableData(data: DataSelection[]) {
+        setDataSelectionTableData(data: MigrationDataSelection[]) {
             this.dataSelectionTableData = data;
         },
 
@@ -166,7 +166,7 @@ Shopware.Store.register({
 
         // merges the existing premapping (in the state) with the newly provided one.
         // resets the state premapping if an empty array is passed as an argument.
-        setPremapping(newPremapping: Premapping[]) {
+        setPremapping(newPremapping: MigrationPremapping[]) {
             if (newPremapping === undefined || newPremapping === null || newPremapping.length < 1) {
                 this.premapping = [];
                 return;
@@ -175,7 +175,7 @@ Shopware.Store.register({
             newPremapping.forEach((group) => {
                 // the premapping is grouped by entity, find the corresponding group in the state
                 let existingGroup = this.premapping.find(
-                    (existingGroupItem: Premapping) => existingGroupItem.entity === group.entity,
+                    (existingGroupItem: MigrationPremapping) => existingGroupItem.entity === group.entity,
                 );
 
                 if (!existingGroup) {
@@ -297,8 +297,8 @@ Shopware.Store.register({
 
                 this.dataSelectionTableData = dataSelection;
                 this.dataSelectionIds = dataSelection
-                    .filter((selection: DataSelection) => selection.requiredSelection)
-                    .map((selection: DataSelection) => selection.id);
+                    .filter((selection: MigrationDataSelection) => selection.requiredSelection)
+                    .map((selection: MigrationDataSelection) => selection.id);
             } catch {
                 await this.createErrorNotification('swag-migration.api-error.getDataSelection');
             }

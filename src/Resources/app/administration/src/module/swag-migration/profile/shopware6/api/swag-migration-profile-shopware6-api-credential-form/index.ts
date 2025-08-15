@@ -1,12 +1,22 @@
+import type { PropType } from 'vue';
 import template from './swag-migration-profile-shopware6-api-credential-form.html.twig';
 
-const { Component } = Shopware;
+type Credentials = {
+    endpoint?: string;
+    apiUser?: string;
+    apiPassword?: string;
+    bearer_token?: string;
+};
+
+export interface SwagMigrationProfileShopware6ApiCredentialFormData {
+    inputCredentials: Credentials;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-profile-shopware6major-api-credential-form', {
+Shopware.Component.register('swag-migration-profile-shopware6major-api-credential-form', {
     template,
 
     emits: [
@@ -16,14 +26,14 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
 
     props: {
         credentials: {
-            type: Object,
+            type: Object as PropType<Credentials>,
             default() {
                 return {};
             },
         },
     },
 
-    data() {
+    data(): SwagMigrationProfileShopware6ApiCredentialFormData {
         return {
             inputCredentials: {
                 endpoint: '',
@@ -34,7 +44,7 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
     },
 
     computed: {
-        apiPasswordLength() {
+        apiPasswordLength(): number {
             if (this.inputCredentials.apiPassword === null) {
                 return 0;
             }
@@ -46,7 +56,7 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
     watch: {
         credentials: {
             immediate: true,
-            handler(newCredentials) {
+            handler(newCredentials: Credentials | null) {
                 if (newCredentials === null || Object.keys(newCredentials).length < 1) {
                     this.emitCredentials(this.inputCredentials);
                     return;
@@ -59,7 +69,7 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
 
         inputCredentials: {
             deep: true,
-            handler(newInputCredentials) {
+            handler(newInputCredentials: Credentials) {
                 delete newInputCredentials.bearer_token;
                 this.emitCredentials(newInputCredentials);
             },
@@ -67,7 +77,7 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
     },
 
     methods: {
-        areCredentialsValid(newInputCredentials) {
+        areCredentialsValid(newInputCredentials: Credentials): boolean {
             return (
                 this.apiPasswordValid(newInputCredentials.apiPassword) &&
                 this.validateInput(newInputCredentials.endpoint) &&
@@ -77,19 +87,19 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
             );
         },
 
-        validateInput(input) {
+        validateInput(input: string | null): boolean {
             return input !== null && input !== '';
         },
 
-        apiPasswordValid(apiPassword) {
+        apiPasswordValid(apiPassword: string | null): boolean {
             return apiPassword !== null && apiPassword.length >= 1;
         },
 
-        emitOnChildRouteReadyChanged(isReady) {
+        emitOnChildRouteReadyChanged(isReady: boolean) {
             this.$emit('onChildRouteReadyChanged', isReady);
         },
 
-        emitCredentials(newInputCredentials) {
+        emitCredentials(newInputCredentials: Credentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
             this.emitOnChildRouteReadyChanged(this.areCredentialsValid(newInputCredentials));
         },
