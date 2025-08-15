@@ -54,6 +54,9 @@ export default class MigrationApiService extends ApiService {
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<unknown> {
         // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
@@ -64,8 +67,7 @@ export default class MigrationApiService extends ApiService {
                 },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(additionalHeaders),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -75,6 +77,9 @@ export default class MigrationApiService extends ApiService {
 
     async checkConnection(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<EnvironmentInformation> {
         // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
@@ -82,8 +87,7 @@ export default class MigrationApiService extends ApiService {
                 { connectionId },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(additionalHeaders),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -92,6 +96,9 @@ export default class MigrationApiService extends ApiService {
     }
 
     async getDataSelection(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<DataSelection[]> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
         return (
             // @ts-ignore
             this.httpClient
@@ -101,8 +108,7 @@ export default class MigrationApiService extends ApiService {
                     params: {
                         connectionId,
                     },
-                    // @ts-ignore
-                    ...this.getBasicHeaders(additionalHeaders),
+                    headers,
                 })
                 .then((response: AxiosResponse) => {
                     return ApiService.handleResponse(response);
@@ -112,6 +118,9 @@ export default class MigrationApiService extends ApiService {
 
     async generatePremapping(dataSelectionIds: string[]): Promise<Premapping> {
         // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
@@ -119,8 +128,7 @@ export default class MigrationApiService extends ApiService {
                 { dataSelectionIds },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -130,6 +138,9 @@ export default class MigrationApiService extends ApiService {
 
     async writePremapping(premapping: Premapping[]): Promise<unknown> {
         // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
@@ -137,8 +148,7 @@ export default class MigrationApiService extends ApiService {
                 { premapping },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -147,6 +157,9 @@ export default class MigrationApiService extends ApiService {
     }
 
     async startMigration(dataSelectionNames: string[]): Promise<unknown> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         // @ts-ignore
         return this.httpClient
             .post(
@@ -157,8 +170,7 @@ export default class MigrationApiService extends ApiService {
                 },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -167,14 +179,16 @@ export default class MigrationApiService extends ApiService {
     }
 
     async getState(): Promise<MigrationState> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         return (
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-state`, {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 })
                 .then((response: AxiosResponse) => {
                     return ApiService.handleResponse(response);
@@ -184,6 +198,9 @@ export default class MigrationApiService extends ApiService {
 
     async approveFinishedMigration(): Promise<unknown> {
         // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
@@ -191,8 +208,7 @@ export default class MigrationApiService extends ApiService {
                 {},
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -202,6 +218,9 @@ export default class MigrationApiService extends ApiService {
 
     async abortMigration(): Promise<unknown> {
         // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
@@ -209,8 +228,7 @@ export default class MigrationApiService extends ApiService {
                 {},
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -219,14 +237,16 @@ export default class MigrationApiService extends ApiService {
     }
 
     async getProfiles(): Promise<MigrationProfile[]> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         return (
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/get-profiles`, {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 })
                 .then((response: AxiosResponse) => {
                     return ApiService.handleResponse(response);
@@ -235,6 +255,9 @@ export default class MigrationApiService extends ApiService {
     }
 
     async getGateways(profileName: string): Promise<MigrationGateway[]> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         return (
             // @ts-ignore
             this.httpClient
@@ -244,8 +267,7 @@ export default class MigrationApiService extends ApiService {
                     params: {
                         profileName,
                     },
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 })
                 .then((response: AxiosResponse) => {
                     return ApiService.handleResponse(response);
@@ -254,6 +276,9 @@ export default class MigrationApiService extends ApiService {
     }
 
     async getProfileInformation(profileName: string, gatewayName: string): Promise<MigrationProfile> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         return (
             // @ts-ignore
             this.httpClient
@@ -264,8 +289,7 @@ export default class MigrationApiService extends ApiService {
                         profileName,
                         gatewayName,
                     },
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 })
                 .then((response: AxiosResponse) => {
                     return ApiService.handleResponse(response);
@@ -284,6 +308,9 @@ export default class MigrationApiService extends ApiService {
             level: string;
         }[];
     }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         return (
             // @ts-ignore
             this.httpClient
@@ -293,8 +320,7 @@ export default class MigrationApiService extends ApiService {
                     params: {
                         runUuid,
                     },
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 })
                 .then((response: AxiosResponse) => {
                     return ApiService.handleResponse(response);
@@ -303,6 +329,9 @@ export default class MigrationApiService extends ApiService {
     }
 
     async clearDataOfRun(runUuid: string): Promise<unknown> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
         // @ts-ignore
         return this.httpClient
             .post(
@@ -313,8 +342,7 @@ export default class MigrationApiService extends ApiService {
                 },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -323,6 +351,9 @@ export default class MigrationApiService extends ApiService {
     }
 
     async resetChecksums(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<unknown> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
         // @ts-ignore
         return this.httpClient
             .post(
@@ -333,8 +364,7 @@ export default class MigrationApiService extends ApiService {
                 },
                 {
                     ...this.basicConfig,
-                    // @ts-ignore
-                    ...this.getBasicHeaders(additionalHeaders),
+                    headers,
                 },
             )
             .then((response: AxiosResponse) => {
@@ -344,19 +374,23 @@ export default class MigrationApiService extends ApiService {
 
     async cleanupMigrationData(additionalHeaders: AdditionalHeaders = {}): Promise<unknown> {
         // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
         return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
             ...this.basicConfig,
-            // @ts-ignore
-            ...this.getBasicHeaders(additionalHeaders),
+            headers,
         });
     }
 
     async isMediaProcessing(additionalHeaders: AdditionalHeaders = {}): Promise<boolean> {
         // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
         return this.httpClient.get(`_action/${this.getApiBasePath()}/is-media-processing`, {
             ...this.basicConfig,
-            // @ts-ignore
-            ...this.getBasicHeaders(additionalHeaders),
+            headers,
         });
     }
 }
