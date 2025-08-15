@@ -99,9 +99,7 @@ Component.register('swag-migration-history-detail-errors', {
         },
 
         loadAllMigrationErrors() {
-            return this.migrationApiService.getGroupedLogsOfRun(
-                this.migrationRun.id,
-            ).then((response) => {
+            return this.migrationApiService.getGroupedLogsOfRun(this.migrationRun.id).then((response) => {
                 this.total = response.total;
                 this.allMigrationErrors = response.items;
                 this.allMigrationErrors.forEach((item) => {

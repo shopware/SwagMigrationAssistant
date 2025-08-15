@@ -19,9 +19,12 @@ Component.register('swag-migration-confirm-warning', {
     },
 
     computed: {
-        ...mapState(() => Store.get('swagMigration'), [
-            'environmentInformation',
-        ]),
+        ...mapState(
+            () => Store.get('swagMigration'),
+            [
+                'environmentInformation',
+            ],
+        ),
 
         hasDifferentCurrency() {
             return this.sourceSystemCurrency !== this.targetSystemCurrency;
@@ -48,8 +51,10 @@ Component.register('swag-migration-confirm-warning', {
         },
 
         isContinuable() {
-            return (!this.hasDifferentCurrency || this.isCurrencyChecked) &&
-                (!this.hasDifferentLanguage || this.isLanguageChecked);
+            return (
+                (!this.hasDifferentCurrency || this.isCurrencyChecked) &&
+                (!this.hasDifferentLanguage || this.isLanguageChecked)
+            );
         },
     },
 

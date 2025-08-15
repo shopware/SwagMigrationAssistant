@@ -7,7 +7,6 @@ const { mapState } = Shopware.Component.getComponentHelper();
 
 const MIGRATION_STATE_POLLING_INTERVAL = 1000; // ms
 
-
 const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
@@ -42,9 +41,10 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
     metaInfo() {
         return {
-            title: this.progressPercentage !== null ?
-                `${this.progressPercentage}% ${this.$createTitle()}` :
-                this.$createTitle(),
+            title:
+                this.progressPercentage !== null
+                    ? `${this.progressPercentage}% ${this.$createTitle()}`
+                    : this.$createTitle(),
         };
     },
 
@@ -65,25 +65,26 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     },
 
     computed: {
-        ...mapState(() => Store.get('swagMigration'), [
-            'isLoading',
-            'dataSelectionIds',
-        ]),
+        ...mapState(
+            () => Store.get('swagMigration'),
+            [
+                'isLoading',
+                'dataSelectionIds',
+            ],
+        ),
 
         /**
          * @returns {boolean}
          */
         abortButtonVisible() {
-            return !this.isLoading &&
-                !this.componentIndexIsResult;
+            return !this.isLoading && !this.componentIndexIsResult;
         },
 
         /**
          * @returns {boolean}
          */
         backToOverviewButtonVisible() {
-            return !this.isLoading &&
-                this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
+            return !this.isLoading && this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
 
         /**
@@ -110,10 +111,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             }
 
             // Prevent progress bar and window title from exceeding 100%
-            return Math.min(
-                Math.round((this.progress / this.total) * 100),
-                100,
-            );
+            return Math.min(Math.round((this.progress / this.total) * 100), 100);
         },
     },
 
@@ -206,10 +204,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             ) {
                 this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (
-                state.step === MIGRATION_STEP.WAITING_FOR_APPROVE ||
-                state.step === MIGRATION_STEP.IDLE
-            ) {
+            } else if (state.step === MIGRATION_STEP.WAITING_FOR_APPROVE || state.step === MIGRATION_STEP.IDLE) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
                 this.unregisterPolling();

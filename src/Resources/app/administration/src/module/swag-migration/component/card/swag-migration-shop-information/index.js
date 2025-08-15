@@ -55,17 +55,19 @@ Component.register('swag-migration-shop-information', {
     },
 
     computed: {
-        ...mapState(() => Store.get('swagMigration'), [
-            'connectionId',
-            'environmentInformation',
-            'lastConnectionCheck',
-            'adminLocaleLanguage',
-            'adminLocaleRegion',
-        ]),
+        ...mapState(
+            () => Store.get('swagMigration'),
+            [
+                'connectionId',
+                'environmentInformation',
+                'lastConnectionCheck',
+                'adminLocaleLanguage',
+                'adminLocaleRegion',
+            ],
+        ),
 
         displayEnvironmentInformation() {
-            return this.environmentInformation === null ? {} :
-                this.environmentInformation;
+            return this.environmentInformation === null ? {} : this.environmentInformation;
         },
 
         migrationRunRepository() {
@@ -77,14 +79,15 @@ Component.register('swag-migration-shop-information', {
         },
 
         connectionName() {
-            return this.connection !== null ?
-                this.connection.name :
-                this.$tc('swag-migration.index.shopInfoCard.noConnection');
+            return this.connection !== null
+                ? this.connection.name
+                : this.$tc('swag-migration.index.shopInfoCard.noConnection');
         },
 
         shopUrl() {
-            return this.displayEnvironmentInformation.sourceSystemDomain === undefined ? '' :
-                this.displayEnvironmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
+            return this.displayEnvironmentInformation.sourceSystemDomain === undefined
+                ? ''
+                : this.displayEnvironmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
         },
 
         shopUrlPrefix() {
@@ -101,7 +104,7 @@ Component.register('swag-migration-shop-information', {
         },
 
         sslActive() {
-            return (this.shopUrlPrefix === 'https://');
+            return this.shopUrlPrefix === 'https://';
         },
 
         shopUrlPrefixClass() {
@@ -129,25 +132,28 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopFirstLetter() {
-            return this.displayEnvironmentInformation.sourceSystemName === undefined ? 'S' :
-                this.displayEnvironmentInformation.sourceSystemName[0];
+            return this.displayEnvironmentInformation.sourceSystemName === undefined
+                ? 'S'
+                : this.displayEnvironmentInformation.sourceSystemName[0];
         },
 
         profile() {
-            return this.connection === null || this.connection.profile === undefined ? '' :
-                // eslint-disable-next-line max-len
-                `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
+            return this.connection === null || this.connection.profile === undefined
+                ? ''
+                : // eslint-disable-next-line max-len
+                  `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
         },
 
         profileIcon() {
             return this.connection === null ||
                 this.connection.profile === undefined ||
-                this.connection.profile.icon === undefined ? null : this.connection.profile.icon;
+                this.connection.profile.icon === undefined
+                ? null
+                : this.connection.profile.icon;
         },
 
         gateway() {
-            return this.connection === null || this.connection.gateway === undefined ? '' :
-                this.connection.gateway.snippet;
+            return this.connection === null || this.connection.gateway === undefined ? '' : this.connection.gateway.snippet;
         },
 
         formattedLastConnectionCheckDate() {
@@ -230,7 +236,8 @@ Component.register('swag-migration-shop-information', {
                 return Promise.resolve();
             }
 
-            return this.migrationConnectionRepository.get(connectionId, this.context)
+            return this.migrationConnectionRepository
+                .get(connectionId, this.context)
                 .then((connection) => {
                     if (!connection) {
                         return Promise.resolve(null);
@@ -238,11 +245,9 @@ Component.register('swag-migration-shop-information', {
                     delete connection.credentialFields;
                     this.connection = connection;
 
-                    return this.migrationApiService.getProfileInformation(
-                        connection.profileName,
-                        connection.gatewayName,
-                    );
-                }).then((profileInformation) => {
+                    return this.migrationApiService.getProfileInformation(connection.profileName, connection.gatewayName);
+                })
+                .then((profileInformation) => {
                     if (!profileInformation) {
                         return;
                     }
@@ -287,10 +292,7 @@ Component.register('swag-migration-shop-information', {
 
         onClickRemoveConnectionCredentials() {
             this.confirmModalIsLoading = true;
-            return this.migrationApiService.updateConnectionCredentials(
-                this.connectionId,
-                { },
-            ).then(() => {
+            return this.migrationApiService.updateConnectionCredentials(this.connectionId, {}).then(() => {
                 this.$router.go(); // Refresh the page
             });
         },
@@ -305,28 +307,31 @@ Component.register('swag-migration-shop-information', {
 
         onClickResetMigration() {
             this.confirmModalIsLoading = true;
-            return this.migrationApiService.cleanupMigrationData().then(() => {
-                this.showResetMigrationConfirmModal = false;
-                this.confirmModalIsLoading = false;
+            return this.migrationApiService
+                .cleanupMigrationData()
+                .then(() => {
+                    this.showResetMigrationConfirmModal = false;
+                    this.confirmModalIsLoading = false;
 
-                this.$nextTick(() => {
-                    this.$router.go(); // reload page
-                });
-            }).catch(() => {
-                this.showResetMigrationConfirmModal = false;
-                this.confirmModalIsLoading = false;
+                    this.$nextTick(() => {
+                        this.$router.go(); // reload page
+                    });
+                })
+                .catch(() => {
+                    this.showResetMigrationConfirmModal = false;
+                    this.confirmModalIsLoading = false;
 
-                this.createNotificationError({
-                    title: this.$t(
-                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title',
-                    ),
-                    message: this.$t(
-                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
-                    ),
-                    variant: 'error',
-                    growl: true,
+                    this.createNotificationError({
+                        title: this.$t(
+                            'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title',
+                        ),
+                        message: this.$t(
+                            'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
+                        ),
+                        variant: 'error',
+                        growl: true,
+                    });
                 });
-            });
         },
 
         onClickRefreshConnection() {

@@ -14,7 +14,10 @@ Component.register('swag-migration-wizard-page-connection-select', {
         repositoryFactory: 'repositoryFactory',
     },
 
-    emits: ['onChildRouteReadyChanged', 'onConnectionSelected'],
+    emits: [
+        'onChildRouteReadyChanged',
+        'onConnectionSelected',
+    ],
 
     props: {
         currentConnectionId: {

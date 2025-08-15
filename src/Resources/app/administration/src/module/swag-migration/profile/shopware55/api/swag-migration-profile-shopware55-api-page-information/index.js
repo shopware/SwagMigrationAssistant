@@ -9,4 +9,3 @@ Component.extend(
     'swag-migration-profile-shopware-api-page-information',
     {},
 );
-

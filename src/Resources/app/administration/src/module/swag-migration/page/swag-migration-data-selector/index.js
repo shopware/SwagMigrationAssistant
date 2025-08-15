@@ -17,11 +17,14 @@ Component.register('swag-migration-data-selector', {
     },
 
     computed: {
-        ...mapState(() => Store.get('swagMigration'), [
-            'environmentInformation',
-            'dataSelectionTableData',
-            'dataSelectionIds',
-        ]),
+        ...mapState(
+            () => Store.get('swagMigration'),
+            [
+                'environmentInformation',
+                'dataSelectionTableData',
+                'dataSelectionIds',
+            ],
+        ),
 
         displayWarnings() {
             return this.environmentInformation.displayWarnings;
@@ -65,10 +68,7 @@ Component.register('swag-migration-data-selector', {
 
             let string = '';
             Object.keys(item.entityTotals).forEach((key) => {
-                string += `${this.$tc(item.entityNames[key])
-                }: ${
-                    item.entityTotals[key]
-                }</br>`;
+                string += `${this.$tc(item.entityNames[key])}: ${item.entityTotals[key]}</br>`;
             });
 
             return string;

@@ -9,7 +9,10 @@ const { Component } = Shopware;
 Component.register('swag-migration-profile-shopware6major-api-credential-form', {
     template,
 
-    emits: ['onChildRouteReadyChanged', 'onCredentialsChanged'],
+    emits: [
+        'onChildRouteReadyChanged',
+        'onCredentialsChanged',
+    ],
 
     props: {
         credentials: {
@@ -50,9 +53,7 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
                 }
 
                 this.inputCredentials = newCredentials;
-                this.emitOnChildRouteReadyChanged(
-                    this.areCredentialsValid(this.inputCredentials),
-                );
+                this.emitOnChildRouteReadyChanged(this.areCredentialsValid(this.inputCredentials));
             },
         },
 
@@ -90,9 +91,7 @@ Component.register('swag-migration-profile-shopware6major-api-credential-form', 
 
         emitCredentials(newInputCredentials) {
             this.$emit('onCredentialsChanged', newInputCredentials);
-            this.emitOnChildRouteReadyChanged(
-                this.areCredentialsValid(newInputCredentials),
-            );
+            this.emitOnChildRouteReadyChanged(this.areCredentialsValid(newInputCredentials));
         },
     },
 });

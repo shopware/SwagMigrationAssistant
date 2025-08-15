@@ -16,7 +16,12 @@ Component.register('swag-migration-wizard-page-connection-create', {
         migrationApiService: 'migrationApiService',
     },
 
-    emits: ['onIsLoadingChanged', 'onProfileSelected', 'onChangeConnectionName', 'onChildRouteReadyChanged'],
+    emits: [
+        'onIsLoadingChanged',
+        'onProfileSelected',
+        'onChangeConnectionName',
+        'onChildRouteReadyChanged',
+    ],
 
     props: {
         connectionNameErrorCode: {
@@ -102,7 +107,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         profileSearch(searchParams) {
             const searchTerm = searchParams.searchTerm;
-            return searchParams.options.filter(option => {
+            return searchParams.options.filter((option) => {
                 const label = `${option.sourceSystemName} ${option.version} - ${option.author}`;
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });
@@ -110,7 +115,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
         gatewaySearch(searchParams) {
             const searchTerm = searchParams.searchTerm;
-            return searchParams.options.filter(option => {
+            return searchParams.options.filter((option) => {
                 const label = this.$tc(option.snippet);
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });

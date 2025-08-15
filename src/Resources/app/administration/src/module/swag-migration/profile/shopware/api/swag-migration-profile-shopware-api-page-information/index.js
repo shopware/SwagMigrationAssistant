@@ -21,7 +21,12 @@ Component.register('swag-migration-profile-shopware-api-page-information', {
         storeLinkISO() {
             const iso = this.locale.split('-')[0];
 
-            if (['en', 'de'].includes(iso)) {
+            if (
+                [
+                    'en',
+                    'de',
+                ].includes(iso)
+            ) {
                 return iso;
             }
 

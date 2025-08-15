@@ -84,9 +84,7 @@ Mixin.register('swag-wizard', {
 
             Object.keys(this.routes).forEach((route) => {
                 if (this.routes[route].index < this.currentRoute.index) {
-                    if (previousRoute === undefined ||
-                        Math.floor(this.routes[route].index) > previousRoute.index
-                    ) {
+                    if (previousRoute === undefined || Math.floor(this.routes[route].index) > previousRoute.index) {
                         previousRoute = this.routes[route];
                     }
                 }
@@ -105,9 +103,7 @@ Mixin.register('swag-wizard', {
             let nextRoute;
             Object.keys(this.routes).forEach((route) => {
                 if (Math.floor(this.routes[route].index) > this.routeIndex) {
-                    if (nextRoute === undefined ||
-                        Math.floor(this.routes[route].index) < nextRoute.index
-                    ) {
+                    if (nextRoute === undefined || Math.floor(this.routes[route].index) < nextRoute.index) {
                         nextRoute = this.routes[route];
                     }
                 }

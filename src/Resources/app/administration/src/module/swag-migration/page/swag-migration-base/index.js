@@ -30,13 +30,16 @@ Component.register('swag-migration-base', {
     },
 
     computed: {
-        ...mapState(() => Store.get('swagMigration'), [
-            'environmentInformation',
-            'connectionId',
-            'isLoading',
-            'dataSelectionTableData',
-            'isMigrationAllowed',
-        ]),
+        ...mapState(
+            () => Store.get('swagMigration'),
+            [
+                'environmentInformation',
+                'connectionId',
+                'isLoading',
+                'dataSelectionTableData',
+                'isMigrationAllowed',
+            ],
+        ),
     },
 
     created() {

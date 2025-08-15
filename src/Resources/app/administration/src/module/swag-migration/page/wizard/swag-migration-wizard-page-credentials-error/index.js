@@ -27,9 +27,21 @@ Component.register('swag-migration-wizard-page-credentials-error', {
             type: String,
             default: 'info',
             required: false,
-            validValues: ['info', 'warning', 'error', 'success', 'neutral'],
+            validValues: [
+                'info',
+                'warning',
+                'error',
+                'success',
+                'neutral',
+            ],
             validator(value) {
-                return ['info', 'warning', 'error', 'success', 'neutral'].includes(value);
+                return [
+                    'info',
+                    'warning',
+                    'error',
+                    'success',
+                    'neutral',
+                ].includes(value);
             },
         },
     },

@@ -34,15 +34,13 @@ Component.register('swag-migration-main-page', {
         },
 
         connectionEstablished() {
-            return this.environmentInformation !== undefined &&
+            return (
+                this.environmentInformation !== undefined &&
                 this.environmentInformation.requestStatus &&
-                (
-                    this.environmentInformation.requestStatus.isWarning === true ||
-                    (
-                        this.environmentInformation.requestStatus.isWarning === false &&
-                        this.environmentInformation.requestStatus.code === ''
-                    )
-                );
+                (this.environmentInformation.requestStatus.isWarning === true ||
+                    (this.environmentInformation.requestStatus.isWarning === false &&
+                        this.environmentInformation.requestStatus.code === ''))
+            );
         },
     },
 });

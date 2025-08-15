@@ -68,8 +68,7 @@ Component.register('swag-migration-history', {
         this.migrationApiService.isMediaProcessing().then((response) => {
             this.isMediaProcessing = response.data;
         });
-        this.logDownloadEndpoint = '/api/_action/' +
-            `${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
+        this.logDownloadEndpoint = '/api/_action/' + `${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
     },
 
     methods: {
@@ -122,9 +121,7 @@ Component.register('swag-migration-history', {
         getList() {
             this.isLoading = true;
 
-            const params = this.normalizeListingParams(
-                this.getMainListingParams(),
-            );
+            const params = this.normalizeListingParams(this.getMainListingParams());
 
             if (JSON.stringify(this.oldParams) === JSON.stringify(params)) {
                 // Do not request the data again if the parameters don't change.
@@ -170,18 +167,21 @@ Component.register('swag-migration-history', {
 
         clearDataOfRun(runId) {
             this.runClearConfirmModalIsLoading = true;
-            return this.migrationApiService.clearDataOfRun(runId).then(() => {
-                this.showRunClearConfirmModal = false;
-                this.runClearConfirmModalIsLoading = false;
-                this.$router.go();
-            }).catch(() => {
-                this.createNotificationError({
-                    message: this.$t(
-                        'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
-                    ),
-                    growl: true,
+            return this.migrationApiService
+                .clearDataOfRun(runId)
+                .then(() => {
+                    this.showRunClearConfirmModal = false;
+                    this.runClearConfirmModalIsLoading = false;
+                    this.$router.go();
+                })
+                .catch(() => {
+                    this.createNotificationError({
+                        message: this.$t(
+                            'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
+                        ),
+                        growl: true,
+                    });
                 });
-            });
         },
 
         onContextClearRunClicked(runId) {

@@ -45,24 +45,27 @@ Component.register('swag-migration-history-detail', {
         },
 
         shopFirstLetter() {
-            return this.migrationRun.environmentInformation.sourceSystemName === undefined ? 'S' :
-                this.migrationRun.environmentInformation.sourceSystemName[0];
+            return this.migrationRun.environmentInformation.sourceSystemName === undefined
+                ? 'S'
+                : this.migrationRun.environmentInformation.sourceSystemName[0];
         },
 
         profileIcon() {
             return this.migrationRun.connection === null ||
                 this.migrationRun.connection.profile === undefined ||
-                this.migrationRun.connection.profile.icon === undefined ? null : this.migrationRun.connection.profile.icon;
+                this.migrationRun.connection.profile.icon === undefined
+                ? null
+                : this.migrationRun.connection.profile.icon;
         },
 
         connectionName() {
-            return this.migrationRun.connection === null ? '' :
-                this.migrationRun.connection.name;
+            return this.migrationRun.connection === null ? '' : this.migrationRun.connection.name;
         },
 
         shopUrl() {
-            return this.migrationRun.environmentInformation.sourceSystemDomain === undefined ? '' :
-                this.migrationRun.environmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
+            return this.migrationRun.environmentInformation.sourceSystemDomain === undefined
+                ? ''
+                : this.migrationRun.environmentInformation.sourceSystemDomain.replace(/^\s*https?:\/\//, '');
         },
 
         shopUrlPrefix() {
@@ -79,7 +82,7 @@ Component.register('swag-migration-history-detail', {
         },
 
         sslActive() {
-            return (this.shopUrlPrefix === 'https://');
+            return this.shopUrlPrefix === 'https://';
         },
 
         shopUrlPrefixClass() {
@@ -87,23 +90,23 @@ Component.register('swag-migration-history-detail', {
         },
 
         profileName() {
-            return this.migrationRun.connection === null ? '' :
-                this.migrationRun.connection.profileName;
+            return this.migrationRun.connection === null ? '' : this.migrationRun.connection.profileName;
         },
 
         gatewayName() {
-            return this.migrationRun.connection === null ? '' :
-                this.migrationRun.connection.gatewayName;
+            return this.migrationRun.connection === null ? '' : this.migrationRun.connection.gatewayName;
         },
 
         runStatusSnippet() {
-            return this.migrationRun.step === null ? '' :
-                `swag-migration.history.detailPage.status.${this.migrationRun.step}`;
+            return this.migrationRun.step === null
+                ? ''
+                : `swag-migration.history.detailPage.status.${this.migrationRun.step}`;
         },
 
         runStatusClasses() {
-            return this.migrationRun.step === null ? '' :
-                `swag-migration-history-detail__run-status-value--${this.migrationRun.step}`;
+            return this.migrationRun.step === null
+                ? ''
+                : `swag-migration-history-detail__run-status-value--${this.migrationRun.step}`;
         },
 
         assetFilter() {
@@ -126,30 +129,35 @@ Component.register('swag-migration-history-detail', {
         const criteria = new Criteria(1, 1);
         criteria.addFilter(Criteria.equals('id', this.runId));
 
-        return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
-            if (runs.length < 1) {
+        return this.migrationRunRepository
+            .search(criteria, this.context)
+            .then((runs) => {
+                if (runs.length < 1) {
+                    this.isLoading = false;
+                    this.onCloseModal();
+                    return Promise.resolve();
+                }
+
+                this.migrationRun = runs.first();
+
+                return this.migrationApiService
+                    .getProfileInformation(
+                        this.migrationRun.connection.profileName,
+                        this.migrationRun.connection.gatewayName,
+                    )
+                    .then((profileInformation) => {
+                        this.migrationRun.connection.profile = profileInformation.profile;
+
+                        this.isLoading = false;
+                        this.$nextTick(() => {
+                            this.$refs.tabReference.setActiveItem(this.$refs.dataTabItem);
+                        });
+                    });
+            })
+            .catch(() => {
                 this.isLoading = false;
                 this.onCloseModal();
-                return Promise.resolve();
-            }
-
-            this.migrationRun = runs.first();
-
-            return this.migrationApiService.getProfileInformation(
-                this.migrationRun.connection.profileName,
-                this.migrationRun.connection.gatewayName,
-            ).then((profileInformation) => {
-                this.migrationRun.connection.profile = profileInformation.profile;
-
-                this.isLoading = false;
-                this.$nextTick(() => {
-                    this.$refs.tabReference.setActiveItem(this.$refs.dataTabItem);
-                });
             });
-        }).catch(() => {
-            this.isLoading = false;
-            this.onCloseModal();
-        });
     },
 
     methods: {

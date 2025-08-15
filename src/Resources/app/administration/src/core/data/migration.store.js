@@ -75,14 +75,16 @@ export default {
                 return null;
             });
 
-            const migrationAllowedByDataSelection = state.dataSelectionIds.some(id => tableDataIds.includes(id));
+            const migrationAllowedByDataSelection = state.dataSelectionIds.some((id) => tableDataIds.includes(id));
             const migrationAllowedByEnvironment = state.environmentInformation?.migrationDisabled === false;
 
-            return migrationAllowedByDataSelection &&
+            return (
+                migrationAllowedByDataSelection &&
                 migrationAllowedByEnvironment &&
                 !state.isLoading &&
                 state.isPremappingValid &&
-                state.warningConfirmed;
+                state.warningConfirmed
+            );
         },
     },
 
@@ -121,9 +123,7 @@ export default {
 
             newPremapping.forEach((group) => {
                 // the premapping is grouped by entity, find the corresponding group in the state
-                let existingGroup = this.premapping.find(
-                    (existingGroupItem) => existingGroupItem.entity === group.entity,
-                );
+                let existingGroup = this.premapping.find((existingGroupItem) => existingGroupItem.entity === group.entity);
 
                 if (!existingGroup) {
                     // if it doesn't exist, create a new group for this entity with no mappings
@@ -244,8 +244,9 @@ export default {
             try {
                 const dataSelection = await migrationApiService.getDataSelection(this.connectionId);
                 this.dataSelectionTableData = dataSelection;
-                this.dataSelectionIds = dataSelection.filter(selection => selection.requiredSelection)
-                    .map(selection => selection.id);
+                this.dataSelectionIds = dataSelection
+                    .filter((selection) => selection.requiredSelection)
+                    .map((selection) => selection.id);
             } catch (e) {
                 await this.createErrorNotification('swag-migration.api-error.getDataSelection');
             }

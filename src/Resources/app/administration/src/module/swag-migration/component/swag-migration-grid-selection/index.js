@@ -32,7 +32,12 @@ Component.register('swag-migration-grid-selection', {
             items: [],
             disableRouteParams: true,
             limit: 10,
-            paginationSteps: [10, 20, 30, 50],
+            paginationSteps: [
+                10,
+                20,
+                30,
+                50,
+            ],
             selectOptions: [],
         };
     },

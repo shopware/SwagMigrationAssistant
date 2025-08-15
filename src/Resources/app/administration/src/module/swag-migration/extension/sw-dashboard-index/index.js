@@ -39,7 +39,9 @@ Component.override('sw-dashboard-index', {
             this.$super('createdComponent');
 
             if (!this.acl.isAdmin()) {
-                return new Promise((resolve) => { resolve(); });
+                return new Promise((resolve) => {
+                    resolve();
+                });
             }
 
             return this.migrationRunRepository.search(new Criteria(), this.context).then((items) => {

@@ -25,11 +25,14 @@ Component.register('swag-migration-premapping', {
     },
 
     computed: {
-        ...mapState(() => Store.get('swagMigration'), [
-            'premapping',
-            'dataSelectionIds',
-            'isPremappingValid',
-        ]),
+        ...mapState(
+            () => Store.get('swagMigration'),
+            [
+                'premapping',
+                'dataSelectionIds',
+                'isPremappingValid',
+            ],
+        ),
     },
 
     watch: {
@@ -43,11 +46,13 @@ Component.register('swag-migration-premapping', {
             Store.get('swagMigration').setIsLoading(true);
             this.isLoading = true;
 
-            return this.migrationApiService.generatePremapping(this.dataSelectionIds)
+            return this.migrationApiService
+                .generatePremapping(this.dataSelectionIds)
                 .then((premapping) => {
                     Store.get('swagMigration').setPremapping(premapping);
                     return this.savePremapping();
-                }).finally(() => {
+                })
+                .finally(() => {
                     Store.get('swagMigration').setIsLoading(false);
                     this.isLoading = false;
                 });
@@ -58,9 +63,10 @@ Component.register('swag-migration-premapping', {
                 return;
             }
 
-            const filledOut = this.premapping.every(
-                (group) => group.mapping.every(
-                    (mapping) => mapping.destinationUuid !== null &&
+            const filledOut = this.premapping.every((group) =>
+                group.mapping.every(
+                    (mapping) =>
+                        mapping.destinationUuid !== null &&
                         mapping.destinationUuid !== undefined &&
                         mapping.destinationUuid !== '',
                 ),

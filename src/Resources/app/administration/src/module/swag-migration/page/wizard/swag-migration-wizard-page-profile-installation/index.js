@@ -11,7 +11,12 @@ const { Criteria } = Shopware.Data;
 Component.register('swag-migration-wizard-page-profile-installation', {
     template,
 
-    inject: ['storeService', 'extensionHelperService', 'cacheApiService', 'repositoryFactory'],
+    inject: [
+        'storeService',
+        'extensionHelperService',
+        'cacheApiService',
+        'repositoryFactory',
+    ],
 
     data() {
         return {
@@ -34,7 +39,10 @@ Component.register('swag-migration-wizard-page-profile-installation', {
 
             const match = version.split('.');
 
-            return [match[0], match[1]].join('.');
+            return [
+                match[0],
+                match[1],
+            ].join('.');
         },
 
         pluginRepository() {
@@ -57,7 +65,8 @@ Component.register('swag-migration-wizard-page-profile-installation', {
 
         refreshPlugin() {
             const pluginCriteria = new Criteria();
-            pluginCriteria.addFilter(Criteria.equals('plugin.name', this.pluginName))
+            pluginCriteria
+                .addFilter(Criteria.equals('plugin.name', this.pluginName))
                 .addFilter(Criteria.equals('plugin.active', true))
                 .setLimit(1);
 
@@ -78,7 +87,8 @@ Component.register('swag-migration-wizard-page-profile-installation', {
             this.pluginIsLoading = true;
             this.pluginIsSaveSuccessful = false;
 
-            return this.extensionHelperService.downloadStoreExtension(this.pluginName)
+            return this.extensionHelperService
+                .downloadStoreExtension(this.pluginName)
                 .then(() => {
                     this.pluginIsSaveSuccessful = true;
 
