@@ -68,7 +68,7 @@ Component.register('swag-migration-history', {
         this.migrationApiService.isMediaProcessing().then((response) => {
             this.isMediaProcessing = response.data;
         });
-        this.logDownloadEndpoint = '/api/_action/' + `${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
+        this.logDownloadEndpoint = `/api/_action/${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
     },
 
     methods: {

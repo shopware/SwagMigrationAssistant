@@ -166,9 +166,7 @@ Component.register('swag-migration-wizard', {
                 return '';
             }
 
-            return (
-                `swag-migration-profile-${this.connection.profileName}-` + `${this.connection.gatewayName}-page-information`
-            );
+            return `swag-migration-profile-${this.connection.profileName}-${this.connection.gatewayName}-page-information`;
         },
 
         profileInformationComponentIsLoaded() {
@@ -345,6 +343,7 @@ Component.register('swag-migration-wizard', {
                         connectionCheckResponse.requestStatus.code !== '' &&
                         connectionCheckResponse.requestStatus.isWarning === true
                     ) {
+                        // eslint-disable-next-line max-len
                         this.errorMessageSnippet = `swag-migration.wizard.pages.credentials.success.${connectionCheckResponse.requestStatus.code}`;
                     }
 

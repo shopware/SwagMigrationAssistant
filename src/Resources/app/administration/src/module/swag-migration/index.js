@@ -3,17 +3,13 @@ import './component';
 import './page';
 import './extension';
 import './profile';
-import MigrationStore from '../../core/data/migration.store';
-
-const { Module, Store } = Shopware;
-
-Store.register('swagMigration', MigrationStore);
+import './store/migration.store';
 
 /**
  * @sw-package fundamentals@after-sales
  * @private
  */
-Module.register('swag-migration', {
+Shopware.Module.register('swag-migration', {
     type: 'plugin',
     name: 'swag-migration',
     title: 'swag-migration.general.mainMenuItemGeneral',

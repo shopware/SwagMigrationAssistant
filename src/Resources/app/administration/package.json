@@ -14,7 +14,9 @@
     "format:fix": "prettier --write \"src/**/*.{js,ts}\" --cache"
   },
   "devDependencies": {
+    "shopware-administration": "file:../../../../../../../src/Administration/Resources/app/administration",
     "@babel/core": "^7.24.5",
+    "@types/node": "^22.10.10",
     "@babel/eslint-parser": "^7.24.5",
     "@babel/plugin-proposal-class-properties": "^7.18.6",
     "@babel/plugin-proposal-decorators": "^7.24.1",
@@ -29,6 +31,8 @@
     "@babel/preset-env": "^7.24.5",
     "@babel/preset-typescript": "^7.24.1",
     "@babel/register": "^7.23.7",
+    "typescript": "^5.7.3",
+    "typescript-eslint": "^8.21.0",
     "@shopware-ag/eslint-config-base": "^2.0.0",
     "@shopware-ag/stylelint-plugin-meteor": "^1.1.0",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
@@ -37,7 +41,8 @@
     "babel-plugin-istanbul": "^6.1.1",
     "babel-plugin-module-resolver": "^5.0.2",
     "core-js": "^2.6.12",
-    "eslint": "^8.57.0",
+    "@eslint/js": "^9.18.0",
+    "eslint": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint",
     "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.4.2",
     "prettier-plugin-multiline-arrays": "^3.0.6",
@@ -53,8 +58,8 @@
     "eslint-plugin-sw-deprecation-rules": "file:../../../../../../../src/Administration/Resources/app/administration/eslint-rules/deprecation-rules",
     "eslint-plugin-sw-test-rules": "file:../../../../../../../src/Administration/Resources/app/administration/eslint-rules/test-rules",
     "eslint-plugin-twig-vue": "file:../../../../../../../src/Administration/Resources/app/administration/twigVuePlugin",
-    "eslint-plugin-vue": "^9.26.0",
-    "eslint-plugin-vuejs-accessibility": "^2.3.0",
+    "eslint-plugin-vue": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint-plugin-vue",
+    "eslint-plugin-vuejs-accessibility": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint-plugin-vuejs-accessibility",
     "stylelint": "^16.16.0",
     "stylelint-define-config": "^16.15.0"
   }

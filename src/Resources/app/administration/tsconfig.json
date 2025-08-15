@@ -1,29 +1,35 @@
 {
-  "include": [
-    "./src/**/*",
-    "./scripts/**/*"
-  ],
-  "exclude": ["node_modules"],
   "compilerOptions": {
+    "baseUrl": ".",
     "target": "es2020",
     "lib": [
       "ES2020",
       "DOM"
     ],
     "module": "commonjs",
-    "rootDir": "./",
-    "baseUrl": "./",
-    "paths": {
-      "src": ["src"]
-    },
     "resolveJsonModule": true,
-    "allowJs": true,
-    "noEmit": true,
-    "isolatedModules": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "strict": true,
+    "sourceMap": true,
     "skipLibCheck": true,
-    "noErrorTruncation": false
-  }
+    "paths": {
+      "src": ["src"],
+      "@administration/*": [
+        "../../../../../../../src/Administration/Resources/app/administration/*"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*.ts",
+    "./scripts/**/*"
+  ],
+  "exclude": [
+    "src/**/*.spec.ts",
+    "node_modules"
+  ],
+  "files": [
+    "../../../../../../../src/Administration/Resources/app/administration/src/html-shim.d.ts",
+    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts",
+    "../../../../../../../src/Administration/Resources/app/administration/src/entity-schema-definition.d.ts",
+    "../../../../../../../src/Administration/Resources/app/administration/src/global.types.ts"
+  ]
 }
