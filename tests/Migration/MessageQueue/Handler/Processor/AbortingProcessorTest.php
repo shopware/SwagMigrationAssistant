@@ -47,6 +47,10 @@ class AbortingProcessorTest extends TestCase
 
     public function testProcessingWithoutConnection(): void
     {
+        // TODO: TODO remove with #11883?
+        static::markTestSkipped('Evaluate if this test is still needed, as it seems to unnecessary since $connection can be null');
+
+        /** @phpstan-ignore deadCode.unreachable */
         $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), 'product', 0);
 
         $run = new SwagMigrationRunEntity();

@@ -104,6 +104,6 @@ class LanguageConverterTest extends TestCase
         static::assertNotNull($convertResult->getUnmapped());
 
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_LANGUAGE_ENTITY_ALREADY_EXISTS', $logs[0]['code']);
+        static::assertSame('SWAG_MIGRATION_ENTITY_ALREADY_EXISTS', $logs[0]['code']);
     }
 }

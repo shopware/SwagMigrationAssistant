@@ -70,8 +70,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::SALES_CHANNEL,
-                    $data['subshopID'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SEO_URL
                 )
             );
@@ -87,8 +87,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $data['_locale'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SEO_URL
                 )
             );
@@ -118,8 +118,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
                     $this->loggingService->addLogEntry(
                         new AssociationRequiredMissingLog(
                             $migrationContext->getRunUuid(),
-                            DefaultEntities::PRODUCT,
-                            $data['typeId'],
+                            $connection->getProfileName(),
+                            $connection->getGatewayName(),
                             DefaultEntities::SEO_URL
                         )
                     );
@@ -144,8 +144,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
                 $this->loggingService->addLogEntry(
                     new AssociationRequiredMissingLog(
                         $migrationContext->getRunUuid(),
-                        DefaultEntities::CATEGORY,
-                        $data['typeId'],
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         DefaultEntities::SEO_URL
                     )
                 );
@@ -160,8 +160,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new UnsupportedSeoUrlType(
                     $migrationContext->getRunUuid(),
-                    $data['type'],
-                    DefaultEntities::SEO_URL,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $originalData['id']
                 )
             );

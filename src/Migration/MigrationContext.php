@@ -54,8 +54,10 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->profile;
     }
 
-    public function getConnection(): ?SwagMigrationConnectionEntity
+    public function getConnection(): SwagMigrationConnectionEntity
     {
+        \assert($this->connection instanceof SwagMigrationConnectionEntity);
+
         return $this->connection;
     }
 

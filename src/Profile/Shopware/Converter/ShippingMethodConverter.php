@@ -88,11 +88,17 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
+
         if (empty($data['id'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::SHIPPING_METHOD,
-                '',
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'id',
             ));
 
@@ -104,12 +110,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->oldShippingMethod = $data['id'];
         $this->mainLocale = $data['_locale'];
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -150,8 +150,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             foreach ($fields as $field) {
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD,
-                    $this->oldShippingMethod,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $field
                 ));
             }
@@ -186,13 +186,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             ) {
                 $this->loggingService->addLogEntry(new UnsupportedShippingCalculationType(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD,
-                    $this->oldShippingMethod,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $data['calculation']
                 ));
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
-                $converted['prices'] = $this->getShippingCosts($data, $calculationType, $priceRule);
+                $converted['prices'] = $this->getShippingCosts($migrationContext, $data, $calculationType, $priceRule);
             }
         }
 
@@ -243,8 +243,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::SHIPPING_METHOD,
-                $this->oldShippingMethod,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'id',
             ));
 
@@ -633,8 +633,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      *
      * @return list<array<string, mixed>>
      */
-    protected function getShippingCosts(array $data, int $calculationType, ?array $rule): array
+    protected function getShippingCosts(MigrationContextInterface $migrationContext, array $data, int $calculationType, ?array $rule): array
     {
+        $connection = $migrationContext->getConnection();
+
         $shippingCosts = $data['shippingCosts'];
         $taxRate = 0.0;
         if (isset($data['tax']['tax'])) {
@@ -646,8 +648,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (empty($shippingCost['id'])) {
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $this->oldShippingMethod,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     'id'
                 ));
 
@@ -681,8 +683,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (!isset($currencyMapping)) {
                 $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $shippingCost['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     'currency'
                 ));
 
@@ -698,8 +700,8 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
                 $this->loggingService->addLogEntry(new UnsupportedShippingPriceLog(
                     $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $shippingCost['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $this->oldShippingMethod
                 ));
 

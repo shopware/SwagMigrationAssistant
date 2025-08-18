@@ -14,12 +14,23 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $emptyField,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $replacementField,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -29,57 +40,6 @@ class FieldReassignedRunLog extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        $entity = $this->getEntity();
-        if ($entity === null) {
-            return 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED';
-        }
-
-        return \sprintf('SWAG_MIGRATION_%s_ENTITY_FIELD_REASSIGNED', \mb_strtoupper($entity));
-    }
-
-    public function getTitle(): string
-    {
-        $entity = $this->getEntity();
-        if ($entity === null) {
-            return 'The entity has a field that was reassigned';
-        }
-
-        return \sprintf('The %s entity has a field that was reassigned', $entity);
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, emptyField: string, replacementField: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'emptyField' => $this->emptyField,
-            'replacementField' => $this->replacementField,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'The %s entity with the source id "%s" got the field %s replaced with %s.',
-            $args['entity'],
-            $args['sourceId'],
-            $args['emptyField'],
-            $args['replacementField']
-        );
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return \sprintf('%s.%s.title', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return \sprintf('%s.%s.description', $this->getSnippetRoot(), 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
+        return 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED';
     }
 }

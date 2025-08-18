@@ -65,13 +65,13 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         );
 
         if ($mainProductMapping === null) {
-            $this->addAssociationRequiredLog(DefaultEntities::PRODUCT_CONTAINER, $data['id']);
+            $this->addAssociationRequiredLog($migrationContext);
 
             return new ConvertStruct(null, $data);
         }
 
         if ($variantProductMapping === null) {
-            $this->addAssociationRequiredLog(DefaultEntities::PRODUCT, $data['ordernumber']);
+            $this->addAssociationRequiredLog($migrationContext);
 
             return new ConvertStruct(null, $data);
         }
@@ -98,13 +98,15 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
-    private function addAssociationRequiredLog(string $requiredEntity, string $id): void
+    private function addAssociationRequiredLog(MigrationContextInterface $migrationContext): void
     {
+        $connection = $migrationContext->getConnection();
+
         $this->loggingService->addLogEntry(
             new AssociationRequiredMissingLog(
                 $this->runUuid,
-                $requiredEntity,
-                $id,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::MAIN_VARIANT_RELATION
             )
         );

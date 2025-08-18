@@ -17,11 +17,21 @@ class WriteExceptionRunLog extends BaseRunLogEntry
      */
     public function __construct(
         string $runId,
-        string $entity,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly array $error,
-        ?string $dataId = null,
     ) {
-        parent::__construct($runId, $entity, $dataId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -32,32 +42,5 @@ class WriteExceptionRunLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED';
-    }
-
-    public function getTitle(): string
-    {
-        return 'A write exception has occurred';
-    }
-
-    /**
-     * @return array{entity: ?string, dataId: ?string, error: array<mixed>, description: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'dataId' => $this->getSourceId(),
-            'error' => $this->error,
-            'description' => (string) \json_encode([
-                'entity' => $this->getEntity(),
-                'dataId' => $this->getSourceId(),
-                'error' => $this->error,
-            ], \JSON_PRETTY_PRINT),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        return $this->getParameters()['description'];
     }
 }

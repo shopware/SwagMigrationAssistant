@@ -28,7 +28,6 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 
@@ -102,8 +101,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::CUSTOMER_GROUP,
-                    $data['customer_group_id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -119,8 +118,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $data['locale'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -143,8 +142,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::CURRENCY,
-                    $data['currency'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -170,8 +169,8 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::CATEGORY,
-                    $data['category_id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::SALES_CHANNEL
                 )
             );
@@ -391,8 +390,15 @@ abstract class SalesChannelConverter extends ShopwareConverter
                     $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
                 }
 
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(
-                    new DeactivatedPackLanguageLog($this->migrationContext->getRunUuid(), SalesChannelDataSet::getEntity(), $this->oldIdentifier, $packLanguageId)
+                    new DeactivatedPackLanguageLog(
+                        $this->migrationContext->getRunUuid(),
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
+                        $packLanguageId,
+                    )
                 );
             }
         }

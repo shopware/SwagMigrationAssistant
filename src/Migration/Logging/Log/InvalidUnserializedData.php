@@ -14,12 +14,23 @@ class InvalidUnserializedData extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $unserializedEntity,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $serializedData,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,36 +41,5 @@ class InvalidUnserializedData extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Invalid unserialized data';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, unserializedEntity: string, serializedData: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'unserializedEntity' => $this->unserializedEntity,
-            'serializedData' => $this->serializedData,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'The %s entity with source id "%s" could not be converted because of invalid unserialized object data for the "%s" entity and the raw data is: %s',
-            $args['entity'],
-            $args['sourceId'],
-            $args['unserializedEntity'],
-            $args['serializedData']
-        );
     }
 }

@@ -65,7 +65,7 @@ class MessageQueueSubscriberTest extends TestCase
         /** @var StaticEntityRepository<SwagMigrationRunCollection> $repository */
         $repository = new StaticEntityRepository(
             [new EntitySearchResult(SwagMigrationRunDefinition::ENTITY_NAME, 1, new EntityCollection([$run]), null, new Criteria(), $this->context)],
-            new SwagMigrationRunDefinition()
+            new SwagMigrationRunDefinition(),
         );
 
         $dummyLoggingService = new DummyLoggingService();
@@ -192,7 +192,7 @@ class MessageQueueSubscriberTest extends TestCase
                     $this->context
                 ),
             ],
-            new SwagMigrationRunDefinition()
+            new SwagMigrationRunDefinition(),
         );
 
         $dummyLoggingService = new DummyLoggingService();
@@ -253,7 +253,7 @@ class MessageQueueSubscriberTest extends TestCase
                     $this->context
                 ),
             ],
-            new SwagMigrationRunDefinition()
+            new SwagMigrationRunDefinition(),
         );
 
         $dummyLoggingService = new DummyLoggingService();

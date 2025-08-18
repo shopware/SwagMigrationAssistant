@@ -55,14 +55,20 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext,
     ): ConvertStruct {
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = '';
+        if ($connection !== null) {
+            $this->connectionId = $connection->getId();
+        }
+
         $this->runId = $migrationContext->getRunUuid();
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 \implode(',', $fields)
             ));
 
@@ -73,12 +79,6 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
@@ -104,7 +104,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $this->convertValue($converted, 'city', $address, 'city');
 
             if (isset($address['salutation'])) {
-                $salutationUuid = $this->getSalutation($address['salutation']);
+                $salutationUuid = $this->getSalutation($address['salutation'], $migrationContext);
                 if ($salutationUuid !== null) {
                     $converted['salutationId'] = $salutationUuid;
                 }
@@ -116,7 +116,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (isset($converted['confirmedAt'])) {
             $status = 'optIn';
         } else {
-            $status = $this->getStatus();
+            $status = $this->getStatus($migrationContext);
         }
 
         if ($status === null) {
@@ -150,7 +150,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
-    protected function getSalutation(string $salutation): ?string
+    protected function getSalutation(string $salutation, MigrationContextInterface $migrationContext): ?string
     {
         $salutationMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -160,10 +160,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new UnknownEntityLog(
                 $this->runId,
-                'salutation',
-                $salutation,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 DefaultEntities::NEWSLETTER_RECIPIENT,
                 $this->oldNewsletterRecipientId
             ));
@@ -190,10 +192,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if (!isset($salesChannelMapping)) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'salesChannel'
             ));
 
@@ -204,7 +208,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return $salesChannelMapping['entityUuid'];
     }
 
-    protected function getStatus(): ?string
+    protected function getStatus(MigrationContextInterface $migrationContext): ?string
     {
         $status = $this->mappingService->getValue(
             $this->connectionId,
@@ -214,10 +218,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'status'
             ));
         }

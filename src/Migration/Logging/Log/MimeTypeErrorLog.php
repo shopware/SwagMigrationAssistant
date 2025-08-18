@@ -14,10 +14,19 @@ class MimeTypeErrorLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        ?string $sourceId = null,
+        string $profileName,
+        string $gatewayName,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -28,28 +37,5 @@ class MimeTypeErrorLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED';
-    }
-
-    public function getTitle(): string
-    {
-        return 'An exception occurred';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, exceptionCode: int|string, description: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'exceptionCode' => $this->getCode(),
-            'description' => 'Could not determine the mime type',
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        return $this->getParameters()['description'];
     }
 }

@@ -8,6 +8,5 @@
 return [
     [
         'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER',
-        'sourceId' => '604126aee2d749d88e3b62801461e163',
     ],
 ];

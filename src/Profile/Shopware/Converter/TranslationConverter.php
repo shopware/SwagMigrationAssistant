@@ -64,8 +64,8 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($data['locale'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $this->runId,
-                DefaultEntities::TRANSLATION,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'locale'
             ));
 
@@ -99,8 +99,8 @@ abstract class TranslationConverter extends ShopwareConverter
         $this->loggingService->addLogEntry(
             new UnsupportedTranslationType(
                 $migrationContext->getRunUuid(),
-                $data['objecttype'],
-                DefaultEntities::TRANSLATION,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $data['id']
             )
         );
@@ -132,11 +132,13 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PRODUCT,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -243,11 +245,13 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['ordernumber']);
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PRODUCT,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -319,11 +323,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PRODUCT_MANUFACTURER,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -401,11 +407,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::UNIT,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -488,11 +496,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::CATEGORY,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -585,11 +595,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PROPERTY_GROUP_OPTION,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -664,11 +676,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PROPERTY_GROUP,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -746,11 +760,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PROPERTY_GROUP_OPTION,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -823,11 +839,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::PROPERTY_GROUP,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );
@@ -955,11 +973,13 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if (!\is_array($objectData)) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new InvalidUnserializedData(
                     $this->runId,
-                    DefaultEntities::TRANSLATION,
-                    $data['id'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     $entity,
                     $objectDataSerialized
                 )
@@ -990,11 +1010,13 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
+            $connection = $this->migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->runId,
-                    DefaultEntities::MEDIA,
-                    $data['mediaId'],
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::TRANSLATION
                 )
             );

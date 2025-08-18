@@ -14,11 +14,21 @@ class UnsupportedObjectType extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $type,
-        string $entity,
-        string $sourceId,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -29,34 +39,5 @@ class UnsupportedObjectType extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Unsupported object type';
-    }
-
-    /**
-     * @return array{objectType: string, entity: ?string, sourceId: ?string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'objectType' => $this->type,
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            '%s of object type "%s" with source id "%s" could not be converted.',
-            $args['entity'],
-            $args['objectType'],
-            $args['sourceId']
-        );
     }
 }

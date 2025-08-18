@@ -15,7 +15,7 @@ class PlainStrategyResolver implements StrategyResolverInterface
 {
     public function supports(string $path, MigrationContextInterface $migrationContext): bool
     {
-        return \file_exists($this->resolve($path, $migrationContext));
+        return \is_file($this->resolve($path, $migrationContext));
     }
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string

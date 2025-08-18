@@ -16,9 +16,24 @@ class DebugLog implements LogEntryInterface
      * @param array<mixed> $logData
      */
     public function __construct(
+        private readonly string $runId,
         private readonly array $logData,
-        private readonly ?string $runId,
     ) {
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
+    public function getProfileName(): string
+    {
+        return 'Debug Profile';
+    }
+
+    public function getGatewayName(): string
+    {
+        return 'Debug Gateway';
     }
 
     public function getLevel(): string
@@ -76,7 +91,7 @@ class DebugLog implements LogEntryInterface
         return null;
     }
 
-    public function getRunId(): ?string
+    public function getRunId(): string
     {
         return $this->runId;
     }

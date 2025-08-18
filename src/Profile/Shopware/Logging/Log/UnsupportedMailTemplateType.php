@@ -15,10 +15,21 @@ class UnsupportedMailTemplateType extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $type,
     ) {
-        parent::__construct($runId, null, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -29,32 +40,5 @@ class UnsupportedMailTemplateType extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Unsupported mail type';
-    }
-
-    /**
-     * @return array{sourceId: ?string, type: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'sourceId' => $this->getSourceId(),
-            'type' => $this->type,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'MailTemplate-Entity with source id "%s" could not be converted because of unsupported type: %s.',
-            $args['sourceId'],
-            $args['type']
-        );
     }
 }

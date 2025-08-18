@@ -58,11 +58,13 @@ class MediaFolderConverter extends ShopwareConverter
             $converted['parentId'] = $this->mediaFolderLookup->get($data['defaultFolder']['entity'], $this->context);
 
             if ($converted['parentId'] === null) {
+                $connection = $this->migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(
                     new UnsupportedMediaDefaultFolderLog(
                         $this->migrationContext->getRunUuid(),
-                        DefaultEntities::MEDIA_FOLDER,
-                        $data['id'],
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         $data['defaultFolder']['entity']
                     )
                 );

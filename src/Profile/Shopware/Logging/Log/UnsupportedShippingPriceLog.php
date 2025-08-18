@@ -15,11 +15,21 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $shippingMethodId,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,33 +40,5 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Unsupported shipping factor price calculation';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, shippingMethodId: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'shippingMethodId' => $this->shippingMethodId,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'ShippingPrice-Entity with source id "%s" of shipping method "%s" could not be converted because of unsupported factor price calculation.',
-            $args['sourceId'],
-            $args['shippingMethodId']
-        );
     }
 }

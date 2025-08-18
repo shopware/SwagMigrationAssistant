@@ -41,11 +41,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
     {
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
+        $connection = $migrationContext->getConnection();
+        $connectionId = $connection->getId();
+
         if (!empty($fields)) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $migrationContext->getRunUuid(),
-                DefaultEntities::PRODUCT_REVIEW,
-                $data['id'],
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 \implode(',', $fields)
             ));
 
@@ -55,12 +58,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $originalData = $data;
         $mainLocale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $connectionId = '';
-        if ($connection !== null) {
-            $connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -89,11 +86,13 @@ abstract class ProductReviewConverter extends ShopwareConverter
             );
 
             if ($mapping === null) {
+                $connection = $migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(
                     new AssociationRequiredMissingLog(
                         $migrationContext->getRunUuid(),
-                        DefaultEntities::PRODUCT,
-                        $data['articleID'],
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
                         DefaultEntities::PRODUCT_REVIEW
                     )
                 );
@@ -133,8 +132,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::SALES_CHANNEL,
-                    $shopId,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::PRODUCT_REVIEW
                 )
             );
@@ -150,8 +149,8 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $mainLocale,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::PRODUCT_REVIEW
                 )
             );

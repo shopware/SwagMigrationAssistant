@@ -9,13 +9,12 @@ namespace SwagMigrationAssistant\Migration\Logging;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\AutoIncrementField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
@@ -46,21 +45,17 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
+            new AutoIncrementField(),
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
+            new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
+            (new StringField('profile_name', 'profileName', 255))->addFlags(new Required()),
+            (new StringField('gateway_name', 'gatewayName', 255))->addFlags(new Required()),
             (new StringField('level', 'level', 64))->addFlags(new Required()),
             (new StringField('code', 'code'))->addFlags(new Required()),
-            (new LongTextField('title', 'title'))->addFlags(new Required()),
-            (new LongTextField('description', 'description'))->addFlags(new Required()),
-            (new JsonField('parameters', 'parameters'))->addFlags(new Required()),
-            (new StringField('title_snippet', 'titleSnippet'))->addFlags(new Required()),
-            (new StringField('description_snippet', 'descriptionSnippet'))->addFlags(new Required()),
-            new StringField('entity', 'entity'),
-            new StringField('source_id', 'sourceId'),
-            new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
+            (new BoolField('user_fixable', 'userFixable'))->addFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),
-            new AutoIncrementField(),
         ]);
     }
 }

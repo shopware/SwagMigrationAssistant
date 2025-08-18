@@ -67,11 +67,15 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
-                $dataSet::getEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $exception
             ));
+
             $this->loggingService->saveLogging($context);
         }
     }
@@ -101,11 +105,13 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Throwable $exception) {
+                $connection = $migrationContext->getConnection();
+
                 $this->loggingService->addLogEntry(new ExceptionRunLog(
                     $runUuid,
-                    $dataSet::getEntity(),
-                    $exception,
-                    $item['id'] ?? null
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
+                    $exception
                 ));
 
                 $createData[] = [

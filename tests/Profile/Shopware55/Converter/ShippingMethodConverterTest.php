@@ -160,15 +160,12 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
-        $error = new UnsupportedShippingCalculationType('', DefaultEntities::SHIPPING_METHOD, '15', '5');
+        $error = new UnsupportedShippingCalculationType('', 'Profile name', 'Gateway name', '5');
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
-        static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
-        static::assertSame($error->getEntity(), $logs[0]['entity']);
-        static::assertSame($error->getParameters()['type'], $logs[0]['parameters']['type']);
     }
 
     public function testConvertWithFactor(): void
@@ -178,15 +175,12 @@ class ShippingMethodConverterTest extends TestCase
 
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
-        $error = new UnsupportedShippingPriceLog('', DefaultEntities::SHIPPING_METHOD_PRICE, '309', '15');
+        $error = new UnsupportedShippingPriceLog('', 'Profile name', 'Gateway name', '15');
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());
         static::assertCount(1, $logs);
         static::assertSame($error->getCode(), $logs[0]['code']);
-        static::assertSame($error->getSourceId(), $logs[0]['sourceId']);
-        static::assertSame($error->getEntity(), $logs[0]['entity']);
-        static::assertSame($error->getParameters()['shippingMethodId'], $logs[0]['parameters']['shippingMethodId']);
     }
 
     /**

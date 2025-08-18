@@ -62,11 +62,13 @@ class NumberRangeConverter extends ShopwareConverter
                         $data['id']
                     );
 
+                    $connection = $this->migrationContext->getConnection();
+
                     $this->loggingService->addLogEntry(
                         new UnsupportedNumberRangeTypeLog(
                             $this->runId,
-                            DefaultEntities::NUMBER_RANGE,
-                            $data['id'],
+                            $connection->getProfileName(),
+                            $connection->getGatewayName(),
                             $converted['type']['technicalName']
                         )
                     );

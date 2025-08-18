@@ -15,11 +15,21 @@ class InvalidEmailAddressLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $email,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,34 +40,5 @@ class InvalidEmailAddressLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__INVALID_EMAIL_ADDRESS';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Invalid Email address';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, email: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'email' => $this->email,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            '%s with source id "%s" could not be converted because of invalid email address: %s.',
-            $args['entity'],
-            $args['sourceId'],
-            $args['email']
-        );
     }
 }

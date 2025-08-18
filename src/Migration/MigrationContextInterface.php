@@ -18,7 +18,7 @@ interface MigrationContextInterface
 {
     public function getProfile(): ProfileInterface;
 
-    public function getConnection(): ?SwagMigrationConnectionEntity;
+    public function getConnection(): SwagMigrationConnectionEntity;
 
     public function getRunUuid(): string;
 

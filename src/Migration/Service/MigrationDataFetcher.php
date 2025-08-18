@@ -34,9 +34,12 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         try {
             return $this->gatewayRegistry->getGateway($migrationContext)->read($migrationContext);
         } catch (\Throwable $exception) {
+            $connection = $migrationContext->getConnection();
+
             $this->loggingService->addLogEntry(new ExceptionRunLog(
                 $migrationContext->getRunUuid(),
-                $dataSet::getEntity(),
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 $exception
             ));
             $this->loggingService->saveLogging($context);

@@ -90,8 +90,8 @@ abstract class CategoryConverter extends ShopwareConverter
         if (!isset($data['_locale'])) {
             $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
                 $migrationContext->getRunUuid(),
-                DefaultEntities::CATEGORY,
-                $this->oldCategoryId,
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
                 'locale'
             ));
 

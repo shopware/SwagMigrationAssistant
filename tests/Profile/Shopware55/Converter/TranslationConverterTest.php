@@ -142,8 +142,6 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE');
-        static::assertSame($logs[0]['parameters']['sourceId'], '276');
-        static::assertSame($logs[0]['parameters']['objectType'], 'invalid');
     }
 
     public function testConvertProductTranslation(): void
@@ -278,8 +276,6 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '273');
-        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'product_manufacturer_translation');
     }
 
     public function testConvertUnitTranslation(): void
@@ -324,9 +320,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_UNIT');
-        static::assertSame($logs[0]['parameters']['sourceId'], '274');
-        static::assertSame($logs[0]['parameters']['missingEntity'], 'unit');
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
     }
 
     public function testConvertUnitTranslationWithInvalidTranslationObject(): void
@@ -356,8 +350,6 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '274');
-        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'unit_translation');
     }
 
     public function testConvertCategoryTranslation(): void
@@ -472,9 +464,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_CATEGORY');
-        static::assertSame($logs[0]['parameters']['sourceId'], '275');
-        static::assertSame($logs[0]['parameters']['missingEntity'], 'category');
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
     }
 
     public function testConvertCategoryTranslationWithInvalidTranslationObject(): void
@@ -503,8 +493,6 @@ class TranslationConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
-        static::assertSame($logs[0]['parameters']['sourceId'], '275');
-        static::assertSame($logs[0]['parameters']['unserializedEntity'], 'category_translation');
     }
 
     public function testCreateConfiguratorOptionTranslation(): void
@@ -621,7 +609,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($convertResult->getConverted());
         static::assertCount(1, $this->loggingService->getLoggingArray());
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_TRANSLATION', $logs[0]['code']);
+        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $logs[0]['code']);
     }
 
     public function testConvertVariantAttributeTranslation(): void
@@ -759,14 +747,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($converted);
         static::assertCount(1, $logs);
 
-        $logParameters = [
-            'missingEntity' => DefaultEntities::MEDIA,
-            'requiredFor' => DefaultEntities::TRANSLATION,
-            'sourceId' => '769',
-        ];
-
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_MEDIA', $logs[0]['code']);
-        static::assertSame($logParameters, $logs[0]['parameters']);
+        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
     }
 
     public function testConvertProductTranslationsWithSeoData(): void

@@ -13,14 +13,28 @@ use Shopware\Core\Framework\Log\Package;
 class CannotReadEntityCountLog extends BaseRunLogEntry
 {
     public function __construct(
-        string $runUuid,
-        string $entity,
+        string $runId,
+        string $profileName,
+        string $gatewayName,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $table,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly ?string $condition,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $exceptionCode,
+        /** @phpstan-ignore property.onlyWritten */
         private readonly string $exceptionMessage,
     ) {
-        parent::__construct($runUuid, $entity);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -31,37 +45,5 @@ class CannotReadEntityCountLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Could not read entity count';
-    }
-
-    /**
-     * @return array{entity: ?string, table: string, condition: ?string, exceptionCode: string, exceptionMessage: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'table' => $this->table,
-            'condition' => $this->condition,
-            'exceptionCode' => $this->exceptionCode,
-            'exceptionMessage' => $this->exceptionMessage,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'Total count for entity %s could not be read. Make sure the table %s exists in your source system and the optional condition "%s" is valid. Exception message: %s',
-            $args['entity'],
-            $args['table'],
-            $args['condition'],
-            $args['exceptionMessage']
-        );
     }
 }

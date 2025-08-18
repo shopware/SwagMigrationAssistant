@@ -89,17 +89,17 @@ abstract class ShopwareConverterTest extends TestCase
         $expectedOutput = require $fixtureFolderPath . '/output.php';
 
         $mappingArray = [];
-        if (\file_exists($fixtureFolderPath . '/mapping.php')) {
+        if (\is_file($fixtureFolderPath . '/mapping.php')) {
             $mappingArray = require $fixtureFolderPath . '/mapping.php';
         }
 
         $expectedLogArray = [];
-        if (\file_exists($fixtureFolderPath . '/log.php')) {
+        if (\is_file($fixtureFolderPath . '/log.php')) {
             $expectedLogArray = require $fixtureFolderPath . '/log.php';
         }
 
         $mediaFileArray = [];
-        if (\file_exists($fixtureFolderPath . '/media.php')) {
+        if (\is_file($fixtureFolderPath . '/media.php')) {
             $mediaFileArray = require $fixtureFolderPath . '/media.php';
         }
 

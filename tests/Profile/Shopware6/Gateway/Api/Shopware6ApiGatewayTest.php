@@ -302,7 +302,6 @@ class Shopware6ApiGatewayTest extends TestCase
                     Context::createDefaultContext(),
                 ),
             ],
-            new CurrencyDefinition(),
         );
 
         $languageEntity = new LanguageEntity();
@@ -323,7 +322,6 @@ class Shopware6ApiGatewayTest extends TestCase
                     Context::createDefaultContext(),
                 ),
             ],
-            new LanguageDefinition(),
         );
 
         $totalReader = static::createStub(TotalReaderInterface::class);

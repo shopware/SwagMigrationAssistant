@@ -254,10 +254,11 @@ SQL;
         foreach ($salesChannels as $salesChannel) {
             try {
                 $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
-            } catch (\Throwable $exception) {
+            } catch (\Throwable) {
                 $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
                     $runUuid,
-                    $defaultTheme
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                 ));
             }
         }

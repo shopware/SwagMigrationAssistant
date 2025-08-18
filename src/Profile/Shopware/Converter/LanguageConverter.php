@@ -54,8 +54,8 @@ abstract class LanguageConverter extends ShopwareConverter
         if ($languageUuid !== null) {
             $this->loggingService->addLogEntry(new EntityAlreadyExistsRunLog(
                 $migrationContext->getRunUuid(),
-                DefaultEntities::LANGUAGE,
-                $data['id']
+                $connection->getProfileName(),
+                $connection->getGatewayName(),
             ));
 
             return new ConvertStruct(null, $data);

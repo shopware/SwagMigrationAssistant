@@ -86,8 +86,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new EmptyNecessaryFieldRunLog(
                     $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER_DOCUMENT,
-                    $this->oldId,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     'hash'
                 )
             );
@@ -99,8 +99,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new EmptyNecessaryFieldRunLog(
                     $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER_DOCUMENT,
-                    $this->oldId,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     'documenttype'
                 )
             );
@@ -119,8 +119,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 new AssociationRequiredMissingLog(
                     $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER,
-                    $this->oldId,
+                    $connection->getProfileName(),
+                    $connection->getGatewayName(),
                     DefaultEntities::ORDER_DOCUMENT
                 )
             );
@@ -202,9 +202,12 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return $documentType;
         }
 
+        $connection = $this->migrationContext->getConnection();
+
         $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
             $this->runId,
-            $data['id'],
+            $connection->getProfileName(),
+            $connection->getGatewayName(),
             $mappedKey
         ));
 

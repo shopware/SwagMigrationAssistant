@@ -54,16 +54,12 @@ class LoggingService implements LoggingServiceInterface
     public function addLogEntry(LogEntryInterface $logEntry): void
     {
         $this->logging[] = [
+            'runId' => $logEntry->getRunId(),
+            'profileName' => $logEntry->getProfileName(),
+            'gatewayName' => $logEntry->getGatewayName(),
             'level' => $logEntry->getLevel(),
             'code' => $logEntry->getCode(),
-            'title' => $logEntry->getTitle(),
-            'description' => $logEntry->getDescription(),
-            'parameters' => $logEntry->getParameters(),
-            'titleSnippet' => $logEntry->getTitleSnippet(),
-            'descriptionSnippet' => $logEntry->getDescriptionSnippet(),
-            'entity' => $logEntry->getEntity(),
-            'sourceId' => $logEntry->getSourceId(),
-            'runId' => $logEntry->getRunId(),
+            'userFixable' => $logEntry->isUserFixable(),
         ];
     }
 

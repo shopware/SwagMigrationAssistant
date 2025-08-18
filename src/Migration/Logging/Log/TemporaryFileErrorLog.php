@@ -14,10 +14,19 @@ class TemporaryFileErrorLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $entity,
-        ?string $sourceId = null,
+        string $profileName,
+        string $gatewayName,
     ) {
-        parent::__construct($runId, $entity, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -28,28 +37,5 @@ class TemporaryFileErrorLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED';
-    }
-
-    public function getTitle(): string
-    {
-        return 'An exception occurred';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, exceptionCode: int|string, description: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'exceptionCode' => $this->getCode(),
-            'description' => 'The temporary file for media download could not be created',
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        return $this->getParameters()['description'];
     }
 }

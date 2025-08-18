@@ -647,7 +647,6 @@ class MigrationDataWriterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
 
         static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
-        static::assertSame('SWAG_MIGRATION__WRITER_NOT_FOUND', $logs[0]['parameters']['exceptionCode']);
         static::assertCount(1, $logs);
     }
 

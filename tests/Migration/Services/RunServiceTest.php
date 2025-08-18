@@ -224,7 +224,7 @@ class RunServiceTest extends TestCase
                     $generalSettingEntity,
                 ]),
             ],
-            new GeneralSettingDefinition()
+            new GeneralSettingDefinition(),
         );
 
         $runService = $this->createRunService(

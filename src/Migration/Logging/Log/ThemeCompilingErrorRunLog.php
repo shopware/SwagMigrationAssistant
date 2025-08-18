@@ -14,9 +14,19 @@ class ThemeCompilingErrorRunLog extends BaseRunLogEntry
 {
     public function __construct(
         string $runId,
-        string $sourceId,
+        string $profileName,
+        string $gatewayName,
     ) {
-        parent::__construct($runId, null, $sourceId);
+        parent::__construct(
+            $runId,
+            $profileName,
+            $gatewayName,
+        );
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -27,30 +37,5 @@ class ThemeCompilingErrorRunLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__THEME_COMPILING_ERROR';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Theme compiling error';
-    }
-
-    /**
-     * @return array{sourceId: ?string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'sourceId' => $this->getSourceId(),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'The theme with id "%s" could not be compiled.',
-            $args['sourceId']
-        );
     }
 }

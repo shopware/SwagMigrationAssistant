@@ -60,8 +60,8 @@ class LoggingServiceTest extends TestCase
 
     public function testAddLogEntry(): void
     {
-        $log1 = new AssociationRequiredMissingLog($this->runUuid, DefaultEntities::PRODUCT, '2', DefaultEntities::PRODUCT_MANUFACTURER);
-        $log2 = new CannotConvertChildEntity($this->runUuid, DefaultEntities::PRODUCT_MANUFACTURER, DefaultEntities::PRODUCT, '200');
+        $log1 = new AssociationRequiredMissingLog($this->runUuid, 'Profile name', 'Gateway name', DefaultEntities::PRODUCT_MANUFACTURER);
+        $log2 = new CannotConvertChildEntity($this->runUuid, 'Profile name', 'Gateway name', DefaultEntities::PRODUCT, '200');
 
         $this->loggingService->addLogEntry($log1);
         $this->loggingService->addLogEntry($log2);
