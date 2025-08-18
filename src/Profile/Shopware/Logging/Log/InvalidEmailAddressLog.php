@@ -8,25 +8,11 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class InvalidEmailAddressLog extends BaseRunLogEntry
+readonly class InvalidEmailAddressLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $email,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;

@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectType;
 
 #[Package('fundamentals@after-sales')]
-class UnsupportedSeoUrlType extends UnsupportedObjectType
+readonly class UnsupportedSeoUrlType extends UnsupportedObjectType
 {
     public function getLevel(): string
     {

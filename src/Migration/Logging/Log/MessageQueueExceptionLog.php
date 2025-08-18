@@ -8,26 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class MessageQueueExceptionLog extends BaseRunLogEntry
+readonly class MessageQueueExceptionLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly \Throwable $exception,
-        /** @phpstan-ignore property.onlyWritten */
-        private int $exceptionCount,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;

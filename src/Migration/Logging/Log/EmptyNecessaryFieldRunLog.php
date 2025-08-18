@@ -8,24 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class EmptyNecessaryFieldRunLog extends BaseRunLogEntry
+readonly class EmptyNecessaryFieldRunLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $emptyField,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;

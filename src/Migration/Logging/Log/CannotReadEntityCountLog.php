@@ -8,30 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class CannotReadEntityCountLog extends BaseRunLogEntry
+readonly class CannotReadEntityCountLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $table,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly ?string $condition,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $exceptionCode,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $exceptionMessage,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;

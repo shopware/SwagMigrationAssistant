@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectType;
 
 #[Package('fundamentals@after-sales')]
-class UnsupportedTranslationType extends UnsupportedObjectType
+readonly class UnsupportedTranslationType extends UnsupportedObjectType
 {
     public function getLevel(): string
     {
