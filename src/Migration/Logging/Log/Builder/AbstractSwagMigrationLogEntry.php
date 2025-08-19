@@ -17,39 +17,55 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     final public const LOG_LEVEL_ERROR = 'error';
     final public const LOG_LEVEL_DEBUG = 'debug';
 
+    /**
+     * @param array<int, array<string, mixed>>|null $sourceData
+     * @param array<int, array<string, mixed>>|null $convertedData
+     * @param array<string, mixed>|null $usedMapping
+     * @param array<int, array<string, mixed>>|null $exceptionTrace
+     */
     public function __construct(
-        protected SwagMigrationLogRecord $record,
+        protected string $runId,
+        protected string $profileName,
+        protected string $gatewayName,
+        protected ?string $entityName = null,
+        protected ?string $fieldName = null,
+        protected ?string $fieldSourcePath = null,
+        protected ?array $sourceData = null,
+        protected ?array $convertedData = null,
+        protected ?array $usedMapping = null,
+        protected ?string $exceptionMessage = null,
+        protected ?array $exceptionTrace = null,
     ) {
     }
 
     public function getRunId(): string
     {
-        return $this->record->runId;
+        return $this->runId;
     }
 
     public function getProfileName(): string
     {
-        return $this->record->profileName;
+        return $this->profileName;
     }
 
     public function getGatewayName(): string
     {
-        return $this->record->gatewayName;
+        return $this->gatewayName;
     }
 
     public function getEntityName(): ?string
     {
-        return $this->record->entityName;
+        return $this->entityName;
     }
 
     public function getFieldName(): ?string
     {
-        return $this->record->fieldName;
+        return $this->fieldName;
     }
 
     public function getFieldSourcePath(): ?string
     {
-        return $this->record->fieldSourcePath;
+        return $this->fieldSourcePath;
     }
 
     /**
@@ -57,7 +73,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
      */
     public function getSourceData(): ?array
     {
-        return $this->record->sourceData;
+        return $this->sourceData;
     }
 
     /**
@@ -65,7 +81,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
      */
     public function getConvertedData(): ?array
     {
-        return $this->record->convertedData;
+        return $this->convertedData;
     }
 
     /**
@@ -73,12 +89,12 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
      */
     public function getUsedMapping(): ?array
     {
-        return $this->record->usedMapping;
+        return $this->usedMapping;
     }
 
     public function getExceptionMessage(): ?string
     {
-        return $this->record->exceptionMessage;
+        return $this->exceptionMessage;
     }
 
     /**
@@ -86,6 +102,6 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
      */
     public function getExceptionTrace(): ?array
     {
-        return $this->record->exceptionTrace;
+        return $this->exceptionTrace;
     }
 }

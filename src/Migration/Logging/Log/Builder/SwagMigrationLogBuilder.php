@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
  * $log = (new SwagMigrationLogBuilder('runId', 'profileName', 'gatewayName'))
  *     ->withField('fieldName')
  *     ->withFieldSourcePath('sourcePath')
- *     ->build(SwagMigrationLogRecord::class);
+ *     ->build(SwagMigrationLogEntry::class);
  */
 #[Package('fundamentals@after-sales')]
 class SwagMigrationLogBuilder
@@ -127,7 +127,7 @@ class SwagMigrationLogBuilder
      */
     public function build(string $logClass): AbstractSwagMigrationLogEntry
     {
-        $record = new SwagMigrationLogRecord(
+        return new $logClass(
             $this->runId,
             $this->profileName,
             $this->gatewayName,
@@ -140,7 +140,5 @@ class SwagMigrationLogBuilder
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
-
-        return new $logClass($record);
     }
 }
