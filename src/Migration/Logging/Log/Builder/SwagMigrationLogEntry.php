@@ -24,7 +24,9 @@ interface SwagMigrationLogEntry
 
     public function isUserFixable(): bool;
 
-    public function getField(): ?string;
+    public function getEntityName(): ?string;
+
+    public function getFieldName(): ?string;
 
     public function getFieldSourcePath(): ?string;
 

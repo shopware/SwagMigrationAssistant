@@ -30,7 +30,8 @@ class SwagMigrationLogBuilder
         protected string $runId,
         protected string $profileName,
         protected string $gatewayName,
-        protected ?string $field = null,
+        protected ?string $entityName = null,
+        protected ?string $fieldName = null,
         protected ?string $fieldSourcePath = null,
         protected ?array $sourceData = null,
         protected ?array $convertedData = null,
@@ -49,9 +50,16 @@ class SwagMigrationLogBuilder
         );
     }
 
-    public function withField(string $field): self
+    public function withEntityName(string $entityName): self
     {
-        $this->field = $field;
+        $this->entityName = $entityName;
+
+        return $this;
+    }
+
+    public function withFieldName(string $field): self
+    {
+        $this->fieldName = $field;
 
         return $this;
     }
@@ -123,7 +131,8 @@ class SwagMigrationLogBuilder
             $this->runId,
             $this->profileName,
             $this->gatewayName,
-            $this->field,
+            $this->entityName,
+            $this->fieldName,
             $this->fieldSourcePath,
             $this->sourceData,
             $this->convertedData,

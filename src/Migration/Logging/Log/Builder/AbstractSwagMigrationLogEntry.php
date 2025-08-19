@@ -37,9 +37,14 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
         return $this->record->gatewayName;
     }
 
-    public function getField(): ?string
+    public function getEntityName(): string
     {
-        return $this->record->field;
+        return $this->record->entityName;
+    }
+
+    public function getFieldName(): ?string
+    {
+        return $this->record->fieldName;
     }
 
     public function getFieldSourcePath(): ?string

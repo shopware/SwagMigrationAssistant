@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
-class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
+class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 {
     public const MIGRATION_LOGGING_TABLE = 'swag_migration_logging';
 
@@ -30,6 +30,10 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
         'auto_increment' => null,
         'created_at' => null,
         'updated_at' => null,
+    ];
+
+    public const OPTIONAL_FIELDS = [
+        'field' => 'VARCHAR(255) DEFAULT NULL',
     ];
 
     public function getCreationTimestamp(): int
