@@ -106,6 +106,9 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function addAssociationRequiredLog(MigrationContextInterface $migrationContext, string $field, string $entity, array $data): void
     {
         $this->loggingService->addLogEntry( // TODO: add optional fields

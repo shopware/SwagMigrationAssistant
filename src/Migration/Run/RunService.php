@@ -97,7 +97,6 @@ class RunService implements RunServiceInterface
         }
 
         $connectionId = $connection->getId();
-        // ToDo: MIG-965 - Check how we could put this into the MQ
         $this->cleanupUnwrittenRunDataOfLastInactiveRun($context);
 
         $runUuid = $this->createPlainMigrationRun($connectionId, $context);

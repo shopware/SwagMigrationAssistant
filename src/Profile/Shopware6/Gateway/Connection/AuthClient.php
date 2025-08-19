@@ -98,13 +98,13 @@ class AuthClient implements HttpClientInterface
         $connection = $this->migrationContext->getConnection();
 
         if ($connection === null) {
-            return; // TODO: throw exception
+            return;
         }
 
         $credentials = $connection->getCredentialFields();
 
         if ($credentials === null) {
-            return; // TODO: throw exception
+            return;
         }
 
         $response = $this->apiClient->post('/api/oauth/token', [

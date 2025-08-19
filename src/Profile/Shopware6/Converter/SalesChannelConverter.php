@@ -132,7 +132,6 @@ class SalesChannelConverter extends ShopwareConverter
         }
 
         unset(
-            // ToDo implement if these associations are migrated
             $converted['mailHeaderFooterId']
         );
 
