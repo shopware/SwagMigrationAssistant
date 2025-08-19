@@ -33,6 +33,34 @@ class SwagMigrationLoggingEntity extends Entity
 
     protected int $autoIncrement;
 
+    protected ?string $entityName = null;
+
+    protected ?string $fieldName = null;
+
+    protected ?string $fieldSourcePath = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
+    protected ?array $sourceData = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
+    protected ?array $convertedData = null;
+
+    /**
+     * @var array<string, mixed>|null
+     */
+    protected ?array $usedMapping = null;
+
+    protected ?string $exceptionMessage = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
+    protected ?array $exceptionTrace = null;
+
     public function getRunId(): string
     {
         return $this->runId;
@@ -111,5 +139,109 @@ class SwagMigrationLoggingEntity extends Entity
     public function setAutoIncrement(int $autoIncrement): void
     {
         $this->autoIncrement = $autoIncrement;
+    }
+
+    public function getEntityName(): ?string
+    {
+        return $this->entityName;
+    }
+
+    public function setEntityName(string $entityName): void
+    {
+        $this->entityName = $entityName;
+    }
+
+    public function getFieldName(): ?string
+    {
+        return $this->fieldName;
+    }
+
+    public function setFieldName(string $fieldName): void
+    {
+        $this->fieldName = $fieldName;
+    }
+
+    public function getFieldSourcePath(): ?string
+    {
+        return $this->fieldSourcePath;
+    }
+
+    public function setFieldSourcePath(string $fieldSourcePath): void
+    {
+        $this->fieldSourcePath = $fieldSourcePath;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
+    public function getSourceData(): ?array
+    {
+        return $this->sourceData;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $sourceData
+     */
+    public function setSourceData(array $sourceData): void
+    {
+        $this->sourceData = $sourceData;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
+    public function getConvertedData(): ?array
+    {
+        return $this->convertedData;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $convertedData
+     */
+    public function setConvertedData(array $convertedData): void
+    {
+        $this->convertedData = $convertedData;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function getUsedMapping(): ?array
+    {
+        return $this->usedMapping;
+    }
+
+    /**
+     * @param array<string, mixed> $usedMapping
+     */
+    public function setUsedMapping(array $usedMapping): void
+    {
+        $this->usedMapping = $usedMapping;
+    }
+
+    public function getExceptionMessage(): ?string
+    {
+        return $this->exceptionMessage;
+    }
+
+    public function setExceptionMessage(string $exceptionMessage): void
+    {
+        $this->exceptionMessage = $exceptionMessage;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
+    public function getExceptionTrace(): ?array
+    {
+        return $this->exceptionTrace;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $exceptionTrace
+     */
+    public function setExceptionTrace(array $exceptionTrace): void
+    {
+        $this->exceptionTrace = $exceptionTrace;
     }
 }

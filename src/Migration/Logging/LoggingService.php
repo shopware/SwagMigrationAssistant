@@ -60,13 +60,14 @@ class LoggingService implements LoggingServiceInterface
             'level' => $logEntry->getLevel(),
             'code' => $logEntry->getCode(),
             'userFixable' => $logEntry->isUserFixable(),
-            'field' => $logEntry->getField(),
-            'fieldSourcePath' => $logEntry->getFieldSourcePath(),
-            'sourceData' => $logEntry->getSourceData(),
-            'convertedData' => $logEntry->getConvertedData(),
-            'usedMapping' => $logEntry->getUsedMapping(),
-            'exceptionMessage' => $logEntry->getExceptionMessage(),
-            'exceptionTrace' => $logEntry->getExceptionTrace(),
+            'entity_name' => $logEntry->getEntityName(),
+            'field_name' => $logEntry->getFieldName(),
+            'field_source_path' => $logEntry->getFieldSourcePath(),
+            'source_data' => $logEntry->getSourceData(),
+            'converted_data' => $logEntry->getConvertedData(),
+            'used_mapping' => $logEntry->getUsedMapping(),
+            'exception_message' => $logEntry->getExceptionMessage(),
+            'exception_trace' => $logEntry->getExceptionTrace(),
         ];
     }
 

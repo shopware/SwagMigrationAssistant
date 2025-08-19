@@ -916,7 +916,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!\is_array($objectData)) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->withField($entity)
+                    ->withEntityName($entity)
                     ->build(InvalidUnserializedDataLog::class)
             );
 

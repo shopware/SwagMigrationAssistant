@@ -61,7 +61,12 @@ readonly class DebugLog implements SwagMigrationLogEntry
         return 'SWAG_MIGRATION__DEBUG';
     }
 
-    public function getField(): ?string
+    public function getEntityName(): ?string
+    {
+        return null;
+    }
+
+    public function getFieldName(): ?string
     {
         return null;
     }
