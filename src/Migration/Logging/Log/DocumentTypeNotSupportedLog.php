@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class DocumentTypeNotSupported extends AbstractSwagMigrationLogEntry
+readonly class DocumentTypeNotSupportedLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {

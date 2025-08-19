@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class InvalidUnserializedData extends AbstractSwagMigrationLogEntry
+readonly class UnsupportedObjectTypeLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class InvalidUnserializedData extends AbstractSwagMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA';
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE';
     }
 }

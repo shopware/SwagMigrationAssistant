@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class CannotConvertEntity extends AbstractSwagMigrationLogEntry
+readonly class InvalidUnserializedDataLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class CannotConvertEntity extends AbstractSwagMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_CANNOT_CONVERT';
+        return 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA';
     }
 }

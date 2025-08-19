@@ -261,7 +261,7 @@ SQL;
                         $runUuid,
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
-                    ))->buildLogEntry(ThemeCompilingErrorRunLog::class)
+                    ))->build(ThemeCompilingErrorRunLog::class)
                 );
             }
         }

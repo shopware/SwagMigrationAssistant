@@ -22,12 +22,12 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
+use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedDataLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationType;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationTypeLog;
 
 #[Package('fundamentals@after-sales')]
 abstract class TranslationConverter extends ShopwareConverter
@@ -65,7 +65,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if (!isset($data['locale'])) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -97,7 +97,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         $this->loggingService->addLogEntry(
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->buildLogEntry(UnsupportedTranslationType::class)
+                ->build(UnsupportedTranslationTypeLog::class)
         );
 
         return new ConvertStruct(null, $data);
@@ -129,7 +129,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -236,7 +236,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -308,7 +308,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -386,7 +386,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -469,7 +469,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -562,7 +562,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -637,7 +637,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -715,7 +715,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -788,7 +788,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -917,7 +917,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withField($entity)
-                    ->buildLogEntry(InvalidUnserializedData::class)
+                    ->build(InvalidUnserializedDataLog::class)
             );
 
             return null;
@@ -947,7 +947,7 @@ abstract class TranslationConverter extends ShopwareConverter
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);

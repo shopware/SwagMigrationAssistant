@@ -22,8 +22,6 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
 
     protected string $connectionId = '';
 
-    private string $runUuid;
-
     public function getSourceIdentifier(array $data): string
     {
         return $data['id'];
@@ -33,7 +31,6 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->context = $context;
-        $this->runUuid = $migrationContext->getRunUuid();
         $connection = $migrationContext->getConnection();
         if ($connection !== null) {
             $this->connectionId = $connection->getId();
@@ -103,7 +100,7 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
     {
         $this->loggingService->addLogEntry(
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->buildLogEntry(AssociationRequiredMissingLog::class)
+                ->build(AssociationRequiredMissingLog::class)
         );
     }
 }

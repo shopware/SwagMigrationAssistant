@@ -87,7 +87,7 @@ final class ProcessMediaHandler
         } catch (NoConnectionFoundException) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(ProcessorNotFoundLog::class)
+                    ->build(ProcessorNotFoundLog::class)
             );
 
             $this->loggingService->saveLogging($context);
@@ -96,7 +96,7 @@ final class ProcessMediaHandler
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($e->getMessage())
                     ->withExceptionTrace($e->getTrace())
-                    ->buildLogEntry(ExceptionRunLog::class)
+                    ->build(ExceptionRunLog::class)
             );
 
             $this->loggingService->saveLogging($context);

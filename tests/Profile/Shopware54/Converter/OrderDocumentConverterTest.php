@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
+use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
@@ -180,7 +180,7 @@ class OrderDocumentConverterTest extends TestCase
                     $this->runId,
                     Shopware54Profile::PROFILE_NAME,
                     ShopwareLocalGateway::GATEWAY_NAME
-                ))->buildLogEntry(DocumentTypeNotSupported::class)
+                ))->build(DocumentTypeNotSupportedLog::class)
             );
 
             $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock, $loggerMock);

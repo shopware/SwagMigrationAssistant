@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnsupportedObjectType extends AbstractSwagMigrationLogEntry
+readonly class CannotConvertChildEntityLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class UnsupportedObjectType extends AbstractSwagMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE';
+        return 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY';
     }
 }

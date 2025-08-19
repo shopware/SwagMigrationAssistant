@@ -65,7 +65,7 @@ class NumberRangeConverter extends ShopwareConverter
 
                     $this->loggingService->addLogEntry(
                         SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                            ->buildLogEntry(UnsupportedNumberRangeTypeLog::class)
+                            ->build(UnsupportedNumberRangeTypeLog::class)
                     );
 
                     return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);

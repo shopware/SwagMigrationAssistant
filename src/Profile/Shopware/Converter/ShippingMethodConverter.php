@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationTypeLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
@@ -98,7 +98,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if (empty($data['id'])) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -149,7 +149,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             foreach ($fields as $field) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                        ->build(EmptyNecessaryFieldRunLog::class)
                 );
             }
 
@@ -183,7 +183,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             ) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(UnsupportedShippingCalculationType::class)
+                        ->build(UnsupportedShippingCalculationTypeLog::class)
                 );
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
@@ -238,7 +238,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -641,7 +641,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (empty($shippingCost['id'])) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                        ->build(EmptyNecessaryFieldRunLog::class)
                 );
 
                 continue;
@@ -674,7 +674,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (!isset($currencyMapping)) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                        ->build(EmptyNecessaryFieldRunLog::class)
                 );
 
                 continue;
@@ -689,7 +689,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(UnsupportedShippingPriceLog::class)
+                        ->build(UnsupportedShippingPriceLog::class)
                 );
 
                 continue;

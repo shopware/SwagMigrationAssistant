@@ -68,7 +68,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (!empty($fields)) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -161,7 +161,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if ($salutationMapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(UnknownEntityLog::class)
+                    ->build(UnknownEntityLog::class)
             );
 
             return null;
@@ -188,7 +188,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (!isset($salesChannelMapping)) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return null;
@@ -210,7 +210,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if ($status === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
         }
 

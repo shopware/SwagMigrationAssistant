@@ -35,8 +35,6 @@ abstract class PromotionConverter extends ShopwareConverter
      */
     private array $productUuids;
 
-    private string $runId;
-
     /**
      * @param EntityRepository<SalesChannelCollection> $salesChannelRepository
      */
@@ -57,7 +55,6 @@ abstract class PromotionConverter extends ShopwareConverter
     {
         $this->generateChecksum($data);
         $this->context = $context;
-        $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = '';
@@ -372,7 +369,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 if ($productMapping === null) {
                     $this->loggingService->addLogEntry(
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                            ->buildLogEntry(AssociationRequiredMissingLog::class)
+                            ->build(AssociationRequiredMissingLog::class)
                     );
 
                     continue;
@@ -501,15 +498,9 @@ abstract class PromotionConverter extends ShopwareConverter
                 unset($data['bindtosupplier']);
                 $oneRuleAdded = true;
             } else {
-                $connection = $migrationContext->getConnection();
-
                 $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $this->runId,
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        DefaultEntities::PROMOTION_DISCOUNT
-                    )
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(AssociationRequiredMissingLog::class)
                 );
             }
         }
@@ -560,7 +551,7 @@ abstract class PromotionConverter extends ShopwareConverter
             if ($salesChannelMapping === null) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(AssociationRequiredMissingLog::class)
+                        ->build(AssociationRequiredMissingLog::class)
                 );
 
                 return;
@@ -628,7 +619,7 @@ abstract class PromotionConverter extends ShopwareConverter
         if ($customerGroupMapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return;

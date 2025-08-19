@@ -15,7 +15,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
  * $log = (new SwagMigrationLogBuilder('runId', 'profileName', 'gatewayName'))
  *     ->withField('fieldName')
  *     ->withFieldSourcePath('sourcePath')
- *     ->buildLogEntry(SwagMigrationLogRecord::class);
+ *     ->build(SwagMigrationLogRecord::class);
  */
 #[Package('fundamentals@after-sales')]
 class SwagMigrationLogBuilder
@@ -49,14 +49,14 @@ class SwagMigrationLogBuilder
         );
     }
 
-    public function withField(?string $field): self
+    public function withField(string $field): self
     {
         $this->field = $field;
 
         return $this;
     }
 
-    public function withFieldSourcePath(?string $fieldSourcePath): self
+    public function withFieldSourcePath(string $fieldSourcePath): self
     {
         $this->fieldSourcePath = $fieldSourcePath;
 
@@ -64,9 +64,9 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<int, array<string, mixed>>|null $sourceData
+     * @param array<int, array<string, mixed>> $sourceData
      */
-    public function withSourceData(?array $sourceData): self
+    public function withSourceData(array $sourceData): self
     {
         $this->sourceData = $sourceData;
 
@@ -74,9 +74,9 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<int, array<string, mixed>>|null $convertedData
+     * @param array<int, array<string, mixed>> $convertedData
      */
-    public function withConvertedData(?array $convertedData): self
+    public function withConvertedData(array $convertedData): self
     {
         $this->convertedData = $convertedData;
 
@@ -84,16 +84,16 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<string, mixed>|null $usedMapping
+     * @param array<string, mixed> $usedMapping
      */
-    public function withUsedMapping(?array $usedMapping): self
+    public function withUsedMapping(array $usedMapping): self
     {
         $this->usedMapping = $usedMapping;
 
         return $this;
     }
 
-    public function withExceptionMessage(?string $exceptionMessage): self
+    public function withExceptionMessage(string $exceptionMessage): self
     {
         $this->exceptionMessage = $exceptionMessage;
 
@@ -101,9 +101,9 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<int, array<string, mixed>>|null $exceptionTrace
+     * @param array<int, array<string, mixed>> $exceptionTrace
      */
-    public function withExceptionTrace(?array $exceptionTrace): self
+    public function withExceptionTrace(array $exceptionTrace): self
     {
         $this->exceptionTrace = $exceptionTrace;
 
@@ -117,7 +117,7 @@ class SwagMigrationLogBuilder
      *
      * @return T The created log entry instance
      */
-    public function buildLogEntry(string $logClass): AbstractSwagMigrationLogEntry
+    public function build(string $logClass): AbstractSwagMigrationLogEntry
     {
         $record = new SwagMigrationLogRecord(
             $this->runId,

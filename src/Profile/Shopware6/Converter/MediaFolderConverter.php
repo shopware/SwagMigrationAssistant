@@ -61,7 +61,7 @@ class MediaFolderConverter extends ShopwareConverter
             if ($converted['parentId'] === null) {
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                        ->buildLogEntry(UnsupportedMediaDefaultFolderLog::class)
+                        ->build(UnsupportedMediaDefaultFolderLog::class)
                 );
             }
 

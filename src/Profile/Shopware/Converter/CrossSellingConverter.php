@@ -64,7 +64,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
         if ($sourceProductMapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -75,7 +75,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
         if ($relatedProductMapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);

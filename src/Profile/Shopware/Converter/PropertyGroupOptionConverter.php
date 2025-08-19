@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -81,7 +81,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         if (!isset($data['group']['name'])) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -133,7 +133,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         if (!isset($data['media']['id'])) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->buildLogEntry(CannotConvertChildEntity::class)
+                    ->build(CannotConvertChildEntityLog::class)
             );
 
             return;

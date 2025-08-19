@@ -55,7 +55,7 @@ abstract class LanguageConverter extends ShopwareConverter
         if ($languageUuid !== null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(EntityAlreadyExistsRunLog::class)
+                    ->build(EntityAlreadyExistsRunLog::class)
             );
 
             return new ConvertStruct(null, $data);

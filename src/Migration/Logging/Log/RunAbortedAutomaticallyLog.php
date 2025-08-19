@@ -5,13 +5,13 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
+namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnsupportedShippingCalculationType extends AbstractSwagMigrationLogEntry
+readonly class RunAbortedAutomaticallyLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class UnsupportedShippingCalculationType extends AbstractSwagMigrationL
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_ERROR;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE';
+        return 'SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION';
     }
 }

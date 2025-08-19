@@ -29,7 +29,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
@@ -348,8 +348,8 @@ class MigrationDataProcessingTest extends TestCase
             $type = $log->getLevel();
 
             if (
-                ($type === LogEntryInterface::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD')
+                ($type === AbstractSwagMigrationLogEntry::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED')
+                || ($type === AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD')
             ) {
                 ++$countValidLogging;
 

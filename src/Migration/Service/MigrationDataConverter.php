@@ -72,7 +72,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
-                    ->buildLogEntry(ExceptionRunLog::class)
+                    ->build(ExceptionRunLog::class)
             );
 
             $this->loggingService->saveLogging($context);
@@ -108,7 +108,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
-                        ->buildLogEntry(ExceptionRunLog::class)
+                        ->build(ExceptionRunLog::class)
                 );
 
                 $createData[] = [

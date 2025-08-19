@@ -133,7 +133,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     {
         $this->loggingService->addLogEntry(
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->buildLogEntry(DataSetNotFoundLog::class)
+                ->build(DataSetNotFoundLog::class)
         );
     }
 }

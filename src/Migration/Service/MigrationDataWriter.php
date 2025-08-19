@@ -109,7 +109,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($writerNotFoundException->getMessage())
                     ->withExceptionTrace($writerNotFoundException->getTrace())
-                    ->buildLogEntry(ExceptionRunLog::class)
+                    ->build(ExceptionRunLog::class)
             );
             $this->loggingService->saveLogging($context);
 
@@ -183,7 +183,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
 
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(WriteExceptionRunLog::class)
+                    ->build(WriteExceptionRunLog::class)
             );
 
             ++$index;
@@ -241,7 +241,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
-                        ->buildLogEntry(ExceptionRunLog::class)
+                        ->build(ExceptionRunLog::class)
                 );
 
                 $updateWrittenData[$dataId]['written'] = false;

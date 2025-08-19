@@ -110,7 +110,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->buildLogEntry(CannotGetFileRunLog::class)
+                        ->build(CannotGetFileRunLog::class)
                 );
                 $processedMedia[] = $mediaId;
                 $failedMedia[] = $mediaId;
@@ -133,7 +133,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
-                        ->buildLogEntry(ExceptionRunLog::class)
+                        ->build(ExceptionRunLog::class)
                 );
             }
         }

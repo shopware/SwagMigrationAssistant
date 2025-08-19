@@ -101,7 +101,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if ($customerGroupMapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -114,7 +114,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if ($languageUuid === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -134,7 +134,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if ($currencyUuid === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -157,7 +157,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if ($categoryMapping === null) {
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -377,7 +377,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                        ->buildLogEntry(DeactivatedPackLanguageLog::class)
+                        ->build(DeactivatedPackLanguageLog::class)
                 );
             }
         }

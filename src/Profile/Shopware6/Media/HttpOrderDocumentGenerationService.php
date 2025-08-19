@@ -96,7 +96,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
-                    ->buildLogEntry(ExceptionRunLog::class)
+                    ->build(ExceptionRunLog::class)
             );
             $this->loggingService->saveLogging($context);
 
@@ -295,9 +295,9 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($clientException->getMessage())
-                    ->withExceptionTrace($clientException->getTrace())
-                    ->buildLogEntry(CannotGetFileRunLog::class)
+                    ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
+                    ->withExceptionTrace($clientException?->getTrace() ?? [])
+                    ->build(CannotGetFileRunLog::class)
             );
         }
     }

@@ -5,13 +5,13 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\Logging\Log;
+namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class RunAbortedAutomatically extends AbstractSwagMigrationLogEntry
+readonly class UnsupportedMailTemplateTypeLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class RunAbortedAutomatically extends AbstractSwagMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_INFO;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION';
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE';
     }
 }

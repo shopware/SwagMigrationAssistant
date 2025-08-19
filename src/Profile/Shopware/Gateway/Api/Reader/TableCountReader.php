@@ -72,7 +72,7 @@ class TableCountReader implements TableCountReaderInterface
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception['message'])
-                    ->buildLogEntry(CannotReadEntityCountLog::class)
+                    ->build(CannotReadEntityCountLog::class)
             );
         }
 
