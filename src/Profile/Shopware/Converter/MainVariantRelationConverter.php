@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -100,15 +101,9 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
 
     private function addAssociationRequiredLog(MigrationContextInterface $migrationContext): void
     {
-        $connection = $migrationContext->getConnection();
-
         $this->loggingService->addLogEntry(
-            new AssociationRequiredMissingLog(
-                $this->runUuid,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                DefaultEntities::MAIN_VARIANT_RELATION
-            )
+            SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->buildLogEntry(AssociationRequiredMissingLog::class)
         );
     }
 }

@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -84,20 +85,19 @@ final class ProcessMediaHandler
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
         } catch (NoConnectionFoundException) {
-            $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
-                $message->getRunId(),
-                $connection->getProfileName(),
-                $connection->getGatewayName()
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(ProcessorNotFoundLog::class)
+            );
 
             $this->loggingService->saveLogging($context);
         } catch (\Exception $e) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $message->getRunId(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                $e
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($e->getMessage())
+                    ->withExceptionTrace($e->getTrace())
+                    ->buildLogEntry(ExceptionRunLog::class)
+            );
 
             $this->loggingService->saveLogging($context);
         }

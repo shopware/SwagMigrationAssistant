@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedData;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -62,12 +63,10 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if (!isset($data['locale'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'locale'
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -97,12 +96,8 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $this->loggingService->addLogEntry(
-            new UnsupportedTranslationType(
-                $migrationContext->getRunUuid(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                $data['id']
-            )
+            SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->buildLogEntry(UnsupportedTranslationType::class)
         );
 
         return new ConvertStruct(null, $data);
@@ -132,15 +127,9 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -245,15 +234,9 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['ordernumber']);
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -323,15 +306,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -407,15 +384,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -496,15 +467,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -595,15 +560,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -676,15 +635,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -760,15 +713,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -839,15 +786,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -973,16 +914,10 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if (!\is_array($objectData)) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new InvalidUnserializedData(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $entity,
-                    $objectDataSerialized
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withField($entity)
+                    ->buildLogEntry(InvalidUnserializedData::class)
             );
 
             return null;
@@ -1010,15 +945,9 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::TRANSLATION
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);

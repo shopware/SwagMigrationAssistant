@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -68,12 +69,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::SEO_URL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);
@@ -85,12 +82,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
         if ($converted['languageId'] === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::SEO_URL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);
@@ -116,12 +109,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
                 if ($mapping === null) {
                     $this->loggingService->addLogEntry(
-                        new AssociationRequiredMissingLog(
-                            $migrationContext->getRunUuid(),
-                            $connection->getProfileName(),
-                            $connection->getGatewayName(),
-                            DefaultEntities::SEO_URL
-                        )
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->buildLogEntry(AssociationRequiredMissingLog::class)
                     );
 
                     return new ConvertStruct(null, $originalData);
@@ -142,12 +131,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
             if ($mapping === null) {
                 $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $migrationContext->getRunUuid(),
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        DefaultEntities::SEO_URL
-                    )
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(AssociationRequiredMissingLog::class)
                 );
 
                 return new ConvertStruct(null, $originalData);
@@ -158,12 +143,8 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
         } else {
             $this->loggingService->addLogEntry(
-                new UnsupportedSeoUrlType(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $originalData['id']
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(UnsupportedSeoUrlType::class)
             );
 
             return new ConvertStruct(null, $originalData);

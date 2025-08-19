@@ -31,6 +31,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -255,11 +256,13 @@ SQL;
             try {
                 $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
             } catch (\Throwable) {
-                $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
-                    $runUuid,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                ));
+                $this->loggingService->addLogEntry(
+                    (new SwagMigrationLogBuilder(
+                        $runUuid,
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
+                    ))->buildLogEntry(ThemeCompilingErrorRunLog::class)
+                );
             }
         }
 

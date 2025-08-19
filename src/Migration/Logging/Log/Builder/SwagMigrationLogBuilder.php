@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
  * @example
@@ -37,6 +38,15 @@ class SwagMigrationLogBuilder
         protected ?string $exceptionMessage = null,
         protected ?array $exceptionTrace = null,
     ) {
+    }
+
+    public static function fromMigrationContext(MigrationContextInterface $migrationContext): self
+    {
+        return new self(
+            $migrationContext->getRunUuid(),
+            $migrationContext->getConnection()->getProfileName(),
+            $migrationContext->getConnection()->getGatewayName(),
+        );
     }
 
     public function withField(?string $field): self
@@ -100,9 +110,16 @@ class SwagMigrationLogBuilder
         return $this;
     }
 
-    public function buildRecord(): SwagMigrationLogRecord
+    /**
+     * @template T of AbstractSwagMigrationLogEntry
+     *
+     * @param class-string<T> $logClass The class name of the log entry to create
+     *
+     * @return T The created log entry instance
+     */
+    public function buildLogEntry(string $logClass): AbstractSwagMigrationLogEntry
     {
-        return new SwagMigrationLogRecord(
+        $record = new SwagMigrationLogRecord(
             $this->runId,
             $this->profileName,
             $this->gatewayName,
@@ -114,18 +131,6 @@ class SwagMigrationLogBuilder
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
-    }
-
-    /**
-     * @template T of AbstractSwagMigrationLogEntry
-     *
-     * @param class-string<T> $logClass The class name of the log entry to create
-     *
-     * @return T The created log entry instance
-     */
-    public function buildLogEntry(string $logClass): AbstractSwagMigrationLogEntry
-    {
-        $record = $this->buildRecord();
 
         return new $logClass($record);
     }

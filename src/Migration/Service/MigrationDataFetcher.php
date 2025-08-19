@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -34,14 +35,12 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         try {
             return $this->gatewayRegistry->getGateway($migrationContext)->read($migrationContext);
         } catch (\Throwable $exception) {
-            $connection = $migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                $exception
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->buildLogEntry(ExceptionRunLog::class)
+            );
             $this->loggingService->saveLogging($context);
         }
 

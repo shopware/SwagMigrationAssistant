@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaThumbnailSizeLookup;
@@ -58,15 +59,9 @@ class MediaFolderConverter extends ShopwareConverter
             $converted['parentId'] = $this->mediaFolderLookup->get($data['defaultFolder']['entity'], $this->context);
 
             if ($converted['parentId'] === null) {
-                $connection = $this->migrationContext->getConnection();
-
                 $this->loggingService->addLogEntry(
-                    new UnsupportedMediaDefaultFolderLog(
-                        $this->migrationContext->getRunUuid(),
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        $data['defaultFolder']['entity']
-                    )
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->buildLogEntry(UnsupportedMediaDefaultFolderLog::class)
                 );
             }
 

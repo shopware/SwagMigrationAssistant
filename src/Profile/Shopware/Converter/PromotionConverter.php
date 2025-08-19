@@ -15,10 +15,10 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -88,7 +88,7 @@ abstract class PromotionConverter extends ShopwareConverter
         }
 
         $this->setSalesChannel($data, $converted, $migrationContext);
-        $this->setProductNumbers($data, $connection);
+        $this->setProductNumbers($data, $migrationContext);
         $this->setDiscount($data, $converted);
         $this->setShippingDiscount($data, $converted);
         $this->setCartRule($data, $converted, $migrationContext);
@@ -351,7 +351,7 @@ abstract class PromotionConverter extends ShopwareConverter
     /**
      * @param array<string, mixed> $data
      */
-    private function setProductNumbers(array &$data, SwagMigrationConnectionEntity $connection): void
+    private function setProductNumbers(array &$data, MigrationContextInterface $migrationContext): void
     {
         if (!isset($data['restrictarticles'])) {
             return;
@@ -371,12 +371,8 @@ abstract class PromotionConverter extends ShopwareConverter
 
                 if ($productMapping === null) {
                     $this->loggingService->addLogEntry(
-                        new AssociationRequiredMissingLog(
-                            $this->runId,
-                            $connection->getProfileName(),
-                            $connection->getGatewayName(),
-                            DefaultEntities::PROMOTION
-                        )
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->buildLogEntry(AssociationRequiredMissingLog::class)
                     );
 
                     continue;
@@ -562,15 +558,9 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             if ($salesChannelMapping === null) {
-                $connection = $migrationContext->getConnection();
-
                 $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $this->runId,
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        DefaultEntities::PROMOTION
-                    )
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(AssociationRequiredMissingLog::class)
                 );
 
                 return;
@@ -636,14 +626,10 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $connection = $migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                DefaultEntities::PROMOTION
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(AssociationRequiredMissingLog::class)
+            );
 
             return;
         }

@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -65,12 +66,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                \implode(',', $fields)
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -160,15 +159,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $connection = $migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(UnknownEntityLog::class)
+            );
 
             return null;
         }
@@ -192,14 +186,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if (!isset($salesChannelMapping)) {
-            $connection = $this->migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'salesChannel'
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+            );
 
             return null;
         }
@@ -218,14 +208,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
-            $connection = $migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'status'
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+            );
         }
 
         return $status;

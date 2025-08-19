@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup;
@@ -64,15 +65,9 @@ class MailTemplateConverter extends ShopwareMediaConverter
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid === null) {
-                    $connection = $this->migrationContext->getConnection();
-
                     $this->loggingService->addLogEntry(
-                        new UnsupportedMailTemplateType(
-                            $this->runId,
-                            $connection->getProfileName(),
-                            $connection->getGatewayName(),
-                            $converted['mailTemplateType']['technicalName']
-                        )
+                        SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->buildLogEntry(UnsupportedMailTemplateType::class)
                     );
 
                     return new ConvertStruct(null, $data, $converted['id'] ?? null);

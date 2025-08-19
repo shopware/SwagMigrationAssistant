@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -107,12 +108,10 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
             if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(new CannotGetFileRunLog(
-                    $mappedWorkload[$mediaId]->getRunId(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $sourcePath,
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(CannotGetFileRunLog::class)
+                );
                 $processedMedia[] = $mediaId;
                 $failedMedia[] = $mediaId;
 
@@ -130,12 +129,12 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(new ExceptionRunLog(
-                    $mappedWorkload[$mediaId]->getRunId(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $e,
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withExceptionMessage($e->getMessage())
+                        ->withExceptionTrace($e->getTrace())
+                        ->buildLogEntry(ExceptionRunLog::class)
+                );
             }
         }
 

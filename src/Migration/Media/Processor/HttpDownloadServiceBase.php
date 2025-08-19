@@ -23,6 +23,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\TemporaryFileErrorLog;
@@ -76,12 +77,14 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         // prepare http client
         $client = $this->getHttpClient($migrationContext);
         if ($client === null) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                new \Exception('Http download client can not be constructed.')
-            ));
+            $exception = new \Exception('Http download client can not be constructed.');
+
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->buildLogEntry(ExceptionRunLog::class)
+            );
             $this->loggingService->saveLogging($context);
 
             return $workload;
@@ -120,13 +123,11 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 if ($work->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
                     $failureUuids[] = $uuid;
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addLogEntry(new CannotGetFileRunLog(
-                        $work->getRunId(),
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        $work->getAdditionalData()['uri'],
-                        $result['reason'] ?? null
-                    ));
+
+                    $this->loggingService->addLogEntry(
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->buildLogEntry(CannotGetFileRunLog::class)
+                    );
                 }
 
                 continue;
@@ -141,11 +142,11 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             if ($filePath === false) {
                 $failureUuids[] = $uuid;
                 $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(new TemporaryFileErrorLog(
-                    $work->getRunId(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                ));
+
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(TemporaryFileErrorLog::class)
+                );
 
                 continue;
             }
@@ -182,12 +183,12 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 } catch (\Exception $e) {
                     $failureUuids[] = $uuid;
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addLogEntry(new ExceptionRunLog(
-                        $work->getRunId(),
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        $e,
-                    ));
+                    $this->loggingService->addLogEntry(
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withExceptionMessage($e->getMessage())
+                            ->withExceptionTrace($e->getTrace())
+                            ->buildLogEntry(ExceptionRunLog::class)
+                    );
                 } finally {
                     // clear up temp data
                     \unlink($filePath);
@@ -279,15 +280,13 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $workload->setCurrentOffset((int) $additionalData['file_size']);
             $workload->setState(MediaProcessWorkloadStruct::FINISH_STATE);
         } catch (\Throwable $exception) {
-            $connection = $migrationContext->getConnection();
-
             // this should never happen because of Promises, but just in case something is wrong with request construction
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $workload->getRunId(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                $exception,
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->buildLogEntry(ExceptionRunLog::class)
+            );
 
             $promise = null;
             $workload->setErrorCount($workload->getErrorCount() + 1);
@@ -303,14 +302,14 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         $mimeType = \mime_content_type($filePath);
 
         if ($fileSize === false || $fileSize === 0 || $mimeType === false) {
-            $connection = $migrationContext->getConnection();
+            $exception = new \Exception('Downloaded file is empty or could not determine mime type.');
 
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                new \Exception('Downloaded file is empty or could not determine mime type.'),
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->buildLogEntry(ExceptionRunLog::class)
+            );
 
             return;
         }
@@ -340,14 +339,12 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 } elseif (\in_array($mediaException->getErrorCode(), [MediaException::MEDIA_ILLEGAL_FILE_NAME, MediaException::MEDIA_EMPTY_FILE_NAME], true)) {
                     $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
                 } else {
-                    $connection = $migrationContext->getConnection();
-
-                    $this->loggingService->addLogEntry(new ExceptionRunLog(
-                        $migrationContext->getRunUuid(),
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        $mediaException,
-                    ));
+                    $this->loggingService->addLogEntry(
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withExceptionMessage($mediaException->getMessage())
+                            ->withExceptionTrace($mediaException->getTrace())
+                            ->buildLogEntry(ExceptionRunLog::class)
+                    );
                 }
             }
         });

@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
@@ -95,12 +96,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         }
 
         if (empty($data['id'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'id',
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -148,12 +147,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredConvertedFields($converted, $this->requiredDataFields);
         if (!empty($fields)) {
             foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $field
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                );
             }
 
             return new ConvertStruct(null, $data);
@@ -184,12 +181,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (!isset($data['calculation'])
                 || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
             ) {
-                $this->loggingService->addLogEntry(new UnsupportedShippingCalculationType(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $data['calculation']
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(UnsupportedShippingCalculationType::class)
+                );
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
                 $converted['prices'] = $this->getShippingCosts($migrationContext, $data, $calculationType, $priceRule);
@@ -241,12 +236,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->updateMainMapping($migrationContext, $context);
 
         if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'id',
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -646,12 +639,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
             if (empty($shippingCost['id'])) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    'id'
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                );
 
                 continue;
             }
@@ -681,12 +672,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (!isset($currencyMapping)) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    'currency'
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(EmptyNecessaryFieldRunLog::class)
+                );
 
                 continue;
             }
@@ -698,12 +687,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
-                $this->loggingService->addLogEntry(new UnsupportedShippingPriceLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $this->oldShippingMethod
-                ));
+                $this->loggingService->addLogEntry(
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->buildLogEntry(UnsupportedShippingPriceLog::class)
+                );
 
                 continue;
             }
