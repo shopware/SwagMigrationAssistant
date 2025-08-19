@@ -76,7 +76,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(UnsupportedNumberRangeTypeLog::class)
             );
 

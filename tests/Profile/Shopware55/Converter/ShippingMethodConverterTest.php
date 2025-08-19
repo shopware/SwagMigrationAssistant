@@ -28,6 +28,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\Converter\ShippingMethodConverter;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationTypeLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55ShippingMethodConverter;
@@ -179,7 +180,7 @@ class ShippingMethodConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
 
         $error = (new SwagMigrationLogBuilder('', 'Profile name', 'Gateway name'))
-            ->build(UnsupportedShippingCalculationTypeLog::class);
+            ->build(UnsupportedShippingPriceLog::class);
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getConverted());
