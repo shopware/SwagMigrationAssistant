@@ -91,8 +91,6 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         MigrationContextInterface $migrationContext,
         Context $context,
     ): array {
-        $connection = $migrationContext->getConnection();
-
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
         $failedMedia = [];
@@ -103,7 +101,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
             if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(CannotGetFileRunLog::class)
                 );
@@ -124,7 +122,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())

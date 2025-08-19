@@ -62,7 +62,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
         if ($sourceProductMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -73,7 +73,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $relatedProductMapping = $this->getProductMapping($data['relatedarticle']);
         if ($relatedProductMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );

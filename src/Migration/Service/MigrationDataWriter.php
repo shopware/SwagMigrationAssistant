@@ -105,7 +105,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
             $currentWriter->writeData(\array_values($converted), $this->writeContext);
         } catch (WriterNotFoundException $writerNotFoundException) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($writerNotFoundException->getMessage())
                     ->withExceptionTrace($writerNotFoundException->getTrace())
@@ -181,7 +181,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $updateWrittenData[$dataId]['written'] = false;
             $updateWrittenData[$dataId]['writeFailure'] = true;
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(WriteExceptionRunLog::class)
             );
@@ -230,14 +230,12 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         MigrationContextInterface $migrationContext,
         Context $context,
     ): void {
-        $connection = $migrationContext->getConnection();
-
         foreach ($converted as $dataId => $entity) {
             try {
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
                 $currentWriter->writeData([$entity], $this->writeContext);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())

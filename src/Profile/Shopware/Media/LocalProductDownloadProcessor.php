@@ -96,8 +96,6 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
         MigrationContextInterface $migrationContext,
         Context $context,
     ): array {
-        $connection = $migrationContext->getConnection();
-
         $installationRoot = $this->getInstallationRoot($migrationContext);
         $processedMedia = [];
         $failedMedia = [];
@@ -108,7 +106,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
             if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(CannotGetFileRunLog::class)
                 );
@@ -129,7 +127,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())

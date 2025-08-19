@@ -148,7 +148,7 @@ abstract class ShopwareConverter extends Converter
 
             if (empty($newAssociationId)) {
                 if ($logMissing) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
                         SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                             ->build(AssociationRequiredMissingLog::class)
                     );

@@ -147,7 +147,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -386,7 +386,7 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
         if (empty($converted['price'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -890,7 +890,7 @@ abstract class ProductConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
 
             if (empty($esdFile['name'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->build(CannotConvertChildEntityLog::class)
                 );
@@ -901,7 +901,7 @@ abstract class ProductConverter extends ShopwareConverter
             try {
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
             } catch (\Throwable) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->build(CannotConvertChildEntityLog::class)
                 );
@@ -932,7 +932,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->build(CannotConvertChildEntityLog::class)
                 );
@@ -964,7 +964,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mediaObjects = [];
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->build(CannotConvertChildEntityLog::class)
                 );
@@ -1352,7 +1352,7 @@ abstract class ProductConverter extends ShopwareConverter
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
             if (empty($priceArray)) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->build(EmptyNecessaryFieldRunLog::class)
                 );

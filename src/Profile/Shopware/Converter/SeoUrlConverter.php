@@ -68,7 +68,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -81,7 +81,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
         if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -108,7 +108,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
                 );
 
                 if ($mapping === null) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->build(AssociationRequiredMissingLog::class)
                     );
@@ -130,7 +130,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             );
 
             if ($mapping === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(AssociationRequiredMissingLog::class)
                 );
@@ -142,7 +142,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $converted['pathInfo'] = '/navigation/' . $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
         } else {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(UnsupportedSeoUrlTypeLog::class)
             );

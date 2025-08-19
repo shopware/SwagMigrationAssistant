@@ -68,7 +68,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
@@ -104,7 +104,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())

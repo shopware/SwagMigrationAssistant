@@ -131,7 +131,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
     private function logDataSetNotFoundException(MigrationContextInterface $migrationContext): void
     {
-        $this->loggingService->addLogEntry(
+        $this->loggingService->addLogEntry( // TODO: add optional fields
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                 ->build(DataSetNotFoundLog::class)
         );

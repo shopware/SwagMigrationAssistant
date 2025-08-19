@@ -84,7 +84,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $converted = [];
 
         if (empty($data['hash'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -93,7 +93,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         if (!isset($data['documenttype'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -109,7 +109,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
 
         if ($orderMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -191,7 +191,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return $documentType;
         }
 
-        $this->loggingService->addLogEntry(
+        $this->loggingService->addLogEntry( // TODO: add optional fields
             SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                 ->build(DocumentTypeNotSupportedLog::class)
         );

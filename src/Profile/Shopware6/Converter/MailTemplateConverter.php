@@ -65,7 +65,7 @@ class MailTemplateConverter extends ShopwareMediaConverter
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid === null) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
                         SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                             ->build(UnsupportedMailTemplateTypeLog::class)
                     );

@@ -69,7 +69,7 @@ class TableCountReader implements TableCountReaderInterface
     private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
     {
         foreach ($exceptionArray as $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception['message'])
                     ->build(CannotReadEntityCountLog::class)

@@ -256,7 +256,7 @@ SQL;
             try {
                 $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
             } catch (\Throwable) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     (new SwagMigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),

@@ -99,7 +99,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -112,7 +112,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -132,7 +132,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -155,7 +155,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($categoryMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -375,7 +375,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
                     $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
                 }
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->build(DeactivatedPackLanguageLog::class)
                 );

@@ -75,7 +75,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(UnsupportedNumberRangeTypeLog::class)
             );
@@ -88,7 +88,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $converted['typeId'] = $this->getProductNumberRangeTypeUuid($data['name']);
 
         if (empty($converted['typeId'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );

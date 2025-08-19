@@ -64,7 +64,7 @@ class DocumentConverter extends ShopwareMediaConverter
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
         if ($converted['documentTypeId'] === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnsupportedDocumentTypeLog::class)
             );

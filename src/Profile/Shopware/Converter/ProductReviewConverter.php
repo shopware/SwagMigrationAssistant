@@ -46,7 +46,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $connectionId = $connection->getId();
 
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -85,7 +85,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
             );
 
             if ($mapping === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(AssociationRequiredMissingLog::class)
                 );
@@ -122,7 +122,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -135,7 +135,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
         if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );

@@ -117,8 +117,6 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         MigrationContextInterface $migrationContext,
         Context $context,
     ): array {
-        $connection = $migrationContext->getConnection();
-
         $processedMedia = [];
         $failedMedia = [];
 
@@ -131,7 +129,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
                 if ($resolver === null) {
                     $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->build(CannotGetFileRunLog::class)
                     );
@@ -148,7 +146,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 $failedMedia[] = $mediaId;
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(TemporaryFileErrorLog::class)
                 );
@@ -177,7 +175,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                     $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $failedMedia[] = $mediaId;
 
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withExceptionMessage($e->getMessage())
                             ->withExceptionTrace($e->getTrace())
@@ -187,7 +185,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 \unlink($filePath);
             } else {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(CannotGetFileRunLog::class)
                 );
@@ -223,7 +221,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $failedMedia[] = $mediaId;
             $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(MimeTypeErrorLog::class)
             );

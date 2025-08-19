@@ -367,7 +367,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 );
 
                 if ($productMapping === null) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->build(AssociationRequiredMissingLog::class)
                     );
@@ -498,7 +498,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 unset($data['bindtosupplier']);
                 $oneRuleAdded = true;
             } else {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(AssociationRequiredMissingLog::class)
                 );
@@ -549,7 +549,7 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             if ($salesChannelMapping === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->addLogEntry( // TODO: add optional fields
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->build(AssociationRequiredMissingLog::class)
                 );
@@ -617,7 +617,7 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );

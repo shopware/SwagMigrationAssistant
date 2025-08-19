@@ -63,7 +63,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if (!isset($data['locale'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -95,7 +95,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createProductMediaTranslation($data);
         }
 
-        $this->loggingService->addLogEntry(
+        $this->loggingService->addLogEntry( // TODO: add optional fields
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                 ->build(UnsupportedTranslationTypeLog::class)
         );
@@ -127,7 +127,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -234,7 +234,7 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['ordernumber']);
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -306,7 +306,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -384,7 +384,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -467,7 +467,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );
@@ -560,7 +560,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(AssociationRequiredMissingLog::class)
             );

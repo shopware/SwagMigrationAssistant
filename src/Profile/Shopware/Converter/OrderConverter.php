@@ -136,7 +136,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -215,7 +215,7 @@ abstract class OrderConverter extends ShopwareConverter
             $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         }
         if ($currencyUuid === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -242,7 +242,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($stateMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -317,7 +317,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         $billingAddress = $this->getAddress($data['billingaddress']);
         if (empty($billingAddress)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -421,7 +421,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -476,7 +476,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($paymentMethodMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -499,7 +499,7 @@ abstract class OrderConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredDataFields($originalData, $this->requiredAddressDataFieldKeys);
 
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -642,7 +642,7 @@ abstract class OrderConverter extends ShopwareConverter
         $state = ['countryId' => $newCountryId];
 
         if (!isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -675,7 +675,7 @@ abstract class OrderConverter extends ShopwareConverter
             $oldAddressData['state']['position'],
             $oldAddressData['state']['active']
         )) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -751,9 +751,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($deliveryStateMapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -833,8 +831,6 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($shippingMethodMapping === null) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
@@ -1027,8 +1023,6 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (!\is_array($mediaMapping)) {
-            $connection = $this->migrationContext->getConnection();
-
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)

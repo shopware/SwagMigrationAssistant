@@ -79,7 +79,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         }
 
         if (!isset($data['group']['name'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -131,7 +131,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function setMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(CannotConvertChildEntityLog::class)
             );

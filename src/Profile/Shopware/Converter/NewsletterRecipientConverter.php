@@ -66,7 +66,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -159,7 +159,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -186,7 +186,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if (!isset($salesChannelMapping)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
@@ -208,7 +208,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );

@@ -92,7 +92,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         if ($client === null) {
             $exception = new \Exception('Connection to the source system could not be established');
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
@@ -293,7 +293,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         if ($mappedWorkload->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
                     ->withExceptionTrace($clientException?->getTrace() ?? [])

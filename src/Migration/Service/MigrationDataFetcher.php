@@ -35,7 +35,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         try {
             return $this->gatewayRegistry->getGateway($migrationContext)->read($migrationContext);
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
