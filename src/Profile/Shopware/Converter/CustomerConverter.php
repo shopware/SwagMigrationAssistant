@@ -683,7 +683,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                ->build(FieldReassignedRunLog::class)
+                    ->build(FieldReassignedRunLog::class)
             );
         }
     }

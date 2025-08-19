@@ -113,7 +113,6 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
     {
         $this->loggingService->addLogEntry( // TODO: add optional fields
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->withEntityName(DefaultEntities::MAIN_VARIANT_RELATION)
                 ->withEntityName($entity)
                 ->withFieldName($field)
                 ->withFieldSourcePath($field)
