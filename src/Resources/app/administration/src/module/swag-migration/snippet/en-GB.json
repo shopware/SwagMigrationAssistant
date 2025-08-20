@@ -101,7 +101,7 @@
           "emptyState": "Sorry no form for selected profile found.",
           "shopware55": {
             "api": {
-              "contentInformation": "You need valid API credentials to establish a connection between Shopware 5 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”. API access needs to be activated there and confirmed by saving.",
+              "contentInformation": "You need valid API credentials to establish a connection between Shopware 5 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”. API access needs to be activated there and confirmed by saving.<br>The API user must have the role \"local_admin\", otherwise a connection cannot be established",
               "apiKeyLabel": "API key",
               "apiKeyTooltip": "The API key is used for security and identification.",
               "apiKeyPlaceholder": "Enter key",

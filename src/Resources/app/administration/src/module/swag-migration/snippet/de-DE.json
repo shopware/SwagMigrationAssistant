@@ -34,7 +34,7 @@
         "introduction": {
           "title": "Migrations-Assistent",
           "contentHeadline": "Lass uns was bewegen",
-          "contentInformation": "Gemeinsam verbinden wir Dein Shopsystem mit Shopware 6. Im Anschluss daran kannst Du mit Hilfe des Migrations-Assistenten Schritt für Schritt Deine Daten migrieren."
+          "contentInformation": "Gemeinsam verbinden wir Dein Shopsystem mit Shopware 6. Im Anschluss daran kannst Du mit Hilfe des Migrations-Assistenten Schritt für Schritt Deine Daten migrieren.<br>Der API-Benutzer muss über die Rolle \"local_admin\" verfügen, andernfalls kann keine Verbindung hergestellt werden."
         },
         "profileInstallation": {
           "title": "Migration - Shopsystem-Profile",
