@@ -347,7 +347,6 @@ class StatusController extends AbstractController
             throw MigrationException::noConnectionFound();
         }
 
-        // ToDo: MIG-965 - Check how we could put this into the MQ
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();

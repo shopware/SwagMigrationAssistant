@@ -196,12 +196,20 @@ class HttpDownloadServiceBaseTest extends TestCase
         ], $resultWorkload);
         static::assertEquals([
             [
-                'runId' => $this->runId,
+                'runId' => $this->migrationContext->getRunUuid(),
                 'level' => 'warning',
                 'code' => 'SWAG_MIGRATION_CANNOT_GET_FILE',
                 'profileName' => '',
                 'gatewayName' => '',
                 'userFixable' => false,
+                'entityName' => null,
+                'fieldName' => null,
+                'fieldSourcePath' => null,
+                'sourceData' => null,
+                'convertedData' => null,
+                'usedMapping' => null,
+                'exceptionMessage' => null,
+                'exceptionTrace' => null,
             ],
         ], $this->loggingService->getLoggingArray());
     }

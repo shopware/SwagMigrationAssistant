@@ -17,6 +17,7 @@ use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -74,13 +75,9 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
-            $this->loggingService->addLogEntry(
-                new UnsupportedNumberRangeTypeLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    $data['name']
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(UnsupportedNumberRangeTypeLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -91,12 +88,10 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $converted['typeId'] = $this->getProductNumberRangeTypeUuid($data['name']);
 
         if (empty($converted['typeId'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $migrationContext->getRunUuid(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'typeId'
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }

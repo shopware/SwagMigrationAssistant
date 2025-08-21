@@ -8,26 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class UnknownEntityLog extends BaseRunLogEntry
+readonly class UnknownEntityLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $requiredForEntity,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $requiredForSourceId,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;

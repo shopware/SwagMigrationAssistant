@@ -23,6 +23,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -98,13 +99,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::SALES_CHANNEL
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -115,13 +112,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::SALES_CHANNEL
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -139,13 +132,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::SALES_CHANNEL
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -166,13 +155,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($categoryMapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::SALES_CHANNEL
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -390,15 +375,9 @@ abstract class SalesChannelConverter extends ShopwareConverter
                     $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
                 }
 
-                $connection = $this->migrationContext->getConnection();
-
-                $this->loggingService->addLogEntry(
-                    new DeactivatedPackLanguageLog(
-                        $this->migrationContext->getRunUuid(),
-                        $connection->getProfileName(),
-                        $connection->getGatewayName(),
-                        $packLanguageId,
-                    )
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->build(DeactivatedPackLanguageLog::class)
                 );
             }
         }

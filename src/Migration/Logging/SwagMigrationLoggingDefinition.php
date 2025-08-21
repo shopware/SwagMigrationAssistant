@@ -15,6 +15,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\PrimaryKey;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
@@ -45,14 +46,22 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
     protected function defineFields(): FieldCollection
     {
         return new FieldCollection([
-            new AutoIncrementField(),
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
-            (new StringField('profile_name', 'profileName', 255))->addFlags(new Required()),
-            (new StringField('gateway_name', 'gatewayName', 255))->addFlags(new Required()),
+            (new StringField('profile_name', 'profileName', 64))->addFlags(new Required()),
+            (new StringField('gateway_name', 'gatewayName', 64))->addFlags(new Required()),
             (new StringField('level', 'level', 64))->addFlags(new Required()),
             (new StringField('code', 'code'))->addFlags(new Required()),
             (new BoolField('user_fixable', 'userFixable'))->addFlags(new Required()),
+            new StringField('entity_name', 'entityName', 64),
+            new StringField('field_name', 'fieldName', 64),
+            new StringField('field_source_path', 'fieldSourcePath', 255),
+            new JsonField('source_data', 'sourceData'),
+            new JsonField('converted_data', 'convertedData'),
+            new JsonField('used_mapping', 'usedMapping'),
+            new StringField('exception_message', 'exceptionMessage', 255),
+            new JsonField('exception_trace', 'exceptionTrace'),
+            new AutoIncrementField(),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('run', 'run_id', SwagMigrationRunDefinition::class),

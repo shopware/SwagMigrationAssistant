@@ -7,28 +7,12 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use GuzzleHttp\Exception\RequestException;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class CannotGetFileRunLog extends BaseRunLogEntry
+readonly class CannotGetFileRunLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $uri,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly ?RequestException $requestException = null,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;

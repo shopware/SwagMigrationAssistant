@@ -8,24 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class RunAbortedAutomatically extends BaseRunLogEntry
+readonly class CannotConvertChildEntityLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly \Throwable $exception,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;
@@ -33,11 +20,11 @@ class RunAbortedAutomatically extends BaseRunLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION';
+        return 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY';
     }
 }

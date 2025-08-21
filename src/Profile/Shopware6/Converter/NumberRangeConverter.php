@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
@@ -62,15 +63,9 @@ class NumberRangeConverter extends ShopwareConverter
                         $data['id']
                     );
 
-                    $connection = $this->migrationContext->getConnection();
-
-                    $this->loggingService->addLogEntry(
-                        new UnsupportedNumberRangeTypeLog(
-                            $this->runId,
-                            $connection->getProfileName(),
-                            $connection->getGatewayName(),
-                            $converted['type']['technicalName']
-                        )
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
+                        SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->build(UnsupportedNumberRangeTypeLog::class)
                     );
 
                     return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);

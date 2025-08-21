@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
@@ -130,14 +131,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
     private function logDataSetNotFoundException(MigrationContextInterface $migrationContext): void
     {
-        $connection = $migrationContext->getConnection();
-
-        $this->loggingService->addLogEntry(
-            new DataSetNotFoundLog(
-                $migrationContext->getRunUuid(),
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-            )
+        $this->loggingService->addLogEntry( // TODO: add optional fields
+            SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->build(DataSetNotFoundLog::class)
         );
     }
 }

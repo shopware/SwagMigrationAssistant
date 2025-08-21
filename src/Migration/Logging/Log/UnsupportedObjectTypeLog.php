@@ -8,26 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class CannotConvertChildEntity extends BaseRunLogEntry
+readonly class UnsupportedObjectTypeLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $profileName,
-        string $gatewayName,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $parentEntity,
-        /** @phpstan-ignore property.onlyWritten */
-        private readonly string $parentSourceId,
-    ) {
-        parent::__construct(
-            $runId,
-            $profileName,
-            $gatewayName,
-        );
-    }
-
     public function isUserFixable(): bool
     {
         return false;
@@ -40,6 +25,6 @@ class CannotConvertChildEntity extends BaseRunLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY';
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE';
     }
 }

@@ -10,13 +10,14 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedMailTemplateType;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedMailTemplateTypeLog;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
@@ -64,15 +65,9 @@ class MailTemplateConverter extends ShopwareMediaConverter
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid === null) {
-                    $connection = $this->migrationContext->getConnection();
-
-                    $this->loggingService->addLogEntry(
-                        new UnsupportedMailTemplateType(
-                            $this->runId,
-                            $connection->getProfileName(),
-                            $connection->getGatewayName(),
-                            $converted['mailTemplateType']['technicalName']
-                        )
+                    $this->loggingService->addLogEntry( // TODO: add optional fields
+                        SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->build(UnsupportedMailTemplateTypeLog::class)
                     );
 
                     return new ConvertStruct(null, $data, $converted['id'] ?? null);

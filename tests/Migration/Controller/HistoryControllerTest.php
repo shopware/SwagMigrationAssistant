@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
 use SwagMigrationAssistant\Migration\History\HistoryService;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -102,7 +102,7 @@ class HistoryControllerTest extends TestCase
                 'runId' => $this->runUuid,
                 'profileName' => Shopware55Profile::PROFILE_NAME,
                 'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
-                'level' => LogEntryInterface::LOG_LEVEL_ERROR,
+                'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
                 'code' => 'migration_error_1',
                 'userFixable' => false,
             ],

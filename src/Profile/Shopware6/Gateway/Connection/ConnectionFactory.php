@@ -50,7 +50,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
             new Client($options),
             $this->connectionRepository,
             $migrationContext,
-            Context::createDefaultContext() // ToDo maybe replace this with the real context from the request, because this could cause caching issues (but it will only write data to DB).
+            Context::createDefaultContext()
         );
     }
 }

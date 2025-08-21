@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
 class LoggingService implements LoggingServiceInterface
@@ -51,7 +51,7 @@ class LoggingService implements LoggingServiceInterface
         }
     }
 
-    public function addLogEntry(LogEntryInterface $logEntry): void
+    public function addLogEntry(SwagMigrationLogEntry $logEntry): void
     {
         $this->logging[] = [
             'runId' => $logEntry->getRunId(),
@@ -60,6 +60,14 @@ class LoggingService implements LoggingServiceInterface
             'level' => $logEntry->getLevel(),
             'code' => $logEntry->getCode(),
             'userFixable' => $logEntry->isUserFixable(),
+            'entityName' => $logEntry->getEntityName(),
+            'fieldName' => $logEntry->getFieldName(),
+            'fieldSourcePath' => $logEntry->getFieldSourcePath(),
+            'sourceData' => $logEntry->getSourceData(),
+            'convertedData' => $logEntry->getConvertedData(),
+            'usedMapping' => $logEntry->getUsedMapping(),
+            'exceptionMessage' => $logEntry->getExceptionMessage(),
+            'exceptionTrace' => $logEntry->getExceptionTrace(),
         ];
     }
 

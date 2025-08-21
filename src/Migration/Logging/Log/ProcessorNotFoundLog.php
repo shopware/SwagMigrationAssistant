@@ -8,30 +8,14 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class ProcessorNotFoundLog implements LogEntryInterface
+readonly class ProcessorNotFoundLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        private readonly string $runId,
-        private readonly string $profileName,
-        private readonly string $gatewayName,
-    ) {
-    }
-
     public function isUserFixable(): bool
     {
         return false;
-    }
-
-    public function getProfileName(): string
-    {
-        return $this->profileName;
-    }
-
-    public function getGatewayName(): string
-    {
-        return $this->gatewayName;
     }
 
     public function getLevel(): string
@@ -42,10 +26,5 @@ class ProcessorNotFoundLog implements LogEntryInterface
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND';
-    }
-
-    public function getRunId(): string
-    {
-        return $this->runId;
     }
 }

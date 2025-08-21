@@ -15,21 +15,35 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
-class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
+class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 {
     public const MIGRATION_LOGGING_TABLE = 'swag_migration_logging';
 
     public const REQUIRED_FIELDS = [
         'id' => 'BINARY(16) NOT NULL',
-        'run_id' => null,
-        'level' => null,
-        'code' => null,
-        'profile_name' => 'VARCHAR(255) NOT NULL',
-        'gateway_name' => 'VARCHAR(255) NOT NULL',
+        'run_id' => 'BINARY(16) NULL',
+        'profile_name' => 'VARCHAR(64) NOT NULL',
+        'gateway_name' => 'VARCHAR(64) NOT NULL',
+        'level' => 'VARCHAR(64) NOT NULL',
+        'code' => 'VARCHAR(255) NOT NULL',
         'user_fixable' => 'TINYINT(1) NOT NULL DEFAULT 0',
-        'auto_increment' => null,
-        'created_at' => null,
-        'updated_at' => null,
+    ];
+
+    public const OPTIONAL_FIELDS = [
+        'entity_name' => 'VARCHAR(64) NULL',
+        'field_name' => 'VARCHAR(64) NULL',
+        'field_source_path' => 'VARCHAR(255) NULL',
+        'source_data' => 'JSON NULL',
+        'converted_data' => 'JSON NULL',
+        'used_mapping' => 'JSON NULL',
+        'exception_message' => 'VARCHAR(255) NULL',
+        'exception_trace' => 'JSON NULL',
+    ];
+
+    public const SYSTEM_FIELDS = [
+        'auto_increment' => 'BIGINT UNSIGNED AUTO_INCREMENT UNIQUE',
+        'created_at' => 'DATETIME(3) NOT NULL',
+        'updated_at' => 'DATETIME(3) NULL',
     ];
 
     public function getCreationTimestamp(): int
@@ -53,7 +67,7 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
         $this->dropConstraintIfExists($connection, 'json.swag_migration_logging.log_entry');
 
         $this->dropObsoleteColumns($connection, $schemaManager);
-        $this->addOrModifyRequiredColumns($connection, $schemaManager);
+        $this->addOrModifyColumns($connection, $schemaManager);
         $this->ensureRelations($connection, $schemaManager);
     }
 
@@ -64,8 +78,14 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
     {
         $columns = $schemaManager->listTableColumns(self::MIGRATION_LOGGING_TABLE);
 
+        $allFields = array_merge(
+            self::REQUIRED_FIELDS,
+            self::OPTIONAL_FIELDS,
+            self::SYSTEM_FIELDS
+        );
+
         foreach ($columns as $column) {
-            if (!\array_key_exists($column->getName(), self::REQUIRED_FIELDS)) {
+            if (!\array_key_exists($column->getName(), $allFields)) {
                 $connection->executeStatement(
                     \sprintf(
                         'ALTER TABLE `%s` DROP COLUMN `%s`;',
@@ -80,15 +100,17 @@ class Migration1754897550AddRequiredFieldsToMigrationLogs extends MigrationStep
     /**
      * @param AbstractSchemaManager<MySQLPlatform> $schemaManager
      */
-    private function addOrModifyRequiredColumns(Connection $connection, AbstractSchemaManager $schemaManager): void
+    private function addOrModifyColumns(Connection $connection, AbstractSchemaManager $schemaManager): void
     {
         $columns = $schemaManager->listTableColumns(self::MIGRATION_LOGGING_TABLE);
 
-        foreach (self::REQUIRED_FIELDS as $name => $type) {
-            if ($type === null) {
-                continue;
-            }
+        $orderedFields = array_merge(
+            self::REQUIRED_FIELDS,
+            self::OPTIONAL_FIELDS,
+            self::SYSTEM_FIELDS
+        );
 
+        foreach ($orderedFields as $name => $type) {
             if (!isset($columns[$name])) {
                 $connection->executeStatement(
                     \sprintf(

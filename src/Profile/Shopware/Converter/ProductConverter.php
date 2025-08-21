@@ -18,7 +18,8 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
@@ -146,12 +147,10 @@ abstract class ProductConverter extends ShopwareConverter
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                \implode(',', $fields)
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -387,14 +386,10 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
         if (empty($converted['price'])) {
-            $connection = $this->migrationContext->getConnection();
-
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                $connection->getProfileName(),
-                $connection->getGatewayName(),
-                'currency'
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
         }
 
         $converted['prices'] = $this->getPrices($data['prices'], $converted);
@@ -894,16 +889,11 @@ abstract class ProductConverter extends ShopwareConverter
             $newMedia['id'] = $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
 
-            $connection = $this->migrationContext->getConnection();
-
             if (empty($esdFile['name'])) {
-                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::PRODUCT,
-                    $this->oldProductId
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->build(CannotConvertChildEntityLog::class)
+                );
 
                 continue;
             }
@@ -911,13 +901,10 @@ abstract class ProductConverter extends ShopwareConverter
             try {
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
             } catch (\Throwable) {
-                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::PRODUCT,
-                    $this->oldProductId
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->build(CannotConvertChildEntityLog::class)
+                );
 
                 continue;
             }
@@ -945,13 +932,10 @@ abstract class ProductConverter extends ShopwareConverter
 
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {
-                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::PRODUCT,
-                    $this->oldProductId
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->build(CannotConvertChildEntityLog::class)
+                );
 
                 continue;
             }
@@ -980,15 +964,10 @@ abstract class ProductConverter extends ShopwareConverter
         $mediaObjects = [];
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
-                $connection = $this->migrationContext->getConnection();
-
-                $this->loggingService->addLogEntry(new CannotConvertChildEntity(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    DefaultEntities::PRODUCT,
-                    $this->oldProductId
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->build(CannotConvertChildEntityLog::class)
+                );
 
                 continue;
             }
@@ -1373,14 +1352,10 @@ abstract class ProductConverter extends ShopwareConverter
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
             if (empty($priceArray)) {
-                $connection = $this->migrationContext->getConnection();
-
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    $connection->getProfileName(),
-                    $connection->getGatewayName(),
-                    'currencyId'
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->build(EmptyNecessaryFieldRunLog::class)
+                );
 
                 continue;
             }
