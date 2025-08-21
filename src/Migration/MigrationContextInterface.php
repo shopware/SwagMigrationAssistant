@@ -34,5 +34,9 @@ interface MigrationContextInterface
 
     public function getOffset(): int;
 
+    public function setOffset(int $offset): void;
+
     public function getLimit(): int;
+
+    public function setLimit(int $limit): void;
 }

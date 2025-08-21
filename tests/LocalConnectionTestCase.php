@@ -70,9 +70,8 @@ abstract class LocalConnectionTestCase extends TestCase
 
     protected function setLimitAndOffset(int $limit, int $offset): void
     {
-        $reflectionClass = new \ReflectionClass($this->getMigrationContext());
-        (new \ReflectionProperty($reflectionClass->getName(), 'limit'))->setValue($this->getMigrationContext(), $limit);
-        (new \ReflectionProperty($reflectionClass->getName(), 'offset'))->setValue($this->getMigrationContext(), $offset);
+        $this->getMigrationContext()->setLimit($limit);
+        $this->getMigrationContext()->setOffset($offset);
     }
 
     protected function getExternalConnection(): Connection

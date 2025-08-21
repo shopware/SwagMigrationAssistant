@@ -26,8 +26,8 @@ class MigrationContext extends Struct implements MigrationContextInterface
         private ?GatewayInterface $gateway = null,
         private ?DataSet $dataSet = null,
         private readonly string $runUuid = '',
-        private readonly int $offset = 0,
-        private readonly int $limit = 0,
+        private int $offset = 0,
+        private int $limit = 0,
     ) {
     }
 
@@ -89,8 +89,18 @@ class MigrationContext extends Struct implements MigrationContextInterface
         return $this->offset;
     }
 
+    public function setOffset(int $offset): void
+    {
+        $this->offset = $offset;
+    }
+
     public function getLimit(): int
     {
         return $this->limit;
+    }
+
+    public function setLimit(int $limit): void
+    {
+        $this->limit = $limit;
     }
 }
