@@ -3,7 +3,7 @@
  */
 import type { SubContainer } from '@administration/src/global.types';
 import type { MigrationStore } from '../module/swag-migration/store/migration.store';
-import MigrationApiService from '../core/service/api/swag-migration.api.service';
+import type MigrationApiService from '../core/service/api/swag-migration.api.service';
 
 declare global {
     interface PiniaRootState {

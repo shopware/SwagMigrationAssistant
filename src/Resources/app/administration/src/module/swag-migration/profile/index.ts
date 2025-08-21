@@ -1,7 +1,7 @@
 export const MODULE_COUNT = 17;
 
-// @ts-ignore
-const rawModules = import.meta.glob<any>('./[a-z0-9-]*/[a-z0-9-]*/[a-z0-9-]*/index.{js,ts}', {
+// @ts-expect-error
+const rawModules = import.meta.glob<unknown>('./[a-z0-9-]*/[a-z0-9-]*/[a-z0-9-]*/index.{js,ts}', {
     eager: true,
 });
 

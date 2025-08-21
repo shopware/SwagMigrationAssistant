@@ -1,8 +1,39 @@
+import type { AxiosResponse } from 'axios';
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
+import type { TEntityCollection, TRepository } from '../../../../type/types';
 
 const { Component, Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
+
+export interface SwagMigrationHistoryData {
+    sortBy: string;
+    context: unknown;
+    isLoading: boolean;
+    migrationRuns: unknown[];
+    sortDirection: string;
+    runIdForRunClear?: string;
+    isMediaProcessing: boolean;
+    logDownloadEndpoint?: string;
+    runIdForLogDownload?: string;
+    oldParams?: Record<
+        string,
+        {
+            page: number;
+            limit: number;
+            sortBy: string;
+            sortDirection: string;
+            naturalSorting?: boolean;
+        }
+    >;
+    showRunClearConfirmModal: boolean;
+    runClearConfirmModalIsLoading: boolean;
+    migrationDateOptions: {
+        hour: string;
+        minute: string;
+        second: string;
+    };
+}
 
 /**
  * @private
@@ -22,7 +53,7 @@ Component.register('swag-migration-history', {
         Mixin.getByName('notification'),
     ],
 
-    data() {
+    data(): SwagMigrationHistoryData {
         return {
             isLoading: false,
             migrationRuns: [],
@@ -51,7 +82,7 @@ Component.register('swag-migration-history', {
     },
 
     computed: {
-        migrationRunRepository() {
+        migrationRunRepository(): TRepository<'swag_migration_run'> {
             return this.repositoryFactory.create('swag_migration_run');
         },
 
@@ -65,14 +96,23 @@ Component.register('swag-migration-history', {
     },
 
     created() {
-        this.migrationApiService.isMediaProcessing().then((response) => {
+        this.migrationApiService.isMediaProcessing().then((response: AxiosResponse<boolean>) => {
             this.isMediaProcessing = response.data;
         });
+
         this.logDownloadEndpoint = `/api/_action/${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
     },
 
     methods: {
-        getMigrationColumns() {
+        getMigrationColumns(): Array<{
+            property: string;
+            dataIndex: string;
+            label: string;
+            primary?: boolean;
+            visible?: boolean;
+            allowResize?: boolean;
+            align?: string;
+        }> {
             return [
                 {
                     property: 'connection.name',
@@ -131,16 +171,19 @@ Component.register('swag-migration-history', {
             }
 
             this.oldParams = params;
-            const criteria = new Criteria(params.page, params.limit);
-            criteria.addSorting(Criteria.sort(params.sortBy, params.sortDirection, params.naturalSorting));
+            const criteria = new Criteria(params.page, params.limit).addSorting(
+                Criteria.sort(params.sortBy, params.sortDirection, params.naturalSorting),
+            );
 
-            return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
-                this.total = runs.total;
-                this.migrationRuns = runs;
-                this.isLoading = false;
+            return this.migrationRunRepository
+                .search(criteria, this.context)
+                .then((runs: TEntityCollection<'swag_migration_run'>) => {
+                    this.total = runs.total;
+                    this.migrationRuns = runs;
+                    this.isLoading = false;
 
-                return this.migrationRuns;
-            });
+                    return this.migrationRuns;
+                });
         },
 
         /**

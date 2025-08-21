@@ -9,10 +9,12 @@ module.exports = {
     },
     extends: [
         '@shopware-ag/eslint-config-base',
+        'eslint:recommended',
+        'plugin:@typescript-eslint/recommended',
+        'plugin:vue/vue3-recommended',
     ],
     plugins: [
         '@typescript-eslint',
-        'jest',
         'inclusive-language',
         'vuejs-accessibility',
         'file-progress',
@@ -34,23 +36,46 @@ module.exports = {
         },
     },
     rules: {
+        indent: ['error', 4, { SwitchCase: 1 }],
+        quotes: ['error', 'single', { avoidEscape: true }],
+        semi: ['error', 'always'],
         'comma-dangle': ['error', 'always-multiline'],
         'max-len': ['error', 125, {
             ignoreRegExpLiterals: true,
+            ignoreComments: false,
         }],
-        'no-console': ['error', {
-            allow: ['warn', 'error'],
-        }],
+        'no-console': ['error', { allow: ['warn', 'error'] }],
+        'no-debugger': 'error',
+        'no-var': 'error',
+        'prefer-const': 'error',
+        'prefer-arrow-callback': 'error',
+        'arrow-spacing': ['error', { before: true, after: true }],
+        'no-empty-function': 'error',
         'import/extensions': [
             'error',
             'ignorePackages',
-            {
-                js: 'never',
-                ts: 'never',
-            },
+            { js: 'never', ts: 'never' },
         ],
         'no-void': 'off',
         'no-unused-vars': 'off',
-        '@typescript-eslint/no-unused-vars': 'error',
+        '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+        '@typescript-eslint/explicit-function-return-type': ['error', { allowExpressions: true }],
+        '@typescript-eslint/no-explicit-any': 'error',
+        '@typescript-eslint/consistent-type-imports': 'error',
+        '@typescript-eslint/ban-ts-comment': 'off',
     },
+    overrides: [
+        {
+            files: ['*.ts', '*.vue'],
+            rules: {
+                '@typescript-eslint/explicit-module-boundary-types': 'error',
+            },
+        },
+        {
+            files: ['*.spec.ts', '*.test.ts'],
+            rules: {
+                '@typescript-eslint/no-empty-function': 'off',
+            },
+        },
+    ],
 };

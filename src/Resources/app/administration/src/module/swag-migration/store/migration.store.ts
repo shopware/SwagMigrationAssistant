@@ -1,6 +1,6 @@
 import type RepositoryType from '@administration/src/core/data/repository.data';
 import type { MigrationDataSelection, MigrationEnvironmentInformation, MigrationPremapping } from '../../../type/types';
-import MigrationApiService from '../../../core/service/api/swag-migration.api.service';
+import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
 
@@ -16,10 +16,7 @@ const migrationGeneralSettingRepository = repositoryFactory.create(
  */
 export const migrationStoreId = 'swagMigration';
 
-/**
- * @private
- */
-export type MigrationStore = {
+type MigrationState = {
     state: {
         isLoading: boolean;
         warningConfirmed: boolean;
@@ -57,10 +54,10 @@ export type MigrationStore = {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Store.register({
+const migrationStore = Shopware.Store.register({
     id: migrationStoreId,
 
-    state: (): MigrationStore['state'] => ({
+    state: (): MigrationState['state'] => ({
         /**
          * The id of the currently selected connection to a source system.
          */
@@ -317,3 +314,13 @@ Shopware.Store.register({
         },
     },
 });
+
+/**
+ * @private
+ */
+export type MigrationStore = ReturnType<typeof migrationStore>;
+
+/**
+ * @private
+ */
+export default migrationStore;

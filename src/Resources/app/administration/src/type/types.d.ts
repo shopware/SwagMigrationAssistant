@@ -1,10 +1,11 @@
 /**
  * @sw-package after-sales
  */
-import type { Entity } from '@shopware-ag/admin-extension-sdk/es/data/_internals/Entity';
 import type Repository from 'shopware-administration/src/core/data/repository.data';
 
-type TEntity<T> = Entity<T>;
+export type { Entity as TEntity } from '@shopware-ag/admin-extension-sdk/es/data/_internals/Entity';
+export type { default as TEntityCollection } from '@shopware-ag/admin-extension-sdk/es/data/_internals/EntityCollection';
+export type { default as TCriteria } from '@shopware-ag/admin-extension-sdk/es/data/Criteria';
 
 type TRepository<T> = Repository<T>;
 
@@ -98,7 +99,6 @@ type MigrationCredentials = {
  * @private
  */
 export {
-    TEntity,
     TRepository,
     MigrationStep,
     MigrationState,

@@ -1,19 +1,26 @@
 import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.scss';
+import type { MigrationDataSelection } from '../../../../type/types';
+import type { MigrationStore } from '../../store/migration.store';
 
-const { Component, Store } = Shopware;
+const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
+
+export interface SwagMigrationDataSelectorData {
+    migrationStore: MigrationStore;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-data-selector', {
+Shopware.Component.register('swag-migration-data-selector', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
+    data(): SwagMigrationDataSelectorData {
+        return {
+            migrationStore: Shopware.Store.get('swagMigration'),
+        };
     },
 
     computed: {
@@ -27,41 +34,42 @@ Component.register('swag-migration-data-selector', {
         ),
 
         displayWarnings() {
-            return this.environmentInformation.displayWarnings;
+            return this.environmentInformation?.displayWarnings;
         },
     },
 
     methods: {
         tableDataGridMounted() {
-            this.dataSelectionIds.forEach((id) => {
+            this.dataSelectionIds.forEach((id: string) => {
                 this.$refs.tableDataGrid?.selectItem(true, { id });
             });
         },
 
-        onGridSelectItem(selection) {
+        onGridSelectItem(selection: Record<string, MigrationDataSelection>) {
             const selectionIds = Object.keys(selection);
 
-            this.dataSelectionTableData.forEach((data) => {
+            this.dataSelectionTableData.forEach((data: MigrationDataSelection) => {
                 if (data.requiredSelection !== true) {
                     return;
                 }
 
                 if (!selectionIds.includes(data.id)) {
                     selectionIds.push(data.id);
+
                     this.$nextTick(() => {
                         this.$refs.tableDataGrid.selectItem(true, data);
                     });
                 }
             });
 
-            Store.get('swagMigration').setDataSelectionIds(selectionIds);
+            this.migrationStore.setDataSelectionIds(selectionIds);
         },
 
-        showHelptext(entityTotals) {
+        showHelptext(entityTotals: number[]): boolean {
             return entityTotals !== undefined && Object.keys(entityTotals).length > 1;
         },
 
-        getHelptext(item) {
+        getHelptext(item: MigrationDataSelection) {
             if (item.entityTotals === undefined || Object.keys(item.entityTotals).length === 0) {
                 return '';
             }

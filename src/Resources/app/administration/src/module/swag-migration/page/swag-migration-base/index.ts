@@ -1,14 +1,19 @@
 import template from './swag-migration-base.html.twig';
 import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
 
-const { Component, Store } = Shopware;
+const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
+
+export interface SwagMigrationBaseData {
+    context: unknown;
+    storesInitializing: boolean;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-base', {
+Shopware.Component.register('swag-migration-base', {
     template,
 
     inject: {
@@ -16,7 +21,7 @@ Component.register('swag-migration-base', {
         migrationApiService: 'migrationApiService',
     },
 
-    data() {
+    data(): SwagMigrationBaseData {
         return {
             context: Shopware.Context.api,
             storesInitializing: true,
@@ -55,12 +60,13 @@ Component.register('swag-migration-base', {
         async checkMigrationBackendState() {
             try {
                 const response = await this.migrationApiService.getState();
-                if (!response || !response.step) {
+
+                if (!response?.step) {
                     return;
                 }
 
                 if (response.step !== MIGRATION_STEP.IDLE) {
-                    this.$router.push({ name: 'swag.migration.processScreen' });
+                    await this.$router.push({ name: 'swag.migration.processScreen' });
                 }
             } catch {
                 // do nothing
