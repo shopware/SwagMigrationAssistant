@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
@@ -121,13 +122,13 @@ class SwagMigrationLogBuilder
     /**
      * @template T of AbstractSwagMigrationLogEntry
      *
-     * @param class-string<T> $logClass The class name of the log entry to create
+     * @param class-string<T> $logClass
      *
-     * @return T The created log entry instance
+     * @return T
      */
     public function build(string $logClass): AbstractSwagMigrationLogEntry
     {
-        return new $logClass(
+        $log = new $logClass(
             $this->runId,
             $this->profileName,
             $this->gatewayName,
@@ -140,5 +141,11 @@ class SwagMigrationLogBuilder
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
+
+        if ($log instanceof AbstractSwagMigrationLogEntry) {
+            return $log;
+        }
+
+        throw MigrationException::failedToCreateMigrationLog($logClass);
     }
 }

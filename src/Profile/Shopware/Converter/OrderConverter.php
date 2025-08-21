@@ -831,7 +831,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($shippingMethodMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -995,7 +995,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
@@ -1023,7 +1023,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (!\is_array($mediaMapping)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->addLogEntry( // TODO: add optional fields
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->build(UnknownEntityLog::class)
             );
