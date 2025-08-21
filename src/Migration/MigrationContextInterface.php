@@ -18,7 +18,15 @@ interface MigrationContextInterface
 {
     public function getProfile(): ProfileInterface;
 
+    public function setProfile(ProfileInterface $profile): void;
+
+    public function getGateway(): GatewayInterface;
+
+    public function setGateway(GatewayInterface $gateway): void;
+
     public function getConnection(): SwagMigrationConnectionEntity;
+
+    public function setConnection(SwagMigrationConnectionEntity $connection): void;
 
     public function getRunUuid(): string;
 
@@ -27,8 +35,4 @@ interface MigrationContextInterface
     public function getOffset(): int;
 
     public function getLimit(): int;
-
-    public function getGateway(): GatewayInterface;
-
-    public function setGateway(GatewayInterface $gateway): void;
 }

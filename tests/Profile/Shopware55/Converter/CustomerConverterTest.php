@@ -75,10 +75,11 @@ class CustomerConverterTest extends TestCase
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $runId,
             0,
             250
         );

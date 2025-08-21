@@ -19,6 +19,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TableReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\TotalReaderInterface;
@@ -54,9 +55,9 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         return 'swag-migration.wizard.pages.connectionCreate.gateways.shopwareApi';
     }
 
-    public function supports(MigrationContextInterface $migrationContext): bool
+    public function supports(ProfileInterface $profile): bool
     {
-        return $migrationContext->getProfile() instanceof Shopware6ProfileInterface;
+        return $profile instanceof Shopware6ProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

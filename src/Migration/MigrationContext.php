@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration;
 
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Struct\Struct;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
@@ -19,46 +20,53 @@ class MigrationContext extends Struct implements MigrationContextInterface
 {
     final public const SOURCE_CONTEXT = 'MIGRATION_CONNECTION_CHECK_FOR_RUNNING_MIGRATION';
 
-    private ProfileInterface $profile;
-
-    private ?SwagMigrationConnectionEntity $connection;
-
-    private string $runUuid;
-
-    private ?DataSet $dataSet;
-
-    private int $offset;
-
-    private int $limit;
-
-    private GatewayInterface $gateway;
-
     public function __construct(
-        ProfileInterface $profile,
-        ?SwagMigrationConnectionEntity $connection = null,
-        string $runUuid = '',
-        ?DataSet $dataSet = null,
-        int $offset = 0,
-        int $limit = 0,
+        private SwagMigrationConnectionEntity $connection,
+        private ?ProfileInterface $profile = null,
+        private ?GatewayInterface $gateway = null,
+        private ?DataSet $dataSet = null,
+        private string $runUuid = '',
+        private int $offset = 0,
+        private int $limit = 0,
     ) {
-        $this->profile = $profile;
-        $this->connection = $connection;
-        $this->runUuid = $runUuid;
-        $this->dataSet = $dataSet;
-        $this->offset = $offset;
-        $this->limit = $limit;
     }
 
     public function getProfile(): ProfileInterface
     {
+        if ($this->profile === null) {
+            throw MigrationException::migrationContextPropertyMissing('profile');
+        }
+
         return $this->profile;
+    }
+
+    public function setProfile(ProfileInterface $profile): void
+    {
+        $this->profile = $profile;
+    }
+
+    public function getGateway(): GatewayInterface
+    {
+        if ($this->gateway === null) {
+            throw MigrationException::migrationContextPropertyMissing('gateway');
+        }
+
+        return $this->gateway;
+    }
+
+    public function setGateway(GatewayInterface $gateway): void
+    {
+        $this->gateway = $gateway;
     }
 
     public function getConnection(): SwagMigrationConnectionEntity
     {
-        \assert($this->connection instanceof SwagMigrationConnectionEntity);
-
         return $this->connection;
+    }
+
+    public function setConnection(SwagMigrationConnectionEntity $connection): void
+    {
+        $this->connection = $connection;
     }
 
     public function getRunUuid(): string
@@ -84,15 +92,5 @@ class MigrationContext extends Struct implements MigrationContextInterface
     public function getLimit(): int
     {
         return $this->limit;
-    }
-
-    public function getGateway(): GatewayInterface
-    {
-        return $this->gateway;
-    }
-
-    public function setGateway(GatewayInterface $gateway): void
-    {
-        $this->gateway = $gateway;
     }
 }

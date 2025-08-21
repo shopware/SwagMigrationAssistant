@@ -52,10 +52,11 @@ abstract class ShopwareConverterTest extends TestCase
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName($this->getProfileName());
         $this->migrationContext = new MigrationContext(
-            $this->createProfile(),
             $connection,
-            $runId,
+            $this->createProfile(),
+            null,
             $this->createDataSet(),
+            $runId,
             0,
             250
         );

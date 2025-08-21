@@ -19,6 +19,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
@@ -41,7 +42,8 @@ class EnvironmentReaderTest extends TestCase
         $environmentReader = new EnvironmentReader($connectionFactory);
 
         $migrationContext = new MigrationContext(
-            new Shopware6MajorProfile('6.6.0')
+            new SwagMigrationConnectionEntity(),
+            new Shopware6MajorProfile('6.6.0'),
         );
 
         $response = $environmentReader->read($migrationContext);
@@ -80,7 +82,8 @@ class EnvironmentReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
-            new Shopware6MajorProfile('6.6.0')
+            new SwagMigrationConnectionEntity(),
+            new Shopware6MajorProfile('6.6.0'),
         );
 
         $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);
@@ -219,7 +222,8 @@ class EnvironmentReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
-            new Shopware6MajorProfile('6.6.0')
+            new SwagMigrationConnectionEntity(),
+            new Shopware6MajorProfile('6.6.0'),
         );
 
         $connectionFactory = $this->createMock(ConnectionFactoryInterface::class);

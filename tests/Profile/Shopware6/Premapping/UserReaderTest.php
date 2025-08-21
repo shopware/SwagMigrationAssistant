@@ -103,8 +103,8 @@ class UserReaderTest extends TestCase
         $gatewayRegistryMock->method('getGateway')->willReturn($gatewayMock);
 
         $this->migrationContext = new MigrationContext(
+            $connection,
             new Shopware6MajorProfile('6.6'),
-            $connection
         );
 
         $this->reader = new UserReader($mock, $gatewayRegistryMock);

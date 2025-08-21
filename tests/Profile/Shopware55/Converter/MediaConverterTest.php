@@ -48,10 +48,11 @@ class MediaConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $runId,
             0,
             250
         );

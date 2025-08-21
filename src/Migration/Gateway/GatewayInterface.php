@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 
 #[Package('fundamentals@after-sales')]
@@ -23,7 +24,7 @@ interface GatewayInterface
     /**
      * Identifier for a gateway registry
      */
-    public function supports(MigrationContextInterface $migrationContext): bool;
+    public function supports(ProfileInterface $profile): bool;
 
     /**
      * Reads the given entity type from via context from its connection and returns the data

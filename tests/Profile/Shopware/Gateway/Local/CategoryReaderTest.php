@@ -32,10 +32,11 @@ class CategoryReaderTest extends TestCase
         $this->categoryReader = new CategoryReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $this->runId,
             0,
             10
         );
@@ -67,10 +68,11 @@ class CategoryReaderTest extends TestCase
         static::assertSame('5', $data[3]['previousSiblingId']);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $this->runId,
             10,
             10
         );

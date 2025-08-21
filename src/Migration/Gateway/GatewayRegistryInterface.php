@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Gateway;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 #[Package('fundamentals@after-sales')]
 interface GatewayRegistryInterface
@@ -16,7 +17,7 @@ interface GatewayRegistryInterface
     /**
      * @return GatewayInterface[]
      */
-    public function getGateways(MigrationContextInterface $migrationContext): array;
+    public function getGateways(ProfileInterface $profile): array;
 
     /**
      * Selects the correct gateway by the given migration context

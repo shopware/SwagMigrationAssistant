@@ -53,10 +53,11 @@ class NewsletterRecipientConverterTest extends TestCase
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->context = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new NewsletterRecipientDataSet(),
+            $runId,
             0,
             250
         );

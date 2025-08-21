@@ -13,6 +13,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
@@ -21,7 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 #[Package('fundamentals@after-sales')]
@@ -34,9 +35,9 @@ class DummyLocalGateway implements GatewayInterface
         return self::GATEWAY_NAME;
     }
 
-    public function supports(MigrationContextInterface $migrationContext): bool
+    public function supports(ProfileInterface $profile): bool
     {
-        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
+        return $profile instanceof Shopware6ProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

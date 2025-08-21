@@ -77,10 +77,11 @@ class ShippingMethodConverterTest extends TestCase
 
         $this->context = Context::createDefaultContext();
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new ShippingMethodDataSet(),
+            $runId,
             0,
             250
         );

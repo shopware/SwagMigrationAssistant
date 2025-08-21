@@ -95,28 +95,31 @@ class TranslationConverterTest extends TestCase
         $profile = new Shopware55Profile();
 
         $this->migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $runId,
+            $profile,
+            null,
             new TranslationDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->productMigrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $runId,
+            $profile,
+            null,
             new ProductDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->categoryMigrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $runId,
+            $profile,
+            null,
             new CategoryDataSet(),
+            $runId,
             0,
             250
         );

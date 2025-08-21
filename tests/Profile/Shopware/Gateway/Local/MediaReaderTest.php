@@ -35,10 +35,11 @@ class MediaReaderTest extends TestCase
         $this->mediaReader = new MediaReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $this->runId,
             0,
             10
         );

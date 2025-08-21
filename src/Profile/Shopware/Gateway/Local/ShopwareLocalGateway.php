@@ -22,11 +22,12 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
-use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
 
 #[Package('fundamentals@after-sales')]
 class ShopwareLocalGateway implements ShopwareGatewayInterface
@@ -57,9 +58,9 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         return 'swag-migration.wizard.pages.connectionCreate.gateways.shopwareLocal';
     }
 
-    public function supports(MigrationContextInterface $migrationContext): bool
+    public function supports(ProfileInterface $profile): bool
     {
-        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
+        return $profile instanceof Shopware6ProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
