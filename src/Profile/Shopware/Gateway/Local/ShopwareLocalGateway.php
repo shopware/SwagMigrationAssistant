@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Connection\ConnectionFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
-use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('fundamentals@after-sales')]
 class ShopwareLocalGateway implements ShopwareGatewayInterface
@@ -60,7 +60,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
 
     public function supports(ProfileInterface $profile): bool
     {
-        return $profile instanceof Shopware6ProfileInterface;
+        return $profile instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

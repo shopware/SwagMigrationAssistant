@@ -22,7 +22,7 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware6\Shopware6ProfileInterface;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 #[Package('fundamentals@after-sales')]
@@ -37,7 +37,7 @@ class DummyLocalGateway implements GatewayInterface
 
     public function supports(ProfileInterface $profile): bool
     {
-        return $profile instanceof Shopware6ProfileInterface;
+        return $profile instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

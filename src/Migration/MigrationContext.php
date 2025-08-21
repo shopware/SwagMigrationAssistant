@@ -25,9 +25,9 @@ class MigrationContext extends Struct implements MigrationContextInterface
         private ?ProfileInterface $profile = null,
         private ?GatewayInterface $gateway = null,
         private ?DataSet $dataSet = null,
-        private string $runUuid = '',
-        private int $offset = 0,
-        private int $limit = 0,
+        private readonly string $runUuid = '',
+        private readonly int $offset = 0,
+        private readonly int $limit = 0,
     ) {
     }
 
