@@ -54,16 +54,6 @@ parameters:
             paths:
                 - tests/**/*Test.php
 
-        - # TODO remove with #11883
-            message: '#Strict comparison using === between SwagMigrationAssistant\\Migration\\Connection\\SwagMigrationConnectionEntity and null will always evaluate to false\.#'
-            paths:
-                - **/*.php
-
-        - # TODO remove with #11883
-            message: '#Strict comparison using !== between SwagMigrationAssistant\\Migration\\Connection\\SwagMigrationConnectionEntity and null will always evaluate to true\.#'
-            paths:
-                - **/*.php
-
 rules:
     # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule

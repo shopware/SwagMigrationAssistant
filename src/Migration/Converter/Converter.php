@@ -76,7 +76,8 @@ abstract class Converter implements ConverterInterface
 
         $dataSet = $migrationContext->getDataSet();
         $connection = $migrationContext->getConnection();
-        if ($dataSet === null || $connection === null) {
+
+        if ($dataSet === null) {
             return;
         }
 

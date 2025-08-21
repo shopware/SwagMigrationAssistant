@@ -47,12 +47,7 @@ class NewsletterRecipientStatusReader extends AbstractPremappingReader
 
     protected function fillConnectionPremappingValue(MigrationContextInterface $migrationContext): void
     {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return;
-        }
-
-        $mappingArray = $connection->getPremapping();
+        $mappingArray = $migrationContext->getConnection()->getPremapping();
 
         if ($mappingArray === null) {
             return;

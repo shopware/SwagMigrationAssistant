@@ -66,12 +66,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
     private function getInstallationRoot(MigrationContextInterface $migrationContext): string
     {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return '';
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return '';

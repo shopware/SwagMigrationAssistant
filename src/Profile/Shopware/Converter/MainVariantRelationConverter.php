@@ -32,9 +32,7 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         $this->generateChecksum($data);
         $this->context = $context;
         $connection = $migrationContext->getConnection();
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (!isset($data['id'], $data['ordernumber'])) {
             return new ConvertStruct(null, $data);

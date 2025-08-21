@@ -84,20 +84,7 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             );
         }
 
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '',
-                [],
-                [],
-                null
-            );
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return new EnvironmentInformation(

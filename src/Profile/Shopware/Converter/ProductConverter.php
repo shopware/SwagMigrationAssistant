@@ -138,12 +138,8 @@ abstract class ProductConverter extends ShopwareConverter
         $this->locale = $data['_locale'];
 
         $connection = $migrationContext->getConnection();
-        $this->connectionName = '';
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (!empty($fields)) {

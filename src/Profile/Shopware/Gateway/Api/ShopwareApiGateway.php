@@ -125,21 +125,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         $environmentDataArray['defaultShopLanguage'] = \str_replace('_', '-', $environmentDataArray['defaultShopLanguage']);
 
         $totals = $this->readTotals($migrationContext, $context);
-
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '',
-                [],
-                [],
-                null
-            );
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return new EnvironmentInformation(

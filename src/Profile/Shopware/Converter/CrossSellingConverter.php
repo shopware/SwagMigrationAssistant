@@ -36,10 +36,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(

@@ -73,12 +73,8 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $this->context = $context;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionName = '';
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $oldData = $data;
         $converted = [];

@@ -69,9 +69,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
         }
 
         $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return new ConvertStruct(null, $data);
-        }
         $this->connectionId = $connection->getId();
 
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {

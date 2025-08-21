@@ -40,11 +40,6 @@ class GatewayRegistry implements GatewayRegistryInterface
     public function getGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
         $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            throw MigrationException::migrationContextPropertyMissing('Connection');
-        }
-
         $profileName = $connection->getProfileName();
         $gatewayName = $connection->getGatewayName();
 

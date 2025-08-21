@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Migration\Media;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -34,10 +33,10 @@ class MediaFileProcessorRegistry implements MediaFileProcessorRegistryInterface
         }
 
         $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            throw MigrationException::entityNotExists(SwagMigrationConnectionEntity::class, $migrationContext->getRunUuid());
-        }
 
-        throw MigrationException::processorNotFound($connection->getProfileName(), $connection->getGatewayName());
+        throw MigrationException::processorNotFound(
+            $connection->getProfileName(),
+            $connection->getGatewayName()
+        );
     }
 }

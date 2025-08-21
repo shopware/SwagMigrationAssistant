@@ -24,13 +24,7 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
 
     public function createApiClient(MigrationContextInterface $migrationContext): HttpClientInterface
     {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if (empty($credentials)) {
             throw MigrationException::invalidConnectionCredentials();
@@ -57,13 +51,7 @@ class ConnectionFactory implements ConnectionFactoryInterface, ResetInterface
             return $this->externalConnection;
         }
 
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             throw MigrationException::invalidConnectionCredentials();

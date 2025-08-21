@@ -44,12 +44,8 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         unset($data['_locale']);
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

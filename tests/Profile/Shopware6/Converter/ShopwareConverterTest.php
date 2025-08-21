@@ -167,13 +167,8 @@ abstract class ShopwareConverterTest extends TestCase
 
     protected function loadMapping(array $mappingArray): void
     {
-        $connection = $this->migrationContext->getConnection();
+        $connectionId = $this->migrationContext->getConnection()->getId();
 
-        if ($connection === null) {
-            return;
-        }
-
-        $connectionId = $connection->getId();
         foreach ($mappingArray as $mapping) {
             $mappingConnection = null;
             if (isset($mapping['connectionId'])) {

@@ -120,12 +120,8 @@ abstract class OrderConverter extends ShopwareConverter
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionName = '';
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
         if (empty($data['billingaddress']['id'])) {
