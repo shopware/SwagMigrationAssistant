@@ -95,10 +95,6 @@ const migrationStore = Shopware.Store.register({
 
     getters: {
         isPremappingValid(): boolean {
-            if (!this.premapping.length) {
-                return false;
-            }
-
             return !this.premapping.some((group: MigrationPremapping) => {
                 return group.mapping.some((mapping) => {
                     return mapping.destinationUuid === null || mapping.destinationUuid === '';

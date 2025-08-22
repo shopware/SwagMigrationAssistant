@@ -63,12 +63,15 @@ module.exports = {
         '@typescript-eslint/no-explicit-any': 'error',
         '@typescript-eslint/consistent-type-imports': 'error',
         '@typescript-eslint/ban-ts-comment': 'off',
+        'implicit-arrow-linebreak': 'off',
+        'function-paren-newline': 'off',
     },
     overrides: [
         {
             files: ['*.ts', '*.vue'],
             rules: {
                 '@typescript-eslint/explicit-module-boundary-types': 'error',
+                indent: 'off',
             },
         },
         {
