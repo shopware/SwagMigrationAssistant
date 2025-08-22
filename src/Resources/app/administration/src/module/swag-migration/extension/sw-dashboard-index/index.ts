@@ -3,6 +3,9 @@ import type { TEntity, TRepository } from '../../../../type/types';
 
 const { Criteria } = Shopware.Data;
 
+/**
+ * @private
+ */
 export interface SwDashboardData {
     context: unknown;
     runExists: boolean;

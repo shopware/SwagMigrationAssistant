@@ -1,8 +1,9 @@
-import type { RouteLocationNormalized, NavigationGuardNext } from 'vue-router';
 import template from './swag-migration-wizard.html.twig';
 import './swag-migration-wizard.scss';
-import { MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.api.service';
-import type { MigrationCredentials, MigrationProfile, TRepository } from '../../../../../type/types';
+import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.api.service';
+import type { MigrationConnection, MigrationCredentials, MigrationProfile, TRepository } from '../../../../../type/types';
+import type { MigrationStore } from '../../../store/migration.store';
+import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 
 const { Mixin, Store } = Shopware;
 const { Criteria } = Shopware.Data;
@@ -15,7 +16,10 @@ const CONNECTION_NAME_ERRORS = {
     NAME_ALREADY_EXISTS: 'SWAG_MIGRATION_CONNECTION_NAME_ALREADY_EXISTS',
 } as const;
 
-const ROUTES = {
+/**
+ * @private
+ */
+export const ROUTES = {
     introduction: {
         name: 'swag.migration.wizard.introduction',
         index: 0,
@@ -58,6 +62,9 @@ const ROUTES = {
     },
 } as const;
 
+/**
+ * @private
+ */
 export interface SwagMigrationWizardData {
     context: unknown;
     storesInitializing: boolean;
@@ -73,6 +80,7 @@ export interface SwagMigrationWizardData {
     errorMessageHintSnippet: string;
     connectionNameErrorCode: string;
     currentErrorCode: string;
+    migrationStore: MigrationStore;
 }
 
 /**
@@ -87,7 +95,7 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
         'repositoryFactory',
     ],
 
@@ -111,6 +119,7 @@ export default Shopware.Component.wrapComponentConfig({
             errorMessageHintSnippet: '',
             connectionNameErrorCode: '',
             currentErrorCode: '',
+            migrationStore: Store.get(MIGRATION_STORE_ID),
         };
     },
 
@@ -122,7 +131,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         ...mapState(
-            () => Store.get('swagMigration'),
+            () => Store.get(MIGRATION_STORE_ID),
             [
                 'connectionId',
             ],
@@ -230,7 +239,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         profileInformationComponentIsLoaded() {
-            return Component.getComponentRegistry().has(this.profileInformationComponent);
+            return Shopware.Component.getComponentRegistry().has(this.profileInformationComponent);
         },
 
         credentialsComponent() {
@@ -250,10 +259,11 @@ export default Shopware.Component.wrapComponentConfig({
      * @param from
      * @param next
      */
-    beforeRouteLeave: (to: RouteLocationNormalized, from: RouteLocationNormalized, next: NavigationGuardNext): void => {
+    beforeRouteLeave(to: never, from: never, next: () => void) {
         this.showModal = false;
-
-        this.$nextTick(() => next());
+        this.$nextTick(() => {
+            next();
+        });
     },
 
     created() {
@@ -287,7 +297,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-            await Store.get('swagMigration').init(forceFullStateReload);
+            await Store.get(MIGRATION_STORE_ID).init(forceFullStateReload);
             this.storesInitializing = false;
         },
 
@@ -327,17 +337,17 @@ export default Shopware.Component.wrapComponentConfig({
             return this.migrationApiService
                 .checkConnection(this.connection.id)
                 .then((connectionCheckResponse) => {
-                    Store.get('swagMigration').setConnectionId(this.connection.id);
+                    this.migrationStore.setConnectionId(this.connection.id);
                     this.isLoading = false;
 
                     if (!connectionCheckResponse) {
                         this.onResponseError(-1);
                         return;
                     }
-                    Store.get('swagMigration').setEnvironmentInformation(connectionCheckResponse);
-                    Store.get('swagMigration').setDataSelectionIds([]);
-                    Store.get('swagMigration').setPremapping([]);
-                    Store.get('swagMigration').setDataSelectionTableData([]);
+                    this.migrationStore.setEnvironmentInformation(connectionCheckResponse);
+                    this.migrationStore.setDataSelectionIds([]);
+                    this.migrationStore.setPremapping([]);
+                    this.migrationStore.setDataSelectionTableData([]);
 
                     if (connectionCheckResponse.requestStatus === undefined) {
                         this.navigateToRoute(this.routes.credentialsSuccess);
@@ -366,11 +376,11 @@ export default Shopware.Component.wrapComponentConfig({
                 })
                 .catch((error) => {
                     this.isLoading = false;
-                    Store.get('swagMigration').setConnectionId(this.connection.id);
-                    Store.get('swagMigration').setEnvironmentInformation({});
-                    Store.get('swagMigration').setDataSelectionIds([]);
-                    Store.get('swagMigration').setPremapping([]);
-                    Store.get('swagMigration').setDataSelectionTableData([]);
+                    this.migrationStore.setConnectionId(this.connection.id);
+                    this.migrationStore.setEnvironmentInformation({});
+                    this.migrationStore.setDataSelectionIds([]);
+                    this.migrationStore.setPremapping([]);
+                    this.migrationStore.setDataSelectionTableData([]);
                     this.onResponseError(error.response.data.errors[0].code);
                 });
         },
@@ -551,13 +561,13 @@ export default Shopware.Component.wrapComponentConfig({
                     if (connectionResponse.length === 0 || connectionResponse.first().id === null) {
                         this.isLoading = false;
                         this.onNoConnectionSelected();
-                        resolve();
+                        resolve(null);
                         return;
                     }
 
                     this.connection = connectionResponse.first();
                     this.isLoading = false;
-                    resolve();
+                    resolve(null);
                 });
             });
         },
@@ -609,11 +619,11 @@ export default Shopware.Component.wrapComponentConfig({
             return new Promise((resolve, reject) => {
                 this.isLoading = true;
 
-                Store.get('swagMigration').setConnectionId(connection.id);
-                Store.get('swagMigration').setEnvironmentInformation({});
-                Store.get('swagMigration').setDataSelectionIds([]);
-                Store.get('swagMigration').setPremapping([]);
-                Store.get('swagMigration').setDataSelectionTableData([]);
+                this.migrationStore.setConnectionId(connection.id);
+                this.migrationStore.setEnvironmentInformation({});
+                this.migrationStore.setDataSelectionIds([]);
+                this.migrationStore.setPremapping([]);
+                this.migrationStore.setDataSelectionTableData([]);
 
                 const criteria = new Criteria(1, 1);
 
@@ -633,7 +643,7 @@ export default Shopware.Component.wrapComponentConfig({
                             .then(() => {
                                 this.connection = connection;
                                 this.isLoading = false;
-                                resolve();
+                                resolve(null);
                             })
                             .catch(() => {
                                 this.isLoading = false;

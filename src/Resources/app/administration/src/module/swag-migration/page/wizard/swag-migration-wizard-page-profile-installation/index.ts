@@ -4,6 +4,9 @@ import type { TRepository } from '../../../../../type/types';
 
 const { Criteria } = Shopware.Data;
 
+/**
+ * @private
+ */
 export interface SwagMigrationWizardPageProfileInstallationData {
     pluginIsLoading: boolean;
     pluginIsSaveSuccessful: boolean;

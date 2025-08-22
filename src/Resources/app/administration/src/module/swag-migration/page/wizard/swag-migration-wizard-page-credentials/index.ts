@@ -36,7 +36,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         componentIsLoaded() {
-            return Component.getComponentRegistry().has(this.credentialsComponent);
+            return Shopware.Component.getComponentRegistry().has(this.credentialsComponent);
         },
     },
 });

@@ -7,6 +7,9 @@ type Credentials = {
     bearer_token?: string;
 };
 
+/**
+ * @private
+ */
 export interface SwagMigrationProfileShopware6ApiCredentialFormData {
     inputCredentials: Credentials;
 }

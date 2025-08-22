@@ -1,7 +1,11 @@
 import template from './swag-migration-main-page.html.twig';
 import './swag-migration-main-page.scss';
 import type { MigrationStore } from '../../store/migration.store';
+import { MIGRATION_STORE_ID } from '../../store/migration.store';
 
+/**
+ * @private
+ */
 export interface SwagMigrationMainPageData {
     migrationStore: MigrationStore;
 }
@@ -15,7 +19,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationMainPageData {
         return {
-            migrationStore: Shopware.Store.get('swagMigration'),
+            migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
         };
     },
 

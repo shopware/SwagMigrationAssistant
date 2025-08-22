@@ -1,4 +1,4 @@
-import MigrationApiService from './api/swag-migration.api.service';
+import MigrationApiService, { MIGRATION_API_SERVICE } from './api/swag-migration.api.service';
 
 const { Application } = Shopware;
 
@@ -6,7 +6,7 @@ const { Application } = Shopware;
  * @sw-package fundamentals@after-sales
  * @private
  */
-Application.addServiceProvider('migrationApiService', (container) => {
+Application.addServiceProvider(MIGRATION_API_SERVICE, (container) => {
     const initContainer = Application.getContainer('init');
     return new MigrationApiService(initContainer.httpClient, container.loginService);
 });

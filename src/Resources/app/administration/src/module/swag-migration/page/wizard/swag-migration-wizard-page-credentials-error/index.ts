@@ -32,7 +32,7 @@ export default Shopware.Component.wrapComponentConfig({
                 'success',
                 'neutral',
             ],
-            validator(value) {
+            validator(value: string) {
                 return [
                     'info',
                     'warning',

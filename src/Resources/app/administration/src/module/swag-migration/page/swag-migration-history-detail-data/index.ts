@@ -10,6 +10,9 @@ type EntityGroup = {
     total?: number;
 };
 
+/**
+ * @private
+ */
 export interface SwagMigrationHistoryDetailData {
     isLoading: boolean;
     allMigrationData: EntityGroup[];

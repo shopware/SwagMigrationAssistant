@@ -8,6 +8,9 @@ type Route = {
     index: number;
 };
 
+/**
+ * @private
+ */
 export interface SwagWizardMixinData {
     routes: Record<string, Route>;
     currentRoute: Route;

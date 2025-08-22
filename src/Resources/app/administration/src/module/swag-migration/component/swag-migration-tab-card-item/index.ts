@@ -1,5 +1,8 @@
 import template from './swag-migration-tab-card-item.html.twig';
 
+/**
+ * @private
+ */
 export interface SwagMigrationTabCardItemData {
     active: boolean;
 }

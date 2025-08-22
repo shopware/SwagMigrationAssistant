@@ -1,10 +1,11 @@
 import type RepositoryType from '@administration/src/core/data/repository.data';
 import type { MigrationDataSelection, MigrationEnvironmentInformation, MigrationPremapping } from '../../../type/types';
 import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_API_SERVICE } from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
 
-const migrationApiService: MigrationApiService = Shopware.Service('migrationApiService');
+const migrationApiService: MigrationApiService = Shopware.Service(MIGRATION_API_SERVICE);
 const repositoryFactory = Shopware.Service('repositoryFactory');
 
 const migrationGeneralSettingRepository = repositoryFactory.create(
@@ -14,7 +15,7 @@ const migrationGeneralSettingRepository = repositoryFactory.create(
 /**
  * @private
  */
-export const migrationStoreId = 'swagMigration';
+export const MIGRATION_STORE_ID = 'swagMigration';
 
 type MigrationState = {
     state: {
@@ -55,7 +56,7 @@ type MigrationState = {
  * @sw-package fundamentals@after-sales
  */
 const migrationStore = Shopware.Store.register({
-    id: migrationStoreId,
+    id: MIGRATION_STORE_ID,
 
     state: (): MigrationState['state'] => ({
         /**

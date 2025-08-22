@@ -7,6 +7,8 @@ import type {
     TEntityCollection,
     TRepository,
 } from '../../../../../type/types';
+import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 
 const { Mixin, Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
@@ -18,6 +20,9 @@ const BADGE_TYPE = {
     DANGER: 'danger',
 } as const;
 
+/**
+ * @private
+ */
 export interface SwagMigrationShopInformationData {
     confirmModalIsLoading: boolean;
     showRemoveCredentialsConfirmModal: boolean;
@@ -36,7 +41,7 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
         'repositoryFactory',
     ],
 
@@ -73,7 +78,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         ...mapState(
-            () => Store.get('swagMigration'),
+            () => Store.get(MIGRATION_STORE_ID),
             [
                 'connectionId',
                 'environmentInformation',
@@ -199,10 +204,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         connectionId: {
             immediate: true,
-            /**
-             * @param {string} newConnectionId
-             */
-            handler(newConnectionId) {
+            handler(newConnectionId: string) {
                 this.fetchConnection(newConnectionId);
             },
         },
@@ -353,7 +355,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onClickRefreshConnection() {
-            return Store.get('swagMigration').init(true);
+            return Store.get(MIGRATION_STORE_ID).init(true);
         },
     },
 });

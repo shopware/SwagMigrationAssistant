@@ -5,8 +5,9 @@ import './swag-migration-settings-icon.scss';
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.wrapComponentConfig({
+export default Shopware.Component.wrapComponentConfig({
     template,
+
     computed: {
         assetFilter() {
             return Shopware.Filter.getByName('asset');

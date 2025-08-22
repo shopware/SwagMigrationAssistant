@@ -1,6 +1,9 @@
 import template from './swag-migration-tab-card.html.twig';
 import './swag-migration-tab-card.scss';
 
+/**
+ * @private
+ */
 export interface SwagMigrationTabCardData {
     selectedNumber: string;
 }
@@ -51,8 +54,8 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
-        tabItems(): SwagMigrationTabCardItem[] | undefined {
-            return this.$refs.swTabsItems as SwagMigrationTabCardItem[] | undefined;
+        tabItems(): TabCardItem[] | undefined {
+            return this.$refs.swTabsItems as TabCardItem[] | undefined;
         },
     },
 

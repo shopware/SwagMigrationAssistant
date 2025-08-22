@@ -3,6 +3,9 @@ import type { MigrationConnection, TRepository } from '../../../../../type/types
 
 const { Criteria } = Shopware.Data;
 
+/**
+ * @private
+ */
 export interface SwagMigrationWizardPageConnectionSelectData {
     selectedConnectionId?: string;
     connections: MigrationConnection[];

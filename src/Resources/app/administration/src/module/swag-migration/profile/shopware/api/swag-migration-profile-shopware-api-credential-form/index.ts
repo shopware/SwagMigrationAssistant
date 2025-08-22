@@ -9,6 +9,9 @@ type Credentials = {
     apiKey?: string;
 };
 
+/**
+ * @private
+ */
 export interface SwagMigrationProfileShopwareApiCredentialFormData {
     inputCredentials: Credentials;
     apiKeyErrorCode: string;

@@ -1,9 +1,13 @@
 import template from './swag-migration-history-detail.html.twig';
 import './swag-migration-history-detail.scss';
 import type { TEntity, TRepository } from '../../../../type/types';
+import { MIGRATION_API_SERVICE } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
 
+/**
+ * @private
+ */
 export interface SwagMigrationHistoryDetailData {
     runId: string;
     migrationRun?: TEntity<'swag_migration_run'>;
@@ -26,7 +30,7 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
         'repositoryFactory',
     ],
 

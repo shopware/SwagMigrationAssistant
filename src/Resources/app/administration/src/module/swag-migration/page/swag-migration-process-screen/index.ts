@@ -1,8 +1,9 @@
 import template from './swag-migration-process-screen.html.twig';
 import './swag-migration-process-screen.scss';
-import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
 import type { MigrationState } from '../../../../type/types';
 import type { MigrationStore } from '../../store/migration.store';
+import { MIGRATION_STORE_ID } from '../../store/migration.store';
 
 const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
@@ -25,6 +26,9 @@ const UI_COMPONENT_INDEX = {
     RESULT_SUCCESS: 1,
 } as const;
 
+/**
+ * @private
+ */
 export interface SwagMigrationProcessScreenData {
     displayFlowChart: boolean;
     flowChartItemIndex: number;
@@ -34,7 +38,7 @@ export interface SwagMigrationProcessScreenData {
     componentIndex: number;
     showAbortMigrationConfirmDialog: boolean;
     pollingIntervalId: number | null;
-    step: MIGRATION_STEP;
+    step: MigrationState['step'];
     progress: number;
     total: number;
     migrationStore: MigrationStore;
@@ -48,7 +52,7 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
     ],
 
     mixins: [
@@ -77,7 +81,7 @@ export default Shopware.Component.wrapComponentConfig({
             step: MIGRATION_STEP.FETCHING,
             progress: 0,
             total: 0,
-            migrationStore: Shopware.Store.get('swagMigration'),
+            migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
         };
     },
 

@@ -9,6 +9,9 @@ type Credentials = {
     installationRoot: string;
 };
 
+/**
+ * @private
+ */
 export interface SwagMigrationProfileShopwareLocalCredentialFormData {
     inputCredentials: Credentials;
 }

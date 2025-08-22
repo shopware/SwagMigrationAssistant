@@ -27,7 +27,7 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        setActiveTab(tabItem) {
+        setActiveTab(tabItem: { name: string }) {
             this.$router.push({ name: tabItem.name });
         },
     },

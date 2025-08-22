@@ -2,10 +2,23 @@ import type { AxiosResponse } from 'axios';
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 import type { TEntityCollection, TRepository } from '../../../../type/types';
+import { MIGRATION_API_SERVICE } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 
+type Params = {
+    limit: string | number;
+    page: string | number;
+    term: string | undefined;
+    sortBy: string | null;
+    sortDirection: string;
+    naturalSorting: boolean;
+};
+
+/**
+ * @private
+ */
 export interface SwagMigrationHistoryData {
     sortBy: string;
     context: unknown;
@@ -43,8 +56,8 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
+        MIGRATION_API_SERVICE,
         'repositoryFactory',
-        'migrationApiService',
     ],
 
     mixins: [
@@ -185,9 +198,13 @@ export default Shopware.Component.wrapComponentConfig({
          * @param {Object} params
          * @returns {Object}
          */
-        normalizeListingParams(params: unknown) {
-            params.limit = parseInt(params.limit, 10);
-            params.page = parseInt(params.page, 10);
+        normalizeListingParams(params: Params): Params {
+            if (typeof params.limit === 'string') {
+                params.limit = parseInt(params.limit, 10);
+            }
+            if (typeof params.page === 'string') {
+                params.page = parseInt(params.page, 10);
+            }
 
             return params;
         },

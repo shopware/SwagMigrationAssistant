@@ -1,9 +1,13 @@
 import template from './swag-migration-history-detail-errors.html.twig';
 import './swag-migration-history-detail-errors.scss';
 import type { MigrationError, TEntity } from '../../../../type/types';
+import { MIGRATION_API_SERVICE } from '../../../../core/service/api/swag-migration.api.service';
 
 const { Mixin } = Shopware;
 
+/**
+ * @private
+ */
 export interface SwagMigrationHistoryDetailErrorsData {
     isLoading: boolean;
     allMigrationErrors?: MigrationError[];
@@ -23,7 +27,7 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
     ],
 
     mixins: [

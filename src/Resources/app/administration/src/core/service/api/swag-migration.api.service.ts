@@ -16,7 +16,10 @@ type AdditionalHeaders = Record<string, string>;
 
 const ApiService = Shopware.Classes.ApiService;
 
-export const migrationApiServiceName = 'migrationApiService';
+/**
+ * @private
+ */
+export const MIGRATION_API_SERVICE = 'migrationApiService';
 
 /**
  * @private
@@ -43,7 +46,7 @@ export default class MigrationApiService extends ApiService {
     constructor(httpClient: AxiosInstance, loginService: LoginService, apiEndpoint = 'migration') {
         super(httpClient, loginService, apiEndpoint);
         // @ts-ignore
-        this.name = migrationApiServiceName;
+        this.name = MIGRATION_API_SERVICE;
         this.basicConfig = {
             timeout: 30000,
             version: Shopware.Context.api.apiVersion,

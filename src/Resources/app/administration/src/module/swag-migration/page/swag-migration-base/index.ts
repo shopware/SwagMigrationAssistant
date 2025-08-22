@@ -1,9 +1,13 @@
 import template from './swag-migration-base.html.twig';
-import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_STORE_ID } from '../../store/migration.store';
 
 const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
+/**
+ * @private
+ */
 export interface SwagMigrationBaseData {
     context: unknown;
     storesInitializing: boolean;
@@ -17,7 +21,7 @@ export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
     ],
 
     data(): SwagMigrationBaseData {
@@ -35,7 +39,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         ...mapState(
-            () => Store.get('swagMigration'),
+            () => Store.get(MIGRATION_STORE_ID),
             [
                 'environmentInformation',
                 'connectionId',
@@ -74,13 +78,13 @@ export default Shopware.Component.wrapComponentConfig({
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-            await Store.get('swagMigration').init(forceFullStateReload);
+            await Store.get(MIGRATION_STORE_ID).init(forceFullStateReload);
             this.storesInitializing = false;
         },
 
         onMigrate() {
             // navigate to process screen
-            Store.get('swagMigration').setIsLoading(true);
+            Store.get(MIGRATION_STORE_ID).setIsLoading(true);
             this.$router.push({ name: 'swag.migration.processScreen' });
         },
     },

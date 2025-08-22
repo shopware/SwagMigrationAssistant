@@ -22,11 +22,11 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        isDisabled(item: GridItem): boolean {
-            return item[this.disabledAttribute];
+        isDisabled(item: GridItem) {
+            return !!item[this.disabledAttribute];
         },
 
-        extendedGridRowClasses(item: GridItem, index: number): Record<string, boolean> {
+        extendedGridRowClasses(item: GridItem, index: number) {
             const classes = {
                 'is--selected': this.isSelected(item.id) && !this.isDisabled(item),
                 'is--deleted': item.isDeleted,

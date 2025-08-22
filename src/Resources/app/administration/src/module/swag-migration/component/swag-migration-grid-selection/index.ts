@@ -1,9 +1,12 @@
 import template from './swag-migration-grid-selection.html.twig';
 import './swag-migration-grid-selection.scss';
-import type { MigrationPremapping, MigrationPremappingChoice } from '../../../../type/types';
+import type { MigrationPremapping, MigrationPremappingChoice, MigrationPremappingEntity } from '../../../../type/types';
 
 const { Mixin } = Shopware;
 
+/**
+ * @private
+ */
 export interface SwagMigrationGridSelectionData {
     items: MigrationPremapping[];
     disableRouteParams: boolean;
@@ -91,7 +94,7 @@ export default Shopware.Component.wrapComponentConfig({
             this.$emit('update:value');
         },
 
-        getClassesAfterValidation(item) {
+        getClassesAfterValidation(item: MigrationPremappingEntity) {
             const hasError = item.destinationUuid === null || item.destinationUuid.length === 0;
             return { 'has--error': hasError };
         },

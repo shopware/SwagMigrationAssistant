@@ -2,10 +2,14 @@ import template from './swag-migration-data-selector.html.twig';
 import './swag-migration-data-selector.scss';
 import type { MigrationDataSelection } from '../../../../type/types';
 import type { MigrationStore } from '../../store/migration.store';
+import { MIGRATION_STORE_ID } from '../../store/migration.store';
 
 const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
+/**
+ * @private
+ */
 export interface SwagMigrationDataSelectorData {
     migrationStore: MigrationStore;
 }
@@ -19,13 +23,13 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationDataSelectorData {
         return {
-            migrationStore: Shopware.Store.get('swagMigration'),
+            migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
         };
     },
 
     computed: {
         ...mapState(
-            () => Store.get('swagMigration'),
+            () => Store.get(MIGRATION_STORE_ID),
             [
                 'environmentInformation',
                 'dataSelectionTableData',

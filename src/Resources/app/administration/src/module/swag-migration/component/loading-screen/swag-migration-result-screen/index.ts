@@ -4,6 +4,9 @@ import type { TEntity, TRepository } from '../../../../../type/types';
 
 const { Criteria } = Shopware.Data;
 
+/**
+ * @private
+ */
 export interface SwagMigrationResultScreenData {
     latestRun?: TEntity<'swag_migration_run'>;
     context: unknown;
@@ -13,7 +16,7 @@ export interface SwagMigrationResultScreenData {
  *@private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.wrapComponentConfig({
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [

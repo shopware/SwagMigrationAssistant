@@ -1,6 +1,7 @@
 import template from './swag-migration-wizard-page-connection-create.html.twig';
 import './swag-migration-wizard-page-connection-create.scss';
 import type { MigrationGateway, MigrationProfile } from '../../../../../type/types';
+import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
 
 const ShopwareError = Shopware.Classes.ShopwareError;
 
@@ -9,6 +10,9 @@ type SearchParams = {
     options: MigrationProfile[] | MigrationGateway[];
 };
 
+/**
+ * @private
+ */
 export interface SwagMigrationWizardPageConnectionCreateData {
     isLoading: boolean;
     selection: {
@@ -24,11 +28,11 @@ export interface SwagMigrationWizardPageConnectionCreateData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.wrapComponentConfig({
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
-        'migrationApiService',
+        MIGRATION_API_SERVICE,
     ],
 
     emits: [
@@ -125,7 +129,7 @@ Shopware.Component.wrapComponentConfig({
         profileSearch(searchParams: SearchParams) {
             const searchTerm = searchParams.searchTerm;
 
-            return searchParams.options.filter((option) => {
+            return searchParams.options.filter((option: MigrationProfile) => {
                 const label = `${option.sourceSystemName} ${option.version} - ${option.author}`;
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });
@@ -134,7 +138,7 @@ Shopware.Component.wrapComponentConfig({
         gatewaySearch(searchParams: SearchParams) {
             const searchTerm = searchParams.searchTerm;
 
-            return searchParams.options.filter((option) => {
+            return searchParams.options.filter((option: MigrationGateway) => {
                 const label = this.$tc(option.snippet);
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });
@@ -184,7 +188,7 @@ Shopware.Component.wrapComponentConfig({
                         }
 
                         this.emitOnChildRouteReadyChanged(this.isReady);
-                        resolve();
+                        resolve(null);
                     });
                 }
             });
@@ -200,12 +204,12 @@ Shopware.Component.wrapComponentConfig({
             this.emitOnChildRouteReadyChanged(this.isReady);
         },
 
-        onChangeConnectionName(value) {
+        onChangeConnectionName(value: string | null) {
             this.$emit('onChangeConnectionName', value);
             this.emitOnChildRouteReadyChanged(this.isReady);
         },
 
-        emitOnChildRouteReadyChanged(isReady) {
+        emitOnChildRouteReadyChanged(isReady: boolean) {
             this.$emit('onChildRouteReadyChanged', isReady);
         },
     },
