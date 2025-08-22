@@ -101,6 +101,15 @@ type MigrationCredentials = {
 type MigrationConnection = {
     profile?: MigrationProfile;
     gateway?: MigrationGateway;
+    credentialsFields?: MigrationCredentials;
+};
+
+type MigrationError = {
+    code: string;
+    count: number;
+    titleSnippet: string;
+    entity: string;
+    level: string;
 };
 
 /**
@@ -112,6 +121,7 @@ export {
     MigrationState,
     MigrationProfile,
     MigrationGateway,
+    MigrationError,
     MigrationConnection,
     MigrationDataSelection,
     MigrationPremapping,

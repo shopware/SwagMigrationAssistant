@@ -14,7 +14,7 @@ export interface SwDashboardData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.override('sw-dashboard-index', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [

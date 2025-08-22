@@ -1,14 +1,30 @@
 import template from './swag-migration-wizard-page-connection-create.html.twig';
 import './swag-migration-wizard-page-connection-create.scss';
+import type { MigrationGateway, MigrationProfile } from '../../../../../type/types';
 
-const { Component } = Shopware;
 const ShopwareError = Shopware.Classes.ShopwareError;
+
+type SearchParams = {
+    searchTerm: string;
+    options: MigrationProfile[] | MigrationGateway[];
+};
+
+export interface SwagMigrationWizardPageConnectionCreateData {
+    isLoading: boolean;
+    selection: {
+        profile?: string;
+        gateway?: string;
+        connectionName?: string;
+    };
+    profiles: MigrationProfile[];
+    gateways: MigrationGateway[];
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-wizard-page-connection-create', {
+Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -30,7 +46,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
         },
     },
 
-    data() {
+    data(): SwagMigrationWizardPageConnectionCreateData {
         return {
             isLoading: true,
             selection: {
@@ -59,7 +75,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             );
         },
 
-        connectionNameError() {
+        connectionNameError(): ShopwareError | null {
             if (this.connectionNameErrorCode === '') {
                 return null;
             }
@@ -75,6 +91,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             }
 
             const snippet = `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`;
+
             if (this.$tc(snippet) !== `swag-migration.wizard.pages.connectionCreate.hint.${this.selection.gateway}`) {
                 return this.$tc(snippet);
             }
@@ -94,6 +111,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
 
             this.profiles = await this.migrationApiService.getProfiles();
             this.pushLinkToProfiles();
+
             await this.selectDefaultProfile();
             this.setIsLoading(false);
         },
@@ -104,23 +122,25 @@ Component.register('swag-migration-wizard-page-connection-create', {
             });
         },
 
-        profileSearch(searchParams) {
+        profileSearch(searchParams: SearchParams) {
             const searchTerm = searchParams.searchTerm;
+
             return searchParams.options.filter((option) => {
                 const label = `${option.sourceSystemName} ${option.version} - ${option.author}`;
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });
         },
 
-        gatewaySearch(searchParams) {
+        gatewaySearch(searchParams: SearchParams) {
             const searchTerm = searchParams.searchTerm;
+
             return searchParams.options.filter((option) => {
                 const label = this.$tc(option.snippet);
                 return label.toLowerCase().includes(searchTerm.toLowerCase());
             });
         },
 
-        getText(item) {
+        getText(item: MigrationProfile): string {
             return `${item.sourceSystemName} ${item.version} - <i>${item.author}</i>`;
         },
 
@@ -129,12 +149,12 @@ Component.register('swag-migration-wizard-page-connection-create', {
             this.onSelectGateway('api');
         },
 
-        setIsLoading(value) {
+        setIsLoading(value: boolean) {
             this.isLoading = value;
             this.$emit('onIsLoadingChanged', this.isLoading);
         },
 
-        onSelectProfile(value) {
+        onSelectProfile(value: string | null) {
             if (value === null || value === undefined) {
                 return Promise.resolve();
             }
@@ -170,7 +190,7 @@ Component.register('swag-migration-wizard-page-connection-create', {
             });
         },
 
-        onSelectGateway(value) {
+        onSelectGateway(value: string | null) {
             if (value !== null && value !== undefined) {
                 this.selection.gateway = value;
             }

@@ -1,14 +1,23 @@
 import template from './swag-migration-main-page.html.twig';
 import './swag-migration-main-page.scss';
+import type { MigrationStore } from '../../store/migration.store';
 
-const { Component } = Shopware;
+export interface SwagMigrationMainPageData {
+    migrationStore: MigrationStore;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-main-page', {
+export default Shopware.Component.wrapComponentConfig({
     template,
+
+    data(): SwagMigrationMainPageData {
+        return {
+            migrationStore: Shopware.Store.get('swagMigration'),
+        };
+    },
 
     metaInfo() {
         return {
@@ -18,15 +27,15 @@ Component.register('swag-migration-main-page', {
 
     computed: {
         environmentInformation() {
-            return Shopware.Store.get('swagMigration').environmentInformation;
+            return this.migrationStore.environmentInformation;
         },
 
         connectionId() {
-            return Shopware.Store.get('swagMigration').connectionId;
+            return this.migrationStore.connectionId;
         },
 
         isLoading() {
-            return Shopware.Store.get('swagMigration').isLoading;
+            return this.migrationStore.isLoading;
         },
 
         displayWarnings() {

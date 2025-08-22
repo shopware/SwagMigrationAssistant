@@ -14,7 +14,7 @@ export interface SwagMigrationPremappingData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-premapping', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -51,7 +51,7 @@ Shopware.Component.register('swag-migration-premapping', {
 
             this.migrationApiService
                 .generatePremapping(this.dataSelectionIds)
-                .then(async (premapping: MigrationPremapping[]) => {
+                .then(async (premapping) => {
                     Store.get('swagMigration').setPremapping(premapping);
                     await this.savePremapping();
                 })

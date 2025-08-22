@@ -1,7 +1,19 @@
 import template from './swag-migration-tab-card.html.twig';
 import './swag-migration-tab-card.scss';
 
-const { Component } = Shopware;
+export interface SwagMigrationTabCardData {
+    selectedNumber: string;
+}
+
+type TabCardItem = {
+    name: string;
+    entity?: string;
+    mapping: { destinationUuid?: string }[];
+};
+
+type GroupTab = {
+    mapping: { destinationUuid?: string }[];
+};
 
 /**
  * @example
@@ -17,7 +29,7 @@ const { Component } = Shopware;
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-tab-card', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     props: {
@@ -27,20 +39,20 @@ Component.register('swag-migration-tab-card', {
             required: false,
         },
         items: {
-            type: Array,
+            type: Array as PropType<TabCardItem[]>,
             required: true,
         },
     },
 
-    data() {
+    data(): SwagMigrationTabCardData {
         return {
             selectedNumber: '',
         };
     },
 
     computed: {
-        tabItems() {
-            return this.$refs.swTabsItems;
+        tabItems(): SwagMigrationTabCardItem[] | undefined {
+            return this.$refs.swTabsItems as SwagMigrationTabCardItem[] | undefined;
         },
     },
 
@@ -54,6 +66,7 @@ Component.register('swag-migration-tab-card', {
                 // select first tab
                 if (this.tabItems !== undefined && this.tabItems.length > 0) {
                     this.selectedNumber = this.tabItems[0].name;
+
                     setTimeout(() => {
                         if (this.$refs.swTabs) {
                             this.$refs.swTabs.setActiveItem(this.tabItems[0]);
@@ -63,13 +76,13 @@ Component.register('swag-migration-tab-card', {
             });
         },
 
-        onNewActiveItem(item) {
+        onNewActiveItem(item: TabCardItem) {
             this.$refs.contentContainer[this.selectedNumber].setActive(false);
             this.selectedNumber = item.name;
             this.$refs.contentContainer[this.selectedNumber].setActive(true);
         },
 
-        getErrorCountForGroupTab(group) {
+        getErrorCountForGroupTab(group: GroupTab): number {
             return group.mapping.reduce((currentValue, mapping) => {
                 if (!mapping.destinationUuid) {
                     return currentValue + 1;
@@ -79,7 +92,7 @@ Component.register('swag-migration-tab-card', {
             }, 0);
         },
 
-        getKey(item) {
+        getKey(item: TabCardItem): string | undefined {
             if (!item.entity) {
                 // see https://vuejs.org/api/built-in-special-attributes.html#key
                 // we use child components with state

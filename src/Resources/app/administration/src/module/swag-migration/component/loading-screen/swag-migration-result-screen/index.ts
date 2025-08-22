@@ -1,21 +1,26 @@
 import template from './swag-migration-result-screen.html.twig';
 import './swag-migration-result-screen.scss';
+import type { TEntity, TRepository } from '../../../../../type/types';
 
-const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
 
+export interface SwagMigrationResultScreenData {
+    latestRun?: TEntity<'swag_migration_run'>;
+    context: unknown;
+}
+
 /**
- * @private
+ *@private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-result-screen', {
+Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
         'repositoryFactory',
     ],
 
-    data() {
+    data(): SwagMigrationResultScreenData {
         return {
             latestRun: null,
             context: Shopware.Context.api,
@@ -23,7 +28,7 @@ Component.register('swag-migration-result-screen', {
     },
 
     computed: {
-        migrationRunRepository() {
+        migrationRunRepository(): TRepository<'swag_migration_run'> {
             return this.repositoryFactory.create('swag_migration_run');
         },
     },
@@ -37,7 +42,7 @@ Component.register('swag-migration-result-screen', {
             this.latestRun = await this.fetchLatestRun();
         },
 
-        async fetchLatestRun() {
+        async fetchLatestRun(): Promise<TEntity<'swag_migration_run'> | null> {
             const criteria = new Criteria(1, 1);
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 

@@ -3,14 +3,14 @@ import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 import type { TEntityCollection, TRepository } from '../../../../type/types';
 
-const { Component, Mixin } = Shopware;
+const { Mixin } = Shopware;
 const { Criteria } = Shopware.Data;
 
 export interface SwagMigrationHistoryData {
     sortBy: string;
     context: unknown;
     isLoading: boolean;
-    migrationRuns: unknown[];
+    migrationRuns: TEntityCollection<'swag_migration_run'>;
     sortDirection: string;
     runIdForRunClear?: string;
     isMediaProcessing: boolean;
@@ -39,7 +39,7 @@ export interface SwagMigrationHistoryData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-history', {
+export default Shopware.Component.register({
     template,
 
     inject: [
@@ -55,7 +55,7 @@ Component.register('swag-migration-history', {
     data(): SwagMigrationHistoryData {
         return {
             isLoading: false,
-            migrationRuns: [],
+            migrationRuns: [] as TEntityCollection<'swag_migration_run'>,
             migrationDateOptions: {
                 hour: '2-digit',
                 minute: '2-digit',
@@ -193,22 +193,23 @@ Component.register('swag-migration-history', {
          * @param {Object} params
          * @returns {Object}
          */
-        normalizeListingParams(params) {
+        normalizeListingParams(params: unknown) {
             params.limit = parseInt(params.limit, 10);
             params.page = parseInt(params.page, 10);
 
             return params;
         },
 
-        onContextDownloadLogFile(runId) {
+        onContextDownloadLogFile(runId: string) {
             this.runIdForLogDownload = runId;
             this.$nextTick(() => {
                 this.$refs.downloadLogsOfRunForm.submit();
             });
         },
 
-        clearDataOfRun(runId) {
+        clearDataOfRun(runId: string) {
             this.runClearConfirmModalIsLoading = true;
+
             return this.migrationApiService
                 .clearDataOfRun(runId)
                 .then(() => {
@@ -226,7 +227,7 @@ Component.register('swag-migration-history', {
                 });
         },
 
-        onContextClearRunClicked(runId) {
+        onContextClearRunClicked(runId: string) {
             this.runIdForRunClear = runId;
             this.showRunClearConfirmModal = true;
         },

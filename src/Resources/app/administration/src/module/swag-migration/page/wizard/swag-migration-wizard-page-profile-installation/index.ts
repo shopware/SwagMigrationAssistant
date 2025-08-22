@@ -1,14 +1,21 @@
 import template from './swag-migration-wizard-page-profile-installation.html.twig';
 import './swag-migration-wizard-page-profile-installation.scss';
+import type { TRepository } from '../../../../../type/types';
 
-const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
+
+export interface SwagMigrationWizardPageProfileInstallationData {
+    pluginIsLoading: boolean;
+    pluginIsSaveSuccessful: boolean;
+    isInstalled: boolean;
+    pluginName: string;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-wizard-page-profile-installation', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -18,7 +25,7 @@ Component.register('swag-migration-wizard-page-profile-installation', {
         'repositoryFactory',
     ],
 
-    data() {
+    data(): SwagMigrationWizardPageProfileInstallationData {
         return {
             pluginIsLoading: false,
             pluginIsSaveSuccessful: false,
@@ -45,7 +52,7 @@ Component.register('swag-migration-wizard-page-profile-installation', {
             ].join('.');
         },
 
-        pluginRepository() {
+        pluginRepository(): TRepository<'plugin'> {
             return this.repositoryFactory.create('plugin');
         },
 
@@ -64,8 +71,7 @@ Component.register('swag-migration-wizard-page-profile-installation', {
         },
 
         refreshPlugin() {
-            const pluginCriteria = new Criteria();
-            pluginCriteria
+            const pluginCriteria = new Criteria()
                 .addFilter(Criteria.equals('plugin.name', this.pluginName))
                 .addFilter(Criteria.equals('plugin.active', true))
                 .setLimit(1);

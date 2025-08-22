@@ -1,4 +1,3 @@
-import type { PropType } from 'vue';
 import template from './swag-migration-profile-shopware-api-credential-form.html.twig';
 
 const ShopwareError = Shopware.Classes.ShopwareError;
@@ -19,7 +18,7 @@ export interface SwagMigrationProfileShopwareApiCredentialFormData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-profile-shopware-api-credential-form', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     emits: [
@@ -48,7 +47,7 @@ Shopware.Component.register('swag-migration-profile-shopware-api-credential-form
     },
 
     computed: {
-        apiKeyLength(): number {
+        apiKeyLength() {
             if (this.inputCredentials.apiKey === null) {
                 return 0;
             }
@@ -105,11 +104,11 @@ Shopware.Component.register('swag-migration-profile-shopware-api-credential-form
             );
         },
 
-        validateInput(input: string | null): boolean {
+        validateInput(input: string | null) {
             return input !== null && input !== '';
         },
 
-        apiKeyValid(apiKey: string | null): boolean {
+        apiKeyValid(apiKey: string | null) {
             if (apiKey === null || apiKey.length < 40 || apiKey.length > 40) {
                 this.apiKeyErrorCode = API_KEY_INVALID_ERROR_CODE;
                 return false;

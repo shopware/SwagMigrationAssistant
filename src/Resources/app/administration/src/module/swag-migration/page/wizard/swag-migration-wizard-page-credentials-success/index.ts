@@ -1,12 +1,10 @@
 import template from './swag-migration-wizard-page-credentials-success.html.twig';
 
-const { Component } = Shopware;
-
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-wizard-page-credentials-success', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     props: {

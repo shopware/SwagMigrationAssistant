@@ -2,4 +2,4 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-import './sw-dashboard-index';
+Shopware.Component.override('sw-dashboard-index', () => import('./sw-dashboard-index'));

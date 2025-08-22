@@ -1,4 +1,3 @@
-import type { PropType } from 'vue';
 import template from './swag-migration-profile-shopware-local-credential-form.html.twig';
 
 type Credentials = {
@@ -18,7 +17,7 @@ export interface SwagMigrationProfileShopwareLocalCredentialFormData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-profile-shopware-local-credential-form', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     emits: [
@@ -71,7 +70,7 @@ Shopware.Component.register('swag-migration-profile-shopware-local-credential-fo
     },
 
     methods: {
-        areCredentialsValid(newInputCredentials: Credentials): boolean {
+        areCredentialsValid(newInputCredentials: Credentials) {
             return (
                 newInputCredentials.dbHost !== '' &&
                 newInputCredentials.dbPort !== '' &&

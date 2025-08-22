@@ -1,13 +1,24 @@
 import template from './swag-migration-grid-selection.html.twig';
 import './swag-migration-grid-selection.scss';
+import type { MigrationPremapping, MigrationPremappingChoice } from '../../../../type/types';
 
-const { Component, Mixin } = Shopware;
+const { Mixin } = Shopware;
+
+export interface SwagMigrationGridSelectionData {
+    items: MigrationPremapping[];
+    disableRouteParams: boolean;
+    limit: number;
+    paginationSteps: number[];
+    selectOptions: Array<{ label: string; value: string }>;
+    total?: number;
+    page?: number;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-grid-selection', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     emits: ['update:value'],
@@ -18,16 +29,16 @@ Component.register('swag-migration-grid-selection', {
 
     props: {
         choices: {
-            type: Array,
+            type: Array as PropType<MigrationPremappingChoice[]>,
             required: true,
         },
         mapping: {
-            type: Array,
+            type: Array as PropType<MigrationPremapping[]>,
             required: true,
         },
     },
 
-    data() {
+    data(): SwagMigrationGridSelectionData {
         return {
             items: [],
             disableRouteParams: true,
@@ -44,7 +55,7 @@ Component.register('swag-migration-grid-selection', {
 
     watch: {
         choices: {
-            handler(newChoices) {
+            handler(newChoices: MigrationPremappingChoice[] | null) {
                 if (!newChoices) return;
 
                 this.selectOptions = newChoices.map((choice) => ({
@@ -61,7 +72,7 @@ Component.register('swag-migration-grid-selection', {
     },
 
     methods: {
-        getList() {
+        getList(): MigrationPremapping[] {
             this.total = this.mapping.length;
             const start = (this.page - 1) * this.limit;
             const end = Math.min(start + this.limit, this.total);

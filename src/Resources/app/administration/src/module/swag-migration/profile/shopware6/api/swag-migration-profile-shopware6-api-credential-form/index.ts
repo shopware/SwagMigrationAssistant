@@ -1,4 +1,3 @@
-import type { PropType } from 'vue';
 import template from './swag-migration-profile-shopware6-api-credential-form.html.twig';
 
 type Credentials = {
@@ -16,7 +15,7 @@ export interface SwagMigrationProfileShopware6ApiCredentialFormData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-profile-shopware6major-api-credential-form', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     emits: [
@@ -44,7 +43,7 @@ Shopware.Component.register('swag-migration-profile-shopware6major-api-credentia
     },
 
     computed: {
-        apiPasswordLength(): number {
+        apiPasswordLength() {
             if (this.inputCredentials.apiPassword === null) {
                 return 0;
             }
@@ -77,7 +76,7 @@ Shopware.Component.register('swag-migration-profile-shopware6major-api-credentia
     },
 
     methods: {
-        areCredentialsValid(newInputCredentials: Credentials): boolean {
+        areCredentialsValid(newInputCredentials: Credentials) {
             return (
                 this.apiPasswordValid(newInputCredentials.apiPassword) &&
                 this.validateInput(newInputCredentials.endpoint) &&
@@ -87,11 +86,11 @@ Shopware.Component.register('swag-migration-profile-shopware6major-api-credentia
             );
         },
 
-        validateInput(input: string | null): boolean {
+        validateInput(input: string | null) {
             return input !== null && input !== '';
         },
 
-        apiPasswordValid(apiPassword: string | null): boolean {
+        apiPasswordValid(apiPassword: string | null) {
             return apiPassword !== null && apiPassword.length >= 1;
         },
 

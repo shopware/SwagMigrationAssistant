@@ -13,7 +13,7 @@ export interface SwagMigrationConfirmWarningData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-confirm-warning', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     data(): SwagMigrationConfirmWarningData {
@@ -35,11 +35,11 @@ Shopware.Component.register('swag-migration-confirm-warning', {
             return this.sourceSystemCurrency !== this.targetSystemCurrency;
         },
 
-        sourceSystemCurrency() {
+        sourceSystemCurrency(): ?string {
             return this.environmentInformation.sourceSystemCurrency;
         },
 
-        targetSystemCurrency() {
+        targetSystemCurrency(): ?string {
             return this.environmentInformation.targetSystemCurrency;
         },
 

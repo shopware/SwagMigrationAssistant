@@ -1,12 +1,17 @@
 import template from './swag-migration-grid-extended.html.twig';
 
-const { Component } = Shopware;
+type GridItem = {
+    id: string;
+    isDeleted?: boolean;
+    isLocal?: boolean;
+    [key: string]: unknown;
+};
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.extend('swag-migration-grid-extended', 'sw-grid', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     props: {
@@ -17,11 +22,11 @@ Component.extend('swag-migration-grid-extended', 'sw-grid', {
     },
 
     methods: {
-        isDisabled(item) {
+        isDisabled(item: GridItem): boolean {
             return item[this.disabledAttribute];
         },
 
-        extendedGridRowClasses(item, index) {
+        extendedGridRowClasses(item: GridItem, index: number): Record<string, boolean> {
             const classes = {
                 'is--selected': this.isSelected(item.id) && !this.isDisabled(item),
                 'is--deleted': item.isDeleted,

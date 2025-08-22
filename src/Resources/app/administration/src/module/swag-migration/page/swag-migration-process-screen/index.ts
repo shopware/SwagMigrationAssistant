@@ -1,13 +1,15 @@
 import template from './swag-migration-process-screen.html.twig';
 import './swag-migration-process-screen.scss';
 import { MIGRATION_STEP } from '../../../../core/service/api/swag-migration.api.service';
+import type { MigrationState } from '../../../../type/types';
+import type { MigrationStore } from '../../store/migration.store';
 
-const { Component, Store } = Shopware;
+const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
-const MIGRATION_STATE_POLLING_INTERVAL = 1000; // ms
+const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
 
-const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
+const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
     [MIGRATION_STEP.WRITING]: 1,
@@ -16,18 +18,33 @@ const MIGRATION_STEP_DISPLAY_INDEX = Object.freeze({
     [MIGRATION_STEP.CLEANUP]: 3,
     [MIGRATION_STEP.INDEXING]: 4,
     [MIGRATION_STEP.WAITING_FOR_APPROVE]: 5,
-});
+} as const;
 
-const UI_COMPONENT_INDEX = Object.freeze({
+const UI_COMPONENT_INDEX = {
     LOADING_SCREEN: 0,
     RESULT_SUCCESS: 1,
-});
+} as const;
+
+export interface SwagMigrationProcessScreenData {
+    displayFlowChart: boolean;
+    flowChartItemIndex: number;
+    flowChartItemVariant: string;
+    flowChartInitialItemVariants: string[];
+    UI_COMPONENT_INDEX: typeof UI_COMPONENT_INDEX;
+    componentIndex: number;
+    showAbortMigrationConfirmDialog: boolean;
+    pollingIntervalId: number | null;
+    step: MIGRATION_STEP;
+    progress: number;
+    total: number;
+    migrationStore: MigrationStore;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.extend('swag-migration-process-screen', 'swag-migration-base', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -47,7 +64,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         };
     },
 
-    data() {
+    data(): SwagMigrationProcessScreenData {
         return {
             displayFlowChart: true,
             flowChartItemIndex: 0,
@@ -60,6 +77,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             step: MIGRATION_STEP.FETCHING,
             progress: 0,
             total: 0,
+            migrationStore: Shopware.Store.get('swagMigration'),
         };
     },
 
@@ -121,7 +139,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     methods: {
         async createdComponent() {
             await this.initState();
-            Store.get('swagMigration').setIsLoading(true);
+            this.migrationStore.setIsLoading(true);
 
             if (this.connectionId === null) {
                 this.$router.push({ name: 'swag.migration.index.main' });
@@ -135,7 +153,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                     migrationRunning = true;
                     this.visualizeMigrationState(state);
                 }
-            } catch (e) {
+            } catch {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.getState'),
@@ -157,7 +175,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             }
 
             this.registerPolling();
-            Store.get('swagMigration').setIsLoading(false);
+            this.migrationStore.setIsLoading(false);
         },
 
         async unmountedComponent() {
@@ -176,7 +194,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
             this.pollingIntervalId = setInterval(this.migrationStatePoller, MIGRATION_STATE_POLLING_INTERVAL);
         },
 
-        visualizeMigrationState(state) {
+        visualizeMigrationState(state: MigrationState | null) {
             if (!state) {
                 return;
             }
@@ -225,11 +243,12 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         async startMigration() {
             try {
                 await this.migrationApiService.startMigration(this.dataSelectionIds);
-            } catch (e) {
+            } catch {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.startMigration'),
                 });
+
                 this.$router.push({
                     name: 'swag.migration.index.main',
                     query: {
@@ -242,6 +261,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         async migrationStatePoller() {
             try {
                 const state = await this.migrationApiService.getState();
+
                 if (state && state.step === MIGRATION_STEP.IDLE) {
                     // back in idle, which happens after aborting for example
                     this.unregisterPolling();
@@ -252,8 +272,9 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                         },
                     });
                 }
+
                 this.visualizeMigrationState(state);
-            } catch (e) {
+            } catch {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.getState'),
@@ -265,19 +286,21 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
 
         async approveFinishedMigration() {
             try {
-                Store.get('swagMigration').setIsLoading(true);
+                this.migrationStore.setIsLoading(true);
                 await this.migrationApiService.approveFinishedMigration();
+
                 this.$router.push({
                     name: 'swag.migration.index.main',
                     query: {
                         forceFullStateReload: true, // also resets data selection for next run
                     },
                 });
-            } catch (e) {
+            } catch {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.approveFinishedMigration'),
                 });
+
                 this.$router.push({
                     name: 'swag.migration.index.main',
                     query: {
@@ -285,7 +308,7 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
                     },
                 });
             } finally {
-                Store.get('swagMigration').setIsLoading(false);
+                this.migrationStore.setIsLoading(false);
             }
         },
 
@@ -300,17 +323,19 @@ Component.extend('swag-migration-process-screen', 'swag-migration-base', {
         async onAbort() {
             try {
                 this.showAbortMigrationConfirmDialog = false;
-                Store.get('swagMigration').setIsLoading(true);
+                this.migrationStore.setIsLoading(true);
+
                 await this.migrationApiService.abortMigration();
+
                 const state = await this.migrationApiService.getState();
                 this.visualizeMigrationState(state);
-            } catch (error) {
+            } catch {
                 this.createNotificationError({
                     title: this.$tc('global.default.error'),
                     message: this.$tc('swag-migration.api-error.abortMigration'),
                 });
             } finally {
-                Store.get('swagMigration').setIsLoading(false);
+                this.migrationStore.setIsLoading(false);
             }
         },
 

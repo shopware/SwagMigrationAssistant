@@ -13,7 +13,7 @@ export interface SwagMigrationBaseData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-base', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [

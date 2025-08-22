@@ -1,13 +1,11 @@
 import template from './swag-migration-loading-screen.html.twig';
 import './swag-migration-loading-screen.scss';
 
-const { Component } = Shopware;
-
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-loading-screen', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     props: {

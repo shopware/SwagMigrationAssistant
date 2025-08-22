@@ -1,5 +1,6 @@
 import type { AxiosInstance, AxiosResponse, AxiosRequestConfig } from 'axios';
 import type { LoginService } from '@administration/src/core/service/login.service';
+import type { ApiResponse } from '@administration/src/core/service/api.service';
 import type {
     MigrationDataSelection,
     MigrationEnvironmentInformation,
@@ -8,6 +9,7 @@ import type {
     MigrationState,
     MigrationPremapping,
     MigrationCredentials,
+    MigrationError,
 } from '../../../type/types';
 
 type AdditionalHeaders = Record<string, string>;
@@ -52,7 +54,7 @@ export default class MigrationApiService extends ApiService {
         connectionId: string,
         credentialFields: Record<string, MigrationCredentials>,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<unknown> {
+    ): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -142,7 +144,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async writePremapping(premapping: MigrationPremapping[]): Promise<unknown> {
+    async writePremapping(premapping: MigrationPremapping[]): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -162,7 +164,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async startMigration(dataSelectionNames: string[]): Promise<unknown> {
+    async startMigration(dataSelectionNames: string[]): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -202,7 +204,7 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async approveFinishedMigration(): Promise<unknown> {
+    async approveFinishedMigration(): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -222,7 +224,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async abortMigration(): Promise<unknown> {
+    async abortMigration(): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -306,13 +308,7 @@ export default class MigrationApiService extends ApiService {
     async getGroupedLogsOfRun(runUuid: string): Promise<{
         total: number;
         downloadUrl: string;
-        item: {
-            code: string;
-            count: number;
-            titleSnippet: string;
-            entity: string;
-            level: string;
-        }[];
+        items: MigrationError[];
     }> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
@@ -334,7 +330,7 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async clearDataOfRun(runUuid: string): Promise<unknown> {
+    async clearDataOfRun(runUuid: string): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -356,7 +352,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async resetChecksums(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<unknown> {
+    async resetChecksums(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -378,7 +374,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async cleanupMigrationData(additionalHeaders: AdditionalHeaders = {}): Promise<unknown> {
+    async cleanupMigrationData(additionalHeaders: AdditionalHeaders = {}): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 

@@ -4,7 +4,7 @@ import template from './swag-migration-profile-shopware-api-page-information.htm
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-profile-shopware-api-page-information', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     computed: {
@@ -12,11 +12,11 @@ Shopware.Component.register('swag-migration-profile-shopware-api-page-informatio
             return Shopware.Filter.getByName('asset');
         },
 
-        storeLink(): string {
+        storeLink() {
             return `https://store.shopware.com/${this.storeLinkISO}/swag226607479310f/migration-connector.html`;
         },
 
-        storeLinkISO(): string {
+        storeLinkISO() {
             const iso = this.locale.split('-')[0];
 
             if (
@@ -31,8 +31,8 @@ Shopware.Component.register('swag-migration-profile-shopware-api-page-informatio
             return 'en';
         },
 
-        locale(): string {
-            return Shopware.Store.get('session')?.currentLocale ?? '';
+        locale() {
+            return (Shopware.Store.get('session')?.currentLocale as string) ?? '';
         },
     },
 });

@@ -14,7 +14,7 @@ export interface SwagMigrationDataSelectorData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-data-selector', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     data(): SwagMigrationDataSelectorData {
@@ -65,7 +65,7 @@ Shopware.Component.register('swag-migration-data-selector', {
             this.migrationStore.setDataSelectionIds(selectionIds);
         },
 
-        showHelptext(entityTotals: number[]): boolean {
+        showHelptext(entityTotals: number[]) {
             return entityTotals !== undefined && Object.keys(entityTotals).length > 1;
         },
 

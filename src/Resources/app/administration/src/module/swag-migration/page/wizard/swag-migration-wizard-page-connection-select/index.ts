@@ -1,13 +1,19 @@
 import template from './swag-migration-wizard-page-connection-select.html.twig';
+import type { MigrationConnection, TRepository } from '../../../../../type/types';
 
-const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
+
+export interface SwagMigrationWizardPageConnectionSelectData {
+    selectedConnectionId?: string;
+    connections: MigrationConnection[];
+    context: unknown;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-wizard-page-connection-select', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -26,10 +32,10 @@ Component.register('swag-migration-wizard-page-connection-select', {
         },
     },
 
-    data() {
+    data(): SwagMigrationWizardPageConnectionSelectData {
         return {
             selectedConnectionId: null,
-            connections: [],
+            connections: [] as MigrationConnection[],
             context: Shopware.Context.api,
         };
     },
@@ -41,7 +47,7 @@ Component.register('swag-migration-wizard-page-connection-select', {
     },
 
     computed: {
-        migrationConnectionRepository() {
+        migrationConnectionRepository(): TRepository<'swag_migration_connection'> {
             return this.repositoryFactory.create('swag_migration_connection');
         },
     },
@@ -49,7 +55,7 @@ Component.register('swag-migration-wizard-page-connection-select', {
     watch: {
         currentConnectionId: {
             immediate: true,
-            handler(newConnectionId) {
+            handler(newConnectionId: string) {
                 this.selectedConnectionId = newConnectionId;
                 this.onConnectionSelected();
             },

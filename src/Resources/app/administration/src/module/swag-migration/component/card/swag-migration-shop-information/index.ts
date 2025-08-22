@@ -32,7 +32,7 @@ export interface SwagMigrationShopInformationData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-shop-information', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -84,9 +84,7 @@ Shopware.Component.register('swag-migration-shop-information', {
         ),
 
         displayEnvironmentInformation() {
-            return this.environmentInformation === null
-                ? {}
-                : this.environmentInformation;
+            return this.environmentInformation === null ? {} : this.environmentInformation;
         },
 
         migrationRunRepository(): TRepository<'swag_migration_run'> {
@@ -159,7 +157,7 @@ Shopware.Component.register('swag-migration-shop-information', {
             return this.connection === null || this.connection.profile === undefined
                 ? ''
                 : // eslint-disable-next-line max-len
-                `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
+                  `${this.connection.profile.sourceSystemName} ${this.connection.profile.version} - ${this.connection.profile.author}`;
         },
 
         profileIcon() {

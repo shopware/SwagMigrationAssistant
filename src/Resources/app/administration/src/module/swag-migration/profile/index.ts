@@ -1,22 +1,10 @@
-export const MODULE_COUNT = 17;
-
-// @ts-expect-error
-const rawModules = import.meta.glob<unknown>('./[a-z0-9-]*/[a-z0-9-]*/[a-z0-9-]*/index.{js,ts}', {
-    eager: true,
-});
-
-const modules: { path: string; content: unknown }[] = Object.entries(rawModules).map(
-    ([
-        path,
-        content,
-    ]) => ({
-        path: path.replace(/^\.\//, ''),
-        content,
-    }),
-);
-
-if (modules.length !== MODULE_COUNT) {
-    console.error(`[swag-migration-assistant]: Expected ${MODULE_COUNT} modules, but found ${modules.length}.`);
-}
-
-export default modules;
+/**
+ * @package after-sales
+ * @private
+ */
+import './shopware';
+import './shopware6';
+import './shopware54';
+import './shopware55';
+import './shopware56';
+import './shopware57';

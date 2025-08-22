@@ -1,13 +1,11 @@
 import template from './swag-migration-expand-div.html.twig';
 import './swag-migration-expand-div.scss';
 
-const { Component } = Shopware;
-
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-expand-div', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     props: {
@@ -16,7 +14,6 @@ Component.register('swag-migration-expand-div', {
             default: '',
             required: false,
         },
-
         collapseTitle: {
             type: String,
             default: '',

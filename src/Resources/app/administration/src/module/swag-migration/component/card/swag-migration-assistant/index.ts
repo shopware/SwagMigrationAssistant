@@ -5,12 +5,12 @@ import './swag-migration-assistant.scss';
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-assistant', {
+export default Shopware.Component.wrapComponentConfig({
+    template,
+
     computed: {
         assetFilter() {
             return Shopware.Filter.getByName('asset');
         },
     },
-
-    template,
 });

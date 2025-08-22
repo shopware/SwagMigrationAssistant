@@ -1,14 +1,28 @@
 import template from './swag-migration-history-detail.html.twig';
 import './swag-migration-history-detail.scss';
+import type { TEntity, TRepository } from '../../../../type/types';
 
-const { Component } = Shopware;
 const { Criteria } = Shopware.Data;
+
+export interface SwagMigrationHistoryDetailData {
+    runId: string;
+    migrationRun?: TEntity<'swag_migration_run'>;
+    showModal: boolean;
+    isLoading: boolean;
+    migrationDateOptions: {
+        hour: string;
+        minute: string;
+        second: string;
+    };
+    currentTab: string;
+    context: unknown;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-history-detail', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -16,10 +30,10 @@ Component.register('swag-migration-history-detail', {
         'repositoryFactory',
     ],
 
-    data() {
+    data(): SwagMigrationHistoryDetailData {
         return {
             runId: '',
-            migrationRun: {},
+            migrationRun: {} as TEntity<'swag_migration_run'>,
             showModal: true,
             isLoading: true,
             migrationDateOptions: {
@@ -39,25 +53,21 @@ Component.register('swag-migration-history-detail', {
     },
 
     computed: {
-        migrationRunRepository() {
+        migrationRunRepository(): TRepository<'swag_migration_run'> {
             return this.repositoryFactory.create('swag_migration_run');
         },
 
         shopFirstLetter() {
-            return this.migrationRun.environmentInformation.sourceSystemName === undefined
+            return this.migrationRun.environmentInformation?.sourceSystemName === undefined
                 ? 'S'
-                : this.migrationRun.environmentInformation.sourceSystemName[0];
+                : this.migrationRun.environmentInformation.sourceSystemName.charAt(0);
         },
 
-        profileIcon() {
-            return this.migrationRun.connection === null ||
-                this.migrationRun.connection.profile === undefined ||
-                this.migrationRun.connection.profile.icon === undefined
-                ? null
-                : this.migrationRun.connection.profile.icon;
+        profileIcon(): ?string {
+            return this.migrationRun.connection?.profile?.icon ?? null;
         },
 
-        connectionName() {
+        connectionName(): string {
             return this.migrationRun.connection === null ? '' : this.migrationRun.connection.name;
         },
 
@@ -73,6 +83,7 @@ Component.register('swag-migration-history-detail', {
             }
 
             const match = this.migrationRun.environmentInformation.sourceSystemDomain.match(/^\s*https?:\/\//);
+
             if (match === null) {
                 return '';
             }
@@ -88,11 +99,11 @@ Component.register('swag-migration-history-detail', {
             return this.sslActive ? 'swag-migration-shop-information__shop-domain-prefix--is-ssl' : '';
         },
 
-        profileName() {
+        profileName(): string {
             return this.migrationRun.connection === null ? '' : this.migrationRun.connection.profileName;
         },
 
-        gatewayName() {
+        gatewayName(): string {
             return this.migrationRun.connection === null ? '' : this.migrationRun.connection.gatewayName;
         },
 
@@ -167,7 +178,7 @@ Component.register('swag-migration-history-detail', {
             });
         },
 
-        newActiveTabItem(item) {
+        newActiveTabItem(item: { name: string }) {
             this.currentTab = item.name;
         },
     },

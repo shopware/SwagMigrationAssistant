@@ -1,13 +1,25 @@
 import template from './swag-migration-history-detail-errors.html.twig';
 import './swag-migration-history-detail-errors.scss';
+import type { MigrationError, TEntity } from '../../../../type/types';
 
-const { Component, Mixin } = Shopware;
+const { Mixin } = Shopware;
+
+export interface SwagMigrationHistoryDetailErrorsData {
+    isLoading: boolean;
+    allMigrationErrors?: MigrationError[];
+    migrationErrors: MigrationError[];
+    sortBy: string;
+    sortDirection: string;
+    disableRouteParams: boolean;
+    limit: number;
+    downloadUrl: string;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-history-detail-errors', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -20,16 +32,16 @@ Component.register('swag-migration-history-detail-errors', {
 
     props: {
         migrationRun: {
-            type: Object,
+            type: Object as PropType<TEntity<'swag_migration_run'>>,
             required: true,
         },
     },
 
-    data() {
+    data(): SwagMigrationHistoryDetailErrorsData {
         return {
             isLoading: true,
-            allMigrationErrors: null,
-            migrationErrors: [],
+            allMigrationErrors: null as MigrationError[] | null,
+            migrationErrors: [] as MigrationError[],
             sortBy: 'level',
             sortDirection: 'DESC',
             disableRouteParams: true,
@@ -89,6 +101,7 @@ Component.register('swag-migration-history-detail-errors', {
             const startIndex = (params.page - 1) * this.limit;
             const endIndex = Math.min((params.page - 1) * this.limit + this.limit, this.allMigrationErrors.length);
             this.migrationErrors = [];
+
             for (let i = startIndex; i < endIndex; i += 1) {
                 this.migrationErrors.push(this.allMigrationErrors[i]);
             }
@@ -97,19 +110,21 @@ Component.register('swag-migration-history-detail-errors', {
             return this.migrationErrors;
         },
 
-        loadAllMigrationErrors() {
+        loadAllMigrationErrors(): Promise<MigrationError[]> {
             return this.migrationApiService.getGroupedLogsOfRun(this.migrationRun.id).then((response) => {
                 this.total = response.total;
                 this.allMigrationErrors = response.items;
+
                 this.allMigrationErrors.forEach((item) => {
                     item.title = this.$tc(this.getErrorTitleSnippet(item), { entity: item.entity }, 0);
                 });
+
                 this.downloadUrl = response.downloadUrl;
                 return this.allMigrationErrors;
             });
         },
 
-        applySorting(params) {
+        applySorting(params: { page: number; sortBy: string; sortDirection: string }) {
             this.allMigrationErrors.sort((first, second) => {
                 if (params.sortDirection === 'ASC') {
                     if (first[params.sortBy] < second[params.sortBy]) {
@@ -127,8 +142,9 @@ Component.register('swag-migration-history-detail-errors', {
             });
         },
 
-        getErrorTitleSnippet(item) {
+        getErrorTitleSnippet(item: MigrationError) {
             const snippetKey = item.titleSnippet;
+
             if (this.$te(snippetKey)) {
                 return snippetKey;
             }

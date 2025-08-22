@@ -1,13 +1,32 @@
 import template from './swag-migration-history-detail-data.html.twig';
 import './swag-migration-history-detail-data.scss';
+import type { TEntity } from '../../../../type/types';
 
-const { Component, Mixin } = Shopware;
+const { Mixin } = Shopware;
+
+type EntityGroup = {
+    id: string;
+    name: string;
+    total?: number;
+};
+
+export interface SwagMigrationHistoryDetailData {
+    isLoading: boolean;
+    allMigrationData: EntityGroup[];
+    migrationData: EntityGroup[];
+    sortBy: string;
+    sortDirection: string;
+    disableRouteParams: boolean;
+    limit: number;
+    total?: number;
+    page?: number;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-history-detail-data', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     mixins: [
@@ -16,12 +35,12 @@ Component.register('swag-migration-history-detail-data', {
 
     props: {
         migrationRun: {
-            type: Object,
+            type: Object as PropType<TEntity<'swag_migration_run'>>,
             required: true,
         },
     },
 
-    data() {
+    data(): SwagMigrationHistoryDetailData {
         return {
             isLoading: true,
             allMigrationData: [],
@@ -58,20 +77,21 @@ Component.register('swag-migration-history-detail-data', {
             ];
         },
 
-        entityGroups() {
+        entityGroups(): EntityGroup[] {
             if (!this.migrationRun.progress) {
                 return [];
             }
 
             return this.migrationRun.progress.dataSets.map((entitySelection) => {
-                let name = entitySelection.entityName;
+                let name: string = entitySelection.entityName;
+
                 if (this.$te(`swag-migration.index.selectDataCard.entities.${name}`)) {
                     name = this.$tc(`swag-migration.index.selectDataCard.entities.${name}`);
                 }
 
                 return {
-                    id: entitySelection.entityName,
                     name,
+                    id: entitySelection.entityName as string,
                     total: entitySelection.total,
                 };
             });

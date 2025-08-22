@@ -1,13 +1,11 @@
 import template from './swag-migration-dashboard-card.html.twig';
 import './swag-migration-dashboard-card.scss';
 
-const { Component } = Shopware;
-
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-dashboard-card', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     computed: {

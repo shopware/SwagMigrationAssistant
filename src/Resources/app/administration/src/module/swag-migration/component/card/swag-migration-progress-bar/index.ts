@@ -5,7 +5,7 @@ import './swag-migration-progress-bar.scss';
  * @private
  * @sw-package fundamentals@after-sales
  */
-Shopware.Component.register('swag-migration-progress-bar', {
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     props: {
