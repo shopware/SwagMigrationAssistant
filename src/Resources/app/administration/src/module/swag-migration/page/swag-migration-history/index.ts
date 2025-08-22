@@ -39,7 +39,7 @@ export interface SwagMigrationHistoryData {
  * @private
  * @sw-package fundamentals@after-sales
  */
-export default Shopware.Component.register({
+export default Shopware.Component.wrapComponentConfig({
     template,
 
     inject: [
@@ -103,15 +103,7 @@ export default Shopware.Component.register({
     },
 
     methods: {
-        getMigrationColumns(): Array<{
-            property: string;
-            dataIndex: string;
-            label: string;
-            primary?: boolean;
-            visible?: boolean;
-            allowResize?: boolean;
-            align?: string;
-        }> {
+        getMigrationColumns() {
             return [
                 {
                     property: 'connection.name',

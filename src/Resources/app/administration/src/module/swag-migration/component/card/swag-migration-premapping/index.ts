@@ -66,14 +66,11 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const filledOut = this.premapping.every((group: MigrationPremapping) =>
-                group.mapping.every(
-                    (mapping) =>
-                        mapping.destinationUuid !== null &&
+            const filledOut = this.premapping.every((group: MigrationPremapping) => group.mapping.every(
+                (mapping) => mapping.destinationUuid !== null &&
                         mapping.destinationUuid !== undefined &&
                         mapping.destinationUuid !== '',
-                ),
-            );
+            ));
 
             if (!filledOut) {
                 return;

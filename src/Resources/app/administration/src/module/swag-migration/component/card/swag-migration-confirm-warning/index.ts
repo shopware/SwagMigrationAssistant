@@ -35,11 +35,11 @@ export default Shopware.Component.wrapComponentConfig({
             return this.sourceSystemCurrency !== this.targetSystemCurrency;
         },
 
-        sourceSystemCurrency(): ?string {
+        sourceSystemCurrency(): string {
             return this.environmentInformation.sourceSystemCurrency;
         },
 
-        targetSystemCurrency(): ?string {
+        targetSystemCurrency(): string {
             return this.environmentInformation.targetSystemCurrency;
         },
 

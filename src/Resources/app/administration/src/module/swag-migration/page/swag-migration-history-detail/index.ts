@@ -63,7 +63,7 @@ export default Shopware.Component.wrapComponentConfig({
                 : this.migrationRun.environmentInformation.sourceSystemName.charAt(0);
         },
 
-        profileIcon(): ?string {
+        profileIcon(): string | null {
             return this.migrationRun.connection?.profile?.icon ?? null;
         },
 
