@@ -2,7 +2,6 @@
  * @sw-package fundamentals@after-sales
  * @private
  */
-
 import './swag-migration-shop-information';
 import './swag-migration-premapping';
 import './swag-migration-progress-bar';

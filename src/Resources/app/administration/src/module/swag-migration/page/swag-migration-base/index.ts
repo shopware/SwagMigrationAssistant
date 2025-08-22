@@ -16,10 +16,9 @@ export interface SwagMigrationBaseData {
 Shopware.Component.register('swag-migration-base', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-    },
+    inject: [
+        'migrationApiService',
+    ],
 
     data(): SwagMigrationBaseData {
         return {

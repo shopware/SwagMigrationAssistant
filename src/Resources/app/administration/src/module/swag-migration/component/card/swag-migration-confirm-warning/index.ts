@@ -1,17 +1,22 @@
 import template from './swag-migration-confirm-warning.html.twig';
 import './swag-migration-confirm-warning.scss';
 
-const { Component, Store } = Shopware;
+const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
+
+export interface SwagMigrationConfirmWarningData {
+    isCurrencyChecked: boolean;
+    isLanguageChecked: boolean;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-confirm-warning', {
+Shopware.Component.register('swag-migration-confirm-warning', {
     template,
 
-    data() {
+    data(): SwagMigrationConfirmWarningData {
         return {
             isCurrencyChecked: false,
             isLanguageChecked: false,

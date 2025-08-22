@@ -10,9 +10,9 @@ const { Criteria } = Shopware.Data;
 Component.register('swag-migration-wizard-page-connection-select', {
     template,
 
-    inject: {
-        repositoryFactory: 'repositoryFactory',
-    },
+    inject: [
+        'repositoryFactory',
+    ],
 
     emits: [
         'onChildRouteReadyChanged',

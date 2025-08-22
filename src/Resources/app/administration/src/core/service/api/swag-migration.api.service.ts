@@ -122,7 +122,7 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async generateMigration(dataSelectionIds: string[]): Promise<MigrationPremapping> {
+    async generatePremapping(dataSelectionIds: string[]): Promise<MigrationPremapping[]> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 

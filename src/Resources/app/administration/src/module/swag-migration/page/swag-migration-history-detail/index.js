@@ -11,11 +11,10 @@ const { Criteria } = Shopware.Data;
 Component.register('swag-migration-history-detail', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-        repositoryFactory: 'repositoryFactory',
-    },
+    inject: [
+        'migrationApiService',
+        'repositoryFactory',
+    ],
 
     data() {
         return {

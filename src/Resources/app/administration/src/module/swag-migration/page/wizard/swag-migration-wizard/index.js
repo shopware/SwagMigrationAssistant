@@ -23,11 +23,10 @@ const CONNECTION_NAME_ERRORS = Object.freeze({
 Component.register('swag-migration-wizard', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-        repositoryFactory: 'repositoryFactory',
-    },
+    inject: [
+        'migrationApiService',
+        'repositoryFactory',
+    ],
 
     mixins: [
         Mixin.getByName('swag-wizard'),

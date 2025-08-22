@@ -42,11 +42,10 @@ export interface SwagMigrationHistoryData {
 Component.register('swag-migration-history', {
     template,
 
-    inject: {
-        repositoryFactory: 'repositoryFactory',
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-    },
+    inject: [
+        'repositoryFactory',
+        'migrationApiService',
+    ],
 
     mixins: [
         Mixin.getByName('listing'),

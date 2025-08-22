@@ -32,6 +32,8 @@ type MigrationProfile = {
     sourceSystemName: string;
     version: string;
     author: string;
+    profile: string;
+    gateway: string;
     icon?: string;
 };
 
@@ -46,6 +48,7 @@ type MigrationEnvironmentInformation = {
     sourceSystemLocale?: string;
     sourceSystemDomain?: string;
     sourceSystemCurrency?: string;
+    targetSystemLocale?: string;
     displayWarnings?: {
         snippetKey: string;
         snippetArguments: string[];
@@ -95,6 +98,11 @@ type MigrationCredentials = {
     apiPassword?: string;
 };
 
+type MigrationConnection = {
+    profile?: MigrationProfile;
+    gateway?: MigrationGateway;
+};
+
 /**
  * @private
  */
@@ -104,6 +112,7 @@ export {
     MigrationState,
     MigrationProfile,
     MigrationGateway,
+    MigrationConnection,
     MigrationDataSelection,
     MigrationPremapping,
     MigrationPremappingEntity,

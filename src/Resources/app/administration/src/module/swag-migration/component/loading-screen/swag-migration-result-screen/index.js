@@ -11,9 +11,9 @@ const { Criteria } = Shopware.Data;
 Component.register('swag-migration-result-screen', {
     template,
 
-    inject: {
-        repositoryFactory: 'repositoryFactory',
-    },
+    inject: [
+        'repositoryFactory',
+    ],
 
     data() {
         return {

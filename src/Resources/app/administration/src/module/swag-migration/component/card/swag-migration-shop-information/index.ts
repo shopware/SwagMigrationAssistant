@@ -1,37 +1,54 @@
 import template from './swag-migration-shop-information.html.twig';
 import './swag-migration-shop-information.scss';
+import type {
+    MigrationConnection,
+    MigrationProfile,
+    TEntity,
+    TEntityCollection,
+    TRepository,
+} from '../../../../../type/types';
 
-const { Component, Mixin, Store } = Shopware;
+const { Mixin, Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
 
-const BADGE_TYPE = Object.freeze({
+const BADGE_TYPE = {
     SUCCESS: 'success',
     DANGER: 'danger',
-});
+} as const;
+
+export interface SwagMigrationShopInformationData {
+    confirmModalIsLoading: boolean;
+    showRemoveCredentialsConfirmModal: boolean;
+    showResetChecksumsConfirmModal: boolean;
+    showResetMigrationConfirmModal: boolean;
+    lastMigrationDate: string;
+    connection?: MigrationConnection;
+    context: unknown;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-shop-information', {
+Shopware.Component.register('swag-migration-shop-information', {
     template,
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-        repositoryFactory: 'repositoryFactory',
-    },
+
+    inject: [
+        'migrationApiService',
+        'repositoryFactory',
+    ],
 
     mixins: [
         Mixin.getByName('notification'),
     ],
 
     filters: {
-        localizedNumberFormat(value) {
+        localizedNumberFormat(value: number): string {
             const locale = `${this.adminLocaleLanguage}-${this.adminLocaleRegion}`;
-            const formatter = new Intl.NumberFormat(locale);
-            return formatter.format(value);
+
+            return Intl.NumberFormat(locale).format(value);
         },
     },
 
@@ -42,7 +59,7 @@ Component.register('swag-migration-shop-information', {
         },
     },
 
-    data() {
+    data(): SwagMigrationShopInformationData {
         return {
             confirmModalIsLoading: false,
             showRemoveCredentialsConfirmModal: false,
@@ -67,20 +84,22 @@ Component.register('swag-migration-shop-information', {
         ),
 
         displayEnvironmentInformation() {
-            return this.environmentInformation === null ? {} : this.environmentInformation;
+            return this.environmentInformation === null
+                ? {}
+                : this.environmentInformation;
         },
 
-        migrationRunRepository() {
+        migrationRunRepository(): TRepository<'swag_migration_run'> {
             return this.repositoryFactory.create('swag_migration_run');
         },
 
-        migrationConnectionRepository() {
+        migrationConnectionRepository(): TRepository<'swag_migration_connection'> {
             return this.repositoryFactory.create('swag_migration_connection');
         },
 
         connectionName() {
             return this.connection !== null
-                ? this.connection.name
+                ? this.connection?.name
                 : this.$tc('swag-migration.index.shopInfoCard.noConnection');
         },
 
@@ -96,6 +115,7 @@ Component.register('swag-migration-shop-information', {
             }
 
             const match = this.displayEnvironmentInformation.sourceSystemDomain.match(/^\s*https?:\/\//);
+
             if (match === null) {
                 return '';
             }
@@ -132,9 +152,7 @@ Component.register('swag-migration-shop-information', {
         },
 
         shopFirstLetter() {
-            return this.displayEnvironmentInformation.sourceSystemName === undefined
-                ? 'S'
-                : this.displayEnvironmentInformation.sourceSystemName[0];
+            return this.displayEnvironmentInformation.sourceSystemName?.charAt(0) ?? 'S';
         },
 
         profile() {
@@ -215,39 +233,38 @@ Component.register('swag-migration-shop-information', {
             });
         },
 
-        updateLastMigrationDate() {
-            const criteria = new Criteria(1, 1);
-            criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
+        async updateLastMigrationDate() {
+            const criteria = new Criteria(1, 1).addSorting(Criteria.sort('createdAt', 'DESC'));
 
-            return this.migrationRunRepository.search(criteria, this.context).then((runs) => {
-                if (runs.length > 0) {
-                    this.lastMigrationDate = runs.first().createdAt;
-                } else {
-                    this.lastMigrationDate = '-';
-                }
-            });
+            return this.migrationRunRepository
+                .search(criteria, this.context)
+                .then((runs: TEntityCollection<'swag_migration_run'>) => {
+                    if (runs.length > 0) {
+                        this.lastMigrationDate = runs.first().createdAt;
+                    } else {
+                        this.lastMigrationDate = '-';
+                    }
+                });
         },
 
-        /**
-         * @param {string} connectionId
-         */
-        fetchConnection(connectionId) {
+        async fetchConnection(connectionId: string | null) {
             if (!connectionId) {
                 return Promise.resolve();
             }
 
             return this.migrationConnectionRepository
                 .get(connectionId, this.context)
-                .then((connection) => {
+                .then((connection: TEntity<'swag_migration_connection'>) => {
                     if (!connection) {
                         return Promise.resolve(null);
                     }
+
                     delete connection.credentialFields;
                     this.connection = connection;
 
                     return this.migrationApiService.getProfileInformation(connection.profileName, connection.gatewayName);
                 })
-                .then((profileInformation) => {
+                .then((profileInformation: MigrationProfile) => {
                     if (!profileInformation) {
                         return;
                     }
@@ -290,23 +307,26 @@ Component.register('swag-migration-shop-information', {
             });
         },
 
-        onClickRemoveConnectionCredentials() {
+        async onClickRemoveConnectionCredentials() {
             this.confirmModalIsLoading = true;
+
             return this.migrationApiService.updateConnectionCredentials(this.connectionId, {}).then(() => {
-                this.$router.go(); // Refresh the page
+                this.$router.go();
             });
         },
 
-        onClickResetChecksums() {
+        async onClickResetChecksums() {
             this.confirmModalIsLoading = true;
+
             return this.migrationApiService.resetChecksums(this.connectionId).then(() => {
                 this.showResetChecksumsConfirmModal = false;
                 this.confirmModalIsLoading = false;
             });
         },
 
-        onClickResetMigration() {
+        async onClickResetMigration() {
             this.confirmModalIsLoading = true;
+
             return this.migrationApiService
                 .cleanupMigrationData()
                 .then(() => {

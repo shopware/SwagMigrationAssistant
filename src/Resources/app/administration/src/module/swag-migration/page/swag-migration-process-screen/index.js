@@ -30,10 +30,9 @@ const UI_COMPONENT_INDEX = Object.freeze({
 Component.extend('swag-migration-process-screen', 'swag-migration-base', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-    },
+    inject: [
+        'migrationApiService',
+    ],
 
     mixins: [
         'notification',

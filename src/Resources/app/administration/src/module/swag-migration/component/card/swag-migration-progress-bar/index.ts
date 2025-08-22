@@ -1,13 +1,11 @@
 import template from './swag-migration-progress-bar.html.twig';
 import './swag-migration-progress-bar.scss';
 
-const { Component } = Shopware;
-
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-progress-bar', {
+Shopware.Component.register('swag-migration-progress-bar', {
     template,
 
     props: {

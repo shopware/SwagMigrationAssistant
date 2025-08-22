@@ -11,10 +11,9 @@ const ShopwareError = Shopware.Classes.ShopwareError;
 Component.register('swag-migration-wizard-page-connection-create', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-    },
+    inject: [
+        'migrationApiService',
+    ],
 
     emits: [
         'onIsLoadingChanged',

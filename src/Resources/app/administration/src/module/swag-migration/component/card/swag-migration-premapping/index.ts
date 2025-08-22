@@ -1,26 +1,29 @@
 import template from './swag-migration-premapping.html.twig';
 import './swag-migration-premapping.scss';
+import type { MigrationPremapping } from '../../../../../type/types';
 
-const { Component, Store } = Shopware;
+const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 const { debounce } = Shopware.Utils;
+
+export interface SwagMigrationPremappingData {
+    isLoading: boolean;
+}
 
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
-Component.register('swag-migration-premapping', {
+Shopware.Component.register('swag-migration-premapping', {
     template,
 
-    inject: {
-        /** @var {MigrationApiService} migrationApiService */
-        migrationApiService: 'migrationApiService',
-    },
+    inject: [
+        'migrationApiService',
+    ],
 
-    data() {
+    data(): SwagMigrationPremappingData {
         return {
             isLoading: false,
-            premappingInput: [],
         };
     },
 
@@ -46,11 +49,11 @@ Component.register('swag-migration-premapping', {
             Store.get('swagMigration').setIsLoading(true);
             this.isLoading = true;
 
-            return this.migrationApiService
+            this.migrationApiService
                 .generatePremapping(this.dataSelectionIds)
-                .then((premapping) => {
+                .then(async (premapping: MigrationPremapping[]) => {
                     Store.get('swagMigration').setPremapping(premapping);
-                    return this.savePremapping();
+                    await this.savePremapping();
                 })
                 .finally(() => {
                     Store.get('swagMigration').setIsLoading(false);
@@ -63,11 +66,14 @@ Component.register('swag-migration-premapping', {
                 return;
             }
 
-            const filledOut = this.premapping.every((group) => group.mapping.every(
-                (mapping) => mapping.destinationUuid !== null &&
+            const filledOut = this.premapping.every((group: MigrationPremapping) =>
+                group.mapping.every(
+                    (mapping) =>
+                        mapping.destinationUuid !== null &&
                         mapping.destinationUuid !== undefined &&
                         mapping.destinationUuid !== '',
-            ));
+                ),
+            );
 
             if (!filledOut) {
                 return;
@@ -76,8 +82,9 @@ Component.register('swag-migration-premapping', {
             await this.migrationApiService.writePremapping(this.premapping);
         },
 
-        onPremappingChanged() {
+        async onPremappingChanged() {
             Store.get('swagMigration').setIsLoading(true);
+
             debounce(async () => {
                 await this.savePremapping();
                 Store.get('swagMigration').setIsLoading(false);
