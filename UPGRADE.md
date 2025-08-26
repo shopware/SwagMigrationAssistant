@@ -58,6 +58,15 @@
         - `exceptionMessage` and `getExceptionMessage()`
         - `exceptionTrace` and `getExceptionTrace()`
 
+- [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: migration connection usage
+    - Changed signature of method `supports()` in `SwagMigrationAssistant\Migration\Gateway\GatewayInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistry` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - Changed signature of constructor method of `SwagMigrationAssistant\Migration\MigrationContext` to require `SwagMigrationConnectionEntity` and additional optional parameter of `ProfileInterface` with default value `null`
+    - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContextInterface`
+    - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContext`
+    - Added null checks to methods `getProfile()` and `getGateway()` in `SwagMigrationAssistant\Migration\MigrationContext` to ensure that a profile and gateway is set before usage
+
 # 14.0.0
 - [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.
 - [BREAKING] MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.

@@ -1,6 +1,7 @@
 # 16.0.0
 - [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) feat!: add migration logging required fields
 - [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) refactor!: add migration logging optional fields
+- [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: migration connection usage
 
 # 15.0.3
 - Fixed translations of error groups missing details like the entity
