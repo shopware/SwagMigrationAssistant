@@ -32,10 +32,11 @@ class PropertyGroupOptionReaderTest extends TestCase
         $this->propertyGroupOptionReader = new PropertyGroupOptionReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new PropertyGroupOptionDataSet(),
+            $this->runId,
             0,
             10
         );

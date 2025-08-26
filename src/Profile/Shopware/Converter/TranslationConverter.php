@@ -57,10 +57,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (!isset($data['locale'])) {
             $this->loggingService->addLogEntry( // TODO: add optional fields
@@ -850,12 +847,11 @@ abstract class TranslationConverter extends ShopwareConverter
      */
     protected function addAttribute(string $entityName, string $key, string $value, array &$translation, array &$objectData): void
     {
-        $connection = $this->migrationContext->getConnection();
-
-        if ($connection === null || $value === '') {
+        if ($value === '') {
             return;
         }
 
+        $connection = $this->migrationContext->getConnection();
         $connectionName = ConnectionNameSanitizer::sanitize($connection->getName());
 
         $isAttribute = \mb_strpos($key, '__attribute_');
@@ -909,7 +905,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         try {
             $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
-        } catch (\Throwable $error) {
+        } catch (\Throwable) {
             $objectData = null;
         }
 

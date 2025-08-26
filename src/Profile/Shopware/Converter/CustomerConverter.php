@@ -101,12 +101,8 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 

@@ -72,10 +72,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->oldIdentifier = $data['id'];
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(

@@ -87,8 +87,8 @@ class StatusController extends AbstractController
             return new Response();
         }
 
-        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+        $profile = $this->profileRegistry->getProfile($profileName);
+        $gateways = $this->gatewayRegistry->getGateways($profile);
 
         $currentGateway = null;
         foreach ($gateways as $gateway) {
@@ -151,8 +151,8 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('profileName');
         }
 
-        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+        $profile = $this->profileRegistry->getProfile($profileName);
+        $gateways = $this->gatewayRegistry->getGateways($profile);
 
         $gatewayNames = [];
         foreach ($gateways as $gateway) {

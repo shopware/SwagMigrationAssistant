@@ -83,7 +83,7 @@ class AbortingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
 
         $this->processor->process(
             $migrationContext,

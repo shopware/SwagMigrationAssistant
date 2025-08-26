@@ -81,12 +81,8 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         if (!isset($data['_locale'])) {
             $this->loggingService->addLogEntry( // TODO: add optional fields

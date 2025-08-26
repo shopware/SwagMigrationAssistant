@@ -57,10 +57,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $this->runId = $migrationContext->getRunUuid();
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);

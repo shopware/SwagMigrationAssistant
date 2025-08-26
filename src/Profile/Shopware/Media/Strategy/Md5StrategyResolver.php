@@ -24,12 +24,7 @@ class Md5StrategyResolver implements StrategyResolverInterface
 
     public function resolve(string $path, MigrationContextInterface $migrationContext): string
     {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return '';
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return '';

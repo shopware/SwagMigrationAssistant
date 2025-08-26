@@ -69,10 +69,11 @@ class ProductConverterTest extends TestCase
         $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $runId,
             0,
             250
         );

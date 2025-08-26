@@ -32,10 +32,11 @@ class ShippingMethodReaderTest extends TestCase
         $this->shippingMethodReader = new ShippingMethodReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ShippingMethodDataSet(),
+            $this->runId,
             0,
             10
         );

@@ -110,19 +110,21 @@ class OrderConverterTest extends TestCase
         $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new OrderDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->customerMigrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $runId,
             0,
             250
         );

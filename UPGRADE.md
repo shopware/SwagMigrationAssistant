@@ -1,3 +1,72 @@
+# 16.0.0
+
+- [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) - feat!: add migration logging required fields
+    - [BREAKING] Truncated database entries of `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754896654TruncateMigrationLogs`
+    - [BREAKING] Deleted columns `title`, `description`, `paramenters`,  `title_snippet`, `description_snippet`, `entity` and `source_id` from `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`
+    - [BREAKING] Removed fields `title`, `description`, `parameters`, `title_snippet`, `description_snippet`, `entity` and `source_id` from log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`
+    - [BREAKING] Removed properties `title`, `description`, `parameters`, `titleSnippet`, `descriptionSnippet`, `entity` and `sourceId` from log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`
+    - [BREAKING] Removed aggregations of `titleSnippet`, `entity` and `level` in `SwagMigrationAssistant\Migration\History\HistoryService`
+    - [BREAKING] Updated all log implementations in `SwagMigrationAssistant\Migration\Logging\Log\*` and `SwagMigrationAssistant\Profile\**\Logging\*`:
+        - deleted methods `getTitle()`, `getTitleSnippet()`, `getDescription()`, `getDescriptionSnippet()`, `getParameters()`, `getSourceId()`
+        - add method `isUserFixable()`
+    - Added columns `profile_name`, `gateway_name` and `user_fixable` to `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`
+    - Added fields `profile_name`, `gateway_name` and `user_fixable` to log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`
+    - Added properties `profileName`, `gatewayName` and `userFixable` to log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`
+
+- [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) - refactor!: add migration logging optional fields
+    - [BREAKING] Replaced `SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntity` with `SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry`
+    - [BREAKING] Replaced `SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface` with `SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry`
+    - [BREAKING] Updated all log implementations in `SwagMigrationAssistant\Migration\Logging\Log\*` and `SwagMigrationAssistant\Profile\**\Logging\*`:
+        - extend `SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry` instead of `SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntity`
+        - implement `SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry` instead of `SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface`
+        - mark class readonly
+    - [BREAKING] Renamed log classes to include `Log` suffix 
+        - `SwagMigrationAssistant\Migration\Logging\LogCannotConvertChildEntity`,
+        - `SwagMigrationAssistant\Migration\Logging\LogCannotConvertEntity`,
+        - `SwagMigrationAssistant\Migration\Logging\LogDocumentTypeNotSupported`,
+        - `SwagMigrationAssistant\Migration\Logging\LogInvalidUnserializedData`,
+        - `SwagMigrationAssistant\Migration\Logging\LogInvalidUnserializedData`,
+        - `SwagMigrationAssistant\Migration\Logging\LogRunAbortedAutomatically`
+        - `SwagMigrationAssistant\Migration\Logging\LogUnsupportedObjectType`
+    - [BREAKING] Change method `addLogEntry()` of `SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface` and implementation `LoggingService` to require `SwagMigrationLogEntry` as parameter instead of `LogEntryInterface`
+    - Created `SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder` to build log entries of type `SwagMigrationLogEntry`
+    - Added columns to `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`:
+        - `entity_name`
+        - `field_name`
+        - `field_source_path`
+        - `source_data`
+        - `converted_data`
+        - `used_mapping`
+        - `exception_message`
+        - `exception_trace`
+    - Added fields to `swag_migration_logging` to log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`:
+        - `entity_name`
+        - `field_name`
+        - `field_source_path`
+        - `source_data`
+        - `converted_data`
+        - `used_mapping`
+        - `exception_message`
+        - `exception_trace`
+    - Added properties and methods to log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`:
+        - `entityName` and `getEntityName()`
+        - `fieldName` and `getFieldName()`
+        - `fieldSourcePath` and `getFieldSourcePath()`
+        - `sourceData` and `getSourceData()`
+        - `convertedData` and `getConvertedData()`
+        - `usedMapping` and `getUsedMapping()`
+        - `exceptionMessage` and `getExceptionMessage()`
+        - `exceptionTrace` and `getExceptionTrace()`
+
+- [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: migration connection usage
+    - Changed signature of method `supports()` in `SwagMigrationAssistant\Migration\Gateway\GatewayInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistry` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
+    - Changed signature of constructor method of `SwagMigrationAssistant\Migration\MigrationContext` to require `SwagMigrationConnectionEntity` and additional optional parameter of `ProfileInterface` with default value `null`
+    - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContextInterface`
+    - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContext`
+    - Added null checks to methods `getProfile()` and `getGateway()` in `SwagMigrationAssistant\Migration\MigrationContext` to ensure that a profile and gateway is set before usage
+
 # 14.0.0
 - [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.
 - [BREAKING] MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.

@@ -90,10 +90,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (empty($data['id'])) {
             $this->loggingService->addLogEntry( // TODO: add optional fields

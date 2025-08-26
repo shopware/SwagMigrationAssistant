@@ -32,10 +32,11 @@ class OrderDocumentReaderTest extends TestCase
         $this->orderDocumentReader = new OrderDocumentReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new OrderDocumentDataSet(),
+            $this->runId,
             0,
             5
         );

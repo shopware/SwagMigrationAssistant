@@ -73,10 +73,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (!isset($data['group']['name'])) {
             $this->loggingService->addLogEntry( // TODO: add optional fields

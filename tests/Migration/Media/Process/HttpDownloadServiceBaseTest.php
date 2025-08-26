@@ -47,10 +47,11 @@ class HttpDownloadServiceBaseTest extends TestCase
         $this->runId = Uuid::randomHex();
         $this->loggingService = new DummyLoggingService();
         $this->migrationContext = new MigrationContext(
-            new Shopware6MajorProfile('6.6.0'),
             new SwagMigrationConnectionEntity(),
-            Uuid::randomHex(),
+            new Shopware6MajorProfile('6.6.0'),
             null,
+            null,
+            Uuid::randomHex(),
             0,
             100
         );

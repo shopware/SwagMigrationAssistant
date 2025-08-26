@@ -67,10 +67,11 @@ class PromotionConverterTest extends TestCase
         $connectionId = $connection->getId();
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new PromotionDataSet(),
+            $runId,
             0,
             250
         );

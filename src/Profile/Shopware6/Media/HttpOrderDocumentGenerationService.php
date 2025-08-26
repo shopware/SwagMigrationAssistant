@@ -71,13 +71,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $mappedWorkload = [];
         $documentIds = [];
         $runId = $migrationContext->getRunUuid();
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return $workload;
-        }
-
-        $this->connection = $connection;
+        $this->connection = $migrationContext->getConnection();
 
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;

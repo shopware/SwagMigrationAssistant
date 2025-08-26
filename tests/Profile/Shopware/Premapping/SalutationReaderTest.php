@@ -84,8 +84,9 @@ class SalutationReaderTest extends TestCase
         $gatewayRegistryMock->method('getGateway')->willReturn($gatewayMock);
 
         $this->migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
+            null
         );
 
         $this->reader = new SalutationReader($mock, $gatewayRegistryMock);

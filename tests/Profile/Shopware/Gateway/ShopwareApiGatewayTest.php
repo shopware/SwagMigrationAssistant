@@ -36,10 +36,11 @@ class ShopwareApiGatewayTest extends TestCase
     public function testReadFailed(): void
     {
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             new SwagMigrationConnectionEntity(),
-            '',
-            new FooDataSet()
+            new Shopware55Profile(),
+            null,
+            new FooDataSet(),
+            ''
         );
 
         $connectionFactory = new ConnectionFactory();
@@ -78,8 +79,8 @@ class ShopwareApiGatewayTest extends TestCase
             'apiKey' => 'testing',
         ]);
         $migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
         );
 
         $connectionFactory = new ConnectionFactory();
@@ -110,8 +111,8 @@ class ShopwareApiGatewayTest extends TestCase
         $connection->setCredentialFields(['endpoint' => 'foo']);
 
         $migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
         );
 
         $connectionFactory = new ConnectionFactory();
@@ -141,8 +142,8 @@ class ShopwareApiGatewayTest extends TestCase
         $connection->setCredentialFields(['endpoint' => 'foo']);
 
         $migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
         );
 
         $connectionFactory = new ConnectionFactory();

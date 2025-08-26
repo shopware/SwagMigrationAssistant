@@ -80,10 +80,11 @@ class CrossSellingConverterTest extends TestCase
         $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CrossSellingDataSet(),
+            $runId,
             0,
             250
         );

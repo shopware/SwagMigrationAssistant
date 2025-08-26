@@ -181,10 +181,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -209,10 +210,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -233,10 +235,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new TranslationDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -257,10 +260,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -281,10 +285,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -304,10 +309,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -327,10 +333,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new InvalidCustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );

@@ -96,10 +96,11 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new PropertyGroupOptionDataSet(),
+            $runId,
             0,
             250
         );

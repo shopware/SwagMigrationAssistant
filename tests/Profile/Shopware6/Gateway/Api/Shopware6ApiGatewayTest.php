@@ -354,10 +354,11 @@ class Shopware6ApiGatewayTest extends TestCase
         ]);
 
         return new MigrationContext(
-            $profile,
             $connection,
-            Uuid::randomHex(),
+            $profile,
             null,
+            null,
+            Uuid::randomHex(),
             0,
             100
         );

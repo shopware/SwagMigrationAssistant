@@ -129,9 +129,9 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $migrationContext,
                 $context
             );
-        } catch (\Throwable $exception) {
+        } catch (\Throwable) {
             // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
-            $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext, $context);
+            $this->writePerEntity($converted, $dataSet::getEntity(), $updateWrittenData, $migrationContext);
         } finally {
             // Update written-Flag of the entity in the data table
             $this->entityWriter->update(
@@ -196,7 +196,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         try {
             $currentWriter->writeData($newData, $this->writeContext);
         } catch (\Throwable) {
-            $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext, $context);
+            $this->writePerEntity($converted, $entityName, $updateWrittenData, $migrationContext);
         }
     }
 
@@ -228,7 +228,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         string $entityName,
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
-        Context $context,
     ): void {
         foreach ($converted as $dataId => $entity) {
             try {

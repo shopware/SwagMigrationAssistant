@@ -143,14 +143,13 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             $checksums[$converter->getSourceIdentifier($dataSet)] = \md5(\serialize($dataSet));
         }
 
-        $connection = $migrationContext->getConnection();
         $dataSet = $migrationContext->getDataSet();
 
-        if ($connection === null || $dataSet === null) {
+        if ($dataSet === null) {
             return new MappingDeltaResult();
         }
 
-        $connectionId = $connection->getId();
+        $connectionId = $migrationContext->getConnection()->getId();
         $entity = $dataSet::getEntity();
         $result = $this->mappingService->getMappings($connectionId, $entity, \array_keys($checksums), $context);
 

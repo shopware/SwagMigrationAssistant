@@ -29,13 +29,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
     public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
     {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return null;
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if (empty($credentials) || !isset($credentials['endpoint'])) {
             return null;

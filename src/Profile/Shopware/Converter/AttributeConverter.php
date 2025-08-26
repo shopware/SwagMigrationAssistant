@@ -39,12 +39,8 @@ abstract class AttributeConverter extends Converter
         $converted = [];
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

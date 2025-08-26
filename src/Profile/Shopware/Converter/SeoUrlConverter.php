@@ -44,10 +44,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $originalData = $data;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
