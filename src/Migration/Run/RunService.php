@@ -254,13 +254,17 @@ SQL;
         foreach ($salesChannels as $salesChannel) {
             try {
                 $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
-            } catch (\Throwable) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+            } catch (\Throwable $exception) {
+                $this->loggingService->addLogEntry(
                     (new SwagMigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
-                    ))->build(ThemeCompilingErrorRunLog::class)
+                    ))
+                        ->withExceptionMessage($exception->getMessage())
+                        ->withExceptionTrace($exception->getTrace())
+                        ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                        ->build(ThemeCompilingErrorRunLog::class)
                 );
             }
         }
