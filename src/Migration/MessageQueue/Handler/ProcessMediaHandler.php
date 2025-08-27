@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -84,18 +85,22 @@ final class ProcessMediaHandler
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
-        } catch (NoConnectionFoundException) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+        } catch (NoConnectionFoundException $exception) {
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(ProcessorNotFoundLog::class)
             );
 
             $this->loggingService->saveLogging($context);
         } catch (\Exception $e) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($e->getMessage())
                     ->withExceptionTrace($e->getTrace())
+                    ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(ExceptionRunLog::class)
             );
 

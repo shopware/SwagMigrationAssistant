@@ -17,6 +17,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\StreamInterface;
 use Shopware\Core\Content\Media\File\FileSaver;
 use Shopware\Core\Content\Media\File\MediaFile;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\Log\Package;
@@ -203,7 +204,7 @@ class HttpDownloadServiceBaseTest extends TestCase
                 'profileName' => '',
                 'gatewayName' => '',
                 'userFixable' => false,
-                'entityName' => null,
+                'entityName' => MediaDefinition::ENTITY_NAME,
                 'fieldName' => null,
                 'fieldSourcePath' => null,
                 'sourceData' => null,

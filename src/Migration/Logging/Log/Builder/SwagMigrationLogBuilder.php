@@ -128,7 +128,11 @@ class SwagMigrationLogBuilder
      */
     public function build(string $logClass): AbstractSwagMigrationLogEntry
     {
-        $log = new $logClass(
+        if (!class_exists($logClass) || !is_subclass_of($logClass, AbstractSwagMigrationLogEntry::class)) {
+            throw MigrationException::failedToCreateMigrationLog($logClass);
+        }
+
+        return new $logClass(
             $this->runId,
             $this->profileName,
             $this->gatewayName,
@@ -141,11 +145,5 @@ class SwagMigrationLogBuilder
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
-
-        if ($log instanceof AbstractSwagMigrationLogEntry) {
-            return $log;
-        }
-
-        throw MigrationException::failedToCreateMigrationLog($logClass);
     }
 }
