@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Shopware\Core\Content\Media\MediaDefinition;
-use Shopware\Core\Content\Media\MediaEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;

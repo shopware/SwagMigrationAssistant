@@ -109,7 +109,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($writerNotFoundException->getMessage())
                     ->withExceptionTrace($writerNotFoundException->getTrace())
-                    ->withConvertedData($converted)
+                    ->withConvertedData([$converted])
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
             );
