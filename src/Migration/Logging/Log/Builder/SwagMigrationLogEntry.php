@@ -31,24 +31,24 @@ interface SwagMigrationLogEntry
     public function getFieldSourcePath(): ?string;
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return array<mixed>|null
      */
     public function getSourceData(): ?array;
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return array<mixed>|null
      */
     public function getConvertedData(): ?array;
 
     /**
-     * @return array<string, mixed>|null
+     * @return array<mixed>|null
      */
     public function getUsedMapping(): ?array;
 
     public function getExceptionMessage(): ?string;
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return array<mixed>|null
      */
     public function getExceptionTrace(): ?array;
 }
