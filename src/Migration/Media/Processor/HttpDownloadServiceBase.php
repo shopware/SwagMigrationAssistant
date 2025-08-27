@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Migration\Media\Processor;
 
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\Utils;
 use Psr\Http\Message\ResponseInterface;
