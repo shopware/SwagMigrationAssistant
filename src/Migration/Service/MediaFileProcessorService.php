@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
@@ -44,8 +45,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             if ($currentDataSet === null) {
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
+                } catch (DataSetNotFoundException) {
+                    $this->logDataSetNotFoundException($migrationContext);
 
                     continue;
                 }
@@ -58,8 +59,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                     $messageMediaUuids = [];
                     $currentCount = 0;
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
+                } catch (DataSetNotFoundException) {
+                    $this->logDataSetNotFoundException($migrationContext);
 
                     continue;
                 }
@@ -128,26 +129,11 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $this->messageBus->dispatch($message);
     }
 
-    /**
-     * @param array<string, mixed> $mediaFile
-     */
-    private function logDataSetNotFoundException(
-        MigrationContextInterface $migrationContext,
-        array $mediaFile,
-    ): void {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return;
-        }
-
-        $this->loggingService->addLogEntry(
-            new DataSetNotFoundLog(
-                $migrationContext->getRunUuid(),
-                $mediaFile['entity'],
-                $mediaFile['id'],
-                $connection->getProfileName()
-            )
+    private function logDataSetNotFoundException(MigrationContextInterface $migrationContext): void
+    {
+        $this->loggingService->addLogEntry( // TODO: add optional fields
+            SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->build(DataSetNotFoundLog::class)
         );
     }
 }

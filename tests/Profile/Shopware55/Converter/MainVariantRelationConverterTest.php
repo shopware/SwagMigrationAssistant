@@ -62,10 +62,11 @@ class MainVariantRelationConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new MainVariantRelationDataSet(),
+            $runId,
             0,
             250
         );
@@ -142,17 +143,11 @@ class MainVariantRelationConverterTest extends TestCase
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
 
-        $parameters = [
-            'missingEntity' => 'product_container',
-            'requiredFor' => 'main_variant_relation',
-            'sourceId' => 'invalid-id',
-        ];
         $logs = $this->loggingService->getLoggingArray();
         static::assertNotNull($convertResult->getUnmapped());
         static::assertNull($converted);
         static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT_CONTAINER', $logs[0]['code']);
-        static::assertSame($parameters, $logs[0]['parameters']);
+        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
 
         $this->loggingService->resetLogging();
         $raw2['ordernumber'] = 'invalid-ordernumber';
@@ -160,16 +155,10 @@ class MainVariantRelationConverterTest extends TestCase
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
 
-        $parameters = [
-            'missingEntity' => 'product',
-            'requiredFor' => 'main_variant_relation',
-            'sourceId' => 'invalid-ordernumber',
-        ];
         $logs = $this->loggingService->getLoggingArray();
         static::assertNotNull($convertResult->getUnmapped());
         static::assertNull($converted);
         static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_PRODUCT', $logs[0]['code']);
-        static::assertSame($parameters, $logs[0]['parameters']);
+        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
     }
 }

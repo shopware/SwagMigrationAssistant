@@ -32,10 +32,11 @@ class CustomerAttributeReaderTest extends TestCase
         $this->customerAttributeReader = new CustomerAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new CustomerAttributeDataSet(),
+            $this->runId,
             0,
             10
         );
@@ -49,6 +50,9 @@ class CustomerAttributeReaderTest extends TestCase
 
         $data = $this->customerAttributeReader->read($this->migrationContext);
 
-        static::assertCount(0, $data);
+        static::assertCount(1, $data);
+        static::assertSame('userID', $data[0]['name']);
+        static::assertSame('integer', $data[0]['type']);
+        static::assertSame('de-DE', $data[0]['_locale']);
     }
 }

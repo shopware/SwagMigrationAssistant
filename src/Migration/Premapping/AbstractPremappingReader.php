@@ -20,12 +20,8 @@ abstract class AbstractPremappingReader implements PremappingReaderInterface
 
     protected function fillConnectionPremappingDictionary(MigrationContextInterface $migrationContext): void
     {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return;
-        }
+        $connectionMapping = $migrationContext->getConnection()->getPremapping();
 
-        $connectionMapping = $connection->getPremapping();
         if ($connectionMapping === null) {
             return;
         }

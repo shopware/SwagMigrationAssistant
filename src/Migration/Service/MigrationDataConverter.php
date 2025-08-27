@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
@@ -67,11 +68,13 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $migrationContext->getRunUuid(),
-                $dataSet::getEntity(),
-                $exception
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->build(ExceptionRunLog::class)
+            );
+
             $this->loggingService->saveLogging($context);
         }
     }
@@ -101,12 +104,12 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(new ExceptionRunLog(
-                    $runUuid,
-                    $dataSet::getEntity(),
-                    $exception,
-                    $item['id'] ?? null
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withExceptionMessage($exception->getMessage())
+                        ->withExceptionTrace($exception->getTrace())
+                        ->build(ExceptionRunLog::class)
+                );
 
                 $createData[] = [
                     'entity' => $dataSet::getEntity(),
@@ -140,14 +143,13 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             $checksums[$converter->getSourceIdentifier($dataSet)] = \md5(\serialize($dataSet));
         }
 
-        $connection = $migrationContext->getConnection();
         $dataSet = $migrationContext->getDataSet();
 
-        if ($connection === null || $dataSet === null) {
+        if ($dataSet === null) {
             return new MappingDeltaResult();
         }
 
-        $connectionId = $connection->getId();
+        $connectionId = $migrationContext->getConnection()->getId();
         $entity = $dataSet::getEntity();
         $result = $this->mappingService->getMappings($connectionId, $entity, \array_keys($checksums), $context);
 

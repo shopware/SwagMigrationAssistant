@@ -9,12 +9,12 @@ namespace SwagMigrationAssistant\Migration\Logging;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
 interface LoggingServiceInterface
 {
-    public function addLogEntry(LogEntryInterface $logEntry): void;
+    public function addLogEntry(SwagMigrationLogEntry $logEntry): void;
 
     public function saveLogging(Context $context): void;
 }

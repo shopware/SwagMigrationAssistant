@@ -122,10 +122,11 @@ class OrderReaderTest extends TestCase
     private function createMigrationContext(int $offset, int $limit): void
     {
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new OrderDataSet(),
+            $this->runId,
             $offset,
             $limit
         );

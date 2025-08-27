@@ -16,6 +16,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessHandler;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\MigrationProcessorRegistry;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MigrationProcessorInterface;
@@ -145,7 +146,10 @@ class MigrationProcessHandlerTest extends TestCase
             ->willReturn($this->createMock(MigrationProcessorInterface::class));
 
         $migrationContextFactory = $this->createMock(MigrationContextFactoryInterface::class);
-        $migrationContextFactory->method('create')->willReturn(new MigrationContext(new Shopware55Profile()));
+        $migrationContextFactory->method('create')->willReturn(new MigrationContext(
+            new SwagMigrationConnectionEntity(),
+            new Shopware55Profile()
+        ));
 
         $this->migrationProcessHandler = new MigrationProcessHandler(
             $repository,

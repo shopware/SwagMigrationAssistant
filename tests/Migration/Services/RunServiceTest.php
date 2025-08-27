@@ -123,8 +123,8 @@ class RunServiceTest extends TestCase
 
         $this->migrationContextFactory = $this->createMock(MigrationContextFactory::class);
         $this->migrationContextFactory->method('createByConnection')->willReturn(new MigrationContext(
-            new Shopware55Profile(),
             $connectionEntity,
+            new Shopware55Profile(),
         ));
 
         $this->dataFetcher = $this->createMock(MigrationDataFetcher::class);
@@ -224,7 +224,7 @@ class RunServiceTest extends TestCase
                     $generalSettingEntity,
                 ]),
             ],
-            new GeneralSettingDefinition()
+            new GeneralSettingDefinition(),
         );
 
         $runService = $this->createRunService(

@@ -8,18 +8,14 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class InvalidEmailAddressLog extends BaseRunLogEntry
+readonly class InvalidEmailAddressLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $entity,
-        string $sourceId,
-        private readonly string $email,
-    ) {
-        parent::__construct($runId, $entity, $sourceId);
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,34 +26,5 @@ class InvalidEmailAddressLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__INVALID_EMAIL_ADDRESS';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Invalid Email address';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, email: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'email' => $this->email,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            '%s with source id "%s" could not be converted because of invalid email address: %s.',
-            $args['entity'],
-            $args['sourceId'],
-            $args['email']
-        );
     }
 }

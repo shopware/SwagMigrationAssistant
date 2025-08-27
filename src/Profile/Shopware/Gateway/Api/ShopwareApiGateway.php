@@ -22,6 +22,7 @@ use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\ShopwareGatewayInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableCountReaderInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\TableReaderInterface;
@@ -56,9 +57,9 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         return 'swag-migration.wizard.pages.connectionCreate.gateways.shopwareApi';
     }
 
-    public function supports(MigrationContextInterface $migrationContext): bool
+    public function supports(ProfileInterface $profile): bool
     {
-        return $migrationContext->getProfile() instanceof ShopwareProfileInterface;
+        return $profile instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array
@@ -124,21 +125,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         $environmentDataArray['defaultShopLanguage'] = \str_replace('_', '-', $environmentDataArray['defaultShopLanguage']);
 
         $totals = $this->readTotals($migrationContext, $context);
-
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '',
-                [],
-                [],
-                null
-            );
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return new EnvironmentInformation(

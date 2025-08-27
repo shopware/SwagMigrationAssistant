@@ -8,20 +8,14 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class WriteExceptionRunLog extends BaseRunLogEntry
+readonly class WriteExceptionRunLog extends AbstractSwagMigrationLogEntry
 {
-    /**
-     * @param array<mixed> $error
-     */
-    public function __construct(
-        string $runId,
-        string $entity,
-        private readonly array $error,
-        ?string $dataId = null,
-    ) {
-        parent::__construct($runId, $entity, $dataId);
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -32,32 +26,5 @@ class WriteExceptionRunLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED';
-    }
-
-    public function getTitle(): string
-    {
-        return 'A write exception has occurred';
-    }
-
-    /**
-     * @return array{entity: ?string, dataId: ?string, error: array<mixed>, description: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'dataId' => $this->getSourceId(),
-            'error' => $this->error,
-            'description' => (string) \json_encode([
-                'entity' => $this->getEntity(),
-                'dataId' => $this->getSourceId(),
-                'error' => $this->error,
-            ], \JSON_PRETTY_PRINT),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        return $this->getParameters()['description'];
     }
 }

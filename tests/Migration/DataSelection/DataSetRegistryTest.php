@@ -47,10 +47,11 @@ class DataSetRegistryTest extends TestCase
     public function testSupports(): void
     {
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runId,
             0,
             250
         );
@@ -66,10 +67,11 @@ class DataSetRegistryTest extends TestCase
     public function testDataSetNotFound(): void
     {
         $migrationContext = new MigrationContext(
-            new DummyProfile(),
             $this->connection,
-            $this->runId,
+            new DummyProfile(),
+            null,
             new FooDataSet(),
+            $this->runId,
             0,
             250
         );

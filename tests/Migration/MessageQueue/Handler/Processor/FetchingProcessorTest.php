@@ -59,7 +59,7 @@ class FetchingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
 
         $dataConverter = $this->createMock(MigrationDataConverter::class);
         $dataConverter
@@ -106,7 +106,7 @@ class FetchingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
 
         $dataFetcher = $this->createMock(MigrationDataFetcher::class);
         $dataFetcher
@@ -159,7 +159,15 @@ class FetchingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, 'run-uuid', null, 0, 100);
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+            null,
+            null,
+            'run-uuid',
+            0,
+            100
+        );
 
         $dataConverter = $this->createMock(MigrationDataConverter::class);
         // Method "convert" expected to be called 10 times
@@ -219,7 +227,15 @@ class FetchingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, 'run-uuid', null, 0, 100);
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+            null,
+            null,
+            'run-uuid',
+            0,
+            100
+        );
 
         $dataConverter = $this->createMock(MigrationDataConverter::class);
         $dataFetcher = $this->createMock(MigrationDataFetcher::class);

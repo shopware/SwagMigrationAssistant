@@ -2,1025 +2,1230 @@ parameters:
 	ignoreErrors:
 		-
 			message: '#^Property SwagMigrationAssistant\\Migration\\Converter\\Converter\:\:\$mainMapping \(array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string\|null, additionalData\: array\<mixed\>\|null\}\|null\) does not accept array\{additionalData\: non\-empty\-array\<mixed\>\}\|array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string\|null, additionalData\: non\-empty\-array\<mixed\>\}\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/Migration/Converter/Converter.php
 
 		-
 			message: '#^Property SwagMigrationAssistant\\Migration\\Converter\\Converter\:\:\$mainMapping \(array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string\|null, additionalData\: array\<mixed\>\|null\}\|null\) does not accept array\{checksum\: string\}\|array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string, additionalData\: array\<mixed\>\|null\}\.$#'
+			identifier: assign.propertyType
 			count: 1
 			path: src/Migration/Converter/Converter.php
 
 		-
-			message: "#^swag_migration_data\\.run association has a configured autoload\\=\\=\\=true, this is forbidden for platform integrations$#"
+			message: '#^swag_migration_data\.run association has a configured autoload\=\=\=true, this is forbidden for platform integrations$#'
+			identifier: shopware.associationAutoload
 			count: 1
 			path: src/Migration/Data/SwagMigrationDataDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:extractBucketInformation\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\History\\HistoryService\:\:extractBucketInformation\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/History/HistoryService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryService\\:\\:getGroupedLogsOfRun\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\History\\HistoryService\:\:getGroupedLogsOfRun\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/History/HistoryService.php
 
 		-
-			message: "#^Provide more specific return type \"SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingCollection\" over abstract one$#"
+			message: '#^Provide more specific return type "SwagMigrationAssistant\\Migration\\Logging\\SwagMigrationLoggingCollection" over abstract one$#'
+			identifier: typePerfect.narrowReturnObjectType
 			count: 1
 			path: src/Migration/History/HistoryService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\History\\\\HistoryServiceInterface\\:\\:getGroupedLogsOfRun\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\History\\HistoryServiceInterface\:\:getGroupedLogsOfRun\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/History/HistoryServiceInterface.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Logging\\\\LoggingService\\:\\:\\$logging type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Logging\\LoggingService\:\:\$logging type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Logging/LoggingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity\\:\\:getParameters\\(\\) return type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity\\:\\:setParameters\\(\\) has parameter \\$parameters with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Logging\\\\SwagMigrationLoggingEntity\\:\\:\\$parameters type has no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Migration/Logging/SwagMigrationLoggingEntity.php
-
-		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingDeltaResult\\:\\:__construct\\(\\) has parameter \\$migrationData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingDeltaResult\:\:__construct\(\) has parameter \$migrationData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingDeltaResult.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingDeltaResult\\:\\:__construct\\(\\) has parameter \\$preloadIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingDeltaResult\:\:__construct\(\) has parameter \$preloadIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingDeltaResult.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingDeltaResult\\:\\:getMigrationData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingDeltaResult\:\:getMigrationData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingDeltaResult.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingDeltaResult\\:\\:getPreloadIds\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingDeltaResult\:\:getPreloadIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingDeltaResult.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:getMappings\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:getUuidsByEntity\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:getUuidsByEntity\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:preloadMappings\\(\\) has parameter \\$mappingIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:preloadMappings\(\) has parameter \$mappingIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:saveListMapping\\(\\) has parameter \\$mapping with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:saveListMapping\(\) has parameter \$mapping with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:saveMapping\\(\\) has parameter \\$mapping with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:saveMapping\(\) has parameter \$mapping with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:updateMapping\\(\\) has parameter \\$updateData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:updateMapping\(\) has parameter \$updateData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:updateMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:updateMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:\\$languageData type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:\$languageData type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:\\$locales type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:\$locales type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:\\$mappings type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:\$mappings type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:\\$migratedSalesChannels type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:\$migratedSalesChannels type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingService\\:\\:\\$writeArray type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Mapping\\MappingService\:\:\$writeArray type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingServiceInterface\:\:getMappings\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:getUuidsByEntity\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingServiceInterface\:\:getUuidsByEntity\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:preloadMappings\\(\\) has parameter \\$mappingIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingServiceInterface\:\:preloadMappings\(\) has parameter \$mappingIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:updateMapping\\(\\) has parameter \\$updateData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingServiceInterface\:\:updateMapping\(\) has parameter \$updateData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\MappingServiceInterface\\:\\:updateMapping\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingServiceInterface\:\:updateMapping\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Mapping/MappingServiceInterface.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Mapping\\\\SwagMigrationMappingCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
+			message: '#^Class SwagMigrationAssistant\\Migration\\Mapping\\SwagMigrationMappingCollection extends generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection but does not specify its types\: TElement$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Migration/Mapping/SwagMigrationMappingCollection.php
 
 		-
-			message: "#^Change \"defineFields\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
+			message: '#^Change "defineFields\(\)" method visibility to "protected" to respect parent method visibility\.$#'
+			identifier: symplify.parentMethodVisibilityOverride
 			count: 1
 			path: src/Migration/Mapping/SwagMigrationMappingDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:saveMediaFile\\(\\) has parameter \\$mediaFile with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaFileService\:\:saveMediaFile\(\) has parameter \$mediaFile with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:saveWrittenFlag\\(\\) has parameter \\$mediaUuids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaFileService\:\:saveWrittenFlag\(\) has parameter \$mediaUuids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:setWrittenFlag\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaFileService\:\:setWrittenFlag\(\) has parameter \$converted with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:\\$uuids type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Media\\MediaFileService\:\:\$uuids type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileService.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileService\\:\\:\\$writeArray type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Media\\MediaFileService\:\:\$writeArray type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileServiceInterface\\:\\:saveMediaFile\\(\\) has parameter \\$mediaFile with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaFileServiceInterface\:\:saveMediaFile\(\) has parameter \$mediaFile with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaFileServiceInterface\\:\\:setWrittenFlag\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaFileServiceInterface\:\:setWrittenFlag\(\) has parameter \$converted with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaFileServiceInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaProcessWorkloadStruct\\:\\:__construct\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaProcessWorkloadStruct\:\:__construct\(\) has parameter \$additionalData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaProcessWorkloadStruct.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaProcessWorkloadStruct\\:\\:getAdditionalData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaProcessWorkloadStruct\:\:getAdditionalData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaProcessWorkloadStruct.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaProcessWorkloadStruct\\:\\:setAdditionalData\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Media\\MediaProcessWorkloadStruct\:\:setAdditionalData\(\) has parameter \$additionalData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaProcessWorkloadStruct.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Media\\\\MediaProcessWorkloadStruct\\:\\:\\$additionalData type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Media\\MediaProcessWorkloadStruct\:\:\$additionalData type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Media/MediaProcessWorkloadStruct.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Media\\\\SwagMigrationMediaFileCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
+			message: '#^Class SwagMigrationAssistant\\Migration\\Media\\SwagMigrationMediaFileCollection extends generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection but does not specify its types\: TElement$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Migration/Media/SwagMigrationMediaFileCollection.php
 
 		-
-			message: "#^Change \"defineFields\\(\\)\" method visibility to \"protected\" to respect parent method visibility\\.$#"
+			message: '#^Change "defineFields\(\)" method visibility to "protected" to respect parent method visibility\.$#'
+			identifier: symplify.parentMethodVisibilityOverride
 			count: 1
 			path: src/Migration/Media/SwagMigrationMediaFileDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\MessageQueue\\\\OrderCountIndexer\\:\\:updateCustomer\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\MessageQueue\\OrderCountIndexer\:\:updateCustomer\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/MessageQueue/OrderCountIndexer.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\RunProgress\\:\\:setEntities\\(\\) has parameter \\$entities with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Run\\RunProgress\:\:setEntities\(\) has parameter \$entities with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/RunProgress.php
 
 		-
-			message: "#^swag_migration_run\\.connection association has a configured autoload\\=\\=\\=true, this is forbidden for platform integrations$#"
+			message: '#^swag_migration_run\.connection association has a configured autoload\=\=\=true, this is forbidden for platform integrations$#'
+			identifier: shopware.associationAutoload
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:getEnvironmentInformation\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Run\\SwagMigrationRunEntity\:\:getEnvironmentInformation\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:getTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Run\\SwagMigrationRunEntity\:\:getTotals\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:setEnvironmentInformation\\(\\) has parameter \\$environmentInformation with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Run\\SwagMigrationRunEntity\:\:setEnvironmentInformation\(\) has parameter \$environmentInformation with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:setTotals\\(\\) has parameter \\$totals with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Run\\SwagMigrationRunEntity\:\:setTotals\(\) has parameter \$totals with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:\\$environmentInformation type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Run\\SwagMigrationRunEntity\:\:\$environmentInformation type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Migration\\\\Run\\\\SwagMigrationRunEntity\\:\\:\\$totals type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Migration\\Run\\SwagMigrationRunEntity\:\:\$totals type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Run/SwagMigrationRunEntity.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverter\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Service\\MigrationDataConverter\:\:convert\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Service/MigrationDataConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverter\\:\\:convertData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Service\\MigrationDataConverter\:\:convertData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Service/MigrationDataConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverter\\:\\:convertData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Service\\MigrationDataConverter\:\:convertData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Service/MigrationDataConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverter\\:\\:filterDeltas\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Service\\MigrationDataConverter\:\:filterDeltas\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Service/MigrationDataConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Service\\\\MigrationDataConverterInterface\\:\\:convert\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Service\\MigrationDataConverterInterface\:\:convert\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Service/MigrationDataConverterInterface.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Migration\\\\Setting\\\\GeneralSettingCollection extends generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityCollection but does not specify its types\\: TElement$#"
+			message: '#^Class SwagMigrationAssistant\\Migration\\Setting\\GeneralSettingCollection extends generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityCollection but does not specify its types\: TElement$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Migration/Setting/GeneralSettingCollection.php
 
 		-
-			message: "#^swag_migration_general_setting\\.selectedConnection association has a configured autoload\\=\\=\\=true, this is forbidden for platform integrations$#"
+			message: '#^swag_migration_general_setting\.selectedConnection association has a configured autoload\=\=\=true, this is forbidden for platform integrations$#'
+			identifier: shopware.associationAutoload
 			count: 1
 			path: src/Migration/Setting/GeneralSettingDefinition.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\TranslationWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Writer\\TranslationWriter\:\:writeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Writer/TranslationWriter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\TranslationWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Writer\\TranslationWriter\:\:writeData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Writer/TranslationWriter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Writer\\WriterInterface\:\:writeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Writer/WriterInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Migration\\\\Writer\\\\WriterInterface\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Migration\\Writer\\WriterInterface\:\:writeData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Migration/Writer/WriterInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter\\:\\:getCurrencyTranslation\\(\\) has parameter \\$currency with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\CurrencyConverter\:\:getCurrencyTranslation\(\) has parameter \$currency with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CurrencyConverter\\:\\:getCurrencyTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\CurrencyConverter\:\:getCurrencyTranslation\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/CurrencyConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter\\:\\:getCustomerGroupTranslation\\(\\) has parameter \\$customerGroup with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\CustomerGroupConverter\:\:getCustomerGroupTranslation\(\) has parameter \$customerGroup with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/CustomerGroupConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\CustomerGroupConverter\\:\\:getCustomerGroupTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\CustomerGroupConverter\:\:getCustomerGroupTranslation\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/CustomerGroupConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaConverter\\:\\:getMediaTranslation\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\MediaConverter\:\:getMediaTranslation\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaConverter\\:\\:getMediaTranslation\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\MediaConverter\:\:getMediaTranslation\(\) has parameter \$media with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter\\:\\:getConfiguration\\(\\) has parameter \\$setting with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\MediaFolderConverter\:\:getConfiguration\(\) has parameter \$setting with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\MediaFolderConverter\\:\\:getConfiguration\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\MediaFolderConverter\:\:getConfiguration\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Converter/MediaFolderConverter.php
 
 		-
-			message: "#^Call to an undefined method Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\Entity\\:\\:getLanguageId\\(\\)\\.$#"
+			message: '#^Call to an undefined method Shopware\\Core\\Framework\\DataAbstractionLayer\\Entity\:\:getLanguageId\(\)\.$#'
+			identifier: method.notFound
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Converter\\\\SalesChannelConverter\\:\\:__construct\\(\\) has parameter \\$languagePackRepo with generic class Shopware\\\\Core\\\\Framework\\\\DataAbstractionLayer\\\\EntityRepository but does not specify its types\\: TEntityCollection$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\SalesChannelConverter\:\:__construct\(\) has parameter \$languagePackRepo with generic class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityRepository but does not specify its types\: TEntityCollection$#'
+			identifier: missingType.generics
 			count: 1
 			path: src/Profile/Shopware/Converter/SalesChannelConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableCountReader\\:\\:logExceptions\\(\\) has parameter \\$exceptionArray with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\Reader\\TableCountReader\:\:logExceptions\(\) has parameter \$exceptionArray with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableCountReader\\:\\:prepareTotals\\(\\) has parameter \\$result with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\Reader\\TableCountReader\:\:prepareTotals\(\) has parameter \$result with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableCountReader\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\Reader\\TableCountReader\:\:readTotals\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableCountReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\Reader\\TableReader\:\:read\(\) has parameter \$filter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\Reader\\\\TableReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\Reader\\TableReader\:\:read\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/Reader/TableReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\ShopwareApiGateway\:\:readTable\(\) has parameter \$filter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Api\\\\ShopwareApiGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Api\\ShopwareApiGateway\:\:readTable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Api/ShopwareApiGateway.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CategoryReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:fetchMainCategoryLocales\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CategoryReader\:\:fetchMainCategoryLocales\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:generateAllLocales\\(\\) has parameter \\$categories with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CategoryReader\:\:generateAllLocales\(\) has parameter \$categories with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:generateAllLocales\\(\\) has parameter \\$mainCategoryLocales with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CategoryReader\:\:generateAllLocales\(\) has parameter \$mainCategoryLocales with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:generateAllLocales\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CategoryReader\:\:generateAllLocales\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CategoryReader\\:\\:getIgnoredCategories\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CategoryReader\:\:getIgnoredCategories\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CategoryReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CrossSellingReader\\:\\:enrichWithPositionData\\(\\) has parameter \\$fetchedCrossSelling with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CrossSellingReader\:\:enrichWithPositionData\(\) has parameter \$fetchedCrossSelling with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CrossSellingReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CrossSellingReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CrossSellingReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CurrencyReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CurrencyReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CurrencyReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroupDiscounts\\(\\) has parameter \\$groupIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CustomerGroupReader\:\:fetchCustomerGroupDiscounts\(\) has parameter \$groupIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroupDiscounts\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CustomerGroupReader\:\:fetchCustomerGroupDiscounts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\CustomerGroupReader\\:\\:fetchCustomerGroups\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\CustomerGroupReader\:\:fetchCustomerGroups\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/CustomerGroupReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:appendAssociatedData\\(\\) has parameter \\$locales with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:appendAssociatedData\(\) has parameter \$locales with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:appendAssociatedData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:appendAssociatedData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:fetchLocales\\(\\) has parameter \\$fetchedShopLocaleIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:fetchLocales\(\) has parameter \$fetchedShopLocaleIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:fetchLocales\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:fetchLocales\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:fetchShopLocaleIds\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:fetchShopLocaleIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:fetchTranslations\\(\\) has parameter \\$locales with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:fetchTranslations\(\) has parameter \$locales with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\LanguageReader\\:\\:fetchTranslations\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\LanguageReader\:\:fetchTranslations\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/LanguageReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MainVariantRelationReader\\:\\:fetchMainVariantRelations\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MainVariantRelationReader\:\:fetchMainVariantRelations\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MainVariantRelationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:fetchAlbums\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaAlbumReader\:\:fetchAlbums\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:getChildAlbums\\(\\) has parameter \\$mediaAlbums with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaAlbumReader\:\:getChildAlbums\(\) has parameter \$mediaAlbums with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:getChildAlbums\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaAlbumReader\:\:getChildAlbums\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:prepareMediaAlbums\\(\\) has parameter \\$mediaAlbums with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaAlbumReader\:\:prepareMediaAlbums\(\) has parameter \$mediaAlbums with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaAlbumReader\\:\\:prepareMediaAlbums\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaAlbumReader\:\:prepareMediaAlbums\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaAlbumReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:prepareMedia\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaReader\:\:prepareMedia\(\) has parameter \$media with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\MediaReader\\:\\:prepareMedia\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\MediaReader\:\:prepareMedia\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/MediaReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:addShopAndLocaleByCustomer\\(\\) has parameter \\$item with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:addShopAndLocaleByCustomer\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:addShopAndLocaleByCustomer\\(\\) has parameter \\$shop with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:addShopAndLocaleByCustomer\(\) has parameter \$shop with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:addShopAndLocaleByGroupId\\(\\) has parameter \\$defaultShop with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:addShopAndLocaleByGroupId\(\) has parameter \$defaultShop with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:addShopAndLocaleByGroupId\\(\\) has parameter \\$item with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:addShopAndLocaleByGroupId\(\) has parameter \$item with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:addShopAndLocaleByGroupId\\(\\) has parameter \\$shops with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:addShopAndLocaleByGroupId\(\) has parameter \$shops with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:fetchData\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:fetchData\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:getDefaultShopAndLocaleByGroupId\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:getDefaultShopAndLocaleByGroupId\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:getGroupedResult\\(\\) has parameter \\$shops with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:getGroupedResult\(\) has parameter \$shops with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:getGroupedResult\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:getGroupedResult\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:getShopsAndLocalesByCustomer\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:getShopsAndLocalesByCustomer\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:getShopsAndLocalesByCustomer\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:getShopsAndLocalesByCustomer\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\NewsletterRecipientReader\\:\\:getShopsAndLocalesByGroupId\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\NewsletterRecipientReader\:\:getShopsAndLocalesByGroupId\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/NewsletterRecipientReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\OrderDocumentReader\\:\\:fetchDocuments\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\OrderDocumentReader\:\:fetchDocuments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/OrderDocumentReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductOptionRelationReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ProductOptionRelationReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ProductOptionRelationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductPropertyRelationReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ProductPropertyRelationReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ProductPropertyRelationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ProductReviewReader\\:\\:fetchReviews\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ProductReviewReader\:\:fetchReviews\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ProductReviewReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PromotionReader\\:\\:fetchIndividualCodes\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\PromotionReader\:\:fetchIndividualCodes\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PromotionReader\\:\\:fetchIndividualCodes\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\PromotionReader\:\:fetchIndividualCodes\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PromotionReader\\:\\:fetchPromotions\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\PromotionReader\:\:fetchPromotions\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PromotionReader\\:\\:fetchPromotions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\PromotionReader\:\:fetchPromotions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PromotionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\PropertyGroupOptionReader\\:\\:fetchData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\PropertyGroupOptionReader\:\:fetchData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/PropertyGroupOptionReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchExcludedCategories\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchExcludedCategories\(\) has parameter \$shippingMethodIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchExcludedCategories\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchExcludedCategories\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchPaymentMethods\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchPaymentMethods\(\) has parameter \$shippingMethodIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchPaymentMethods\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchPaymentMethods\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchShippingCosts\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchShippingCosts\(\) has parameter \$shippingMethodIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchShippingCosts\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchShippingCosts\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchShippingCountries\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchShippingCountries\(\) has parameter \$shippingMethodIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchShippingCountries\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchShippingCountries\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchShippingMethods\\(\\) has parameter \\$shippingMethodIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchShippingMethods\(\) has parameter \$shippingMethodIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\ShippingMethodReader\\:\\:fetchShippingMethods\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\ShippingMethodReader\:\:fetchShippingMethods\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/ShippingMethodReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\TableReader\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\TableReader\:\:read\(\) has parameter \$filter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/TableReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\TableReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\TableReader\:\:read\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/TableReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\Reader\\\\TranslationReader\\:\\:fetchTranslations\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\Reader\\TranslationReader\:\:fetchTranslations\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/Reader/TranslationReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\ShopwareLocalGateway\:\:readTable\(\) has parameter \$filter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\Local\\\\ShopwareLocalGateway\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\Local\\ShopwareLocalGateway\:\:readTable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/Local/ShopwareLocalGateway.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\ShopwareGatewayInterface\\:\\:readTable\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\ShopwareGatewayInterface\:\:readTable\(\) has parameter \$filter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/ShopwareGatewayInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\ShopwareGatewayInterface\\:\\:readTable\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\ShopwareGatewayInterface\:\:readTable\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/ShopwareGatewayInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\TableCountReaderInterface\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\TableCountReaderInterface\:\:readTotals\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/TableCountReaderInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\TableReaderInterface\\:\\:read\\(\\) has parameter \\$filter with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\TableReaderInterface\:\:read\(\) has parameter \$filter with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/TableReaderInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Gateway\\\\TableReaderInterface\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Gateway\\TableReaderInterface\:\:read\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Gateway/TableReaderInterface.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalOrderDocumentProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Media\\LocalOrderDocumentProcessor\:\:copyMediaFiles\(\) has parameter \$media with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalOrderDocumentProcessor\\:\\:persistFileToMedia\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Media\\LocalOrderDocumentProcessor\:\:persistFileToMedia\(\) has parameter \$media with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Parameter \\#1 \\$blob of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
+			message: '#^Parameter \#1 \$blob of method Shopware\\Core\\Content\\Media\\MediaService\:\:saveFile\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
 			count: 3
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Parameter \\#3 \\$contentType of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|false given\\.$#"
+			message: '#^Parameter \#3 \$contentType of method Shopware\\Core\\Content\\Media\\MediaService\:\:saveFile\(\) expects string, string\|false given\.$#'
+			identifier: argument.type
 			count: 3
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Parameter \\#4 \\$filename of method Shopware\\\\Core\\\\Content\\\\Media\\\\MediaService\\:\\:saveFile\\(\\) expects string, string\\|null given\\.$#"
+			message: '#^Parameter \#4 \$filename of method Shopware\\Core\\Content\\Media\\MediaService\:\:saveFile\(\) expects string, string\|null given\.$#'
+			identifier: argument.type
 			count: 1
 			path: src/Profile/Shopware/Media/LocalOrderDocumentProcessor.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalProductDownloadProcessor\\:\\:copyMediaFiles\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Media\\LocalProductDownloadProcessor\:\:copyMediaFiles\(\) has parameter \$media with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware\\\\Media\\\\LocalProductDownloadProcessor\\:\\:persistFileToMedia\\(\\) has parameter \\$media with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware\\Media\\LocalProductDownloadProcessor\:\:persistFileToMedia\(\) has parameter \$media with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware/Media/LocalProductDownloadProcessor.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:processSubentities\\(\\) has parameter \\$sections with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\CmsPageConverter\:\:processSubentities\(\) has parameter \$sections with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\CmsPageConverter\\:\\:updateTranslations\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\CmsPageConverter\:\:updateTranslations\(\) has parameter \$converted with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/CmsPageConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\NumberRangeConverter\\:\\:checkForExistingNumberRange\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\NumberRangeConverter\:\:checkForExistingNumberRange\(\) has parameter \$converted with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter\\:\\:checkDefaultCurrency\\(\\) has parameter \\$source with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\ProductConverter\:\:checkDefaultCurrency\(\) has parameter \$source with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/ProductConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertOption\\(\\) has parameter \\$option with no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$source of method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\ProductConverter\:\:checkDefaultCurrency\(\) expects array, hasOffsetValue\(string, array\<string, mixed\>\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: src/Profile/Shopware6/Converter/ProductConverter.php
+
+		-
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\PropertyGroupConverter\:\:convertOption\(\) has parameter \$option with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/PropertyGroupConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\RuleConverter\\:\\:recursiveAddChildren\\(\\) has parameter \\$parentMap with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\RuleConverter\:\:recursiveAddChildren\(\) has parameter \$parentMap with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\RuleConverter\\:\\:recursiveAddChildren\\(\\) has parameter \\$sorted with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\RuleConverter\:\:recursiveAddChildren\(\) has parameter \$sorted with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\RuleConverter\\:\\:sortConditions\\(\\) has parameter \\$conditions with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\RuleConverter\:\:sortConditions\(\) has parameter \$conditions with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\RuleConverter\\:\\:sortConditions\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\RuleConverter\:\:sortConditions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/RuleConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareMediaConverter\\:\\:updateMediaAssociation\\(\\) has parameter \\$mediaArray with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\ShopwareMediaConverter\:\:updateMediaAssociation\(\) has parameter \$mediaArray with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/ShopwareMediaConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\DataProvider\\\\Service\\\\EnvironmentServiceTest\\:\\:provideEnvironments\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\DataProvider\\Service\\EnvironmentServiceTest\:\:provideEnvironments\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/DataProvider/Service/EnvironmentServiceTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\DeprecatedTagTest\\:\\:\\$whiteList type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Test\\DeprecatedTagTest\:\:\$whiteList type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/DeprecatedTagTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Migration\\\\Converter\\\\ConverterRegistryTest\\:\\:converterProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Migration\\Converter\\ConverterRegistryTest\:\:converterProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Migration/Converter/ConverterRegistryTest.php
 
 		-
-			message: "#^Call to deprecated method getMockForAbstractClass\\(\\) of class PHPUnit\\\\Framework\\\\TestCase\\.$#"
+			message: '#^Call to deprecated method getMockForAbstractClass\(\) of class PHPUnit\\Framework\\TestCase\.$#'
+			identifier: method.deprecated
 			count: 1
 			path: tests/Migration/Writer/AbstractWriterTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Writer\\\\AbstractWriterTest\\:\\:\\$dataToWrite type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Test\\Migration\\Writer\\AbstractWriterTest\:\:\$dataToWrite type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Migration/Writer/AbstractWriterTest.php
 
 		-
-			message: "#^Property SwagMigrationAssistant\\\\Test\\\\Migration\\\\Writer\\\\AbstractWriterTest\\:\\:\\$writeResult type has no value type specified in iterable type array\\.$#"
+			message: '#^Property SwagMigrationAssistant\\Test\\Migration\\Writer\\AbstractWriterTest\:\:\$writeResult type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Migration/Writer/AbstractWriterTest.php
 
 		-
-			message: "#^Class SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\\: TKey, TValue$#"
+			message: '#^Class SwagMigrationAssistant\\Test\\Mock\\DummyCollection implements generic interface IteratorAggregate but does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
 			count: 1
 			path: tests/Mock/DummyCollection.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection\\:\\:__construct\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\DummyCollection\:\:__construct\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/DummyCollection.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\DummyCollection\\:\\:getIterator\\(\\) return type with generic class ArrayIterator does not specify its types\\: TKey, TValue$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\DummyCollection\:\:getIterator\(\) return type with generic class ArrayIterator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
 			count: 1
 			path: tests/Mock/DummyCollection.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Api\\\\Reader\\\\ApiDummyReader\\:\\:read\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Gateway\\Dummy\\Api\\Reader\\ApiDummyReader\:\:read\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Gateway/Dummy/Api/Reader/ApiDummyReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Api\\\\Reader\\\\EnvironmentDummyReader\\:\\:read\\(\\) has parameter \\$params with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Gateway\\Dummy\\Api\\Reader\\EnvironmentDummyReader\:\:read\(\) has parameter \$params with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Gateway/Dummy/Api/Reader/EnvironmentDummyReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Gateway\\\\Dummy\\\\Api\\\\Reader\\\\TableCountDummyReader\\:\\:readTotals\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Gateway\\Dummy\\Api\\Reader\\TableCountDummyReader\:\:readTotals\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Gateway/Dummy/Api/Reader/TableCountDummyReader.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Logging\\\\DummyLoggingService\\:\\:getLoggingArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Logging\\DummyLoggingService\:\:getLoggingArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Logging/DummyLoggingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:createListItemMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\Dummy6MappingService\:\:createListItemMapping\(\) has parameter \$additionalData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\Dummy6MappingService\:\:getMappings\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getUuidList\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\Dummy6MappingService\:\:getUuidList\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:getUuidsByEntity\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\Dummy6MappingService\:\:getUuidsByEntity\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\Dummy6MappingService\\:\\:preloadMappings\\(\\) has parameter \\$mappingIds with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\Dummy6MappingService\:\:preloadMappings\(\) has parameter \$mappingIds with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/Dummy6MappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:createListItemMapping\\(\\) has parameter \\$additionalData with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\DummyMappingService\:\:createListItemMapping\(\) has parameter \$additionalData with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getMappingArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\DummyMappingService\:\:getMappingArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getMappings\\(\\) has parameter \\$ids with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\DummyMappingService\:\:getMappings\(\) has parameter \$ids with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getUuidList\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\DummyMappingService\:\:getUuidList\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:getUuidsByEntity\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\DummyMappingService\:\:getUuidsByEntity\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Mapping\\\\DummyMappingService\\:\\:saveMapping\\(\\) has parameter \\$mapping with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Mapping\\DummyMappingService\:\:saveMapping\(\) has parameter \$mapping with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Mapping/DummyMappingService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Media\\\\DummyMediaFileService\\:\\:getMediaFileArray\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Media\\DummyMediaFileService\:\:getMediaFileArray\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Media/DummyMediaFileService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Media\\\\DummyMediaFileService\\:\\:setWrittenFlag\\(\\) has parameter \\$converted with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Media\\DummyMediaFileService\:\:setWrittenFlag\(\) has parameter \$converted with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Media/DummyMediaFileService.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Writer\\\\DummyWriter\\:\\:writeData\\(\\) has parameter \\$data with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Writer\\DummyWriter\:\:writeData\(\) has parameter \$data with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Writer/DummyWriter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Mock\\\\Migration\\\\Writer\\\\DummyWriter\\:\\:writeData\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Mock\\Migration\\Writer\\DummyWriter\:\:writeData\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Mock/Migration/Writer/DummyWriter.php
 
 		-
-			message: "#^Parameter \\#3 \\$body of class GuzzleHttp\\\\Psr7\\\\Response constructor expects Psr\\\\Http\\\\Message\\\\StreamInterface\\|resource\\|string\\|null, string\\|false given\\.$#"
+			message: '#^Parameter \#3 \$body of class GuzzleHttp\\Psr7\\Response constructor expects Psr\\Http\\Message\\StreamInterface\|resource\|string\|null, string\|false given\.$#'
+			identifier: argument.type
 			count: 1
 			path: tests/Profile/Shopware/Gateway/ApiReaderTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware\\\\Gateway\\\\LocalGatewayTest\\:\\:profileProvider\\(\\) return type has no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware\\Gateway\\LocalGatewayTest\:\:profileProvider\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware/Gateway/LocalGatewayTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductSortingConverterTest\\:\\:loadMapping\\(\\) has parameter \\$mappingArray with no value type specified in iterable type array\\.$#"
+			message: '#^Parameter \#1 \$data of method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\ProductConverter\:\:convert\(\) expects array\<string, mixed\>, array\|ArrayAccess given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: '#^Parameter \#1 \$data of method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\ProductConverter\:\:convert\(\) expects array\<string, mixed\>, hasOffsetValue\(string, mixed\) given\.$#'
+			identifier: argument.type
+			count: 1
+			path: tests/Profile/Shopware55/Converter/ProductConverterTest.php
+
+		-
+			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ProductSortingConverterTest\:\:loadMapping\(\) has parameter \$mappingArray with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware6/Converter/ProductSortingConverterTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:dataProviderConvert\\(\\) return type has no value type specified in iterable type iterable\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ShopwareConverterTest\:\:dataProviderConvert\(\) return type has no value type specified in iterable type iterable\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware6/Converter/ShopwareConverterTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Converter\\\\ShopwareConverterTest\\:\\:loadMapping\\(\\) has parameter \\$mappingArray with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ShopwareConverterTest\:\:loadMapping\(\) has parameter \$mappingArray with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware6/Converter/ShopwareConverterTest.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Test\\\\Profile\\\\Shopware6\\\\Gateway\\\\Connection\\\\ConnectionFactoryTests\\:\\:testCreateApiClient\\(\\) has parameter \\$credentials with no value type specified in iterable type array\\.$#"
+			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Gateway\\Connection\\ConnectionFactoryTests\:\:testCreateApiClient\(\) has parameter \$credentials with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware6/Gateway/Connection/ConnectionFactoryTests.php

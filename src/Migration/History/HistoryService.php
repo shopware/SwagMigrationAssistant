@@ -59,20 +59,8 @@ class HistoryService implements HistoryServiceInterface
                 null,
                 null,
                 new TermsAggregation(
-                    'titleSnippet',
-                    'titleSnippet',
-                    null,
-                    null,
-                    new TermsAggregation(
-                        'entity',
-                        'entity',
-                        null,
-                        null,
-                        new TermsAggregation(
-                            'level',
-                            'level'
-                        )
-                    )
+                    'level',
+                    'level'
                 )
             )
         );
@@ -114,8 +102,8 @@ class HistoryService implements HistoryServiceInterface
 
                 foreach ($logChunk->getElements() as $logEntry) {
                     \printf('[%s] %s%s', $logEntry->getLevel(), $logEntry->getCode(), \PHP_EOL);
-                    \printf('%s%s', $logEntry->getTitle(), \PHP_EOL);
-                    \printf('%s%s%s', $logEntry->getDescription(), \PHP_EOL, \PHP_EOL);
+                    \printf('%s%s', $logEntry->getProfileName(), \PHP_EOL);
+                    \printf('%s%s%s', $logEntry->getGatewayName(), \PHP_EOL, \PHP_EOL);
                 }
 
                 $offset += self::LOG_FETCH_LIMIT;
@@ -151,31 +139,25 @@ class HistoryService implements HistoryServiceInterface
             'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
         )->fetchOne();
 
-        return $unprocessedCount !== '0';
+        return (int) $unprocessedCount !== 0;
     }
 
     private function extractBucketInformation(Bucket $bucket): array
     {
-        /** @var TermsResult $titleResult */
-        $titleResult = $bucket->getResult();
-        $titleBucket = $titleResult->getBuckets()[0];
-
-        /** @var TermsResult $entityResult */
-        $entityResult = $titleBucket->getResult();
-        $entityString = empty($entityResult->getBuckets()) ? '' : $entityResult->getBuckets()[0]->getKey();
-
+        /** @var TermsResult|null $levelResult */
+        $levelResult = $bucket->getResult();
         $levelString = '';
-        if ($entityString !== '') {
-            /** @var TermsResult $levelResult */
-            $levelResult = $entityResult->getBuckets()[0]->getResult();
-            $levelString = empty($levelResult->getBuckets()) ? '' : $levelResult->getBuckets()[0]->getKey();
+
+        if ($levelResult !== null) {
+            $levelBuckets = $levelResult->getBuckets();
+            if (!empty($levelBuckets)) {
+                $levelString = $levelBuckets[0]->getKey();
+            }
         }
 
         return [
             'code' => $bucket->getKey(),
             'count' => $bucket->getCount(),
-            'titleSnippet' => $titleBucket->getKey(),
-            'entity' => $entityString,
             'level' => $levelString,
         ];
     }

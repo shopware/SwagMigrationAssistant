@@ -89,8 +89,8 @@ class PaymentMethodReaderTest extends TestCase
         $gatewayRegistryMock->method('getGateway')->willReturn($gatewayMock);
 
         $this->migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
         );
 
         $this->reader = new PaymentMethodReader($mock, $gatewayRegistryMock);

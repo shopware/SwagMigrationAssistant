@@ -67,7 +67,13 @@ class MediaProcessingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $run->getId());
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+            null,
+            null,
+            $run->getId()
+        );
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService
@@ -114,7 +120,7 @@ class MediaProcessingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $run->getId());
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile(), null, null, $run->getId());
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService

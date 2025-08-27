@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -83,21 +84,20 @@ final class ProcessMediaHandler
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
-        } catch (NoConnectionFoundException $e) {
-            $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
-                $message->getRunId(),
-                $message->getEntityName(),
-                $connection->getProfileName(),
-                $connection->getGatewayName()
-            ));
+        } catch (NoConnectionFoundException) {
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(ProcessorNotFoundLog::class)
+            );
 
             $this->loggingService->saveLogging($context);
         } catch (\Exception $e) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $message->getRunId(),
-                $message->getEntityName(),
-                $e
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($e->getMessage())
+                    ->withExceptionTrace($e->getTrace())
+                    ->build(ExceptionRunLog::class)
+            );
 
             $this->loggingService->saveLogging($context);
         }

@@ -159,10 +159,11 @@ class LanguageConverterConvertDataTest extends TestCase
         $migrationConnectionEntity->setId(Uuid::randomHex());
 
         return new MigrationContext(
-            new Shopware6MajorProfile('6.6.0.0'),
             $migrationConnectionEntity,
-            Uuid::randomHex(),
+            new Shopware6MajorProfile('6.6.0.0'),
+            null,
             new LanguageDataSet(),
+            Uuid::randomHex(),
             0,
             10
         );

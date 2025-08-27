@@ -13,13 +13,14 @@ use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationType;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationTypeLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
@@ -88,13 +89,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = $connection->getId();
+
         if (empty($data['id'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::SHIPPING_METHOD,
-                '',
-                'id',
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -104,12 +106,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->oldShippingMethod = $data['id'];
         $this->mainLocale = $data['_locale'];
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -148,12 +144,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredConvertedFields($converted, $this->requiredDataFields);
         if (!empty($fields)) {
             foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::SHIPPING_METHOD,
-                    $this->oldShippingMethod,
-                    $field
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(EmptyNecessaryFieldRunLog::class)
+                );
             }
 
             return new ConvertStruct(null, $data);
@@ -184,15 +178,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (!isset($data['calculation'])
                 || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
             ) {
-                $this->loggingService->addLogEntry(new UnsupportedShippingCalculationType(
-                    $this->runId,
-                    DefaultEntities::SHIPPING_METHOD,
-                    $this->oldShippingMethod,
-                    $data['calculation']
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(UnsupportedShippingCalculationTypeLog::class)
+                );
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
-                $converted['prices'] = $this->getShippingCosts($data, $calculationType, $priceRule);
+                $converted['prices'] = $this->getShippingCosts($migrationContext, $data, $calculationType, $priceRule);
             }
         }
 
@@ -241,12 +233,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->updateMainMapping($migrationContext, $context);
 
         if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::SHIPPING_METHOD,
-                $this->oldShippingMethod,
-                'id',
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -633,7 +623,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
      *
      * @return list<array<string, mixed>>
      */
-    protected function getShippingCosts(array $data, int $calculationType, ?array $rule): array
+    protected function getShippingCosts(MigrationContextInterface $migrationContext, array $data, int $calculationType, ?array $rule): array
     {
         $shippingCosts = $data['shippingCosts'];
         $taxRate = 0.0;
@@ -644,12 +634,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
             if (empty($shippingCost['id'])) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $this->oldShippingMethod,
-                    'id'
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(EmptyNecessaryFieldRunLog::class)
+                );
 
                 continue;
             }
@@ -679,12 +667,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (!isset($currencyMapping)) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $shippingCost['id'],
-                    'currency'
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(EmptyNecessaryFieldRunLog::class)
+                );
 
                 continue;
             }
@@ -696,12 +682,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
-                $this->loggingService->addLogEntry(new UnsupportedShippingPriceLog(
-                    $this->runId,
-                    DefaultEntities::SHIPPING_METHOD_PRICE,
-                    $shippingCost['id'],
-                    $this->oldShippingMethod
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(UnsupportedShippingPriceLog::class)
+                );
 
                 continue;
             }

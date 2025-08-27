@@ -81,8 +81,8 @@ class DataSelectionRegistryTest extends TestCase
     public function testGetDataSelections(): void
     {
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $this->connection
+            $this->connection,
+            new Shopware55Profile()
         );
 
         $expected = [
@@ -109,8 +109,9 @@ class DataSelectionRegistryTest extends TestCase
     {
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new MediaDataSelection()]));
         $migrationContext = new MigrationContext(
+            $this->connection,
             new Shopware55Profile(),
-            $this->connection
+            null
         );
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
@@ -124,8 +125,9 @@ class DataSelectionRegistryTest extends TestCase
     {
         $this->dataSelectionRegistry = new DataSelectionRegistry(new DummyCollection([new MediaDataSelection()]));
         $migrationContext = new MigrationContext(
+            $this->connection,
             new Shopware55Profile(),
-            $this->connection
+            null
         );
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelectionsByIds($migrationContext, $this->environmentInformation, ['media']);
@@ -137,8 +139,9 @@ class DataSelectionRegistryTest extends TestCase
     public function testEntityNamesRequiredForCount(): void
     {
         $migrationContext = new MigrationContext(
+            $this->connection,
             new Shopware55Profile(),
-            $this->connection
+            null
         );
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);
@@ -154,8 +157,9 @@ class DataSelectionRegistryTest extends TestCase
     public function testEntityNamesRequiredForCountValues(): void
     {
         $migrationContext = new MigrationContext(
+            $this->connection,
             new Shopware55Profile(),
-            $this->connection
+            null
         );
 
         $dataSelections = $this->dataSelectionRegistry->getDataSelections($migrationContext, $this->environmentInformation);

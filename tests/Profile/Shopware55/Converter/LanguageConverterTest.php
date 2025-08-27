@@ -50,10 +50,11 @@ class LanguageConverterTest extends TestCase
         $connection->setProfileName(Shopware55Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new LanguageDataSet(),
+            $runId,
             0,
             250
         );
@@ -104,6 +105,6 @@ class LanguageConverterTest extends TestCase
         static::assertNotNull($convertResult->getUnmapped());
 
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_LANGUAGE_ENTITY_ALREADY_EXISTS', $logs[0]['code']);
+        static::assertSame('SWAG_MIGRATION_ENTITY_ALREADY_EXISTS', $logs[0]['code']);
     }
 }

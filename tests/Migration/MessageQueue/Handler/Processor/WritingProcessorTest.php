@@ -56,7 +56,7 @@ class WritingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
 
         $this->processor = new WritingProcessor(
             $this->createMock(EntityRepository::class),
@@ -97,7 +97,7 @@ class WritingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile(), null);
 
         $migrationDataWriter = $this->createMock(MigrationDataWriter::class);
         $migrationDataWriter

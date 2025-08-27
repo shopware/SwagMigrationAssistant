@@ -87,8 +87,8 @@ class StatusController extends AbstractController
             return new Response();
         }
 
-        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+        $profile = $this->profileRegistry->getProfile($profileName);
+        $gateways = $this->gatewayRegistry->getGateways($profile);
 
         $currentGateway = null;
         foreach ($gateways as $gateway) {
@@ -151,8 +151,8 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('profileName');
         }
 
-        $migrationContext = $this->migrationContextFactory->createByProfileName($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($migrationContext);
+        $profile = $this->profileRegistry->getProfile($profileName);
+        $gateways = $this->gatewayRegistry->getGateways($profile);
 
         $gatewayNames = [];
         foreach ($gateways as $gateway) {
@@ -347,7 +347,6 @@ class StatusController extends AbstractController
             throw MigrationException::noConnectionFound();
         }
 
-        // ToDo: MIG-965 - Check how we could put this into the MQ
         $this->runService->cleanupMappingChecksums($connectionId, $context);
 
         return new Response();

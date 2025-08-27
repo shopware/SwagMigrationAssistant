@@ -35,12 +35,12 @@ $dbName = $matches[5];
 echo "SwagMigrationAssistant: found DB host: " . $host . PHP_EOL;
 echo "SwagMigrationAssistant: found DB user: " . $user . PHP_EOL;
 
-$testDataPath = $pluginPath . '/tests/testData/sw55.sql';
+$testDataPath = $pluginPath . '/tests/_fixtures/database/sw55.sql';
 echo "SwagMigrationAssistant: test data path: " . $testDataPath . PHP_EOL;
 failAssert(file_exists($testDataPath), 'test data sql file does not exists');
 
 // import test data
-// mysql -u"$user" -p"$password" --host "$host" < tests/testData/sw55.sql
+// mysql -u"$user" -p"$password" --host "$host" < tests/_fixtures/database/sw55.sql
 $cmd = sprintf('mysql -u"%s" -p"%s" --host "%s" < %s', $user, $password, $host, $testDataPath);
 $output = [];
 $resultCode = 0;

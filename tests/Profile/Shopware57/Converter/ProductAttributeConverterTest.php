@@ -39,10 +39,11 @@ class ProductAttributeConverterTest extends TestCase
         $connection->setProfileName(Shopware57Profile::PROFILE_NAME);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware57Profile(),
             $connection,
-            $runId,
+            new Shopware57Profile(),
+            null,
             new ProductAttributeDataSet(),
+            $runId,
             0,
             250
         );

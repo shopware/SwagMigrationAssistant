@@ -71,7 +71,7 @@ class IndexingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService
@@ -119,7 +119,7 @@ class IndexingProcessorTest extends TestCase
         $connection = new SwagMigrationConnectionEntity();
         $connection->setId(Uuid::randomHex());
 
-        $migrationContext = new MigrationContext(new Shopware55Profile(), $connection);
+        $migrationContext = new MigrationContext($connection, new Shopware55Profile());
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService

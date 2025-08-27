@@ -54,9 +54,9 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            '',
+            $profile,
+            null,
             new ProductDataSet()
         );
 
@@ -105,10 +105,10 @@ class LocalGatewayTest extends TestCase
         );
 
         $migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            '',
-            new FooDataSet()
+            $profile,
+            null,
+            new FooDataSet(),
         );
 
         $connectionFactory = new ConnectionFactory();
@@ -156,8 +156,8 @@ class LocalGatewayTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
+            $connection,
             $profile,
-            $connection
         );
 
         $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);

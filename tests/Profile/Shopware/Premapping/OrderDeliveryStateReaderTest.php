@@ -83,8 +83,8 @@ class OrderDeliveryStateReaderTest extends TestCase
         $connection->setPremapping($premapping);
 
         $this->migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
         );
 
         $gatewayMock = $this->createMock(ShopwareLocalGateway::class);
