@@ -25,11 +25,11 @@ export interface SwagMigrationHistoryData {
     isLoading: boolean;
     migrationRuns: TEntityCollection<'swag_migration_run'>;
     sortDirection: string;
-    runIdForRunClear?: string;
+    runIdForRunClear: string | null;
     isMediaProcessing: boolean;
-    logDownloadEndpoint?: string;
-    runIdForLogDownload?: string;
-    oldParams?: Record<
+    logDownloadEndpoint: string | null;
+    runIdForLogDownload: string | null;
+    oldParams: Record<
         string,
         {
             page: number;
@@ -38,7 +38,7 @@ export interface SwagMigrationHistoryData {
             sortDirection: string;
             naturalSorting?: boolean;
         }
-    >;
+    > | null;
     showRunClearConfirmModal: boolean;
     runClearConfirmModalIsLoading: boolean;
     migrationDateOptions: {

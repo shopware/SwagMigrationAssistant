@@ -10,7 +10,7 @@ const { Criteria } = Shopware.Data;
  */
 export interface SwagMigrationHistoryDetailData {
     runId: string;
-    migrationRun?: TEntity<'swag_migration_run'>;
+    migrationRun: TEntity<'swag_migration_run'> | null;
     showModal: boolean;
     isLoading: boolean;
     migrationDateOptions: {

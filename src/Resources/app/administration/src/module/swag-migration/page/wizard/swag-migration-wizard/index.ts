@@ -288,7 +288,7 @@ export default Shopware.Component.wrapComponentConfig({
                 }
 
                 if (response.step !== MIGRATION_STEP.IDLE) {
-                    this.$router.push({ name: 'swag.migration.processScreen' });
+                    await this.$router.push({ name: 'swag.migration.processScreen' });
                 }
             } catch {
                 // do nothing
@@ -588,6 +588,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         createNewConnection() {
             this.isLoading = true;
+
             return this.checkConnectionName(this.connectionName).then((valid) => {
                 if (!valid) {
                     this.isLoading = false;
@@ -606,7 +607,7 @@ export default Shopware.Component.wrapComponentConfig({
             });
         },
 
-        checkConnectionName(name: string): Promise<boolean> {
+        async checkConnectionName(name: string): Promise<boolean> {
             const criteria = new Criteria();
             criteria.addFilter(Criteria.equals('name', name));
 

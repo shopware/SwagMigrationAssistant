@@ -7,7 +7,7 @@ const { Criteria } = Shopware.Data;
  * @private
  */
 export interface SwagMigrationWizardPageConnectionSelectData {
-    selectedConnectionId?: string;
+    selectedConnectionId: string | null;
     connections: MigrationConnection[];
     context: unknown;
 }

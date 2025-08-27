@@ -16,7 +16,10 @@ if (!process.env.APP_URL && platformEnv.APP_URL) {
     process.env.APP_URL = platformEnv.APP_URL;
 }
 
-const missingEnvVars = ['APP_URL', 'DATABASE_URL'].filter((envVar) => {
+const missingEnvVars = [
+    'APP_URL',
+    'DATABASE_URL',
+].filter((envVar) => {
     return process.env[envVar] === undefined;
 });
 

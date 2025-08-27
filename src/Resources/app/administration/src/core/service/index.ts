@@ -6,7 +6,7 @@ const { Application } = Shopware;
  * @sw-package fundamentals@after-sales
  * @private
  */
-Application.addServiceProvider(MIGRATION_API_SERVICE, (container) => {
+Application.addServiceProvider(MIGRATION_API_SERVICE, (container: ServiceContainer) => {
     const initContainer = Application.getContainer('init');
     return new MigrationApiService(initContainer.httpClient, container.loginService);
 });

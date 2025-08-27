@@ -59,7 +59,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             this.migrationApiService
                 .generatePremapping(this.dataSelectionIds)
-                .then(async (premapping) => {
+                .then(async (premapping: MigrationPremapping[]) => {
                     this.migrationStore.setPremapping(premapping);
                     await this.savePremapping();
                 })

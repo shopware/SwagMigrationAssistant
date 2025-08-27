@@ -32,7 +32,7 @@
     align-items: center;
     top: var(--scale-size-30);
     font-size: 14px;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
   }
 
   .swag-migration-progress-bar__left-point {
@@ -73,6 +73,6 @@
     margin-bottom: 5px;
     font-size: 14px;
     text-align: center;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
   }
 }

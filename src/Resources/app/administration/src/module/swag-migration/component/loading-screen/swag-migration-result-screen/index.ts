@@ -8,7 +8,7 @@ const { Criteria } = Shopware.Data;
  * @private
  */
 export interface SwagMigrationResultScreenData {
-    latestRun?: TEntity<'swag_migration_run'>;
+    latestRun: TEntity<'swag_migration_run'> | null;
     context: unknown;
 }
 

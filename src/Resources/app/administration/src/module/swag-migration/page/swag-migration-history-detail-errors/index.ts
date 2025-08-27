@@ -10,7 +10,7 @@ const { Mixin } = Shopware;
  */
 export interface SwagMigrationHistoryDetailErrorsData {
     isLoading: boolean;
-    allMigrationErrors?: MigrationError[];
+    allMigrationErrors: MigrationError[] | null;
     migrationErrors: MigrationError[];
     sortBy: string;
     sortDirection: string;

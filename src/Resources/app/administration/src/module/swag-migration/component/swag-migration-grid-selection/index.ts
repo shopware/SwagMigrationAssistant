@@ -13,8 +13,6 @@ export interface SwagMigrationGridSelectionData {
     limit: number;
     paginationSteps: number[];
     selectOptions: Array<{ label: string; value: string }>;
-    total?: number;
-    page?: number;
 }
 
 /**
@@ -75,7 +73,7 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        getList(): MigrationPremapping[] {
+        getList() {
             this.total = this.mapping.length;
             const start = (this.page - 1) * this.limit;
             const end = Math.min(start + this.limit, this.total);

@@ -29,7 +29,7 @@ export interface SwagMigrationShopInformationData {
     showResetChecksumsConfirmModal: boolean;
     showResetMigrationConfirmModal: boolean;
     lastMigrationDate: string;
-    connection?: MigrationConnection;
+    connection: MigrationConnection | null;
     context: unknown;
 }
 
@@ -50,7 +50,7 @@ export default Shopware.Component.wrapComponentConfig({
     ],
 
     filters: {
-        localizedNumberFormat(value: number): string {
+        localizedNumberFormat(value: number) {
             const locale = `${this.adminLocaleLanguage}-${this.adminLocaleRegion}`;
 
             return Intl.NumberFormat(locale).format(value);

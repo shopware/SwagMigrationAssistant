@@ -16,9 +16,9 @@ type SearchParams = {
 export interface SwagMigrationWizardPageConnectionCreateData {
     isLoading: boolean;
     selection: {
-        profile?: string;
-        gateway?: string;
-        connectionName?: string;
+        profile: string | null;
+        gateway: string | null;
+        connectionName: string | null;
     };
     profiles: MigrationProfile[];
     gateways: MigrationGateway[];

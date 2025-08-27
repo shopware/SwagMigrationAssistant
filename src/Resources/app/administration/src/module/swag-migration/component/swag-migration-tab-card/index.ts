@@ -10,12 +10,12 @@ export interface SwagMigrationTabCardData {
 
 type TabCardItem = {
     name: string;
-    entity?: string;
-    mapping: { destinationUuid?: string }[];
+    entity: string | null;
+    mapping: { destinationUuid: string | null }[];
 };
 
 type GroupTab = {
-    mapping: { destinationUuid?: string }[];
+    mapping: { destinationUuid: string | null }[];
 };
 
 /**
@@ -54,7 +54,7 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
-        tabItems(): TabCardItem[] | undefined {
+        tabItems() {
             return this.$refs.swTabsItems as TabCardItem[] | undefined;
         },
     },
@@ -85,17 +85,17 @@ export default Shopware.Component.wrapComponentConfig({
             this.$refs.contentContainer[this.selectedNumber].setActive(true);
         },
 
-        getErrorCountForGroupTab(group: GroupTab): number {
+        getErrorCountForGroupTab(group: GroupTab) {
             return group.mapping.reduce((currentValue, mapping) => {
                 if (!mapping.destinationUuid) {
                     return currentValue + 1;
                 }
 
                 return currentValue;
-            }, 0);
+            }, 0) as number;
         },
 
-        getKey(item: TabCardItem): string | undefined {
+        getKey(item: TabCardItem) {
             if (!item.entity) {
                 // see https://vuejs.org/api/built-in-special-attributes.html#key
                 // we use child components with state

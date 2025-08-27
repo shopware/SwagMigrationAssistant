@@ -26,7 +26,7 @@
 
         .swag-migration-index-data-selector__no-data-label {
             font-size: 18px;
-            font-weight: 600;
+            font-weight: var(--font-weight-semibold);
             letter-spacing: 0.1px;
         }
     }

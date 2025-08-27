@@ -9,8 +9,8 @@
     "lint:fix": "npm run lint -- --fix",
     "lint:scss": "stylelint ./**/*.scss",
     "lint:scss:fix": "npm run lint:scss -- --fix",
-    "format": "prettier --check \"src/**/*.{js,ts}\"",
-    "format:fix": "prettier --write \"src/**/*.{js,ts}\" --cache"
+    "format": "prettier --check \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
+    "format:fix": "prettier --write \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache"
   },
   "devDependencies": {
     "@eslint/js": "^9.18.0",

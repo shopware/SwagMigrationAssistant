@@ -4,17 +4,14 @@ import swagMigrationProgressBar from 'SwagMigrationAssistant/module/swag-migrati
 Shopware.Component.register('swag-migration-progress-bar', swagMigrationProgressBar);
 
 async function createWrapper(props = {}) {
-    const wrapper = mount(
-        await Shopware.Component.build('swag-migration-progress-bar'),
-        {
-            props,
-            global: {
-                stubs: {
-                    'mt-progress-bar': true,
-                },
+    const wrapper = mount(await Shopware.Component.build('swag-migration-progress-bar'), {
+        props,
+        global: {
+            stubs: {
+                'mt-progress-bar': true,
             },
         },
-    );
+    });
     await flushPromises();
     return wrapper;
 }

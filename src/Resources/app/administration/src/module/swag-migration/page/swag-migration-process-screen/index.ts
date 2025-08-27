@@ -94,23 +94,14 @@ export default Shopware.Component.wrapComponentConfig({
             ],
         ),
 
-        /**
-         * @returns {boolean}
-         */
         abortButtonVisible() {
             return !this.isLoading && !this.componentIndexIsResult;
         },
 
-        /**
-         * @returns {boolean}
-         */
         backToOverviewButtonVisible() {
             return !this.isLoading && this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
 
-        /**
-         * @returns {boolean}
-         */
         backToOverviewButtonDisabled() {
             return this.isLoading;
         },
@@ -119,9 +110,6 @@ export default Shopware.Component.wrapComponentConfig({
             return this.isLoading || this.step === MIGRATION_STEP.ABORTING;
         },
 
-        /**
-         * @returns {boolean}
-         */
         componentIndexIsResult() {
             return this.componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS;
         },
@@ -146,7 +134,7 @@ export default Shopware.Component.wrapComponentConfig({
             this.migrationStore.setIsLoading(true);
 
             if (this.connectionId === null) {
-                this.$router.push({ name: 'swag.migration.index.main' });
+                await this.$router.push({ name: 'swag.migration.index.main' });
                 return;
             }
 
@@ -253,7 +241,7 @@ export default Shopware.Component.wrapComponentConfig({
                     message: this.$tc('swag-migration.api-error.startMigration'),
                 });
 
-                this.$router.push({
+                await this.$router.push({
                     name: 'swag.migration.index.main',
                     query: {
                         forceFullStateReload: true, // also resets data selection for next run
@@ -269,7 +257,7 @@ export default Shopware.Component.wrapComponentConfig({
                 if (state && state.step === MIGRATION_STEP.IDLE) {
                     // back in idle, which happens after aborting for example
                     this.unregisterPolling();
-                    this.$router.push({
+                    await this.$router.push({
                         name: 'swag.migration.index.main',
                         query: {
                             forceFullStateReload: true, // also resets data selection for next run
@@ -293,7 +281,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.migrationStore.setIsLoading(true);
                 await this.migrationApiService.approveFinishedMigration();
 
-                this.$router.push({
+                await this.$router.push({
                     name: 'swag.migration.index.main',
                     query: {
                         forceFullStateReload: true, // also resets data selection for next run
@@ -305,7 +293,7 @@ export default Shopware.Component.wrapComponentConfig({
                     message: this.$tc('swag-migration.api-error.approveFinishedMigration'),
                 });
 
-                this.$router.push({
+                await this.$router.push({
                     name: 'swag.migration.index.main',
                     query: {
                         forceFullStateReload: true, // also resets data selection for next run

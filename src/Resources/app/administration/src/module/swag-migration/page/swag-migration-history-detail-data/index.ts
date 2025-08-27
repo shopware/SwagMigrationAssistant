@@ -21,8 +21,6 @@ export interface SwagMigrationHistoryDetailData {
     sortDirection: string;
     disableRouteParams: boolean;
     limit: number;
-    total?: number;
-    page?: number;
 }
 
 /**

@@ -10,7 +10,7 @@ export interface SwDashboardData {
     context: unknown;
     runExists: boolean;
     loading: boolean;
-    run?: TEntity<'swag_migration_run'>;
+    run: TEntity<'swag_migration_run'> | null;
 }
 
 /**
