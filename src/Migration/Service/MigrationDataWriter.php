@@ -245,7 +245,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName($entityName)
-                        ->withConvertedData($entity)
+                        ->withConvertedData([$entity])
                         ->build(ExceptionRunLog::class)
                 );
 
