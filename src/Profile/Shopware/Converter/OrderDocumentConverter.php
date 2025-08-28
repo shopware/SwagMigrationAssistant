@@ -80,8 +80,12 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $converted = [];
 
         if (empty($data['hash'])) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath('hash')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
 
@@ -89,8 +93,13 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         if (!isset($data['documenttype'])) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
+                    ->withFieldName('documentType')
+                    ->withFieldSourcePath('documenttype')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
 
@@ -105,8 +114,13 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
 
         if ($orderMapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
+                    ->withFieldName('orderId')
+                    ->withFieldSourcePath('orderID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -187,8 +201,13 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return $documentType;
         }
 
-        $this->loggingService->addLogEntry( // TODO: add optional fields
+        $this->loggingService->addLogEntry(
             SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                ->withEntityName(DocumentDefinition::ENTITY_NAME)
+                ->withFieldName('documentType')
+                ->withFieldSourcePath('key')
+                ->withSourceData($data)
+                ->withConvertedData($documentType)
                 ->build(DocumentTypeNotSupportedLog::class)
         );
 

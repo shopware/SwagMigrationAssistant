@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Shipping\Aggregate\ShippingMethodPrice\ShippingMethodPriceDefinition;
+use Shopware\Core\Checkout\Shipping\ShippingMethodDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
@@ -93,8 +95,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         if (empty($data['id'])) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withFieldSourcePath('id')
+                    ->withSourceData($data)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
 
@@ -144,8 +150,9 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $fields = $this->checkForEmptyRequiredConvertedFields($converted, $this->requiredDataFields);
         if (!empty($fields)) {
             foreach ($fields as $field) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withFieldName(ShippingMethodDefinition::ENTITY_NAME)
                         ->build(EmptyNecessaryFieldRunLog::class)
                 );
             }
@@ -178,8 +185,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (!isset($data['calculation'])
                 || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
             ) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
+                        ->withFieldName('prices')
+                        ->withFieldSourcePath('calculation')
+                        ->withSourceData($data)
+                        ->withConvertedData($converted)
                         ->build(UnsupportedShippingCalculationTypeLog::class)
                 );
             } else {
@@ -233,8 +245,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $this->updateMainMapping($migrationContext, $context);
 
         if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(EmptyNecessaryFieldRunLog::class)
             );
 
@@ -634,8 +650,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
             if (empty($shippingCost['id'])) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
+                        ->withFieldName('id')
+                        ->withFieldSourcePath('id')
+                        ->withSourceData($data)
                         ->build(EmptyNecessaryFieldRunLog::class)
                 );
 
@@ -667,8 +687,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (!isset($currencyMapping)) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
+                        ->withFieldName('currencyId')
+                        ->withFieldSourcePath('currencyShortName')
+                        ->withSourceData($data)
                         ->build(EmptyNecessaryFieldRunLog::class)
                 );
 
@@ -682,8 +706,12 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
+                        ->withFieldSourcePath('factor')
+                        ->withSourceData($shippingCost)
+                        ->withConvertedData($cost)
                         ->build(UnsupportedShippingPriceLog::class)
                 );
 

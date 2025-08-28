@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
@@ -50,8 +51,11 @@ abstract class LanguageConverter extends ShopwareConverter
 
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid !== null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(LanguageDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath('locale')
+                    ->withSourceData($data)
                     ->build(EntityAlreadyExistsRunLog::class)
             );
 
