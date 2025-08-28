@@ -71,6 +71,21 @@ class LoggingService implements LoggingServiceInterface
         ];
     }
 
+    /**
+     * @param array<array-key, mixed> $keys
+     * @param callable(array-key $key, mixed|null $value): SwagMigrationLogEntry $callback
+     */
+    public function addLogForEach(array $keys, callable $callback): void
+    {
+        foreach ($keys as $key => $value) {
+            if (\array_is_list($keys)) {
+                $this->addLogEntry($callback($value, null));
+            } else {
+                $this->addLogEntry($callback($key, $value));
+            }
+        }
+    }
+
     private function writePerEntry(Context $context): void
     {
         foreach ($this->logging as $log) {

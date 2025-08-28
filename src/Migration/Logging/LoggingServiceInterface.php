@@ -16,5 +16,11 @@ interface LoggingServiceInterface
 {
     public function addLogEntry(SwagMigrationLogEntry $logEntry): void;
 
+    /**
+     * @param array<array-key, mixed> $keys
+     * @param callable(array-key $key, mixed|null $value): SwagMigrationLogEntry $callback
+     */
+    public function addLogForEach(array $keys, callable $callback): void;
+
     public function saveLogging(Context $context): void;
 }
