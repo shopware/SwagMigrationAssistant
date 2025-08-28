@@ -149,13 +149,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
         $fields = $this->checkForEmptyRequiredConvertedFields($converted, $this->requiredDataFields);
         if (!empty($fields)) {
-            foreach ($fields as $field) {
-                $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withFieldName(ShippingMethodDefinition::ENTITY_NAME)
-                        ->build(EmptyNecessaryFieldRunLog::class)
-                );
-            }
+            $this->loggingService->addLogForEach(
+                $fields,
+                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withFieldName(ShippingMethodDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath($key)
+                    ->withSourceData($data)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
