@@ -78,14 +78,14 @@
           "emptyState": "Leider wurde kein enstprechendes Formular für dieses Profil gefunden.",
           "shopware55": {
             "api": {
-              "title": "Connect your Shopware 5 store",
+              "title": "Verbinde Deinen Shopware 5 Shop",
               "steps": {
-                "step1": "Install and activate the plugin {pluginName} from your Shopware 5 backend under Plugin Manager > Extensions > Migration tools.",
-                "step2": "Go to User administration in your Shopware 5 backend.",
-                "step3": "Select the user you want to use for the connection.",
-                "step4": "Activate API access and save.",
-                "step5": "Make sure the user has the role local_admin.",
-                "step6": "Enter the API credentials here to establish the connection."
+                "step1": "Installiere und aktiviere das Plugin {pluginName} in Deinem Shopware 5 Backend unter Plugin Manager > Erweiterungen > Migrationstools.",
+                "step2": "Gehe zur Benutzerverwaltung in Deinem Shopware 5 Backend.",
+                "step3": "Wähle den Benutzer aus, den Du für die Verbindung verwenden möchtest.",
+                "step4": "Aktiviere den API-Zugriff und speichere.",
+                "step5": "Stelle sicher, dass der Benutzer die Rolle local_admin hat.",
+                "step6": "Gib hier die API-Zugangsdaten ein, um die Verbindung herzustellen."
               },
               "pluginName": "Migration Connector",
               "apiKeyLabel": "API-Schlüssel",
@@ -116,12 +116,12 @@
           },
           "shopware6": {
             "api": {
-              "title": "Connect your Shopware 6 store",
+              "title": "Verbinde Deinen Shopware 6 Shop",
               "steps": {
-                "step1": "Install and activate the {pluginName} extension on the source system.",
-                "step2": "Create an integration in the source system via Settings > System > Integrations.",
-                "step3": "Generate an access key ID and secret access key.",
-                "step4": "Enter the access keys and shop domain here to establish the connection."
+                "step1": "Installiere und aktiviere die Erweiterung {pluginName} im Quellsystem.",
+                "step2": "Erstelle im Quellsystem eine Integration über Einstellungen > System > Integrationen.",
+                "step3": "Generiere eine Access Key ID und einen Secret Access Key.",
+                "step4": "Gib hier die Access Keys und die Shop-Domain ein, um die Verbindung herzustellen."
               },
               "pluginName": "Migration Assistant",
               "apiPasswordLabel": "Sicherheitsschlüssel",
