@@ -371,7 +371,6 @@ Component.register('swag-migration-wizard', {
             if (!Object.keys(this.connection).length) {
                 // there is no connection selected. redirect to the selection
                 this.onNoConnectionSelected();
-                return;
             }
         },
 
