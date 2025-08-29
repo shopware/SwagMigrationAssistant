@@ -88,18 +88,6 @@ Component.register('swag-migration-wizard', {
             return this.currentRoute.titleSnippet;
         },
 
-        buttonBackSnippet() {
-            return 'swag-migration.wizard.buttonToProfileInformation';
-        },
-
-        buttonBackVisible() {
-            return (
-                !this.isLoading &&
-                this.currentRoute === this.routes.credentials &&
-                this.profileInformationComponentIsLoaded
-            );
-        },
-
         buttonSecondarySnippet() {
             if (this.currentRoute === this.routes.credentialsError) {
                 return 'swag-migration.wizard.buttonLater';
@@ -154,19 +142,6 @@ Component.register('swag-migration-wizard', {
             }
 
             return this.isLoading;
-        },
-
-        profileInformationComponent() {
-            if (!this.connection || !this.connection.profileName || !this.connection.gatewayName) {
-                return '';
-            }
-
-            return `swag-migration-profile-${this.connection.profileName}-` +
-                `${this.connection.gatewayName}-page-information`;
-        },
-
-        profileInformationComponentIsLoaded() {
-            return Component.getComponentRegistry().has(this.profileInformationComponent);
         },
 
         credentialsComponent() {
@@ -249,11 +224,6 @@ Component.register('swag-migration-wizard', {
                     name: 'swag.migration.wizard.connectionSelect',
                     index: 0.3, // not available through nextRoute (child from profile)
                     titleSnippet: 'swag-migration.wizard.pages.connectionSelect.title',
-                },
-                profileInformation: {
-                    name: 'swag.migration.wizard.profileInformation',
-                    index: 1,
-                    titleSnippet: 'swag-migration.wizard.pages.profileInformation.title',
                 },
                 credentials: {
                     name: 'swag.migration.wizard.credentials',
@@ -403,20 +373,6 @@ Component.register('swag-migration-wizard', {
                 this.onNoConnectionSelected();
                 return;
             }
-
-            if (!this.profileInformationComponentIsLoaded) {
-                if (this.currentRoute === this.routes.profileInformation) {
-                    this.navigateToRoute(this.routes.credentials);
-                }
-
-                // make the profileInformation route a child if there is no component
-                // so navigation to this route is not possible for the user
-                this.routes.profileInformation.index = 0.1;
-            }
-        },
-
-        onButtonBackClick() {
-            this.navigateToRoute(this.routes.profileInformation);
         },
 
         onButtonSecondaryClick() {
@@ -537,7 +493,6 @@ Component.register('swag-migration-wizard', {
         onNoConnectionSelected() {
             if ([
                 this.routes.chooseAction,
-                this.routes.profileInformation,
                 this.routes.credentials,
                 this.routes.credentialsSuccess,
                 this.routes.credentialsError,

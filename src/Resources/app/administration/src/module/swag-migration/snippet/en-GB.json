@@ -73,34 +73,20 @@
             "local": "Note: The shop systems have to be on the same server. You need access data to the database."
           }
         },
-        "profileInformation": {
-          "title": "Migration - Connection preparation",
-          "shopware55Api": {
-            "contentTitle": "Plugin required",
-            "contentInformation": "The required plugin “Migration Connector” is free and can be found in your Shopware 5 backend under Plugin Manager > Extensions > Migration tools. Please install and activate the plugin to proceed.",
-            "pluginLink": "More information about the plugin"
-          },
-          "shopware6Api": {
-            "contentTitle": "Requirements",
-            "plugin": {
-              "title": "Extension",
-              "description": "Install the Migration Assistant extension in the source system.",
-              "linkText": "More about the Migration Assistant extension",
-              "link": "https://store.shopware.com/en/swag257162657297f/migration-assistant.html"
-            },
-            "integration": {
-              "title": "Integration",
-              "description": "Create an integration in the source system via Settings > System > Integrations. You will need the generated access key ID and secret access key in the next step.",
-              "linkText": "More about integrations",
-              "link": "https://docs.shopware.com/en/shopware-6-en/settings/system/integrationen"
-            }
-          }
-        },
         "credentials": {
           "title": "Migration – Establish a connection",
           "emptyState": "Sorry no form for selected profile found.",
           "shopware55": {
             "api": {
+              "title": "Connect your Shopware 5 store",
+              "steps": {
+                "step1": "Install and activate the plugin <b>Migration Connector</b> from your Shopware 5 backend under Plugin Manager > Extensions > Migration tools.",
+                "step2": "Go to User administration in your Shopware 5 backend.",
+                "step3": "Select the user you want to use for the connection.",
+                "step4": "Activate API access and save.",
+                "step5": "Make sure the user has the role local_admin.",
+                "step6": "Enter the API credentials here to establish the connection."
+              },
               "contentInformation": "You need valid API credentials to establish a connection between Shopware 5 and Shopware 6. Your API credentials can be found in your Shopware 5 backend under “User administration”. API access needs to be activated there and confirmed by saving.<br>The API user must have the role \"local_admin\", otherwise a connection cannot be established",
               "apiKeyLabel": "API key",
               "apiKeyTooltip": "The API key is used for security and identification.",
@@ -110,7 +96,8 @@
               "apiUserPlaceholder": "Enter username",
               "endpointLabel": "Shop domain",
               "endpointPlaceholder": "www.demoshop.com",
-              "endpointSSLLabel": "My shop uses a secure connection (SSL)"
+              "endpointSSLLabel": "My shop uses a secure connection (SSL)",
+              "pluginLinkText": "More information about the plugin"
             },
             "local": {
               "contentInformation": "We still need access data to connect to your Shopware 5 database.",
@@ -129,6 +116,13 @@
           },
           "shopware6": {
             "api": {
+              "title": "Connect your Shopware 6 store",
+              "steps": {
+                "step1": "Install and activate the <b>Migration Assistant</b> extension on the source system.",
+                "step2": "Create an integration in the source system via Settings > System > Integrations.",
+                "step3": "Generate an access key ID and secret access key.",
+                "step4": "Enter the access keys and shop domain here to establish the connection."
+              },
               "contentInformation": "You need valid API credentials to establish a connection between your source and target Shopware 6 instance. You get these when you create an integration in your source system.",
               "apiPasswordLabel": "Secret access key",
               "apiPasswordTooltip": "The secret access key is used for security and identification.",
@@ -138,7 +132,11 @@
               "apiUserPlaceholder": "Enter access key ID",
               "endpointLabel": "Shop domain",
               "endpointPlaceholder": "www.demoshop.com",
-              "endpointSSLLabel": "My shop uses a secure connection (SSL)"
+              "endpointSSLLabel": "My shop uses a secure connection (SSL)",
+              "pluginLinkText": "More about the Migration Assistant extension",
+              "pluginLink": "https://store.shopware.com/en/swag257162657297f/migration-assistant.html",
+              "integrationLinkText": "More about integrations",
+              "integrationLink": "https://docs.shopware.com/en/shopware-6-en/settings/system/integrationen"
             }
           },
           "statusTitle": "Connection check",
