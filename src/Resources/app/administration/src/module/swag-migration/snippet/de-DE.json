@@ -125,7 +125,6 @@
                 "step4": "Enter the access keys and shop domain here to establish the connection."
               },
               "pluginName": "Migration Assistant",
-              "contentInformation": "Du benötigst gültige API-Anmeldeinformationen, um eine Verbindung zwischen Deiner Quell- und Ziel-Instanz von Shopware 6 herzustellen. Diese erhälst Du, wenn Du eine Integration in Deinem Quellsystem erstellst.",
               "apiPasswordLabel": "Sicherheitsschlüssel",
               "apiPasswordTooltip": "Der Sicherheitsschlüssel dient der Sicherheit und Identifizierung.",
               "apiPasswordPlaceholder": "Sicherheitsschlüssel einfügen",

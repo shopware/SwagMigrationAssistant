@@ -125,7 +125,6 @@
                 "step4": "Enter the access keys and shop domain here to establish the connection."
               },
               "pluginName": "Migration Assistant",
-              "contentInformation": "You need valid API credentials to establish a connection between your source and target Shopware 6 instance. You get these when you create an integration in your source system.",
               "apiPasswordLabel": "Secret access key",
               "apiPasswordTooltip": "The secret access key is used for security and identification.",
               "apiPasswordPlaceholder": "Enter secret access key",
