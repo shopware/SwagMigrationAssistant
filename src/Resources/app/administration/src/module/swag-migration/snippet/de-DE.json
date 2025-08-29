@@ -88,7 +88,6 @@
                 "step6": "Enter the API credentials here to establish the connection."
               },
               "pluginName": "Migration Connector",
-              "contentInformation": "Wir benötigen noch einige Daten um eine Verbindung mit Deinem Shopware 5 Shop herstellen zu können. Diese Daten findest Du in der Benutzerverwaltung von Deinem Shopware 5 Backend.",
               "apiKeyLabel": "API-Schlüssel",
               "apiKeyTooltip": "Der API-Schlüssel dient der Sicherheit und Identifizierung.",
               "apiKeyPlaceholder": "Schlüssel einfügen",
