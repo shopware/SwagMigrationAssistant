@@ -13,6 +13,7 @@ use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\GatewayReadException;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpSimpleClient;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
@@ -49,10 +50,10 @@ class ApiReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity(),
             new Shopware55Profile(),
             null,
-            '',
-            new ProductDataSet()
+            new ProductDataSet(),
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
         $mock->expects(static::once())
@@ -81,10 +82,10 @@ class ApiReaderTest extends TestCase
         $client = new HttpSimpleClient($options);
 
         $migrationContext = new MigrationContext(
+            new SwagMigrationConnectionEntity(),
             new Shopware55Profile(),
             null,
-            '',
-            new ProductDataSet()
+            new ProductDataSet(),
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
         $mock->expects(static::once())

@@ -32,10 +32,11 @@ class OrderDocumentAttributeReaderTest extends TestCase
         $this->orderDocumentAttributeReader = new OrderDocumentAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new OrderDocumentAttributeDataSet(),
+            $this->runId,
             0,
             10
         );
@@ -49,6 +50,9 @@ class OrderDocumentAttributeReaderTest extends TestCase
 
         $data = $this->orderDocumentAttributeReader->read($this->migrationContext);
 
-        static::assertCount(0, $data);
+        static::assertCount(1, $data);
+        static::assertSame('documentID', $data[0]['name']);
+        static::assertSame('integer', $data[0]['type']);
+        static::assertSame('de-DE', $data[0]['_locale']);
     }
 }

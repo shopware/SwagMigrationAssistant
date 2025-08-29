@@ -68,10 +68,6 @@ class PremappingService implements PremappingServiceInterface
 
         $connection = $migrationContext->getConnection();
 
-        if ($connection === null) {
-            return;
-        }
-
         foreach ($premapping as $item) {
             $entity = $item['entity'];
 
@@ -118,13 +114,8 @@ class PremappingService implements PremappingServiceInterface
      */
     private function updateConnectionPremapping(Context $context, MigrationContextInterface $migrationContext, array $premapping): void
     {
-        $premapping = $this->updateConnectionPremappingStruct($migrationContext, $premapping);
-
         $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return;
-        }
+        $premapping = $this->updateConnectionPremappingStruct($migrationContext, $premapping);
 
         $this->connectionRepo->update(
             [
@@ -144,13 +135,7 @@ class PremappingService implements PremappingServiceInterface
      */
     private function updateConnectionPremappingStruct(MigrationContextInterface $migrationContext, array $premapping): array
     {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return [];
-        }
-
-        $connectionPremapping = $connection->getPremapping();
+        $connectionPremapping = $migrationContext->getConnection()->getPremapping();
 
         if ($connectionPremapping === null) {
             $connectionPremapping = [];

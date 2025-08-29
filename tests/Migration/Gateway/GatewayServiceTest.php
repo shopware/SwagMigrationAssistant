@@ -38,10 +38,11 @@ class GatewayServiceTest extends TestCase
         $connection->setCredentialFields([]);
 
         $migrationContext = new MigrationContext(
-            new DummyProfile(),
             $connection,
-            '',
+            new DummyProfile(),
+            null,
             new ProductDataSet(),
+            '',
             0,
             250
         );

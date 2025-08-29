@@ -188,7 +188,7 @@ SQL;
         $fks = [];
 
         foreach ($foreignKeys as $foreignKey) {
-            $fks[] = $foreignKey->getLocalColumns();
+            $fks[] = $foreignKey->getReferencingColumnNames();
         }
 
         if ($fks !== []) {

@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -66,12 +66,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
     private function getInstallationRoot(MigrationContextInterface $migrationContext): string
     {
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return '';
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             return '';
@@ -99,14 +94,12 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             $sourcePath = $installationRoot . '/files/documents/' . $mediaFile['file_name'] . '.pdf';
             $mediaId = $mediaFile['media_id'];
 
-            if (!\file_exists($sourcePath)) {
+            if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(new CannotGetFileRunLog(
-                    $mappedWorkload[$mediaId]->getRunId(),
-                    DefaultEntities::ORDER_DOCUMENT,
-                    $mediaId,
-                    $sourcePath
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->build(CannotGetFileRunLog::class)
+                );
                 $processedMedia[] = $mediaId;
                 $failedMedia[] = $mediaId;
 
@@ -124,12 +117,12 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(new ExceptionRunLog(
-                    $mappedWorkload[$mediaId]->getRunId(),
-                    DefaultEntities::ORDER_DOCUMENT,
-                    $e,
-                    $mediaId
-                ));
+                $this->loggingService->addLogEntry( // TODO: add optional fields
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withExceptionMessage($e->getMessage())
+                        ->withExceptionTrace($e->getTrace())
+                        ->build(ExceptionRunLog::class)
+                );
             }
         }
 

@@ -32,10 +32,11 @@ class ProductAttributeReaderTest extends TestCase
         $this->productAttributeReader = new ProductAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ProductAttributeDataSet(),
+            $this->runId,
             0,
             10
         );
@@ -49,12 +50,12 @@ class ProductAttributeReaderTest extends TestCase
 
         $data = $this->productAttributeReader->read($this->migrationContext);
 
-        static::assertCount(20, $data);
-        static::assertSame('attr1', $data[0]['name']);
-        static::assertSame('text', $data[0]['type']);
+        static::assertCount(21, $data);
+        static::assertSame('articledetailsID', $data[0]['name']);
+        static::assertSame('integer', $data[0]['type']);
         static::assertSame('de-DE', $data[0]['_locale']);
 
-        static::assertSame('attr2', $data[1]['name']);
+        static::assertSame('attr1', $data[1]['name']);
         static::assertSame('text', $data[1]['type']);
         static::assertSame('de-DE', $data[1]['_locale']);
     }

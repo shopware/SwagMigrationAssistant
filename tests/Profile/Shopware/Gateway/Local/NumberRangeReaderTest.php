@@ -33,10 +33,11 @@ class NumberRangeReaderTest extends TestCase
         $this->numberRangeReader = new NumberRangeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new NumberRangeDataSet(),
+            $this->runId,
             0,
             10
         );
@@ -86,10 +87,11 @@ class NumberRangeReaderTest extends TestCase
         static::assertGreaterThan(4, $totalStruct->getTotal());
 
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new NumberRangeDataSet(),
+            $this->runId,
             0,
             4
         );

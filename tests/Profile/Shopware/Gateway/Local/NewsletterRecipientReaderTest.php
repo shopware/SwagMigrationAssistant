@@ -32,10 +32,11 @@ class NewsletterRecipientReaderTest extends TestCase
         $this->newsletterRecipientReader = new NewsletterRecipientReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new NewsletterRecipientDataSet(),
+            $this->runId,
             0,
             10
         );

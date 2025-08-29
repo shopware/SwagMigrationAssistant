@@ -8,18 +8,14 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class UnsupportedShippingPriceLog extends BaseRunLogEntry
+readonly class UnsupportedShippingPriceLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $entity,
-        string $sourceId,
-        private readonly string $shippingMethodId,
-    ) {
-        parent::__construct($runId, $entity, $sourceId);
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,33 +26,5 @@ class UnsupportedShippingPriceLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Unsupported shipping factor price calculation';
-    }
-
-    /**
-     * @return array{entity: ?string, sourceId: ?string, shippingMethodId: string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'shippingMethodId' => $this->shippingMethodId,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'ShippingPrice-Entity with source id "%s" of shipping method "%s" could not be converted because of unsupported factor price calculation.',
-            $args['sourceId'],
-            $args['shippingMethodId']
-        );
     }
 }

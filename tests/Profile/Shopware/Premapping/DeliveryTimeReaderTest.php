@@ -71,8 +71,8 @@ class DeliveryTimeReaderTest extends TestCase
         $this->deliveryTimeReader = new DeliveryTimeReader($mock);
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
-            $connection
+            $connection,
+            new Shopware55Profile()
         );
     }
 
@@ -104,8 +104,9 @@ class DeliveryTimeReaderTest extends TestCase
         $connection->setPremapping($premapping);
 
         $this->migrationContext = new MigrationContext(
+            $connection,
             new Shopware55Profile(),
-            $connection
+            null
         );
 
         $result = $this->deliveryTimeReader->getPremapping($this->context, $this->migrationContext);

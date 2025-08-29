@@ -32,10 +32,11 @@ class TranslationReaderTest extends TestCase
         $this->translationReader = new TranslationReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new TranslationDataSet(),
+            $this->runId,
             50,
             10
         );

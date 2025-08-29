@@ -42,9 +42,9 @@ Selected dataSets:
 
 --------------------Log-entries---------------------
 
-[info] SWAG_MIGRATION_LANGUAGE_ENTITY_ALREADY_EXISTS
-The language entity already exists
-The language entity with source id "1" already exists and cannot be written.
+[info] SWAG_MIGRATION_ENTITY_ALREADY_EXISTS
+shopware55
+local
 
 [info] SWAG_MIGRATION_LANGUAGE_ENTITY_ALREADY_EXISTS
 The language entity already exists

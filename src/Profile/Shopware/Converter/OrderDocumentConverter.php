@@ -16,7 +16,8 @@ use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
@@ -72,37 +73,25 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $this->context = $context;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionName = '';
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $oldData = $data;
         $converted = [];
 
         if (empty($data['hash'])) {
-            $this->loggingService->addLogEntry(
-                new EmptyNecessaryFieldRunLog(
-                    $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER_DOCUMENT,
-                    $this->oldId,
-                    'hash'
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $oldData);
         }
 
         if (!isset($data['documenttype'])) {
-            $this->loggingService->addLogEntry(
-                new EmptyNecessaryFieldRunLog(
-                    $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER_DOCUMENT,
-                    $this->oldId,
-                    'documenttype'
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
             );
 
             return new ConvertStruct(null, $oldData);
@@ -116,13 +105,9 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
 
         if ($orderMapping === null) {
-            $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $this->migrationContext->getRunUuid(),
-                    DefaultEntities::ORDER,
-                    $this->oldId,
-                    DefaultEntities::ORDER_DOCUMENT
-                )
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $oldData);
@@ -202,11 +187,10 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return $documentType;
         }
 
-        $this->loggingService->addLogEntry(new DocumentTypeNotSupported(
-            $this->runId,
-            $data['id'],
-            $mappedKey
-        ));
+        $this->loggingService->addLogEntry( // TODO: add optional fields
+            SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                ->build(DocumentTypeNotSupportedLog::class)
+        );
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

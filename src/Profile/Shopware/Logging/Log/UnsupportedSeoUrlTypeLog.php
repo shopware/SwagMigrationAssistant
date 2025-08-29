@@ -8,10 +8,10 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectType;
+use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectTypeLog;
 
 #[Package('fundamentals@after-sales')]
-class UnsupportedSeoUrlType extends UnsupportedObjectType
+readonly class UnsupportedSeoUrlTypeLog extends UnsupportedObjectTypeLog
 {
     public function getLevel(): string
     {

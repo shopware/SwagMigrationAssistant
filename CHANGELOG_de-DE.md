@@ -1,3 +1,8 @@
+# 16.0.0
+- [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) feat!: Erforderliche Felder für Migrationsprotokollierung hinzufügen
+- [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) refactor!: Optionale Felder für Migrationsprotokollierung hinzufügen
+- [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: Nutzung der Migrationsverbindung
+
 # 15.0.3
 - Übersetzungen von Fehlergruppen behoben, welche Details wie den Entitätsnamen nicht darstellten
 - Fehler bei Kunden ohne Standardzahlungsmethode in SW6.7 Migrationen behoben

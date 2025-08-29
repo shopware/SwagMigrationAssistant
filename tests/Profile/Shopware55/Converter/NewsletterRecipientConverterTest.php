@@ -53,10 +53,11 @@ class NewsletterRecipientConverterTest extends TestCase
         $connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
 
         $this->context = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new NewsletterRecipientDataSet(),
+            $runId,
             0,
             250
         );
@@ -112,9 +113,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_NEWSLETTER_RECIPIENT');
-        static::assertSame($logs[0]['parameters']['sourceId'], '1');
-        static::assertSame($logs[0]['parameters']['emptyField'], 'status');
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
     }
 
     public function testConvertWithNotExistingSalutation(): void
@@ -137,9 +136,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_SALUTATION_ENTITY_UNKNOWN');
-        static::assertSame($logs[0]['parameters']['sourceId'], 'xx');
-        static::assertSame($logs[0]['parameters']['requiredForSourceId'], '1');
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_ENTITY_UNKNOWN');
     }
 
     public function testConvert(): void

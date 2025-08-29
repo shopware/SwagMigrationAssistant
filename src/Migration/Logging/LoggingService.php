@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
 class LoggingService implements LoggingServiceInterface
@@ -51,20 +51,39 @@ class LoggingService implements LoggingServiceInterface
         }
     }
 
-    public function addLogEntry(LogEntryInterface $logEntry): void
+    public function addLogEntry(SwagMigrationLogEntry $logEntry): void
     {
         $this->logging[] = [
+            'runId' => $logEntry->getRunId(),
+            'profileName' => $logEntry->getProfileName(),
+            'gatewayName' => $logEntry->getGatewayName(),
             'level' => $logEntry->getLevel(),
             'code' => $logEntry->getCode(),
-            'title' => $logEntry->getTitle(),
-            'description' => $logEntry->getDescription(),
-            'parameters' => $logEntry->getParameters(),
-            'titleSnippet' => $logEntry->getTitleSnippet(),
-            'descriptionSnippet' => $logEntry->getDescriptionSnippet(),
-            'entity' => $logEntry->getEntity(),
-            'sourceId' => $logEntry->getSourceId(),
-            'runId' => $logEntry->getRunId(),
+            'userFixable' => $logEntry->isUserFixable(),
+            'entityName' => $logEntry->getEntityName(),
+            'fieldName' => $logEntry->getFieldName(),
+            'fieldSourcePath' => $logEntry->getFieldSourcePath(),
+            'sourceData' => $logEntry->getSourceData(),
+            'convertedData' => $logEntry->getConvertedData(),
+            'usedMapping' => $logEntry->getUsedMapping(),
+            'exceptionMessage' => $logEntry->getExceptionMessage(),
+            'exceptionTrace' => $logEntry->getExceptionTrace(),
         ];
+    }
+
+    /**
+     * @param array<array-key, mixed> $keys
+     * @param callable(array-key $key, mixed|null $value): SwagMigrationLogEntry $callback
+     */
+    public function addLogForEach(array $keys, callable $callback): void
+    {
+        foreach ($keys as $key => $value) {
+            if (\array_is_list($keys)) {
+                $this->addLogEntry($callback($value, null));
+            } else {
+                $this->addLogEntry($callback($key, $value));
+            }
+        }
     }
 
     private function writePerEntry(Context $context): void

@@ -70,9 +70,8 @@ abstract class LocalConnectionTestCase extends TestCase
 
     protected function setLimitAndOffset(int $limit, int $offset): void
     {
-        $reflectionClass = new \ReflectionClass($this->getMigrationContext());
-        (new \ReflectionProperty($reflectionClass->getName(), 'limit'))->setValue($this->getMigrationContext(), $limit);
-        (new \ReflectionProperty($reflectionClass->getName(), 'offset'))->setValue($this->getMigrationContext(), $offset);
+        $this->getMigrationContext()->setLimit($limit);
+        $this->getMigrationContext()->setOffset($offset);
     }
 
     protected function getExternalConnection(): Connection
@@ -97,15 +96,20 @@ abstract class LocalConnectionTestCase extends TestCase
             return $this->migrationContext;
         }
 
+        if ($this->migrationConnectionEntity === null) {
+            throw new \RuntimeException('Migration connection entity is not set. Please call before() method first.');
+        }
+
         if ($this->runId === null) {
             throw new \RuntimeException('RunId is not set. Please call before() method first.');
         }
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->migrationConnectionEntity,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             $this->getDataSet(),
+            $this->runId,
             0,
             10
         );
