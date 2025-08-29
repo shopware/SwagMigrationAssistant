@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Media;
 
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Content\Media\MediaDefinition;
 use Shopware\Core\Content\Media\MediaException;
 use Shopware\Core\Content\Media\MediaService;
 use Shopware\Core\Framework\Context;
@@ -96,10 +97,18 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
             if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(MediaDefinition::ENTITY_NAME)
+                        ->withSourceData([
+                            'media_id' => $mediaId,
+                            'source_path' => $sourcePath,
+                            'media' => $mappedWorkload[$mediaId],
+                        ])
                         ->build(CannotGetFileRunLog::class)
                 );
+
                 $processedMedia[] = $mediaId;
                 $failedMedia[] = $mediaId;
 
@@ -117,10 +126,15 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
+                        ->withSourceData([
+                            'media_id' => $mediaId,
+                            'source_path' => $sourcePath,
+                            'media' => $mappedWorkload[$mediaId],
+                        ])
                         ->build(ExceptionRunLog::class)
                 );
             }

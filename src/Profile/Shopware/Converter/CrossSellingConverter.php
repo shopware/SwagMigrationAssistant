@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductCrossSelling\ProductCrossSellingDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -59,8 +60,13 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
         if ($sourceProductMapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductCrossSellingDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withFieldSourcePath('articleID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -70,8 +76,13 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $relatedProductMapping = $this->getProductMapping($data['relatedarticle']);
         if ($relatedProductMapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductCrossSellingDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withFieldSourcePath('relatedarticle')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(AssociationRequiredMissingLog::class)
             );
 

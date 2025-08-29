@@ -7,7 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Promotion\Aggregate\PromotionCartRule\PromotionCartRuleDefinition;
 use Shopware\Core\Checkout\Promotion\Aggregate\PromotionDiscount\PromotionDiscountEntity;
+use Shopware\Core\Checkout\Promotion\Aggregate\PromotionPersonaRule\PromotionPersonaRuleDefinition;
+use Shopware\Core\Checkout\Promotion\PromotionDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -364,8 +367,12 @@ abstract class PromotionConverter extends ShopwareConverter
                 );
 
                 if ($productMapping === null) {
-                    $this->loggingService->addLogEntry( // TODO: add optional fields
+                    $this->loggingService->addLogEntry(
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withEntityName(PromotionDefinition::ENTITY_NAME)
+                            ->withFieldName('productId')
+                            ->withFieldSourcePath('restrictarticles')
+                            ->withSourceData($data)
                             ->build(AssociationRequiredMissingLog::class)
                     );
 
@@ -495,8 +502,12 @@ abstract class PromotionConverter extends ShopwareConverter
                 unset($data['bindtosupplier']);
                 $oneRuleAdded = true;
             } else {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(PromotionCartRuleDefinition::ENTITY_NAME)
+                        ->withFieldName('rule.value.manufacturerId')
+                        ->withFieldSourcePath('bindtosupplier')
+                        ->withSourceData($data)
                         ->build(AssociationRequiredMissingLog::class)
                 );
             }
@@ -546,8 +557,13 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             if ($salesChannelMapping === null) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(PromotionDefinition::ENTITY_NAME)
+                        ->withFieldName('salesChannelId')
+                        ->withFieldSourcePath('subshopID')
+                        ->withSourceData($data)
+                        ->withConvertedData($converted)
                         ->build(AssociationRequiredMissingLog::class)
                 );
 
@@ -614,8 +630,13 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(PromotionPersonaRuleDefinition::ENTITY_NAME)
+                    ->withFieldName('rule.value.customerGroupId')
+                    ->withFieldSourcePath('customergroup')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(AssociationRequiredMissingLog::class)
             );
 

@@ -429,10 +429,11 @@ class CustomerConverterTest extends TestCase
         static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
 
         $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(3, $logs);
+        static::assertCount(4, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
         static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
         static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
     }
 
