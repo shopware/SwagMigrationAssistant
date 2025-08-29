@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
@@ -59,10 +58,6 @@ class AbortingProcessor extends AbstractProcessor
         MigrationProgress $progress,
     ): void {
         $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
         $this->runService->cleanupMappingChecksums($connection->getId(), $context);
 
         $this->runTransitionService->forceTransitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);

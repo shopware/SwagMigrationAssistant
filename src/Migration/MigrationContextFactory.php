@@ -22,18 +22,18 @@ use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingEntity;
 
 #[Package('fundamentals@after-sales')]
-class MigrationContextFactory implements MigrationContextFactoryInterface
+readonly class MigrationContextFactory implements MigrationContextFactoryInterface
 {
     /**
      * @param EntityRepository<GeneralSettingCollection> $generalSettingRepository
      * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepository
      */
     public function __construct(
-        private readonly ProfileRegistryInterface $profileRegistry,
-        private readonly GatewayRegistryInterface $gatewayRegistry,
-        private readonly DataSetRegistryInterface $dataSetRegistry,
-        private readonly EntityRepository $generalSettingRepository,
-        private readonly EntityRepository $migrationConnectionRepository,
+        private ProfileRegistryInterface $profileRegistry,
+        private GatewayRegistryInterface $gatewayRegistry,
+        private DataSetRegistryInterface $dataSetRegistry,
+        private EntityRepository $generalSettingRepository,
+        private EntityRepository $migrationConnectionRepository,
     ) {
     }
 
@@ -44,19 +44,23 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
         string $entity = '',
     ): ?MigrationContextInterface {
         $connection = $run->getConnection();
+
         if ($connection === null) {
             return null;
         }
 
         $profile = $this->profileRegistry->getProfile($connection->getProfileName());
+
         $migrationContext = new MigrationContext(
-            $profile,
             $connection,
-            $run->getId(),
+            $profile,
             null,
+            null,
+            $run->getId(),
             $offset,
             $limit
         );
+
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
         $migrationContext->setGateway($gateway);
 
@@ -68,25 +72,18 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
         return $migrationContext;
     }
 
-    public function createByProfileName(string $profileName): MigrationContextInterface
-    {
-        $profile = $this->profileRegistry->getProfile($profileName);
-
-        return new MigrationContext(
-            $profile
-        );
-    }
-
     public function createByConnection(
         SwagMigrationConnectionEntity $connection,
     ): MigrationContextInterface {
         $profile = $this->profileRegistry->getProfile(
             $connection->getProfileName()
         );
+
         $migrationContext = new MigrationContext(
+            $connection,
             $profile,
-            $connection
         );
+
         $gateway = $this->gatewayRegistry->getGateway($migrationContext);
         $migrationContext->setGateway($gateway);
 
@@ -96,6 +93,7 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
     public function createBySelectedConnection(Context $context): MigrationContextInterface
     {
         $settings = $this->generalSettingRepository->search(new Criteria(), $context)->first();
+
         if (!$settings instanceof GeneralSettingEntity) {
             throw MigrationException::entityNotExists(GeneralSettingEntity::class, 'Default');
         }
@@ -104,9 +102,18 @@ class MigrationContextFactory implements MigrationContextFactoryInterface
             throw MigrationException::noConnectionIsSelected();
         }
 
-        $connection = $this->migrationConnectionRepository->search(new Criteria([$settings->getSelectedConnectionId()]), $context)->first();
+        $connection = $this->migrationConnectionRepository->search(
+            new Criteria(
+                [$settings->getSelectedConnectionId()]
+            ),
+            $context
+        )->first();
+
         if (!$connection instanceof SwagMigrationConnectionEntity) {
-            throw MigrationException::entityNotExists(SwagMigrationConnectionEntity::class, $settings->getSelectedConnectionId());
+            throw MigrationException::entityNotExists(
+                SwagMigrationConnectionEntity::class,
+                $settings->getSelectedConnectionId()
+            );
         }
 
         return $this->createByConnection($connection);

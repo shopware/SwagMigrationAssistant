@@ -67,10 +67,11 @@ class PromotionConverterTest extends TestCase
         $connectionId = $connection->getId();
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new PromotionDataSet(),
+            $runId,
             0,
             250
         );
@@ -239,9 +240,6 @@ class PromotionConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
-        static::assertSame(DefaultEntities::SALES_CHANNEL, $logs[0]['parameters']['missingEntity']);
-        static::assertSame(DefaultEntities::PROMOTION, $logs[0]['parameters']['requiredFor']);
-        static::assertSame('9', $logs[0]['parameters']['sourceId']);
 
         $this->assertSameTwiceMigration($promotionData[0], $context, $converted);
     }
@@ -350,9 +348,6 @@ class PromotionConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
-        static::assertSame(DefaultEntities::PRODUCT_MANUFACTURER, $logs[0]['parameters']['missingEntity']);
-        static::assertSame(DefaultEntities::PROMOTION_DISCOUNT, $logs[0]['parameters']['requiredFor']);
-        static::assertSame('8', $logs[0]['parameters']['sourceId']);
 
         $this->assertSameTwiceMigration($promotionData[0], $context, $converted);
     }
@@ -422,9 +417,6 @@ class PromotionConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(3, $logs);
-        static::assertSame(DefaultEntities::PRODUCT, $logs[0]['parameters']['missingEntity']);
-        static::assertSame(DefaultEntities::PROMOTION, $logs[0]['parameters']['requiredFor']);
-        static::assertSame('SW10008.1', $logs[0]['parameters']['sourceId']);
 
         $this->assertSameTwiceMigration($promotionData[0], $context, $converted);
     }
@@ -465,9 +457,6 @@ class PromotionConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
-        static::assertSame(DefaultEntities::PRODUCT, $logs[0]['parameters']['missingEntity']);
-        static::assertSame(DefaultEntities::PROMOTION, $logs[0]['parameters']['requiredFor']);
-        static::assertSame('SW10008.3', $logs[0]['parameters']['sourceId']);
 
         $this->assertSameTwiceMigration($promotionData[0], $context, $converted);
     }
@@ -617,9 +606,6 @@ class PromotionConverterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
-        static::assertSame(DefaultEntities::CUSTOMER_GROUP, $logs[0]['parameters']['missingEntity']);
-        static::assertSame(DefaultEntities::PROMOTION, $logs[0]['parameters']['requiredFor']);
-        static::assertSame('8', $logs[0]['parameters']['sourceId']);
 
         $this->assertSameTwiceMigration($promotionData[0], $context, $converted);
     }

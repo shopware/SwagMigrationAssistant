@@ -32,10 +32,11 @@ class CustomerReaderTest extends TestCase
         $this->customerReader = new CustomerReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runId,
             0,
             10
         );

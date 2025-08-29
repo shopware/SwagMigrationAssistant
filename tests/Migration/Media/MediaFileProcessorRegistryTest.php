@@ -46,9 +46,9 @@ class MediaFileProcessorRegistryTest extends TestCase
         $connection->setCredentialFields([]);
 
         $context = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            '',
+            new Shopware55Profile(),
+            null,
             new FooDataSet()
         );
         $context->setGateway(new DummyLocalGateway());

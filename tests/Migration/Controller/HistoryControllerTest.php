@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
 use SwagMigrationAssistant\Migration\History\HistoryService;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -99,16 +99,12 @@ class HistoryControllerTest extends TestCase
 
         $this->loggingRepo->create([
             [
-                'level' => LogEntryInterface::LOG_LEVEL_ERROR,
-                'code' => 'migration_error_1',
-                'title' => 'Error1',
-                'description' => 'Lorem Ipsum',
-                'parameters' => [],
-                'titleSnippet' => 'Random error snippet',
-                'descriptionSnippet' => 'Lorem Ipsum random error',
-                'entity' => 'product',
-                'sourceId' => Uuid::randomHex(),
                 'runId' => $this->runUuid,
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+                'code' => 'migration_error_1',
+                'userFixable' => false,
             ],
         ], $this->context);
     }
@@ -162,7 +158,6 @@ class HistoryControllerTest extends TestCase
 
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $result);
         static::assertNotNull($result->first());
-        static::assertSame('Lorem Ipsum', $result->first()->getDescription());
     }
 
     public function testGetPrefixLogInformation(): void

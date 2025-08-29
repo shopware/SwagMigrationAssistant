@@ -1,15 +1,32 @@
-.idea
-.vscode
-coverage/
+# ide
+.idea/
+.vscode/
+
+# os
+.DS_Store
+
+# node
+node_modules/
+*.hot-update.js
+
+# php
+vendor/
+phpstan.neon
+composer.lock
 .phpunit.cache
 .phpunit.result.cache
-vendor
-node_modules
-phpstan.neon
-*.hot-update.js
-/var/
-composer.lock
-src/Resources/public/administration/
+
+# tests
+coverage/
+
+# build
 src/Resources/public/static/
+src/Resources/public/administration/
+src/Resources/app/administration/.tmp
+
+# runtime
+/var/
 .env
+
+# plugin
 /migration_assistant.cache

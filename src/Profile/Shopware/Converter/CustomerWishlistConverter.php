@@ -27,10 +27,7 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

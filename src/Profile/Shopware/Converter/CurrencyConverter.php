@@ -47,10 +47,7 @@ abstract class CurrencyConverter extends ShopwareConverter
         $this->mainLocale = $data['_locale'];
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid !== null) {

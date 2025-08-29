@@ -32,10 +32,11 @@ class ProductPriceAttributeReaderTest extends TestCase
         $this->productPriceAttributeReader = new ProductPriceAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ProductPriceAttributeDataSet(),
+            $this->runId,
             0,
             10
         );
@@ -49,6 +50,9 @@ class ProductPriceAttributeReaderTest extends TestCase
 
         $data = $this->productPriceAttributeReader->read($this->migrationContext);
 
-        static::assertCount(0, $data);
+        static::assertCount(1, $data);
+        static::assertSame('priceID', $data[0]['name']);
+        static::assertSame('integer', $data[0]['type']);
+        static::assertSame('de-DE', $data[0]['_locale']);
     }
 }

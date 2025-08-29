@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Newsletter\Aggregate\NewsletterRecipient\NewsletterRecipientDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -55,30 +57,29 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         Context $context,
         MigrationContextInterface $migrationContext,
     ): ConvertStruct {
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = $connection->getId();
+
         $this->runId = $migrationContext->getRunUuid();
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $data['id'],
-                \implode(',', $fields)
-            ));
+            $this->loggingService->addLogForEach(
+                $fields,
+                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
+                    ->withFieldName($key)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
+
         $oldData = $data;
         $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->oldNewsletterRecipientId = $data['id'];
@@ -104,7 +105,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $this->convertValue($converted, 'city', $address, 'city');
 
             if (isset($address['salutation'])) {
-                $salutationUuid = $this->getSalutation($address['salutation']);
+                $salutationUuid = $this->getSalutation($address['salutation'], $migrationContext);
                 if ($salutationUuid !== null) {
                     $converted['salutationId'] = $salutationUuid;
                 }
@@ -116,7 +117,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (isset($converted['confirmedAt'])) {
             $status = 'optIn';
         } else {
-            $status = $this->getStatus();
+            $status = $this->getStatus($migrationContext);
         }
 
         if ($status === null) {
@@ -150,7 +151,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }
 
-    protected function getSalutation(string $salutation): ?string
+    protected function getSalutation(string $salutation, MigrationContextInterface $migrationContext): ?string
     {
         $salutationMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -160,13 +161,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                'salutation',
-                $salutation,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(UnknownEntityLog::class)
+            );
 
             return null;
         }
@@ -190,12 +188,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if (!isset($salesChannelMapping)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId,
-                'salesChannel'
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return null;
         }
@@ -204,7 +200,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         return $salesChannelMapping['entityUuid'];
     }
 
-    protected function getStatus(): ?string
+    protected function getStatus(MigrationContextInterface $migrationContext): ?string
     {
         $status = $this->mappingService->getValue(
             $this->connectionId,
@@ -214,12 +210,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::NEWSLETTER_RECIPIENT,
-                $this->oldNewsletterRecipientId,
-                'status'
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
         }
 
         return $status;

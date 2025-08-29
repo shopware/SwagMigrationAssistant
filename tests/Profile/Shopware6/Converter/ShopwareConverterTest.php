@@ -52,10 +52,11 @@ abstract class ShopwareConverterTest extends TestCase
         $connection->setId(Uuid::randomHex());
         $connection->setProfileName($this->getProfileName());
         $this->migrationContext = new MigrationContext(
-            $this->createProfile(),
             $connection,
-            $runId,
+            $this->createProfile(),
+            null,
             $this->createDataSet(),
+            $runId,
             0,
             250
         );
@@ -89,17 +90,17 @@ abstract class ShopwareConverterTest extends TestCase
         $expectedOutput = require $fixtureFolderPath . '/output.php';
 
         $mappingArray = [];
-        if (\file_exists($fixtureFolderPath . '/mapping.php')) {
+        if (\is_file($fixtureFolderPath . '/mapping.php')) {
             $mappingArray = require $fixtureFolderPath . '/mapping.php';
         }
 
         $expectedLogArray = [];
-        if (\file_exists($fixtureFolderPath . '/log.php')) {
+        if (\is_file($fixtureFolderPath . '/log.php')) {
             $expectedLogArray = require $fixtureFolderPath . '/log.php';
         }
 
         $mediaFileArray = [];
-        if (\file_exists($fixtureFolderPath . '/media.php')) {
+        if (\is_file($fixtureFolderPath . '/media.php')) {
             $mediaFileArray = require $fixtureFolderPath . '/media.php';
         }
 
@@ -166,13 +167,8 @@ abstract class ShopwareConverterTest extends TestCase
 
     protected function loadMapping(array $mappingArray): void
     {
-        $connection = $this->migrationContext->getConnection();
+        $connectionId = $this->migrationContext->getConnection()->getId();
 
-        if ($connection === null) {
-            return;
-        }
-
-        $connectionId = $connection->getId();
         foreach ($mappingArray as $mapping) {
             $mappingConnection = null;
             if (isset($mapping['connectionId'])) {

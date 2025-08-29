@@ -11,7 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -72,18 +73,13 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         if (!isset($data['group']['name'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                $data['id'],
-                'group'
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -132,12 +128,10 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function setMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
-            $this->loggingService->addLogEntry(new CannotConvertChildEntity(
-                $this->runId,
-                'property_group_option_media',
-                DefaultEntities::PROPERTY_GROUP_OPTION,
-                $data['id']
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->build(CannotConvertChildEntityLog::class)
+            );
 
             return;
         }

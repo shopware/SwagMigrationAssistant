@@ -31,6 +31,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -96,7 +97,6 @@ class RunService implements RunServiceInterface
         }
 
         $connectionId = $connection->getId();
-        // ToDo: MIG-965 - Check how we could put this into the MQ
         $this->cleanupUnwrittenRunDataOfLastInactiveRun($context);
 
         $runUuid = $this->createPlainMigrationRun($connectionId, $context);
@@ -255,10 +255,17 @@ SQL;
             try {
                 $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(new ThemeCompilingErrorRunLog(
-                    $runUuid,
-                    $defaultTheme
-                ));
+                $this->loggingService->addLogEntry(
+                    (new SwagMigrationLogBuilder(
+                        $runUuid,
+                        $connection->getProfileName(),
+                        $connection->getGatewayName(),
+                    ))
+                        ->withExceptionMessage($exception->getMessage())
+                        ->withExceptionTrace($exception->getTrace())
+                        ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                        ->build(ThemeCompilingErrorRunLog::class)
+                );
             }
         }
 

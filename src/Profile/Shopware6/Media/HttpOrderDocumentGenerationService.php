@@ -20,6 +20,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -70,13 +71,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $mappedWorkload = [];
         $documentIds = [];
         $runId = $migrationContext->getRunUuid();
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return $workload;
-        }
-
-        $this->connection = $connection;
+        $this->connection = $migrationContext->getConnection();
 
         foreach ($workload as $work) {
             $mappedWorkload[$work->getMediaId()] = $work;
@@ -89,11 +84,14 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
         if ($client === null) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $runId,
-                DefaultEntities::ORDER_DOCUMENT_GENERATED,
-                new \Exception('Connection to the source system could not be established')
-            ));
+            $exception = new \Exception('Connection to the source system could not be established');
+
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->build(ExceptionRunLog::class)
+            );
             $this->loggingService->saveLogging($context);
 
             return $workload;
@@ -125,7 +123,15 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             }
 
             if ($state !== 'fulfilled') {
-                $this->handleFailedRequest($oldWorkload, $mappedWorkload[$uuid], $uuid, $additionalData, $failureUuids, $result['reason'] ?? null);
+                $this->handleFailedRequest(
+                    $migrationContext,
+                    $oldWorkload,
+                    $mappedWorkload[$uuid],
+                    $uuid,
+                    $additionalData,
+                    $failureUuids,
+                    $result['reason'] ?? null
+                );
 
                 continue;
             }
@@ -266,6 +272,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
      * @param list<string> $failureUuids
      */
     private function handleFailedRequest(
+        MigrationContextInterface $migrationContext,
         MediaProcessWorkloadStruct $oldWorkload,
         MediaProcessWorkloadStruct &$mappedWorkload,
         string $uuid,
@@ -280,13 +287,12 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         if ($mappedWorkload->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-            $this->loggingService->addLogEntry(new CannotGetFileRunLog(
-                $mappedWorkload->getRunId(),
-                DefaultEntities::ORDER_DOCUMENT,
-                $mappedWorkload->getMediaId(),
-                $mappedWorkload->getAdditionalData()['uri'],
-                $clientException
-            ));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
+                    ->withExceptionTrace($clientException?->getTrace() ?? [])
+                    ->build(CannotGetFileRunLog::class)
+            );
         }
     }
 }

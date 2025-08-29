@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
@@ -57,7 +58,10 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
         if ($converted['documentTypeId'] === null) {
-            $this->loggingService->addLogEntry(new UnsupportedDocumentTypeLog($this->runId, DefaultEntities::ORDER_DOCUMENT_BASE_CONFIG, $data['id'], $data['documentType']['technicalName']));
+            $this->loggingService->addLogEntry( // TODO: add optional fields
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->build(UnsupportedDocumentTypeLog::class)
+            );
 
             return new ConvertStruct(null, $data, $converted['id'] ?? null);
         }

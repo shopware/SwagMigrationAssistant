@@ -8,17 +8,14 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class DataSetNotFoundLog extends BaseRunLogEntry
+readonly class DataSetNotFoundLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runUuid,
-        string $entity,
-        string $sourceId,
-        private readonly string $profileName,
-    ) {
-        parent::__construct($runUuid, $entity, $sourceId);
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -29,34 +26,5 @@ class DataSetNotFoundLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__DATASET_NOT_FOUND';
-    }
-
-    public function getTitle(): string
-    {
-        return 'DataSet not found';
-    }
-
-    /**
-     * @return array{profileName: string, entity: ?string, sourceId: ?string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'profileName' => $this->profileName,
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'DataSet for profile "%s" and entity "%s" not found. Entity with id "%s" could not be processed.',
-            $args['profileName'],
-            $args['entity'],
-            $args['sourceId']
-        );
     }
 }

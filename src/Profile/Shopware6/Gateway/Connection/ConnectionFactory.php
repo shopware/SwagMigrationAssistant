@@ -29,13 +29,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
 
     public function createApiClient(MigrationContextInterface $migrationContext): ?HttpClientInterface
     {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return null;
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if (empty($credentials) || !isset($credentials['endpoint'])) {
             return null;
@@ -50,7 +44,7 @@ class ConnectionFactory implements ConnectionFactoryInterface
             new Client($options),
             $this->connectionRepository,
             $migrationContext,
-            Context::createDefaultContext() // ToDo maybe replace this with the real context from the request, because this could cause caching issues (but it will only write data to DB).
+            Context::createDefaultContext()
         );
     }
 }

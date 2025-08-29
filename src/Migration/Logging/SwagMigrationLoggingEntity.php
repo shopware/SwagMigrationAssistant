@@ -17,29 +17,89 @@ class SwagMigrationLoggingEntity extends Entity
 {
     use EntityIdTrait;
 
+    protected string $runId;
+
+    protected SwagMigrationRunEntity $run;
+
+    protected string $profileName;
+
+    protected string $gatewayName;
+
     protected string $level;
 
     protected string $code;
 
-    protected string $title;
-
-    protected string $description;
-
-    protected array $parameters;
-
-    protected string $titleSnippet;
-
-    protected string $descriptionSnippet;
-
-    protected ?string $entity;
-
-    protected ?string $sourceId;
-
-    protected ?string $runId;
-
-    protected ?SwagMigrationRunEntity $run;
+    protected bool $userFixable;
 
     protected int $autoIncrement;
+
+    protected ?string $entityName = null;
+
+    protected ?string $fieldName = null;
+
+    protected ?string $fieldSourcePath = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
+    protected ?array $sourceData = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
+    protected ?array $convertedData = null;
+
+    /**
+     * @var array<string, mixed>|null
+     */
+    protected ?array $usedMapping = null;
+
+    protected ?string $exceptionMessage = null;
+
+    /**
+     * @var array<int, array<string, mixed>>|null
+     */
+    protected ?array $exceptionTrace = null;
+
+    public function getRunId(): string
+    {
+        return $this->runId;
+    }
+
+    public function setRunId(string $runId): void
+    {
+        $this->runId = $runId;
+    }
+
+    public function getRun(): SwagMigrationRunEntity
+    {
+        return $this->run;
+    }
+
+    public function setRun(SwagMigrationRunEntity $run): void
+    {
+        $this->run = $run;
+    }
+
+    public function getProfileName(): string
+    {
+        return $this->profileName;
+    }
+
+    public function setProfileName(string $profileName): void
+    {
+        $this->profileName = $profileName;
+    }
+
+    public function getGatewayName(): string
+    {
+        return $this->gatewayName;
+    }
+
+    public function setGatewayName(string $gatewayName): void
+    {
+        $this->gatewayName = $gatewayName;
+    }
 
     public function getLevel(): string
     {
@@ -61,94 +121,14 @@ class SwagMigrationLoggingEntity extends Entity
         $this->code = $code;
     }
 
-    public function getTitle(): string
+    public function isUserFixable(): bool
     {
-        return $this->title;
+        return $this->userFixable;
     }
 
-    public function setTitle(string $title): void
+    public function setUserFixable(bool $userFixable): void
     {
-        $this->title = $title;
-    }
-
-    public function getDescription(): string
-    {
-        return $this->description;
-    }
-
-    public function setDescription(string $description): void
-    {
-        $this->description = $description;
-    }
-
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    public function setParameters(array $parameters): void
-    {
-        $this->parameters = $parameters;
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return $this->titleSnippet;
-    }
-
-    public function setTitleSnippet(string $titleSnippet): void
-    {
-        $this->titleSnippet = $titleSnippet;
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return $this->descriptionSnippet;
-    }
-
-    public function setDescriptionSnippet(string $descriptionSnippet): void
-    {
-        $this->descriptionSnippet = $descriptionSnippet;
-    }
-
-    public function getEntity(): ?string
-    {
-        return $this->entity;
-    }
-
-    public function setEntity(?string $entity): void
-    {
-        $this->entity = $entity;
-    }
-
-    public function getSourceId(): ?string
-    {
-        return $this->sourceId;
-    }
-
-    public function setSourceId(?string $sourceId): void
-    {
-        $this->sourceId = $sourceId;
-    }
-
-    public function getRunId(): ?string
-    {
-        return $this->runId;
-    }
-
-    public function setRunId(?string $runId): void
-    {
-        $this->runId = $runId;
-    }
-
-    public function getRun(): ?SwagMigrationRunEntity
-    {
-        return $this->run;
-    }
-
-    public function setRun(?SwagMigrationRunEntity $run): void
-    {
-        $this->run = $run;
+        $this->userFixable = $userFixable;
     }
 
     public function getAutoIncrement(): int
@@ -159,5 +139,109 @@ class SwagMigrationLoggingEntity extends Entity
     public function setAutoIncrement(int $autoIncrement): void
     {
         $this->autoIncrement = $autoIncrement;
+    }
+
+    public function getEntityName(): ?string
+    {
+        return $this->entityName;
+    }
+
+    public function setEntityName(string $entityName): void
+    {
+        $this->entityName = $entityName;
+    }
+
+    public function getFieldName(): ?string
+    {
+        return $this->fieldName;
+    }
+
+    public function setFieldName(string $fieldName): void
+    {
+        $this->fieldName = $fieldName;
+    }
+
+    public function getFieldSourcePath(): ?string
+    {
+        return $this->fieldSourcePath;
+    }
+
+    public function setFieldSourcePath(string $fieldSourcePath): void
+    {
+        $this->fieldSourcePath = $fieldSourcePath;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
+    public function getSourceData(): ?array
+    {
+        return $this->sourceData;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $sourceData
+     */
+    public function setSourceData(array $sourceData): void
+    {
+        $this->sourceData = $sourceData;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
+    public function getConvertedData(): ?array
+    {
+        return $this->convertedData;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $convertedData
+     */
+    public function setConvertedData(array $convertedData): void
+    {
+        $this->convertedData = $convertedData;
+    }
+
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function getUsedMapping(): ?array
+    {
+        return $this->usedMapping;
+    }
+
+    /**
+     * @param array<string, mixed> $usedMapping
+     */
+    public function setUsedMapping(array $usedMapping): void
+    {
+        $this->usedMapping = $usedMapping;
+    }
+
+    public function getExceptionMessage(): ?string
+    {
+        return $this->exceptionMessage;
+    }
+
+    public function setExceptionMessage(string $exceptionMessage): void
+    {
+        $this->exceptionMessage = $exceptionMessage;
+    }
+
+    /**
+     * @return array<int, array<string, mixed>>|null
+     */
+    public function getExceptionTrace(): ?array
+    {
+        return $this->exceptionTrace;
+    }
+
+    /**
+     * @param array<int, array<string, mixed>> $exceptionTrace
+     */
+    public function setExceptionTrace(array $exceptionTrace): void
+    {
+        $this->exceptionTrace = $exceptionTrace;
     }
 }

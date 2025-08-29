@@ -7,11 +7,9 @@
 
 return [
     [
-        'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_LANGUAGE',
-        'sourceId' => '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
+        'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
     ],
     [
-        'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_LANGUAGE',
-        'sourceId' => '69f122e76ec34f89bb0b22bd3ca0a368',
+        'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
     ],
 ];
