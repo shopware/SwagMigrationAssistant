@@ -1,0 +1,62 @@
+{% block swag_migration_dynamic_resolution_field_scalar %}
+<div class="swag-migration-dynamic-resolution-field-scalar">
+    {% block swag_migration_dynamic_resolution_field_scalar_number %}
+        <mt-number-field
+            v-if="componentType === 'number'"
+            label="Number"
+            class="sw-migration-dynamic-resolution-field__number"
+            name="migration-resolution--number"
+            :placeholder="componentType"
+        />
+    {% endblock %}
+
+    {% block swag_migration_dynamic_resolution_field_scalar_textarea %}
+        <mt-textarea
+            v-if="componentType === 'textarea'"
+            label="Textarea"
+            class="sw-migration-dynamic-resolution-field__textarea"
+            name="migration-resolution--textarea"
+            :placeholder="componentType"
+        />
+    {% endblock %}
+
+    {% block swag_migration_dynamic_resolution_field_scalar_text %}
+        <mt-text-field
+            v-if="componentType === 'text'"
+            label="Text"
+            class="sw-migration-dynamic-resolution-field__text"
+            name="migration-resolution--text"
+            :placeholder="componentType"
+        />
+    {% endblock %}
+
+    {% block swag_migration_dynamic_resolution_field_scalar_switch %}
+        <mt-switch
+            v-if="componentType === 'switch'"
+            label="Switch"
+            class="sw-migration-dynamic-resolution-field__switch"
+            name="migration-resolution--switch"
+            :placeholder="componentType"
+        />
+    {% endblock %}
+
+    {% block swag_migration_dynamic_resolution_field_scalar_date %}
+        <mt-datepicker
+            v-if="componentType === 'datepicker'"
+            label="Datepicker"
+            class="sw-migration-dynamic-resolution-field__datepicker"
+            name="migration-resolution--datepicker"
+            :placeholder="componentType"
+        />
+    {% endblock %}
+
+    {% block swag_migration_dynamic_resolution_field_scalar_editor %}
+        <sw-code-editor
+            v-if="componentType === 'editor'"
+            label="Code editor"
+            class="sw-migration-dynamic-resolution-field__code-editor"
+            name="migration-resolution--code-editor"
+        />
+    {% endblock %}
+</div>
+{% endblock %}

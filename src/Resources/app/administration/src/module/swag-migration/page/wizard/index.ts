@@ -31,3 +31,7 @@ Shopware.Component.register(
     'swag-migration-wizard-page-profile-installation',
     () => import('./swag-migration-wizard-page-profile-installation'),
 );
+Shopware.Component.register(
+    'swag-migration-wizard-error-resolution',
+    () => import('./swag-migration-wizard-error-resolution'),
+);

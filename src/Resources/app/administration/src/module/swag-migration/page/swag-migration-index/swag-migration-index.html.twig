@@ -4,7 +4,6 @@
         {% block swag_migration_index_tabs %}
             <sw-tabs class="swag-migration-index-tabs"
                      position-identifier="swag-migration-index-tabs">
-
                 {% block swag_migration_index_tab_main %}
                     <sw-tabs-item :route="{ name: 'swag.migration.index.main' }"
                                   :title="$tc('swag-migration.general.tabMain')">
@@ -23,6 +22,13 @@
                     <sw-tabs-item :route="{ name: 'swag.migration.index.history' }"
                                   :title="$tc('swag-migration.general.tabHistory')">
                         {{ $tc('swag-migration.general.tabHistory') }}
+                    </sw-tabs-item>
+                {% endblock %}
+
+                {% block swag_migration_index_tab_poc %}
+                    <sw-tabs-item :route="{ name: 'swag.migration.index.poc' }"
+                                  title="poc">
+                        poc
                     </sw-tabs-item>
                 {% endblock %}
             </sw-tabs>

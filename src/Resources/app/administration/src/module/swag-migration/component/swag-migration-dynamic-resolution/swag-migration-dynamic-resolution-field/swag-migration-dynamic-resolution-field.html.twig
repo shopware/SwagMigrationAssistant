@@ -1,0 +1,13 @@
+{% block swag_migration_dyamic_resolution_field %}
+    <div class="swag-migration-dynamic-resolution-field">
+        <swag-migration-dynamic-resolution-field-scalar
+            v-if="isScalarField"
+            :component-type="fieldType"
+        />
+        <swag-migration-dynamic-resolution-field-relation
+            v-else
+            :relation-type="fieldType"
+            :entity-field="entityField"
+        />
+    </div>
+{% endblock %}

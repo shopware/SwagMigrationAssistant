@@ -1,0 +1,11 @@
+{% block swag_migration_wizard_error_resolution %}
+    <mt-card class="swag-migration-error-resolution"
+             position-identifier="swag-migration-error-resolution"
+             :large="true">
+        <template v-for="log in logs">
+            <swag-migration-dynamic-resolution-field
+                :log="log"
+            />
+        </template>
+    </mt-card>
+{% endblock %}

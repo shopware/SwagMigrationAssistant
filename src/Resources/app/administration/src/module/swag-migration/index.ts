@@ -72,6 +72,14 @@ Shopware.Module.register('swag-migration', {
                         privilege: 'admin',
                     },
                 },
+                poc: {
+                    path: 'poc',
+                    component: 'swag-migration-wizard-error-resolution',
+                    meta: {
+                        parentPath: 'sw.settings.index',
+                        privilege: 'admin',
+                    },
+                },
             },
         },
         processScreen: {
