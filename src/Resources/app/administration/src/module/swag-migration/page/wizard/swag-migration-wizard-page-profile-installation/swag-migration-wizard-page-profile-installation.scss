@@ -38,7 +38,7 @@
         padding-left: var(--scale-size-8);
         padding-right: var(--scale-size-8);
         border-radius: var(--border-radius-2xs);
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         font-size: 12px;
     }
 
@@ -47,18 +47,18 @@
         padding-left: var(--scale-size-8);
         padding-right: var(--scale-size-8);
         border-radius: var(--border-radius-2xs);
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         font-size: 12px;
     }
 
     .swag-migration-wizard-profile-installation__profile_headline {
         font-size: $font-size-s;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-wizard-profile-installation__profile_manufacturer {
         font-size: 12px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         color: $color-gray-500;
         margin-bottom: var(--scale-size-8);
     }
@@ -74,7 +74,7 @@
 
     .swag-migration-wizard-profile-installation__installed_box {
         font-size: $font-size-xxs;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         position: relative;
         color: $color-emerald-500;
     }
@@ -87,7 +87,7 @@
 
     .swag-migration-wizard-profile-installation__availability-headline {
         font-size: 12px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         margin-bottom: var(--scale-size-20);
     }
 

@@ -38,7 +38,10 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Start', exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByPlaceholder('Enter name').fill('sw5local');
-        await page.locator('div').filter({ hasText: /^Shopware 5\.5 - shopware AG$/ }).click();
+        await page
+            .locator('div')
+            .filter({ hasText: /^Shopware 5\.5 - shopware AG$/ })
+            .click();
         await page.getByText('Shopware 5.5 - shopware AG').click();
         await page.getByText('Select gateway').click();
         await page.getByPlaceholder('Select gateway').fill('Local');
@@ -51,7 +54,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByPlaceholder('Enter name').fill(DatabaseCredentials.database);
         await page.getByPlaceholder('Enter installation root').fill('/tmp');
         await page.getByRole('button', { name: 'Connect' }).click();
-
 
         await page.getByRole('button', { name: 'Done' }).click({ timeout: MIGRATION_LOADING_TIMEOUT });
         await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
@@ -70,18 +72,20 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         // premapping:
         // go through each entity (tab card title)
         const tabs = page.locator('.swag-migration-tab-card__title');
-        for (let i = 0; i < await tabs.count(); i++) {
+        for (let i = 0; i < (await tabs.count()); i++) {
             const tab = tabs.nth(i);
             await tab.click();
 
             // go through each select input with error and select the first available option for each
-            const premappingItems = page.locator('.swag-migration-grid-selection__choice-column .has--error .mt-select-selection-list__input');
+            const premappingItems = page.locator(
+                '.swag-migration-grid-selection__choice-column .has--error .mt-select-selection-list__input',
+            );
 
-            await premappingItems.evaluateAll(async list => {
+            await premappingItems.evaluateAll(async (list) => {
                 for await (const item of list) {
                     await item.click();
                     document.querySelector('.mt-select-result')?.click();
-                    await new Promise(resolve => setTimeout(resolve, 150));
+                    await new Promise((resolve) => setTimeout(resolve, 150));
                 }
             });
 
@@ -108,13 +112,21 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
     // ToDo MIG-985: Remove this if the underlying issue is fixed
     await test.step('Wait for media download to finish', async () => {
-        await expect.poll(async () => {
-            return await MediaProcessObserver.isMediaProcessing();
-        }, {
-            // Probe after 100ms and then every second
-            intervals: [100, 1_000],
-            timeout: 300_000,
-        }).toBe(false);
+        await expect
+            .poll(
+                async () => {
+                    return await MediaProcessObserver.isMediaProcessing();
+                },
+                {
+                    // Probe after 100ms and then every second
+                    intervals: [
+                        100,
+                        1_000,
+                    ],
+                    timeout: 300_000,
+                },
+            )
+            .toBe(false);
     });
 
     await test.step('Expect entities to be there', async () => {
@@ -166,7 +178,10 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         let logString = finalBuffer.toString();
 
         // cleanup file timestamps
-        logString = logString.replaceAll(/[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4}\s[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\sUTC/g, 'TimestampXXX');
+        logString = logString.replaceAll(
+            /[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4}\s[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\sUTC/g,
+            'TimestampXXX',
+        );
 
         // cleanup log file uuids
         logString = logString.replaceAll(/(\s|")(0[0-9a-fA-F]+)/g, '$1XXX');

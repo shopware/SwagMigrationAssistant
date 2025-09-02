@@ -27,7 +27,7 @@
 
     .swag-migration-shop-information__connection-name {
         font-size: $font-size-m;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         margin-bottom: var(--scale-size-4);
     }
 
@@ -52,7 +52,7 @@
     .swag-migration-shop-information__connection-status-text {
         margin: auto 0;
         font-size: 12px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-shop-information__metadata {
@@ -83,7 +83,7 @@
     .swag-migration-shop-information__confirm-modal-content-hint {
         text-align: center;
         padding-top: var(--scale-size-32);
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
     }
 }
 

@@ -28,7 +28,7 @@
         margin-top: var(--scale-size-20);
 
         a {
-            font-weight: 600;
+            font-weight: var(--font-weight-semibold);
             font-size: 12px;
             text-decoration: none;
         }
@@ -50,13 +50,13 @@
     }
 
     .swag-migration-wizard-page-credentials__steps {
-        padding-left: 20px;
+        padding-left: var(--scale-size-20);
         text-align: left;
         font-size: 14px;
         line-height: 20px;
 
         a {
-            font-weight: 600;
+            font-weight: var(--font-weight-semibold);
             text-decoration: none;
         }
     }

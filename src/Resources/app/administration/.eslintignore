@@ -1,4 +1,3 @@
 /node_modules
 /static
-*.spec.vue2.js
-*.fixtures.js
+/.tmp

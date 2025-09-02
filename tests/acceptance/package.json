@@ -4,12 +4,16 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "lint": "eslint --ext .js,.ts,.cjs .",
-    "lint-fix": "npm run lint -- --fix",
     "types": "tsc",
-    "test": "npx playwright test --ui"
+    "test": "npx playwright test --ui",
+    "lint": "eslint --ext .js,.ts,.cjs .",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",
+    "format:fix": "prettier --write \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache"
   },
   "devDependencies": {
+    "prettier": "^3.4.2",
+    "prettier-plugin-multiline-arrays": "^3.0.6",
     "@babel/eslint-parser": "^7.24.5",
     "@shopware-ag/eslint-config-base": "^2.0.0",
     "@typescript-eslint/eslint-plugin": "^7.9.0",

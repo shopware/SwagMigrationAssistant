@@ -24,7 +24,7 @@
 
     h5.swag-migration-confirm-warning__title {
         font-size: 18px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         line-height: 25px;
     }
 
@@ -38,7 +38,7 @@
     }
 
     .swag-migration-confirm-warning__question {
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         padding-bottom: var(--scale-size-32);
     }
 
