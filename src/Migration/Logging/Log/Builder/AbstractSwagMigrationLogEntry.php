@@ -18,10 +18,10 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     final public const LOG_LEVEL_DEBUG = 'debug';
 
     /**
-     * @param array<int, array<string, mixed>>|null $sourceData
-     * @param array<int, array<string, mixed>>|null $convertedData
-     * @param array<string, mixed>|null $usedMapping
-     * @param array<int, array<string, mixed>>|null $exceptionTrace
+     * @param array<mixed>|null $sourceData
+     * @param array<mixed>|null $convertedData
+     * @param array<mixed>|null $usedMapping
+     * @param array<mixed>|null $exceptionTrace
      */
     public function __construct(
         protected string $runId,
@@ -69,7 +69,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     }
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return array<mixed>|null
      */
     public function getSourceData(): ?array
     {
@@ -77,7 +77,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     }
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return array<mixed>|null
      */
     public function getConvertedData(): ?array
     {
@@ -85,7 +85,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     }
 
     /**
-     * @return array<string, mixed>|null
+     * @return array<mixed>|null
      */
     public function getUsedMapping(): ?array
     {
@@ -98,7 +98,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     }
 
     /**
-     * @return array<int, array<string, mixed>>|null
+     * @return array<mixed>|null
      */
     public function getExceptionTrace(): ?array
     {

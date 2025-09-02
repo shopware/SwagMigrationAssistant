@@ -115,13 +115,6 @@ Shopware.Module.register('swag-migration', {
                         privilege: 'admin',
                     },
                 },
-                profileInformation: {
-                    path: 'profile/information',
-                    component: 'swag-migration-wizard-page-profile-information',
-                    meta: {
-                        privilege: 'admin',
-                    },
-                },
                 credentials: {
                     path: 'credentials',
                     component: 'swag-migration-wizard-page-credentials',

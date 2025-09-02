@@ -1,9 +1,0 @@
-{% block swag_migration_wizard_page_profile_information %}
-    <div>
-
-        {% block swag_migration_wizard_page_profile_information_component %}
-            <component :is="profileInformationComponent"
-                       v-if="profileInformationComponent !== '' && componentIsLoaded" />
-        {% endblock %}
-    </div>
-{% endblock %}

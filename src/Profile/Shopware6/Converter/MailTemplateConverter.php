@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -65,8 +66,11 @@ class MailTemplateConverter extends ShopwareMediaConverter
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid === null) {
-                    $this->loggingService->addLogEntry( // TODO: add optional fields
+                    $this->loggingService->addLogEntry(
                         SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->withEntityName(MailTemplateDefinition::ENTITY_NAME)
+                            ->withFieldName('mailTemplateTypeId')
+                            ->withFieldSourcePath('mailTemplateType.technicalName')
                             ->build(UnsupportedMailTemplateTypeLog::class)
                     );
 

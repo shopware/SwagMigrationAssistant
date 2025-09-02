@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Seo\SeoUrl\SeoUrlDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -65,8 +66,13 @@ abstract class SeoUrlConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('subshopID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -78,8 +84,13 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
         if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -105,8 +116,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
                 );
 
                 if ($mapping === null) {
-                    $this->loggingService->addLogEntry( // TODO: add optional fields
+                    $this->loggingService->addLogEntry(
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                            ->withFieldName('foreignKey')
+                            ->withFieldSourcePath('type')
+                            ->withSourceData($data)
                             ->build(AssociationRequiredMissingLog::class)
                     );
 
@@ -127,8 +142,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
             );
 
             if ($mapping === null) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                        ->withFieldName('foreignKey')
+                        ->withFieldSourcePath('type')
+                        ->withSourceData($data)
                         ->build(AssociationRequiredMissingLog::class)
                 );
 
@@ -139,8 +158,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $converted['pathInfo'] = '/navigation/' . $mapping['entityUuid'];
             $this->mappingIds[] = $mapping['id'];
         } else {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('foreignKey')
+                    ->withFieldSourcePath('type')
+                    ->withSourceData($data)
                     ->build(UnsupportedSeoUrlTypeLog::class)
             );
 

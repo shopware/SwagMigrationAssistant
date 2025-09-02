@@ -45,8 +45,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             if ($currentDataSet === null) {
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException) {
-                    $this->logDataSetNotFoundException($migrationContext);
+                } catch (DataSetNotFoundException $exception) {
+                    $this->logDataSetNotFoundException($migrationContext, $exception);
 
                     continue;
                 }
@@ -59,8 +59,8 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                     $messageMediaUuids = [];
                     $currentCount = 0;
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException) {
-                    $this->logDataSetNotFoundException($migrationContext);
+                } catch (DataSetNotFoundException $exception) {
+                    $this->logDataSetNotFoundException($migrationContext, $exception);
 
                     continue;
                 }
@@ -129,10 +129,14 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $this->messageBus->dispatch($message);
     }
 
-    private function logDataSetNotFoundException(MigrationContextInterface $migrationContext): void
-    {
-        $this->loggingService->addLogEntry( // TODO: add optional fields
+    private function logDataSetNotFoundException(
+        MigrationContextInterface $migrationContext,
+        \Throwable $exception,
+    ): void {
+        $this->loggingService->addLogEntry(
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->withExceptionMessage($exception->getMessage())
+                ->withExceptionTrace($exception->getTrace())
                 ->build(DataSetNotFoundLog::class)
         );
     }

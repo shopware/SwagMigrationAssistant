@@ -38,18 +38,6 @@ class="swag-migration-wizard__placeholder"></div>
             <template #modal-footer>
                 <div class="swag-migration-wizard__footer">
                     {% block swag_migration_wizard_footer %}
-                        {% block swag_migration_wizard_arrow %}
-                            <div class="swag-migration-wizard__left-actions">
-                                <mt-button v-show="buttonBackVisible"
-                                           variant="secondary"
-                                           class="swag-migration-wizard__buttonBack"
-                                           size="small"
-                                           @click="onButtonBackClick">
-                                    {{ $tc(buttonBackSnippet) }}
-                                </mt-button>
-                            </div>
-                        {% endblock %}
-
                         {% block swag_migration_wizard_actions %}
                             <div class="swag-migration-wizard__right-actions">
 

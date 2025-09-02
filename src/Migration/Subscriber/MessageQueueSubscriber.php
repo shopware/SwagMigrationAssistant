@@ -89,7 +89,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
          * Raise exception counter and log the exception
          */
         $progress->raiseExceptionCount();
-        $this->loggingService->addLogEntry( // TODO: add optional fields
+        $this->loggingService->addLogEntry(
             (new SwagMigrationLogBuilder(
                 $run->getId(),
                 $connection?->getProfileName() ?? 'unknown',
@@ -108,7 +108,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             $progress->setIsAborted(true);
             $this->updateRun($run->getId(), $progress, $message->getContext());
 
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 (new SwagMigrationLogBuilder(
                     $run->getId(),
                     $connection?->getProfileName() ?? 'unknown',

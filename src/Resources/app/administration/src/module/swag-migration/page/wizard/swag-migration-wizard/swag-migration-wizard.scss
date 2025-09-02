@@ -10,6 +10,10 @@
     .swag-migration-wizard__content {
         max-width: 520px;
         margin: var(--scale-size-8) auto 60px auto;
+
+        .swag-migration-wizard__form {
+            width: 80%;
+        }
     }
 
     .swag-migration-wizard__content-information {
@@ -42,8 +46,19 @@
     }
 
     .swag-migration-wizard__form {
-        width: 80%;
         margin: var(--scale-size-40) auto var(--scale-size-30) auto;
+    }
+
+    .swag-migration-wizard-page-credentials__steps {
+        padding-left: 20px;
+        text-align: left;
+        font-size: 14px;
+        line-height: 20px;
+
+        a {
+            font-weight: 600;
+            text-decoration: none;
+        }
     }
 
     &.sw-modal {
@@ -54,14 +69,6 @@
 
     .swag-migration-wizard__footer {
         width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        align-items: center;
-        white-space: nowrap;
-    }
-
-    .swag-migration-wizard__left-actions {
-        text-align: left;
     }
 
     .swag-migration-wizard__right-actions {

@@ -68,10 +68,11 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
+                    ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
             );
 
@@ -104,10 +105,12 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
+                        ->withEntityName($dataSet::getEntity())
+                        ->withSourceData($item)
                         ->build(ExceptionRunLog::class)
                 );
 

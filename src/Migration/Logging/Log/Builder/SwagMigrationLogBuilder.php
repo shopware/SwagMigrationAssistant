@@ -22,10 +22,10 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 class SwagMigrationLogBuilder
 {
     /**
-     * @param array<int, array<string, mixed>>|null $sourceData
-     * @param array<int, array<string, mixed>>|null $convertedData
-     * @param array<string, mixed>|null $usedMapping
-     * @param array<int, array<string, mixed>>|null $exceptionTrace
+     * @param array<mixed>|null $sourceData
+     * @param array<mixed>|null $convertedData
+     * @param array<mixed>|null $usedMapping
+     * @param array<mixed>|null $exceptionTrace
      */
     public function __construct(
         protected string $runId,
@@ -73,7 +73,7 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<int, array<string, mixed>> $sourceData
+     * @param array<mixed> $sourceData
      */
     public function withSourceData(array $sourceData): self
     {
@@ -83,7 +83,7 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<int, array<string, mixed>> $convertedData
+     * @param array<mixed> $convertedData
      */
     public function withConvertedData(array $convertedData): self
     {
@@ -93,7 +93,7 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<string, mixed> $usedMapping
+     * @param array<mixed> $usedMapping
      */
     public function withUsedMapping(array $usedMapping): self
     {
@@ -110,7 +110,7 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @param array<int, array<string, mixed>> $exceptionTrace
+     * @param array<mixed> $exceptionTrace
      */
     public function withExceptionTrace(array $exceptionTrace): self
     {
@@ -128,7 +128,11 @@ class SwagMigrationLogBuilder
      */
     public function build(string $logClass): AbstractSwagMigrationLogEntry
     {
-        $log = new $logClass(
+        if (!class_exists($logClass) || !is_subclass_of($logClass, AbstractSwagMigrationLogEntry::class)) {
+            throw MigrationException::failedToCreateMigrationLog($logClass);
+        }
+
+        return new $logClass(
             $this->runId,
             $this->profileName,
             $this->gatewayName,
@@ -141,11 +145,5 @@ class SwagMigrationLogBuilder
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
-
-        if ($log instanceof AbstractSwagMigrationLogEntry) {
-            return $log;
-        }
-
-        throw MigrationException::failedToCreateMigrationLog($logClass);
     }
 }

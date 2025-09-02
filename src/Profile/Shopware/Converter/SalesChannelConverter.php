@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
@@ -96,8 +97,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('customerGroupId')
+                    ->withFieldSourcePath('customer_group_id')
+                    ->withSourceData($data)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -109,8 +114,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('locale')
+                    ->withSourceData($data)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -129,8 +138,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('currencyId')
+                    ->withFieldSourcePath('currency')
+                    ->withSourceData($data)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -152,8 +165,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         if ($categoryMapping === null) {
-            $this->loggingService->addLogEntry( // TODO: add optional fields
+            $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('navigationCategoryId')
+                    ->withFieldSourcePath('category_id')
+                    ->withSourceData($data)
                     ->build(AssociationRequiredMissingLog::class)
             );
 
@@ -372,8 +389,10 @@ abstract class SalesChannelConverter extends ShopwareConverter
                     $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
                 }
 
-                $this->loggingService->addLogEntry( // TODO: add optional fields
+                $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                        ->withFieldName('languageId')
                         ->build(DeactivatedPackLanguageLog::class)
                 );
             }

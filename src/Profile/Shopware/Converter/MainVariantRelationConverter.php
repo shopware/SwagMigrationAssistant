@@ -109,12 +109,11 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
      */
     private function addAssociationRequiredLog(MigrationContextInterface $migrationContext, string $field, string $entity, array $data): void
     {
-        $this->loggingService->addLogEntry( // TODO: add optional fields
+        $this->loggingService->addLogEntry(
             SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                 ->withEntityName($entity)
-                ->withFieldName($field)
                 ->withFieldSourcePath($field)
-                ->withSourceData([$data])
+                ->withSourceData($data)
                 ->build(AssociationRequiredMissingLog::class)
         );
     }
