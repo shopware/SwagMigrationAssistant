@@ -531,12 +531,14 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onNoConnectionSelected() {
-            if ([
-                this.routes.chooseAction,
-                this.routes.credentials,
-                this.routes.credentialsSuccess,
-                this.routes.credentialsError,
-            ].includes(this.currentRoute)) {
+            if (
+                [
+                    this.routes.chooseAction,
+                    this.routes.credentials,
+                    this.routes.credentialsSuccess,
+                    this.routes.credentialsError,
+                ].includes(this.currentRoute)
+            ) {
                 this.navigateToRoute(this.routes.profileInstallation);
             }
         },

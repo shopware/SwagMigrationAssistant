@@ -28,10 +28,6 @@ Shopware.Component.register(
     () => import('./swag-migration-wizard-page-introduction'),
 );
 Shopware.Component.register(
-    'swag-migration-wizard-page-profile-information',
-    () => import('./swag-migration-wizard-page-profile-information'),
-);
-Shopware.Component.register(
     'swag-migration-wizard-page-profile-installation',
     () => import('./swag-migration-wizard-page-profile-installation'),
 );
