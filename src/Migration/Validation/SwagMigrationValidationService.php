@@ -26,6 +26,7 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Validation\Event\SwagMigrationPostValidationEvent;
 use SwagMigrationAssistant\Migration\Validation\Event\SwagMigrationPreValidationEvent;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationUnexpectedFieldLog;
@@ -151,7 +152,8 @@ readonly class SwagMigrationValidationService
                 continue;
             }
 
-            $field = $fields->get($fieldName);
+            $field = clone $fields->get($fieldName);
+            $field->setFlags(new Required());
 
             $keyValue = new KeyValuePair(
                 $field->getPropertyName(),
@@ -160,12 +162,8 @@ readonly class SwagMigrationValidationService
             );
 
             try {
-                $field->getSerializer()->encode(
-                    $field,
-                    $entityExistence,
-                    $keyValue,
-                    $parameters
-                );
+                $serializer = $field->getSerializer();
+                \iterator_to_array($serializer->encode($field, $entityExistence, $keyValue, $parameters), false);
             } catch (\Throwable $e) {
                 $context->getValidationResult()->addLog(
                     SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
@@ -174,7 +172,7 @@ readonly class SwagMigrationValidationService
                         ->withConvertedData([$fieldName => $value])
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
-                        ->build(ValidationExceptionLog::class)
+                        ->build(ValidationInvalidFieldValueLog::class)
                 );
             }
         }

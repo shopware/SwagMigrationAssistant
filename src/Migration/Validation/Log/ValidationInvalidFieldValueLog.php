@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class ValidationMissingRequiredFieldLog extends AbstractSwagMigrationLogEntry
+readonly class ValidationInvalidFieldValueLog extends AbstractSwagMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class ValidationMissingRequiredFieldLog extends AbstractSwagMigrationLo
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD';
+        return 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE';
     }
 }
