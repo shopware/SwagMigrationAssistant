@@ -104,7 +104,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     $dataSet::getEntity()
                 );
 
-                if ($validationResult?->hasErrors()) {
+                if ($validationResult?->hasLogs()) {
                     $convertFailureFlag = true;
                 }
 

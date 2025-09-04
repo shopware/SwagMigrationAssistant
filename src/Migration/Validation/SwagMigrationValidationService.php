@@ -130,6 +130,10 @@ readonly class SwagMigrationValidationService
     {
         $fields = $context->getEntityDefinition()->getFields();
 
+        if (!isset($context->getConvertedData()['id'])) {
+            throw MigrationException::unexpectedNullValue('id');
+        }
+
         $entityExistence = EntityExistence::createForEntity(
             $context->getEntityDefinition()->getEntityName(),
             ['id' => $context->getConvertedData()['id']],

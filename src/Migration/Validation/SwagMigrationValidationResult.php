@@ -35,7 +35,7 @@ class SwagMigrationValidationResult
         return $this->logs;
     }
 
-    public function hasErrors(): bool
+    public function hasLogs(): bool
     {
         return \count($this->logs) !== 0;
     }
