@@ -13,7 +13,6 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -161,9 +160,11 @@ class PropertyGroupOptionConverterTest extends TestCase
         $convertedMainProduct = $mainProduct->getConverted();
         static::assertNotNull($convertedMainProduct);
 
-        $property0 = $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext);
-        $property1 = $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext);
-        $property2 = $this->propertyGroupOptionConverter->convert($propertyData[3], $this->context, $this->migrationContext);
+        $properties = [
+            $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext),
+            $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext),
+            $this->propertyGroupOptionConverter->convert($propertyData[3], $this->context, $this->migrationContext),
+        ];
 
         $iterator = 0;
         foreach ($optionRelationData as &$relation) {
@@ -174,8 +175,8 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
-            $property = ${'property' . $iterator};
-            static::assertInstanceOf(ConvertStruct::class, $property);
+
+            $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
             static::assertSame($firstConverted['id'], $converted['configuratorSettings'][0]['optionId']);
@@ -192,8 +193,8 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
-            $property = ${'property' . $iterator};
-            static::assertInstanceOf(ConvertStruct::class, $property);
+
+            $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
             static::assertSame($firstConverted['id'], $converted['properties'][0]['id']);
@@ -215,9 +216,12 @@ class PropertyGroupOptionConverterTest extends TestCase
         $convertedMainProduct = $mainProduct->getConverted();
         static::assertNotNull($convertedMainProduct);
 
-        $property0 = $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext);
-        $property1 = $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext);
-        $property2 = $this->propertyGroupOptionConverter->convert($propertyData[3], $this->context, $this->migrationContext);
+        $oldMappingId = [];
+        $properties = [
+            $this->propertyGroupOptionConverter->convert($propertyData[4], $this->context, $this->migrationContext),
+            $this->propertyGroupOptionConverter->convert($propertyData[2], $this->context, $this->migrationContext),
+            $this->propertyGroupOptionConverter->convert($propertyData[3], $this->context, $this->migrationContext),
+        ];
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
@@ -225,7 +229,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $propertyData[4]['id'] . '_' . $convertedMainProduct['id'],
             $this->context
         );
-        $oldMappingId0 = $mapping['entityUuid'];
+        $oldMappingId[] = $mapping['entityUuid'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
@@ -233,7 +237,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $propertyData[2]['id'] . '_' . $convertedMainProduct['id'],
             $this->context
         );
-        $oldMappingId1 = $mapping['entityUuid'];
+        $oldMappingId[] = $mapping['entityUuid'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
@@ -241,7 +245,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $propertyData[3]['id'] . '_' . $convertedMainProduct['id'],
             $this->context
         );
-        $oldMappingId2 = $mapping['entityUuid'];
+        $oldMappingId[] = $mapping['entityUuid'];
 
         $iterator = 0;
         foreach ($optionRelationData as &$relation) {
@@ -252,12 +256,12 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
-            $property = ${'property' . $iterator};
-            static::assertInstanceOf(ConvertStruct::class, $property);
+
+            $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
             static::assertSame($firstConverted['id'], $converted['configuratorSettings'][0]['optionId']);
-            static::assertSame(${'oldMappingId' . $iterator}, $converted['configuratorSettings'][0]['id']);
+            static::assertSame($oldMappingId[$iterator], $converted['configuratorSettings'][0]['id']);
 
             ++$iterator;
         }
@@ -271,8 +275,8 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
-            $property = ${'property' . $iterator};
-            static::assertInstanceOf(ConvertStruct::class, $property);
+
+            $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
             static::assertSame($firstConverted['id'], $converted['properties'][0]['id']);

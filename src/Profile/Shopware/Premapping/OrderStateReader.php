@@ -168,7 +168,7 @@ class OrderStateReader extends AbstractPremappingReader
     {
         $preselectionValue = null;
 
-        switch ($sourceId) {
+        switch ((int) $sourceId) {
             case -1: // cancelled
                 $preselectionValue = $this->preselectionDictionary[OrderStates::STATE_CANCELLED] ?? null;
 
