@@ -335,13 +335,19 @@ class SwagMigrationValidationServiceTest extends TestCase
         ];
 
         yield 'valid fk' => [
-            [...$log, 'runId' => $runId],
+            [
+                ...$log,
+                'runId' => $runId,
+            ],
             [$mapping],
             [],
         ];
 
         yield 'invalid fk' => [
-            [...$log, 'runId' => Uuid::randomHex()],
+            [
+                ...$log,
+                'runId' => Uuid::randomHex(),
+            ],
             [$mapping],
             [ValidationInvalidForeignKeyLog::class],
         ];
@@ -353,7 +359,10 @@ class SwagMigrationValidationServiceTest extends TestCase
         ];
 
         yield 'fk value is null' => [
-            [...$log, 'runId' => null],
+            [
+                ...$log,
+                'runId' => null,
+            ],
             [],
             [
                 ValidationInvalidFieldValueLog::class,
@@ -361,7 +370,10 @@ class SwagMigrationValidationServiceTest extends TestCase
         ];
 
         yield 'fk value is empty string' => [
-            [...$log, 'runId' => ''],
+            [
+                ...$log,
+                'runId' => '',
+            ],
             [],
             [
                 ValidationInvalidFieldValueLog::class,

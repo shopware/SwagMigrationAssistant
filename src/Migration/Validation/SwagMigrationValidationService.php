@@ -194,7 +194,7 @@ readonly class SwagMigrationValidationService
 
             $fkValue = $context->getConvertedData()[$fkFieldName];
 
-            if (!$fkValue) {
+            if ($fkValue === '') {
                 continue;
             }
 
