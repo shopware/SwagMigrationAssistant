@@ -1,8 +1,6 @@
-import MigrationStore from 'SwagMigrationAssistant/core/data/migration.store';
+import 'SwagMigrationAssistant/module/swag-migration/store/migration.store';
 
 const { Store } = Shopware;
-
-Store.register('swagMigration', MigrationStore);
 
 describe('core/data/migration.store', () => {
     const store = Store.get('swagMigration');

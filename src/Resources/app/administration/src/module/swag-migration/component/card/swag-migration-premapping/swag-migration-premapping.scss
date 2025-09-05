@@ -24,7 +24,7 @@
 
     .swag-migration-premapping__success-title {
         font-size: 18px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         margin-bottom: 5px;
     }
 
@@ -40,7 +40,7 @@
 
     .swag-migration-premapping__loading-title {
         font-size: 18px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         margin-bottom: 5px;
     }
 
@@ -80,7 +80,7 @@
 
     .swag-migration-premapping__unfilled-title {
         font-size: 18px;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         margin-top: var(--scale-size-10);
         margin-bottom: 5px;
     }

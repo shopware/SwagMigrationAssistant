@@ -87,7 +87,7 @@
 
     .swag-migration-index-modal-abort-migration-confirm-dialog-hint {
         text-align: center;
-        font-weight: 600;
+        font-weight: var(--font-weight-semibold);
         padding-top: var(--scale-size-32);
     }
 }

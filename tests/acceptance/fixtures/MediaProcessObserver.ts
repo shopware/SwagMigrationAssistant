@@ -1,8 +1,8 @@
-import {test as base, expect } from '@playwright/test';
-import {FixtureTypes} from './AcceptanceTest';
+import { test as base, expect } from '@playwright/test';
+import { FixtureTypes } from './AcceptanceTest';
 
 export interface MediaProcessObserverStruct {
-    isMediaProcessing: () => Promise<boolean>
+    isMediaProcessing: () => Promise<boolean>;
 }
 
 // ToDo MIG-985: remove this workaround when the underlying issue is fixed
