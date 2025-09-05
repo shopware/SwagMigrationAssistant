@@ -67,11 +67,11 @@ class ServiceCorrectArgumentsTest extends TestCase
         $serviceTags = $document->getElementsByTagName('service');
 
         $serviceIds = [];
-        /** @var \DOMElement|\DOMNode|\DOMNameSpaceNode|null $element */
         foreach ($serviceTags as $element) {
             if ($element instanceof \DOMElement) {
                 $id = $element->getAttribute('id');
                 $abstract = $element->getAttribute('abstract');
+
                 if (\strtolower($abstract) === 'true') {
                     // skipping abstract services,
                     // because objects of them can't be constructed

@@ -103,8 +103,9 @@ abstract class AttributeReader extends AbstractReader implements ReaderInterface
             ->where('config.table_name = :table')
             ->setParameter('table', $table);
 
-        /** @var array<string, array<string, string|mixed|null>> $attributeConfiguration */
-        $attributeConfiguration = FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
+        $attributeConfiguration = FetchModeHelper::groupUnique(
+            $query->executeQuery()->fetchAllAssociative()
+        );
 
         $sql = <<<SQL
 SELECT s.*, l.locale
@@ -134,11 +135,21 @@ SQL;
             $translationStrPos = (int) \mb_strrpos($translation['name'], '_');
             $field = \mb_substr($translation['name'], $translationStrPos + 1);
 
-            if (!isset($attributeConfiguration[$column]['translations'][$field])) {
-                $attributeConfiguration[$column]['translations'][$field] = [];
+            $col = &$attributeConfiguration[$column];
+
+            if (!isset($col) || !\is_array($col)) {
+                $col = [];
             }
 
-            $attributeConfiguration[$column]['translations'][$field][$translation['locale']] = $translation['value'];
+            if (!isset($col['translations']) || !\is_array($col['translations'])) {
+                $col['translations'] = [];
+            }
+
+            if (!isset($col['translations'][$field]) || !\is_array($col['translations'][$field])) {
+                $col['translations'][$field] = [];
+            }
+
+            $col['translations'][$field][$translation['locale']] = $translation['value'];
         }
 
         $resultSet = [];
@@ -154,6 +165,7 @@ SQL;
             if (isset($attributeConfiguration[$column->getName()])) {
                 $columnData['configuration'] = $attributeConfiguration[$column->getName()];
             }
+
             $resultSet[] = $columnData;
         }
 
