@@ -104,10 +104,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     $dataSet::getEntity()
                 );
 
-                if ($validationResult?->hasLogs()) {
-                    $convertFailureFlag = true;
-                }
-
                 $createData[] = [
                     'entity' => $dataSet::getEntity(),
                     'runId' => $runUuid,
@@ -116,6 +112,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'unmapped' => $convertStruct->getUnmapped(),
                     'mappingUuid' => $convertStruct->getMappingUuid(),
                     'convertFailure' => $convertFailureFlag,
+                    'validationFailure' => $validationResult?->getLogs() !== [],
                 ];
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(
