@@ -97,7 +97,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
                 $convertFailureFlag = empty($convertStruct->getConverted());
 
-                $validationResult = $this->validationService->validate(
+                $this->validationService->validate(
                     $migrationContext,
                     $context,
                     $convertStruct->getConverted(),
@@ -112,7 +112,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'unmapped' => $convertStruct->getUnmapped(),
                     'mappingUuid' => $convertStruct->getMappingUuid(),
                     'convertFailure' => $convertFailureFlag,
-                    'validationFailure' => $validationResult?->getLogs() !== [],
                 ];
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(
