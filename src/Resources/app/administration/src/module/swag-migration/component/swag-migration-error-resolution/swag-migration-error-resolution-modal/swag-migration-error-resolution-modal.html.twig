@@ -1,0 +1,84 @@
+{% block swag_migration_error_resolution_modal %}
+    <sw-modal
+        class="swag-migration-error-resolution-modal"
+        :title="modalTitle"
+        @modal-close="() => $emit('close-error-resolution-modal')"
+    >
+        <swag-migration-error-resolution-details-modal
+            v-if="openDetailsModal"
+            @close-error-resolution-details-modal="() => openDetailsModal = false"
+        />
+
+        <div class="swag-migration-error-resolution-modal__container">
+            <div class="swag-migration-error-resolution-modal__left">
+                <sw-data-grid
+                    identifier="swag-migration-error-resolution-modal-grid"
+                    :data-source="tableDataSource"
+                    :columns="tableColumns"
+                    :show-selection="true"
+                >
+                    <template #column-status="{ item }">
+                        <div
+                            class="swag-migration-error-resolution-modal__left-status"
+                            :class="statusBadgeClass(item.status)"
+                        >
+                            <div class="swag-migration-error-resolution-modal__left-status-pill" />
+                            <span class="swag-migration-error-resolution-modal__left-status-text">
+                                {{ statusBadgeText(item.status) }}
+                            </span>
+                        </div>
+                    </template>
+
+                    <template #bulk>
+                        <mt-link class="swag-migration-error-resolution-step__header-content-link">
+                            {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: 300 }) }}
+                        </mt-link>
+                    </template>
+
+                    <template #actions="{ item }">
+                        <sw-context-menu-item
+                            class="swag-migration-error-resolution-modal__left-modal-action"
+                            @click="() => openDetailsModal = true"
+                        >
+                            {{ $tc('swag-migration.index.error-resolution.modals.error.left.details') }}
+                        </sw-context-menu-item>
+                    </template>
+
+                    <template #pagination>
+                        <sw-pagination
+                            :page="tablePage"
+                            :total="tableTotal"
+                            :limit="tableLimit"
+                            :steps="[25, 50, 100]"
+                        />
+                    </template>
+                </sw-data-grid>
+            </div>
+            <div class="swag-migration-error-resolution-modal__right">
+                <div class="swag-migration-error-resolution-modal__right-header">
+                    <h2 class="swag-migration-error-resolution-modal__right-header-title">
+                        {{ $tc('swag-migration.index.error-resolution.modals.error.right.title', { count: 5 }) }}
+                    </h2>
+                </div>
+                <div class="swag-migration-error-resolution-modal__right-content">
+                    <swag-migration-error-resolution-field :log="log" />
+
+                    <mt-banner
+                        class="swag-migration-error-resolution-modal__right-content-banner"
+                        :title="$tc('swag-migration.index.error-resolution.modals.error.right.banner.title')"
+                        variant="critical"
+                    >
+                        {{ $tc('swag-migration.index.error-resolution.modals.error.right.banner.content') }}
+                    </mt-banner>
+
+                    <mt-button
+                        class="swag-migration-error-resolution-modal__right-content-button"
+                        variant="primary"
+                    >
+                        {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
+                    </mt-button>
+                </div>
+            </div>
+        </div>
+    </sw-modal>
+{% endblock %}

@@ -28,6 +28,7 @@ export const MIGRATION_API_SERVICE = 'migrationApiService';
 export const MIGRATION_STEP = {
     IDLE: 'idle',
     FETCHING: 'fetching',
+    ERROR_RESOLUTION: 'error-resolution',
     WRITING: 'writing',
     MEDIA_PROCESSING: 'media-processing',
     CLEANUP: 'cleanup',

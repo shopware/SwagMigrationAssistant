@@ -121,6 +121,7 @@ type MigrationError = {
  * @private
  */
 export {
+    MIGRATION_LOG_LEVEL,
     TRepository,
     MigrationStep,
     MigrationState,

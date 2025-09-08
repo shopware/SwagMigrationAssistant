@@ -13,17 +13,19 @@ const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
 const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
-    [MIGRATION_STEP.WRITING]: 1,
-    [MIGRATION_STEP.MEDIA_PROCESSING]: 2,
-    [MIGRATION_STEP.ABORTING]: 3,
-    [MIGRATION_STEP.CLEANUP]: 3,
-    [MIGRATION_STEP.INDEXING]: 4,
-    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 5,
+    [MIGRATION_STEP.ERROR_RESOLUTION]: 1,
+    [MIGRATION_STEP.WRITING]: 2,
+    [MIGRATION_STEP.MEDIA_PROCESSING]: 3,
+    [MIGRATION_STEP.ABORTING]: 4,
+    [MIGRATION_STEP.CLEANUP]: 5,
+    [MIGRATION_STEP.INDEXING]: 5,
+    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 6,
 } as const;
 
 const UI_COMPONENT_INDEX = {
     LOADING_SCREEN: 0,
-    RESULT_SUCCESS: 1,
+    ERROR_RESOLUTION: 1,
+    RESULT_SUCCESS: 2,
 } as const;
 
 /**
@@ -74,8 +76,8 @@ export default Shopware.Component.wrapComponentConfig({
             flowChartItemIndex: 0,
             flowChartItemVariant: 'info',
             flowChartInitialItemVariants: [],
-            UI_COMPONENT_INDEX: UI_COMPONENT_INDEX, // accessible to the template
-            componentIndex: UI_COMPONENT_INDEX.LOADING_SCREEN,
+            UI_COMPONENT_INDEX: UI_COMPONENT_INDEX,
+            componentIndex: UI_COMPONENT_INDEX.ERROR_RESOLUTION, // UI_COMPONENT_INDEX.LOADING_SCREEN,
             showAbortMigrationConfirmDialog: false,
             pollingIntervalId: null,
             step: MIGRATION_STEP.FETCHING,
@@ -131,6 +133,10 @@ export default Shopware.Component.wrapComponentConfig({
     methods: {
         async createdComponent() {
             await this.initState();
+            this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[MIGRATION_STEP.ERROR_RESOLUTION];
+
+            return; // TODO: remove
+
             this.migrationStore.setIsLoading(true);
 
             if (this.connectionId === null) {

@@ -385,6 +385,7 @@
         "flowChart": {
           "premapping": "Checking",
           "fetchData": "Reading",
+          "errorResolution": "Error resolution",
           "writeData": "Writing",
           "processMedia": "Downloading",
           "cleanup": "Cleanup",
@@ -396,6 +397,11 @@
             "long": "The data will be read from your system",
             "caption": "The new assignments are processed.",
             "short": "Reading"
+          },
+          "error-resolution": {
+            "long": "Errors can be resolved",
+            "caption": "The migration is paused until all errors are resolved.",
+            "short": "Error resolution"
           },
           "writing": {
             "long": "The data is being written in Shopware 6",
@@ -430,6 +436,72 @@
           "caption": "The media download continues in the background. Large files can take some time.",
           "logSummary": "Logbook",
           "historyHint": "You can view this information any time in the migration history. It is possible that more log messages will be added at a later time because the media download is still running in the background."
+        }
+      },
+      "error-resolution": {
+        "field": {
+          "many-to-one": "Many to one",
+          "one-to-many": "One to many",
+          "number": "Number",
+          "textarea": "Textarea",
+          "text": "Text",
+          "switch": "switch",
+          "datepicker": "datepicker",
+          "editor": "Code editor"
+        },
+        "step": {
+          "continue-modal": {
+            "title": "Continue",
+            "text": "There are 23 errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+          },
+          "header": {
+            "title": "Error resolution",
+            "description": "Short explanatory text. Click continue to finish this step.",
+            "documentation": "Documentation",
+            "download": "Download log file",
+            "continue": "Continue",
+            "banner": {
+              "title": "Some errors may not be fixable via this view",
+              "content": "There are 23 errors that cannot be fixed via this view. Please download log file to get more info. And if help is needed contact the",
+              "link": "Shopware Support"
+            }
+          },
+          "card": {
+            "title": "Errors",
+            "filter": "Filter",
+            "tabs": {
+              "errors": "Errors ({count})",
+              "warnings": "Warnings ({count})",
+              "infos": "Infos ({count})"
+            },
+            "action": {
+              "edit": "Edit"
+            }
+          }
+        },
+        "modals": {
+          "error": {
+            "title": "Fix error: {code}, {entityName}, {fieldName}",
+            "left": {
+              "select-all": "Select all ({count})",
+              "details": "Show details",
+              "status": {
+                "resolved": "Resolved",
+                "unresolved": "Unresolved"
+              }
+            },
+            "right": {
+              "title": "Edit: {count} Items",
+              "banner": {
+                "title": "No option available",
+                "content": "Please create atleast one option to select in the corresponding Admnistration area."
+              },
+              "apply": "Apply changes"
+            }
+          },
+          "details": {
+            "title": "Details: {entityName} - {value}"
+          }
         }
       },
       "confirmAbortDialog": {

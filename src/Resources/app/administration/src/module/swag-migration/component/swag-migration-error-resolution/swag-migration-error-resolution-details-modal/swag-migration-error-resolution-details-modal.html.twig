@@ -1,0 +1,14 @@
+{% block swag_migration_error_resolution_details_modal %}
+    <sw-modal
+        class="swag-migration-error-resolution-details-modal"
+        :title="modalTitle"
+        @modal-close="() => $emit('close-error-resolution-details-modal')"
+    >
+        <div class="swag-migration-error-resolution-details-modal__container">
+            <sw-code-editor
+                class="swag-migration-error-resolution-details-modal__code-editor"
+                name="migration-resolution-details-modal--code-editor"
+            />
+        </div>
+    </sw-modal>
+{% endblock %}

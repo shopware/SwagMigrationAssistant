@@ -22,7 +22,6 @@
 {% endblock %}
 
 {% block swag_migration_base_content %}
-    {# <!-- eslint-disable-next-line vue/valid-v-slot --> #}
     <template #content>
         <sw-card-view v-if="!isLoading && !storesInitializing"
                       class="swag-migration-process-screen">
@@ -35,6 +34,9 @@
                                  :initial-item-variants="flowChartInitialItemVariants">
                     <sw-step-item>
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.fetchData') }}
+                    </sw-step-item>
+                    <sw-step-item>
+                        {{ $tc('swag-migration.index.loadingScreenCard.flowChart.errorResolution') }}
                     </sw-step-item>
                     <sw-step-item>
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.writeData') }}
@@ -64,6 +66,10 @@
 
             {% block swag_migration_index_main_page_card_loadingScreen_success %}
                 <swag-migration-result-screen v-if="componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS" />
+            {% endblock %}
+
+            {% block swag_migration_index_main_page_error_resolution %}
+                <swag-migration-error-resolution-step v-if="componentIndex === UI_COMPONENT_INDEX.ERROR_RESOLUTION" />
             {% endblock %}
 
             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog %}
