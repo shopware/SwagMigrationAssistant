@@ -10,6 +10,8 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
@@ -19,12 +21,16 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
+use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @internal
@@ -43,6 +49,9 @@ final class ProcessMediaHandler
         private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
         private readonly LoggingServiceInterface $loggingService,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
+        private readonly MessageBusInterface $messageBus,
+        private readonly RunTransitionServiceInterface $runTransitionService,
+        private readonly EntityRepository $migrationMediaFileRepo,
     ) {
     }
 
@@ -101,6 +110,39 @@ final class ProcessMediaHandler
 
             $this->loggingService->saveLogging($context);
         }
+
+        $progress = $run->getProgress();
+
+        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($message->getMediaFileIds()));
+        $progress->setProgress($progress->getProgress() + \count($message->getMediaFileIds()));
+
+        $this->migrationRunRepo->update([[
+            'id' => $message->getRunId(),
+            'progress' => $progress->jsonSerialize(),
+        ]], $context);
+
+        if ($this->isAllMediaProcessed($context)) {
+            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
+            $this->messageBus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+        }
+    }
+
+    private function isAllMediaProcessed(Context $context): bool
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new MultiFilter(
+                MultiFilter::CONNECTION_AND,
+                [
+                    new EqualsFilter('processed', false),
+                    new EqualsFilter('processFailure', false),
+                ]
+            )
+        );
+
+        $unprocessedCount = $this->migrationMediaFileRepo->search($criteria, $context)->getTotal();
+
+        return $unprocessedCount === 0;
     }
 
     /**

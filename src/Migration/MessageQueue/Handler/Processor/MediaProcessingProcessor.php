@@ -57,19 +57,8 @@ class MediaProcessingProcessor extends AbstractProcessor
         SwagMigrationRunEntity $run,
         MigrationProgress $progress,
     ): void {
-        $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
+        $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 
-        if ($fileCount <= 0) {
-            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
-            $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-            $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
-
-            return;
-        }
-
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + $fileCount);
-        $progress->setProgress($progress->getProgress() + $fileCount);
-        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 }

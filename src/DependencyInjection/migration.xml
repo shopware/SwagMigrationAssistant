@@ -323,6 +323,9 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="Symfony\Component\Messenger\MessageBusInterface"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
             <tag name="messenger.message_handler"/>
         </service>
 
