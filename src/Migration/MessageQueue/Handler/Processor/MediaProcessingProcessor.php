@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\AdvanceMediaStepMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
@@ -60,16 +61,11 @@ class MediaProcessingProcessor extends AbstractProcessor
         $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 
         if ($fileCount <= 0) {
-            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
-            $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-            $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+            $this->bus->dispatch(new AdvanceMediaStepMessage($context, $migrationContext->getRunUuid()));
 
             return;
         }
 
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + $fileCount);
-        $progress->setProgress($progress->getProgress() + $fileCount);
-        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 }

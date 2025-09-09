@@ -326,6 +326,13 @@
             <tag name="messenger.message_handler"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\AdvanceMediaStepHandler">
+            <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
+            <argument type="service" id="swag_migration_media_file.repository"/>
+            <tag name="messenger.message_handler"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="messenger.default_bus"/>
