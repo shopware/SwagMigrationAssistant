@@ -14,6 +14,9 @@ use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 {
