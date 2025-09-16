@@ -24,7 +24,7 @@ Before the migration takes place, the assistant performs a data check to determi
 
 ## Info for Shopware 5 users:
 
-In migrating your Shopware 5 shop, you can either perform the migration locally or use the “Migration Connector” plugin [Link to the plugin](https://store.shopware.com/search?sSearch=Swag226607479310).
+In migrating your Shopware 5 shop, you can either perform the migration locally or use the “Migration Connector” plugin [Link to the plugin](https://store.shopware.com/de/swag226607479310f/migration-connector.html).
 
 
 
