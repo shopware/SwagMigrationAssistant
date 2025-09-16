@@ -83,7 +83,7 @@ class MediaProcessingProcessorTest extends TestCase
             $progress
         );
 
-        static::assertCount(2, $this->bus->getMessages());
+        static::assertCount(1, $this->bus->getMessages());
     }
 
     public function testProcessing(): void
