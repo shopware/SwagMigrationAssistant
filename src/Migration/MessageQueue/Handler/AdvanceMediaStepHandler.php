@@ -1,5 +1,4 @@
-<?php
-declare(strict_types=1);
+<?php declare(strict_types=1);
 /*
  * (c) shopware AG <info@shopware.com>
  * For the full copyright and license information, please view the LICENSE
@@ -25,7 +24,7 @@ use Symfony\Component\Messenger\Stamp\DelayStamp;
 /**
  * @internal
  */
-#[AsMessageHandler()]
+#[AsMessageHandler]
 #[Package('fundamentals@after-sales')]
 final class AdvanceMediaStepHandler
 {
