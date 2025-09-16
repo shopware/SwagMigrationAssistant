@@ -25,8 +25,6 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Service\MediaFileProcessorService;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
-use function PHPUnit\Framework\once;
-
 #[Package('fundamentals@after-sales')]
 class MediaProcessingProcessorTest extends TestCase
 {
