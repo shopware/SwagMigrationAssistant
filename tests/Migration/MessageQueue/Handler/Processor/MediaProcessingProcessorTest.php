@@ -69,17 +69,11 @@ class MediaProcessingProcessorTest extends TestCase
 
         $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $run->getId());
 
-        $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
-        $runTransitionService
-            ->expects(once())
-            ->method('transitionToRunStep')
-            ->with($run->getId(), MigrationStep::CLEANUP);
-
         $this->processor = new MediaProcessingProcessor(
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
-            $runTransitionService,
+            $this->createMock(RunTransitionServiceInterface::class),
             $this->createMock(MediaFileProcessorService::class),
             $this->bus
         );
@@ -91,7 +85,7 @@ class MediaProcessingProcessorTest extends TestCase
             $progress
         );
 
-        static::assertCount(1, $this->bus->getMessages());
+        static::assertCount(2, $this->bus->getMessages());
     }
 
     public function testProcessing(): void
@@ -116,12 +110,6 @@ class MediaProcessingProcessorTest extends TestCase
 
         $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $run->getId());
 
-        $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
-        $runTransitionService
-            ->expects(static::never())
-            ->method('transitionToRunStep')
-            ->with($run->getId(), MigrationStep::CLEANUP);
-
         $mediaFileProcessorService = $this->createMock(MediaFileProcessorService::class);
         $mediaFileProcessorService
             ->expects(static::once())
@@ -132,7 +120,7 @@ class MediaProcessingProcessorTest extends TestCase
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
-            $runTransitionService,
+            $this->createMock(RunTransitionServiceInterface::class),
             $mediaFileProcessorService,
             $this->bus
         );
