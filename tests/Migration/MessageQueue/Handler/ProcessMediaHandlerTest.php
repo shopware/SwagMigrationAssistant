@@ -104,4 +104,3 @@ class ProcessMediaHandlerTest extends TestCase
         static::assertSame(13, $migrationRun->getProgress()?->getCurrentEntityProgress());
     }
 }
-
