@@ -98,6 +98,8 @@ class MigrationException extends HttpException
 
     public const FAILED_TO_CREATE_MIGRATION_LOG = 'SWAG_MIGRATION__FAILED_TO_CREATE_MIGRATION_LOG';
 
+    public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -509,6 +511,16 @@ class MigrationException extends HttpException
             self::FAILED_TO_CREATE_MIGRATION_LOG,
             'Failed to create migration log of class "{{ logClass }}".',
             ['logClass' => $logClass]
+        );
+    }
+
+    public static function unexpectedNullValue(string $fieldName): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::UNEXPECTED_NULL_VALUE,
+            'Unexpected null value for field "{{ fieldName }}".',
+            ['fieldName' => $fieldName]
         );
     }
 }

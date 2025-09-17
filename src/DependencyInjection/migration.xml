@@ -222,6 +222,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">
@@ -417,6 +418,13 @@
                  decorates="Shopware\Core\Content\Product\Stock\StockStorage">
             <argument type="service"
                       id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator.inner"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+            <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
         </service>
     </services>
 </container>

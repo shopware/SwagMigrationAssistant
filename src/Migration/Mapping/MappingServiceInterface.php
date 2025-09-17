@@ -84,5 +84,7 @@ interface MappingServiceInterface
      */
     public function getMappings(string $connectionId, string $entityName, array $ids, Context $context): EntitySearchResult;
 
+    public function hasValidMappingByEntityUuid(string $connectionId, string $entityName, string $entityUuid, Context $context): bool;
+
     public function preloadMappings(array $mappingIds, Context $context): void;
 }

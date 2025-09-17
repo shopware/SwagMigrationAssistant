@@ -351,6 +351,7 @@ class MigrationDataProcessingTest extends TestCase
 
         $countValidLogging = 0;
         $countInvalidLogging = 0;
+
         foreach ($logs as $log) {
             $type = $log->getLevel();
 
@@ -365,14 +366,15 @@ class MigrationDataProcessingTest extends TestCase
 
             ++$countInvalidLogging;
         }
+
         static::assertSame(8, $countValidLogging);
-        static::assertSame(0, $countInvalidLogging);
+        static::assertSame(2, $countInvalidLogging);
 
         $failureConvertCriteria = new Criteria();
         $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
         $logs = $this->migrationDataRepo->search($failureConvertCriteria, $context);
 
-        static::assertSame(2, $logs->getTotal());
+        static::assertSame(4, $logs->getTotal());
     }
 
     private function createMappingService(): MappingService
