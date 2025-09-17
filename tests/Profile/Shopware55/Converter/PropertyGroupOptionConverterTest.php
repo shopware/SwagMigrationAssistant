@@ -173,6 +173,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+            /** @phpstan-ignore-next-line */
             $property = ${'property' . $iterator};
             static::assertInstanceOf(ConvertStruct::class, $property);
             $firstConverted = $property->getConverted();
@@ -191,6 +192,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+            /** @phpstan-ignore-next-line */
             $property = ${'property' . $iterator};
             static::assertInstanceOf(ConvertStruct::class, $property);
             $firstConverted = $property->getConverted();
@@ -251,11 +253,13 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+            /** @phpstan-ignore-next-line */
             $property = ${'property' . $iterator};
             static::assertInstanceOf(ConvertStruct::class, $property);
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
             static::assertSame($firstConverted['id'], $converted['configuratorSettings'][0]['optionId']);
+            /** @phpstan-ignore-next-line */
             static::assertSame(${'oldMappingId' . $iterator}, $converted['configuratorSettings'][0]['id']);
 
             ++$iterator;
@@ -270,6 +274,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+            /** @phpstan-ignore-next-line */
             $property = ${'property' . $iterator};
             static::assertInstanceOf(ConvertStruct::class, $property);
             $firstConverted = $property->getConverted();

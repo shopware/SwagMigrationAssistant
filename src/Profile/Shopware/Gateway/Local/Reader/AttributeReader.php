@@ -103,7 +103,7 @@ abstract class AttributeReader extends AbstractReader implements ReaderInterface
             ->where('config.table_name = :table')
             ->setParameter('table', $table);
 
-        /** @var array<string, array<string, string|mixed|null>> $attributeConfiguration */
+        /** @var array<string, array<string, string|null>> $attributeConfiguration */
         $attributeConfiguration = FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
 
         $sql = <<<SQL
@@ -134,6 +134,7 @@ SQL;
             $translationStrPos = (int) \mb_strrpos($translation['name'], '_');
             $field = \mb_substr($translation['name'], $translationStrPos + 1);
 
+            /** @var array<string, array<string, mixed>> $attributeConfiguration */
             if (!isset($attributeConfiguration[$column]['translations'][$field])) {
                 $attributeConfiguration[$column]['translations'][$field] = [];
             }
@@ -188,7 +189,7 @@ SQL;
         $fks = [];
 
         foreach ($foreignKeys as $foreignKey) {
-            $fks[] = $foreignKey->getLocalColumns();
+            $fks[] = $foreignKey->getReferencingColumnNames();
         }
 
         if ($fks !== []) {

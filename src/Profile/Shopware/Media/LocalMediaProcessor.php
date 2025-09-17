@@ -124,7 +124,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $mediaId = $mediaFile['media_id'];
             $sourcePath = $mappedWorkload[$mediaId]->getAdditionalData()['path'];
 
-            if (!\file_exists($sourcePath)) {
+            if (!\is_file($sourcePath)) {
                 $resolver = $this->getResolver($mediaFile, $migrationContext);
 
                 if ($resolver === null) {

@@ -67,7 +67,6 @@ class ServiceCorrectArgumentsTest extends TestCase
         $serviceTags = $document->getElementsByTagName('service');
 
         $serviceIds = [];
-        /** @var \DOMElement|\DOMNode|\DOMNameSpaceNode|null $element */
         foreach ($serviceTags as $element) {
             if ($element instanceof \DOMElement) {
                 $id = $element->getAttribute('id');
