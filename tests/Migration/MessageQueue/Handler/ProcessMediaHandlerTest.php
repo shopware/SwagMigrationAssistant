@@ -101,6 +101,6 @@ class ProcessMediaHandlerTest extends TestCase
         $handler->__invoke($processMediaMessage);
 
         static::assertSame(103, $migrationRun->getProgress()?->getProgress());
-        static::assertSame(13, $migrationRun->getProgress()?->getCurrentEntityProgress());
+        static::assertSame(13, $migrationRun->getProgress()->getCurrentEntityProgress());
     }
 }

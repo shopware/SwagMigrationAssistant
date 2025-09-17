@@ -104,7 +104,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
             $sourcePath = $installationRoot . '/files/' . $mediaFile['uri'];
             $mediaId = $mediaFile['media_id'];
 
-            if (!\file_exists($sourcePath)) {
+            if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                 $this->loggingService->addLogEntry(new CannotGetFileRunLog(
                     $mappedWorkload[$mediaId]->getRunId(),

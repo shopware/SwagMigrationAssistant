@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\AdvanceMediaStepMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -28,6 +29,9 @@ use Symfony\Component\Messenger\Stamp\DelayStamp;
 #[Package('fundamentals@after-sales')]
 final class AdvanceMediaStepHandler
 {
+    /**
+     * @param EntityRepository<SwagMigrationMediaFileCollection> $migrationMediaFileRepo
+     */
     public function __construct(
         private readonly MessageBusInterface $messageBus,
         private readonly RunTransitionServiceInterface $runTransitionService,

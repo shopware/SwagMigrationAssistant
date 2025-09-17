@@ -104,13 +104,15 @@ final class ProcessMediaHandler
 
         $progress = $run->getProgress();
 
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($message->getMediaFileIds()));
-        $progress->setProgress($progress->getProgress() + \count($message->getMediaFileIds()));
+        if ($progress !== null) {
+            $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($message->getMediaFileIds()));
+            $progress->setProgress($progress->getProgress() + \count($message->getMediaFileIds()));
 
-        $this->migrationRunRepo->update([[
-            'id' => $message->getRunId(),
-            'progress' => $progress->jsonSerialize(),
-        ]], $context);
+            $this->migrationRunRepo->update([[
+                'id' => $message->getRunId(),
+                'progress' => $progress->jsonSerialize(),
+            ]], $context);
+        }
     }
 
     /**
