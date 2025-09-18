@@ -20,7 +20,6 @@ use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
-use Symfony\Component\Messenger\Stamp\DelayStamp;
 
 /**
  * @internal
@@ -50,10 +49,7 @@ final class AdvanceMediaStepHandler
             return;
         }
 
-        $this->messageBus->dispatch(
-            new AdvanceMediaStepMessage($context, $message->getRunId()),
-            [new DelayStamp(5000)]
-        );
+        $this->messageBus->dispatch(new AdvanceMediaStepMessage($context, $message->getRunId()));
     }
 
     private function isAllMediaProcessed(Context $context, string $runId): bool
