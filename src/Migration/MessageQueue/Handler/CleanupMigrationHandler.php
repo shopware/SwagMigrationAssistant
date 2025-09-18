@@ -38,16 +38,25 @@ final class CleanupMigrationHandler
             'swag_migration_connection',
         ];
 
-        $step = \array_search($message->getTableName(), $tablesToReset, true);
+        $step = \array_search(
+            $message->getTableName(),
+            $tablesToReset,
+            true
+        );
+
         if ($step !== false) {
             $currentStep = $step;
         }
 
         $nextStep = $currentStep + 1;
+
         if (isset($tablesToReset[$nextStep])) {
             $nextMessage = new CleanupMigrationMessage($tablesToReset[$nextStep]);
             $this->bus->dispatch($nextMessage);
         }
-        $this->connection->executeStatement('DELETE FROM ' . $tablesToReset[$currentStep] . ';');
+
+        $this->connection->executeStatement(
+            'DELETE FROM ' . $tablesToReset[$currentStep] . ';'
+        );
     }
 }

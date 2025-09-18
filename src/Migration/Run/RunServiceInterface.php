@@ -34,7 +34,9 @@ interface RunServiceInterface
      */
     public function abortMigration(Context $context): void;
 
-    public function cleanupMappingChecksums(string $connectionUuid, Context $context): void;
+    public function startCleanupMappingChecksums(string $connectionUuid, Context $context): void;
+
+    public function startCleanupMigrationData(Context $context): void;
 
     /**
      * @param array<int, string> $dataSelectionIds
@@ -49,6 +51,4 @@ interface RunServiceInterface
     public function approveFinishingMigration(Context $context): void;
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
-
-    public function cleanupMigrationData(Context $context): void;
 }

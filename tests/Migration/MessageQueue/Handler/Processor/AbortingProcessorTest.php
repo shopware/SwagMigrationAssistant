@@ -13,14 +13,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbortingProcessor;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
-use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
@@ -40,36 +37,8 @@ class AbortingProcessorTest extends TestCase
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
             $this->createMock(RunTransitionServiceInterface::class),
-            $this->createMock(RunServiceInterface::class),
             $this->bus
         );
-    }
-
-    public function testProcessingWithoutConnection(): void
-    {
-        // TODO: TODO remove with #11883?
-        static::markTestSkipped('Evaluate if this test is still needed, as it seems to unnecessary since $connection can be null');
-
-        /** @phpstan-ignore deadCode.unreachable */
-        $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), 'product', 0);
-
-        $run = new SwagMigrationRunEntity();
-        $run->setId(Uuid::randomHex());
-        $run->setProgress($progress);
-
-        try {
-            $this->processor->process(
-                $this->createMock(MigrationContextInterface::class),
-                Context::createDefaultContext(),
-                $run,
-                $progress
-            );
-        } catch (MigrationException $e) {
-            static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
-            static::assertCount(0, $this->bus->getMessages());
-
-            return;
-        }
     }
 
     public function testProcessing(): void

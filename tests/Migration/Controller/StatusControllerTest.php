@@ -23,7 +23,6 @@ use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -177,7 +176,6 @@ class StatusControllerTest extends TestCase
                 static::getContainer()->get('swag_migration_general_setting.repository'),
                 static::getContainer()->get(ThemeService::class),
                 $mappingService,
-                static::getContainer()->get(SwagMigrationDataDefinition::class),
                 static::getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo, new NullLogger()),
                 static::getContainer()->get(TrackingEventClient::class),

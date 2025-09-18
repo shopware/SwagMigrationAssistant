@@ -70,12 +70,27 @@ export default Shopware.Component.wrapComponentConfig({
             };
         },
 
+        buttonTooltip() {
+            if (this.isResettingChecksum) {
+                return {
+                    message: this.$tc('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.message'),
+                    disabled: false,
+                };
+            }
+
+            return {
+                message: '',
+                disabled: true,
+            };
+        },
+
         ...mapState(
             () => Store.get(MIGRATION_STORE_ID),
             [
+                'isLoading',
+                'isResettingChecksum',
                 'environmentInformation',
                 'connectionId',
-                'isLoading',
                 'dataSelectionTableData',
                 'migrationDisabledMessage',
                 'isMigrationAllowed',

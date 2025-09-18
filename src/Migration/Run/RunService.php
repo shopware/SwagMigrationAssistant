@@ -10,17 +10,13 @@ namespace SwagMigrationAssistant\Migration\Run;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeCollection;
@@ -37,6 +33,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -69,7 +66,6 @@ class RunService implements RunServiceInterface
         private readonly EntityRepository $generalSettingRepo,
         private readonly ThemeService $themeService,
         private readonly MappingServiceInterface $mappingService,
-        private readonly EntityDefinition $migrationDataDefinition,
         private readonly Connection $dbalConnection,
         private readonly LoggingServiceInterface $loggingService,
         private readonly TrackingEventClient $trackingEventClient,
@@ -97,8 +93,6 @@ class RunService implements RunServiceInterface
         }
 
         $connectionId = $connection->getId();
-        $this->cleanupUnwrittenRunDataOfLastInactiveRun($context);
-
         $runUuid = $this->createPlainMigrationRun($connectionId, $context);
 
         if ($runUuid === null) {
@@ -177,30 +171,23 @@ class RunService implements RunServiceInterface
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runId, $context);
     }
 
-    public function cleanupMappingChecksums(string $connectionUuid, Context $context, bool $resetAll = true): void
+    public function startCleanupMappingChecksums(string $connectionId, Context $context): void
     {
-        $sql = <<<SQL
-UPDATE swag_migration_mapping
-SET checksum = null
-WHERE HEX(connection_id) = ?
-AND checksum IS NOT NULL;
-SQL;
-        if ($resetAll === false) {
-            $sql = <<<SQL
-UPDATE swag_migration_mapping AS m
-INNER JOIN swag_migration_data d ON d.mapping_uuid = m.id
-SET m.checksum = null
-WHERE HEX(m.connection_id) = ?
-AND d.written = 0
-AND m.checksum IS NOT NULL;
-SQL;
+        $connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
+
+        if ($connection === null) {
+            throw MigrationException::noConnectionFound();
         }
 
         $this->dbalConnection->executeStatement(
-            $sql,
-            [$connectionUuid],
-            [ParameterType::STRING]
+            'UPDATE swag_migration_general_setting SET `is_resetting_checksums` = 1;'
         );
+
+        $this->bus->dispatch(new ResetChecksumMessage(
+            $connectionId,
+            $context,
+            true,
+        ));
     }
 
     public function approveFinishingMigration(Context $context): void
@@ -220,7 +207,7 @@ SQL;
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $run->getId(), $context);
     }
 
-    public function cleanupMigrationData(Context $context): void
+    public function startCleanupMigrationData(Context $context): void
     {
         if ($this->isMigrationRunning($context)) {
             throw MigrationException::migrationIsAlreadyRunning();
@@ -306,19 +293,6 @@ SQL;
     private function isMigrationRunning(Context $context): bool
     {
         return $this->getActiveRun($context) !== null;
-    }
-
-    private function getLastInactiveRun(Context $context): ?SwagMigrationRunEntity
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(new MultiFilter(MultiFilter::CONNECTION_OR, [
-            new EqualsFilter('step', MigrationStep::ABORTED->value),
-            new EqualsFilter('step', MigrationStep::FINISHED->value),
-        ]));
-        $criteria->addSorting(new FieldSorting('createdAt', 'DESC'));
-        $criteria->setLimit(1);
-
-        return $this->migrationRunRepo->search($criteria, $context)->getEntities()->first();
     }
 
     private function fireTrackingInformation(string $eventName, string $runUuid, Context $context): void
@@ -548,21 +522,6 @@ SQL;
         }
 
         return \reset($ids);
-    }
-
-    private function cleanupUnwrittenRunDataOfLastInactiveRun(Context $context): void
-    {
-        $lastInactiveRun = $this->getLastInactiveRun($context);
-
-        if ($lastInactiveRun === null) {
-            return;
-        }
-
-        $queryBuilder = new QueryBuilder($this->dbalConnection);
-        $queryBuilder->delete($this->migrationDataDefinition->getEntityName())
-            ->andWhere('run_id = :runId')
-            ->setParameter('runId', Uuid::fromHexToBytes($lastInactiveRun->getId()))
-            ->executeStatement();
     }
 
     private function updateUnprocessedMediaFiles(string $connectionId, string $runUuid): void

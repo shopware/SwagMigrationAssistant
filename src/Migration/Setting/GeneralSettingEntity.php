@@ -23,6 +23,8 @@ class GeneralSettingEntity extends Entity
 
     protected bool $isReset;
 
+    protected bool $isResettingChecksums = false;
+
     public function getSelectedConnectionId(): ?string
     {
         return $this->selectedConnectionId;
@@ -51,5 +53,15 @@ class GeneralSettingEntity extends Entity
     public function setIsReset(bool $isReset): void
     {
         $this->isReset = $isReset;
+    }
+
+    public function isResettingChecksums(): bool
+    {
+        return $this->isResettingChecksums;
+    }
+
+    public function setIsResettingChecksums(bool $isResettingChecksums): void
+    {
+        $this->isResettingChecksums = $isResettingChecksums;
     }
 }

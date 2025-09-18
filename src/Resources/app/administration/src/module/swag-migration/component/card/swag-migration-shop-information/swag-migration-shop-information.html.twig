@@ -1,8 +1,18 @@
 {% block swag_migration_shop_information %}
+    <mt-banner
+        v-if="isResettingChecksum"
+        class="swag-migration-shop-information__updating-info"
+        variant="info"
+        :title="$tc('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.title')"
+    >
+        {{ $tc('swag-migration.index.shopInfoCard.updateBanner.isResettingChecksums.message') }}
+    </mt-banner>
+
     <mt-card
         class="swag-migration-shop-information"
         :title="$tc('swag-migration.index.shopInfoCard.cardTitle')"
         position-identifier="swag-migration-shop-information"
+        :is-loading="isResettingChecksum || isLoading"
     >
         <template #headerRight>
             <div class="swag-migration-shop-information__header-right">

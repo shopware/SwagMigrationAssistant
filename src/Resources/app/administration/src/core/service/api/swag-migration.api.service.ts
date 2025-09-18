@@ -398,4 +398,17 @@ export default class MigrationApiService extends ApiService {
             headers,
         });
     }
+
+    async isResettingChecksums(): Promise<boolean> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
+        return this.httpClient.get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
+            ...this.basicConfig,
+            headers,
+        }).then((response: AxiosResponse) => {
+            return ApiService.handleResponse(response);
+        });
+    }
 }

@@ -7,13 +7,12 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor;
 
+use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Dbal\QueryBuilder;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -27,6 +26,8 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Package('fundamentals@after-sales')]
 class CleanUpProcessor extends AbstractProcessor
 {
+    public const BATCH_SIZE = 250;
+
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
      * @param EntityRepository<SwagMigrationDataCollection> $migrationDataRepo
@@ -37,7 +38,7 @@ class CleanUpProcessor extends AbstractProcessor
         EntityRepository $migrationDataRepo,
         EntityRepository $migrationMediaFileRepo,
         RunTransitionServiceInterface $runTransitionService,
-        private readonly Connection $dbalConnection,
+        private readonly Connection $connection,
         private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
@@ -59,22 +60,64 @@ class CleanUpProcessor extends AbstractProcessor
         SwagMigrationRunEntity $run,
         MigrationProgress $progress,
     ): void {
-        $deleteCount = (int) $this->removeMigrationData();
-
-        if ($deleteCount <= 0) {
-            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::INDEXING);
+        if ($progress->getTotal() === 0) {
+            $progress->setTotal($this->getMigrationDataTotal());
+            $progress->setProgress(0);
         }
 
-        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+        $deleteCount = $this->removeMigrationData();
+
+        if ($deleteCount > 0) {
+            $progress->setProgress(
+                $progress->getProgress() + $deleteCount
+            );
+        }
+
+        if ($deleteCount <= 0) {
+            $this->runTransitionService->transitionToRunStep(
+                $migrationContext->getRunUuid(),
+                MigrationStep::INDEXING
+            );
+        }
+
+        $this->updateProgress(
+            $migrationContext->getRunUuid(),
+            $progress,
+            $context
+        );
+
+        $this->bus->dispatch(new MigrationProcessMessage(
+            $context,
+            $migrationContext->getRunUuid()
+        ));
     }
 
-    private function removeMigrationData(): int|string
+    private function removeMigrationData(): int
     {
-        return (new QueryBuilder($this->dbalConnection))
-            ->delete(SwagMigrationDataDefinition::ENTITY_NAME)
-            ->andWhere('written = 1')
-            ->setMaxResults(1000)
-            ->executeStatement();
+        $ids = $this->connection->createQueryBuilder()
+            ->select('id')
+            ->from('swag_migration_data')
+            ->setMaxResults(self::BATCH_SIZE)
+            ->executeQuery()
+            ->fetchFirstColumn();
+
+        if (empty($ids)) {
+            return 0;
+        }
+
+        $query = $this->connection->createQueryBuilder()
+            ->delete('swag_migration_data')
+            ->where('id IN (:ids)')
+            ->setParameter('ids', $ids, ArrayParameterType::BINARY);
+
+        return (int) $query->executeStatement();
+    }
+
+    private function getMigrationDataTotal(): int
+    {
+        return (int) $this->connection->createQueryBuilder()
+            ->select('COUNT(id)')->from('swag_migration_data')
+            ->executeQuery()
+            ->fetchOne();
     }
 }

@@ -341,13 +341,7 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('connectionId');
         }
 
-        $connection = $this->migrationConnectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
-
-        if ($connection === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
-        $this->runService->cleanupMappingChecksums($connectionId, $context);
+        $this->runService->startCleanupMappingChecksums($connectionId, $context);
 
         return new Response();
     }
@@ -360,7 +354,7 @@ class StatusController extends AbstractController
     )]
     public function cleanupMigrationData(Context $context): Response
     {
-        $this->runService->cleanupMigrationData($context);
+        $this->runService->startCleanupMigrationData($context);
 
         return new Response();
     }
@@ -380,5 +374,27 @@ class StatusController extends AbstractController
         }
 
         return new JsonResponse($settings->isReset());
+    }
+
+    #[Route(
+        path: '/api/_action/migration/is-resetting-checksums',
+        name: 'api.admin.migration.is-resetting-checksums',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_GET]
+    )]
+    public function isResettingChecksums(Context $context): JsonResponse
+    {
+        $settings = $this->generalSettingRepo
+            ->search(new Criteria(), $context)
+            ->getEntities()
+            ->first();
+
+        if ($settings === null) {
+            return new JsonResponse(false);
+        }
+
+        return new JsonResponse(
+            $settings->isResettingChecksums()
+        );
     }
 }

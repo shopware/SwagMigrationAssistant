@@ -8,7 +8,7 @@ import type {
     TRepository,
 } from '../../../../../type/types';
 import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
-import { MIGRATION_STORE_ID } from '../../../store/migration.store';
+import { MIGRATION_STORE_ID, type MigrationStore } from '../../../store/migration.store';
 
 const { Mixin, Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
@@ -23,10 +23,13 @@ export const BADGE_TYPE = {
     DANGER: 'danger',
 } as const;
 
+const MIGRATION_RESET_CHECKSUM_POLLING_INTERVAL = 2500 as const;
+
 /**
  * @private
  */
 export interface SwagMigrationShopInformationData {
+    migrationStore: MigrationStore;
     confirmModalIsLoading: boolean;
     showRemoveCredentialsConfirmModal: boolean;
     showResetChecksumsConfirmModal: boolean;
@@ -34,6 +37,8 @@ export interface SwagMigrationShopInformationData {
     lastMigrationDate: string;
     connection: MigrationConnection | null;
     context: unknown;
+    pollingIntervalId: number | null;
+    isLoading: boolean;
 }
 
 /**
@@ -69,6 +74,8 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationShopInformationData {
         return {
+            migrationStore: Store.get(MIGRATION_STORE_ID),
+            pollingIntervalId: null,
             confirmModalIsLoading: false,
             showRemoveCredentialsConfirmModal: false,
             showResetChecksumsConfirmModal: false,
@@ -76,6 +83,7 @@ export default Shopware.Component.wrapComponentConfig({
             lastMigrationDate: '-',
             connection: null,
             context: Shopware.Context.api,
+            isLoading: false,
         };
     },
 
@@ -83,6 +91,7 @@ export default Shopware.Component.wrapComponentConfig({
         ...mapState(
             () => Store.get(MIGRATION_STORE_ID),
             [
+                'isResettingChecksum',
                 'connectionId',
                 'currentConnection',
                 'environmentInformation',
@@ -219,15 +228,25 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        createdComponent() {
-            this.updateLastMigrationDate();
+        async createdComponent() {
+            this.isLoading = true;
+
+            try {
+                const [isResetting] = await Promise.all([
+                    this.migrationApiService.isResettingChecksums(),
+                    this.updateLastMigrationDate(),
+                ]);
+
+                if (isResetting) {
+                    this.registerPolling();
+                }
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         openResetMigrationModal() {
             this.showResetMigrationConfirmModal = true;
-            this.$router.push({
-                name: 'swag.migration.index.resetMigration',
-            });
         },
 
         async onCloseResetModal() {
@@ -235,6 +254,40 @@ export default Shopware.Component.wrapComponentConfig({
             await this.$router.push({
                 name: 'swag.migration.index.main',
             });
+        },
+
+        unregisterPolling() {
+            if (this.pollingIntervalId) {
+                clearInterval(this.pollingIntervalId);
+            }
+
+            this.migrationStore.setIsResettingChecksum(false);
+            this.pollingIntervalId = null;
+        },
+
+        registerPolling() {
+            this.unregisterPolling();
+
+            this.migrationStore.setIsResettingChecksum(true);
+            this.pollingIntervalId = setInterval(this.resetCheckSumPoller, MIGRATION_RESET_CHECKSUM_POLLING_INTERVAL);
+        },
+
+        async resetCheckSumPoller() {
+            if (!this.isResettingChecksum) {
+                return;
+            }
+
+            try {
+                if ((await this.migrationApiService.isResettingChecksums()) === false) {
+                    this.unregisterPolling();
+                }
+            } catch {
+                this.unregisterPolling();
+                this.createNotificationError({
+                    title: this.$tc('global.default.error'),
+                    message: this.$tc('swag-migration.api-error.getState'),
+                });
+            }
         },
 
         async updateLastMigrationDate() {
@@ -336,10 +389,11 @@ export default Shopware.Component.wrapComponentConfig({
         async onClickResetChecksums() {
             this.confirmModalIsLoading = true;
 
-            return this.migrationApiService.resetChecksums(this.connectionId).then(() => {
-                this.showResetChecksumsConfirmModal = false;
-                this.confirmModalIsLoading = false;
-            });
+            await this.migrationApiService.resetChecksums(this.connectionId);
+            this.registerPolling();
+
+            this.showResetChecksumsConfirmModal = false;
+            this.confirmModalIsLoading = false;
         },
 
         async onClickResetMigration() {
@@ -348,9 +402,6 @@ export default Shopware.Component.wrapComponentConfig({
             return this.migrationApiService
                 .cleanupMigrationData()
                 .catch(() => {
-                    this.showResetMigrationConfirmModal = false;
-                    this.confirmModalIsLoading = false;
-
                     this.createNotificationError({
                         title: this.$t(
                             'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.title',
@@ -370,7 +421,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onClickRefreshConnection() {
-            return Store.get(MIGRATION_STORE_ID).init(true);
+            return this.migrationStore.init(true);
         },
     },
 });

@@ -195,6 +195,12 @@
       "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
       "shopwareMajorVersionText": "We have noticed that your source system {sourceSystem} version does not match your target system {targetSystem} version. Please ensure to use the same major version for both systems before you start the migration.",
       "shopInfoCard": {
+        "updateBanner": {
+          "isResettingChecksums": {
+            "title": "Resetting checksums",
+            "message": "The checksums are being reset. This may take a few minutes."
+          }
+        },
         "link": "Help & documentation",
         "cardTitle": "Shop system",
         "refreshButton": "Refresh connection",

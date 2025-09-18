@@ -27,6 +27,7 @@ type MigrationState = {
         isLoading: boolean;
         latestRun: TEntity<'swag_migration_run'> | null;
         currentConnection: TEntity<'swag_migration_connection'> | null;
+        isResettingChecksum: boolean;
         warningConfirmed: boolean;
         dataSelectionIds: string[];
         connectionId: string | null;
@@ -49,6 +50,7 @@ type MigrationState = {
         setConnectionId: (id: string) => void;
         fetchConnectionId: () => Promise<boolean>;
         setIsLoading: (isLoading: boolean) => void;
+        setIsResettingChecksum: (isResetting: boolean) => void;
         fetchDataSelectionIds: () => Promise<void>;
         setLastConnectionCheck: (date: Date) => void;
         setDataSelectionIds: (newIds: string[]) => void;
@@ -96,6 +98,10 @@ const migrationStore = Shopware.Store.register({
          * The possible connection object, null if no connection is selected.
          */
         currentConnection: null,
+        /**
+         * Flag which sets the checksum is resetting
+         */
+        isResettingChecksum: false,
         /**
          * The possible data that the user can migrate.
          */
@@ -161,6 +167,8 @@ const migrationStore = Shopware.Store.register({
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.unfilledPremapping');
             }
 
+            // TODO: add reseting message
+
             return null;
         },
 
@@ -202,6 +210,10 @@ const migrationStore = Shopware.Store.register({
 
         setCurrentConnection(connection: TEntity<'swag_migration_connection'> | null) {
             this.currentConnection = connection;
+        },
+
+        setIsResettingChecksum(isResetting: boolean) {
+            this.isResettingChecksum = isResetting;
         },
 
         setDataSelectionIds(newIds: string[]) {
