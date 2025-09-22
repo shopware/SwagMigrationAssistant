@@ -2,12 +2,12 @@
 
 .swag-migration-history-detail__modal {
     .swag-migration-history-detail__loading-placeholder {
-        height: 100px;
+        height: var(--scale-size-96);
     }
 
     .swag-migration-history-detail__header {
         display: grid;
-        grid-template-columns: 80px 1fr min-content;
+        grid-template-columns: var(--scale-size-80) 1fr min-content;
     }
 
     .swag-migration-history-detail__connection-info {

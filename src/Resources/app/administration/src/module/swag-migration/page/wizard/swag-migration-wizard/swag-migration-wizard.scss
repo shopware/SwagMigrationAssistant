@@ -4,12 +4,12 @@
     font-size: var(--font-size-2xs);
 
     .swag-migration-wizard__placeholder {
-        height: 500px;
+        height: calc(var(--scale-size-256) * 2);
     }
 
     .swag-migration-wizard__content {
-        max-width: 520px;
-        margin: var(--scale-size-8) auto 60px auto;
+        max-width: calc(var(--scale-size-256) * 2);
+        margin: var(--scale-size-8) auto var(--scale-size-64) auto;
 
         .swag-migration-wizard__form {
             width: 80%;
@@ -40,12 +40,12 @@
     }
 
     .swag-migration-wizard__illustration {
-        width: 219px;
+        width: var(--scale-size-224);
         margin-bottom: var(--scale-size-40);
     }
 
     .swag-migration-wizard__plugin {
-        width: 84px;
+        width: var(--scale-size-80);
         margin-bottom: var(--scale-size-24);
         margin-top: var(--scale-size-10);
     }
@@ -109,7 +109,7 @@
     }
 
     .sw-url-input-ssl-switch__field {
-        grid-template-columns: 24px 1fr;
+        grid-template-columns: var(--scale-size-24) 1fr;
     }
 
     .swag-migration-wizard__description {

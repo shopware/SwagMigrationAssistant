@@ -70,7 +70,7 @@
   }
 
   .swag-migration-progress-bar__heading {
-    margin-bottom: 5px;
+    margin-bottom: var(--scale-size-4);
     font-size: var(--font-size-xs);
     text-align: center;
     font-weight: var(--font-weight-semibold);

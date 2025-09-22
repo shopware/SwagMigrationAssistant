@@ -6,7 +6,7 @@
     }
 
     .swag-migration-history-detail-errors__loading-placeholder {
-        height: 100px;
+        height: var(--scale-size-96);
     }
 
     .swag-migration-history-detail-errors__description {

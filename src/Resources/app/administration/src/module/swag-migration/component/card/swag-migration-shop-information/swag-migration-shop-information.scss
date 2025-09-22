@@ -1,13 +1,12 @@
 @import "~scss/variables";
 
 .swag-migration-shop-information {
-
     .swag-migration-shop-information__connection {
         display: grid;
-        grid-gap: 8px;
-        grid-template-columns: (112px - 8px) 1fr min-content;
+        grid-gap: var(--scale-size-8);
+        grid-template-columns: var(--scale-size-96) 1fr min-content;
 
-        @media screen and (max-width: 650px) {
+        @media screen and (max-width: 40rem) {
             grid-template-columns: 1fr;
         }
     }
@@ -109,7 +108,7 @@
         font-size: var(--font-size-xs);
         text-align: center;
         padding-top: var(--scale-size-20);
-        max-width: 500px;
+        max-width: calc(var(--scale-size-256) * 2);
         margin: auto;
     }
 

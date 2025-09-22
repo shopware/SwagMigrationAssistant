@@ -14,11 +14,11 @@
     }
 
     .swag-migration-history__no-data {
+        height: var(--scale-size-256);
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 15rem;
         width: 100%;
 
         .swag-migration-history__no-data-label {

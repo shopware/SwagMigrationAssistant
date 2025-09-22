@@ -12,16 +12,16 @@
 
     .swag-migration-wizard-profile-installation__wrapper {
         grid-template-columns: 1fr 1fr;
-        gap: 0 35px;
+        gap: 0 var(--scale-size-36);
         place-items: stretch;
         width: 100%;
         display: grid;
     }
 
     .swag-migration-wizard-profile-installation__inner_wrapper {
-        grid-template-columns: 80px 1fr;
+        grid-template-columns: var(--scale-size-80) 1fr;
         place-items: stretch;
-        gap: 0 15px;
+        gap: 0 var(--scale-size-14);
         width: 100%;
         display: grid;
         margin-bottom: var(--scale-size-30);
@@ -30,7 +30,7 @@
     .swag-migration-wizard-profile-installation__available_version_list {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        gap: var(--scale-size-4);
     }
 
     .swag-migration-wizard-profile-installation__version_box {
@@ -65,7 +65,7 @@
 
     .swag-migration-wizard-profile-installation__available_version_headline {
         font-size: var(--font-size-2xs);
-        margin-bottom: 5px;
+        margin-bottom: var(--scale-size-4);
     }
 
     .swag-migration-wizard-profile-installation__footer {
@@ -92,6 +92,6 @@
     }
 
     .swag-migration-wizard-profile-installation__plugins {
-        margin-top: 35px;
+        margin-top: var(--scale-size-36);
     }
 }

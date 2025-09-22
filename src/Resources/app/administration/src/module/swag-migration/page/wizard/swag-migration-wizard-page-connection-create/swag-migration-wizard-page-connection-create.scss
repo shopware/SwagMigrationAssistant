@@ -9,7 +9,7 @@
     }
 
     .swag-migration-wizard-create-connection__install-profile-link-wrapper {
-        grid-template-columns: 1fr 24px;
+        grid-template-columns: 1fr var(--scale-size-24);
         width: 100%;
         display: grid;
     }

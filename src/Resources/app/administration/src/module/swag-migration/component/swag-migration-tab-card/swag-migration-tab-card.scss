@@ -2,7 +2,7 @@
 
 .swag-migration-tab-card {
     .mt-card {
-        min-height: 15rem;
+        min-height: var(--scale-size-256);
 
         &__tabs {
             margin: 0 var(--scale-size-16);
@@ -24,9 +24,9 @@
         height: var(--scale-size-16);
         line-height: var(--font-line-height-2xs);
         font-size: var(--font-size-2xs);
-        text-align: center;
         padding: var(--scale-size-2) var(--scale-size-10);
         margin-left: var(--scale-size-2);
+        text-align: center;
     }
 
     .sw-tabs-item__error-badge {
