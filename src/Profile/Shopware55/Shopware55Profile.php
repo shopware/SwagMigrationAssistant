@@ -21,7 +21,7 @@ class Shopware55Profile implements ShopwareProfileInterface
 
     final public const AUTHOR_NAME = 'shopware AG';
 
-    final public const ICON_PATH = '/swagmigrationassistant/static/img/migration-assistant-plugin.svg';
+    final public const ICON_PATH = '/swagmigrationassistant/administration/static/img/migration-assistant-plugin.svg';
 
     public function getName(): string
     {
