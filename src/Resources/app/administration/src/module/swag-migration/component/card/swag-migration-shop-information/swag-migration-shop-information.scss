@@ -13,20 +13,20 @@
     }
 
     .swag-migration-shop-information__shop-domain {
-        font-size: $font-size-xxs;
+        font-size: var(--font-size-2xs);
         white-space: nowrap;
     }
 
     .swag-migration-shop-information__shop-domain-prefix {
-        color: $color-pumpkin-spice-300;
+        color: var(--color-text-attention-default);
     }
 
     .swag-migration-shop-information__shop-domain-prefix--is-ssl {
-        color: $color-emerald-500;
+        color: var(--color-text-positive-default);
     }
 
     .swag-migration-shop-information__connection-name {
-        font-size: $font-size-m;
+        font-size: var(--font-size-m);
         font-weight: var(--font-weight-semibold);
         margin-bottom: var(--scale-size-4);
     }
@@ -51,13 +51,13 @@
 
     .swag-migration-shop-information__connection-status-text {
         margin: auto 0;
-        font-size: 12px;
+        font-size: var(--font-size-2xs);
         font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-shop-information__metadata {
-        color: $color-darkgray-200;
-        font-size: 14px;
+        color: var(--color-text-secondary-default);
+        font-size: var(--font-size-xs);
     }
 
     .swag-migration-shop-information__metadata-columns {
@@ -87,37 +87,37 @@
     }
 }
 
-.swag-migration-shop-information__reset-confirm-modal {
-    .swag-migration-shop-information__reset-confirm-modal-icon-wrapper {
+.swag-migration-shop-information__confirm-modal {
+    .swag-migration-shop-information__confirm-modal-icon-wrapper {
         width: var(--scale-size-72);
         height: var(--scale-size-72);
         border-radius: var(--border-radius-round);
-        background-color: $color-emerald-50;
+        background-color: var(--color-background-positive-default);
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 0 auto var(--scale-size-40) auto;
     }
 
-    .swag-migration-shop-information__reset-confirm-modal-header {
-        font-weight: $font-weight-semi-bold;
-        font-size: $font-size-m;
+    .swag-migration-shop-information__confirm-modal-header {
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-s);
         text-align: center;
     }
 
-    .swag-migration-shop-information__reset-confirm-modal-content {
-        font-size: $font-size-xxs;
+    .swag-migration-shop-information__confirm-modal-content {
+        font-size: var(--font-size-xs);
         text-align: center;
         padding-top: var(--scale-size-20);
         max-width: 500px;
         margin: auto;
     }
 
-    .swag-migration-shop-information__reset-confirm-modal-content-hint {
+    .swag-migration-shop-information__confirm-modal-content-hint {
         text-align: center;
         padding-top: var(--scale-size-32);
         padding-bottom: var(--scale-size-20);
-        font-weight: $font-weight-semi-bold;
-        font-size: $font-size-xxs;
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-xs);
     }
 }

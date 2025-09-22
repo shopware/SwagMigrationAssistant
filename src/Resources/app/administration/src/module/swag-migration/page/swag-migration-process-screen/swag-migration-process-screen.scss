@@ -21,7 +21,7 @@
 
                 &:before {
                     width: 84px;
-                    height: 1px;
+                    height: var(--scale-size-2);
                     top: 15px;
                     transform: translate(-50%, 0);
                     z-index: -1;
@@ -63,8 +63,8 @@
     .sw-card {
         .sw-card__title {
             margin-bottom: var(--scale-size-12);
-            font-size: 18px;
-            line-height: 24px;
+            font-size: var(--font-size-m);
+            line-height: var(--font-line-height-xs);
 
             width: unset;
             position: unset;
@@ -76,7 +76,6 @@
 }
 
 .swag-migration-index-modal-abort-migration-confirm-dialog {
-
     .sw-modal__body {
         padding: var(--scale-size-32);
     }

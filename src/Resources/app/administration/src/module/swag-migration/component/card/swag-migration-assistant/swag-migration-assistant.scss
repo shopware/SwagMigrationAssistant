@@ -2,10 +2,12 @@
 
 .swag-migration-assistant {
     h4.swag-migration-assistant__headline {
-        font-size: 32px;
+        color: var(--color-text-primary-default);
+        font-size: var(--font-size-2xl);
+        font-weight: var(--font-weight-medium);
+        padding-top: var(--scale-size-10);
         text-align: center;
         margin: 0;
-        padding-top: var(--scale-size-10);
     }
 
     .swag-migration-assistant__paragraph {
@@ -32,15 +34,17 @@
     h5.swag-migration-assistant__title {
         font-weight: var(--font-weight-semibold);
         margin-bottom: var(--scale-size-8);
+        color: var(--color-text-primary-default);
     }
 
     .swag-migration-assistant__content {
         white-space: pre-line;
+        color: var(--color-text-secondary-default);
     }
 
     .swag-migration-assistant__content,
     .swag-migration-assistant__link a.link {
-        font-size: $font-size-xxs;
-        line-height: 22px;
+        font-size: var(--font-size-xs);
+        line-height: var(--font-line-height-xs);
     }
 }

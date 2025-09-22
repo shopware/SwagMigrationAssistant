@@ -11,7 +11,7 @@
 
     .swag-migration-history-detail-errors__description {
         margin-top: var(--scale-size-16);
-        font-size: $font-size-xxs;
-        color: $color-gray-500;
+        font-size: var(--font-size-2xs);
+        color: var(--color-text-secondary-default);
     }
 }

@@ -7,7 +7,6 @@
             position-identifier="swag-migration-tab-card"
         >
             <template #tabs>
-
                 {% block swag_migration_tab_card_item_tab %}
                     <sw-tabs
                         ref="swTabs"
@@ -41,7 +40,7 @@
             </template>
 
             <template
-                v-for="(item, index) in items"
+                v-for="(item) in items"
                 :key="getKey(item)"
             >
                 <swag-migration-tab-card-item ref="contentContainer">

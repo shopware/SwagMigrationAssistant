@@ -3,7 +3,7 @@
 .swag-migration-confirm-warning {
     .swag-migration-confirm-warning__card {
         text-align: center;
-        font-size: 14px;
+        font-size: var(--font-size-xs);
     }
 
     .swag-migration-confirm-warning__bubble {
@@ -11,7 +11,7 @@
         width: var(--scale-size-72);
         height: var(--scale-size-72);
         border-radius: var(--border-radius-round);
-        background-color: $color-pumpkin-spice-50;
+        background-color: var(--color-background-attention-default);
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -19,13 +19,14 @@
     }
 
     .swag-migration-confirm-warning__bubble-icon {
-        color: $color-pumpkin-spice-500;
+        color: var(--color-icon-attention-default);
     }
 
     h5.swag-migration-confirm-warning__title {
-        font-size: 18px;
+        font-size: var(--font-size-m);
         font-weight: var(--font-weight-semibold);
-        line-height: 25px;
+        line-height: var(--font-line-height-s);
+        color: var(--color-text-primary-default);
     }
 
     .swag-migration-confirm-warning__alert {

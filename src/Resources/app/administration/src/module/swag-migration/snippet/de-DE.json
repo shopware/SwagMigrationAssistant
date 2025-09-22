@@ -332,7 +332,8 @@
           "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter",
           "country_state": "Bundesländer"
         },
-        "noData": "Es wurden keine Daten zum Migrieren gefunden."
+        "noData": "Es wurden keine Daten zum Migrieren gefunden.",
+        "noDataSubline": "Bitte überprüfe Deine Verbindung oder wähle ein anderes Profil."
       },
       "confirmWarningCard": {
         "currencyMismatch": {
@@ -611,6 +612,7 @@
         "contentHint": "Willst Du die Daten wirklich löschen?"
       },
       "noData": "Es wurden keine Migrationen gefunden.",
+      "noDataSubline": "Beginne eine Migration, um Inhalte zu sehen.",
       "detailPage": {
         "title": "Details zur Migration",
         "timestamp": "Startzeitpunkt:",
