@@ -285,21 +285,6 @@
             </call>
         </service>
 
-        <service id="SwagMigrationAssistant\Command\StartMigrationCommand">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <tag name="console.command"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Command\AbortMigrationCommand">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <tag name="console.command"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Command\GetMigrationProgressCommand">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
-            <tag name="console.command"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry">
             <argument type="tagged_iterator" tag="shopware.migration.data_selection"/>
         </service>
