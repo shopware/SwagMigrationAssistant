@@ -332,7 +332,8 @@
           "product_stream_filter_inheritance": "Dynamic product group filters",
           "country_state": "Country states"
         },
-        "noData": "Nothing found to migrate."
+        "noData": "Nothing found to migrate.",
+        "noDataSubline": "Please check your connection or try another profile."
       },
       "confirmWarningCard": {
         "currencyMismatch": {
@@ -611,6 +612,7 @@
         "contentHint": "Do you really want to delete the data?"
       },
       "noData": "No migrations found.",
+      "noDataSubline": "Start a migration to see content.",
       "detailPage": {
         "title": "Migration details",
         "timestamp": "Start time:",

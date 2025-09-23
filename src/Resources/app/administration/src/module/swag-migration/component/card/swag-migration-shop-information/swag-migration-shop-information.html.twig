@@ -322,13 +322,13 @@
 
                 {% block swag_migration_shop_information_reset_migration_confirm_modal %}
                     <sw-modal v-if="showResetMigrationConfirmModal"
-                              class="swag-migration-shop-information__reset-confirm-modal"
+                              class="swag-migration-shop-information__confirm-modal"
                               :title="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.title')"
                               :is-loading="confirmModalIsLoading"
                               @modal-close="onCloseResetModal">
 
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_icon %}
-                            <div class="swag-migration-shop-information__reset-confirm-modal-icon-wrapper">
+                            <div class="swag-migration-shop-information__confirm-modal-icon-wrapper">
                                 <mt-icon class="swag-migration-shop-information__confirm-modal-icon"
                                          name="regular-trophy"
                                          color="#37D046"
@@ -337,19 +337,19 @@
                         {% endblock %}
 
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_header %}
-                            <p class="swag-migration-shop-information__reset-confirm-modal-header"
+                            <p class="swag-migration-shop-information__confirm-modal-header"
                                v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.header')">
                             </p>
                         {% endblock %}
 
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_content %}
-                            <p class="swag-migration-shop-information__reset-confirm-modal-content"
+                            <p class="swag-migration-shop-information__confirm-modal-content"
                                v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.content')">
                             </p>
                         {% endblock %}
 
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_content_hint %}
-                            <p class="swag-migration-shop-information__reset-confirm-modal-content-hint">
+                            <p class="swag-migration-shop-information__confirm-modal-content-hint">
                                 {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.contentHint') }}
                             </p>
                         {% endblock %}

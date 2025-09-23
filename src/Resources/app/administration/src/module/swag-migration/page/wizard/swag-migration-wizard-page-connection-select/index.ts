@@ -60,7 +60,7 @@ export default Shopware.Component.wrapComponentConfig({
             immediate: true,
             handler(newConnectionId: string) {
                 this.selectedConnectionId = newConnectionId;
-                this.onConnectionSelected();
+                this.onConnectionSelected(newConnectionId);
             },
         },
     },
@@ -76,21 +76,18 @@ export default Shopware.Component.wrapComponentConfig({
 
             return this.migrationConnectionRepository.search(criteria, this.context).then((items) => {
                 this.connections = items;
-                this.onConnectionSelected();
+                this.onConnectionSelected(items[0]?.id ?? '');
             });
         },
 
-        onConnectionSelected() {
+        onConnectionSelected(newId: string) {
             const connection = this.connections.find((con) => {
-                return con.id === this.selectedConnectionId;
+                return con.id === newId;
             });
 
-            if (connection) {
-                this.$emit('onChildRouteReadyChanged', true);
-                this.$emit('onConnectionSelected', connection);
-            } else {
-                this.$emit('onChildRouteReadyChanged', false);
-            }
+            this.selectedConnectionId = newId;
+            this.$emit('onChildRouteReadyChanged', !!connection);
+            this.$emit('onConnectionSelected', connection);
         },
     },
 });

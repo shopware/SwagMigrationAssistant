@@ -642,7 +642,7 @@ export default Shopware.Component.wrapComponentConfig({
             this.childIsLoading = value;
         },
 
-        onConnectionSelected(value: MigrationConnection) {
+        onConnectionSelected(value: MigrationConnection | null) {
             this.connection = value;
         },
     },

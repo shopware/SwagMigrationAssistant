@@ -2,28 +2,34 @@
 
 .swag-migration-history {
     .swag-migration-history__status-icon--finished {
-        color: $color-emerald-500;
+        color: var(--color-text-positive-default);
     }
 
     .swag-migration-history__status-icon--aborted {
-        color: $color-crimson-500;
+        color: var(--color-text-critical-default);
     }
 
     .swag-migration-history__status-icon--loading {
-        color: $color-gray-500;
+        color: var(--color-text-primary-disabled);
     }
 
     .swag-migration-history__no-data {
-        background-color: $color-gray-50;
-        height: 230px;
-        line-height: 230px;
-        text-align: center;
+        height: var(--scale-size-256);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
         width: 100%;
 
         .swag-migration-history__no-data-label {
-            font-size: 18px;
+            font-size: var(--font-size-m);
             font-weight: var(--font-weight-semibold);
-            letter-spacing: 0.1px;
+        }
+
+        .swag-migration-history__no-data-sub-label {
+            margin-top: var(--scale-size-4);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary-default);
         }
     }
 }

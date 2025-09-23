@@ -3,25 +3,25 @@
 .swag-migration-result-screen {
     .swag-migration-result-screen__content {
         text-align: center;
-        font-size: 12pt;
+        font-size: var(--font-size-2xs);
     }
 
     .swag-migration-result-screen__title {
-        margin-bottom: 5px;
-        font-size: $font-size-m;
-        font-weight: $font-weight-semi-bold;
+        margin-bottom: var(--scale-size-4);
+        font-size: var(--font-size-m);
+        font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-result-screen__caption {
-        margin: 0 135px var(--scale-size-24) 135px;
-        font-size: $font-size-xxs;
-        color: $color-darkgray-200;
+        margin: 0 var(--scale-size-128) var(--scale-size-24) var(--scale-size-128);
+        font-size: var(--font-size-2xs);
+        color: var(--color-text-secondary-default);
     }
 
     a.swag-migration-result-screen__link {
-        font-size: $font-size-xxs;
-        font-weight: $font-weight-semi-bold;
-        color: $color-shopware-brand-500;
+        font-size: var(--font-size-2xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-brand-default);
         text-decoration: none;
     }
 
@@ -30,7 +30,7 @@
         width: var(--scale-size-72);
         height: var(--scale-size-72);
         border-radius: var(--border-radius-round);
-        background-color: $color-emerald-50;
+        background-color: var(--color-background-positive-default);
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -38,7 +38,7 @@
     }
 
     .swag-migration-result-screen__icon {
-        color: $color-emerald-500;
+        color: var(--color-icon-positive-default);
     }
 }
 
@@ -49,23 +49,23 @@
 
     .swag-migration-result-survey__content {
         text-align: center;
-        font-size: $font-size-xxs;
+        font-size: var(--font-size-2xs);
     }
 
     .swag-migration-result-survey__title {
-        margin-bottom: 5px;
-        font-size: $font-size-xxs;
-        font-weight: $font-weight-semi-bold;
+        margin-bottom: var(--scale-size-4);
+        font-size: var(--font-size-2xs);
+        font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-result-survey__caption {
-        margin: var(--scale-size-10) 60px var(--scale-size-24) 60px;
-        font-size: $font-size-xxs;
-        color: $color-darkgray-200;
+        margin: var(--scale-size-10) var(--scale-size-56) var(--scale-size-24) var(--scale-size-56);
+        font-size: var(--font-size-2xs);
+        color: var(--color-text-secondary-default);
     }
 
     .swag-migration-result-survey__external-icon {
-        margin-left: 5px;
+        margin-left: var(--scale-size-4);
     }
 
     .swag-migration-result-survey__icon {

@@ -4,18 +4,18 @@
 
     .swag-migration-loading-screen__header {
         text-align: center;
-        margin: 5px auto 50px auto;
+        margin: var(--scale-size-4) auto var(--scale-size-48) auto;
     }
 
     .swag-migration-loading-screen__title {
-        font-size: 18px;
+        font-size: var(--font-size-m);
         font-weight: var(--font-weight-semibold);
-        padding-bottom: 5px;
+        padding-bottom: var(--scale-size-4);
     }
 
     .swag-migration-loading-screen__caption {
-        font-size: 14px;
-        color: $color-gray-500;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-secondary-default);
     }
 
     .swag-migration-loading-screen__progress-bar-group {
@@ -29,13 +29,13 @@
 
     .swag-migration-loading-screen__progress-bar-title {
         text-align: center;
-        margin: 15px auto var(--scale-size-10) auto;
-        font-size: $font-size-xxs;
+        margin: var(--scale-size-14) auto var(--scale-size-10) auto;
+        font-size: var(--font-size-2xs);
     }
 
     .sw-loader.swag-migration-loading-screen__loader {
         position: relative;
-        margin: 50px auto 50px auto;
+        margin: var(--scale-size-48) auto var(--scale-size-48) auto;
 
         .sw-loader__container {
             transform: translate(-50%);
@@ -43,19 +43,19 @@
     }
 
     .swag-migration-loading-screen__hint {
-        margin-top: 59px;
+        margin-top: var(--scale-size-56);
         margin-bottom: 0;
     }
 
     .swag-migration-loading-screen__alert-icon {
-        color: $color-emerald-500;
+        color: var(--color-text-positive-default);
         position: absolute;
         display: block;
-        left: 15px;
+        left: var(--scale-size-14);
         top: var(--scale-size-14);
     }
 
     .swag-migration-loading-screen__notice {
-        margin-top: 50px;
+        margin-top: var(--scale-size-48);
     }
 }

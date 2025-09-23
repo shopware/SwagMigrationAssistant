@@ -65,14 +65,18 @@
             {% endblock %}
         </mt-card>
 
-        <mt-card v-else
-                 class="swag-migration-data-selector"
-                 position-identifier="swag-migration-data-selector-no-data">
-
+        <mt-card
+            v-else
+            class="swag-migration-data-selector"
+            position-identifier="swag-migration-data-selector-no-data"
+        >
             {% block swag_migration_data_selector_no_data %}
                 <div class="swag-migration-index-data-selector__no-data">
                     <p class="swag-migration-index-data-selector__no-data-label">
                         {{ $tc('swag-migration.index.selectDataCard.noData') }}
+                    </p>
+                    <p class="swag-migration-index-data-selector__no-data-sub-label">
+                        {{ $tc('swag-migration.index.selectDataCard.noDataSubline') }}
                     </p>
                 </div>
             {% endblock %}

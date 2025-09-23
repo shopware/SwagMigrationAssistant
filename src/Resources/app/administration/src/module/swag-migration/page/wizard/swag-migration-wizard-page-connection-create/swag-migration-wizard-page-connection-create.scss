@@ -3,19 +3,19 @@
 .swag-migration-wizard-page-create-profile {
     .sw-select-result__result-item-text > span > i,
     .sw-single-select__selection-text > span > i {
-        color: $color-gray-500;
+        color: var(--color-text-secondary-default);
+        font-size: var(--font-size-2xs);
         font-style: normal;
-        font-size: 12px;
     }
 
     .swag-migration-wizard-create-connection__install-profile-link-wrapper {
-        grid-template-columns: 1fr 24px;
+        grid-template-columns: 1fr var(--scale-size-24);
         width: 100%;
         display: grid;
     }
 
     .is--active .sw-icon {
-        color: $color-shopware-brand-500;
+        color: var(--color-icon-brand-default);
     }
 
     .sw-select-result__result-item-text {
