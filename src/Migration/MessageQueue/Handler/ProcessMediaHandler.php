@@ -7,12 +7,12 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
@@ -23,8 +23,10 @@ use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
@@ -51,7 +53,7 @@ final class ProcessMediaHandler
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly MessageBusInterface $messageBus,
         private readonly RunTransitionServiceInterface $runTransitionService,
-        private readonly EntityRepository $migrationMediaFileRepo,
+        private readonly Connection $connection,
     ) {
     }
 
@@ -111,38 +113,9 @@ final class ProcessMediaHandler
             $this->loggingService->saveLogging($context);
         }
 
-        $progress = $run->getProgress();
+        $this->updateProgress($message, $run->getProgress(), $context);
 
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($message->getMediaFileIds()));
-        $progress->setProgress($progress->getProgress() + \count($message->getMediaFileIds()));
-
-        $this->migrationRunRepo->update([[
-            'id' => $message->getRunId(),
-            'progress' => $progress->jsonSerialize(),
-        ]], $context);
-
-        if ($this->isAllMediaProcessed($context)) {
-            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
-            $this->messageBus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
-        }
-    }
-
-    private function isAllMediaProcessed(Context $context): bool
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new MultiFilter(
-                MultiFilter::CONNECTION_AND,
-                [
-                    new EqualsFilter('processed', false),
-                    new EqualsFilter('processFailure', false),
-                ]
-            )
-        );
-
-        $unprocessedCount = $this->migrationMediaFileRepo->search($criteria, $context)->getTotal();
-
-        return $unprocessedCount === 0;
+        $this->transitionStepIfReady($message, $migrationContext, $context);
     }
 
     /**
@@ -169,5 +142,53 @@ final class ProcessMediaHandler
 
             $workload = $processor->process($migrationContext, $context, $errorWorkload);
         }
+    }
+
+    private function updateProgress(
+        ProcessMediaMessage $message,
+        MigrationProgress $progress,
+        Context $context
+    ): void {
+        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($message->getMediaFileIds()));
+        $progress->setProgress($progress->getProgress() + \count($message->getMediaFileIds()));
+
+        $this->migrationRunRepo->update([[
+            'id' => $message->getRunId(),
+            'progress' => $progress->jsonSerialize(),
+        ]], $context);
+    }
+
+    private function transitionStepIfReady(
+        ProcessMediaMessage $message,
+        MigrationContext $migrationContext,
+        Context $context
+    ): void
+    {
+        $this->connection->transactional(function() use ($message, $migrationContext, $context) {
+            // Lock the row to prevent race conditions
+            $this->connection->fetchAssociative(
+                'SELECT all_media_processed FROM swag_migration_run WHERE id = :runId FOR UPDATE',
+                ['runId' => Uuid::fromHexToBytes($message->getRunId())]
+            );
+
+            $unprocessedMediaCount = (int) $this->connection->fetchOne(
+                'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 AND process_failure = 0 AND run_id = :runId',
+                ['runId' => Uuid::fromHexToBytes($message->getRunId())]
+            );
+
+            $affectedRows = 0;
+            if ($unprocessedMediaCount === 0) {
+                $affectedRows = $this->connection->executeStatement(
+                    'UPDATE swag_migration_run SET all_media_processed = TRUE WHERE id = :runId',
+                    ['runId' => Uuid::fromHexToBytes($message->getRunId())]
+                );
+            }
+
+            // Only transition if we updated the flag in this transaction to prevent duplicate messages
+            if ($affectedRows > 0) {
+                $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
+                $this->messageBus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+            }
+        });
     }
 }

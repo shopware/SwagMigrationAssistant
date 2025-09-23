@@ -39,6 +39,8 @@ class SwagMigrationRunEntity extends Entity
 
     protected ?SwagMigrationLoggingCollection $logs = null;
 
+    protected ?bool $isAllMediaProcessed = false;
+
     public function getConnectionId(): ?string
     {
         return $this->connectionId;
@@ -149,5 +151,15 @@ class SwagMigrationRunEntity extends Entity
     public function setLogs(SwagMigrationLoggingCollection $logs): void
     {
         $this->logs = $logs;
+    }
+
+    public function isAllMediaProcessed(): ?bool
+    {
+        return $this->isAllMediaProcessed;
+    }
+
+    public function setIsAllMediaProcessed(bool $isAllMediaProcessed): void
+    {
+        $this->isAllMediaProcessed = $isAllMediaProcessed;
     }
 }
