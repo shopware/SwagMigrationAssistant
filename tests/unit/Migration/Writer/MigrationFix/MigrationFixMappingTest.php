@@ -39,6 +39,9 @@ class MigrationFixMappingTest extends TestCase
         static::assertSame($data['additional_data'], $migrationFixMapping->additionalData);
     }
 
+    /**
+     * @param array<string, string> $data
+     */
     #[DataProvider('dataWithMissingKeys')]
     public function testCreateFromDatabaseQueryWithErrors(array $data, string $expectedMissingKey): void
     {
@@ -48,6 +51,9 @@ class MigrationFixMappingTest extends TestCase
         MigrationFixMapping::fromDatabaseQuery($data);
     }
 
+    /**
+     * @return array<string, array<string, array<string, string>|string>>
+     */
     public static function dataWithMissingKeys(): array
     {
         return [
@@ -171,7 +177,7 @@ class MigrationFixMappingTest extends TestCase
                 'id' => 'anyIdentifier',
                 'connection_id' => 'anyConnectionIdentifier',
                 'main_mapping_id' => 'anyMappingId',
-                'value' => json_encode('anyValue'),
+                'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                 'path' => 'any.path',
             ])
         );
@@ -184,7 +190,7 @@ class MigrationFixMappingTest extends TestCase
                 'id' => 'anyIdentifier',
                 'connection_id' => 'anyConnectionIdentifier',
                 'main_mapping_id' => 'anyMappingId',
-                'value' => json_encode('anyValue'),
+                'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                 'path' => 'any.path',
             ])
         );
@@ -211,7 +217,7 @@ class MigrationFixMappingTest extends TestCase
                 'id' => 'anyIdentifier',
                 'connection_id' => 'anyConnectionIdentifier',
                 'main_mapping_id' => 'anyMappingId',
-                'value' => json_encode('newValueOne'),
+                'value' => json_encode('newValueOne', \JSON_THROW_ON_ERROR),
                 'path' => 'any.path',
             ])
         );
@@ -221,7 +227,7 @@ class MigrationFixMappingTest extends TestCase
                 'id' => 'anyIdentifier',
                 'connection_id' => 'anyConnectionIdentifier',
                 'main_mapping_id' => 'anyMappingId',
-                'value' => json_encode('newValueTwo'),
+                'value' => json_encode('newValueTwo', \JSON_THROW_ON_ERROR),
                 'path' => 'any.other.path',
             ])
         );

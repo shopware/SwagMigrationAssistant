@@ -77,12 +77,12 @@ class MigrationFixTest extends TestCase
             'id' => 'anyIdentifier',
             'connection_id' => 'anyConnectionIdentifier',
             'main_mapping_id' => 'anyMappingId',
-            'value' => json_encode('anyValue'),
+            'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
             'path' => 'any.path',
         ];
 
         $migrationFix = MigrationFix::fromDatabaseQuery($data);
-        static::assertInstanceOf(MigrationFix::class, $migrationFix);
+
         static::assertSame($data['id'], $migrationFix->id);
         static::assertSame($data['connection_id'], $migrationFix->connectionId);
         static::assertSame($data['main_mapping_id'], $migrationFix->mainMappingId);
@@ -90,6 +90,9 @@ class MigrationFixTest extends TestCase
         static::assertSame($data['path'], $migrationFix->path);
     }
 
+    /**
+     * @param array<string, string> $data
+     */
     #[DataProvider('dataWithMissingKeys')]
     public function testCreateFromDatabaseQueryWithErrors(array $data, string $expectedMissingKey): void
     {
@@ -99,6 +102,9 @@ class MigrationFixTest extends TestCase
         MigrationFix::fromDatabaseQuery($data);
     }
 
+    /**
+     * @return array<string, array<string, array<string, string>|string>>
+     */
     public static function dataWithMissingKeys(): array
     {
         return [
@@ -106,7 +112,7 @@ class MigrationFixTest extends TestCase
                 'data' => [
                     'connection_id' => 'anyConnectionIdentifier',
                     'main_mapping_id' => 'anyMappingId',
-                    'value' => json_encode('anyValue'),
+                    'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                     'path' => 'any.path',
                 ],
                 'expectedMissingKey' => 'id',
@@ -115,7 +121,7 @@ class MigrationFixTest extends TestCase
                 'data' => [
                     'id' => 'anyIdentifier',
                     'main_mapping_id' => 'anyMappingId',
-                    'value' => json_encode('anyValue'),
+                    'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                     'path' => 'any.path',
                 ],
                 'expectedMissingKey' => 'connection_id',
@@ -124,7 +130,7 @@ class MigrationFixTest extends TestCase
                 'data' => [
                     'id' => 'anyIdentifier',
                     'connection_id' => 'anyConnectionIdentifier',
-                    'value' => json_encode('anyValue'),
+                    'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                     'path' => 'any.path',
                 ],
                 'expectedMissingKey' => 'main_mapping_id',
@@ -143,7 +149,7 @@ class MigrationFixTest extends TestCase
                     'id' => 'anyIdentifier',
                     'connection_id' => 'anyConnectionIdentifier',
                     'main_mapping_id' => 'anyMappingId',
-                    'value' => json_encode('anyValue'),
+                    'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                 ],
                 'expectedMissingKey' => 'path',
             ],

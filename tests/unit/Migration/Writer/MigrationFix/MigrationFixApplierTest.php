@@ -176,6 +176,10 @@ class MigrationFixApplierTest extends TestCase
         static::assertSame('untouchedValue', $data[3]['path']['to']['other']['untouchedKey']);
     }
 
+    /**
+     * @param array<int, array<string, string>> $mappings
+     * @param array<int, array<string, string>> $fixes
+     */
     private function createConnection(array $mappings, array $fixes): Connection
     {
         $resultMock = $this->createMock(Result::class);

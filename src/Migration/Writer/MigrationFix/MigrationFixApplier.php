@@ -9,7 +9,9 @@ namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Log\Package;
 
+#[Package('after-sales')]
 class MigrationFixApplier
 {
     public function __construct(
@@ -17,6 +19,9 @@ class MigrationFixApplier
     ) {
     }
 
+    /**
+     * @param array<int|string, array<int|string, mixed>> $data
+     */
     public function apply(array &$data, string $connectionId): void
     {
         $itemIds = \array_column($data, 'id');
@@ -34,6 +39,9 @@ class MigrationFixApplier
         }
     }
 
+    /**
+     * @param array<MigrationFixMapping> $mappings
+     */
     private function getMappingWithFixes(string $id, array &$mappings): ?MigrationFixMapping
     {
         foreach ($mappings as $index => $fixMapping) {
@@ -46,6 +54,7 @@ class MigrationFixApplier
             }
 
             unset($mappings[$index]);
+
             return $fixMapping;
         }
 

@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 
+#[Package('after-sales')]
 class MigrationFixMapping
 {
     /**
@@ -26,10 +28,13 @@ class MigrationFixMapping
         public readonly string $entityUuid,
         public readonly string $entityValue,
         public readonly string $checksum,
-        public readonly string $additionalData
+        public readonly string $additionalData,
     ) {
     }
 
+    /**
+     * @param array<string,string> $data
+     */
     public static function fromDatabaseQuery(array $data): self
     {
         $expectedArrayKeys = ['id', 'connection_id', 'entity', 'old_identifier', 'entity_uuid', 'entity_value', 'checksum', 'additional_data'];
@@ -55,6 +60,9 @@ class MigrationFixMapping
         $this->hasFix = true;
     }
 
+    /**
+     * @param array<string|int, mixed> $item
+     */
     public function applyFixes(array &$item): void
     {
         foreach ($this->migrationFixes as $migrationFix) {

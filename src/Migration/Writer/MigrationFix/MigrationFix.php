@@ -7,8 +7,10 @@
 
 namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
 
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 
+#[Package('after-sales')]
 class MigrationFix
 {
     private const PATH_SEPERATOR = '.';
