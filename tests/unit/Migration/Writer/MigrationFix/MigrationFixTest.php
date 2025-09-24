@@ -9,9 +9,11 @@ namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFix;
 
+#[Package('after-sales')]
 class MigrationFixTest extends TestCase
 {
     public function testApplyFix(): void

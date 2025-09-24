@@ -11,8 +11,10 @@ use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Query\QueryBuilder;
 use Doctrine\DBAL\Result;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 
+#[Package('after-sales')]
 class MigrationFixApplierTest extends TestCase
 {
     public function testApply(): void

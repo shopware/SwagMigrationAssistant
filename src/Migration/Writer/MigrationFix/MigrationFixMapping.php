@@ -39,7 +39,9 @@ class MigrationFixMapping
     {
         $expectedArrayKeys = ['id', 'connection_id', 'entity', 'old_identifier', 'entity_uuid', 'entity_value', 'checksum', 'additional_data'];
         foreach ($expectedArrayKeys as $expectedKey) {
-            \assert(\array_key_exists($expectedKey, $data), MigrationException::couldNotConvertFixMapping($expectedKey));
+            if (!\array_key_exists($expectedKey, $data)) {
+                throw MigrationException::couldNotConvertFixMapping($expectedKey);
+            }
         }
 
         return new self(

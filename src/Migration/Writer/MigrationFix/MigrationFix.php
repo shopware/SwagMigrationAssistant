@@ -31,7 +31,9 @@ class MigrationFix
     {
         $expectedArrayKeys = ['id', 'connection_id', 'main_mapping_id', 'value', 'path'];
         foreach ($expectedArrayKeys as $expectedKey) {
-            \assert(\array_key_exists($expectedKey, $data), MigrationException::couldNotConvertFix($expectedKey));
+            if (!\array_key_exists($expectedKey, $data)) {
+                throw MigrationException::couldNotConvertFix($expectedKey);
+            }
         }
 
         return new self(
