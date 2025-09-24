@@ -1,28 +1,28 @@
 .swag-migration-process-screen {
     .swag-migration-process-screen__step-display {
         position: absolute;
-        padding-right: 50px;
+        padding-right: var(--scale-size-48);
         top: var(--scale-size-40);
-        left: calc(50% - 450px);
+        left: calc(50% - 28rem);
         transform: translate(-100%, 0);
 
-        @media screen and (max-width: 1600px) {
+        @media screen and (max-width: 100rem) {
             position: static;
             transform: none;
             padding: 0 0 var(--scale-size-10) 0;
-            margin: 13px 0 var(--scale-size-16) 0;
+            margin: var(--scale-size-14) 0 var(--scale-size-16) 0;
             text-align: center;
 
             .sw-step-item {
                 display: inline-flex;
                 flex-direction: column;
                 margin-top: 0;
-                width: 84px;
+                width: var(--scale-size-80);
 
                 &:before {
-                    width: 84px;
-                    height: 1px;
-                    top: 15px;
+                    width: var(--scale-size-80);
+                    height: var(--scale-size-2);
+                    top: var(--scale-size-14);
                     transform: translate(-50%, 0);
                     z-index: -1;
                 }
@@ -35,12 +35,12 @@
             }
         }
 
-        @media screen and (max-width: 780px) {
+        @media screen and (max-width: 48rem) {
             .sw-step-item {
-                width: 52px;
+                width: var(--scale-size-56);
 
                 &:before {
-                    width: 52px;
+                    width: var(--scale-size-56);
                 }
 
                 .sw-step-item__description {
@@ -57,14 +57,14 @@
     }
 
     .swag-migration-process-screen__confirm-warning {
-        margin-top: 33px;
+        margin-top: var(--scale-size-32);
     }
 
     .sw-card {
         .sw-card__title {
             margin-bottom: var(--scale-size-12);
-            font-size: 18px;
-            line-height: 24px;
+            font-size: var(--font-size-m);
+            line-height: var(--font-line-height-xs);
 
             width: unset;
             position: unset;
@@ -76,7 +76,6 @@
 }
 
 .swag-migration-index-modal-abort-migration-confirm-dialog {
-
     .sw-modal__body {
         padding: var(--scale-size-32);
     }

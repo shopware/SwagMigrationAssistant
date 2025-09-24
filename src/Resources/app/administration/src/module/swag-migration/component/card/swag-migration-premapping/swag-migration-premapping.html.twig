@@ -31,7 +31,7 @@
         {% endblock %}
 
         {% block swag_migration_premapping_success_card %}
-            <mt-card v-if="!isLoading && isPremappingValid"
+            <mt-card v-if="!isLoading && isPremappingValid && premapping?.length > 0"
                      class="swag-migration-premapping__success-card"
                      position-identifier="swag-migration-premapping__success-card">
 

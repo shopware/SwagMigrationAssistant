@@ -209,20 +209,20 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
-          "content": "Wenn Du die sogenannten Prüfsummen zurücksetzt, werden bei der nächsten Migration alle Daten aus dem Quellsystem noch einmal berücksichtigt. Dies beinhaltet auch bereits migrierte, unveränderte Datensätze. <br><br><strong>Wichtig:</strong> Änderungen der Datensätze, die Du seit der letzten Migration in Shopware 6 vorgenommen hast, werden wieder überschrieben. Die Daten aus dem Quellsystem haben Vorrang.",
+          "content": "Durch das Zurücksetzen der Prüfsummen wird Ihr Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn Sie sich entscheiden, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
           "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
           "abortButtonText": "Abbrechen",
           "confirmButtonText": "Ja, zurücksetzen"
         },
         "resetMigrationConfirmDialog": {
-            "title": "Die Migration abschließen",
-            "header": "Deine Shopdaten sind fertig migriert?",
-            "content": "Super! Schließe dann jetzt die Migration ab, um temporäre und ungenutzte Dateien aufzuräumen. <strong>Bitte beachte:</strong> Das Abschließen der Migration ist endgültig. Du kannst danach keine Migration mehr über Deine aktuelle Verbindung durchführen.",
-            "contentHint": "Möchtest Du die Migration jetzt abschließen?",
+            "title": "Migration archivieren",
+            "header": "Hast du deine Shopdaten fertig migriert?",
+            "content": "Wenn du alle deine Shop-Daten erfolgreich migriert hast, kannst du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
+            "contentHint": "Möchstest du diese Migration und ihre Verbindung wirklich archivieren?",
             "abortButtonText": "Abbrechen",
-            "confirmButtonText": "Jetzt abschließen",
+            "confirmButtonText": "Ja, archivieren",
             "errorNotification": {
-                "title": "Fehler bei Abschluss der Migration",
+                "title": "Fehler beim Archivieren der Migration",
                 "message": "Eine Migration wird zur Zeit durchgeführt."
             }
         }
@@ -332,7 +332,8 @@
           "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter",
           "country_state": "Bundesländer"
         },
-        "noData": "Es wurden keine Daten zum Migrieren gefunden."
+        "noData": "Es wurden keine Daten zum Migrieren gefunden.",
+        "noDataSubline": "Bitte überprüfe Deine Verbindung oder wähle ein anderes Profil."
       },
       "confirmWarningCard": {
         "currencyMismatch": {
@@ -611,6 +612,7 @@
         "contentHint": "Willst Du die Daten wirklich löschen?"
       },
       "noData": "Es wurden keine Migrationen gefunden.",
+      "noDataSubline": "Beginne eine Migration, um Inhalte zu sehen.",
       "detailPage": {
         "title": "Details zur Migration",
         "timestamp": "Startzeitpunkt:",

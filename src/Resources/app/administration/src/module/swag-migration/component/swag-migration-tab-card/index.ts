@@ -67,14 +67,14 @@ export default Shopware.Component.wrapComponentConfig({
         mountedComponent() {
             this.$nextTick(() => {
                 // select first tab
-                if (this.tabItems !== undefined && this.tabItems.length > 0) {
+                if (this.tabItems[0]?.name) {
                     this.selectedNumber = this.tabItems[0].name;
 
                     setTimeout(() => {
                         if (this.$refs.swTabs) {
                             this.$refs.swTabs.setActiveItem(this.tabItems[0]);
                         }
-                    });
+                    }, 100);
                 }
             });
         },

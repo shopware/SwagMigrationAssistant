@@ -191,7 +191,7 @@
         "buttonRemoveCredentials": "Delete access data",
         "buttonProfileInstallation": "Install another profile",
         "buttonResetChecksums": "Reset checksums",
-        "buttonResetMigration": "Complete migration",
+        "buttonResetMigration": "Archive migration",
         "connected": "Connected",
         "notConnected": "Not connected",
         "noConnection": "No connection",
@@ -209,20 +209,20 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset checksums",
-          "content": "If you reset the checksums, all data from the source system will be recognized in the next migration. This includes already migrated or unchanged data sets. <br><br><strong>Important:</strong> Changes to the data records you have made in Shopware 6 since the last migration, will be overwritten. The source system data has priority.",
+          "content": "Resetting the checksums will restore your source system to a state similar to that before the first migration attempt. If you decide to migrate again from it, any changes to the newer Shopware 6 target system that have been made in the meantime might be overwritten.",
           "contentHint": "Do you want to reset the checksums?",
           "abortButtonText": "Cancel",
           "confirmButtonText": "Yes, reset"
         },
         "resetMigrationConfirmDialog": {
-            "title": "Finalise the migration",
-            "header": "Have you finished migrating your shop data?",
-            "content": "Great! Let's now finalise your migration and clean up temporary files and unused data. <strong>Please note:</strong> Finalising the migration is terminal. You won't be able to migrate any more data via the current connection.",
-            "contentHint": "Do you want to finalise the migration now?",
+            "title": "Archive migration",
+            "header": "Are you done migrating your shop data?",
+            "content": "If you have successfully migrated all of your shop data, go ahead and archive this migration. This will allow the system to clean up temporary files and unused data.",
+            "contentHint": "Do you really want to archive this migration and its connection?",
             "abortButtonText": "Cancel",
-            "confirmButtonText": "Finalise now",
+            "confirmButtonText": "Yes, archive",
             "errorNotification": {
-                "title": "Error occurred while finalising the migration",
+                "title": "Error occurred while archiving the migration",
                 "message": "A migration is currently in progress."
             }
         }
@@ -332,7 +332,8 @@
           "product_stream_filter_inheritance": "Dynamic product group filters",
           "country_state": "Country states"
         },
-        "noData": "Nothing found to migrate."
+        "noData": "Nothing found to migrate.",
+        "noDataSubline": "Please check your connection or try another profile."
       },
       "confirmWarningCard": {
         "currencyMismatch": {
@@ -611,6 +612,7 @@
         "contentHint": "Do you really want to delete the data?"
       },
       "noData": "No migrations found.",
+      "noDataSubline": "Start a migration to see content.",
       "detailPage": {
         "title": "Migration details",
         "timestamp": "Start time:",
