@@ -184,7 +184,7 @@ final class ProcessMediaHandler
                 );
             }
 
-            // Only transition if we updated the flag in this transaction to prevent duplicate messages
+            // Only transition if we updated the flag in this transaction to prevent dispatching duplicate messages
             if ($affectedRows > 0) {
                 $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
                 $this->messageBus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
