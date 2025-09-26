@@ -29,7 +29,7 @@ class HistoryController extends AbstractController
     {
     }
 
-    #[Route(path: '/api/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->getAlnum('runUuid');
