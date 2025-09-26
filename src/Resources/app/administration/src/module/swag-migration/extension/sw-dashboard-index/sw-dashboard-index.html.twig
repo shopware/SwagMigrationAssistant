@@ -2,9 +2,8 @@
     {% parent %}
 
     {%  block swag_migration_dashboard_card %}
-
         {% block sw_dashboard_index_content_migration_card %}
-            <swag-migration-dashboard-card v-if="acl.isAdmin()" />
+            <swag-migration-dashboard-card v-if="isMigrationAllowed" />
         {% endblock %}
     {% endblock %}
 {% endblock %}

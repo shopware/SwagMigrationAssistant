@@ -36,8 +36,10 @@
                                             {% endblock %}
 
                                             {%  block swag_migration_dashboard_card_button %}
-                                                <mt-button variant="primary"
-                                                           @click="goToMigrationIndexPage"
+                                                <mt-button
+                                                    class="swag-migration-dashboard-card__button"
+                                                    variant="primary"
+                                                    @click="goToMigrationIndexPage"
                                                 >
                                                     {{ $tc('swag-migration.dashboard.button') }}
                                                 </mt-button>
@@ -47,8 +49,10 @@
 
                                     {%  block swag_migration_dashboard_card_right_content %}
                                         <div class="swag-migration-dashboard-card__right-content">
-                                            <img :src="assetFilter('/swagmigrationassistant/administration/static/img/wizard-introduction.svg')"
-                                                 alt="">
+                                            <img
+                                                :src="assetFilter('/swagmigrationassistant/administration/static/img/wizard-introduction.svg')"
+                                                alt=""
+                                            />
                                         </div>
                                     {% endblock %}
                                 </div>
