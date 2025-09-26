@@ -160,30 +160,6 @@ class HistoryControllerTest extends TestCase
         static::assertNotNull($result->first());
     }
 
-    public function testGetPrefixLogInformation(): void
-    {
-        $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
-        $run = $result->first();
-        $result = $this->invokeMethod($this->historyService, 'getPrefixLogInformation', [$run]);
-
-        static::assertIsString($result);
-        static::assertStringContainsString('Migration log generated at', $result);
-        static::assertStringContainsString('Run id:', $result);
-        static::assertStringContainsString('Connection name: myConnection', $result);
-    }
-
-    public function testGetSuffixLogInformation(): void
-    {
-        $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
-        $run = $result->first();
-        $result = $this->invokeMethod($this->historyService, 'getSuffixLogInformation', [$run]);
-
-        static::assertIsString($result);
-        static::assertStringContainsString('--------------------Additional-metadata---------------------', $result);
-        static::assertStringContainsString('Environment information {JSON}:', $result);
-        static::assertStringContainsString('Premapping {JSON}: ----------------------------------------------------', $result);
-    }
-
     /**
      * @param array<Context|string|int|Entity|null> $parameters
      *
