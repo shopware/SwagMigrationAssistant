@@ -91,6 +91,8 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onPremappingChanged() {
+            console.log('Premapping changed, saving...');
+
             this.migrationStore.setIsLoading(true);
 
             debounce(async () => {

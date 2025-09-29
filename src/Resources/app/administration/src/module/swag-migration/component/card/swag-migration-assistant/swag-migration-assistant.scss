@@ -22,13 +22,13 @@
         &:last-of-type {
             margin-top: var(--scale-size-40);
         }
-    }
 
-    .swag-migration-assistant__illustration {
-        width: var(--scale-size-128);
-        display: block;
-        margin: 0 auto;
-        padding-bottom: var(--scale-size-16);
+        img {
+            width: var(--scale-size-128);
+            display: block;
+            margin: 0 auto;
+            padding-bottom: var(--scale-size-16);
+        }
     }
 
     h5.swag-migration-assistant__title {
@@ -40,11 +40,5 @@
     .swag-migration-assistant__content {
         white-space: pre-line;
         color: var(--color-text-secondary-default);
-    }
-
-    .swag-migration-assistant__content,
-    .swag-migration-assistant__link a.link {
-        font-size: var(--font-size-xs);
-        line-height: var(--font-line-height-xs);
     }
 }

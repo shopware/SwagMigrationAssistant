@@ -1,19 +1,19 @@
 {% block swag_migration_confirm_warning %}
     <div class="swag-migration-confirm-warning">
-
         {% block swag_migration_confirm_warning_card %}
             <mt-card
                 v-if="hasDifferentCurrency"
                 class="swag-migration-confirm-warning__card"
                 position-identifier="swag-migration-confirm-warning__card"
             >
-
                 {% block swag_migration_confirm_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
-                        <mt-icon class="swag-migration-confirm-warning__bubble-icon"
-                                 name="regular-exclamation-triangle"
-                                 size="36px"
-                                 decorative />
+                        <mt-icon
+                            class="swag-migration-confirm-warning__bubble-icon"
+                            name="regular-exclamation-triangle"
+                            size="36px"
+                            decorative
+                        />
                     </div>
                 {% endblock %}
 
@@ -45,10 +45,12 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_warning_checkbox %}
-                    <mt-checkbox v-model:checked="isCurrencyChecked"
-                                 class="swag-migration-confirm-warning__checkbox"
-                                 :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                 @update:checked="onCheckboxValueChanged" />
+                    <mt-checkbox
+                        v-model:checked="isCurrencyChecked"
+                        class="swag-migration-confirm-warning__checkbox"
+                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                        @update:checked="onCheckboxValueChanged"
+                    />
                 {% endblock %}
             </mt-card>
         {% endblock %}
@@ -59,13 +61,14 @@
                 class="swag-migration-confirm-warning__card"
                 position-identifier="swag-migration-confirm-warning__card"
             >
-
                 {% block swag_migration_confirm_language_warning_bubble %}
                     <div class="swag-migration-confirm-warning__bubble">
-                        <mt-icon class="swag-migration-confirm-warning__bubble-icon"
-                                 name="regular-exclamation-triangle"
-                                 size="36px"
-                                 decorative />
+                        <mt-icon
+                            class="swag-migration-confirm-warning__bubble-icon"
+                            name="regular-exclamation-triangle"
+                            size="36px"
+                            decorative
+                        />
                     </div>
                 {% endblock %}
 
@@ -97,10 +100,12 @@
                 {% endblock %}
 
                 {% block swag_migration_confirm_language_warning_checkbox %}
-                    <mt-checkbox v-model:checked="isLanguageChecked"
-                                 class="swag-migration-confirm-warning__checkbox"
-                                 :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                 @update:checked="onCheckboxValueChanged" />
+                    <mt-checkbox
+                        v-model:checked="isLanguageChecked"
+                        class="swag-migration-confirm-warning__checkbox"
+                        :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
+                        @update:checked="onCheckboxValueChanged"
+                    />
                 {% endblock %}
             </mt-card>
         {% endblock %}
