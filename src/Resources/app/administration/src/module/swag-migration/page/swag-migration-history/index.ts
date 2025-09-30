@@ -142,7 +142,13 @@ export default Shopware.Component.wrapComponentConfig({
                 {
                     property: 'connection.profile',
                     dataIndex: 'connection.profileName',
-                    label: this.$tc('swag-migration.history.profileAndGateway'),
+                    label: this.$tc('swag-migration.history.profile'),
+                    allowResize: true,
+                },
+                {
+                    property: 'connection.gateway',
+                    dataIndex: 'connection.gatewayName',
+                    label: this.$tc('swag-migration.history.gateway'),
                     allowResize: true,
                 },
                 {
@@ -156,7 +162,6 @@ export default Shopware.Component.wrapComponentConfig({
                     property: 'createdAt',
                     dataIndex: 'createdAt',
                     label: this.$tc('swag-migration.history.importDateTime'),
-                    align: 'right',
                     allowResize: true,
                 },
             ];

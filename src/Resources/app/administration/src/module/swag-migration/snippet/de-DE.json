@@ -578,7 +578,8 @@
     },
     "history": {
       "connectionName": "Verbindungsname",
-      "profileAndGateway": "Profil & Schnittstelle",
+      "profile": "Profil",
+      "gateway": "Schnittstelle",
       "status": "Status",
       "importDateTime": "Startzeitpunkt",
       "shopDomain": "Shop-Domain",

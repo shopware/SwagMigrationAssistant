@@ -2,15 +2,15 @@
 
 .swag-migration-history {
     .swag-migration-history__status-icon--finished {
-        color: var(--color-text-primary-default);
+        color: var(--color-icon-positive-default);
     }
 
     .swag-migration-history__status-icon--aborted {
-        color: var(--color-text-critical-default);
+        color: var(--color-icon-critical-default);
     }
 
     .swag-migration-history__status-icon--loading {
-        color: var(--color-text-primary-disabled);
+        color: var(--color-icon-primary-disabled);
     }
 }
 

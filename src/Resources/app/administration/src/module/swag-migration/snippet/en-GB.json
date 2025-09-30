@@ -596,7 +596,8 @@
     },
     "history": {
       "connectionName": "Connection name",
-      "profileAndGateway": "Profile & gateway",
+      "profile": "Profile",
+      "gateway": "Gateway",
       "status": "Status",
       "importDateTime": "Start time",
       "shopDomain": "Shop domain",

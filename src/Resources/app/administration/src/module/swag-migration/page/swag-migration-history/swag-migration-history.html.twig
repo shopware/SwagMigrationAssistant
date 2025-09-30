@@ -38,7 +38,12 @@
 
                     {% block swag_migration_history_grid_column_profile %}
                         <template #column-connection.profile="{ item }">
-                            {{ item.connection.profileName }} /
+                            {{ item.connection.profileName }}
+                        </template>
+                    {% endblock %}
+
+                    {% block swag_migration_history_grid_column_gateway %}
+                        <template #column-connection.gateway="{ item }">
                             {{ item.connection.gatewayName }}
                         </template>
                     {% endblock %}
