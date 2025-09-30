@@ -182,8 +182,9 @@
       "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
       "shopwareMajorVersionText": "We have noticed that your source system {sourceSystem} version does not match your target system {targetSystem} version. Please ensure to use the same major version for both systems before you start the migration.",
       "shopInfoCard": {
+        "link": "Help & documentation",
         "cardTitle": "Shop system",
-        "refreshTooltip": "Check connection to source system",
+        "refreshButton": "Refresh connection",
         "buttonEditSettings": "Edit connection",
         "buttonCreateConnection": "Create new connection",
         "buttonCreateInitialConnection": "Create initial connection",

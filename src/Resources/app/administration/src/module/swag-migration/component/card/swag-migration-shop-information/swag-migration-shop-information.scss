@@ -1,6 +1,29 @@
 @import "~scss/variables";
 
+.swag-migration-shop-information__refresh-connection {
+    .sw-context-menu-item__text {
+        font-size: var(--font-size-xs);
+        line-height: var(--font-line-height-xs);
+    }
+}
+
 .swag-migration-shop-information {
+    .mt-card__header {
+        display: flex;
+        align-items: center;
+    }
+
+    .swag-migration-shop-information__header-right {
+        display: flex;
+        align-items: center;
+        height: 100%;
+
+        a {
+            font-size: var(--font-size-xs);
+            line-height: var(--font-line-height-xs);
+        }
+    }
+
     .swag-migration-shop-information__connection {
         display: grid;
         grid-gap: var(--scale-size-8);
@@ -44,16 +67,16 @@
     }
 
     .swag-migration-shop-information__actions {
+        display: flex;
+        gap: var(--scale-size-6);
+        align-items: center;
+
         &-initial {
             margin-top: var(--scale-size-2);
         }
 
         &-edit, &-context-menu {
             margin-top: var(--scale-size-16);
-        }
-
-        .sw-button {
-            margin-right: var(--scale-size-8);
         }
     }
 

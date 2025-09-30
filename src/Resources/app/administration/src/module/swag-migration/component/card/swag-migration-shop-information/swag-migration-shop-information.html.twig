@@ -4,20 +4,26 @@
         :title="$tc('swag-migration.index.shopInfoCard.cardTitle')"
         position-identifier="swag-migration-shop-information"
     >
-        <template #header-right>
-            <mt-button
-                v-tooltip="{ message: $tc('swag-migration.index.shopInfoCard.refreshTooltip') }"
+        <template #headerRight>
+            <div class="swag-migration-shop-information__header-right">
+                <mt-link
+                    class="swag-migration-shop-information__header-right-link"
+                    as="a"
+                    to="https://docs.shopware.com/en/migration-en"
+                    target="_blank"
+                >
+                    {{ $tc('swag-migration.index.shopInfoCard.link') }}
+                </mt-link>
+            </div>
+        </template>
+
+        <template #context-actions>
+            <sw-context-menu-item
                 class="swag-migration-shop-information__refresh-connection"
-                size="x-small"
-                square
-                variant="secondary"
                 @click="onClickRefreshConnection"
             >
-                <mt-icon
-                    name="regular-redo-s"
-                    size="16px"
-                />
-            </mt-button>
+                {{ $tc('swag-migration.index.shopInfoCard.refreshButton') }}
+            </sw-context-menu-item>
         </template>
 
         {% block swag_migration_shop_information_content %}
