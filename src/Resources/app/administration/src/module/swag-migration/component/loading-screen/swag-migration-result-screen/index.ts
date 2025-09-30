@@ -1,6 +1,7 @@
 import template from './swag-migration-result-screen.html.twig';
 import './swag-migration-result-screen.scss';
 import type { TEntity, TRepository } from '../../../../../type/types';
+import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 
 const { Criteria } = Shopware.Data;
 
@@ -46,11 +47,19 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async fetchLatestRun(): Promise<TEntity<'swag_migration_run'> | null> {
+            if (Shopware.Store.get(MIGRATION_STORE_ID).latestRun !== null) {
+                return Shopware.Store.get(MIGRATION_STORE_ID).latestRun;
+            }
+
             const criteria = new Criteria(1, 1);
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
             const results = await this.migrationRunRepository.search(criteria, this.context);
-            return results.first();
+            const latestRun = results.first();
+
+            Shopware.Store.get(MIGRATION_STORE_ID).setLatestRun(latestRun);
+
+            return latestRun;
         },
     },
 });

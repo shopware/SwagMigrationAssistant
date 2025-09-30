@@ -81,6 +81,7 @@ export default Shopware.Component.wrapComponentConfig({
             () => Store.get(MIGRATION_STORE_ID),
             [
                 'connectionId',
+                'currentConnection',
                 'environmentInformation',
                 'lastConnectionCheck',
                 'adminLocaleLanguage',
@@ -234,6 +235,13 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async updateLastMigrationDate() {
+            const storedRun = Shopware.Store.get(MIGRATION_STORE_ID).latestRun;
+
+            if (storedRun) {
+                this.lastMigrationDate = storedRun.createdAt;
+                return Promise.resolve();
+            }
+
             const criteria = new Criteria(1, 1).addSorting(Criteria.sort('createdAt', 'DESC'));
 
             return this.migrationRunRepository
@@ -241,6 +249,7 @@ export default Shopware.Component.wrapComponentConfig({
                 .then((runs: TEntityCollection<'swag_migration_run'>) => {
                     if (runs.length > 0) {
                         this.lastMigrationDate = runs.first().createdAt;
+                        Shopware.Store.get(MIGRATION_STORE_ID).setLatestRun(runs.first());
                     } else {
                         this.lastMigrationDate = '-';
                     }
@@ -249,6 +258,11 @@ export default Shopware.Component.wrapComponentConfig({
 
         async fetchConnection(connectionId: string | null) {
             if (!connectionId) {
+                return Promise.resolve();
+            }
+
+            if (this.currentConnection) {
+                this.connection = this.currentConnection;
                 return Promise.resolve();
             }
 
@@ -261,6 +275,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                     delete connection.credentialFields;
                     this.connection = connection;
+                    Shopware.Store.get(MIGRATION_STORE_ID).setCurrentConnection(connection);
 
                     return this.migrationApiService.getProfileInformation(connection.profileName, connection.gatewayName);
                 })

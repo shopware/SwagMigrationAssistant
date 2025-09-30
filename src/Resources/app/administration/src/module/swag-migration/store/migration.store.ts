@@ -1,5 +1,10 @@
 import type RepositoryType from '@administration/src/core/data/repository.data';
-import type { MigrationDataSelection, MigrationEnvironmentInformation, MigrationPremapping } from '../../../type/types';
+import type {
+    TEntity,
+    MigrationDataSelection,
+    MigrationEnvironmentInformation,
+    MigrationPremapping,
+} from '../../../type/types';
 import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
 import { MIGRATION_API_SERVICE } from '../../../core/service/api/swag-migration.api.service';
 
@@ -20,6 +25,8 @@ export const MIGRATION_STORE_ID = 'swagMigration';
 type MigrationState = {
     state: {
         isLoading: boolean;
+        latestRun: TEntity<'swag_migration_run'> | null;
+        currentConnection: TEntity<'swag_migration_connection'> | null;
         warningConfirmed: boolean;
         dataSelectionIds: string[];
         connectionId: string | null;
@@ -32,7 +39,10 @@ type MigrationState = {
         isPremappingValid: () => boolean;
         isMigrationAllowed: () => boolean;
     };
+    s;
     actions: {
+        setLatestRun: (run: TEntity<'swag_migration_run'> | null) => void;
+        setCurrentConnection: (connection: TEntity<'swag_migration_connection'> | null) => void;
         setConnectionId: (id: string) => void;
         fetchConnectionId: () => Promise<boolean>;
         setIsLoading: (isLoading: boolean) => void;
@@ -75,6 +85,14 @@ const migrationStore = Shopware.Store.register({
          * Flag which sets the whole module into a loading state
          */
         isLoading: false,
+        /**
+         * Latest migration run object, null if no migration has been started yet.
+         */
+        latestRun: null,
+        /**
+         * The possible connection object, null if no connection is selected.
+         */
+        currentConnection: null,
         /**
          * The possible data that the user can migrate.
          */
@@ -144,6 +162,14 @@ const migrationStore = Shopware.Store.register({
 
         setIsLoading(isLoading: boolean) {
             this.isLoading = isLoading;
+        },
+
+        setLatestRun(run: TEntity<'swag_migration_run'> | null) {
+            this.latestRun = run;
+        },
+
+        setCurrentConnection(connection: TEntity<'swag_migration_connection'> | null) {
+            this.currentConnection = connection;
         },
 
         setDataSelectionIds(newIds: string[]) {

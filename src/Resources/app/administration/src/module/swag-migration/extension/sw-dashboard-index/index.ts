@@ -1,5 +1,6 @@
 import template from './sw-dashboard-index.html.twig';
 import type { TEntity, TRepository } from '../../../../type/types';
+import { MIGRATION_STORE_ID } from '../../store/migration.store';
 
 const { Criteria } = Shopware.Data;
 
@@ -53,12 +54,21 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
+            if (Shopware.Store.get(MIGRATION_STORE_ID).latestRun !== null) {
+                this.runExists = true;
+                this.loading = false;
+                return;
+            }
+
             const items = await this.migrationRunRepository.search(new Criteria(1, 1), this.context);
 
             this.runExists = items.length > 0;
 
             if (this.runExists) {
-                this.run = items[0] as TEntity<'swag_migration_run'>;
+                const item = items[0] as TEntity<'swag_migration_run'>;
+
+                this.run = item;
+                Shopware.Store.get(MIGRATION_STORE_ID).setLatestRun(item);
             }
 
             this.loading = false;

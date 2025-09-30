@@ -81,20 +81,7 @@
                                                @page-change="onPageChange" />
                         </template>
                     {% endblock %}
-
                 </sw-data-grid>
-            {% endblock %}
-
-            {% block swag_migration_history_no_data %}
-                <div v-if="migrationRuns.length === 0"
-                     class="swag-migration-history__no-data">
-                    <p class="swag-migration-history__no-data-label">
-                        {{ $tc('swag-migration.history.noData') }}
-                    </p>
-                    <p class="swag-migration-history__no-data-sub-label">
-                        {{ $tc('swag-migration.history.noDataSubline') }}
-                    </p>
-                </div>
             {% endblock %}
 
             {% block swag_migration_history_router_view %}

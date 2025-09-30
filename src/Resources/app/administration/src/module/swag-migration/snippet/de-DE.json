@@ -611,8 +611,6 @@
         "content": "Beim Löschen der Migrationsdaten werden Log-Einträge, Mediendateien-Einträge, temporäre Migrationsdatensätze und der Migrationslauf selbst entfernt. Nach dem Löschen ist die Migration in der Historie nicht mehr einsehbar.",
         "contentHint": "Willst Du die Daten wirklich löschen?"
       },
-      "noData": "Es wurden keine Migrationen gefunden.",
-      "noDataSubline": "Beginne eine Migration, um Inhalte zu sehen.",
       "detailPage": {
         "title": "Details zur Migration",
         "timestamp": "Startzeitpunkt:",
