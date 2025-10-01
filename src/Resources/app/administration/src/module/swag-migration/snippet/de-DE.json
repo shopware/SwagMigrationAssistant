@@ -331,13 +331,9 @@
         }
       },
       "premappingCard": {
-        "validTitle": "Datenprüfung abgeschlossen",
-        "validCaption": "Bereit mit den ausgewählten Daten fortzufahren.",
+        "unfilledAlert": "Manuelle Zuweisung erforderlich um fortzufahren.",
         "loadingTitle": "Datenprüfung läuft",
         "loadingCaption": "Bitte warte bis die Datenprüfung abgeschlossen ist.",
-        "unfilledTitle": "Datenprüfung fehlgeschlagen",
-        "unfilledCaption": "Einige Werte konnten nicht zugewiesen werden.",
-        "unfilledAlert": "Manuelle Zuweisung erforderlich um fortzufahren.",
         "previousTitle": "Bisheriger Wert",
         "newAssignmentTitle": "Neue Zuweisung",
         "placeholder": "Bitte auswählen ...",

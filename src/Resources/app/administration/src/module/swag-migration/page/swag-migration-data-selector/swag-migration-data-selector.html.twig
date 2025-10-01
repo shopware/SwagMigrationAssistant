@@ -1,19 +1,20 @@
 {% block swag_migration_data_selector %}
     <div class="swag-migration-data-selector">
-
         {% block swag_migration_data_selector_warnings %}
             <div class="swag-migration-data-selector__warnings">
-                <mt-banner v-for="warning in displayWarnings"
-                          :key="warning.snippetKey"
-                          class="swag-migration-data-selector__warning"
-                          variant="attention">
+                <mt-banner
+                    v-for="warning in displayWarnings"
+                    :key="warning.snippetKey"
+                    class="swag-migration-data-selector__warning"
+                    variant="attention"
+                >
                     {{ $tc(warning.snippetKey, warning.snippetArguments, warning.pluralizationCount) }}
                 </mt-banner>
             </div>
         {% endblock %}
 
         {% block swag_migration_index_main_page_card_confirm_warning %}
-            <swag-migration-confirm-warning class="swag-migration-process-screen__confirm-warning" />
+            <swag-migration-confirm-warning class="swag-migration-process-screen__confirm-warning"/>
         {% endblock %}
 
         <mt-card
@@ -21,7 +22,6 @@
             :title="$tc('swag-migration.index.selectDataCard.cardTitle')"
             position-identifier="swag-migration-data-selector"
         >
-
             {% block swag_migration_data_selector_grid %}
                 <template #grid>
                     <swag-migration-grid-extended
@@ -34,29 +34,38 @@
                         @vue:mounted="tableDataGridMounted"
                     >
                         <template #columns="{ item }">
-
                             {% block swag_migration_data_selector_grid_column_data %}
-                                <sw-grid-column flex="1fr"
-                                                :label="$tc('swag-migration.index.selectDataCard.headers.name')">
+                                <sw-grid-column
+                                    flex="1fr"
+                                    :label="$tc('swag-migration.index.selectDataCard.headers.name')"
+                                >
                                     {{ $tc(item.snippet) }}
                                 </sw-grid-column>
 
-                                <sw-grid-column flex="1fr"
-                                                :label="$tc('swag-migration.index.selectDataCard.headers.dataType')">
+                                <sw-grid-column
+                                    flex="1fr"
+                                    :label="$tc('swag-migration.index.selectDataCard.headers.dataType')"
+                                >
                                     {{ $tc('swag-migration.index.selectDataCard.dataTypes.' + item.dataType) }}
                                 </sw-grid-column>
 
-                                <sw-grid-column flex="1fr"
-                                                :label="$tc('swag-migration.index.selectDataCard.headers.total')"
-                                                align="right">
-                                    {{ item.total }}
+                                <sw-grid-column
+                                    flex="1fr"
+                                    :label="$tc('swag-migration.index.selectDataCard.headers.total')"
+                                    align="right"
+                                >
+                                    <span>{{ item.total }}</span>
 
-                                    <sw-help-text v-if="showHelptext(item.entityTotals)"
-                                                  class="swag-migration-data-selector__help-text"
-                                                  :text="getHelptext(item)" />
-                                    <div v-else
-                                         class="swag-migration-data-selector__help-text-placeholder">
-                                    </div>
+                                    <sw-help-text
+                                        v-if="showHelptext(item.entityTotals)"
+                                        class="swag-migration-data-selector__help-text"
+                                        :text="getHelptext(item)"
+                                    />
+
+                                    <div
+                                        v-else
+                                        class="swag-migration-data-selector__help-text-placeholder"
+                                    />
                                 </sw-grid-column>
                             {% endblock %}
                         </template>
@@ -81,6 +90,6 @@
             {% endblock %}
         </mt-card>
 
-        <swag-migration-premapping />
+        <swag-migration-premapping/>
     </div>
 {% endblock %}

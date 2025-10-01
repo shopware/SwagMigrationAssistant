@@ -41,7 +41,6 @@ export default Shopware.Component.wrapComponentConfig({
             [
                 'premapping',
                 'dataSelectionIds',
-                'isPremappingValid',
             ],
         ),
     },

@@ -349,13 +349,9 @@
         }
       },
       "premappingCard": {
-        "validTitle": "Data check completed",
-        "validCaption": "Ready to proceed with the selected data.",
+        "unfilledAlert": "Manual assignment needed in order to proceed.",
         "loadingTitle": "Data check running",
         "loadingCaption": "Please wait while we check your data selection.",
-        "unfilledTitle": "Data check failed",
-        "unfilledCaption": "Some values could not be assigned.",
-        "unfilledAlert": "Manual assignment needed in order to proceed.",
         "previousTitle": "Previous value",
         "newAssignmentTitle": "New assignment",
         "placeholder": "Please select...",
