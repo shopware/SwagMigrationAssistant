@@ -38,8 +38,9 @@
         padding-left: var(--scale-size-8);
         padding-right: var(--scale-size-8);
         border-radius: var(--border-radius-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-medium);
         font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
     }
 
     .swag-migration-wizard-profile-installation__last_version_box {
@@ -47,8 +48,9 @@
         padding-left: var(--scale-size-8);
         padding-right: var(--scale-size-8);
         border-radius: var(--border-radius-2xs);
-        font-weight: var(--font-weight-semibold);
+        font-weight: var(--font-weight-medium);
         font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
     }
 
     .swag-migration-wizard-profile-installation__profile_headline {

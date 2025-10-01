@@ -227,9 +227,9 @@ export default Shopware.Component.wrapComponentConfig({
             });
         },
 
-        onCloseResetModal() {
+        async onCloseResetModal() {
             this.showResetMigrationConfirmModal = false;
-            this.$router.push({
+            await this.$router.push({
                 name: 'swag.migration.index.main',
             });
         },
@@ -359,13 +359,10 @@ export default Shopware.Component.wrapComponentConfig({
                         growl: true,
                     });
                 })
-                .finally(() => {
-                    this.showResetMigrationConfirmModal = false;
+                .finally(async () => {
                     this.confirmModalIsLoading = false;
-
-                    this.$router.push({
-                        name: 'swag.migration.index.main',
-                    });
+                    await this.onCloseResetModal();
+                    window.location.reload();
                 });
         },
 
