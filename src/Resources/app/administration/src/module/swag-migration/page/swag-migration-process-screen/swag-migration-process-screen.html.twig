@@ -69,11 +69,18 @@
             {% endblock %}
 
             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog %}
-                <sw-modal v-if="showAbortMigrationConfirmDialog"
-                          class="swag-migration-index-modal-abort-migration-confirm-dialog"
-                          :title="$tc('swag-migration.index.confirmAbortDialog.title')"
-                          variant="small"
-                          @modal-close="onCloseAbortMigrationConfirmDialog">
+                <sw-modal
+                    v-if="showAbortMigrationConfirmDialog"
+                    class="swag-migration-index-modal-abort-migration-confirm-dialog"
+                    :title="$tc('swag-migration.index.confirmAbortDialog.title')"
+                    variant="small"
+                    @modal-close="onCloseAbortMigrationConfirmDialog"
+                >
+                    {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message_hint %}
+                        <p class="swag-migration-index-modal-abort-migration-confirm-dialog-hint">
+                            {{ $tc('swag-migration.index.confirmAbortDialog.hint') }}
+                        </p>
+                    {% endblock %}
 
                     {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message %}
                         <p class="swag-migration-index-modal-abort-migration-confirm-dialog-content">
@@ -81,27 +88,25 @@
                         </p>
                     {% endblock %}
 
-                    {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message_hint %}
-                        <p class="swag-migration-index-modal-abort-migration-confirm-dialog-hint">
-                            {{ $tc('swag-migration.index.confirmAbortDialog.hint') }}
-                        </p>
-                    {% endblock %}
-
                     {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer %}
                         <template #modal-footer>
 
                             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer_cancelAction %}
-                                <mt-button size="small"
-                                           variant="secondary"
-                                           @click="onCloseAbortMigrationConfirmDialog">
+                                <mt-button
+                                    size="small"
+                                    variant="secondary"
+                                    @click="onCloseAbortMigrationConfirmDialog"
+                                >
                                     {{ $tc('global.default.cancel') }}
                                 </mt-button>
                             {% endblock %}
 
                             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer_confirmAction %}
-                                <mt-button variant="primary"
-                                           size="small"
-                                           @click="onAbort">
+                                <mt-button
+                                    variant="primary"
+                                    size="small"
+                                    @click="onAbort"
+                                >
                                     {{ $tc('swag-migration.index.confirmAbortDialog.confirm') }}
                                 </mt-button>
                             {% endblock %}

@@ -116,22 +116,14 @@
 }
 
 .swag-migration-shop-information__confirm-modal {
-    .sw-modal__body {
-        padding: var(--scale-size-32);
+    &.is--align-center {
+        .swag-migration-shop-information__confirm-modal-header,
+        .swag-migration-shop-information__confirm-modal-content,
+        .swag-migration-shop-information__confirm-modal-content-hint {
+            text-align: center;
+        }
     }
 
-    .swag-migration-shop-information__confirm-modal-content {
-        text-align: center;
-    }
-
-    .swag-migration-shop-information__confirm-modal-content-hint {
-        text-align: center;
-        padding-top: var(--scale-size-32);
-        font-weight: var(--font-weight-semibold);
-    }
-}
-
-.swag-migration-shop-information__confirm-modal {
     .swag-migration-shop-information__confirm-modal-icon-wrapper {
         width: var(--scale-size-72);
         height: var(--scale-size-72);
@@ -140,28 +132,27 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        margin: 0 auto var(--scale-size-40) auto;
+        margin: 0 auto var(--scale-size-12) auto;
     }
 
     .swag-migration-shop-information__confirm-modal-header {
         font-weight: var(--font-weight-semibold);
-        font-size: var(--font-size-s);
-        text-align: center;
+        font-size: var(--font-size-xs);
+        line-height: var(--font-line-height-xs);
+        padding-bottom: var(--scale-size-6);
     }
 
     .swag-migration-shop-information__confirm-modal-content {
         font-size: var(--font-size-xs);
-        text-align: center;
-        padding-top: var(--scale-size-20);
-        max-width: calc(var(--scale-size-256) * 2);
-        margin: auto;
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-xs);
     }
 
     .swag-migration-shop-information__confirm-modal-content-hint {
-        text-align: center;
-        padding-top: var(--scale-size-32);
-        padding-bottom: var(--scale-size-20);
         font-weight: var(--font-weight-semibold);
         font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-xs);
+        padding-bottom: var(--scale-size-6);
     }
 }

@@ -271,15 +271,15 @@
                         size="460px"
                         @modal-close="showRemoveCredentialsConfirmModal = false"
                     >
-                        {% block swag_migration_shop_information_remove_credentials_confirm_modal_content %}
-                            <p class="swag-migration-shop-information__confirm-modal-content">
-                                {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.content') }}
-                            </p>
-                        {% endblock %}
-
                         {% block swag_migration_shop_information_remove_credentials_confirm_modal_content_hint %}
                             <p class="swag-migration-shop-information__confirm-modal-content-hint">
                                 {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.contentHint') }}
+                            </p>
+                        {% endblock %}
+
+                        {% block swag_migration_shop_information_remove_credentials_confirm_modal_content %}
+                            <p class="swag-migration-shop-information__confirm-modal-content">
+                                {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.content') }}
                             </p>
                         {% endblock %}
 
@@ -320,17 +320,17 @@
                         size="460px"
                         @modal-close="showResetChecksumsConfirmModal = false"
                     >
+                        {% block swag_migration_shop_information_reset_checksums_confirm_modal_content_hint %}
+                            <p class="swag-migration-shop-information__confirm-modal-content-hint">
+                                {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.contentHint') }}
+                            </p>
+                        {% endblock %}
+
                         {% block swag_migration_shop_information_reset_checksums_confirm_modal_content %}
                             <p
                                 class="swag-migration-shop-information__confirm-modal-content"
                                 v-html="$tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.content')"
                             >
-                            </p>
-                        {% endblock %}
-
-                        {% block swag_migration_shop_information_reset_checksums_confirm_modal_content_hint %}
-                            <p class="swag-migration-shop-information__confirm-modal-content-hint">
-                                {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.contentHint') }}
                             </p>
                         {% endblock %}
 
@@ -365,12 +365,12 @@
                 {% block swag_migration_shop_information_reset_migration_confirm_modal %}
                     <sw-modal
                         v-if="showResetMigrationConfirmModal"
-                        class="swag-migration-shop-information__confirm-modal"
+                        class="swag-migration-shop-information__confirm-modal is--align-center"
                         :title="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
+                        size="460px"
                         @modal-close="onCloseResetModal"
                     >
-
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_icon %}
                             <div class="swag-migration-shop-information__confirm-modal-icon-wrapper">
                                 <mt-icon
@@ -395,12 +395,6 @@
                                 class="swag-migration-shop-information__confirm-modal-content"
                                 v-html="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.content')"
                             >
-                            </p>
-                        {% endblock %}
-
-                        {% block swag_migration_shop_information_reset_migration_confirm_modal_content_hint %}
-                            <p class="swag-migration-shop-information__confirm-modal-content-hint">
-                                {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.contentHint') }}
                             </p>
                         {% endblock %}
 

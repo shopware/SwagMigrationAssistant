@@ -49,13 +49,11 @@
         },
         "connectionSelect": {
           "title": "Migration – Changing the connection",
-          "contentInformation": "Select an existing connection from the list to update the data.",
           "connectionLabel": "Connection name",
           "connectionPlaceholder": "Please select a connection"
         },
         "connectionCreate": {
           "title": "Migration – Create new connection",
-          "contentInformation": "The following information is required to perform the migration.",
           "profileLabel": "Shop system profile",
           "profilePlaceholder": "Select profile",
           "profileInstall": "Install another profile",
@@ -100,7 +98,6 @@
               "pluginLinkText": "More information about the plugin"
             },
             "local": {
-              "contentInformation": "We still need access data to connect to your Shopware 5 database.",
               "dbHostLabel": "Host",
               "dbHostPlaceholder": "Enter host",
               "dbPortLabel": "Port",
@@ -219,7 +216,6 @@
             "title": "Archive migration",
             "header": "Are you done migrating your shop data?",
             "content": "If you have successfully migrated all of your shop data, go ahead and archive this migration. This will allow the system to clean up temporary files and unused data.",
-            "contentHint": "Do you really want to archive this migration and its connection?",
             "abortButtonText": "Cancel",
             "confirmButtonText": "Yes, archive",
             "errorNotification": {

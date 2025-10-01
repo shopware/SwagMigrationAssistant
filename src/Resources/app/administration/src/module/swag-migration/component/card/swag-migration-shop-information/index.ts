@@ -344,14 +344,6 @@ export default Shopware.Component.wrapComponentConfig({
 
             return this.migrationApiService
                 .cleanupMigrationData()
-                .then(() => {
-                    this.showResetMigrationConfirmModal = false;
-                    this.confirmModalIsLoading = false;
-
-                    this.$nextTick(() => {
-                        this.$router.go(); // reload page
-                    });
-                })
                 .catch(() => {
                     this.showResetMigrationConfirmModal = false;
                     this.confirmModalIsLoading = false;
@@ -365,6 +357,14 @@ export default Shopware.Component.wrapComponentConfig({
                         ),
                         variant: 'error',
                         growl: true,
+                    });
+                })
+                .finally(() => {
+                    this.showResetMigrationConfirmModal = false;
+                    this.confirmModalIsLoading = false;
+
+                    this.$router.push({
+                        name: 'swag.migration.index.main',
                     });
                 });
         },

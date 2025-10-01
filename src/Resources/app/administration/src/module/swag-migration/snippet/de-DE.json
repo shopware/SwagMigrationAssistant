@@ -49,13 +49,11 @@
         },
         "connectionSelect": {
           "title": "Migration - Verbindung wechseln",
-          "contentInformation": "Wähle eine bestehende Verbindung aus der Liste aus, um Daten zu aktualisieren.",
           "connectionLabel": "Name der Verbindung",
           "connectionPlaceholder": "Bitte Verbindung auswählen"
         },
         "connectionCreate": {
           "title": "Migration - Neue Verbindung anlegen",
-          "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
           "profileLabel": "Shopsystem-Profil",
           "profilePlaceholder": "Bitte wählen",
           "profileInstall": "Weiteres Profil installieren",
@@ -100,7 +98,6 @@
               "pluginLinkText": "Mehr Informationen zum Plugin"
             },
             "local": {
-              "contentInformation": "Wir benötigen noch Zugangsdaten um eine Verbindung zu Deiner Datenbank von Shopware 5 herstellen zu können.",
               "dbHostLabel": "Host",
               "dbHostPlaceholder": "Host eintragen",
               "dbPortLabel": "Port",
@@ -219,7 +216,6 @@
             "title": "Migration archivieren",
             "header": "Hast du deine Shopdaten fertig migriert?",
             "content": "Wenn du alle deine Shop-Daten erfolgreich migriert hast, kannst du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
-            "contentHint": "Möchstest du diese Migration und ihre Verbindung wirklich archivieren?",
             "abortButtonText": "Abbrechen",
             "confirmButtonText": "Ja, archivieren",
             "errorNotification": {

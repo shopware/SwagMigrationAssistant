@@ -24,7 +24,7 @@
         gap: 0 var(--scale-size-14);
         width: 100%;
         display: grid;
-        margin-bottom: var(--scale-size-30);
+        margin-bottom: var(--scale-size-14);
     }
 
     .swag-migration-wizard-profile-installation__available_version_list {
@@ -92,6 +92,6 @@
     }
 
     .swag-migration-wizard-profile-installation__plugins {
-        margin-top: var(--scale-size-36);
+        margin-top: var(--scale-size-20);
     }
 }
