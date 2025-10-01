@@ -7,10 +7,18 @@
         &__tabs {
             margin: 0 var(--scale-size-16);
         }
+
+        .mt-card__content {
+            padding: 0;
+        }
     }
 
     .sw-tabs {
         width: 100%;
+
+        .sw-tabs-item {
+            border-bottom: none;
+        }
     }
 
     .sw-tabs__custom-content {
