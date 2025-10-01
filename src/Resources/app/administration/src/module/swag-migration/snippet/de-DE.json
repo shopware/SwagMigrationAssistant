@@ -16,7 +16,15 @@
       "descriptionTextModule": "Modul zum Migrieren der Daten",
       "tabMain": "Übersicht",
       "tabHistory": "Historie",
-      "tabDataSelector": "Datenauswahl"
+      "tabDataSelector": "Datenauswahl",
+      "disabledMessages": {
+        "noData": "Es sind keine Daten für die Migration verfügbar.",
+        "noSelectedData": "Es wurden keine Daten für die Migration ausgewählt.",
+        "disabled": "Die Migration ist in dieser Umgebung deaktiviert.",
+        "loading": "Die Migration wird derzeit ausgeführt.",
+        "unfilledPremapping": "Bitte alle erforderlichen Zuweisungen abschließen.",
+        "uncheckedWarnings": "Bitte bestätige die Währungs- und Sprachwarnungen."
+      }
     },
     "wizard": {
       "buttonAbort": "Abbrechen",

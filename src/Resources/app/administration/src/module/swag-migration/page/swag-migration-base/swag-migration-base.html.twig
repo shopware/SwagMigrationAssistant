@@ -25,6 +25,7 @@
                 #smart-bar-actions
             >
                 <mt-button
+                    v-tooltip="startMigrationButtonTooltip"
                     variant="primary"
                     :disabled="!isMigrationAllowed"
                     :is-loading="isLoading && isMigrationAllowed"

@@ -38,6 +38,20 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
+        startMigrationButtonTooltip() {
+            if (this.migrationDisabledMessage) {
+                return {
+                    message: this.migrationDisabledMessage,
+                    disabled: false,
+                };
+            }
+
+            return {
+                message: '',
+                disabled: true,
+            };
+        },
+
         ...mapState(
             () => Store.get(MIGRATION_STORE_ID),
             [
@@ -45,6 +59,7 @@ export default Shopware.Component.wrapComponentConfig({
                 'connectionId',
                 'isLoading',
                 'dataSelectionTableData',
+                'migrationDisabledMessage',
                 'isMigrationAllowed',
             ],
         ),

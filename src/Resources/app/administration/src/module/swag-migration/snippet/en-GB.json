@@ -16,7 +16,15 @@
       "descriptionTextModule": "Module to migrate data",
       "tabMain": "General",
       "tabHistory": "History",
-      "tabDataSelector": "Data selection"
+      "tabDataSelector": "Data selection",
+      "disabledMessages": {
+        "noData": "There is no data available for migration.",
+        "noSelectedData": "No items have been selected for migration.",
+        "disabled": "Migration is disabled in this environment.",
+        "loading": "Migration is currently in progress.",
+        "unfilledPremapping": "Complete all required mappings before continuing.",
+        "uncheckedWarnings": "Please confirm the currency and language warnings."
+      }
     },
     "wizard": {
       "buttonAbort": "Cancel",

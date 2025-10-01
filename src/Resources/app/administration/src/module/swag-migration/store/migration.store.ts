@@ -39,7 +39,6 @@ type MigrationState = {
         isPremappingValid: () => boolean;
         isMigrationAllowed: () => boolean;
     };
-    s;
     actions: {
         setLatestRun: (run: TEntity<'swag_migration_run'> | null) => void;
         setCurrentConnection: (connection: TEntity<'swag_migration_connection'> | null) => void;
@@ -52,6 +51,7 @@ type MigrationState = {
         fetchEnvironmentInformation: () => Promise<void>;
         setWarningConfirmed: (confirmed: boolean) => void;
         init: (forceFullStateReload?: boolean) => Promise<void>;
+        migrationDisabledMessage: () => string | null;
         setPremapping: (newPremapping: MigrationPremapping[]) => void;
         createErrorNotification: (errorMessageKey: string) => Promise<void>;
         setDataSelectionTableData: (data: MigrationDataSelection[]) => void;
@@ -121,9 +121,9 @@ const migrationStore = Shopware.Store.register({
             });
         },
 
-        isMigrationAllowed(): boolean {
+        migrationDisabledMessage(): string | null {
             if (!this.dataSelectionTableData.length) {
-                return false;
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noData');
             }
 
             const tableDataIds = this.dataSelectionTableData.map((data: MigrationDataSelection) => {
@@ -134,16 +134,31 @@ const migrationStore = Shopware.Store.register({
                 return null;
             });
 
-            const migrationAllowedByDataSelection = this.dataSelectionIds.some((id: string) => tableDataIds.includes(id));
-            const migrationAllowedByEnvironment = this.environmentInformation?.migrationDisabled === false;
+            if (!this.dataSelectionIds.some((id: string) => tableDataIds.includes(id))) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noSelectedData');
+            }
 
-            return (
-                migrationAllowedByDataSelection &&
-                migrationAllowedByEnvironment &&
-                !this.isLoading &&
-                this.isPremappingValid &&
-                this.warningConfirmed
-            );
+            if (this.environmentInformation?.migrationDisabled !== false) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.disabled');
+            }
+
+            if (this.isLoading) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.loading');
+            }
+
+            if (!this.isPremappingValid) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.unfilledPremapping');
+            }
+
+            if (!this.warningConfirmed) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.uncheckedWarnings');
+            }
+
+            return null;
+        },
+
+        isMigrationAllowed(): boolean {
+            return this.migrationDisabledMessage === null;
         },
     },
 
