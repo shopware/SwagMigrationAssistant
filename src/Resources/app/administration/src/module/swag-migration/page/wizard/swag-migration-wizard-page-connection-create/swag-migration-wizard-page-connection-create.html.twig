@@ -7,7 +7,10 @@
             >
                 {% block swag_migration_wizard_page_create_profile_selection %}
                     <div class="swag-migration-wizard__form">
-                        <mt-banner v-if="profileHint">
+                        <mt-banner
+                            v-if="profileHint"
+                            variant="info"
+                        >
                             {{ profileHint }}
                         </mt-banner>
 

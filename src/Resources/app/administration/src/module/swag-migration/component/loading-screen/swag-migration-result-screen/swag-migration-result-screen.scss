@@ -1,75 +1,38 @@
 @import "~scss/variables";
 
 .swag-migration-result-screen {
-    .swag-migration-result-screen__content {
-        text-align: center;
-        font-size: var(--font-size-xs);
-    }
+    .swag-migration-result-screen__card {
+        &-content {
+            text-align: center;
+            font-size: var(--font-size-xs);
+        }
 
-    .swag-migration-result-screen__title {
-        margin-bottom: var(--scale-size-4);
-        font-size: var(--font-size-m);
-        font-weight: var(--font-weight-semibold);
-    }
+        &-title {
+            margin-bottom: var(--scale-size-4);
+            font-size: var(--font-size-m);
+            font-weight: var(--font-weight-semibold);
+        }
 
-    .swag-migration-result-screen__caption {
-        margin: 0 var(--scale-size-128) var(--scale-size-24) var(--scale-size-128);
-        font-size: var(--font-size-xs);
-        color: var(--color-text-secondary-default);
-    }
+        &-caption {
+            margin: 0 var(--scale-size-128) var(--scale-size-24) var(--scale-size-128);
+            font-size: var(--font-size-xs);
+            color: var(--color-text-secondary-default);
+        }
 
-    a.swag-migration-result-screen__link {
-        font-size: var(--font-size-xs);
-        font-weight: var(--font-weight-semibold);
-        color: var(--color-text-brand-default);
-        text-decoration: none;
-    }
+        &-bubble {
+            margin: var(--scale-size-12) auto var(--scale-size-20) auto;
+            width: var(--scale-size-72);
+            height: var(--scale-size-72);
+            border-radius: var(--border-radius-round);
+            background-color: var(--color-background-positive-default);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .swag-migration-result-screen__bubble {
-        margin: var(--scale-size-12) auto var(--scale-size-20) auto;
-        width: var(--scale-size-72);
-        height: var(--scale-size-72);
-        border-radius: var(--border-radius-round);
-        background-color: var(--color-background-positive-default);
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .swag-migration-result-screen__icon {
-        color: var(--color-icon-positive-default);
-    }
-}
-
-.swag-migration-result-survey {
-    .sw-card__content {
-        background-color: transparent;
-    }
-
-    .swag-migration-result-survey__content {
-        text-align: center;
-        font-size: var(--font-size-xs);
-    }
-
-    .swag-migration-result-survey__title {
-        margin-bottom: var(--scale-size-4);
-        font-size: var(--font-size-xs);
-        font-weight: var(--font-weight-semibold);
-    }
-
-    .swag-migration-result-survey__caption {
-        margin: var(--scale-size-10) var(--scale-size-56) var(--scale-size-24) var(--scale-size-56);
-        font-size: var(--font-size-xs);
-        color: var(--color-text-secondary-default);
-    }
-
-    .swag-migration-result-survey__external-icon {
-        margin-left: var(--scale-size-4);
-    }
-
-    .swag-migration-result-survey__icon {
-        margin-top: var(--scale-size-12);
-        width: var(--scale-size-22);
+        &-icon {
+            color: var(--color-icon-positive-default);
+        }
     }
 }

@@ -607,7 +607,7 @@
         "data": "Daten",
         "errors": "Details",
         "logDescription": "Für mehr Details {link}",
-        "logDownload": "lade das Protokoll herunter.",
+        "logDownload": "lade das Protokoll herunter",
         "errorCode": "Protokolleintrag",
         "errorLevel": "Protokolllevel",
         "errorCount": "Anzahl",

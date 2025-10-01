@@ -59,20 +59,6 @@
     .swag-migration-process-screen__confirm-warning {
         margin-top: var(--scale-size-32);
     }
-
-    .sw-card {
-        .sw-card__title {
-            margin-bottom: var(--scale-size-12);
-            font-size: var(--font-size-m);
-            line-height: var(--font-line-height-xs);
-
-            width: unset;
-            position: unset;
-            left: unset;
-            top: unset;
-            text-align: unset;
-        }
-    }
 }
 
 .swag-migration-index-modal-abort-migration-confirm-dialog {

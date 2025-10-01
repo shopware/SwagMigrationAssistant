@@ -625,7 +625,7 @@
         "data": "Data",
         "errors": "Details",
         "logDescription": "For more details {link}",
-        "logDownload": "download the log file.",
+        "logDownload": "download the log file",
         "errorCode": "Log message",
         "errorLevel": "Log level",
         "errorCount": "Count",

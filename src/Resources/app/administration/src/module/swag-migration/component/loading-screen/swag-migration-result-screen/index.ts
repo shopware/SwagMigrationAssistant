@@ -47,10 +47,6 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async fetchLatestRun(): Promise<TEntity<'swag_migration_run'> | null> {
-            if (Shopware.Store.get(MIGRATION_STORE_ID).latestRun !== null) {
-                return Shopware.Store.get(MIGRATION_STORE_ID).latestRun;
-            }
-
             const criteria = new Criteria(1, 1);
             criteria.addSorting(Criteria.sort('createdAt', 'DESC'));
 
