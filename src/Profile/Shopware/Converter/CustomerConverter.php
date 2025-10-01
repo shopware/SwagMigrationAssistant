@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -194,6 +195,18 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->convertValue($converted, 'customerNumber', $data, 'customernumber');
         $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATETIME);
         $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME);
+
+        $converted['accountType'] = $this->getAccountType($data);
+        if ($converted['accountType'] === CustomerEntity::ACCOUNT_TYPE_BUSINESS) {
+            $defaultBillingAddress = $this->getDefaultBillingAddress($data);
+
+            if ($defaultBillingAddress !== null
+                && isset($defaultBillingAddress['company'])
+                && $defaultBillingAddress['company'] !== ''
+            ) {
+                $converted['company'] = $defaultBillingAddress['company'];
+            }
+        }
 
         $this->setPassword($data, $converted);
 
@@ -753,5 +766,42 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         return \count($errors) === 0;
+    }
+
+    /**
+     * If the customer's default billing address contains a company, the account type is business, else private.
+     */
+    private function getAccountType(array $originalData): string
+    {
+        $defaultBillingAddress = $this->getDefaultBillingAddress($originalData);
+
+        if ($defaultBillingAddress === null) {
+            return CustomerEntity::ACCOUNT_TYPE_PRIVATE;
+        }
+
+        if (isset($defaultBillingAddress['company']) && $defaultBillingAddress['company'] !== '') {
+            return CustomerEntity::ACCOUNT_TYPE_BUSINESS;
+        }
+
+        return CustomerEntity::ACCOUNT_TYPE_PRIVATE;
+    }
+
+    private function getDefaultBillingAddress(array $data): ?array
+    {
+        if (!isset($data['addresses'], $data['default_billing_address_id'])) {
+            return null;
+        }
+
+        foreach ($data['addresses'] as $address) {
+            if (!isset($address['id'])) {
+                continue;
+            }
+
+            if (isset($data['default_billing_address_id']) && $address['id'] === $data['default_billing_address_id']) {
+                return $address;
+            }
+        }
+
+        return null;
     }
 }
