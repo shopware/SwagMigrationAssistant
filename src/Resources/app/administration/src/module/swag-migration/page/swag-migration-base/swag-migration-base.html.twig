@@ -3,20 +3,33 @@
         {% block swag_migration_base_smart_bar_header %}
             <template #smart-bar-header>
                 <h2>
-                    {{ $tc('sw-settings.index.title') }}
-                    <mt-icon name="regular-chevron-right-xs" size="12"/>
-                    {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
+                    <span>
+                        {{ $tc('sw-settings.index.title') }}
+                    </span>
+
+                    <mt-icon
+                        name="regular-chevron-right-xs"
+                        size="12"
+                    />
+
+                    <span>
+                        {{ $tc('swag-migration.general.mainMenuItemGeneral') }}
+                    </span>
                 </h2>
             </template>
         {% endblock %}
 
         {% block swag_migration_base_smart_bar_actions %}
-            <template v-if="!storesInitializing"
-                      #smart-bar-actions>
-                <mt-button variant="primary"
-                           :disabled="!isMigrationAllowed"
-                           :is-loading="isLoading"
-                           @click="onMigrate">
+            <template
+                v-if="!storesInitializing"
+                #smart-bar-actions
+            >
+                <mt-button
+                    variant="primary"
+                    :disabled="!isMigrationAllowed"
+                    :is-loading="isLoading && isMigrationAllowed"
+                    @click="onMigrate"
+                >
                     {{ $tc('swag-migration.index.migrateButton') }}
                 </mt-button>
             </template>
