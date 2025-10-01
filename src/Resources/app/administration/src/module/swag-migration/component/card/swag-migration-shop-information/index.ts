@@ -15,7 +15,10 @@ const { mapState } = Shopware.Component.getComponentHelper();
 const { format } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
 
-const BADGE_TYPE = {
+/**
+ * @private
+ */
+export const BADGE_TYPE = {
     SUCCESS: 'success',
     DANGER: 'danger',
 } as const;

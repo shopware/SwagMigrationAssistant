@@ -1,87 +1,112 @@
 {% block swag_migration_history_detail %}
     <div class="swag-migration-history-detail">
-        <sw-modal v-if="showModal"
-                  class="swag-migration-history-detail__modal"
-                  :title="$tc('swag-migration.history.detailPage.title')"
-                  variant="large"
-                  :is-loading="isLoading"
-                  @modal-close="onCloseModal">
+        <sw-modal
+            v-if="showModal"
+            class="swag-migration-history-detail__modal"
+            :title="$tc('swag-migration.history.detailPage.title')"
+            variant="large"
+            :is-loading="isLoading"
+            @modal-close="onCloseModal"
+        >
             {% block swag_migration_history_detail_modal_content %}
-                <div v-if="isLoading"
-                     class="swag-migration-history-detail__loading-placeholder">
-                </div>
-                <div v-if="!isLoading"
-                     class="swag-migration-history-detail__content">
+                <div
+                    v-if="isLoading"
+                    class="swag-migration-history-detail__loading-placeholder"
+                />
 
+                <div
+                    v-if="!isLoading"
+                    class="swag-migration-history-detail__content"
+                >
                     {% block swag_migration_history_detail_header %}
                         <div class="swag-migration-history-detail__header">
+                            <div class="swag-migration-history-detail__header-wrapper">
+                                {% block swag_migration_history_detail_connectin_avatar %}
+                                    <template v-if="profileIcon !== null && profileIcon !== ''">
+                                        <img
+                                            class="swag-migration-history-detail__header-profile-avatar"
+                                            :src="assetFilter(profileIcon)"
+                                            alt=""
+                                        />
+                                    </template>
 
-                            {% block swag_migration_history_detail_connectin_avatar %}
-                                <template v-if="profileIcon !== null && profileIcon !== ''">
-                                    <img class="swag-migration-shop-information__profile-avatar"
-                                         :src="assetFilter(profileIcon)"
-                                         alt=""
-                                         size="80px">
-                                </template>
+                                    <template v-else>
+                                        <img
+                                            class="swag-migration-history-detail__header-profile-avatar"
+                                            :src="assetFilter('/swagmigrationassistant/administration/static/img/migration-assistant-plugin.svg')"
+                                            alt=""
+                                        />
+                                    </template>
+                                {% endblock %}
 
-                                <template v-else>
-                                    <img class="swag-migration-shop-information__profile-avatar"
-                                         :src="assetFilter('/swagmigrationassistant/administration/static/img/migration-assistant-plugin.svg')"
-                                         alt=""
-                                         size="80px">
-                                </template>
-                            {% endblock %}
+                                {% block swag_migration_history_detail_connection_info %}
+                                    <div class="swag-migration-history-detail__connection-info">
+                                        {% block swag_migration_history_detail_shop_system %}
+                                            <div class="swag-migration-history-detail__connection-name">
+                                                {{ connectionName }}
+                                            </div>
+                                        {% endblock %}
 
-                            {% block swag_migration_history_detail_connection_info %}
-                                <div class="swag-migration-history-detail__connection-info">
+                                        {% block swag_migration_history_detail_shop_domain %}
+                                            <div
+                                                v-if="shopUrl !== ''"
+                                                class="swag-migration-history-detail__shop-domain"
+                                            >
+                                                <span
+                                                    class="swag-migration-history-detail__shop-domain-prefix"
+                                                    :class="shopUrlPrefixClass"
+                                                >
+                                                    <mt-icon
+                                                        v-if="sslActive"
+                                                        class="swag-migration-history-detail__shop-domain-prefix-icon"
+                                                        name="regular-lock"
+                                                        size="12px"
+                                                    />
+                                                    <mt-icon
+                                                        v-else
+                                                        class="swag-migration-history-detail__shop-domain-prefix-icon"
+                                                        name="regular-lock-open-s"
+                                                        size="12px"
+                                                    />
+                                                    {{ shopUrlPrefix }}
+                                                </span>
+                                                <span>
+                                                    {{ shopUrl }}
+                                                </span>
+                                            </div>
+                                        {% endblock %}
 
-                                    {% block swag_migration_history_detail_shop_system %}
-                                        <div class="swag-migration-history-detail__connection-name">
-                                            {{ connectionName }}
-                                        </div>
-                                    {% endblock %}
-
-                                    {% block swag_migration_history_detail_shop_domain %}
-                                        <div v-if="shopUrl !== ''"
-                                             class="swag-migration-history-detail__shop-domain">
-                                                        <span class="swag-migration-history-detail__shop-domain-prefix"
-                                                              :class="shopUrlPrefixClass">
-                                                            <mt-icon v-if="sslActive"
-                                                                     class="swag-migration-history-detail__shop-domain-prefix-icon"
-                                                                     name="regular-lock"
-                                                                     size="12px" />
-                                                            <mt-icon v-else
-                                                                     class="swag-migration-history-detail__shop-domain-prefix-icon"
-                                                                     name="regular-lock-open-s"
-                                                                     size="12px" />
-                                                            {{ shopUrlPrefix }}</span>{{ shopUrl }}
-                                        </div>
-                                    {% endblock %}
-
-                                    {% block swag_migration_history_detail_profile %}
-                                        <div class="swag-migration-history-detail__profile">
-                                            {{ profileName }} / {{ gatewayName }}
-                                        </div>
-                                    {% endblock %}
-                                </div>
-                            {% endblock %}
+                                        {% block swag_migration_history_detail_profile %}
+                                            <div class="swag-migration-history-detail__profile">
+                                                {{ profileName }} / {{ gatewayName }}
+                                            </div>
+                                        {% endblock %}
+                                    </div>
+                                {% endblock %}
+                            </div>
 
                             {% block swag_migration_history_detail_run_info %}
                                 <div class="swag-migration-history-detail__run-info">
-                                    <div class="swag-migration-history-detail__run-timestamp-label">
-                                        {{ $tc('swag-migration.history.detailPage.timestamp') }}
-                                    </div>
-                                    <div class="swag-migration-history-detail__run-timestamp-value">
-                                        {{ dateFilter(migrationRun.createdAt, migrationDateOptions) }}
+                                    <div class="swag-migration-history-detail__status-badge">
+                                        <sw-label
+                                            class="swag-migration-history-detail__status"
+                                            :variant="statusBadgeVariant"
+                                            appearance="pill"
+                                        >
+                                            <sw-color-badge
+                                                class="swag-migration-history-detail__status-dot"
+                                                :variant="statusBadgeVariant"
+                                                rounded
+                                            />
+                                            <span class="swag-migration-history-detail__status-text">
+                                                    {{ $tc(statusBadgeLabel) }}
+                                                </span>
+                                        </sw-label>
                                     </div>
 
-                                    <div class="swag-migration-history-detail__run-status-label">
-                                        {{ $tc('swag-migration.history.detailPage.runStatus') }}
-                                    </div>
-                                    <div class="swag-migration-history-detail__run-status-value"
-                                         :class="runStatusClasses">
-                                        {{ $tc(runStatusSnippet) }}
-                                    </div>
+                                    <p class="swag-migration-history-detail__run-timestamp-value">
+                                        {{ dateFilter(migrationRun.createdAt, migrationDateOptions) }}
+                                    </p>
                                 </div>
                             {% endblock %}
                         </div>
@@ -89,24 +114,26 @@
 
                     {% block swag_migration_history_detail_body %}
                         <div class="swag-migration-history-detail__body">
-
                             {% block swag_migration_history_detail_body_tabs %}
                                 <sw-tabs
                                     ref="tabReference"
                                     position-identifier="swag-migration-history-detail-body-tabs"
                                     @new-item-active="newActiveTabItem"
                                 >
-
                                     {% block swag_migration_history_detail_body_tabs_data %}
-                                        <sw-tabs-item ref="dataTabItem"
-                                                      name="data">
+                                        <sw-tabs-item
+                                            ref="dataTabItem"
+                                            name="data"
+                                        >
                                             {{ $tc('swag-migration.history.detailPage.data') }}
                                         </sw-tabs-item>
                                     {% endblock %}
 
                                     {% block swag_migration_history_detail_body_tabs_errors %}
-                                        <sw-tabs-item ref="errorsTabItem"
-                                                      name="errors">
+                                        <sw-tabs-item
+                                            ref="errorsTabItem"
+                                            name="errors"
+                                        >
                                             {{ $tc('swag-migration.history.detailPage.errors') }}
                                         </sw-tabs-item>
                                     {% endblock %}
@@ -114,13 +141,17 @@
                             {% endblock %}
 
                             {% block swag_migration_history_detail_body_data %}
-                                <swag-migration-history-detail-data v-show="currentTab === 'data'"
-                                                                    :migration-run="migrationRun" />
+                                <swag-migration-history-detail-data
+                                    v-show="currentTab === 'data'"
+                                    :migration-run="migrationRun"
+                                />
                             {% endblock %}
 
                             {% block swag_migration_history_detail_body_errors %}
-                                <swag-migration-history-detail-errors v-show="currentTab === 'errors'"
-                                                                      :migration-run="migrationRun" />
+                                <swag-migration-history-detail-errors
+                                    v-show="currentTab === 'errors'"
+                                    :migration-run="migrationRun"
+                                />
                             {% endblock %}
                         </div>
                     {% endblock %}
@@ -129,9 +160,11 @@
 
             {% block swag_migration_history_detail_footer %}
                 <template #modal-footer>
-                    <mt-button size="small"
-                               variant="secondary"
-                               @click="onCloseModal">
+                    <mt-button
+                        size="small"
+                        variant="secondary"
+                        @click="onCloseModal"
+                    >
                         {{ $tc('swag-migration.history.detailPage.close') }}
                     </mt-button>
                 </template>

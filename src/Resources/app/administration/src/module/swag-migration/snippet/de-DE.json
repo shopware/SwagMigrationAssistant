@@ -401,7 +401,8 @@
             "caption": "Die neuen Daten werden indexiert.",
             "short": "Indexierung"
           },
-          "finish": "Fertig"
+          "finish": "Fertig",
+          "unknown": "Unbekannt"
         },
         "result": {
           "title": "Der Migrations-Assistent ist fertig",
@@ -593,8 +594,6 @@
       },
       "detailPage": {
         "title": "Details zur Migration",
-        "timestamp": "Startzeitpunkt:",
-        "runStatus": "Migrations-Status:",
         "status": {
           "finished": "Abgeschlossen",
           "aborted": "Abgebrochen",

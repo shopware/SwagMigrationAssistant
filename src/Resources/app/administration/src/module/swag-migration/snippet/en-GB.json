@@ -422,7 +422,8 @@
             "caption": "The migration is almost complete.",
             "short": "Indexing"
           },
-          "finish": "Done"
+          "finish": "Done",
+          "unknown": "Unknown"
         },
         "result": {
           "title": "The Migration Assistant is done",
@@ -614,8 +615,6 @@
       },
       "detailPage": {
         "title": "Migration details",
-        "timestamp": "Start time:",
-        "runStatus": "Migration status:",
         "status": {
           "finished": "Finished",
           "aborted": "Aborted",

@@ -6,14 +6,40 @@
     }
 
     .swag-migration-history-detail__header {
-        display: grid;
-        grid-template-columns: var(--scale-size-80) 1fr min-content;
+        display: flex;
+        align-items: stretch;
+    }
+
+    .swag-migration-history-detail__header-wrapper {
+        display: flex;
+        gap: var(--scale-size-10);
+        flex: 1;
+    }
+
+    .swag-migration-history-detail__header-profile-avatar {
+        height: 100%;
     }
 
     .swag-migration-history-detail__connection-info {
-        padding-left: var(--scale-size-16);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
         line-height: var(--font-line-height-xs);
         font-size: var(--font-size-xs);
+    }
+
+    .swag-migration-history-detail__status {
+        margin: 0;
+    }
+
+    .swag-migration-history-detail__status-dot {
+        margin: auto var(--scale-size-6) auto auto;
+    }
+
+    .swag-migration-history-detail__status-text {
+        margin: auto 0;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-history-detail__connection-name {
@@ -31,31 +57,15 @@
     }
 
     .swag-migration-history-detail__run-info {
-        white-space: nowrap;
+        display: flex;
+        flex: 1;
+        height: auto;
+        text-align: right;
+        flex-direction: column;
+        justify-content: space-between;
         font-size: var(--font-size-xs);
         line-height: var(--font-line-height-2xs);
-        padding-right: var(--scale-size-16);
-    }
-
-    .swag-migration-history-detail__run-status-label {
-        margin-top: var(--scale-size-4);
-    }
-
-    .swag-migration-history-detail__run-timestamp-value,
-    .swag-migration-history-detail__run-status-value {
-        font-weight: var(--font-weight-semibold);
-    }
-
-    .swag-migration-history-detail__run-status-value {
-        color: var(--color-text-secondary-default);
-    }
-
-    .swag-migration-history-detail__run-status-value--finished {
-        color: var(--color-text-primary-default);
-    }
-
-    .swag-migration-history-detail__run-status-value--aborted {
-        color: var(--color-text-critical-default);
+        padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-2) 0;
     }
 
     .sw-tabs__custom-content {
