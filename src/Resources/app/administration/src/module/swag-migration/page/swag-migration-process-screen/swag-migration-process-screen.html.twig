@@ -1,7 +1,6 @@
 {% block swag_migration_base_smart_bar_actions %}
     {# <!-- eslint-disable-next-line vue/valid-v-slot --> #}
     <template #smart-bar-actions>
-
         {% block swag_migration_index_smart_bar_abort_button %}
             <mt-button v-if="abortButtonVisible"
                        variant="secondary"
@@ -19,7 +18,6 @@
                 {{ $tc('swag-migration.index.backToOverviewButton') }}
             </mt-button>
         {% endblock %}
-
     </template>
 {% endblock %}
 
@@ -97,13 +95,13 @@
                                     variant="secondary"
                                     @click="onCloseAbortMigrationConfirmDialog"
                                 >
-                                    {{ $tc('global.default.cancel') }}
+                                    {{ $tc('swag-migration.index.confirmAbortDialog.cancel') }}
                                 </mt-button>
                             {% endblock %}
 
                             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer_confirmAction %}
                                 <mt-button
-                                    variant="primary"
+                                    variant="critical"
                                     size="small"
                                     @click="onAbort"
                                 >

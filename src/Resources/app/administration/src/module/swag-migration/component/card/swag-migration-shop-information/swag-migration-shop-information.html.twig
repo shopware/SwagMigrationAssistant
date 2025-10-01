@@ -163,7 +163,10 @@
                                                         {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_resetMigrationItem %}
-                                                            <sw-context-menu-item @click="openResetMigrationModal">
+                                                            <sw-context-menu-item
+                                                                variant="danger"
+                                                                @click="openResetMigrationModal"
+                                                            >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonResetMigration') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
@@ -268,7 +271,7 @@
                         class="swag-migration-shop-information__confirm-modal"
                         :title="$tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
-                        size="460px"
+                        variant="small"
                         @modal-close="showRemoveCredentialsConfirmModal = false"
                     >
                         {% block swag_migration_shop_information_remove_credentials_confirm_modal_content_hint %}
@@ -299,7 +302,7 @@
                                 {% block swag_migration_shop_information_remove_credentials_confirm_modal_confirm %}
                                     <mt-button
                                         size="small"
-                                        variant="primary"
+                                        variant="critical"
                                         :disabled="confirmModalIsLoading"
                                         @click="onClickRemoveConnectionCredentials"
                                     >
@@ -317,7 +320,7 @@
                         class="swag-migration-shop-information__confirm-modal"
                         :title="$tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
-                        size="460px"
+                        variant="small"
                         @modal-close="showResetChecksumsConfirmModal = false"
                     >
                         {% block swag_migration_shop_information_reset_checksums_confirm_modal_content_hint %}
@@ -350,7 +353,7 @@
                                 {% block swag_migration_shop_information_reset_checksums_confirm_modal_confirm %}
                                     <mt-button
                                         size="small"
-                                        variant="primary"
+                                        variant="critical"
                                         :disabled="confirmModalIsLoading"
                                         @click="onClickResetChecksums"
                                     >
@@ -365,23 +368,12 @@
                 {% block swag_migration_shop_information_reset_migration_confirm_modal %}
                     <sw-modal
                         v-if="showResetMigrationConfirmModal"
-                        class="swag-migration-shop-information__confirm-modal is--align-center"
+                        class="swag-migration-shop-information__confirm-modal"
                         :title="$tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.title')"
                         :is-loading="confirmModalIsLoading"
-                        size="460px"
+                        variant="small"
                         @modal-close="onCloseResetModal"
                     >
-                        {% block swag_migration_shop_information_reset_migration_confirm_modal_icon %}
-                            <div class="swag-migration-shop-information__confirm-modal-icon-wrapper">
-                                <mt-icon
-                                    class="swag-migration-shop-information__confirm-modal-icon"
-                                    name="regular-trophy"
-                                    color="#37D046"
-                                    size="40"
-                                />
-                            </div>
-                        {% endblock %}
-
                         {% block swag_migration_shop_information_reset_migration_confirm_modal_header %}
                             <p
                                 class="swag-migration-shop-information__confirm-modal-header"
@@ -414,7 +406,7 @@
                                 {% block swag_migration_shop_information_reset_migration_confirm_modal_confirm %}
                                     <mt-button
                                         size="small"
-                                        variant="primary"
+                                        variant="critical"
                                         :disabled="confirmModalIsLoading"
                                         @click="onClickResetMigration"
                                     >

@@ -1,4 +1,42 @@
 {% block swag_migration_base %}
+    {% block swag_migration_warning_modal %}
+        <sw-modal
+            v-if="warningModalOpen"
+            class="swag-migration-warning-modal"
+            :title="$tc('swag-migration.index.warningModal.title')"
+            :is-loading="isLoading"
+            variant="small"
+            @modal-close="onWarningModalClose"
+        >
+            <p
+                class="swag-migration-warning-modal__text"
+                v-html="warningModalMessage"
+            />
+
+            <template #modal-footer>
+                <mt-button
+                    class="swag-migration-warning-modal__cancel-button"
+                    size="small"
+                    variant="secondary"
+                    :disabled="isLoading"
+                    @click="onWarningModalClose"
+                >
+                    {{ $tc('swag-migration.index.warningModal.cancelButton') }}
+                </mt-button>
+
+                <mt-button
+                    class="swag-migration-warning-modal__confirm-button"
+                    size="small"
+                    variant="critical"
+                    :is-loading="isLoading"
+                    @click="onConfirmWarning"
+                >
+                    {{ $tc('swag-migration.index.warningModal.confirmButton') }}
+                </mt-button>
+            </template>
+        </sw-modal>
+    {% endblock %}
+
     <sw-page class="swag-migration-index">
         {% block swag_migration_base_smart_bar_header %}
             <template #smart-bar-header>
@@ -27,8 +65,8 @@
                 <mt-button
                     v-tooltip="startMigrationButtonTooltip"
                     variant="primary"
-                    :disabled="!isMigrationAllowed"
-                    :is-loading="isLoading && isMigrationAllowed"
+                    :disabled="!isContinueAllowed"
+                    :is-loading="isLoading && isContinueAllowed"
                     @click="onMigrate"
                 >
                     {{ $tc('swag-migration.index.migrateButton') }}

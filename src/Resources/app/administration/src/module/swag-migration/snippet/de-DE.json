@@ -22,8 +22,7 @@
         "noSelectedData": "Es wurden keine Daten für die Migration ausgewählt.",
         "disabled": "Die Migration ist in dieser Umgebung deaktiviert.",
         "loading": "Die Migration wird derzeit ausgeführt.",
-        "unfilledPremapping": "Bitte alle erforderlichen Zuweisungen abschließen.",
-        "uncheckedWarnings": "Bitte bestätige die Währungs- und Sprachwarnungen."
+        "unfilledPremapping": "Bitte alle erforderlichen Zuweisungen abschließen."
       }
     },
     "wizard": {
@@ -180,7 +179,7 @@
       },
       "pauseButton": "Pausieren",
       "continueButton": "Fortsetzen",
-      "abortButton": "Beenden",
+      "abortButton": "Migration beenden",
       "finishButton": "Fertig",
       "backToOverviewButton": "Zur Übersicht",
       "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
@@ -210,22 +209,22 @@
           "title": "Zugangsdaten löschen",
           "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
           "contentHint": "Möchtest Du die aktuellen Zugangsdaten löschen?",
-          "abortButtonText": "Abbrechen",
-          "confirmButtonText": "Ja, löschen"
+          "abortButtonText": "Behalten",
+          "confirmButtonText": "Löschen"
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
           "content": "Durch das Zurücksetzen der Prüfsummen wird Ihr Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn Sie sich entscheiden, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
           "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
-          "abortButtonText": "Abbrechen",
-          "confirmButtonText": "Ja, zurücksetzen"
+          "abortButtonText": "Behalten",
+          "confirmButtonText": "Zurücksetzen"
         },
         "resetMigrationConfirmDialog": {
             "title": "Migration archivieren",
             "header": "Hast du deine Shopdaten fertig migriert?",
             "content": "Wenn du alle deine Shop-Daten erfolgreich migriert hast, kannst du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
-            "abortButtonText": "Abbrechen",
-            "confirmButtonText": "Ja, archivieren",
+            "abortButtonText": "Behalten",
+            "confirmButtonText": "Archivieren",
             "errorNotification": {
                 "title": "Fehler beim Archivieren der Migration",
                 "message": "Eine Migration wird zur Zeit durchgeführt."
@@ -340,8 +339,6 @@
       },
       "premappingCard": {
         "unfilledAlert": "Manuelle Zuweisung erforderlich um fortzufahren.",
-        "loadingTitle": "Datenprüfung läuft",
-        "loadingCaption": "Bitte warte bis die Datenprüfung abgeschlossen ist.",
         "previousTitle": "Bisheriger Wert",
         "newAssignmentTitle": "Neue Zuweisung",
         "placeholder": "Bitte auswählen ...",
@@ -417,8 +414,7 @@
         "title": "Migration beenden",
         "content": "Die Daten sind noch nicht vollständig migriert und teilweise unbrauchbar. Die gesamten Daten müssen erneut migriert werden, wenn Du jetzt beendest.",
         "hint": "Möchtest Du die Migration beenden?",
-        "cancelRunning": "Fortsetzen",
-        "cancelPause": "Pausieren",
+        "cancel": "Fortsetzen",
         "confirm": "Migration beenden"
       },
       "errorTypes": {

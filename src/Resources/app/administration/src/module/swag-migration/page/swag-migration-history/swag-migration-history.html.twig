@@ -110,7 +110,7 @@
                     class="swag-migration-history__run-clear-confirm-modal"
                     :title="$tc('swag-migration.history.clearRunDialog.title')"
                     :is-loading="runClearConfirmModalIsLoading"
-                    size="460px"
+                    variant="small"
                     @modal-close="showRunClearConfirmModal = false"
                 >
                     {% block swag_migration_history_run_clear_confirm_modal_content_hint %}
@@ -141,7 +141,7 @@
                             {% block swag_migration_history_run_clear_confirm_modal_confirm %}
                                 <mt-button
                                     size="small"
-                                    variant="primary"
+                                    variant="critical"
                                     :disabled="runClearConfirmModalIsLoading"
                                     @click="onClearRunConfirmed"
                                 >

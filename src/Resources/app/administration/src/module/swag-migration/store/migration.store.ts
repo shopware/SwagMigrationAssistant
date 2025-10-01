@@ -37,7 +37,11 @@ type MigrationState = {
     };
     getters: {
         isPremappingValid: () => boolean;
+        migrationDisabledMessage: () => string | null;
+        isContinueAllowed: () => boolean;
         isMigrationAllowed: () => boolean;
+        hasCurrencyMismatch: () => boolean;
+        hasLanguageMismatch: () => boolean;
     };
     actions: {
         setLatestRun: (run: TEntity<'swag_migration_run'> | null) => void;
@@ -51,7 +55,6 @@ type MigrationState = {
         fetchEnvironmentInformation: () => Promise<void>;
         setWarningConfirmed: (confirmed: boolean) => void;
         init: (forceFullStateReload?: boolean) => Promise<void>;
-        migrationDisabledMessage: () => string | null;
         setPremapping: (newPremapping: MigrationPremapping[]) => void;
         createErrorNotification: (errorMessageKey: string) => Promise<void>;
         setDataSelectionTableData: (data: MigrationDataSelection[]) => void;
@@ -121,6 +124,14 @@ const migrationStore = Shopware.Store.register({
             });
         },
 
+        hasCurrencyMismatch(): boolean {
+            return this.environmentInformation.sourceSystemCurrency !== this.environmentInformation.targetSystemCurrency;
+        },
+
+        hasLanguageMismatch(): boolean {
+            return this.environmentInformation.sourceSystemLocale !== this.environmentInformation.targetSystemLocale;
+        },
+
         migrationDisabledMessage(): string | null {
             if (!this.dataSelectionTableData.length) {
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noData');
@@ -150,15 +161,21 @@ const migrationStore = Shopware.Store.register({
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.unfilledPremapping');
             }
 
-            if (!this.warningConfirmed) {
-                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.uncheckedWarnings');
-            }
-
             return null;
         },
 
-        isMigrationAllowed(): boolean {
+        isContinueAllowed(): boolean {
             return this.migrationDisabledMessage === null;
+        },
+
+        isMigrationAllowed(): boolean {
+            const hasWarning = this.hasCurrencyMismatch || this.hasLanguageMismatch;
+
+            if (hasWarning && !this.warningConfirmed) {
+                return false;
+            }
+
+            return this.isContinueAllowed;
         },
     },
 

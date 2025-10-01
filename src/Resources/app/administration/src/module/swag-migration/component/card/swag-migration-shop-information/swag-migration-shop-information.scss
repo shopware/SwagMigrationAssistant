@@ -116,25 +116,6 @@
 }
 
 .swag-migration-shop-information__confirm-modal {
-    &.is--align-center {
-        .swag-migration-shop-information__confirm-modal-header,
-        .swag-migration-shop-information__confirm-modal-content,
-        .swag-migration-shop-information__confirm-modal-content-hint {
-            text-align: center;
-        }
-    }
-
-    .swag-migration-shop-information__confirm-modal-icon-wrapper {
-        width: var(--scale-size-72);
-        height: var(--scale-size-72);
-        border-radius: var(--border-radius-round);
-        background-color: var(--color-background-positive-default);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto var(--scale-size-12) auto;
-    }
-
     .swag-migration-shop-information__confirm-modal-header {
         font-weight: var(--font-weight-semibold);
         font-size: var(--font-size-xs);
