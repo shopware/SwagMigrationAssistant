@@ -32,6 +32,7 @@
                     <sw-card-section :divider="showMoreInformation ? 'bottom' : ''">
                         {% block swag_migration_shop_information_connection %}
                             <div class="swag-migration-shop-information__connection">
+                                <div class="swag-migration-shop-information__connection-wrapper-left">
                                 {% block swag_migration_shop_information_connection_avatar %}
                                     <template v-if="profileIcon !== null && profileIcon !== ''">
                                         <img
@@ -171,6 +172,7 @@
                                             </div>
                                         {% endblock %}
                                     </div>
+                                </div>
                                 {% endblock %}
 
                                 {% block swag_migration_shop_information_connection %}

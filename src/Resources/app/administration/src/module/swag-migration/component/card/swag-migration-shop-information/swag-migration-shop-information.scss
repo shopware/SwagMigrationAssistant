@@ -25,19 +25,20 @@
     }
 
     .swag-migration-shop-information__connection {
-        display: grid;
-        grid-gap: var(--scale-size-8);
-        grid-template-columns: var(--scale-size-96) 1fr min-content;
+        display: flex;
+        justify-content: space-between;
+    }
 
-        @media screen and (max-width: 40rem) {
-            grid-template-columns: 1fr;
-        }
+    .swag-migration-shop-information__connection-wrapper-left {
+        display: flex;
+        gap: var(--scale-size-8);
+        flex: 1;
     }
 
     .swag-migration-shop-information__shop-domain {
         display: flex;
         align-items: center;
-        font-size: var(--font-size-2xs);
+        font-size: var(--font-size-xs);
         white-space: nowrap;
         gap: var(--scale-size-4);
     }
@@ -85,9 +86,7 @@
     }
 
     .swag-migration-shop-information__connection-status {
-        white-space: nowrap;
-        max-width: unset;
-        display: inline-flex;
+        margin: 0;
     }
 
     .swag-migration-shop-information__connection-status-dot {
@@ -96,7 +95,7 @@
 
     .swag-migration-shop-information__connection-status-text {
         margin: auto 0;
-        font-size: var(--font-size-2xs);
+        font-size: var(--font-size-xs);
         font-weight: var(--font-weight-semibold);
     }
 

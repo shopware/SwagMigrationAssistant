@@ -1,7 +1,7 @@
 @import "~scss/variables";
 
 .swag-migration-wizard__modal {
-    font-size: var(--font-size-2xs);
+    font-size: var(--font-size-xs);
 
     .swag-migration-wizard__placeholder {
         height: calc(var(--scale-size-256) * 2);
@@ -34,7 +34,7 @@
 
         a {
             font-weight: var(--font-weight-semibold);
-            font-size: var(--font-size-2xs);
+            font-size: var(--font-size-xs);
             text-decoration: none;
         }
     }
