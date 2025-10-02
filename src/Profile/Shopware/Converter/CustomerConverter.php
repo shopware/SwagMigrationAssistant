@@ -196,18 +196,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATETIME);
         $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME);
 
-        $converted['accountType'] = $this->getAccountType($data);
-        if ($converted['accountType'] === CustomerEntity::ACCOUNT_TYPE_BUSINESS) {
-            $defaultBillingAddress = $this->getDefaultBillingAddress($data);
-
-            if ($defaultBillingAddress !== null
-                && isset($defaultBillingAddress['company'])
-                && $defaultBillingAddress['company'] !== ''
-            ) {
-                $converted['company'] = $defaultBillingAddress['company'];
-            }
-        }
-
+        $this->setAccountType($data, $converted);
         $this->setPassword($data, $converted);
 
         if (!isset($converted['customerNumber']) || $converted['customerNumber'] === '') {
@@ -771,19 +760,19 @@ abstract class CustomerConverter extends ShopwareConverter
     /**
      * If the customer's default billing address contains a company, the account type is business, else private.
      */
-    private function getAccountType(array $originalData): string
+    private function setAccountType(array $data, array &$converted): void
     {
-        $defaultBillingAddress = $this->getDefaultBillingAddress($originalData);
+        $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_PRIVATE;
 
-        if ($defaultBillingAddress === null) {
-            return CustomerEntity::ACCOUNT_TYPE_PRIVATE;
+        $defaultBillingAddress = $this->getDefaultBillingAddress($data);
+
+        if ($defaultBillingAddress !== null
+            && isset($defaultBillingAddress['company'])
+            && $defaultBillingAddress['company'] !== ''
+        ) {
+            $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_BUSINESS;
+            $converted['company'] = $defaultBillingAddress['company'];
         }
-
-        if (isset($defaultBillingAddress['company']) && $defaultBillingAddress['company'] !== '') {
-            return CustomerEntity::ACCOUNT_TYPE_BUSINESS;
-        }
-
-        return CustomerEntity::ACCOUNT_TYPE_PRIVATE;
     }
 
     private function getDefaultBillingAddress(array $data): ?array
