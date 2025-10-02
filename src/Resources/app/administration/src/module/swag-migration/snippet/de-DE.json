@@ -270,7 +270,8 @@
           "seoUrls": "SEO-URLs",
           "promotions": "Rabatte & Aktionen",
           "cms": "Layouts",
-          "customerWishlists": "Merkzettel"
+          "customerWishlists": "Merkzettel",
+          "customProducts":  "Custom Products"
         },
         "entities": {
           "category": "Kategorien",
@@ -332,7 +333,10 @@
           "cms_page": "Layouts",
           "product_stream": "Dynamische Produktgruppen",
           "product_stream_filter_inheritance": "Dynamische Produktgruppen-Filter",
-          "country_state": "Bundesländer"
+          "country_state": "Bundesländer",
+          "swag_customized_products_template": "Template:",
+          "swag_customized_products_template_option": "Option:",
+          "swag_customized_products_template_option_value": "Value:"
         },
         "noData": "Es wurden keine Daten zum Migrieren gefunden."
       },

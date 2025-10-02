@@ -270,7 +270,8 @@
           "seoUrls": "SEO URLs",
           "promotions": "Promotions",
           "cms": "Layouts",
-          "customerWishlists": "Wishlists"
+          "customerWishlists": "Wishlists",
+          "customProducts":  "Custom Products"
         },
         "entities": {
           "category": "Categories",
@@ -332,7 +333,10 @@
           "cms_page": "Layouts",
           "product_stream": "Dynamic product groups",
           "product_stream_filter_inheritance": "Dynamic product group filters",
-          "country_state": "Country states"
+          "country_state": "Country states",
+          "swag_customized_products_template": "Template:",
+          "swag_customized_products_template_option": "Option:",
+          "swag_customized_products_template_option_value": "Value:"
         },
         "noData": "Nothing found to migrate."
       },
