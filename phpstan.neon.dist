@@ -43,11 +43,13 @@ parameters:
             message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
             path: src/DataProvider/Provider/Data/AbstractProvider.php
 
-        - # TODO remove this for 6.8 compatibility
-            message: '#Access to constant on deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
-            paths:
-                - src/Profile/Shopware/Premapping/PaymentMethodReader.php
-                - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
+        # TODO remove this for 6.8 compatibility
+        - message: '#Access to constant on deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
+          paths:
+              - src/Profile/Shopware/Premapping/PaymentMethodReader.php
+              - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
+
+        - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityDefinition#'
 
 rules:
     # Shopware core rules

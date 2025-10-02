@@ -110,7 +110,7 @@ class SeoUrlReaderTest extends LocalConnectionTestCase
         )->fetchOne();
 
         if (!\is_string($value)) {
-            $connection->executeQuery(
+            $connection->executeStatement(
                 'INSERT INTO `s_core_config_values` (`element_id`, `shop_id`, `value`) VALUES (:elementId, :shopId, :value)',
                 ['elementId' => $elementId, 'shopId' => 1, 'value' => $serializedValue]
             );
@@ -118,7 +118,7 @@ class SeoUrlReaderTest extends LocalConnectionTestCase
             return;
         }
 
-        $connection->executeQuery(
+        $connection->executeStatement(
             'UPDATE `s_core_config_values` SET `value` = :value WHERE `element_id` = :elementId AND `shop_id` = 1;',
             ['elementId' => $elementId, 'value' => $serializedValue]
         );

@@ -34,7 +34,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
         $expectedOutput = require $fixtureFolderPath . '/output.php';
 
         $mappingArray = [];
-        if (\file_exists($fixtureFolderPath . '/mapping.php')) {
+        if (\is_file($fixtureFolderPath . '/mapping.php')) {
             $mappingArray = require $fixtureFolderPath . '/mapping.php';
         }
 
