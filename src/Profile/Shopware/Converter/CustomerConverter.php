@@ -780,6 +780,8 @@ abstract class CustomerConverter extends ShopwareConverter
 
     /**
      * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>|null
      */
     private function getDefaultBillingAddress(array $data): ?array
     {
