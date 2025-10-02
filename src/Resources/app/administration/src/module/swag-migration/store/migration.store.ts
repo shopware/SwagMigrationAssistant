@@ -286,9 +286,13 @@ const migrationStore = Shopware.Store.register({
 
             if (forceFullStateReload || connectionIdChanged) {
                 // First, clear old user input
-                this.premapping = [];
-                this.dataSelectionIds = [];
+                this.latestRun = null;
+                this.currentConnection = null;
                 this.warningConfirmed = false;
+                this.dataSelectionIds = [];
+                this.lastConnectionCheck = null;
+                this.premapping = [];
+                this.dataSelectionTableData = [];
 
                 // Then fetch new data
                 await this.fetchDataSelectionIds();

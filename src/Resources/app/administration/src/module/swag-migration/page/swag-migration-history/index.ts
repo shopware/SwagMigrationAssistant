@@ -229,7 +229,7 @@ export default Shopware.Component.wrapComponentConfig({
                 .then(() => {
                     this.showRunClearConfirmModal = false;
                     this.runClearConfirmModalIsLoading = false;
-                    this.$router.go();
+                    window.location.reload();
                 })
                 .catch(() => {
                     this.createNotificationError({
