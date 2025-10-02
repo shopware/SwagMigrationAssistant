@@ -759,6 +759,9 @@ abstract class CustomerConverter extends ShopwareConverter
 
     /**
      * If the customer's default billing address contains a company, the account type is business, else private.
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
      */
     private function setAccountType(array $data, array &$converted): void
     {
@@ -775,6 +778,9 @@ abstract class CustomerConverter extends ShopwareConverter
         }
     }
 
+    /**
+     * @param array<string, mixed> $data
+     */
     private function getDefaultBillingAddress(array $data): ?array
     {
         if (!isset($data['addresses'], $data['default_billing_address_id'])) {
