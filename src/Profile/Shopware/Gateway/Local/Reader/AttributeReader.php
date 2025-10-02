@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader;
 
 use Doctrine\DBAL\Schema\Column;
 use Doctrine\DBAL\Schema\ForeignKeyConstraint;
+use Doctrine\DBAL\Schema\Name\UnqualifiedName;
 use Doctrine\DBAL\Types\AsciiStringType;
 use Doctrine\DBAL\Types\BigIntType;
 use Doctrine\DBAL\Types\BinaryType;
@@ -103,7 +104,7 @@ abstract class AttributeReader extends AbstractReader implements ReaderInterface
             ->where('config.table_name = :table')
             ->setParameter('table', $table);
 
-        /** @var array<string, array<string, string|mixed|null>> $attributeConfiguration */
+        /** @var array<string, array<string, string|null>> $attributeConfiguration */
         $attributeConfiguration = FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
 
         $sql = <<<SQL
@@ -134,6 +135,7 @@ SQL;
             $translationStrPos = (int) \mb_strrpos($translation['name'], '_');
             $field = \mb_substr($translation['name'], $translationStrPos + 1);
 
+            /** @var array<string, array<string, mixed>> $attributeConfiguration */
             if (!isset($attributeConfiguration[$column]['translations'][$field])) {
                 $attributeConfiguration[$column]['translations'][$field] = [];
             }
@@ -188,7 +190,7 @@ SQL;
         $fks = [];
 
         foreach ($foreignKeys as $foreignKey) {
-            $fks[] = $foreignKey->getLocalColumns();
+            $fks[] = array_map(fn (UnqualifiedName $name) => $name->toString(), $foreignKey->getReferencingColumnNames());
         }
 
         if ($fks !== []) {
