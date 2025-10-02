@@ -17,15 +17,6 @@
             </div>
         </template>
 
-        <template #context-actions>
-            <sw-context-menu-item
-                class="swag-migration-shop-information__refresh-connection"
-                @click="onClickRefreshConnection"
-            >
-                {{ $tc('swag-migration.index.shopInfoCard.refreshButton') }}
-            </sw-context-menu-item>
-        </template>
-
         {% block swag_migration_shop_information_content %}
             <template #grid>
                 <sw-container rows="auto auto">
@@ -121,6 +112,12 @@
                                                                 <mt-icon name="solid-ellipsis-h-s"/>
                                                             </mt-button>
                                                         </template>
+
+                                                        {% block swag_migration_shop_information_actions_refreshConnection %}
+                                                            <sw-context-menu-item @click="onClickRefreshConnection">
+                                                                {{ $tc('swag-migration.index.shopInfoCard.refreshButton') }}
+                                                            </sw-context-menu-item>
+                                                        {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_createConnectionItem %}
                                                             <sw-context-menu-item @click="onClickCreateConnection">
