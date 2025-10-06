@@ -1,108 +1,21 @@
 {% block swag_migration_confirm_warning %}
     <div class="swag-migration-confirm-warning">
+        <mt-banner
+            v-if="hasCurrencyMismatch"
+            class="swag-migration-confirm-warning__banner"
+            :title="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.title')"
+            variant="attention"
+        >
+            {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.text', { sourceSystemCurrency, targetSystemCurrency }, 0) }}
+        </mt-banner>
 
-        {% block swag_migration_confirm_warning_card %}
-            <mt-card
-                v-if="hasDifferentCurrency"
-                class="swag-migration-confirm-warning__card"
-                position-identifier="swag-migration-confirm-warning__card"
-            >
-
-                {% block swag_migration_confirm_warning_bubble %}
-                    <div class="swag-migration-confirm-warning__bubble">
-                        <mt-icon class="swag-migration-confirm-warning__bubble-icon"
-                                 name="regular-exclamation-triangle"
-                                 size="36px"
-                                 decorative />
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_confirm_warning_title %}
-                    <h5 class="swag-migration-confirm-warning__title">
-                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.title') }}
-                    </h5>
-                {% endblock %}
-
-                {% block swag_migration_confirm_warning_text %}
-                    <p class="swag-migration-confirm-warning__text">
-                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.text', { sourceSystemCurrency, targetSystemCurrency }, 0) }}
-                    </p>
-                {% endblock %}
-
-                {% block swag_migration_confirm_warning_alert %}
-                    <mt-banner
-                        variant="critical"
-                        class="swag-migration-confirm-warning__alert"
-                    >
-                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.info') }}
-                    </mt-banner>
-                {% endblock %}
-
-                {% block swag_migration_confirm_warning_question %}
-                    <p class="swag-migration-confirm-warning__question">
-                        {{ $tc('swag-migration.index.confirmWarningCard.currencyMismatch.question', { targetSystemCurrency }, 0) }}
-                    </p>
-                {% endblock %}
-
-                {% block swag_migration_confirm_warning_checkbox %}
-                    <mt-checkbox v-model:checked="isCurrencyChecked"
-                                 class="swag-migration-confirm-warning__checkbox"
-                                 :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                 @update:checked="onCheckboxValueChanged" />
-                {% endblock %}
-            </mt-card>
-        {% endblock %}
-
-        {% block swag_migration_confirm_language_warning_card %}
-            <mt-card
-                v-if="hasDifferentLanguage"
-                class="swag-migration-confirm-warning__card"
-                position-identifier="swag-migration-confirm-warning__card"
-            >
-
-                {% block swag_migration_confirm_language_warning_bubble %}
-                    <div class="swag-migration-confirm-warning__bubble">
-                        <mt-icon class="swag-migration-confirm-warning__bubble-icon"
-                                 name="regular-exclamation-triangle"
-                                 size="36px"
-                                 decorative />
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_confirm_language_warning_title %}
-                    <h5 class="swag-migration-confirm-warning__title">
-                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.title') }}
-                    </h5>
-                {% endblock %}
-
-                {% block swag_migration_confirm_language_warning_text %}
-                    <p class="swag-migration-confirm-warning__text">
-                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.text', { sourceSystemLanguage, targetSystemLanguage }, 0) }}
-                    </p>
-                {% endblock %}
-
-                {% block swag_migration_confirm_language_warning_alert %}
-                    <mt-banner
-                        variant="critical"
-                        class="swag-migration-confirm-warning__alert"
-                    >
-                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.info') }}
-                    </mt-banner>
-                {% endblock %}
-
-                {% block swag_migration_confirm_language_warning_question %}
-                    <p class="swag-migration-confirm-warning__question">
-                        {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.question', { targetSystemLanguage }, 0) }}
-                    </p>
-                {% endblock %}
-
-                {% block swag_migration_confirm_language_warning_checkbox %}
-                    <mt-checkbox v-model:checked="isLanguageChecked"
-                                 class="swag-migration-confirm-warning__checkbox"
-                                 :label="$tc('swag-migration.index.confirmWarningCard.currencyMismatch.checkboxLabel')"
-                                 @update:checked="onCheckboxValueChanged" />
-                {% endblock %}
-            </mt-card>
-        {% endblock %}
+        <mt-banner
+            v-if="hasLanguageMismatch"
+            class="swag-migration-confirm-warning__banner"
+            :title="$tc('swag-migration.index.confirmWarningCard.languageMismatch.title')"
+            variant="attention"
+        >
+            {{ $tc('swag-migration.index.confirmWarningCard.languageMismatch.text', { sourceSystemLanguage, targetSystemLanguage }, 0) }}
+        </mt-banner>
     </div>
 {% endblock %}

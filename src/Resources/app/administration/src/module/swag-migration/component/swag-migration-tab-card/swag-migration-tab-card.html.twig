@@ -7,6 +7,14 @@
             position-identifier="swag-migration-tab-card"
         >
             <template #tabs>
+                <mt-banner
+                    v-if="!isPremappingValid"
+                    class="swag-migration-tab-card__alert"
+                    variant="critical"
+                >
+                    {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
+                </mt-banner>
+
                 {% block swag_migration_tab_card_item_tab %}
                     <sw-tabs
                         ref="swTabs"
