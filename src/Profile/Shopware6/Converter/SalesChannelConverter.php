@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -29,7 +28,7 @@ class SalesChannelConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        if ($converted['id'] === TestDefaults::SALES_CHANNEL) {
+        if ($converted['id'] === '98432def39fc4624b33213a56b8c944d') {
             $mapping = $this->getMappingIdFacade(DefaultEntities::SALES_CHANNEL, $data['id']);
             $converted['id'] = $mapping ?? Uuid::randomHex();
             $converted['name'] .= ' (Migration)';
