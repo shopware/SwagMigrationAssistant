@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 #[Package('after-sales')]
 class MigrationFix
 {
-    private const PATH_SEPERATOR = '.';
+    private const PATH_SEPARATOR = '.';
 
     public function __construct(
         public readonly string $id,
@@ -50,7 +50,7 @@ class MigrationFix
      */
     public function apply(array &$item): void
     {
-        $pathArray = explode(self::PATH_SEPERATOR, $this->path);
+        $pathArray = explode(self::PATH_SEPARATOR, $this->path);
 
         $temp = &$item;
         foreach ($pathArray as $key) {
