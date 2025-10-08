@@ -323,6 +323,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="messenger.default_bus"/>
             <tag name="messenger.message_handler"/>
         </service>
 

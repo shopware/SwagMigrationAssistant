@@ -14,5 +14,5 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('fundamentals@after-sales')]
 interface MediaFileProcessorServiceInterface
 {
-    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context): int;
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context): void;
 }

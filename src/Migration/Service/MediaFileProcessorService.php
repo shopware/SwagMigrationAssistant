@@ -23,7 +23,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 #[Package('fundamentals@after-sales')]
 class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 {
-    final public const MESSAGE_SIZE = 5;
+    final public const MESSAGE_SIZE = 20;
 
     public function __construct(
         private readonly MessageBusInterface $messageBus,
@@ -33,7 +33,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
     ) {
     }
 
-    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context): int
+    public function processMediaFiles(MigrationContextInterface $migrationContext, Context $context): void
     {
         $mediaFiles = $this->getMediaFiles($migrationContext);
 
@@ -53,16 +53,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
 
             if ($currentDataSet::getEntity() !== $mediaFile['entity']) {
                 $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
+                $this->loggingService->saveLogging($context);
 
-                try {
-                    $messageMediaUuids = [];
-                    $currentCount = 0;
-                    $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
-
-                    continue;
-                }
+                return;
             }
 
             ++$currentCount;
@@ -73,8 +66,9 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             }
 
             $this->addMessageToBus($migrationContext->getRunUuid(), $context, $currentDataSet, $messageMediaUuids);
-            $messageMediaUuids = [];
-            $currentCount = 0;
+            $this->loggingService->saveLogging($context);
+
+            return;
         }
 
         if ($currentCount > 0 && $currentDataSet !== null) {
@@ -82,8 +76,6 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         }
 
         $this->loggingService->saveLogging($context);
-
-        return \count($mediaFiles);
     }
 
     /**

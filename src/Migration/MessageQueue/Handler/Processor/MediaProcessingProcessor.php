@@ -9,6 +9,9 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
@@ -57,19 +60,33 @@ class MediaProcessingProcessor extends AbstractProcessor
         SwagMigrationRunEntity $run,
         MigrationProgress $progress,
     ): void {
-        $fileCount = $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
+        $this->mediaFileProcessorService->processMediaFiles($migrationContext, $context);
 
-        if ($fileCount <= 0) {
+        if ($this->isAllMediaProcessed($context, $migrationContext->getRunUuid())) {
             $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
             $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
             $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
-
-            return;
         }
+    }
 
-        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + $fileCount);
-        $progress->setProgress($progress->getProgress() + $fileCount);
-        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+    private function isAllMediaProcessed(Context $context, string $runId): bool
+    {
+        $criteria = new Criteria();
+        $criteria->addFilter(
+            new EqualsFilter('runId', $runId)
+        );
+        $criteria->addFilter(
+            new MultiFilter(
+                MultiFilter::CONNECTION_AND,
+                [
+                    new EqualsFilter('processed', false),
+                    new EqualsFilter('processFailure', false),
+                ]
+            )
+        );
+
+        $unprocessedCount = $this->migrationMediaFileRepo->search($criteria, $context)->getTotal();
+
+        return $unprocessedCount === 0;
     }
 }

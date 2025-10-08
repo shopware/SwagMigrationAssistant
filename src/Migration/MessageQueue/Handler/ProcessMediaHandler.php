@@ -19,12 +19,15 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ProcessMediaMessage;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
+use Symfony\Component\Messenger\MessageBusInterface;
 
 /**
  * @internal
@@ -43,6 +46,7 @@ final class ProcessMediaHandler
         private readonly MediaFileProcessorRegistryInterface $mediaFileProcessorRegistry,
         private readonly LoggingServiceInterface $loggingService,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
+        private readonly MessageBusInterface $messageBus,
     ) {
     }
 
@@ -101,6 +105,10 @@ final class ProcessMediaHandler
 
             $this->loggingService->saveLogging($context);
         }
+
+        $this->updateProgress($message, $run->getProgress(), $context);
+
+        $this->messageBus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
     /**
@@ -127,5 +135,19 @@ final class ProcessMediaHandler
 
             $workload = $processor->process($migrationContext, $context, $errorWorkload);
         }
+    }
+
+    private function updateProgress(
+        ProcessMediaMessage $message,
+        MigrationProgress $progress,
+        Context $context
+    ): void {
+        $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($message->getMediaFileIds()));
+        $progress->setProgress($progress->getProgress() + \count($message->getMediaFileIds()));
+
+        $this->migrationRunRepo->update([[
+            'id' => $message->getRunId(),
+            'progress' => $progress->jsonSerialize(),
+        ]], $context);
     }
 }
