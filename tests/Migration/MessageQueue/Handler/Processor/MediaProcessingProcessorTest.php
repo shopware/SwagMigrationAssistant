@@ -67,11 +67,17 @@ class MediaProcessingProcessorTest extends TestCase
 
         $migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $run->getId());
 
+        $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
+        $runTransitionService
+            ->expects(static::once())
+            ->method('transitionToRunStep')
+            ->with($run->getId(), MigrationStep::CLEANUP);
+
         $this->processor = new MediaProcessingProcessor(
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
             $this->createMock(EntityRepository::class),
-            $this->createMock(RunTransitionServiceInterface::class),
+            $runTransitionService,
             $this->createMock(MediaFileProcessorService::class),
             $this->bus
         );
