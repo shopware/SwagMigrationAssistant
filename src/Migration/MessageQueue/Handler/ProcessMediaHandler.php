@@ -106,7 +106,9 @@ final class ProcessMediaHandler
             $this->loggingService->saveLogging($context);
         }
 
-        $this->updateProgress($message, $run->getProgress(), $context);
+        if ($run->getProgress() !== null) {
+            $this->updateProgress($message, $run->getProgress(), $context);
+        }
 
         $this->messageBus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
