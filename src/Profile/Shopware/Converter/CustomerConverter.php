@@ -758,7 +758,8 @@ abstract class CustomerConverter extends ShopwareConverter
     }
 
     /**
-     * If the customer's default billing address contains a company, the account type is business, else private.
+     * If the customer's default billing address or default shipping address contains a company,
+     * the account type is business, else private.
      *
      * @param array<string, mixed> $data
      * @param array<string, mixed> $converted
@@ -767,7 +768,7 @@ abstract class CustomerConverter extends ShopwareConverter
     {
         $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_PRIVATE;
 
-        $defaultBillingAddress = $this->getDefaultBillingAddress($data);
+        $defaultBillingAddress = isset($data['default_billing_address_id']) ? $this->getAddressWithId($data, $data['default_billing_address_id']) : null;
 
         if ($defaultBillingAddress !== null
             && isset($defaultBillingAddress['company'])
@@ -775,6 +776,18 @@ abstract class CustomerConverter extends ShopwareConverter
         ) {
             $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_BUSINESS;
             $converted['company'] = $defaultBillingAddress['company'];
+
+            return;
+        }
+
+        $defaultShippingAddress = isset($data['default_shipping_address_id']) ? $this->getAddressWithId($data, $data['default_shipping_address_id']) : null;
+
+        if ($defaultShippingAddress !== null
+            && isset($defaultShippingAddress['company'])
+            && $defaultShippingAddress['company'] !== ''
+        ) {
+            $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_BUSINESS;
+            $converted['company'] = $defaultShippingAddress['company'];
         }
     }
 
@@ -783,9 +796,9 @@ abstract class CustomerConverter extends ShopwareConverter
      *
      * @return array<string, mixed>|null
      */
-    private function getDefaultBillingAddress(array $data): ?array
+    private function getAddressWithId(array $data, string $id): ?array
     {
-        if (!isset($data['addresses'], $data['default_billing_address_id'])) {
+        if (!isset($data['addresses'])) {
             return null;
         }
 
@@ -794,7 +807,7 @@ abstract class CustomerConverter extends ShopwareConverter
                 continue;
             }
 
-            if (isset($data['default_billing_address_id']) && $address['id'] === $data['default_billing_address_id']) {
+            if ($address['id'] === $id) {
                 return $address;
             }
         }
