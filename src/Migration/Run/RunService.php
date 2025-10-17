@@ -272,6 +272,25 @@ SQL;
         $this->loggingService->saveLogging($context);
     }
 
+    public function resumeAfterFixes(Context $context): void
+    {
+        $run = $this->getActiveRun($context);
+
+        if ($run === null) {
+            throw MigrationException::noRunningMigration();
+        }
+
+        $runId = $run->getId();
+
+        if ($run->getStepValue() !== MigrationStep::APPLY_FIXES->value) {
+            throw MigrationException::migrationNotInStep($runId, MigrationStep::APPLY_FIXES->value);
+        }
+
+        $this->runTransitionService->transitionToRunStep($runId, MigrationStep::WRITING);
+
+        $this->bus->dispatch(new MigrationProcessMessage($context, $runId));
+    }
+
     /**
      * @param array<int, string> $dataSelectionIds
      */

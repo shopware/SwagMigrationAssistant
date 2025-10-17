@@ -381,4 +381,21 @@ class StatusController extends AbstractController
 
         return new JsonResponse($settings->isReset());
     }
+
+    #[Route(
+        path: '/api/_action/migration/resume-after-fixes',
+        name: 'api.admin.migration.resume-after-fixes',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function resumeAfterFixes(Context $context): Response
+    {
+        try {
+            $this->runService->resumeAfterFixes($context);
+        } catch (\Exception $e) {
+            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
+        }
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
 }

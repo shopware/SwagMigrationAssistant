@@ -100,6 +100,8 @@ class MigrationException extends HttpException
 
     public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
 
+    public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -521,6 +523,16 @@ class MigrationException extends HttpException
             self::UNEXPECTED_NULL_VALUE,
             'Unexpected null value for field "{{ fieldName }}".',
             ['fieldName' => $fieldName]
+        );
+    }
+
+    public static function migrationNotInStep(string $runUuid, string $step): self
+    {
+        return new NoRunningMigrationException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_NOT_IN_STEP,
+            'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
+            ['runUuid' => $runUuid, 'step' => $step]
         );
     }
 }

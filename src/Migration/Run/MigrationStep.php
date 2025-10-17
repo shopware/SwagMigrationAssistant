@@ -16,6 +16,8 @@ enum MigrationStep: string
 
     case FETCHING = 'fetching';
 
+    case APPLY_FIXES = 'apply-fixes';
+
     case WRITING = 'writing';
 
     case MEDIA_PROCESSING = 'media-processing';
@@ -37,6 +39,18 @@ enum MigrationStep: string
         return !\in_array($this, [
             self::FINISHED,
             self::ABORTED,
+        ], true);
+    }
+
+    public function needsProcessor(): bool
+    {
+        return \in_array($this, [
+            self::FETCHING,
+            self::WRITING,
+            self::MEDIA_PROCESSING,
+            self::CLEANUP,
+            self::INDEXING,
+            self::ABORTING,
         ], true);
     }
 }
