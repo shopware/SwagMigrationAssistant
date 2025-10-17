@@ -44,13 +44,9 @@ enum MigrationStep: string
 
     public function needsProcessor(): bool
     {
-        return \in_array($this, [
-            self::FETCHING,
-            self::WRITING,
-            self::MEDIA_PROCESSING,
-            self::CLEANUP,
-            self::INDEXING,
-            self::ABORTING,
+        return !\in_array($this, [
+            self::APPLY_FIXES,
+            self::WAITING_FOR_APPROVE,
         ], true);
     }
 }

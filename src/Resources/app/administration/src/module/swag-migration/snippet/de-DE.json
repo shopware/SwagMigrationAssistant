@@ -364,7 +364,7 @@
         "flowChart": {
           "premapping": "Prüfen",
           "fetchData": "Lesen",
-          "applyFixes": "Applying fixes",
+          "applyFixes": "Fehler beheben",
           "writeData": "Schreiben",
           "processMedia": "Download",
           "cleanup": "Aufräumen",
@@ -412,8 +412,8 @@
           "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen. Es kann sein, dass zu einem späteren Zeitpunkt noch mehr Log-Nachrichten hinzukommen, weil der Mediendownload noch im Hintergrund läuft."
         },
         "applyFixes": {
-          "title": "Apply fixes",
-          "resumeButton": "Continue migration"
+          "title": "Fehler beheben",
+          "resumeButton": "Migration fortsetzen"
         }
       },
       "confirmAbortDialog": {
