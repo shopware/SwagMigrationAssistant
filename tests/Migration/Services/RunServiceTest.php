@@ -286,6 +286,7 @@ class RunServiceTest extends TestCase
             ->expects(static::never())
             ->method('transitionToRunStep');
 
+        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
         $runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([
                 (static function (): SwagMigrationRunEntity {
@@ -330,13 +331,15 @@ class RunServiceTest extends TestCase
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
             ->expects(static::once())
-            ->method('dispatch');
+            ->method('dispatch')
+            ->willReturn(new Envelope(new \stdClass()));
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService
             ->expects(static::once())
             ->method('transitionToRunStep');
 
+        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
         $runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([
                 (static function (): SwagMigrationRunEntity {
