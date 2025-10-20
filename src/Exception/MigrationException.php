@@ -102,8 +102,6 @@ class MigrationException extends HttpException
 
     public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
 
-    public const MISSING_MIGRATION_FIX_MAPPING_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_MAPPING_KEY';
-
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -534,16 +532,6 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::MISSING_MIGRATION_FIX_KEY,
             'Missing key "{{ missingKey }}" to construct MigrationFix.',
-            ['missingKey' => $missingKey]
-        );
-    }
-
-    public static function couldNotConvertFixMapping(string $missingKey): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::MISSING_MIGRATION_FIX_MAPPING_KEY,
-            'Missing key "{{ missingKey }}" to construct MigrationFixMapping.',
             ['missingKey' => $missingKey]
         );
     }

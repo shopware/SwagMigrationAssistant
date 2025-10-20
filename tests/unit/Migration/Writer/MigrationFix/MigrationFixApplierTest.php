@@ -8,10 +8,9 @@
 namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Query\QueryBuilder;
-use Doctrine\DBAL\Result;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 
 #[Package('after-sales')]
@@ -21,122 +20,83 @@ class MigrationFixApplierTest extends TestCase
     {
         $expected = 'newValue';
 
-        $mappings = [
-            '1' => [
-                'id' => '1',
-                'connection_id' => '1',
-                'entity' => 'test',
-                'old_identifier' => 'test',
-                'entity_uuid' => '1',
-                'entity_value' => 'test',
-                'checksum' => 'test',
-                'additional_data' => '',
-            ],
-            '2' => [
-                'id' => '2',
-                'connection_id' => '1',
-                'entity' => 'test',
-                'old_identifier' => 'test2',
-                'entity_uuid' => '2',
-                'entity_value' => 'test',
-                'checksum' => 'test',
-                'additional_data' => '',
-            ],
-            '3' => [
-                'id' => '3',
-                'connection_id' => '1',
-                'entity' => 'test',
-                'old_identifier' => 'test2',
-                'entity_uuid' => '3',
-                'entity_value' => 'test',
-                'checksum' => 'test',
-                'additional_data' => '',
-            ],
-            '4' => [
-                'id' => '4',
-                'connection_id' => '1',
-                'entity' => 'test',
-                'old_identifier' => 'test2',
-                'entity_uuid' => '4',
-                'entity_value' => 'test',
-                'checksum' => 'test',
-                'additional_data' => '',
-            ],
-        ];
+        $dataIdOne = Uuid::randomHex();
+        $dataIdTwo = Uuid::randomHex();
+        $dataIdThree = Uuid::randomHex();
+        $dataIdFour = Uuid::randomHex();
 
         $fixes = [
             [
-                'id' => '2',
-                'connection_id' => '1',
-                'main_mapping_id' => '1',
+                'entityId' => Uuid::fromHexToBytes($dataIdOne),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'other.path.to.value',
             ],
             [
-                'id' => '3',
-                'connection_id' => '1',
-                'main_mapping_id' => '1',
+                'entityId' => Uuid::fromHexToBytes($dataIdOne),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'the.path.to.value',
             ],
             [
-                'id' => '4',
-                'connection_id' => '1',
-                'main_mapping_id' => '2',
+                'entityId' => Uuid::fromHexToBytes($dataIdTwo),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'the.path.to.value',
             ],
             [
-                'id' => '5',
-                'connection_id' => '1',
-                'main_mapping_id' => '3',
+                'entityId' => Uuid::fromHexToBytes($dataIdThree),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'other.path.to.value',
             ],
             [
-                'id' => '6',
-                'connection_id' => '1',
-                'main_mapping_id' => '4',
+                'entityId' => Uuid::fromHexToBytes($dataIdFour),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'path.to.nested',
             ],
             [
-                'id' => '7',
-                'connection_id' => '1',
-                'main_mapping_id' => '4',
+                'entityId' => Uuid::fromHexToBytes($dataIdFour),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'path.to.other.nested',
             ],
             [
-                'id' => '8',
-                'connection_id' => '1',
-                'main_mapping_id' => '4',
+                'entityId' => Uuid::fromHexToBytes($dataIdFour),
+                'id' => Uuid::randomBytes(),
                 'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
                 'path' => 'path.value',
+            ],
+            [
+                'entityId' => Uuid::fromHexToBytes($dataIdFour),
+                'id' => Uuid::randomBytes(),
+                'value' => \json_encode($expected, \JSON_THROW_ON_ERROR),
+                'path' => 'path.without.predefined.value',
             ],
         ];
 
         $data = [
             0 => [
-                'id' => '1',
+                'id' => $dataIdOne,
                 'name' => 'test',
                 'the' => ['path' => ['to' => ['value' => 'oldValue']]],
                 'other' => ['path' => ['to' => ['value' => 'oldValue']]],
             ],
             1 => [
-                'id' => '2',
+                'id' => $dataIdTwo,
                 'name' => 'test',
                 'the' => ['path' => ['to' => ['value' => 'oldValue']]],
                 'other' => ['path' => ['to' => ['value' => 'oldValue']]],
             ],
             2 => [
-                'id' => '3',
+                'id' => $dataIdThree,
                 'name' => 'test',
                 'the' => ['path' => ['to' => ['value' => 'oldValue']]],
                 'other' => ['path' => ['to' => ['value' => 'oldValue']]],
             ],
             3 => [
-                'id' => '4',
+                'id' => $dataIdFour,
                 'name' => 'test',
                 'untouchedKey' => 'untouchedValue',
                 'path' => [
@@ -154,9 +114,9 @@ class MigrationFixApplierTest extends TestCase
             ],
         ];
 
-        $migrationFixApplier = new MigrationFixApplier($this->createConnection($mappings, $fixes));
+        $migrationFixApplier = new MigrationFixApplier($this->createConnection($fixes));
 
-        $migrationFixApplier->apply($data, '1');
+        $migrationFixApplier->apply($data, Uuid::randomHex());
 
         static::assertSame($expected, $data[0]['the']['path']['to']['value']);
         static::assertSame($expected, $data[0]['other']['path']['to']['value']);
@@ -176,28 +136,18 @@ class MigrationFixApplierTest extends TestCase
         static::assertSame('untouchedValue', $data[3]['path']['untouchedKey']);
         static::assertSame('untouchedValue', $data[3]['path']['to']['untouchedKey']);
         static::assertSame('untouchedValue', $data[3]['path']['to']['other']['untouchedKey']);
+
+        // Check value without predefined item array path and value are set
+        static::assertSame($expected, $data[3]['path']['without']['predefined']['value']);
     }
 
     /**
-     * @param array<int, array<string, string>> $mappings
      * @param array<int, array<string, string>> $fixes
      */
-    private function createConnection(array $mappings, array $fixes): Connection
+    private function createConnection(array $fixes): Connection
     {
-        $resultMock = $this->createMock(Result::class);
-        $resultMock->method('fetchAllAssociativeIndexed')->willReturn($mappings);
-        $resultMock->method('fetchAllAssociative')->willReturn($fixes);
-
-        $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->method('select')->willReturnSelf();
-        $queryBuilderMock->method('from')->willReturnSelf();
-        $queryBuilderMock->method('where')->willReturnSelf();
-        $queryBuilderMock->method('andWhere')->willReturnSelf();
-        $queryBuilderMock->method('setParameter')->willReturnSelf();
-        $queryBuilderMock->method('executeQuery')->willReturn($resultMock);
-
         $connectionMock = $this->createMock(Connection::class);
-        $connectionMock->method('createQueryBuilder')->willReturn($queryBuilderMock);
+        $connectionMock->method('fetchAllAssociative')->willReturn($fixes);
 
         return $connectionMock;
     }

@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 
 #[Package('after-sales')]
 class MigrationFixApplier
@@ -25,95 +26,58 @@ class MigrationFixApplier
     public function apply(array &$data, string $connectionId): void
     {
         $itemIds = \array_column($data, 'id');
-        $mapping = $this->getMapping($itemIds, $connectionId);
+        $fixes = $this->getMappings($itemIds, $connectionId);
 
         foreach ($data as &$item) {
             $id = $item['id'];
 
-            $mappingWithFixes = $this->getMappingWithFixes($id, $mapping);
-            if (!$mappingWithFixes instanceof MigrationFixMapping) {
+            if (!\is_array($fixes[$id])) {
                 continue;
             }
 
-            $mappingWithFixes->applyFixes($item);
-        }
-    }
-
-    /**
-     * @param array<MigrationFixMapping> $mappings
-     */
-    private function getMappingWithFixes(string $id, array &$mappings): ?MigrationFixMapping
-    {
-        foreach ($mappings as $index => $fixMapping) {
-            if ($id !== $fixMapping->entityUuid) {
-                continue;
+            foreach ($fixes[$id] as $fix) {
+                $fix->apply($item);
             }
-
-            if (!$fixMapping->hasFix) {
-                continue;
-            }
-
-            unset($mappings[$index]);
-
-            return $fixMapping;
         }
 
-        return null;
+        unset($item);
     }
 
     /**
-     * @param array<string> $ids
+     * @param array<int, string> $ids
      *
-     * @return array<MigrationFixMapping>
+     * @return array<string, list<MigrationFix>>
      */
-    private function getMapping(array $ids, string $connectionId): array
+    private function getMappings(array $ids, string $connectionId): array
     {
-        $result = $this->connection->createQueryBuilder()
-            ->select('id', 'id', 'connection_id', 'entity', 'old_identifier', 'entity_uuid', 'entity_value', 'checksum', 'additional_data')
-            ->from('swag_migration_mapping')
-            ->where('entity_uuid IN (:ids)')
-            ->andWhere('connection_id = :connectionId')
-            ->setParameter('ids', $ids, ArrayParameterType::STRING)
-            ->setParameter('connectionId', $connectionId)
-            ->executeQuery()
-            ->fetchAllAssociativeIndexed();
+        $sql = <<<'SQL'
+SELECT mapping.entity_uuid as entityId, fix.id, fix.value, fix.path FROM swag_migration_mapping as mapping
+INNER JOIN swag_migration_fixes as fix ON fix.main_mapping_id = mapping.id
+WHERE mapping.entity_uuid IN (:ids)
+AND mapping.connection_id = :connectionId
+SQL;
 
-        $mappingIds = array_keys($result);
-        $fixes = $this->getFixes($mappingIds, $connectionId);
+        $result = $this->connection->fetchAllAssociative(
+            $sql,
+            [
+                'ids' => Uuid::fromHexToBytesList($ids),
+                'connectionId' => Uuid::fromHexToBytes($connectionId),
+            ],
+            [
+                'ids' => ArrayParameterType::STRING,
+            ]
+        );
 
-        return \array_map(function ($item) use ($fixes) {
-            $mapping = MigrationFixMapping::fromDatabaseQuery($item);
-
-            foreach ($fixes as $index => $fix) {
-                if ($fix->mainMappingId === $mapping->id) {
-                    $mapping->addMigrationFix($fix);
-                    unset($fixes[$index]);
-                }
+        $return = [];
+        foreach ($result as $row) {
+            $entityUuid = Uuid::fromBytesToHex($row['entityId']);
+            if (!\array_key_exists($entityUuid, $return)) {
+                $return[$entityUuid] = [];
             }
 
-            return $mapping;
-        }, $result);
-    }
+            $return[$entityUuid][] = MigrationFix::fromDatabaseQuery($row);
+        }
 
-    /**
-     * @param array<string> $mappingIds
-     *
-     * @return array<MigrationFix>
-     */
-    private function getFixes(array $mappingIds, string $connectionId): array
-    {
-        $result = $this->connection->createQueryBuilder()
-            ->select('id', 'connection_id', 'main_mapping_id', 'value', 'path')
-            ->from('swag_migration_fixes')
-            ->where('main_mapping_id IN (:ids)')
-            ->andWhere('connection_id = :connectionId')
-            ->setParameter('ids', $mappingIds, ArrayParameterType::STRING)
-            ->setParameter('connectionId', $connectionId)
-            ->executeQuery()
-            ->fetchAllAssociative();
-
-        return \array_map(function ($item) {
-            return MigrationFix::fromDatabaseQuery($item);
-        }, $result);
+        return $return;
     }
 }

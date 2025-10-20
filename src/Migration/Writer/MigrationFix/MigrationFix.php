@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('after-sales')]
@@ -17,8 +18,6 @@ class MigrationFix
 
     public function __construct(
         public readonly string $id,
-        public readonly string $connectionId,
-        public readonly string $mainMappingId,
         public readonly string $value,
         public readonly string $path,
     ) {
@@ -29,7 +28,7 @@ class MigrationFix
      */
     public static function fromDatabaseQuery(array $data): self
     {
-        $expectedArrayKeys = ['id', 'connection_id', 'main_mapping_id', 'value', 'path'];
+        $expectedArrayKeys = ['id', 'value', 'path'];
         foreach ($expectedArrayKeys as $expectedKey) {
             if (!\array_key_exists($expectedKey, $data)) {
                 throw MigrationException::couldNotConvertFix($expectedKey);
@@ -37,9 +36,7 @@ class MigrationFix
         }
 
         return new self(
-            $data['id'],
-            $data['connection_id'],
-            $data['main_mapping_id'],
+            Uuid::fromBytesToHex($data['id']),
             $data['value'],
             $data['path'],
         );

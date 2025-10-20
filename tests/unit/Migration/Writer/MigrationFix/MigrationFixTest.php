@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFix;
 
@@ -22,8 +23,6 @@ class MigrationFixTest extends TestCase
 
         $fix = new MigrationFix(
             'anyId',
-            'anyConnectionId',
-            'anyMappingId',
             \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
             'path.to.the.value.which.needs.to.be.replaced',
         );
@@ -61,6 +60,7 @@ class MigrationFixTest extends TestCase
         $fix->apply($item);
 
         static::assertSame($expectedValue, $item['path']['to']['the']['value']['which']['needs']['to']['be']['replaced']);
+
         // Check other nested values are not affected
         static::assertSame('untouchedValue', $item['doNotTouch']);
         static::assertSame('untouchedValue', $item['path']['doNotTouch']);
@@ -76,18 +76,14 @@ class MigrationFixTest extends TestCase
     public function testCreateFromDatabaseQuery(): void
     {
         $data = [
-            'id' => 'anyIdentifier',
-            'connection_id' => 'anyConnectionIdentifier',
-            'main_mapping_id' => 'anyMappingId',
+            'id' => Uuid::randomBytes(),
             'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
             'path' => 'any.path',
         ];
 
         $migrationFix = MigrationFix::fromDatabaseQuery($data);
 
-        static::assertSame($data['id'], $migrationFix->id);
-        static::assertSame($data['connection_id'], $migrationFix->connectionId);
-        static::assertSame($data['main_mapping_id'], $migrationFix->mainMappingId);
+        static::assertSame(Uuid::fromBytesToHex($data['id']), $migrationFix->id);
         static::assertSame($data['value'], $migrationFix->value);
         static::assertSame($data['path'], $migrationFix->path);
     }
@@ -112,36 +108,14 @@ class MigrationFixTest extends TestCase
         return [
             'id is missing' => [
                 'data' => [
-                    'connection_id' => 'anyConnectionIdentifier',
-                    'main_mapping_id' => 'anyMappingId',
                     'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                     'path' => 'any.path',
                 ],
                 'expectedMissingKey' => 'id',
             ],
-            'connection_id is missing' => [
-                'data' => [
-                    'id' => 'anyIdentifier',
-                    'main_mapping_id' => 'anyMappingId',
-                    'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
-                    'path' => 'any.path',
-                ],
-                'expectedMissingKey' => 'connection_id',
-            ],
-            'main_mapping_id is missing' => [
-                'data' => [
-                    'id' => 'anyIdentifier',
-                    'connection_id' => 'anyConnectionIdentifier',
-                    'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
-                    'path' => 'any.path',
-                ],
-                'expectedMissingKey' => 'main_mapping_id',
-            ],
             'value is missing' => [
                 'data' => [
                     'id' => 'anyIdentifier',
-                    'connection_id' => 'anyConnectionIdentifier',
-                    'main_mapping_id' => 'anyMappingId',
                     'path' => 'any.path',
                 ],
                 'expectedMissingKey' => 'value',
