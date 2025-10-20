@@ -31,7 +31,7 @@ class MigrationFixApplier
         foreach ($data as &$item) {
             $id = $item['id'];
 
-            if (!\is_array($fixes[$id])) {
+            if (!\array_key_exists($id, $fixes) || !\is_array($fixes[$id])) {
                 continue;
             }
 
