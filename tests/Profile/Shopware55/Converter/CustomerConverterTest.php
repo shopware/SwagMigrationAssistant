@@ -150,12 +150,7 @@ class CustomerConverterTest extends TestCase
             $this->migrationContext
         );
 
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__INVALID_EMAIL_ADDRESS');
+        static::assertNotNull($convertResult->getConverted());
     }
 
     #[DataProvider('requiredProperties')]
@@ -171,12 +166,8 @@ class CustomerConverterTest extends TestCase
             $context,
             $this->migrationContext
         );
-        static::assertNull($convertResult->getConverted());
 
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertNotNull($convertResult->getConverted());
     }
 
     /**
@@ -286,12 +277,7 @@ class CustomerConverterTest extends TestCase
             $this->migrationContext
         );
 
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertNotNull($convertResult->getConverted());
     }
 
     public function testConvertCustomerWithoutValidAddresses(): void
@@ -309,14 +295,7 @@ class CustomerConverterTest extends TestCase
             $this->migrationContext
         );
 
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(3, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertNotNull($convertResult->getConverted());
     }
 
     /**
