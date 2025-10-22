@@ -1,4 +1,5 @@
 import template from './swag-migration-wizard-page-credentials-success.html.twig';
+import './swag-migration-wizard-page-credentials-success.scss';
 
 /**
  * @private

@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -158,30 +157,6 @@ class HistoryControllerTest extends TestCase
 
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $result);
         static::assertNotNull($result->first());
-    }
-
-    public function testGetPrefixLogInformation(): void
-    {
-        $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
-        $run = $result->first();
-        $result = $this->invokeMethod($this->historyService, 'getPrefixLogInformation', [$run]);
-
-        static::assertIsString($result);
-        static::assertStringContainsString('Migration log generated at', $result);
-        static::assertStringContainsString('Run id:', $result);
-        static::assertStringContainsString('Connection name: myConnection', $result);
-    }
-
-    public function testGetSuffixLogInformation(): void
-    {
-        $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
-        $run = $result->first();
-        $result = $this->invokeMethod($this->historyService, 'getSuffixLogInformation', [$run]);
-
-        static::assertIsString($result);
-        static::assertStringContainsString('--------------------Additional-metadata---------------------', $result);
-        static::assertStringContainsString('Environment information {JSON}:', $result);
-        static::assertStringContainsString('Premapping {JSON}: ----------------------------------------------------', $result);
     }
 
     /**

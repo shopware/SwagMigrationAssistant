@@ -38,7 +38,12 @@
 
                     {% block swag_migration_history_grid_column_profile %}
                         <template #column-connection.profile="{ item }">
-                            {{ item.connection.profileName }} /
+                            {{ item.connection.profileName }}
+                        </template>
+                    {% endblock %}
+
+                    {% block swag_migration_history_grid_column_gateway %}
+                        <template #column-connection.gateway="{ item }">
                             {{ item.connection.gatewayName }}
                         </template>
                     {% endblock %}
@@ -81,20 +86,7 @@
                                                @page-change="onPageChange" />
                         </template>
                     {% endblock %}
-
                 </sw-data-grid>
-            {% endblock %}
-
-            {% block swag_migration_history_no_data %}
-                <div v-if="migrationRuns.length === 0"
-                     class="swag-migration-history__no-data">
-                    <p class="swag-migration-history__no-data-label">
-                        {{ $tc('swag-migration.history.noData') }}
-                    </p>
-                    <p class="swag-migration-history__no-data-sub-label">
-                        {{ $tc('swag-migration.history.noDataSubline') }}
-                    </p>
-                </div>
             {% endblock %}
 
             {% block swag_migration_history_router_view %}
@@ -113,12 +105,19 @@
             {% endblock %}
 
             {% block swag_migration_history_run_clear_confirm_modal %}
-                <sw-modal v-if="showRunClearConfirmModal"
-                          class="swag-migration-history__run-clear-confirm-modal"
-                          :title="$tc('swag-migration.history.clearRunDialog.title')"
-                          :is-loading="runClearConfirmModalIsLoading"
-                          size="460px"
-                          @modal-close="showRunClearConfirmModal = false">
+                <sw-modal
+                    v-if="showRunClearConfirmModal"
+                    class="swag-migration-history__run-clear-confirm-modal"
+                    :title="$tc('swag-migration.history.clearRunDialog.title')"
+                    :is-loading="runClearConfirmModalIsLoading"
+                    variant="small"
+                    @modal-close="showRunClearConfirmModal = false"
+                >
+                    {% block swag_migration_history_run_clear_confirm_modal_content_hint %}
+                        <p class="swag-migration-history__run-clear-confirm-modal-content-hint">
+                            {{ $tc('swag-migration.history.clearRunDialog.contentHint') }}
+                        </p>
+                    {% endblock %}
 
                     {% block swag_migration_history_run_clear_confirm_modal_content %}
                         <p class="swag-migration-history__run-clear-confirm-modal-content">
@@ -126,28 +125,26 @@
                         </p>
                     {% endblock %}
 
-                    {% block swag_migration_history_run_clear_confirm_modal_content_hint %}
-                        <p class="swag-migration-history__run-clear-confirm-modal-content-hint">
-                            {{ $tc('swag-migration.history.clearRunDialog.contentHint') }}
-                        </p>
-                    {% endblock %}
-
                     {% block swag_migration_history_run_clear_confirm_modal_footer %}
                         <template #modal-footer>
                             {% block swag_migration_history_run_clear_confirm_modal_abort %}
-                                <mt-button size="small"
-                                           variant="secondary"
-                                           :disabled="runClearConfirmModalIsLoading"
-                                           @click="showRunClearConfirmModal = false">
+                                <mt-button
+                                    size="small"
+                                    variant="secondary"
+                                    :disabled="runClearConfirmModalIsLoading"
+                                    @click="showRunClearConfirmModal = false"
+                                >
                                     {{ $tc('global.default.cancel') }}
                                 </mt-button>
                             {% endblock %}
 
                             {% block swag_migration_history_run_clear_confirm_modal_confirm %}
-                                <mt-button size="small"
-                                           variant="primary"
-                                           :disabled="runClearConfirmModalIsLoading"
-                                           @click="onClearRunConfirmed">
+                                <mt-button
+                                    size="small"
+                                    variant="critical"
+                                    :disabled="runClearConfirmModalIsLoading"
+                                    @click="onClearRunConfirmed"
+                                >
                                     {{ $tc('global.default.delete') }}
                                 </mt-button>
                             {% endblock %}

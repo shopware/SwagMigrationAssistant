@@ -1,32 +1,23 @@
 @import "~scss/variables";
 
 .swag-migration-wizard__modal {
-    font-size: var(--font-size-2xs);
+    font-size: var(--font-size-xs);
 
     .swag-migration-wizard__placeholder {
         height: calc(var(--scale-size-256) * 2);
     }
 
-    .swag-migration-wizard__content {
-        max-width: calc(var(--scale-size-256) * 2);
-        margin: var(--scale-size-8) auto var(--scale-size-64) auto;
-
-        .swag-migration-wizard__form {
-            width: 80%;
-        }
-    }
-
     .swag-migration-wizard__content-information {
-        text-align: center;
-
-        .text-left {
-            color: var(--color-text-primary-default);
-            font-weight: var(--font-weight-medium);
-        }
+        font-size: var(--font-size-xs);
+        line-height: var(--font-line-height-xs);
     }
 
     h3.swag-migration-wizard__information-header {
-        margin-bottom: var(--scale-size-12);
+        margin-bottom: var(--scale-size-2);
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-xs);
     }
 
     .swag-migration-wizard__link {
@@ -34,9 +25,14 @@
 
         a {
             font-weight: var(--font-weight-semibold);
-            font-size: var(--font-size-2xs);
+            font-size: var(--font-size-xs);
             text-decoration: none;
         }
+    }
+
+    .swag-migration-wizard__illustration-wrapper {
+        display: flex;
+        justify-content: center;
     }
 
     .swag-migration-wizard__illustration {
@@ -51,7 +47,7 @@
     }
 
     .swag-migration-wizard__form {
-        margin: var(--scale-size-40) auto var(--scale-size-30) auto;
+        margin-top: var(--scale-size-12);
     }
 
     .swag-migration-wizard-page-credentials__steps {
@@ -59,6 +55,8 @@
         text-align: left;
         font-size: var(--font-size-xs);
         line-height: var(--font-line-height-xs);
+        color: var(--color-text-primary-default);
+        margin-bottom: var(--scale-size-20);
 
         a {
             font-weight: var(--font-weight-semibold);
@@ -81,11 +79,11 @@
     }
 
     .swag-migration-wizard__bubble {
-        margin: var(--scale-size-4) auto var(--scale-size-20) auto;
+        margin: var(--scale-size-4) auto var(--scale-size-12) auto;
         width: var(--scale-size-72);
         height: var(--scale-size-72);
         border-radius: var(--border-radius-round);
-        background-color: var(--color-text-positive-default);
+        background-color: var(--color-text-primary-default);
         flex-shrink: 0;
         display: flex;
         align-items: center;
@@ -118,7 +116,9 @@
 
     .swag-migration-wizard__headline {
         color: var(--color-text-primary);
-        font-size: var(--font-size-xl);
+        font-size: var(--font-size-l);
         font-weight: var(--font-weight-medium);
+        line-height: var(--font-line-height-l);
+        margin-bottom: var(--scale-size-4);
     }
 }

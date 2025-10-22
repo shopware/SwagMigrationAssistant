@@ -16,7 +16,14 @@
       "descriptionTextModule": "Modul zum Migrieren der Daten",
       "tabMain": "Übersicht",
       "tabHistory": "Historie",
-      "tabDataSelector": "Datenauswahl"
+      "tabDataSelector": "Datenauswahl",
+      "disabledMessages": {
+        "noData": "Es sind keine Daten für die Migration verfügbar.",
+        "noSelectedData": "Es wurden keine Daten für die Migration ausgewählt.",
+        "disabled": "Die Migration ist in dieser Umgebung deaktiviert.",
+        "loading": "Die Migration wird derzeit ausgeführt.",
+        "unfilledPremapping": "Bitte alle erforderlichen Zuweisungen abschließen."
+      }
     },
     "wizard": {
       "buttonAbort": "Abbrechen",
@@ -49,13 +56,11 @@
         },
         "connectionSelect": {
           "title": "Migration - Verbindung wechseln",
-          "contentInformation": "Wähle eine bestehende Verbindung aus der Liste aus, um Daten zu aktualisieren.",
           "connectionLabel": "Name der Verbindung",
           "connectionPlaceholder": "Bitte Verbindung auswählen"
         },
         "connectionCreate": {
           "title": "Migration - Neue Verbindung anlegen",
-          "contentInformation": "Gib die Daten an, die für die Migration benötigt werden.",
           "profileLabel": "Shopsystem-Profil",
           "profilePlaceholder": "Bitte wählen",
           "profileInstall": "Weiteres Profil installieren",
@@ -100,7 +105,6 @@
               "pluginLinkText": "Mehr Informationen zum Plugin"
             },
             "local": {
-              "contentInformation": "Wir benötigen noch Zugangsdaten um eine Verbindung zu Deiner Datenbank von Shopware 5 herstellen zu können.",
               "dbHostLabel": "Host",
               "dbHostPlaceholder": "Host eintragen",
               "dbPortLabel": "Port",
@@ -175,15 +179,16 @@
       },
       "pauseButton": "Pausieren",
       "continueButton": "Fortsetzen",
-      "abortButton": "Beenden",
+      "abortButton": "Migration beenden",
       "finishButton": "Fertig",
       "backToOverviewButton": "Zur Übersicht",
       "migrationAlreadyRunning": "Die Migration wurde bereits gestartet.",
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
       "shopwareMajorVersionText": "Wir haben festgestellt, dass die Version deines Quellsystems {sourceSystem} nicht der Version des Zielsystems {targetSystem} entspricht. Bitte stelle sicher, dass beide Systeme in der gleichen Major-Version vorliegen, bevor Du mit der Migration startest.",
       "shopInfoCard": {
+        "link": "Hilfe & Dokumentation",
         "cardTitle": "Shopsystem",
-        "refreshTooltip": "Prüfe die Verbindung zum Quellsystem",
+        "refreshButton": "Verbindung aktualisieren",
         "buttonEditSettings": "Verbindung bearbeiten",
         "buttonCreateConnection": "Neue Verbindung anlegen",
         "buttonCreateInitialConnection": "Initiale Verbindung anlegen",
@@ -204,45 +209,26 @@
           "title": "Zugangsdaten löschen",
           "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
           "contentHint": "Möchtest Du die aktuellen Zugangsdaten löschen?",
-          "abortButtonText": "Abbrechen",
-          "confirmButtonText": "Ja, löschen"
+          "abortButtonText": "Behalten",
+          "confirmButtonText": "Löschen"
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
           "content": "Durch das Zurücksetzen der Prüfsummen wird Ihr Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn Sie sich entscheiden, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
           "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
-          "abortButtonText": "Abbrechen",
-          "confirmButtonText": "Ja, zurücksetzen"
+          "abortButtonText": "Behalten",
+          "confirmButtonText": "Zurücksetzen"
         },
         "resetMigrationConfirmDialog": {
             "title": "Migration archivieren",
             "header": "Hast du deine Shopdaten fertig migriert?",
             "content": "Wenn du alle deine Shop-Daten erfolgreich migriert hast, kannst du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
-            "contentHint": "Möchstest du diese Migration und ihre Verbindung wirklich archivieren?",
-            "abortButtonText": "Abbrechen",
-            "confirmButtonText": "Ja, archivieren",
+            "abortButtonText": "Behalten",
+            "confirmButtonText": "Archivieren",
             "errorNotification": {
                 "title": "Fehler beim Archivieren der Migration",
                 "message": "Eine Migration wird zur Zeit durchgeführt."
             }
-        }
-      },
-      "assistantCard": {
-        "title": "Information",
-        "headline": "So funktioniert die Migration",
-        "finish": "Fertig!",
-        "connection": {
-          "title": "Eine Verbindung anlegen",
-          "content": "Gemeinsam verbinden wir Deinen Shop mit dem neuen Shopware 6 und können dann alle von Dir ausgewählten Daten migrieren.",
-          "link": "Hilfe & Dokumentation"
-        },
-        "dataSelection": {
-          "title": "Daten für die Migration auswählen",
-          "content": "Wähle aus, welche Daten migiert werden sollen. Auch Plugin-Daten können migriert werden, wenn das zugehörige Plugin in Shopware 6 installiert ist. Die Verfügbarkeit des Plugins kannst Du in Deinem Shopware-Account prüfen."
-        },
-        "migrationOverview": {
-          "title": "Die Migration im Überblick",
-          "content": "1. Ein Datencheck prüft Deine Daten. Gegebenfalls wird eine Zuordnung benötigt.\n2. Die Daten werden von Deinem System gelesen und zugeordnet.\n3. Die Daten werden in Shopware 6 geschrieben.\n4. Die Medien werden heruntergeladen."
         }
       },
       "selectDataCard": {
@@ -352,12 +338,6 @@
         }
       },
       "premappingCard": {
-        "validTitle": "Datenprüfung abgeschlossen",
-        "validCaption": "Bereit mit den ausgewählten Daten fortzufahren.",
-        "loadingTitle": "Datenprüfung läuft",
-        "loadingCaption": "Bitte warte bis die Datenprüfung abgeschlossen ist.",
-        "unfilledTitle": "Datenprüfung fehlgeschlagen",
-        "unfilledCaption": "Einige Werte konnten nicht zugewiesen werden.",
         "unfilledAlert": "Manuelle Zuweisung erforderlich um fortzufahren.",
         "previousTitle": "Bisheriger Wert",
         "newAssignmentTitle": "Neue Zuweisung",
@@ -421,7 +401,8 @@
             "caption": "Die neuen Daten werden indexiert.",
             "short": "Indexierung"
           },
-          "finish": "Fertig"
+          "finish": "Fertig",
+          "unknown": "Unbekannt"
         },
         "result": {
           "title": "Der Migrations-Assistent ist fertig",
@@ -434,8 +415,7 @@
         "title": "Migration beenden",
         "content": "Die Daten sind noch nicht vollständig migriert und teilweise unbrauchbar. Die gesamten Daten müssen erneut migriert werden, wenn Du jetzt beendest.",
         "hint": "Möchtest Du die Migration beenden?",
-        "cancelRunning": "Fortsetzen",
-        "cancelPause": "Pausieren",
+        "cancel": "Fortsetzen",
         "confirm": "Migration beenden"
       },
       "errorTypes": {
@@ -595,7 +575,8 @@
     },
     "history": {
       "connectionName": "Verbindungsname",
-      "profileAndGateway": "Profil & Schnittstelle",
+      "profile": "Profil",
+      "gateway": "Schnittstelle",
       "status": "Status",
       "importDateTime": "Startzeitpunkt",
       "shopDomain": "Shop-Domain",
@@ -611,12 +592,8 @@
         "content": "Beim Löschen der Migrationsdaten werden Log-Einträge, Mediendateien-Einträge, temporäre Migrationsdatensätze und der Migrationslauf selbst entfernt. Nach dem Löschen ist die Migration in der Historie nicht mehr einsehbar.",
         "contentHint": "Willst Du die Daten wirklich löschen?"
       },
-      "noData": "Es wurden keine Migrationen gefunden.",
-      "noDataSubline": "Beginne eine Migration, um Inhalte zu sehen.",
       "detailPage": {
         "title": "Details zur Migration",
-        "timestamp": "Startzeitpunkt:",
-        "runStatus": "Migrations-Status:",
         "status": {
           "finished": "Abgeschlossen",
           "aborted": "Abgebrochen",
@@ -625,7 +602,7 @@
         "data": "Daten",
         "errors": "Details",
         "logDescription": "Für mehr Details {link}",
-        "logDownload": "lade das Protokoll herunter.",
+        "logDownload": "lade das Protokoll herunter",
         "errorCode": "Protokolleintrag",
         "errorLevel": "Protokolllevel",
         "errorCount": "Anzahl",

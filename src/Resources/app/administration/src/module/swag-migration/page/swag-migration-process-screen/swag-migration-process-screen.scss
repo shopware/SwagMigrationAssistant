@@ -59,34 +59,20 @@
     .swag-migration-process-screen__confirm-warning {
         margin-top: var(--scale-size-32);
     }
-
-    .sw-card {
-        .sw-card__title {
-            margin-bottom: var(--scale-size-12);
-            font-size: var(--font-size-m);
-            line-height: var(--font-line-height-xs);
-
-            width: unset;
-            position: unset;
-            left: unset;
-            top: unset;
-            text-align: unset;
-        }
-    }
 }
 
 .swag-migration-index-modal-abort-migration-confirm-dialog {
-    .sw-modal__body {
-        padding: var(--scale-size-32);
-    }
-
     .swag-migration-index-modal-abort-migration-confirm-dialog-content {
-        text-align: center;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-s);
     }
 
     .swag-migration-index-modal-abort-migration-confirm-dialog-hint {
-        text-align: center;
         font-weight: var(--font-weight-semibold);
-        padding-top: var(--scale-size-32);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-s);
+        padding-bottom: var(--scale-size-6);
     }
 }

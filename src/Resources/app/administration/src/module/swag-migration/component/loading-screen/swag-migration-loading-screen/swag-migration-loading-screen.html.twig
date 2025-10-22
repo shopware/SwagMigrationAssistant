@@ -1,18 +1,29 @@
 {% block swag_migration_loading_screen %}
     <div class="swag-migration-loading-screen">
-
         {% block swag_migration_loading_screen_card %}
             <mt-card
                 class="swag-migration-loading-screen__card"
                 position-identifier="swag-migration-loading-screen__card"
             >
-
                 {% block swag_migration_index_loading_screen_content %}
                     <div class="swag-migration-loading-screen__content">
+                        <mt-banner
+                            class="swag-migration-loading-screen__notice"
+                            variant="info"
+                        >
+                            <span>{{ $tc('swag-migration.index.loadingScreenCard.notice') }}</span>
+                            <mt-link
+                                as="a"
+                                :to="$tc('swag-migration.index.loadingScreenCard.documentationLink')"
+                                type="external"
+                                target="_blank"
+                            >
+                                {{ $tc('swag-migration.index.loadingScreenCard.documentationLinkText') }}
+                            </mt-link>
+                        </mt-banner>
 
                         {% block swag_migration_index_loading_screen_header %}
                             <div class="swag-migration-loading-screen__header">
-
                                 {% block swag_migration_index_loading_screen_title %}
                                     <div class="swag-migration-loading-screen__title">
                                         {{ statusLong }}
@@ -29,21 +40,12 @@
 
                         {% block swag_migration_index_loading_screen_progress_bar %}
                             <swag-migration-progress-bar
-                                    :left-point-description="progressBarLeftPointDescription"
-                                    :right-point-description="$tc('swag-migration.index.loadingScreenCard.status.finish')"
-                                    :value="progress"
-                                    :max-value="total" />
+                                :left-point-description="progressBarLeftPointDescription"
+                                :right-point-description="$tc('swag-migration.index.loadingScreenCard.status.finish')"
+                                :value="progress"
+                                :max-value="total"
+                            />
                         {% endblock %}
-
-                        <mt-banner variant="info"
-                                  class="swag-migration-loading-screen__notice">
-                            {{ $tc('swag-migration.index.loadingScreenCard.notice') }}
-                            <a class="link"
-                               :href="$tc('swag-migration.index.loadingScreenCard.documentationLink')"
-                               target="_blank">
-                                {{ $tc('swag-migration.index.loadingScreenCard.documentationLinkText') }}
-                            </a>
-                        </mt-banner>
                     </div>
                 {% endblock %}
             </mt-card>

@@ -1,5 +1,10 @@
 import type RepositoryType from '@administration/src/core/data/repository.data';
-import type { MigrationDataSelection, MigrationEnvironmentInformation, MigrationPremapping } from '../../../type/types';
+import type {
+    TEntity,
+    MigrationDataSelection,
+    MigrationEnvironmentInformation,
+    MigrationPremapping,
+} from '../../../type/types';
 import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
 import { MIGRATION_API_SERVICE } from '../../../core/service/api/swag-migration.api.service';
 
@@ -20,6 +25,8 @@ export const MIGRATION_STORE_ID = 'swagMigration';
 type MigrationState = {
     state: {
         isLoading: boolean;
+        latestRun: TEntity<'swag_migration_run'> | null;
+        currentConnection: TEntity<'swag_migration_connection'> | null;
         warningConfirmed: boolean;
         dataSelectionIds: string[];
         connectionId: string | null;
@@ -30,9 +37,15 @@ type MigrationState = {
     };
     getters: {
         isPremappingValid: () => boolean;
+        migrationDisabledMessage: () => string | null;
+        isContinueAllowed: () => boolean;
         isMigrationAllowed: () => boolean;
+        hasCurrencyMismatch: () => boolean;
+        hasLanguageMismatch: () => boolean;
     };
     actions: {
+        setLatestRun: (run: TEntity<'swag_migration_run'> | null) => void;
+        setCurrentConnection: (connection: TEntity<'swag_migration_connection'> | null) => void;
         setConnectionId: (id: string) => void;
         fetchConnectionId: () => Promise<boolean>;
         setIsLoading: (isLoading: boolean) => void;
@@ -76,6 +89,14 @@ const migrationStore = Shopware.Store.register({
          */
         isLoading: false,
         /**
+         * Latest migration run object, null if no migration has been started yet.
+         */
+        latestRun: null,
+        /**
+         * The possible connection object, null if no connection is selected.
+         */
+        currentConnection: null,
+        /**
          * The possible data that the user can migrate.
          */
         dataSelectionTableData: [],
@@ -103,9 +124,17 @@ const migrationStore = Shopware.Store.register({
             });
         },
 
-        isMigrationAllowed(): boolean {
+        hasCurrencyMismatch(): boolean {
+            return this.environmentInformation.sourceSystemCurrency !== this.environmentInformation.targetSystemCurrency;
+        },
+
+        hasLanguageMismatch(): boolean {
+            return this.environmentInformation.sourceSystemLocale !== this.environmentInformation.targetSystemLocale;
+        },
+
+        migrationDisabledMessage(): string | null {
             if (!this.dataSelectionTableData.length) {
-                return false;
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noData');
             }
 
             const tableDataIds = this.dataSelectionTableData.map((data: MigrationDataSelection) => {
@@ -116,16 +145,37 @@ const migrationStore = Shopware.Store.register({
                 return null;
             });
 
-            const migrationAllowedByDataSelection = this.dataSelectionIds.some((id: string) => tableDataIds.includes(id));
-            const migrationAllowedByEnvironment = this.environmentInformation?.migrationDisabled === false;
+            if (!this.dataSelectionIds.some((id: string) => tableDataIds.includes(id))) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noSelectedData');
+            }
 
-            return (
-                migrationAllowedByDataSelection &&
-                migrationAllowedByEnvironment &&
-                !this.isLoading &&
-                this.isPremappingValid &&
-                this.warningConfirmed
-            );
+            if (this.environmentInformation?.migrationDisabled !== false) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.disabled');
+            }
+
+            if (this.isLoading) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.loading');
+            }
+
+            if (!this.isPremappingValid) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.unfilledPremapping');
+            }
+
+            return null;
+        },
+
+        isContinueAllowed(): boolean {
+            return this.migrationDisabledMessage === null;
+        },
+
+        isMigrationAllowed(): boolean {
+            const hasWarning = this.hasCurrencyMismatch || this.hasLanguageMismatch;
+
+            if (hasWarning && !this.warningConfirmed) {
+                return false;
+            }
+
+            return this.isContinueAllowed;
         },
     },
 
@@ -144,6 +194,14 @@ const migrationStore = Shopware.Store.register({
 
         setIsLoading(isLoading: boolean) {
             this.isLoading = isLoading;
+        },
+
+        setLatestRun(run: TEntity<'swag_migration_run'> | null) {
+            this.latestRun = run;
+        },
+
+        setCurrentConnection(connection: TEntity<'swag_migration_connection'> | null) {
+            this.currentConnection = connection;
         },
 
         setDataSelectionIds(newIds: string[]) {
@@ -228,9 +286,13 @@ const migrationStore = Shopware.Store.register({
 
             if (forceFullStateReload || connectionIdChanged) {
                 // First, clear old user input
-                this.premapping = [];
-                this.dataSelectionIds = [];
+                this.latestRun = null;
+                this.currentConnection = null;
                 this.warningConfirmed = false;
+                this.dataSelectionIds = [];
+                this.lastConnectionCheck = null;
+                this.premapping = [];
+                this.dataSelectionTableData = [];
 
                 // Then fetch new data
                 await this.fetchDataSelectionIds();

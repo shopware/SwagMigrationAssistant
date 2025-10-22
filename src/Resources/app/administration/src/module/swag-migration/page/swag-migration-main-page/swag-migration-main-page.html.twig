@@ -27,10 +27,6 @@
             </div>
         {% endblock %}
 
-        {% block swag_migration_index_main_page_assistant %}
-            <swag-migration-assistant v-if="!isLoading" />
-        {% endblock %}
-
         {% block swag_migration_index_main_page_loader %}
             <mt-loader v-if="isLoading" />
         {% endblock %}

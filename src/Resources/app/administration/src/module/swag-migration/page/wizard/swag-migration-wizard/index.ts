@@ -254,17 +254,14 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async checkMigrationBackendState() {
-            try {
-                const response = await this.migrationApiService.getState();
-                if (!response || !response.step) {
-                    return;
-                }
+            const response = await this.migrationApiService.getState().catch();
 
-                if (response.step !== MIGRATION_STEP.IDLE) {
-                    await this.$router.push({ name: 'swag.migration.processScreen' });
-                }
-            } catch {
-                // do nothing
+            if (!response || !response.step) {
+                return;
+            }
+
+            if (response.step !== MIGRATION_STEP.IDLE) {
+                await this.$router.push({ name: 'swag.migration.processScreen' });
             }
         },
 

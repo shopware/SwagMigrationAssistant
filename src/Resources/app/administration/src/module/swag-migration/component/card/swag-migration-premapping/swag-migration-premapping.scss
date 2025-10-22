@@ -1,61 +1,6 @@
 @import "~scss/variables";
 
 .swag-migration-premapping {
-    .swag-migration-premapping__success-card {
-        text-align: center;
-        font-size: var(--font-size-xs);
-
-        .mt-card__content {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            height: var(--scale-size-256);
-        }
-    }
-
-    .swag-migration-premapping__success-bubble {
-        margin: 0 auto var(--scale-size-20) auto;
-        width: var(--scale-size-72);
-        height: var(--scale-size-72);
-        border-radius: var(--border-radius-round);
-        background-color: var(--color-background-positive-default);
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .swag-migration-premapping__success-icon {
-        color: var(--color-icon-positive-default);
-    }
-
-    .swag-migration-premapping__success-title {
-        font-size: var(--font-size-m);
-        font-weight: var(--font-weight-semibold);
-        margin-bottom: var(--scale-size-4);
-    }
-
-    .swag-migration-premapping__success-caption {
-        color: var(--color-text-secondary-default);
-    }
-
-    .swag-migration-premapping__loading-card {
-        text-align: center;
-        font-size: var(--font-size-xs);
-    }
-
-    .swag-migration-premapping__loading-title {
-        font-size: var(--font-size-m);
-        font-weight: var(--font-weight-semibold);
-        margin-bottom: var(--scale-size-4);
-    }
-
-    .swag-migration-premapping__loading-caption {
-        color: var(--color-text-secondary-default);
-        margin-bottom: var(--scale-size-48);
-    }
-
     .sw-loader.swag-migration-premapping__loader {
         position: relative;
         margin: var(--scale-size-12) auto var(--scale-size-40) auto;
@@ -77,24 +22,6 @@
 
     .swag-migration-premapping__filled-tab-card {
         margin-top: var(--scale-size-40);
-    }
-
-    .swag-migration-premapping__unfilled-card {
-        margin-top: var(--scale-size-40);
-        text-align: center;
-        font-size: var(--font-size-xs);
-    }
-
-    .swag-migration-premapping__unfilled-title {
-        font-size: var(--font-size-m);
-        font-weight: var(--font-weight-semibold);
-        margin-top: var(--scale-size-10);
-        margin-bottom: var(--scale-size-4);
-    }
-
-    .swag-migration-premapping__unfilled-caption {
-        color: var(--color-text-secondary-default);
-        margin-bottom: var(--scale-size-10);
     }
 
     .swag-migration-premapping__tab-card {
