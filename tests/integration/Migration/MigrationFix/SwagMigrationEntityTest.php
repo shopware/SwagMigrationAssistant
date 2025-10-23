@@ -38,18 +38,12 @@ class SwagMigrationEntityTest extends TestCase
      */
     private EntityRepository $connectionRepository;
 
-    /**
-     * @var EntityRepository<SwagMigrationMappingCollection>
-     */
-    private EntityRepository $mappingRepository;
-
     private MappingService $mappingService;
 
     protected function setUp(): void
     {
         $this->migrationFixRepository = $this->getContainer()->get('swag_migration_fix.repository');
         $this->connectionRepository = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->mappingRepository = $this->getContainer()->get('swag_migration_mapping.repository');
         $this->mappingService = $this->getContainer()->get(MappingService::class);
     }
 
