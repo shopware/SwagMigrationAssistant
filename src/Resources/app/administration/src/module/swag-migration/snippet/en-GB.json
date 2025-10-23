@@ -16,7 +16,14 @@
       "descriptionTextModule": "Module to migrate data",
       "tabMain": "General",
       "tabHistory": "History",
-      "tabDataSelector": "Data selection"
+      "tabDataSelector": "Data selection",
+      "disabledMessages": {
+        "noData": "There is no data available for migration.",
+        "noSelectedData": "No items have been selected for migration.",
+        "disabled": "Migration is disabled in this environment.",
+        "loading": "Migration is currently in progress.",
+        "unfilledPremapping": "Complete all required mappings before continuing."
+      }
     },
     "wizard": {
       "buttonAbort": "Cancel",
@@ -49,13 +56,11 @@
         },
         "connectionSelect": {
           "title": "Migration – Changing the connection",
-          "contentInformation": "Select an existing connection from the list to update the data.",
           "connectionLabel": "Connection name",
           "connectionPlaceholder": "Please select a connection"
         },
         "connectionCreate": {
           "title": "Migration – Create new connection",
-          "contentInformation": "The following information is required to perform the migration.",
           "profileLabel": "Shop system profile",
           "profilePlaceholder": "Select profile",
           "profileInstall": "Install another profile",
@@ -100,7 +105,6 @@
               "pluginLinkText": "More information about the plugin"
             },
             "local": {
-              "contentInformation": "We still need access data to connect to your Shopware 5 database.",
               "dbHostLabel": "Host",
               "dbHostPlaceholder": "Enter host",
               "dbPortLabel": "Port",
@@ -167,6 +171,15 @@
       }
     },
     "index": {
+      "warningModal": {
+        "title": "Data mismatch detected",
+        "cancelButton": "Go back",
+        "confirmButton": "Continue anyway",
+        "message": {
+          "currency": "A migration with <b>different default currencies</b> can lead to corrupted data records and cause unpredictable side effects.",
+          "language": "A migration with <b>different default languages</b> can lead to corrupted data records and cause unpredictable side effects."
+        }
+      },
       "title": "General",
       "migrateButton": "Start migration",
       "savePremapping": {
@@ -175,15 +188,16 @@
       },
       "pauseButton": "Pause",
       "continueButton": "Continue",
-      "abortButton": "Cancel",
+      "abortButton": "Stop migration",
       "finishButton": "Finish",
       "backToOverviewButton": "Back to overview",
       "migrationAlreadyRunning": "Migration already started.",
       "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
       "shopwareMajorVersionText": "We have noticed that your source system {sourceSystem} version does not match your target system {targetSystem} version. Please ensure to use the same major version for both systems before you start the migration.",
       "shopInfoCard": {
+        "link": "Help & documentation",
         "cardTitle": "Shop system",
-        "refreshTooltip": "Check connection to source system",
+        "refreshButton": "Refresh connection",
         "buttonEditSettings": "Edit connection",
         "buttonCreateConnection": "Create new connection",
         "buttonCreateInitialConnection": "Create initial connection",
@@ -204,23 +218,22 @@
           "title": "Delete access data",
           "content": "There will be no active connection after this. Enter your access data again to restore the connection.",
           "contentHint": "Would you like to delete the current access data?",
-          "abortButtonText": "Cancel",
-          "confirmButtonText": "Yes, delete"
+          "abortButtonText": "Keep",
+          "confirmButtonText": "Delete"
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset checksums",
           "content": "Resetting the checksums will restore your source system to a state similar to that before the first migration attempt. If you decide to migrate again from it, any changes to the newer Shopware 6 target system that have been made in the meantime might be overwritten.",
           "contentHint": "Do you want to reset the checksums?",
-          "abortButtonText": "Cancel",
-          "confirmButtonText": "Yes, reset"
+          "abortButtonText": "Keep",
+          "confirmButtonText": "Reset"
         },
         "resetMigrationConfirmDialog": {
             "title": "Archive migration",
             "header": "Are you done migrating your shop data?",
             "content": "If you have successfully migrated all of your shop data, go ahead and archive this migration. This will allow the system to clean up temporary files and unused data.",
-            "contentHint": "Do you really want to archive this migration and its connection?",
-            "abortButtonText": "Cancel",
-            "confirmButtonText": "Yes, archive",
+            "abortButtonText": "Keep",
+            "confirmButtonText": "Archive",
             "errorNotification": {
                 "title": "Error occurred while archiving the migration",
                 "message": "A migration is currently in progress."
@@ -338,26 +351,14 @@
       "confirmWarningCard": {
         "currencyMismatch": {
           "title": "Different default currencies recognised",
-          "info": "A migration with different default currencies can lead to corrupted data records and cause unpredictable side effects.",
-          "text": "The default currencies of the source system [{sourceSystemCurrency}] and target system [{targetSystemCurrency}] do not match. The data can be migrated, but it is not converted automatically.",
-          "question": "Are you sure you want to run the migration with different default currencies?",
-          "checkboxLabel": "Yes, I would like to continue"
+          "text": "The default currencies of the source system [{sourceSystemCurrency}] and target system [{targetSystemCurrency}] do not match. The data can be migrated, but it is not converted automatically."
         },
         "languageMismatch": {
-            "title": "Different default languages recognised",
-            "info": "A migration with different default languages can lead to corrupted data records and cause unpredictable side effects.",
-            "text": "The default languages of the source system [{sourceSystemLanguage}] and target system [{targetSystemLanguage}] do not match. The data can be migrated, but it is not automatically assigned.",
-            "question": "Are you sure you want to run the migration with different default languages?",
-            "checkboxLabel": "Yes, I would like to continue"
+          "title": "Different default languages recognised",
+          "text": "The default languages of the source system [{sourceSystemLanguage}] and target system [{targetSystemLanguage}] do not match. The data can be migrated, but it is not automatically assigned."
         }
       },
       "premappingCard": {
-        "validTitle": "Data check completed",
-        "validCaption": "Ready to proceed with the selected data.",
-        "loadingTitle": "Data check running",
-        "loadingCaption": "Please wait while we check your data selection.",
-        "unfilledTitle": "Data check failed",
-        "unfilledCaption": "Some values could not be assigned.",
         "unfilledAlert": "Manual assignment needed in order to proceed.",
         "previousTitle": "Previous value",
         "newAssignmentTitle": "New assignment",
@@ -421,7 +422,8 @@
             "caption": "The migration is almost complete.",
             "short": "Indexing"
           },
-          "finish": "Done"
+          "finish": "Done",
+          "unknown": "Unknown"
         },
         "result": {
           "title": "The Migration Assistant is done",
@@ -434,8 +436,7 @@
         "title": "Stop migration",
         "content": "The migration is not fully complete. Already migrated data might be unusable. If you quit now, you will have to completely rerun the migration process.",
         "hint": "Do you want to stop the migration?",
-        "cancelRunning": "Continue",
-        "cancelPause": "Pause",
+        "cancel": "Keep going",
         "confirm": "Stop migration"
       },
       "errorTypes": {
@@ -595,7 +596,8 @@
     },
     "history": {
       "connectionName": "Connection name",
-      "profileAndGateway": "Profile & gateway",
+      "profile": "Profile",
+      "gateway": "Gateway",
       "status": "Status",
       "importDateTime": "Start time",
       "shopDomain": "Shop domain",
@@ -611,12 +613,8 @@
         "content": "Deleting migration data will remove log entries, media file entries, temporary migration data records and the migration run, which then will no longer be available in the migration history.",
         "contentHint": "Do you really want to delete the data?"
       },
-      "noData": "No migrations found.",
-      "noDataSubline": "Start a migration to see content.",
       "detailPage": {
         "title": "Migration details",
-        "timestamp": "Start time:",
-        "runStatus": "Migration status:",
         "status": {
           "finished": "Finished",
           "aborted": "Aborted",
@@ -625,7 +623,7 @@
         "data": "Data",
         "errors": "Details",
         "logDescription": "For more details {link}",
-        "logDownload": "download the log file.",
+        "logDownload": "download the log file",
         "errorCode": "Log message",
         "errorLevel": "Log level",
         "errorCount": "Count",

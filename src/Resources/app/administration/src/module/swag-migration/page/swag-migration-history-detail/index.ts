@@ -2,8 +2,14 @@ import template from './swag-migration-history-detail.html.twig';
 import './swag-migration-history-detail.scss';
 import type { TEntity, TRepository } from '../../../../type/types';
 import { MIGRATION_API_SERVICE } from '../../../../core/service/api/swag-migration.api.service';
+import { BADGE_TYPE } from '../../component/card/swag-migration-shop-information';
 
 const { Criteria } = Shopware.Data;
+
+/**
+ * @private
+ */
+export const MIGRATION_SUCCESS_STEP = 'finished';
 
 /**
  * @private
@@ -61,6 +67,22 @@ export default Shopware.Component.wrapComponentConfig({
             return this.repositoryFactory.create('swag_migration_run');
         },
 
+        statusBadgeLabel() {
+            if (!this.migrationRun?.step) {
+                return 'swag-migration.history.detailPage.status.unknown';
+            }
+
+            return `swag-migration.history.detailPage.status.${this.migrationRun.step}`;
+        },
+
+        statusBadgeVariant() {
+            if (this.migrationRun?.step === MIGRATION_SUCCESS_STEP) {
+                return BADGE_TYPE.SUCCESS;
+            }
+
+            return BADGE_TYPE.DANGER;
+        },
+
         shopFirstLetter() {
             return this.migrationRun.environmentInformation?.sourceSystemName === undefined
                 ? 'S'
@@ -109,18 +131,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         gatewayName(): string {
             return this.migrationRun.connection === null ? '' : this.migrationRun.connection.gatewayName;
-        },
-
-        runStatusSnippet() {
-            return this.migrationRun.step === null
-                ? ''
-                : `swag-migration.history.detailPage.status.${this.migrationRun.step}`;
-        },
-
-        runStatusClasses() {
-            return this.migrationRun.step === null
-                ? ''
-                : `swag-migration-history-detail__run-status-value--${this.migrationRun.step}`;
         },
 
         assetFilter() {

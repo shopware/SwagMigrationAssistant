@@ -1,27 +1,28 @@
 {% block swag_migration_result_screen %}
-    <div>
-
+    <div class="swag-migration-result-screen">
         {% block swag_migration_result_screen_card %}
-            <mt-card class="swag-migration-result-screen"
-                     position-identifier="swag-migration-result-screen">
-
+            <mt-card
+                class="swag-migration-result-screen__card"
+                position-identifier="swag-migration-result-screen"
+            >
                 {% block swag_migration_result_screen_content %}
-                    <div class="swag-migration-result-screen__content">
-
+                    <div class="swag-migration-result-screen__card-content">
                         {% block swag_migration_result_screen_icon %}
-                            <div class="swag-migration-result-screen__bubble">
-                                <mt-icon class="swag-migration-result-screen__icon"
-                                         name="regular-thumbs-up"
-                                         size="36px"
-                                         decorative />
+                            <div class="swag-migration-result-screen__card-bubble">
+                                <mt-icon
+                                    class="swag-migration-result-screen__card-icon"
+                                    name="regular-thumbs-up"
+                                    size="36px"
+                                    decorative
+                                />
                             </div>
                         {% endblock %}
 
                         {% block swag_migration_result_screen_title %}
-                            <div class="swag-migration-result-screen__title">
+                            <div class="swag-migration-result-screen__card-title">
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.title') }}
                             </div>
-                            <div class="swag-migration-result-screen__caption">
+                            <div class="swag-migration-result-screen__card-caption">
                                 {{ $tc('swag-migration.index.loadingScreenCard.result.caption') }}
                             </div>
                         {% endblock %}
@@ -31,11 +32,15 @@
         {% endblock %}
 
         <mt-card
+            class="swag-migration-result-screen__log-summary"
             position-identifier="swag-migration-result-screen__log-summary"
             :is-loading="!latestRun"
             :title="$tc('swag-migration.index.loadingScreenCard.result.logSummary')"
         >
-            <mt-banner>
+            <mt-banner
+                class="swag-migration-result-screen__log-summary-banner"
+                variant="info"
+            >
                 {{ $tc('swag-migration.index.loadingScreenCard.result.historyHint') }}
             </mt-banner>
 
@@ -44,6 +49,5 @@
                 :migration-run="latestRun"
             />
         </mt-card>
-
     </div>
 {% endblock %}

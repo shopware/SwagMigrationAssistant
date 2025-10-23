@@ -8,21 +8,12 @@
 
     .swag-migration-index-data-selector__no-data {
         display: flex;
-        flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: var(--scale-size-192);
         width: 100%;
 
-        .swag-migration-index-data-selector__no-data-label {
-            font-size: var(--font-size-m);
-            font-weight: var(--font-weight-semibold);
-        }
-
-        .swag-migration-index-data-selector__no-data-sub-label {
-            margin-top: var(--scale-size-4);
-            font-size: var(--font-size-xs);
-            color: var(--color-text-secondary-default);
+        .mt-empty-state {
+            place-items: center;
         }
     }
 

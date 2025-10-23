@@ -2,50 +2,30 @@
 
 .swag-migration-history {
     .swag-migration-history__status-icon--finished {
-        color: var(--color-text-positive-default);
+        color: var(--color-icon-positive-default);
     }
 
     .swag-migration-history__status-icon--aborted {
-        color: var(--color-text-critical-default);
+        color: var(--color-icon-critical-default);
     }
 
     .swag-migration-history__status-icon--loading {
-        color: var(--color-text-primary-disabled);
-    }
-
-    .swag-migration-history__no-data {
-        height: var(--scale-size-256);
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        width: 100%;
-
-        .swag-migration-history__no-data-label {
-            font-size: var(--font-size-m);
-            font-weight: var(--font-weight-semibold);
-        }
-
-        .swag-migration-history__no-data-sub-label {
-            margin-top: var(--scale-size-4);
-            font-size: var(--font-size-xs);
-            color: var(--color-text-secondary-default);
-        }
+        color: var(--color-icon-primary-disabled);
     }
 }
 
 .swag-migration-history__run-clear-confirm-modal {
-    .sw-modal__body {
-        padding: var(--scale-size-32);
-    }
-
     .swag-migration-history__run-clear-confirm-modal-content {
-        text-align: center;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-s);
     }
 
     .swag-migration-history__run-clear-confirm-modal-content-hint {
-        text-align: center;
-        padding-top: var(--scale-size-32);
         font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-s);
+        padding-bottom: var(--scale-size-6);
     }
 }

@@ -24,7 +24,7 @@
         gap: 0 var(--scale-size-14);
         width: 100%;
         display: grid;
-        margin-bottom: var(--scale-size-30);
+        margin-bottom: var(--scale-size-14);
     }
 
     .swag-migration-wizard-profile-installation__available_version_list {
@@ -38,8 +38,9 @@
         padding-left: var(--scale-size-8);
         padding-right: var(--scale-size-8);
         border-radius: var(--border-radius-2xs);
-        font-weight: var(--font-weight-semibold);
-        font-size: var(--font-size-2xs);
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
     }
 
     .swag-migration-wizard-profile-installation__last_version_box {
@@ -47,8 +48,9 @@
         padding-left: var(--scale-size-8);
         padding-right: var(--scale-size-8);
         border-radius: var(--border-radius-2xs);
-        font-weight: var(--font-weight-semibold);
-        font-size: var(--font-size-2xs);
+        font-weight: var(--font-weight-medium);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
     }
 
     .swag-migration-wizard-profile-installation__profile_headline {
@@ -64,7 +66,7 @@
     }
 
     .swag-migration-wizard-profile-installation__available_version_headline {
-        font-size: var(--font-size-2xs);
+        font-size: var(--font-size-xs);
         margin-bottom: var(--scale-size-4);
     }
 
@@ -72,26 +74,32 @@
         margin-top: var(--scale-size-18);
     }
 
-    .swag-migration-wizard-profile-installation__installed_box {
-        font-size: var(--font-size-2xs);
+    .swag-migration-wizard-profile-installation__installed_box {;
+        display: flex;
+        align-items: center;
+        font-size: var(--font-size-xs);
         font-weight: var(--font-weight-semibold);
-        color: var(--color-text-positive-default);
+        color: var(--color-text-primary-default);
         position: relative;
     }
 
+    .swag-migration-wizard-profile-installation__installed_img {
+        color: var(--color-icon-positive-default);
+    }
+
     .swag-migration-wizard-profile-installation__installed_title {
-        position: absolute;
+        margin-left: var(--scale-size-4);
         top: var(--scale-size-2);
         left: var(--scale-size-20);
     }
 
     .swag-migration-wizard-profile-installation__availability-headline {
-        font-size: var(--font-size-2xs);
+        font-size: var(--font-size-xs);
         font-weight: var(--font-weight-semibold);
         margin-bottom: var(--scale-size-20);
     }
 
     .swag-migration-wizard-profile-installation__plugins {
-        margin-top: var(--scale-size-36);
+        margin-top: var(--scale-size-20);
     }
 }

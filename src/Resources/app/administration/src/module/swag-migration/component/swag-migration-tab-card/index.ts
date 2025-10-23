@@ -1,5 +1,8 @@
 import template from './swag-migration-tab-card.html.twig';
 import './swag-migration-tab-card.scss';
+import { MIGRATION_STORE_ID } from '../../store/migration.store';
+
+const { mapState } = Shopware.Component.getComponentHelper();
 
 /**
  * @private
@@ -57,6 +60,13 @@ export default Shopware.Component.wrapComponentConfig({
         tabItems() {
             return this.$refs.swTabsItems as TabCardItem[] | undefined;
         },
+
+        ...mapState(
+            () => Shopware.Store.get(MIGRATION_STORE_ID),
+            [
+                'isPremappingValid',
+            ],
+        ),
     },
 
     mounted() {
