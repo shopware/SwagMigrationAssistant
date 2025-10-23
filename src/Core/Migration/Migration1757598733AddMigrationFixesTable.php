@@ -17,13 +17,13 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 #[Package('fundamentals@after-sales')]
 class Migration1757598733AddMigrationFixesTable extends MigrationStep
 {
-    public const MIGRATION_FIXES_TABLE = 'swag_migration_fixes';
+    public const MIGRATION_FIXES_TABLE = 'swag_migration_fix';
 
     public const FIELDS = [
         'id' => 'BINARY(16) NOT NULL',
         'connection_id' => 'BINARY(16) NOT NULL',
         'main_mapping_id' => 'BINARY(16) NOT NULL',
-        'value' => 'JSON NOT NULL',
+        'value' => 'LONGTEXT NOT NULL',
         'path' => 'VARCHAR(255) NOT NULL',
         'created_at' => 'DATETIME(3) NOT NULL',
         'updated_at' => 'DATETIME(3) NULL',

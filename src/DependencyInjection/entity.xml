@@ -45,5 +45,9 @@
         <service id="SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition">
             <tag name="shopware.entity.definition" entity="swag_migration_connection"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixDefinition">
+            <tag name="shopware.entity.definition" entity="swag_migration_fix"/>
+        </service>
     </services>
 </container>
