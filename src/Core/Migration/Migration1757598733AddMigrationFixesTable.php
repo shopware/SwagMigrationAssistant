@@ -46,8 +46,8 @@ class Migration1757598733AddMigrationFixesTable extends MigrationStep
             CREATE TABLE IF NOT EXISTS `%s` (
                 %s,
                 PRIMARY KEY (`id`),
-                CONSTRAINT `fk.swag_migration_fixes.connection_id` FOREIGN KEY (`connection_id`) REFERENCES `swag_migration_connection` (`id`) ON DELETE CASCADE,
-                CONSTRAINT `fk.swag_migration_fixes.main_mapping_id` FOREIGN KEY (`main_mapping_id`) REFERENCES `swag_migration_mapping` (`id`) ON DELETE CASCADE
+                CONSTRAINT `fk.swag_migration_fix.connection_id` FOREIGN KEY (`connection_id`) REFERENCES `swag_migration_connection` (`id`) ON DELETE CASCADE,
+                CONSTRAINT `fk.swag_migration_fix.main_mapping_id` FOREIGN KEY (`main_mapping_id`) REFERENCES `swag_migration_mapping` (`id`) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ', self::MIGRATION_FIXES_TABLE, implode(', ', $columns));
 
