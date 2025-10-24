@@ -50,7 +50,7 @@
             <tag name="shopware.entity.definition" entity="swag_migration_fix"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Core\Field\MigrationJsonFieldSerializer">
+        <service id="SwagMigrationAssistant\Core\Field\AnyJsonFieldSerializer">
             <argument type="service" id="validator"/>
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
 

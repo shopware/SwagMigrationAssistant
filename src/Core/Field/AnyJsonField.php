@@ -12,14 +12,19 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
 use Shopware\Core\Framework\Log\Package;
 
 /**
+ * This is an alternative for the JsonField and allows to save all simple data types
+ * into a JSON database field, not just arrays.
+ *
+ * int, float, string, null and array
+ *
  * @internal
  */
 #[Package('after-sales')]
-class MigrationJsonField extends Field implements StorageAware
+class AnyJsonField extends Field implements StorageAware
 {
     public function __construct(
         private readonly string $storageName,
-        string $propertyName
+        string $propertyName,
     ) {
         parent::__construct($propertyName);
     }
@@ -31,6 +36,6 @@ class MigrationJsonField extends Field implements StorageAware
 
     protected function getSerializerClass(): string
     {
-        return MigrationJsonFieldSerializer::class;
+        return AnyJsonFieldSerializer::class;
     }
 }
