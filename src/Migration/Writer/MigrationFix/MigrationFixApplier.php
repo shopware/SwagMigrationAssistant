@@ -52,7 +52,7 @@ class MigrationFixApplier
     {
         $sql = <<<'SQL'
 SELECT mapping.entity_uuid as entityId, fix.id, fix.value, fix.path FROM swag_migration_mapping as mapping
-INNER JOIN swag_migration_fixes as fix ON fix.main_mapping_id = mapping.id
+INNER JOIN swag_migration_fix as fix ON fix.main_mapping_id = mapping.id
 WHERE mapping.entity_uuid IN (:ids)
 AND mapping.connection_id = :connectionId
 SQL;

@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Test\integration\Migration\Writer\MigrationFix;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
-use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -18,6 +17,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixEntity;
 use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 
@@ -82,11 +82,11 @@ class MigrationFixApplierTest extends TestCase
 
         $this->mappingService->writeMapping();
 
-        $this->createFix($mappingOne['id'], $connectionId, \json_encode('val1', \JSON_THROW_ON_ERROR), 'first.path');
-        $this->createFix($mappingOne['id'], $connectionId, \json_encode(['nested' => ['array' => ['value' => 'nested array value']]], \JSON_THROW_ON_ERROR), 'second.other.path');
+        $this->createFix($mappingOne['id'], $connectionId, 'val1', 'first.path');
+        $this->createFix($mappingOne['id'], $connectionId, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path');
 
-        $this->createFix($mappingTwo['id'], $connectionId, \json_encode('val3', \JSON_THROW_ON_ERROR), 'third.path');
-        $this->createFix($mappingTwo['id'], $connectionId, \json_encode('val4', \JSON_THROW_ON_ERROR), 'fourth.other.path');
+        $this->createFix($mappingTwo['id'], $connectionId, 'val3', 'third.path');
+        $this->createFix($mappingTwo['id'], $connectionId, 'val4', 'fourth.other.path');
 
         $data = [
             [
@@ -130,16 +130,16 @@ class MigrationFixApplierTest extends TestCase
         static::assertSame($expected, $data);
     }
 
-    private function createFix(string $mappingId, string $connectionId, string $value, string $path): void
+    private function createFix(string $mappingId, string $connectionId, mixed $value, string $path): void
     {
-        $this->getContainer()->get(Connection::class)->insert('swag_migration_fixes', [
-            'id' => Uuid::randomBytes(),
-            'connection_id' => Uuid::fromHexToBytes($connectionId),
-            'main_mapping_id' => Uuid::fromHexToBytes($mappingId),
-            'value' => $value,
-            'path' => $path,
-            'created_at' => (new \DateTime())->format(Defaults::STORAGE_DATE_TIME_FORMAT),
-        ]);
+        $migrationFix = new SwagMigrationFixEntity();
+        $migrationFix->setId(Uuid::randomHex());
+        $migrationFix->setConnectionId($connectionId);
+        $migrationFix->setMainMappingId($mappingId);
+        $migrationFix->setPath($path);
+        $migrationFix->setValue($value);
+
+        $this->getContainer()->get('swag_migration_fix.repository')->create([$migrationFix->jsonSerialize()], Context::createDefaultContext());
     }
 
     private function createConnection(string $connectionId): void
