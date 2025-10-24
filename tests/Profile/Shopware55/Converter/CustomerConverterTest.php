@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -137,7 +136,6 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
-
 
     public function testConvertGuestAccount(): void
     {
