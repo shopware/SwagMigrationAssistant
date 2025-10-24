@@ -82,6 +82,7 @@ class SwagMigrationEntityTest extends TestCase
             'float' => ['value' => 42.12],
             'string' => ['value' => 'fooBar'],
             'array' => ['value' => ['key' => 'value']],
+            'empty' => ['value' => ''],
         ];
     }
 

@@ -20,7 +20,7 @@ class SwagMigrationFixEntity extends Entity
 
     protected string $mainMappingId;
 
-    protected string $value;
+    protected mixed $value;
 
     protected string $path;
 
@@ -46,12 +46,12 @@ class SwagMigrationFixEntity extends Entity
 
     public function getValue(): mixed
     {
-        return \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
+        return $this->value;
     }
 
     public function setValue(mixed $value): void
     {
-        $this->value = \json_encode($value, \JSON_THROW_ON_ERROR);
+        $this->value = $value;
     }
 
     public function getPath(): string

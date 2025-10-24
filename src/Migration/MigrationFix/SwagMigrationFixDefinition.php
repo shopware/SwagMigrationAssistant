@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Core\Field\MigrationJsonField;
 
 #[Package('after-sales')]
 class SwagMigrationFixDefinition extends EntityDefinition
@@ -44,7 +45,7 @@ class SwagMigrationFixDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             (new IdField('connection_id', 'connectionId'))->addFlags(new Required()),
             (new IdField('main_mapping_id', 'mainMappingId'))->addFlags(new Required()),
-            (new LongTextField('value', 'value'))->addFlags(new Required()),
+            (new MigrationJsonField('value', 'value'))->addFlags(new Required()),
             (new StringField('path', 'path'))->addFlags(new Required()),
             new CreatedAtField(),
             new UpdatedAtField(),
