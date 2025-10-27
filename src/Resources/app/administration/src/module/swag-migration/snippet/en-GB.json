@@ -19,6 +19,7 @@
       "tabDataSelector": "Data selection",
       "disabledMessages": {
         "noData": "There is no data available for migration.",
+        "resettingChecksum": "Checksums are currently being reset.",
         "noSelectedData": "No items have been selected for migration.",
         "disabled": "Migration is disabled in this environment.",
         "loading": "Migration is currently in progress.",

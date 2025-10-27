@@ -151,6 +151,10 @@ const migrationStore = Shopware.Store.register({
                 return null;
             });
 
+            if (this.isResettingChecksum) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.resettingChecksum');
+            }
+
             if (!this.dataSelectionIds.some((id: string) => tableDataIds.includes(id))) {
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noSelectedData');
             }
@@ -166,8 +170,6 @@ const migrationStore = Shopware.Store.register({
             if (!this.isPremappingValid) {
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.unfilledPremapping');
             }
-
-            // TODO: add reseting message
 
             return null;
         },
