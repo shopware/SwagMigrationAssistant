@@ -196,6 +196,50 @@ class StatusControllerTest extends TestCase
         );
     }
 
+    public function testGetResetStatus(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
+
+        $result = $this->controller->getResetStatus($this->context)->getContent();
+        static::assertSame('false', $result);
+
+        $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
+
+        $result = $this->controller->getResetStatus($this->context)->getContent();
+        static::assertSame('true', $result);
+    }
+
+    public function testIsResettingChecksumsWhenTrue(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isResettingChecksums' => true]], $this->context);
+
+        $result = $this->controller->isResettingChecksums($this->context)->getContent();
+        static::assertSame('true', $result);
+    }
+
+    public function testIsResettingChecksumsWhenFalse(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isResettingChecksums' => false]], $this->context);
+
+        $result = $this->controller->isResettingChecksums($this->context)->getContent();
+        static::assertSame('false', $result);
+    }
+
+    public function testIsResettingChecksumsWithoutSettings(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+
+        if ($id) {
+            $this->generalSettingRepo->delete([['id' => $id]], $this->context);
+        }
+
+        $result = $this->controller->isResettingChecksums($this->context);
+        static::assertSame('false', $result->getContent());
+    }
+
     /**
      * @return list<list<string>>
      */
@@ -566,20 +610,6 @@ class StatusControllerTest extends TestCase
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
         static::assertNotNull($run);
         static::assertSame(MigrationStep::FINISHED, $run->getStep());
-    }
-
-    public function testGetResetStatus(): void
-    {
-        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
-        $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
-
-        $result = $this->controller->getResetStatus($this->context)->getContent();
-        static::assertSame('false', $result);
-
-        $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
-
-        $result = $this->controller->getResetStatus($this->context)->getContent();
-        static::assertSame('true', $result);
     }
 
     private function createConnection(string $connectionId, string $profileName, string $connectionName): void
