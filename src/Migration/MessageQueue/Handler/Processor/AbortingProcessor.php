@@ -61,6 +61,9 @@ class AbortingProcessor extends AbstractProcessor
             true,
             $run->getId(),
             $progress->getCurrentEntity(),
+            null,
+            0,
+            true // abort flow flag
         ));
     }
 }

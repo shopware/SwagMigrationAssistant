@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbortingProcessor;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
@@ -43,24 +44,41 @@ class AbortingProcessorTest extends TestCase
 
     public function testProcessing(): void
     {
-        $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), 'product', 0);
+        $runId = Uuid::randomHex();
+        $connectionId = Uuid::randomHex();
+        $currentEntity = 'product';
+
+        $progress = new MigrationProgress(0, 0, new ProgressDataSetCollection(), $currentEntity, 0);
 
         $run = new SwagMigrationRunEntity();
-        $run->setId(Uuid::randomHex());
+        $run->setId($runId);
         $run->setProgress($progress);
 
         $connection = new SwagMigrationConnectionEntity();
-        $connection->setId(Uuid::randomHex());
+        $connection->setId($connectionId);
 
         $migrationContext = new MigrationContext($connection, new Shopware55Profile());
+        $context = Context::createDefaultContext();
 
         $this->processor->process(
             $migrationContext,
-            Context::createDefaultContext(),
+            $context,
             $run,
             $progress
         );
 
-        static::assertCount(1, $this->bus->getMessages());
+        $messages = $this->bus->getMessages();
+        static::assertCount(1, $messages);
+
+        $message = $messages[0];
+        static::assertInstanceOf(ResetChecksumMessage::class, $message);
+
+        // Verify the message has correct properties
+        static::assertSame($connectionId, $message->getConnectionId());
+        static::assertSame($context, $message->getContext());
+        static::assertTrue($message->isResettingAll(), 'Should reset all checksums during abort');
+        static::assertSame($runId, $message->getRunId());
+        static::assertSame($currentEntity, $message->getEntity());
+        static::assertTrue($message->isPartOfAbort(), 'Should be marked as part of abort flow');
     }
 }

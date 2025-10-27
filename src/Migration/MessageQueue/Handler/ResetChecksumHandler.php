@@ -14,10 +14,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\AbortCompletionMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
+use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
@@ -38,6 +40,7 @@ final readonly class ResetChecksumHandler
         private Connection $connection,
         private MessageBusInterface $messageBus,
         private EntityRepository $migrationRunRepo,
+        private RunTransitionServiceInterface $runTransitionService,
     ) {
     }
 
@@ -81,10 +84,7 @@ final readonly class ResetChecksumHandler
 
         if ($batchSize === 0) {
             $this->clearResettingChecksumsFlag();
-            $this->dispatchCompletionMessage(
-                $message,
-                $progress
-            );
+            $this->handleCompletion($message, $progress);
 
             return;
         }
@@ -109,10 +109,7 @@ final readonly class ResetChecksumHandler
 
         if ($batchSize < self::BATCH_SIZE) {
             $this->clearResettingChecksumsFlag();
-            $this->dispatchCompletionMessage(
-                $message,
-                $progress,
-            );
+            $this->handleCompletion($message, $progress);
 
             return;
         }
@@ -124,15 +121,24 @@ final readonly class ResetChecksumHandler
             $message->getRunId(),
             $message->getEntity(),
             $totalMappings,
-            $newProcessedCount
+            $newProcessedCount,
+            $message->isPartOfAbort()
         ));
     }
 
-    private function dispatchCompletionMessage(ResetChecksumMessage $message, ?MigrationProgress $progress): void
+    private function handleCompletion(ResetChecksumMessage $message, ?MigrationProgress $progress): void
     {
-        if ($message->getRunId() === null) {
+        if (!$message->isPartOfAbort() || $message->getRunId() === null) {
             return;
         }
+
+        $runId = $message->getRunId();
+        $context = $message->getContext();
+
+        $this->runTransitionService->forceTransitionToRunStep(
+            $runId,
+            MigrationStep::CLEANUP
+        );
 
         $finalProgress = new MigrationProgress(
             0,
@@ -141,14 +147,19 @@ final readonly class ResetChecksumHandler
             $message->getEntity() ?? DefaultEntities::RULE,
             $progress?->getCurrentEntityProgress() ?? 0
         );
+        $finalProgress->setIsAborted(true);
 
-        $completion = new AbortCompletionMessage(
-            $message->getRunId(),
-            $finalProgress,
-            $message->getContext()
-        );
+        $this->migrationRunRepo->upsert([
+            [
+                'id' => $runId,
+                'progress' => $finalProgress,
+            ],
+        ], $context);
 
-        $this->messageBus->dispatch($completion);
+        $this->messageBus->dispatch(new MigrationProcessMessage(
+            $context,
+            $runId
+        ));
     }
 
     private function getTotalMappingsCount(string $connectionId, bool $resetAll): int

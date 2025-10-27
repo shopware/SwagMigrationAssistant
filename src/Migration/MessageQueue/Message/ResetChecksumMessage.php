@@ -22,6 +22,7 @@ readonly class ResetChecksumMessage implements AsyncMessageInterface
         private ?string $entity = null,
         private ?int $totalMappings = null,
         private int $processedMappings = 0,
+        private bool $isPartOfAbort = false,
     ) {
     }
 
@@ -58,5 +59,10 @@ readonly class ResetChecksumMessage implements AsyncMessageInterface
     public function getProcessedMappings(): int
     {
         return $this->processedMappings;
+    }
+
+    public function isPartOfAbort(): bool
+    {
+        return $this->isPartOfAbort;
     }
 }

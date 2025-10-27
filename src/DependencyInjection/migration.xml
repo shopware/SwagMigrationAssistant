@@ -334,13 +334,7 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="messenger.default_bus"/>
             <argument id="swag_migration_run.repository" type="service"/>
-            <tag name="messenger.message_handler"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\AbortCompletionHandler">
             <argument id="SwagMigrationAssistant\Migration\Run\RunTransitionService" type="service"/>
-            <argument type="service" id="messenger.default_bus"/>
-            <argument id="swag_migration_run.repository" type="service"/>
             <tag name="messenger.message_handler"/>
         </service>
 
