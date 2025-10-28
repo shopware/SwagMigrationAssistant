@@ -14,6 +14,10 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 #[Package('fundamentals@after-sales')]
 class Migration1759000000AddIsResettingChecksumsToSetting extends MigrationStep
 {
+    public const TABLE = 'swag_migration_general_setting';
+
+    public const COLUMN = 'is_resetting_checksums';
+
     public function getCreationTimestamp(): int
     {
         return 1759000000;
@@ -21,8 +25,17 @@ class Migration1759000000AddIsResettingChecksumsToSetting extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $connection->executeStatement(<<<SQL
-            ALTER TABLE `swag_migration_general_setting` ADD `is_resetting_checksums` TINYINT(1) NOT NULL DEFAULT '0';
-        SQL);
+        $schemaManager = $connection->createSchemaManager();
+        $columns = $schemaManager->listTableColumns(self::TABLE);
+
+        if (isset($columns[self::COLUMN])) {
+            return;
+        }
+
+        $connection->executeStatement(\sprintf(
+            'ALTER TABLE %s ADD COLUMN %s TINYINT(1) NOT NULL DEFAULT 0',
+            self::TABLE,
+            self::COLUMN
+        ));
     }
 }
