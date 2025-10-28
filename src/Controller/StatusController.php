@@ -390,11 +390,7 @@ class StatusController extends AbstractController
     )]
     public function resumeAfterFixes(Context $context): Response
     {
-        try {
-            $this->runService->resumeAfterFixes($context);
-        } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->runService->resumeAfterFixes($context);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
