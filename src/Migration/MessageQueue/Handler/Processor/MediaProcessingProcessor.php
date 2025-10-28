@@ -90,6 +90,12 @@ class MediaProcessingProcessor extends AbstractProcessor
         }
 
         $mediaFiles = $this->getMediaFiles($migrationContext);
+        if (empty($mediaFiles)) {
+            $this->runTransitionService->transitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
+            $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+
+            return;
+        }
 
         $currentDataSet = null;
         $currentCount = 0;
