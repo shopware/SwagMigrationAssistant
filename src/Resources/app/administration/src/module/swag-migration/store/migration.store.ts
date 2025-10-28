@@ -133,6 +133,10 @@ const migrationStore = Shopware.Store.register({
         },
 
         migrationDisabledMessage(): string | null {
+            if (!Shopware.Service('acl').can('swag_migration.creator')) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noPermission');
+            }
+
             if (!this.dataSelectionTableData.length) {
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noData');
             }

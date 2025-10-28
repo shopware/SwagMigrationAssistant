@@ -53,6 +53,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     inject: [
         MIGRATION_API_SERVICE,
+        'acl',
     ],
 
     mixins: [
@@ -107,7 +108,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         abortButtonDisabled() {
-            return this.isLoading || this.step === MIGRATION_STEP.ABORTING;
+            return this.isLoading || this.step === MIGRATION_STEP.ABORTING || !this.acl.can('swag_migration.editor');
         },
 
         componentIndexIsResult() {

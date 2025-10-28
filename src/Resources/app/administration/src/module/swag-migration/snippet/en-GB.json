@@ -18,6 +18,7 @@
       "tabHistory": "History",
       "tabDataSelector": "Data selection",
       "disabledMessages": {
+        "noPermission": "You do not have the required permissions to perform a migration.",
         "noData": "There is no data available for migration.",
         "noSelectedData": "No items have been selected for migration.",
         "disabled": "Migration is disabled in this environment.",
@@ -650,6 +651,13 @@
       "startMigration": "Failed to start migration.",
       "approveFinishedMigration": "Failed while completing the migration",
       "abortMigration": "Failed to abort migration."
+    }
+  },
+  "sw-privileges": {
+    "permissions": {
+      "swag_migration": {
+        "label": "Migration Assistant"
+      }
     }
   },
   "global": {

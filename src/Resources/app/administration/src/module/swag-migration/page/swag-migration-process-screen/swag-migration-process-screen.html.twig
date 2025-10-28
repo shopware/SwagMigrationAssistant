@@ -103,6 +103,7 @@
                                 <mt-button
                                     variant="critical"
                                     size="small"
+                                    :disabled="!acl.can('swag_migration.editor')"
                                     @click="onAbort"
                                 >
                                     {{ $tc('swag-migration.index.confirmAbortDialog.confirm') }}
