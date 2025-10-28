@@ -70,15 +70,14 @@ class AbortingProcessorTest extends TestCase
         $messages = $this->bus->getMessages();
         static::assertCount(1, $messages);
 
-        $message = $messages[0];
+        $message = $messages[0]->getMessage();
         static::assertInstanceOf(ResetChecksumMessage::class, $message);
 
-        // Verify the message has correct properties
         static::assertSame($connectionId, $message->getConnectionId());
         static::assertSame($context, $message->getContext());
-        static::assertTrue($message->isResettingAll(), 'Should reset all checksums during abort');
+        static::assertTrue($message->isResettingAll());
         static::assertSame($runId, $message->getRunId());
         static::assertSame($currentEntity, $message->getEntity());
-        static::assertTrue($message->isPartOfAbort(), 'Should be marked as part of abort flow');
+        static::assertTrue($message->isPartOfAbort());
     }
 }
