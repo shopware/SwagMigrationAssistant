@@ -164,7 +164,6 @@ class MediaProcessingProcessor extends AbstractProcessor
         $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
     }
 
-
     /**
      * @return array<int, array<string, mixed>>
      */
