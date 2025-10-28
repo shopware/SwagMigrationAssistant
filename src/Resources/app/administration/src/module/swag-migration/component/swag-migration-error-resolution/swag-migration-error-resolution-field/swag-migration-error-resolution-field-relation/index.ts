@@ -2,6 +2,10 @@ import type { Property } from '@administration/src/core/data/entity-definition.d
 import template from './swag-migration-error-resolution-field-relation.html.twig';
 import { HANDLED_RELATION_TYPES } from '../swag-migration-error-resolution-field';
 
+/**
+ * @private
+ * @sw-package fundamentals@after-sales
+ */
 export default Shopware.Component.wrapComponentConfig({
     template,
 

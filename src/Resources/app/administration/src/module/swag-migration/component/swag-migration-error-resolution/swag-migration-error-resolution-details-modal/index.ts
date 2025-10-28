@@ -1,5 +1,4 @@
 import template from './swag-migration-error-resolution-details-modal.html.twig';
-import './swag-migration-error-resolution-details-modal.scss';
 
 /**
  * @private

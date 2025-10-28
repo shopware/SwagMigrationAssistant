@@ -36,7 +36,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         modalTitle() {
-            return this.$tc('swag-migration.index.error-resolution.modal.title', {
+            return this.$tc('swag-migration.index.error-resolution.modals.error.title', {
                 code: 'empty_required_field',
                 entityName: 'product',
                 fieldName: 'name',

@@ -23,6 +23,7 @@
                             :class="statusBadgeClass(item.status)"
                         >
                             <div class="swag-migration-error-resolution-modal__left-status-pill" />
+
                             <span class="swag-migration-error-resolution-modal__left-status-text">
                                 {{ statusBadgeText(item.status) }}
                             </span>
@@ -60,6 +61,7 @@
                         {{ $tc('swag-migration.index.error-resolution.modals.error.right.title', { count: 5 }) }}
                     </h2>
                 </div>
+
                 <div class="swag-migration-error-resolution-modal__right-content">
                     <swag-migration-error-resolution-field :log="log" />
 

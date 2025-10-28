@@ -1,12 +1,8 @@
 import type { Property } from '@administration/src/core/data/entity-definition.data';
 import template from './swag-migration-error-resolution-field.html.twig';
+import type { MigrationLog } from '../../../../../../type/types';
 
-type MigrationLog = {
-    entityName?: string;
-    fieldName?: string;
-};
-
-export const DATA_TYPES = {
+const DATA_TYPES = {
     UUID: 'uuid',
     INT: 'int',
     TEXT: 'text',
@@ -19,12 +15,12 @@ export const DATA_TYPES = {
     ASSOCIATION: 'association',
 } as const;
 
-export const UNHANDLED_FIELD_TYPES = [
+const UNHANDLED_FIELD_TYPES = [
     'blob',
     'password',
 ] as const;
 
-export const UNHANDLED_FIELD_NAMES = [
+const UNHANDLED_FIELD_NAMES = [
     'id',
     'autoIncrement',
     'createdAt',
@@ -33,12 +29,12 @@ export const UNHANDLED_FIELD_NAMES = [
     'versionId',
 ] as const;
 
-export const HANDLED_RELATION_TYPES = {
+const HANDLED_RELATION_TYPES = {
     MANY_TO_ONE: 'many_to_one',
     ONE_TO_MANY: 'one_to_many',
 } as const;
 
-export const FIELD_COMPONENT_TYPES = {
+const FIELD_COMPONENT_TYPES = {
     NUMBER: 'number',
     TEXTAREA: 'textarea',
     TEXT: 'text',
@@ -47,7 +43,7 @@ export const FIELD_COMPONENT_TYPES = {
     EDITOR: 'editor',
 } as const;
 
-export const FIELD_TYPE_COMPONENT_MAPPING = {
+const FIELD_TYPE_COMPONENT_MAPPING = {
     [DATA_TYPES.UUID]: HANDLED_RELATION_TYPES.MANY_TO_ONE,
     [DATA_TYPES.INT]: FIELD_COMPONENT_TYPES.NUMBER,
     [DATA_TYPES.TEXT]: FIELD_COMPONENT_TYPES.TEXTAREA,
@@ -59,6 +55,22 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
     [DATA_TYPES.JSON_OBJECT]: FIELD_COMPONENT_TYPES.EDITOR,
 } as const;
 
+/**
+ * @private
+ */
+export {
+    DATA_TYPES,
+    UNHANDLED_FIELD_TYPES,
+    UNHANDLED_FIELD_NAMES,
+    HANDLED_RELATION_TYPES,
+    FIELD_COMPONENT_TYPES,
+    FIELD_TYPE_COMPONENT_MAPPING,
+};
+
+/**
+ * @private
+ * @sw-package fundamentals@after-sales
+ */
 export default Shopware.Component.wrapComponentConfig({
     template,
 

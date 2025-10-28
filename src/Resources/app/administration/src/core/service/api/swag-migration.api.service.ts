@@ -399,4 +399,25 @@ export default class MigrationApiService extends ApiService {
             headers,
         });
     }
+
+    async downloadLogsOfRun(runUuid: string, additionalHeaders: AdditionalHeaders = {}): Promise<Blob> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/download-logs-of-run`,
+                { runUuid },
+                {
+                    ...this.basicConfig,
+                    headers,
+                    responseType: 'blob',
+                },
+            )
+            .then((response: AxiosResponse<Blob>) => {
+                return response.data;
+            });
+    }
 }

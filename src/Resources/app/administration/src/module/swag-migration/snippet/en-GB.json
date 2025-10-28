@@ -439,6 +439,9 @@
         }
       },
       "error-resolution": {
+        "errors": {
+          "downloadLogsFailed": "Failed downloading log file."
+        },
         "field": {
           "many-to-one": "Many to one",
           "one-to-many": "One to many",

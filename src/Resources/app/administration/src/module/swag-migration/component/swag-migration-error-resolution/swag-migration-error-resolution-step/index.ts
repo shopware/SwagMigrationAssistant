@@ -1,5 +1,9 @@
 import template from './swag-migration-error-resolution-step.html.twig';
 import './swag-migration-error-resolution-step.scss';
+import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
+import type MigrationApiService from '../../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_STORE_ID } from '../../../store/migration.store';
+import type { MigrationStore } from '../../../store/migration.store';
 
 /**
  * @private
@@ -15,6 +19,9 @@ export const MIGRATION_LOG_LEVEL = {
  */
 export type MigrationLogLevel = (typeof MIGRATION_LOG_LEVEL)[keyof typeof MIGRATION_LOG_LEVEL];
 
+/**
+ * @private
+ */
 export interface SwagMigrationErrorResolutionStepData {
     defaultTabItem: MigrationLogLevel;
     tablePage: number;
@@ -22,6 +29,8 @@ export interface SwagMigrationErrorResolutionStepData {
     tableTotal: number;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
+    migrationStore: MigrationStore;
+    migrationApiService: MigrationApiService;
 }
 
 /**
@@ -31,6 +40,14 @@ export interface SwagMigrationErrorResolutionStepData {
 export default Shopware.Component.wrapComponentConfig({
     template,
 
+    inject: [
+        MIGRATION_API_SERVICE,
+    ],
+
+    mixins: [
+        Shopware.Mixin.getByName('notification'),
+    ],
+
     data(): SwagMigrationErrorResolutionStepData {
         return {
             defaultTabItem: MIGRATION_LOG_LEVEL.ERROR,
@@ -39,6 +56,8 @@ export default Shopware.Component.wrapComponentConfig({
             tableTotal: 145,
             openContinueModal: false,
             openErrorResolutionModal: false,
+            migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
+            migrationApiService: Shopware.Service(MIGRATION_API_SERVICE),
         };
     },
 
@@ -140,6 +159,33 @@ export default Shopware.Component.wrapComponentConfig({
                     position: 4,
                 },
             ];
+        },
+    },
+
+    methods: {
+        async onDownloadLogs() {
+            // TODO: fetch latest !?
+            const runId = this.migrationStore.latestRun?.id;
+
+            try {
+                const blob = await this.migrationApiService.downloadLogsOfRun(runId);
+
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
+
+                link.href = url;
+                link.download = `migration-logs-${runId}.txt`;
+
+                document.body.appendChild(link);
+                link.click();
+
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+            } catch (error) {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
+                });
+            }
         },
     },
 });

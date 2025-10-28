@@ -1,7 +1,7 @@
 .swag-migration-error-resolution-modal {
     .sw-modal__dialog {
         width: 100%;
-        height: calc(100% - 3rem) !important;
+        height: calc(100% - var(--scale-size-48)) !important;
         max-width: none !important;
         margin: var(--scale-size-24);
         overflow: hidden;
@@ -30,7 +30,7 @@
             align-items: center;
             gap: var(--scale-size-8);
             border-radius: var(--border-radius-round);
-            padding: 0.15rem 0.55rem;
+            padding: var(--scale-size-4) var(--scale-size-8);
 
             &--resolved {
                 background-color: var(--color-background-critical-default);
@@ -64,14 +64,16 @@
     }
 
     &__right {
-        border-left: 1px solid var(--color-border-secondary-default);
+        border-left: 1px solid var(--color-border-primary-default);
         height: 100%;
         width: 25%;
         min-width: 25rem;
 
         &-header {
-            border-bottom: 1px solid var(--color-border-secondary-default);
-            padding: var(--scale-size-16) var(--scale-size-24);
+            // fixed padding needed for alignment with left side (top border)
+            /* stylelint-disable-next-line meteor/prefer-sizing-token */
+            padding: 1.1rem var(--scale-size-24);
+            border-bottom: 1px solid var(--color-border-primary-default);
 
 
             &-title {

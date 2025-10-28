@@ -42,9 +42,11 @@
                 <h2 class="swag-migration-error-resolution-step__header-content-title">
                     {{ $tc('swag-migration.index.error-resolution.step.header.title') }}
                 </h2>
+
                 <p class="swag-migration-error-resolution-step__header-content-description">
                     {{ $tc('swag-migration.index.error-resolution.step.header.description') }}
                 </p>
+
                 <mt-link
                     class="swag-migration-error-resolution-step__header-content-link"
                     to="https://developer.shopware.com/docs/concepts/framework/migrations.html"
@@ -59,6 +61,7 @@
             <div class="swag-migration-error-resolution-step__header-buttons">
                 <mt-button
                     class="swag-migration-error-resolution-step__header-buttons-download"
+                    @click="onDownloadLogs"
                     variant="secondary"
                 >
                     <template #iconFront>
@@ -68,8 +71,9 @@
                         />
                     </template>
 
-                    {{ $tc('swag-migration.index.error-resolution.step.header.download') }}
+                    <span>{{ $tc('swag-migration.index.error-resolution.step.header.download') }}</span>
                 </mt-button>
+
                 <mt-button
                     class="swag-migration-error-resolution-step__header-buttons-continue"
                     variant="primary"
@@ -85,10 +89,11 @@
                 :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
                 variant="critical"
             >
-                {{ $tc('swag-migration.index.error-resolution.step.header.banner.content') }}
+                <span>{{ $tc('swag-migration.index.error-resolution.step.header.banner.content') }}</span>
+
                 <mt-link
                     class="swag-migration-error-resolution-step__header-banner-link"
-                    to="https://developer.shopware.com/docs/concepts/framework/migrations.html"
+                    to="https://account.shopware.com/"
                     target="_blank"
                     type="external"
                     as="a"
@@ -116,7 +121,7 @@
                     />
                 </template>
 
-                {{ $tc('swag-migration.index.error-resolution.step.card.filter') }}
+                <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter') }}</span>
             </mt-button>
         </template>
 
@@ -139,6 +144,7 @@
                         <span class="swag-migration-error-resolution-step__card-table-count-text">
                             {{ item.count }}
                         </span>
+
                         <mt-icon
                             v-if="item.resolved"
                             class="swag-migration-error-resolution-step__card-table-count-icon"

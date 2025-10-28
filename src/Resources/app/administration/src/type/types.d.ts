@@ -117,6 +117,11 @@ type MigrationError = {
     level: string;
 };
 
+type MigrationLog = {
+    entityName?: string;
+    fieldName?: string;
+};
+
 /**
  * @private
  */
@@ -135,4 +140,5 @@ export {
     MigrationPremappingChoice,
     MigrationEnvironmentInformation,
     MigrationCredentials,
+    MigrationLog,
 };
