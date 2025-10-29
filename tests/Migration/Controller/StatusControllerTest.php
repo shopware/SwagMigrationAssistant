@@ -600,7 +600,7 @@ class StatusControllerTest extends TestCase
             $this->controller->resumeAfterFixes($this->context);
         } catch (MigrationException $e) {
             static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            static::assertSame(MigrationException::MIGRATION_IS_ALREADY_RUNNING, $e->getErrorCode());
+            static::assertSame(MigrationException::MIGRATION_NOT_IN_STEP, $e->getErrorCode());
         }
     }
 
