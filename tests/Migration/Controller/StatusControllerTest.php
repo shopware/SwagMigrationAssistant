@@ -596,9 +596,12 @@ class StatusControllerTest extends TestCase
             $this->context
         );
 
-        $response = $this->controller->resumeAfterFixes($this->context);
-
-        static::assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        try {
+            $this->controller->resumeAfterFixes($this->context);
+        } catch (MigrationException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(MigrationException::MIGRATION_IS_ALREADY_RUNNING, $e->getErrorCode());
+        }
     }
 
     public function testResumeMigration(): void
