@@ -147,6 +147,7 @@ class ProductConverter extends ShopwareMediaConverter
                         DefaultEntities::PRODUCT
                     );
 
+                    /** @phpstan-ignore-next-line */
                     $this->checkDefaultCurrency($setting, 'price');
                 }
 

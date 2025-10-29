@@ -364,6 +364,7 @@ class ProductConverterTest extends TestCase
 
     public function testConvertDeliveryTime(): void
     {
+        /** @var array<int, array<string, mixed>> $productData */
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';
         $productData = $productData[0];
         $productData['detail']['shippingtime'] = '10';
