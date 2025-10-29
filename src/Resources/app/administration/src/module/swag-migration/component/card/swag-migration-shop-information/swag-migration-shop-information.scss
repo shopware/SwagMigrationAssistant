@@ -1,5 +1,10 @@
 @import "~scss/variables";
 
+.swag-migration-shop-information__updating-info {
+    max-width: 60rem;
+    margin: 0 auto var(--scale-size-40);
+}
+
 .swag-migration-shop-information {
     .mt-card__header {
         display: flex;
