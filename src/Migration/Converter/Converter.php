@@ -70,6 +70,10 @@ abstract class Converter implements ConverterInterface
             return;
         }
 
+        if (!\is_array($this->mainMapping['additionalData'] ?? null)) {
+            $this->mainMapping['additionalData'] = [];
+        }
+
         $this->mainMapping['checksum'] = $this->checksum;
         $this->mainMapping['additionalData']['relatedMappings'] = $this->mappingIds;
         $this->mappingIds = [];

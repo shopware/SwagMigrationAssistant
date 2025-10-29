@@ -139,6 +139,10 @@ class ProductConverter extends ShopwareMediaConverter
 
         if (isset($converted['configuratorSettings'])) {
             foreach ($converted['configuratorSettings'] as &$setting) {
+                if (!\is_array($setting)) {
+                    continue;
+                }
+
                 if (isset($setting['price'])) {
                     $this->updateAssociationIds(
                         $setting['price'],
@@ -147,7 +151,6 @@ class ProductConverter extends ShopwareMediaConverter
                         DefaultEntities::PRODUCT
                     );
 
-                    /** @phpstan-ignore-next-line */
                     $this->checkDefaultCurrency($setting, 'price');
                 }
 
@@ -209,6 +212,9 @@ class ProductConverter extends ShopwareMediaConverter
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
+    /**
+     * @param array<string, mixed> $source
+     */
     private function checkDefaultCurrency(array &$source, string $key): void
     {
         // If the default currency of source and destination is identically, there is no need to add a default price
