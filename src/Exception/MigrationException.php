@@ -32,6 +32,10 @@ class MigrationException extends HttpException
 
     public const MIGRATION_IS_ALREADY_RUNNING = 'SWAG_MIGRATION__MIGRATION_IS_ALREADY_RUNNING';
 
+    public const MIGRATION_IS_RESETTING_CHECKSUMS = 'SWAG_MIGRATION__MIGRATION_IS_RESETTING_CHECKSUMS';
+
+    public const MIGRATION_IS_TRUNCATING_DATA = 'SWAG_MIGRATION__MIGRATION_IS_TRUNCATING_DATA';
+
     public const NO_CONNECTION_IS_SELECTED = 'SWAG_MIGRATION__NO_CONNECTION_IS_SELECTED';
 
     public const NO_CONNECTION_FOUND = 'SWAG_MIGRATION__NO_CONNECTION_FOUND';
@@ -291,6 +295,24 @@ class MigrationException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::MIGRATION_IS_ALREADY_RUNNING,
             'Migration is already running.',
+        );
+    }
+
+    public static function checksumResetRunning(): self
+    {
+        return new MigrationIsAlreadyRunningException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_IS_RESETTING_CHECKSUMS,
+            'Checksum reset is running.',
+        );
+    }
+
+    public static function truncatingDataRunning(): self
+    {
+        return new MigrationIsAlreadyRunningException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_IS_TRUNCATING_DATA,
+            'Data truncation is running.',
         );
     }
 
