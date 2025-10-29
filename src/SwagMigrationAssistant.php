@@ -107,7 +107,7 @@ class SwagMigrationAssistant extends Plugin
         $connection->executeStatement('
 DROP TABLE IF EXISTS swag_migration_general_setting;
 DROP TABLE IF EXISTS swag_migration_data;
-DROP TABLE IF EXISTS swag_migration_fixes;
+DROP TABLE IF EXISTS swag_migration_fix;
 DROP TABLE IF EXISTS swag_migration_mapping;
 DROP TABLE IF EXISTS swag_migration_logging;
 DROP TABLE IF EXISTS swag_migration_media_file;
