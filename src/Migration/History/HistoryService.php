@@ -180,19 +180,19 @@ class HistoryService implements HistoryServiceInterface
         }
 
         if ($logEntry->getSourceData()) {
-            \printf('Source data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getSourceData(), \JSON_PRETTY_PRINT), \PHP_EOL);
+            \printf('Source data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getSourceData(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
         }
 
         if ($logEntry->getConvertedData()) {
-            \printf('Converted data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getConvertedData(), \JSON_PRETTY_PRINT), \PHP_EOL);
+            \printf('Converted data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getConvertedData(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
         }
 
         if ($logEntry->getUsedMapping()) {
-            \printf('Used mapping (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getUsedMapping(), \JSON_PRETTY_PRINT), \PHP_EOL);
+            \printf('Used mapping (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getUsedMapping(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
         }
 
         if ($logEntry->getExceptionTrace()) {
-            \printf('Exception trace (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getExceptionTrace(), \JSON_PRETTY_PRINT), \PHP_EOL);
+            \printf('Exception trace (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getExceptionTrace(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
         }
 
         \printf(\PHP_EOL);

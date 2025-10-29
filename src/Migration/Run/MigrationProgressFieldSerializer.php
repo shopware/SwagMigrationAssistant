@@ -44,12 +44,15 @@ class MigrationProgressFieldSerializer extends JsonFieldSerializer
                         $dataSet = $dataSet->jsonSerialize();
                     }
                 }
+
+                unset($dataSet);
             }
 
             if (isset($value['dataSets']) && \is_array($value['dataSets'])) {
                 foreach ($value['dataSets'] as &$dataSet) {
                     unset($dataSet['extensions']);
                 }
+                unset($dataSet);
             }
 
             $data = new KeyValuePair($data->getKey(), $value, $data->isRaw());
