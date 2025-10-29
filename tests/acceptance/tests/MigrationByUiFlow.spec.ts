@@ -102,27 +102,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Back to overview' }).click();
     });
 
-    await test.step('Expect entities to be there', async () => {
-        await EntityCounter.checkEntityCount('swag_migration_logging', 699);
-
-        await EntityCounter.checkEntityCount('product', 427);
-        await EntityCounter.checkEntityCount('product_review', 2);
-        await EntityCounter.checkEntityCount('category', 63);
-        await EntityCounter.checkEntityCount('property_group', 14);
-        await EntityCounter.checkEntityCount('property_group_option', 93);
-        await EntityCounter.checkEntityCount('product_manufacturer', 14);
-
-        await EntityCounter.checkEntityCount('order', 2);
-        await EntityCounter.checkEntityCount('customer', 3);
-
-        await EntityCounter.checkEntityCount('cms_page', 10);
-        await EntityCounter.checkEntityCount('media', 603);
-        await EntityCounter.checkEntityCount('media_folder', 26);
-
-        await EntityCounter.checkEntityCount('newsletter_recipient', 0);
-        await EntityCounter.checkEntityCount('promotion', 4);
-    });
-
     await test.step('Inspect the migration history', async () => {
         await page.getByTitle('History').click();
         await page.getByRole('row', { name: 'sw5local' }).locator('button').click();
@@ -164,5 +143,26 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
         // snapshot test the migration log file
         expect.soft(logString).toMatchSnapshot('migration-log-sw5.txt');
+    });
+
+    await test.step('Expect entities to be there', async () => {
+        await EntityCounter.checkEntityCount('swag_migration_logging', 699);
+
+        await EntityCounter.checkEntityCount('product', 427);
+        await EntityCounter.checkEntityCount('product_review', 2);
+        await EntityCounter.checkEntityCount('category', 63);
+        await EntityCounter.checkEntityCount('property_group', 14);
+        await EntityCounter.checkEntityCount('property_group_option', 93);
+        await EntityCounter.checkEntityCount('product_manufacturer', 14);
+
+        await EntityCounter.checkEntityCount('order', 2);
+        await EntityCounter.checkEntityCount('customer', 3);
+
+        await EntityCounter.checkEntityCount('cms_page', 10);
+        await EntityCounter.checkEntityCount('media', 603);
+        await EntityCounter.checkEntityCount('media_folder', 26);
+
+        await EntityCounter.checkEntityCount('newsletter_recipient', 0);
+        await EntityCounter.checkEntityCount('promotion', 4);
     });
 });
