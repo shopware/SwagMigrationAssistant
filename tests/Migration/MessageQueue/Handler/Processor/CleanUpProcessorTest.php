@@ -99,7 +99,7 @@ class CleanUpProcessorTest extends TestCase
         $countResult->method('fetchOne')->willReturn(500);
 
         $selectResult = $this->createMock(Result::class);
-        $selectResult->method('fetchFirstColumn')->willReturn([Uuid::randomBytes()]);
+        $selectResult->method('fetchFirstColumn')->willReturn([]);
 
         $countQueryBuilder = $this->createMock(QueryBuilder::class);
         $countQueryBuilder->method('select')->willReturnSelf();
@@ -112,16 +112,9 @@ class CleanUpProcessorTest extends TestCase
         $selectQueryBuilder->method('setMaxResults')->willReturnSelf();
         $selectQueryBuilder->method('executeQuery')->willReturn($selectResult);
 
-        $deleteQueryBuilder = $this->createMock(QueryBuilder::class);
-        $deleteQueryBuilder->method('delete')->willReturnSelf();
-        $deleteQueryBuilder->method('where')->willReturnSelf();
-        $deleteQueryBuilder->method('setParameter')->willReturnSelf();
-        $deleteQueryBuilder->method('executeStatement')->willReturn(1);
-
         $this->dbalConnection->method('createQueryBuilder')->willReturnOnConsecutiveCalls(
             $countQueryBuilder,
-            $selectQueryBuilder,
-            $deleteQueryBuilder
+            $selectQueryBuilder
         );
 
         $this->processor->process(
@@ -132,7 +125,7 @@ class CleanUpProcessorTest extends TestCase
         );
 
         static::assertSame(500, $progress->getTotal());
-        static::assertSame(1, $progress->getProgress());
+        static::assertSame(0, $progress->getProgress());
         static::assertCount(1, $this->bus->getMessages());
     }
 
@@ -185,7 +178,7 @@ class CleanUpProcessorTest extends TestCase
             $progress
         );
 
-        static::assertSame(110, $progress->getProgress());
+        static::assertSame(100, $progress->getProgress());
         static::assertCount(1, $this->bus->getMessages());
         static::assertInstanceOf(MigrationProcessMessage::class, $this->bus->getMessages()[0]->getMessage());
     }

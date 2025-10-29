@@ -25,17 +25,13 @@ class Migration1759000000AddIsResettingChecksumsToSetting extends MigrationStep
 
     public function update(Connection $connection): void
     {
-        $schemaManager = $connection->createSchemaManager();
-        $columns = $schemaManager->listTableColumns(self::TABLE);
-
-        if (isset($columns[self::COLUMN])) {
-            return;
-        }
-
-        $connection->executeStatement(\sprintf(
-            'ALTER TABLE %s ADD COLUMN %s TINYINT(1) NOT NULL DEFAULT 0',
-            self::TABLE,
-            self::COLUMN
-        ));
+        $this->addColumn(
+            connection: $connection,
+            table: self::TABLE,
+            column: self::COLUMN,
+            type: 'TINYINT(1)',
+            nullable: false,
+            default: '0'
+        );
     }
 }

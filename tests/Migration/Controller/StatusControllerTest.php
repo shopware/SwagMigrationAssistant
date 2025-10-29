@@ -196,17 +196,17 @@ class StatusControllerTest extends TestCase
         );
     }
 
-    public function testGetResetStatus(): void
+    public function tesIsTruncatingMigrationData(): void
     {
         $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
         $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
 
-        $result = $this->controller->getResetStatus($this->context)->getContent();
+        $result = $this->controller->isTruncatingMigrationData($this->context)->getContent();
         static::assertSame('false', $result);
 
         $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
 
-        $result = $this->controller->getResetStatus($this->context)->getContent();
+        $result = $this->controller->isTruncatingMigrationData($this->context)->getContent();
         static::assertSame('true', $result);
     }
 

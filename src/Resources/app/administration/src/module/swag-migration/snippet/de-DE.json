@@ -20,6 +20,7 @@
       "disabledMessages": {
         "noData": "Es sind keine Daten für die Migration verfügbar.",
         "resettingChecksum": "Die Prüfsummen werden derzeit zurückgesetzt.",
+        "truncatingMigration": "Migrationsdaten werden zurzeit geleert.",
         "noSelectedData": "Es wurden keine Daten für die Migration ausgewählt.",
         "disabled": "Die Migration ist in dieser Umgebung deaktiviert.",
         "loading": "Die Migration wird derzeit ausgeführt.",
@@ -191,6 +192,10 @@
           "isResettingChecksums": {
             "title": "Prüfsummen werden zurückgesetzt",
             "message": "Die Prüfsummen werden zurückgesetzt. Dies kann einige Minuten dauern."
+          },
+          "isTruncatingMigration": {
+            "title": "Migrationsdaten werden geleert",
+            "message": "Die Migrationsdaten werden geleert. Dies kann einige Minuten dauern."
           }
         },
         "link": "Hilfe & Dokumentation",

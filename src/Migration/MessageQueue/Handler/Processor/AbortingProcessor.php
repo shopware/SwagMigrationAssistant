@@ -58,7 +58,6 @@ class AbortingProcessor extends AbstractProcessor
         $this->bus->dispatch(new ResetChecksumMessage(
             $migrationContext->getConnection()->getId(),
             $context,
-            true,
             $run->getId(),
             $progress->getCurrentEntity(),
             null,

@@ -31,9 +31,9 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -80,6 +80,10 @@ class RunService implements RunServiceInterface
     {
         if ($this->isMigrationRunning($context)) {
             throw MigrationException::migrationIsAlreadyRunning();
+        }
+
+        if ($this->isResettingChecksums()) {
+            throw MigrationException::checksumResetRunning();
         }
 
         $connection = $this->getCurrentConnection($context);
@@ -173,20 +177,26 @@ class RunService implements RunServiceInterface
 
     public function startCleanupMappingChecksums(string $connectionId, Context $context): void
     {
-        $connection = $this->connectionRepo->search(new Criteria([$connectionId]), $context)->getEntities()->first();
+        $connection = $this->connectionRepo->search(
+            new Criteria([$connectionId]),
+            $context,
+        )->getEntities()->first();
 
         if ($connection === null) {
             throw MigrationException::noConnectionFound();
         }
 
-        $this->dbalConnection->executeStatement(
-            'UPDATE swag_migration_general_setting SET `is_resetting_checksums` = 1;'
+        $affectedRows = $this->dbalConnection->executeStatement(
+            'UPDATE swag_migration_general_setting SET `is_resetting_checksums` = 1 WHERE `is_resetting_checksums` = 0;'
         );
+
+        if ($affectedRows === 0) {
+            throw MigrationException::checksumResetRunning();
+        }
 
         $this->bus->dispatch(new ResetChecksumMessage(
             $connectionId,
             $context,
-            true,
         ));
     }
 
@@ -207,14 +217,21 @@ class RunService implements RunServiceInterface
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_FINISHED, $run->getId(), $context);
     }
 
-    public function startCleanupMigrationData(Context $context): void
+    public function startTruncateMigrationData(Context $context): void
     {
         if ($this->isMigrationRunning($context)) {
             throw MigrationException::migrationIsAlreadyRunning();
         }
 
-        $this->dbalConnection->executeStatement('UPDATE swag_migration_general_setting SET selected_connection_id = NULL, `is_reset` = 1;');
-        $this->bus->dispatch(new CleanupMigrationMessage());
+        $affectedRows = $this->dbalConnection->executeStatement(
+            'UPDATE swag_migration_general_setting SET selected_connection_id = NULL, `is_reset` = 1 WHERE `is_reset` = 0;'
+        );
+
+        if ($affectedRows === 0) {
+            throw MigrationException::truncatingDataRunning();
+        }
+
+        $this->bus->dispatch(new TruncateMigrationMessage());
     }
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void
@@ -293,6 +310,13 @@ class RunService implements RunServiceInterface
     private function isMigrationRunning(Context $context): bool
     {
         return $this->getActiveRun($context) !== null;
+    }
+
+    private function isResettingChecksums(): bool
+    {
+        return (bool) $this->dbalConnection->fetchOne(
+            'SELECT is_resetting_checksums FROM swag_migration_general_setting LIMIT 1'
+        );
     }
 
     private function fireTrackingInformation(string $eventName, string $runUuid, Context $context): void

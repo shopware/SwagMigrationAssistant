@@ -7,8 +7,8 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
@@ -51,52 +51,27 @@ final readonly class ResetChecksumHandler
         $progress = null;
 
         if ($totalMappings === null) {
-            $totalMappings = $this->getTotalMappingsCount($connectionId, $message->isResettingAll());
+            $totalMappings = $this->getTotalMappingsCount($connectionId);
 
             if ($message->getRunId() !== null && $totalMappings > 0) {
-                $progress = $this->initializeProgress(
+                $progress = $this->updateProgress(
                     $message,
+                    0,
                     $totalMappings,
                     $message->getContext()
                 );
             }
         }
 
-        $query = $this->connection->createQueryBuilder()
-            ->select('m.id')
-            ->from('swag_migration_mapping', 'm')
-            ->where('m.checksum IS NOT NULL')
-            ->andWhere('m.connection_id = :connectionId')
-            ->setParameter('connectionId', Uuid::fromHexToBytes($connectionId))
-            ->setMaxResults(self::BATCH_SIZE);
+        $affectedRows = $this->resetChecksums($connectionId);
 
-        if (!$message->isResettingAll()) {
-            $query->innerJoin(
-                'm',
-                'swag_migration_data',
-                'd',
-                'd.mapping_uuid = m.id AND d.written = 0'
-            );
-        }
-
-        $ids = $query->executeQuery()->fetchFirstColumn();
-        $batchSize = \count($ids);
-
-        if ($batchSize === 0) {
-            $this->clearResettingChecksumsFlag();
+        if ($affectedRows === 0) {
             $this->handleCompletion($message, $progress);
 
             return;
         }
 
-        $this->connection->createQueryBuilder()
-            ->update('swag_migration_mapping')
-            ->set('checksum', 'NULL')
-            ->where('id IN (:ids)')
-            ->setParameter('ids', $ids, ArrayParameterType::BINARY)
-            ->executeStatement();
-
-        $newProcessedCount = $message->getProcessedMappings() + $batchSize;
+        $newProcessedCount = $message->getProcessedMappings() + $affectedRows;
 
         if ($message->getRunId() !== null) {
             $progress = $this->updateProgress(
@@ -107,8 +82,7 @@ final readonly class ResetChecksumHandler
             );
         }
 
-        if ($batchSize < self::BATCH_SIZE) {
-            $this->clearResettingChecksumsFlag();
+        if ($affectedRows < self::BATCH_SIZE) {
             $this->handleCompletion($message, $progress);
 
             return;
@@ -117,7 +91,6 @@ final readonly class ResetChecksumHandler
         $this->messageBus->dispatch(new ResetChecksumMessage(
             $message->getConnectionId(),
             $message->getContext(),
-            $message->isResettingAll(),
             $message->getRunId(),
             $message->getEntity(),
             $totalMappings,
@@ -128,6 +101,8 @@ final readonly class ResetChecksumHandler
 
     private function handleCompletion(ResetChecksumMessage $message, ?MigrationProgress $progress): void
     {
+        $this->clearResettingChecksumsFlag();
+
         if (!$message->isPartOfAbort() || $message->getRunId() === null) {
             return;
         }
@@ -152,7 +127,7 @@ final readonly class ResetChecksumHandler
         $this->migrationRunRepo->upsert([
             [
                 'id' => $runId,
-                'progress' => $finalProgress,
+                'progress' => $finalProgress->jsonSerialize(),
             ],
         ], $context);
 
@@ -162,43 +137,35 @@ final readonly class ResetChecksumHandler
         ));
     }
 
-    private function getTotalMappingsCount(string $connectionId, bool $resetAll): int
+    private function resetChecksums(string $connectionId): int
     {
-        $query = $this->connection->createQueryBuilder()
+        return (int) $this->connection->executeStatement(
+            'UPDATE swag_migration_mapping
+            SET checksum = NULL
+            WHERE checksum IS NOT NULL
+              AND connection_id = :connectionId
+            LIMIT :limit',
+            [
+                'connectionId' => Uuid::fromHexToBytes($connectionId),
+                'limit' => self::BATCH_SIZE,
+            ],
+            [
+                'connectionId' => ParameterType::BINARY,
+                'limit' => ParameterType::INTEGER,
+            ]
+        );
+    }
+
+    private function getTotalMappingsCount(string $connectionId): int
+    {
+        return (int) $this->connection->createQueryBuilder()
             ->select('COUNT(m.id)')
             ->from('swag_migration_mapping', 'm')
             ->where('m.checksum IS NOT NULL')
             ->andWhere('m.connection_id = :connectionId')
-            ->setParameter('connectionId', Uuid::fromHexToBytes($connectionId));
-
-        if (!$resetAll) {
-            $query->innerJoin(
-                'm',
-                'swag_migration_data',
-                'd',
-                'd.mapping_uuid = m.id AND d.written = 0'
-            );
-        }
-
-        return (int) $query->executeQuery()->fetchOne();
-    }
-
-    private function initializeProgress(ResetChecksumMessage $message, int $total, Context $context): MigrationProgress
-    {
-        $progress = new MigrationProgress(
-            0,
-            $total,
-            new ProgressDataSetCollection(),
-            $message->getEntity() ?? DefaultEntities::RULE,
-            0
-        );
-
-        $this->migrationRunRepo->update([[
-            'id' => $message->getRunId(),
-            'progress' => $progress->jsonSerialize(),
-        ]], $context);
-
-        return $progress;
+            ->setParameter('connectionId', Uuid::fromHexToBytes($connectionId))
+            ->executeQuery()
+            ->fetchOne();
     }
 
     private function updateProgress(ResetChecksumMessage $message, int $processed, int $total, Context $context): MigrationProgress

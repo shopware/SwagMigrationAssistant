@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor;
 
-use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -94,23 +93,10 @@ class CleanUpProcessor extends AbstractProcessor
 
     private function removeMigrationData(): int
     {
-        $ids = $this->connection->createQueryBuilder()
-            ->select('id')
-            ->from('swag_migration_data')
-            ->setMaxResults(self::BATCH_SIZE)
-            ->executeQuery()
-            ->fetchFirstColumn();
-
-        if (empty($ids)) {
-            return 0;
-        }
-
-        $query = $this->connection->createQueryBuilder()
+        return (int) $this->connection->createQueryBuilder()
             ->delete('swag_migration_data')
-            ->where('id IN (:ids)')
-            ->setParameter('ids', $ids, ArrayParameterType::BINARY);
-
-        return (int) $query->executeStatement();
+            ->setMaxResults(self::BATCH_SIZE)
+            ->executeStatement();
     }
 
     private function getMigrationDataTotal(): int

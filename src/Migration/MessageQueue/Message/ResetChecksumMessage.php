@@ -17,7 +17,6 @@ readonly class ResetChecksumMessage implements AsyncMessageInterface
     public function __construct(
         private string $connectionId,
         private Context $context,
-        private bool $resetAll = true,
         private ?string $runId = null,
         private ?string $entity = null,
         private ?int $totalMappings = null,
@@ -34,11 +33,6 @@ readonly class ResetChecksumMessage implements AsyncMessageInterface
     public function getContext(): Context
     {
         return $this->context;
-    }
-
-    public function isResettingAll(): bool
-    {
-        return $this->resetAll;
     }
 
     public function getRunId(): ?string

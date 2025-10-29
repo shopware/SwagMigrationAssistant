@@ -354,18 +354,18 @@ class StatusController extends AbstractController
     )]
     public function cleanupMigrationData(Context $context): Response
     {
-        $this->runService->startCleanupMigrationData($context);
+        $this->runService->startTruncateMigrationData($context);
 
         return new Response();
     }
 
     #[Route(
-        path: '/api/_action/migration/get-reset-status',
-        name: 'api.admin.migration.get-reset-status',
+        path: '/api/_action/migration/is-truncating-migration-data',
+        name: 'api.admin.migration.is-truncating-migration-data',
         defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
-    public function getResetStatus(Context $context): JsonResponse
+    public function isTruncatingMigrationData(Context $context): JsonResponse
     {
         $settings = $this->generalSettingRepo->search(new Criteria(), $context)->getEntities()->first();
 

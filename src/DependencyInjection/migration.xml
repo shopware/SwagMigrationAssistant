@@ -311,7 +311,7 @@
             <tag name="messenger.message_handler"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\CleanupMigrationHandler">
+        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\TruncateMigrationHandler">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
             <argument type="service" id="messenger.default_bus"/>
             <tag name="messenger.message_handler"/>

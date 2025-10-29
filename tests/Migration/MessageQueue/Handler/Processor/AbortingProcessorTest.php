@@ -75,7 +75,6 @@ class AbortingProcessorTest extends TestCase
 
         static::assertSame($connectionId, $message->getConnectionId());
         static::assertSame($context, $message->getContext());
-        static::assertTrue($message->isResettingAll());
         static::assertSame($runId, $message->getRunId());
         static::assertSame($currentEntity, $message->getEntity());
         static::assertTrue($message->isPartOfAbort());
