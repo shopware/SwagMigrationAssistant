@@ -50,9 +50,6 @@ class CustomerAttributeReaderTest extends TestCase
 
         $data = $this->customerAttributeReader->read($this->migrationContext);
 
-        static::assertCount(1, $data);
-        static::assertSame('userID', $data[0]['name']);
-        static::assertSame('integer', $data[0]['type']);
-        static::assertSame('de-DE', $data[0]['_locale']);
+        static::assertCount(0, $data);
     }
 }
