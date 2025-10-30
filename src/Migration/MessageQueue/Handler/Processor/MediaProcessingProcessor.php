@@ -78,12 +78,6 @@ class MediaProcessingProcessor extends AbstractProcessor
         SwagMigrationRunEntity $run,
         MigrationProgress $progress,
     ): void {
-        $run = $this->migrationRunRepo->search(new Criteria([$migrationContext->getRunUuid()]), $context)->first();
-
-        if (!$run instanceof SwagMigrationRunEntity) {
-            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $migrationContext->getRunUuid());
-        }
-
         $connection = $run->getConnection();
         if ($connection === null) {
             throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $migrationContext->getRunUuid());
@@ -127,6 +121,8 @@ class MediaProcessingProcessor extends AbstractProcessor
                 MediaProcessWorkloadStruct::IN_PROGRESS_STATE
             );
         }
+
+        \assert($currentDataSet !== null);
 
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
