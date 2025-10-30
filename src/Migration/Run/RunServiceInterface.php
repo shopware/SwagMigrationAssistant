@@ -52,7 +52,5 @@ interface RunServiceInterface
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
 
-    public function cleanupMigrationData(Context $context): void;
-
     public function resumeAfterFixes(Context $context): void;
 }
