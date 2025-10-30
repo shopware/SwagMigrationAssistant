@@ -34,7 +34,9 @@ interface RunServiceInterface
      */
     public function abortMigration(Context $context): void;
 
-    public function cleanupMappingChecksums(string $connectionUuid, Context $context): void;
+    public function startCleanupMappingChecksums(string $connectionUuid, Context $context): void;
+
+    public function startTruncateMigrationData(Context $context): void;
 
     /**
      * @param array<int, string> $dataSelectionIds
