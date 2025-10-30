@@ -811,11 +811,6 @@ parameters:
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
 
 		-
-			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\ProductConverter\\:\\:checkDefaultCurrency\\(\\) has parameter \\$source with no value type specified in iterable type array\\.$#"
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductConverter.php
-
-		-
 			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertOption\\(\\) has parameter \\$option with no value type specified in iterable type array\\.$#"
 			count: 1
 			path: src/Profile/Shopware6/Converter/PropertyGroupConverter.php
