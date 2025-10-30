@@ -217,7 +217,7 @@ class TaxLookupTest extends TestCase
         $cacheData = [];
         $taxRateCache = [];
         foreach ($databaseData as $data) {
-            $cacheData[$data['taxRate']] = $data['expectedResult'];
+            $cacheData[(string) $data['taxRate']] = $data['expectedResult'];
             $cacheData[$data['taxRate'] . '-' . $data['name']] = $data['expectedResult'];
 
             $taxRateCache[$data['expectedResult']] = $data['taxRate'];
