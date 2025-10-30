@@ -73,13 +73,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
     protected string $mainLocale;
 
-    /**
-     * @var array<string, string>
-     */
-    protected array $requiredDataFields = [
-        'deliveryTimeId' => 'delivery_time',
-    ];
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -94,26 +87,17 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
 
-        if (empty($data['id'])) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
-                    ->withFieldName('id')
-                    ->withFieldSourcePath('id')
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
-
         $this->generateChecksum($data);
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
-        $this->oldShippingMethod = $data['id'];
+        $converted = [];
+
+        if (!empty($data['id'])) {
+            $this->oldShippingMethod = $data['id'];
+        }
+
         $this->mainLocale = $data['_locale'];
 
-        $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD,
@@ -145,20 +129,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         if ($defaultAvailabilityRuleUuid !== null) {
             $converted['availabilityRuleId'] = $defaultAvailabilityRuleUuid['entityUuid'];
             $this->mappingIds[] = $defaultAvailabilityRuleUuid['id'];
-        }
-
-        $fields = $this->checkForEmptyRequiredConvertedFields($converted, $this->requiredDataFields);
-        if (!empty($fields)) {
-            $this->loggingService->addLogForEach(
-                $fields,
-                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withFieldName(ShippingMethodDefinition::ENTITY_NAME)
-                    ->withFieldSourcePath($key)
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
         }
 
         $converted['technicalName'] = 'migrated_' . $data['id'];
@@ -244,19 +214,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
-
-        if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
-                    ->withFieldName('id')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }

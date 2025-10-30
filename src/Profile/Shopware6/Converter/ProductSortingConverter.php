@@ -49,10 +49,6 @@ class ProductSortingConverter extends ShopwareConverter
             $converted['id']
         );
 
-        if ($this->productSortingLookup->getIsLocked($data['key'], $this->context)) {
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
-        }
-
         $this->updateAssociationIds(
             $converted['translations'],
             DefaultEntities::LANGUAGE,

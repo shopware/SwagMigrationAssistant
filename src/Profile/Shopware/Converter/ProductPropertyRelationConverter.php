@@ -39,6 +39,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
 
+        $converted = [];
         $productMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_CONTAINER,
@@ -53,12 +54,13 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
                 $data['productId'],
                 $context
             );
-
-            if ($productMapping === null) {
-                return new ConvertStruct(null, $this->originalData);
-            }
         }
-        $this->mappingIds[] = $productMapping['id'];
+
+        if ($productMapping !== null) {
+            $this->mappingIds[] = $productMapping['id'];
+            $converted['id'] = $productMapping['entityUuid'];
+        }
+
         $optionMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::PROPERTY_GROUP_OPTION,
@@ -66,22 +68,20 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
             $context
         );
 
-        if ($optionMapping === null) {
-            return new ConvertStruct(null, $this->originalData);
+        if ($optionMapping !== null) {
+            $this->mappingIds[] = $optionMapping['id'];
+
+            $converted['properties'][] = [
+                'id' => $optionMapping['entityUuid'],
+            ];
         }
-        $this->mappingIds[] = $optionMapping['id'];
+
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::PRODUCT_PROPERTY_RELATION,
             $data['identifier'],
             $context
         );
-
-        $converted = [];
-        $converted['id'] = $productMapping['entityUuid'];
-        $converted['properties'][] = [
-            'id' => $optionMapping['entityUuid'],
-        ];
 
         $this->updateMainMapping($migrationContext, $context);
 

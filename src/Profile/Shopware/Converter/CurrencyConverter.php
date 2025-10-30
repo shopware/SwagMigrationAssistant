@@ -49,23 +49,6 @@ abstract class CurrencyConverter extends ShopwareConverter
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
 
-        $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
-        if ($currencyUuid !== null) {
-            $currencyMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
-            if ($currencyMapping === null) {
-                $this->mappingService->createMapping(
-                    $this->connectionId,
-                    DefaultEntities::CURRENCY,
-                    $data['currency'],
-                    $this->checksum,
-                    null,
-                    $currencyUuid
-                );
-            }
-
-            return new ConvertStruct(null, $data);
-        }
-
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

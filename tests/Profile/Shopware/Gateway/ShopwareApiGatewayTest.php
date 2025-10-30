@@ -54,8 +54,8 @@ class ShopwareApiGatewayTest extends TestCase
             $environmentReader,
             $tableReader,
             $tableCountReader,
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository')
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
         );
         $migrationContext->setGateway($gateway);
 
@@ -94,8 +94,8 @@ class ShopwareApiGatewayTest extends TestCase
             $environmentReader,
             $tableReader,
             $tableCountReader,
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository')
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
         );
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
 
@@ -126,8 +126,8 @@ class ShopwareApiGatewayTest extends TestCase
             $environmentReader,
             $tableReader,
             $tableCountReader,
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository')
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
         );
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
 
@@ -158,8 +158,8 @@ class ShopwareApiGatewayTest extends TestCase
             $environmentReader,
             $tableReader,
             $tableCountReader,
-            $this->getContainer()->get('currency.repository'),
-            $this->getContainer()->get('language.repository')
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
         );
         /** @var EnvironmentInformation $response */
         $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());

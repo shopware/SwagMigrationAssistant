@@ -23,7 +23,7 @@ class SeoUrlConverterConvertDataTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    public function testConvertSkipConvertionIfSeoUrlIsUnmodified(): void
+    public function testConvertIfSeoUrlIsUnmodified(): void
     {
         $data = [
             'isModified' => false,
@@ -31,8 +31,8 @@ class SeoUrlConverterConvertDataTest extends TestCase
 
         $seoUrlConverter = $this->createSeoUrlConverter();
         $result = $seoUrlConverter->convert($data, Context::createDefaultContext(), $this->createMigrationContext());
-        static::assertNull($result->getConverted());
-        static::assertSame($data, $result->getUnmapped());
+
+        static::assertSame($data, $result->getConverted());
     }
 
     private function createSeoUrlConverter(): SeoUrlConverter

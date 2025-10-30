@@ -11,8 +11,6 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -33,10 +31,6 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         $this->context = $context;
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
-
-        if (!isset($data['id'], $data['ordernumber'])) {
-            return new ConvertStruct(null, $data);
-        }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -60,38 +54,21 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             $context
         );
 
-        if ($mainProductMapping === null) {
-            $this->addAssociationRequiredLog(
-                $migrationContext,
-                'id',
-                DefaultEntities::PRODUCT_CONTAINER,
-                $data
-            );
-
-            return new ConvertStruct(null, $data);
-        }
-
-        if ($variantProductMapping === null) {
-            $this->addAssociationRequiredLog(
-                $migrationContext,
-                'ordernumber',
-                DefaultEntities::PRODUCT,
-                $data
-            );
-
-            return new ConvertStruct(null, $data);
-        }
-
-        $this->mappingIds[] = $mainProductMapping['id'];
-        $this->mappingIds[] = $variantProductMapping['id'];
-
         $converted = [];
-        $converted['id'] = $mainProductMapping['entityUuid'];
 
-        $converted['variantListingConfig'] = [
-            'displayParent' => true,
-            'mainVariantId' => $variantProductMapping['entityUuid'],
-        ];
+        if ($mainProductMapping !== null) {
+            $this->mappingIds[] = $mainProductMapping['id'];
+            $converted['id'] = $mainProductMapping['entityUuid'];
+        }
+
+        if ($variantProductMapping !== null) {
+            $this->mappingIds[] = $variantProductMapping['id'];
+            $converted['variantListingConfig'] = [
+                'displayParent' => true,
+                'mainVariantId' => $variantProductMapping['entityUuid'],
+            ];
+        }
+
         unset($data['id'], $data['ordernumber']);
 
         $returnData = $data;
@@ -102,19 +79,5 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
-    }
-
-    /**
-     * @param array<string, mixed> $data
-     */
-    private function addAssociationRequiredLog(MigrationContextInterface $migrationContext, string $field, string $entity, array $data): void
-    {
-        $this->loggingService->addLogEntry(
-            SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->withEntityName($entity)
-                ->withFieldSourcePath($field)
-                ->withSourceData($data)
-                ->build(AssociationRequiredMissingLog::class)
-        );
     }
 }

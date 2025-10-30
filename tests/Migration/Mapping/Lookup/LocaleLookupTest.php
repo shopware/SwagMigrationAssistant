@@ -87,7 +87,7 @@ class LocaleLookupTest extends TestCase
     private function getLocaleLookup(): LocaleLookup
     {
         return new LocaleLookup(
-            $this->getContainer()->get('locale.repository')
+            static::getContainer()->get('locale.repository')
         );
     }
 

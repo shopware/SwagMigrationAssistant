@@ -38,31 +38,6 @@ class CmsPageConverter extends ShopwareConverter
     {
         $converted = $data;
 
-        // handle locked default layouts
-        if (isset($converted['locked']) && $converted['locked'] === true) {
-            $cmsPageMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CMS_PAGE, $data['id'], $this->context);
-            if ($cmsPageMapping !== null) {
-                return new ConvertStruct(null, $data, $cmsPageMapping['id']);
-            }
-
-            $cmpPageUuid = $this->cmsPageLookup->getLockedByNamesAndType(
-                \array_column($converted['translations'], 'name'),
-                $converted['type'],
-                $this->context
-            );
-
-            $this->mappingService->createMapping(
-                $this->connectionId,
-                DefaultEntities::CMS_PAGE,
-                $data['id'],
-                $this->checksum,
-                null,
-                $cmpPageUuid,
-            );
-
-            return new ConvertStruct(null, $data);
-        }
-
         $this->updateTranslations($converted);
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
             DefaultEntities::CMS_PAGE,

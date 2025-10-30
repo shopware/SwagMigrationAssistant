@@ -972,6 +972,7 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\Content\Product\SalesChannel\Sorting\ProductSortingDefinition"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\ProductSortingLookup"/>
             <tag name="shopware.migration.writer"/>
         </service>
 

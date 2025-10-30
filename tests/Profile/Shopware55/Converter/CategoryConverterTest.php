@@ -50,9 +50,9 @@ class CategoryConverterTest extends TestCase
             $mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -99,8 +99,8 @@ class CategoryConverterTest extends TestCase
             new DummyMappingService(),
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
             $languageLookup
         );
 
@@ -132,9 +132,9 @@ class CategoryConverterTest extends TestCase
             new DummyMappingService(),
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            //            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            //            static::getContainer()->get(LanguageLookup::class),
             $languageLookup
         );
 
@@ -175,10 +175,35 @@ class CategoryConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->categoryConverter->convert($categoryData, $context, $this->migrationContext);
-        static::assertNull($convertResult->getConverted());
 
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        $expected = [
+            'cmsPageId' => '0199e1fca8de70f7bd5d47fb3ff0248e',
+            'afterCategoryId' => '0199e1fca31b7267a7ac118223a18055',
+            'description' => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
+            'level' => 0,
+            'active' => true,
+            'visible' => true,
+            'name' => 'Lebensmittel',
+        ];
+
+        static::assertArrayHasKey('id', $converted);
+        static::assertTrue(Uuid::isValid($converted['id']));
+
+        foreach ($expected as $key => $value) {
+            static::assertSame($value, $converted[$key]);
+        }
+
+        static::assertArrayHasKey('media', $converted);
+        $media = $converted['media'];
+        static::assertArrayHasKey('id', $media);
+        static::assertArrayHasKey('title', $media);
+        static::assertArrayHasKey('alt', $media);
+        static::assertTrue(Uuid::isValid($media['id']));
+        static::assertSame('brot', $media['title']);
+        static::assertSame('Nices Brot', $media['alt']);
     }
 
     public function testConvertWithExternalLink(): void

@@ -37,31 +37,31 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
             $this->checksum
         );
 
+        $converted = [];
+
         $customerMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CUSTOMER, $data['userID'], $context);
-        if ($customerMapping === null) {
-            return new ConvertStruct(null, $data);
+        if ($customerMapping !== null) {
+            $this->mappingIds[] = $customerMapping['id'];
+            $converted['customerId'] = $customerMapping['entityUuid'];
         }
 
+        $productId = null;
         $productMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::PRODUCT, $data['ordernumber'], $context);
-        if ($productMapping === null) {
-            return new ConvertStruct(null, $data);
+        if ($productMapping !== null) {
+            $this->mappingIds[] = $productMapping['id'];
+            $productId = $productMapping['entityUuid'];
         }
 
         $shopMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALES_CHANNEL, $data['subshopID'], $context);
-        if ($shopMapping === null) {
-            return new ConvertStruct(null, $data);
+        if ($shopMapping !== null) {
+            $converted['salesChannelId'] = $shopMapping['entityUuid'];
         }
 
-        $this->mappingIds[] = $customerMapping['id'];
-        $this->mappingIds[] = $productMapping['id'];
-
-        $converted = [];
         $converted['id'] = $this->mainMapping['entityUuid'];
-        $converted['customerId'] = $customerMapping['entityUuid'];
-        $converted['salesChannelId'] = $shopMapping['entityUuid'];
+
         $converted['products'][] = [
             'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityUuid'],
-            'productId' => $productMapping['entityUuid'],
+            'productId' => $productId,
         ];
 
         $this->updateMainMapping($migrationContext, $context);

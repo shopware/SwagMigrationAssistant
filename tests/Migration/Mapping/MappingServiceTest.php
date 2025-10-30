@@ -47,8 +47,8 @@ class MappingServiceTest extends TestCase
     protected function setUp(): void
     {
         $context = Context::createDefaultContext();
-        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->mappingRepo = $this->getContainer()->get('swag_migration_mapping.repository');
+        $connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+        $this->mappingRepo = static::getContainer()->get('swag_migration_mapping.repository');
 
         $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionRepo): void {
             $this->connectionId = Uuid::randomHex();
@@ -257,7 +257,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->writeMapping();
 
         $sql = 'SELECT * FROM swag_migration_mapping';
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -281,7 +281,7 @@ class MappingServiceTest extends TestCase
         $this->setMappingAndWriteArray($mapping);
         $this->mappingService->writeMapping();
 
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -301,7 +301,7 @@ class MappingServiceTest extends TestCase
         $oldIdentifier = '42';
         $entityUuid = Uuid::randomHex();
 
-        $conn = $this->getContainer()->get(Connection::class);
+        $conn = static::getContainer()->get(Connection::class);
         $qb = $conn->createQueryBuilder();
         $rowsAffected = $qb->insert('swag_migration_mapping')
             ->values([
@@ -360,7 +360,7 @@ class MappingServiceTest extends TestCase
         $reflectionMethod->invoke($this->mappingService);
 
         $sql = 'SELECT * FROM swag_migration_mapping';
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -380,7 +380,7 @@ class MappingServiceTest extends TestCase
         $this->setMappingAndWriteArray($mapping);
         $reflectionMethod->invoke($this->mappingService);
 
-        $result = $this->getContainer()->get(Connection::class)->fetchAllAssociative($sql);
+        $result = static::getContainer()->get(Connection::class)->fetchAllAssociative($sql);
 
         static::assertCount(\count($dataset), $result);
         foreach ($dataset as $set) {
@@ -479,9 +479,9 @@ class MappingServiceTest extends TestCase
     {
         $this->mappingService = new MappingService(
             $this->mappingRepo,
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            static::getContainer()->get(EntityWriter::class),
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            static::getContainer()->get(Connection::class),
             new NullLogger()
         );
     }

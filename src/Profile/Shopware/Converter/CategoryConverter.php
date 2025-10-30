@@ -14,8 +14,6 @@ use Shopware\Core\System\Language\LanguageEntity;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -37,7 +35,7 @@ abstract class CategoryConverter extends ShopwareConverter
 
     protected string $oldCategoryId;
 
-    protected string $locale;
+    protected ?string $locale = null;
 
     protected string $runId;
 
@@ -84,19 +82,11 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
         $this->connectionName = $connection->getName();
 
-        if (!isset($data['_locale'])) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(CategoryDefinition::ENTITY_NAME)
-                    ->withFieldSourcePath('_locale')
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
-        $this->locale = $data['_locale'];
         $converted = [];
+
+        if (isset($data['_locale'])) {
+            $this->locale = $data['_locale'];
+        }
 
         $cmsPageUuid = $this->defaultCmsPageLookup->get($context);
         if ($cmsPageUuid !== null) {
@@ -245,7 +235,7 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $locale = $language->getLocale();
 
-        if ($locale === null || $locale->getCode() === $data['_locale']) {
+        if (!isset($data['_locale']) || $locale === null || $locale->getCode() === $data['_locale']) {
             return;
         }
 
@@ -346,7 +336,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         $locale = $language->getLocale();
-        if ($locale === null || $locale->getCode() === $this->locale) {
+        if ($locale === null || $this->locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 

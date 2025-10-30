@@ -193,7 +193,7 @@ class TaxLookupTest extends TestCase
 
     private function getTaxLookup(): TaxLookup
     {
-        $taxLookup = $this->getContainer()->get(TaxLookup::class);
+        $taxLookup = static::getContainer()->get(TaxLookup::class);
         static::assertInstanceOf(TaxLookup::class, $taxLookup);
 
         return $taxLookup;

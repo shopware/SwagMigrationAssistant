@@ -41,7 +41,7 @@ class DataSetRegistryTest extends TestCase
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setCredentialFields([]);
-        $this->dataSetRegistry = $this->getContainer()->get(DataSetRegistry::class);
+        $this->dataSetRegistry = static::getContainer()->get(DataSetRegistry::class);
     }
 
     public function testSupports(): void

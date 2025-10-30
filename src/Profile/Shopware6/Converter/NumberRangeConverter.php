@@ -12,16 +12,13 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
-use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedNumberRangeTypeLog;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\NumberRangeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
@@ -57,31 +54,13 @@ class NumberRangeConverter extends ShopwareConverter
                 $typeUuid = $numberRangeTypeMapping['entityUuid'];
             } else {
                 $typeUuid = $this->numberRangeTypeLookup->get($converted['type']['technicalName'], $this->context);
-                if ($typeUuid === null) {
-                    $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-                        DefaultEntities::NUMBER_RANGE,
-                        $data['id'],
-                        $data['id']
-                    );
-
-                    $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                            ->withEntityName(NumberRangeDefinition::ENTITY_NAME)
-                            ->withFieldName('typeId')
-                            ->withFieldSourcePath('id')
-                            ->withSourceData($data)
-                            ->build(UnsupportedNumberRangeTypeLog::class)
-                    );
-
-                    return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
-                }
             }
 
             if ($converted['global']) {
                 $this->checkForExistingNumberRange($converted);
             }
 
-            if (isset($converted['numberRangeSalesChannels'])) {
+            if (isset($converted['numberRangeSalesChannels']) && $typeUuid !== null) {
                 foreach ($converted['numberRangeSalesChannels'] as &$numberRangeSalesChannel) {
                     $numberRangeSalesChannel['numberRangeTypeId'] = $typeUuid;
                 }

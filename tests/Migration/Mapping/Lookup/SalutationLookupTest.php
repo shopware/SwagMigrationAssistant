@@ -81,7 +81,7 @@ class SalutationLookupTest extends TestCase
 
     private function getSalutationLookup(): SalutationLookup
     {
-        return $this->getContainer()->get(SalutationLookup::class);
+        return static::getContainer()->get(SalutationLookup::class);
     }
 
     private function getMockedSalutationLookup(): SalutationLookup

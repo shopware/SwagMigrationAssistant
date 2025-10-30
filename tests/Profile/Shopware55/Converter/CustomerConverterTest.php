@@ -138,26 +138,6 @@ class CustomerConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
-    public function testConvertWithInvalidEmail(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData[0]['email'] = '42';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData[0],
-            $context,
-            $this->migrationContext
-        );
-
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__INVALID_EMAIL_ADDRESS');
-    }
-
     #[DataProvider('requiredProperties')]
     public function testConvertWithoutRequiredProperties(string $property, ?string $value): void
     {
@@ -171,12 +151,7 @@ class CustomerConverterTest extends TestCase
             $context,
             $this->migrationContext
         );
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertNotNull($convertResult->getConverted());
     }
 
     /**
@@ -271,52 +246,6 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Mustermann', $converted['lastName']);
         static::assertSame($mapping['entityUuid'], $converted['defaultPaymentMethodId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
-    }
-
-    public function testConvertCustomerWithoutAddresses(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData = $customerData[0];
-        unset($customerData['addresses']);
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData,
-            $context,
-            $this->migrationContext
-        );
-
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-    }
-
-    public function testConvertCustomerWithoutValidAddresses(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData = $customerData[1];
-
-        $customerData['addresses'][0]['firstname'] = '';
-        $customerData['addresses'][1]['lastname'] = '';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData,
-            $context,
-            $this->migrationContext
-        );
-
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(3, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
     }
 
     /**
@@ -475,7 +404,7 @@ class CustomerConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
@@ -502,7 +431,7 @@ class CustomerConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);

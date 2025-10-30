@@ -26,7 +26,7 @@ class DefaultCmsPageLookupTest extends TestCase
     public function testGet(): void
     {
         $defaultCmsPageLookup = new DefaultCmsPageLookup(
-            $this->getContainer()->get('cms_page.repository')
+            static::getContainer()->get('cms_page.repository')
         );
 
         $result = $defaultCmsPageLookup->get(Context::createDefaultContext());
@@ -77,7 +77,7 @@ class DefaultCmsPageLookupTest extends TestCase
     public function testReset(): void
     {
         $defaultCmsPageLookup = new DefaultCmsPageLookup(
-            $this->getContainer()->get('cms_page.repository')
+            static::getContainer()->get('cms_page.repository')
         );
 
         $reflectionProperty = new \ReflectionProperty(DefaultCmsPageLookup::class, 'cache');
@@ -98,7 +98,7 @@ class DefaultCmsPageLookupTest extends TestCase
         $criteria->addFilter(new EqualsFilter('type', 'product_list'));
         $criteria->addFilter(new EqualsFilter('locked', true));
 
-        $result = $this->getContainer()->get('cms_page.repository')->search($criteria, Context::createDefaultContext())->getEntities()->first();
+        $result = static::getContainer()->get('cms_page.repository')->search($criteria, Context::createDefaultContext())->getEntities()->first();
         static::assertInstanceOf(CmsPageEntity::class, $result);
         static::assertTrue(Uuid::isValid($result->getId()));
 

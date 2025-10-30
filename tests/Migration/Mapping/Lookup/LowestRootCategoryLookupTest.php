@@ -78,7 +78,7 @@ class LowestRootCategoryLookupTest extends TestCase
 
     private function getGetTestExpectedResult(): string
     {
-        $categoryRepository = $this->getContainer()->get('category.repository');
+        $categoryRepository = static::getContainer()->get('category.repository');
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('parentId', null));
 
@@ -95,7 +95,7 @@ class LowestRootCategoryLookupTest extends TestCase
     private function getLowestRootCategoryLookup(): LowestRootCategoryLookup
     {
         return new LowestRootCategoryLookup(
-            $this->getContainer()->get('category.repository')
+            static::getContainer()->get('category.repository')
         );
     }
 

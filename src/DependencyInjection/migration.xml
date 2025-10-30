@@ -222,7 +222,6 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">

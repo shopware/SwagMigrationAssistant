@@ -22,7 +22,6 @@ use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService;
 
 #[Package('fundamentals@after-sales')]
 class MigrationDataConverter implements MigrationDataConverterInterface
@@ -34,7 +33,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
         private readonly MappingServiceInterface $mappingService,
-        private readonly SwagMigrationValidationService $validationService,
     ) {
     }
 
@@ -96,13 +94,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             try {
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
                 $convertFailureFlag = empty($convertStruct->getConverted());
-
-                $this->validationService->validate(
-                    $migrationContext,
-                    $context,
-                    $convertStruct->getConverted(),
-                    $dataSet::getEntity()
-                );
 
                 $createData[] = [
                     'entity' => $dataSet::getEntity(),

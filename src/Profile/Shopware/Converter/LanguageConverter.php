@@ -9,13 +9,9 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\System\Language\LanguageDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\EntityAlreadyExistsRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -30,7 +26,6 @@ abstract class LanguageConverter extends ShopwareConverter
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
-        protected readonly LanguageLookup $languageLookup,
         protected readonly LocaleLookup $localeLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
@@ -48,19 +43,6 @@ abstract class LanguageConverter extends ShopwareConverter
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
-
-        $languageUuid = $this->languageLookup->get($data['locale'], $context);
-        if ($languageUuid !== null) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(LanguageDefinition::ENTITY_NAME)
-                    ->withFieldSourcePath('locale')
-                    ->withSourceData($data)
-                    ->build(EntityAlreadyExistsRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(

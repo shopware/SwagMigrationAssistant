@@ -199,9 +199,9 @@ class LanguageLookupTest extends TestCase
     private function getLanguageLookup(): LanguageLookup
     {
         return new LanguageLookup(
-            $this->getContainer()->get('language.repository'),
+            static::getContainer()->get('language.repository'),
             new LocaleLookup(
-                $this->getContainer()->get('locale.repository')
+                static::getContainer()->get('locale.repository')
             )
         );
     }

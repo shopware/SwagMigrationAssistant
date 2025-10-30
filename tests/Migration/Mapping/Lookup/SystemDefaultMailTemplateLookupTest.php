@@ -85,7 +85,7 @@ class SystemDefaultMailTemplateLookupTest extends TestCase
 
     private function getSystemDefaultMailTemplateLookup(): SystemDefaultMailTemplateLookup
     {
-        return $this->getContainer()->get(SystemDefaultMailTemplateLookup::class);
+        return static::getContainer()->get(SystemDefaultMailTemplateLookup::class);
     }
 
     private function getMockedSystemDefaultMailTemplateLookup(): SystemDefaultMailTemplateLookup

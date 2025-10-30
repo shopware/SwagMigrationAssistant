@@ -7,18 +7,14 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
-use Shopware\Core\Content\Seo\SeoUrl\SeoUrlDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedSeoUrlTypeLog;
 
 #[Package('fundamentals@after-sales')]
 abstract class SeoUrlConverter extends ShopwareConverter
@@ -42,7 +38,6 @@ abstract class SeoUrlConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
-        $originalData = $data;
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
@@ -65,39 +60,17 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $context
         );
 
-        if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
-                    ->withFieldName('salesChannelId')
-                    ->withFieldSourcePath('subshopID')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $originalData);
+        if ($mapping !== null) {
+            $converted['salesChannelId'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['subshopID']);
         }
-        $converted['salesChannelId'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['subshopID']);
 
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
-        if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
-                    ->withFieldName('languageId')
-                    ->withFieldSourcePath('_locale')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $originalData);
+        if ($converted['languageId'] !== null) {
+            $this->mappingIds[] = $converted['languageId'];
+            unset($data['_locale']);
         }
-        $this->mappingIds[] = $converted['languageId'];
-        unset($data['_locale']);
 
         if ($data['type'] === self::TYPE_PRODUCT && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
@@ -114,25 +87,14 @@ abstract class SeoUrlConverter extends ShopwareConverter
                     $data['typeId'],
                     $context
                 );
-
-                if ($mapping === null) {
-                    $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                            ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
-                            ->withFieldName('foreignKey')
-                            ->withFieldSourcePath('type')
-                            ->withSourceData($data)
-                            ->build(AssociationRequiredMissingLog::class)
-                    );
-
-                    return new ConvertStruct(null, $originalData);
-                }
             }
 
-            $converted['foreignKey'] = $mapping['entityUuid'];
-            $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
-            $converted['pathInfo'] = '/detail/' . $mapping['entityUuid'];
-            $this->mappingIds[] = $mapping['id'];
+            if ($mapping !== null) {
+                $converted['foreignKey'] = $mapping['entityUuid'];
+                $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
+                $converted['pathInfo'] = '/detail/' . $mapping['entityUuid'];
+                $this->mappingIds[] = $mapping['id'];
+            }
         } elseif ($data['type'] === self::TYPE_CATEGORY && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -141,33 +103,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
                 $context
             );
 
-            if ($mapping === null) {
-                $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
-                        ->withFieldName('foreignKey')
-                        ->withFieldSourcePath('type')
-                        ->withSourceData($data)
-                        ->build(AssociationRequiredMissingLog::class)
-                );
-
-                return new ConvertStruct(null, $originalData);
+            if ($mapping !== null) {
+                $converted['foreignKey'] = $mapping['entityUuid'];
+                $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
+                $converted['pathInfo'] = '/navigation/' . $mapping['entityUuid'];
+                $this->mappingIds[] = $mapping['id'];
             }
-            $converted['foreignKey'] = $mapping['entityUuid'];
-            $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
-            $converted['pathInfo'] = '/navigation/' . $mapping['entityUuid'];
-            $this->mappingIds[] = $mapping['id'];
-        } else {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
-                    ->withFieldName('foreignKey')
-                    ->withFieldSourcePath('type')
-                    ->withSourceData($data)
-                    ->build(UnsupportedSeoUrlTypeLog::class)
-            );
-
-            return new ConvertStruct(null, $originalData);
         }
         unset($data['type'], $data['typeId']);
 

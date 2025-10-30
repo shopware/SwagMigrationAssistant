@@ -21,7 +21,7 @@ class ServiceCorrectArgumentsTest extends TestCase
     #[DataProvider('serviceProvider')]
     public function testServiceShouldHaveCorrectArgumentsInContainer(string $xmlPath, string $serviceId): void
     {
-        $service = $this->getContainer()->get($serviceId);
+        $service = static::getContainer($serviceId);
         static::assertNotNull($service);
     }
 

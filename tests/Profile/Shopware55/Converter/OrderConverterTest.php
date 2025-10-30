@@ -85,10 +85,10 @@ class OrderConverterTest extends TestCase
             $this->loggingService,
             $taxCalculator,
             $salesChannelRepo,
-            $this->getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(CountryLookup::class),
             $currencyLookup,
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(CountryStateLookup::class)
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(CountryStateLookup::class)
         );
 
         $this->customerConverter = new Shopware55CustomerConverter(
@@ -393,12 +393,7 @@ class OrderConverterTest extends TestCase
             $this->migrationContext
         );
 
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertNotNull($convertResult->getConverted());
     }
 
     /**
@@ -407,12 +402,12 @@ class OrderConverterTest extends TestCase
     public static function requiredProperties(): array
     {
         return [
-            ['billingaddress'],
-            ['payment'],
-            ['customer'],
-            ['currencyFactor'],
-            ['currency'],
-            ['status'],
+            'billingaddress' => ['billingaddress'],
+            'payment' => ['payment'],
+            'customer' => ['customer'],
+            'currencyFactor' => ['currencyFactor'],
+            'currency' => ['currency'],
+            'status' => ['status'],
         ];
     }
 
@@ -577,17 +572,7 @@ class OrderConverterTest extends TestCase
 
         $converted = $convertResult->getConverted();
 
-        static::assertNull($converted);
-        static::assertCount(2, $this->loggingService->getLoggingArray());
-
-        $validLog = 0;
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            if ($log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD') {
-                ++$validLog;
-            }
-        }
-
-        static::assertSame(2, $validLog);
+        static::assertNotNull($converted);
     }
 
     #[DataProvider('requiredAddressProperties')]
@@ -617,68 +602,9 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
-        static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
             static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $log['code']);
-        }
-    }
-
-    public function testConvertWithoutPaymentName(): void
-    {
-        [$customerData, $orderData] = $this->getFixtureData();
-        $orderData = $orderData[0];
-        unset($orderData['payment']['name']);
-        $context = Context::createDefaultContext();
-
-        $this->customerConverter->convert(
-            $customerData[0],
-            $context,
-            $this->customerMigrationContext
-        );
-
-        $convertResult = $this->orderConverter->convert(
-            $orderData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-
-        static::assertNull($converted);
-        static::assertCount(1, $this->loggingService->getLoggingArray());
-
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $log['code']);
-        }
-    }
-
-    public function testConvertWithoutKnownOrderState(): void
-    {
-        [$customerData, $orderData] = $this->getFixtureData();
-        $orderData = $orderData[0];
-        $orderData['status'] = 100;
-        $context = Context::createDefaultContext();
-
-        $this->customerConverter->convert(
-            $customerData[0],
-            $context,
-            $this->customerMigrationContext
-        );
-
-        $convertResult = $this->orderConverter->convert(
-            $orderData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-
-        static::assertNull($converted);
-        static::assertCount(1, $this->loggingService->getLoggingArray());
-
-        foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_ENTITY_UNKNOWN', $log['code']);
         }
     }
 
@@ -707,7 +633,7 @@ class OrderConverterTest extends TestCase
             $this->loggingService,
             new TaxCalculator(),
             static::getContainer()->get('sales_channel.repository'),
-            $this->getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(CountryLookup::class),
             $currencyLookup,
             $languageLookup,
             $this->createMock(CountryStateLookup::class)
@@ -809,7 +735,7 @@ class OrderConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
@@ -850,7 +776,7 @@ class OrderConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);

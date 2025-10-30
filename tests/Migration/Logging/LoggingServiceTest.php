@@ -41,10 +41,10 @@ class LoggingServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->context = Context::createDefaultContext();
-        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $this->loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
         $this->loggingService = new LoggingService($this->loggingRepo, new NullLogger());
 
-        $runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $runRepo = static::getContainer()->get('swag_migration_run.repository');
         $this->runUuid = Uuid::randomHex();
         $runRepo->create(
             [

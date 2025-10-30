@@ -69,14 +69,14 @@ class SwagMigrationValidationServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validationService = $this->getContainer()->get(SwagMigrationValidationService::class);
-        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
-        $this->mappingRepo = $this->getContainer()->get(SwagMigrationMappingDefinition::ENTITY_NAME . '.repository');
+        $this->validationService = static::getContainer()->get(SwagMigrationValidationService::class);
+        $this->loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
+        $this->mappingRepo = static::getContainer()->get(SwagMigrationMappingDefinition::ENTITY_NAME . '.repository');
         $this->context = Context::createDefaultContext();
 
         $this->runId = Uuid::randomHex();
-        $this->getContainer()->get('swag_migration_connection.repository')->create(
+        static::getContainer()->get('swag_migration_connection.repository')->create(
             [
                 [
                     'id' => self::CONNECTION_ID,

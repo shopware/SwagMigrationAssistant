@@ -15,10 +15,8 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
@@ -76,35 +74,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
         $this->connectionName = $connection->getName();
 
-        $oldData = $data;
         $converted = [];
-
-        if (empty($data['hash'])) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
-                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
-                    ->withFieldSourcePath('hash')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $oldData);
-        }
-
-        if (!isset($data['documenttype'])) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
-                    ->withFieldName('documentType')
-                    ->withFieldSourcePath('documenttype')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $oldData);
-        }
 
         $orderMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -113,22 +83,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $context
         );
 
-        if ($orderMapping === null) {
-            $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
-                    ->withFieldName('orderId')
-                    ->withFieldSourcePath('orderID')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $oldData);
+        if ($orderMapping !== null) {
+            $this->mappingIds[] = $orderMapping['id'];
+            $converted['orderId'] = $orderMapping['entityUuid'];
         }
         unset($data['orderID']);
-        $orderUuid = $orderMapping['entityUuid'];
-        $this->mappingIds[] = $orderMapping['id'];
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -137,26 +96,26 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
+
         $converted['id'] = $this->mainMapping['entityUuid'];
-        $converted['orderId'] = $orderUuid;
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
         $converted['deepLinkCode'] = Random::getAlphanumericString(32);
         $converted['config'] = [];
+
         if (isset($data['docID'])) {
             $converted['config']['documentNumber'] = $data['docID'];
+
+            if (isset($data['documenttype'])) {
+                $converted['documentType'] = $this->getDocumentType($data['documenttype']);
+            }
 
             if (isset($data['documenttype']['key']) && $data['documenttype']['key'] === 'invoice') {
                 $converted['config']['custom']['invoiceNumber'] = $data['docID'];
             }
 
-            unset($data['docID']);
+            unset($data['docID'], $data['documenttype']);
         }
-
-        $documentType = $this->getDocumentType($data['documenttype']);
-
-        $converted['documentType'] = $documentType;
-        unset($data['documenttype']);
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $this->connectionName, ['id', 'documentID'], $this->context);
@@ -244,16 +203,18 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $newMedia['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $this->mediaFileService->saveMediaFile(
-            [
-                'runId' => $this->runId,
-                'entity' => OrderDocumentDataSet::getEntity(),
-                'uri' => $data['hash'],
-                'fileName' => $data['hash'],
-                'fileSize' => 0,
-                'mediaId' => $newMedia['id'],
-            ]
-        );
+        if (!empty($data['hash'])) {
+            $this->mediaFileService->saveMediaFile(
+                [
+                    'runId' => $this->runId,
+                    'entity' => OrderDocumentDataSet::getEntity(),
+                    'uri' => $data['hash'],
+                    'fileName' => $data['hash'],
+                    'fileSize' => 0,
+                    'mediaId' => $newMedia['id'],
+                ]
+            );
+        }
 
         $newMedia['private'] = true;
         $this->convertValue($newMedia, 'title', $data, 'hash');

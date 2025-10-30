@@ -35,32 +35,31 @@ class SeoUrlConverter extends ShopwareConverter
 
     protected function convertData(array $data): ConvertStruct
     {
-        if (isset($data['isModified']) && $data['isModified'] === false) {
-            return new ConvertStruct(null, $data);
-        }
-
         $converted = $data;
 
         if (isset($converted['foreignKey'])) {
+            $relatedEntity = null;
             if ($converted['routeName'] === self::CATEGORY_ROUTE_NAME) {
                 $relatedEntity = DefaultEntities::CATEGORY;
             } elseif ($converted['routeName'] === self::PRODUCT_ROUTE_NAME) {
                 $relatedEntity = DefaultEntities::PRODUCT;
-            } else {
-                return new ConvertStruct(null, $converted);
             }
 
-            $converted['foreignKey'] = $this->getMappingIdFacade(
-                $relatedEntity,
-                $converted['foreignKey']
-            );
+            if ($relatedEntity !== null) {
+                $converted['foreignKey'] = $this->getMappingIdFacade(
+                    $relatedEntity,
+                    $converted['foreignKey']
+                );
+            }
         }
 
-        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-            DefaultEntities::SEO_URL,
-            $data['id'],
-            $converted['id']
-        );
+        if (isset($data['id']) && isset($converted['id'])) {
+            $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
+                DefaultEntities::SEO_URL,
+                $data['id'],
+                $converted['id']
+            );
+        }
 
         if (isset($converted['salesChannelId'])) {
             $converted['salesChannelId'] = $this->getMappingIdFacade(

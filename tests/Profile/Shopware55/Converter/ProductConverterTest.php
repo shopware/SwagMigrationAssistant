@@ -55,10 +55,10 @@ class ProductConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class),
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -199,9 +199,9 @@ class ProductConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
         $categoryData = require __DIR__ . '/../../../_fixtures/category_data.php';
         $productData = require __DIR__ . '/../../../_fixtures/product_data.php';

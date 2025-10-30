@@ -117,6 +117,7 @@ abstract class ShopwareConverterTest extends TestCase
         if ($output !== null) {
             static::assertNotNull($convertResult->getMappingUuid(), $this->getAssertMessage($fixtureName . ': No mappingUuid in converted result struct.'));
         }
+
         static::assertSame($expectedOutput, $output, $this->getAssertMessage($fixtureName . ': Output of converter does not match.'));
 
         $logs = $this->loggingService->getLoggingArray();

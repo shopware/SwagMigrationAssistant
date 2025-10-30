@@ -86,7 +86,7 @@ class StateMachineStateLookupTest extends TestCase
 
     private function getStateMachineStateLookup(): StateMachineStateLookup
     {
-        return $this->getContainer()->get(StateMachineStateLookup::class);
+        return static::getContainer()->get(StateMachineStateLookup::class);
     }
 
     private function getMockedStateMachineStateLookup(): StateMachineStateLookup

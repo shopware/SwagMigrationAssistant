@@ -87,7 +87,7 @@ class MediaThumbnailSizeLookupTest extends TestCase
     private function getMediaThumbnailSizeLookup(): MediaThumbnailSizeLookup
     {
         return new MediaThumbnailSizeLookup(
-            $this->getContainer()->get('media_thumbnail_size.repository')
+            static::getContainer()->get('media_thumbnail_size.repository')
         );
     }
 

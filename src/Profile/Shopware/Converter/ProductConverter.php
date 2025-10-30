@@ -51,14 +51,6 @@ abstract class ProductConverter extends ShopwareConverter
     protected string $runId;
 
     /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        'tax',
-        'prices',
-    ];
-
-    /**
      * @var array{minPurchase: int, purchaseSteps: int, shippingFree: bool, restockTime: int}
      */
     protected array $defaultValues = [
@@ -144,20 +136,6 @@ abstract class ProductConverter extends ShopwareConverter
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
         $this->connectionName = $connection->getName();
-
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-        if (!empty($fields)) {
-            $this->loggingService->addLogForEach(
-                $fields,
-                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(ProductDefinition::ENTITY_NAME)
-                    ->withFieldSourcePath($key)
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
 
         $this->productType = (int) $data['detail']['kind'];
         unset($data['detail']['kind']);
@@ -254,6 +232,7 @@ abstract class ProductConverter extends ShopwareConverter
                     $converted['children'][0]['cover'] = $media;
                 }
             }
+            unset($media);
         }
         $converted['children'][0]['parentId'] = $containerUuid;
         unset($data['detail']['id'], $converted['children'][0]['translations'], $converted['children'][0]['customFields']);

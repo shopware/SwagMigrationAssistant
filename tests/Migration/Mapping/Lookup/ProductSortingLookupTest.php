@@ -81,7 +81,7 @@ class ProductSortingLookupTest extends TestCase
 
     private function getProductSortingLookup(): ProductSortingLookup
     {
-        return $this->getContainer()->get(ProductSortingLookup::class);
+        return static::getContainer()->get(ProductSortingLookup::class);
     }
 
     private function getMockedProductSortingLookup(): ProductSortingLookup

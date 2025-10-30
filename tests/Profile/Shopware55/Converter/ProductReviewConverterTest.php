@@ -54,7 +54,7 @@ class ProductReviewConverterTest extends TestCase
         $this->converter = new Shopware55ProductReviewConverter(
             $mappingService,
             $loggingService,
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $connectionId = Uuid::randomHex();

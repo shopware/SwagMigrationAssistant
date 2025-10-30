@@ -66,8 +66,8 @@ class ShippingMethodConverterTest extends TestCase
         $this->shippingMethodConverter = new Shopware55ShippingMethodConverter(
             $this->mappingService,
             $this->loggingService,
-            $this->getContainer()->get(CountryLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $runId = Uuid::randomHex();
@@ -141,7 +141,7 @@ class ShippingMethodConverterTest extends TestCase
         $shippingMethodConverter = new Shopware55ShippingMethodConverter(
             $this->mappingService,
             $this->loggingService,
-            $this->getContainer()->get(CountryLookup::class),
+            static::getContainer()->get(CountryLookup::class),
             $languageLookup
         );
 

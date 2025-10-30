@@ -148,8 +148,8 @@ class LanguageConverterConvertDataTest extends TestCase
         return new LanguageConverter(
             $mappingService ?? new Dummy6MappingService(),
             $loggingService ?? $this->createMock(LoggingServiceInterface::class),
-            $languageLookup ?? $this->getContainer()->get(LanguageLookup::class),
-            $localeLookup ?? $this->getContainer()->get(LocaleLookup::class)
+            $languageLookup ?? static::getContainer()->get(LanguageLookup::class),
+            $localeLookup ?? static::getContainer()->get(LocaleLookup::class)
         );
     }
 
