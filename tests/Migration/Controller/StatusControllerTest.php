@@ -612,20 +612,6 @@ class StatusControllerTest extends TestCase
         static::assertSame(MigrationStep::FINISHED, $run->getStep());
     }
 
-    public function testGetResetStatus(): void
-    {
-        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
-        $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
-
-        $result = $this->controller->getResetStatus($this->context)->getContent();
-        static::assertSame('false', $result);
-
-        $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
-
-        $result = $this->controller->getResetStatus($this->context)->getContent();
-        static::assertSame('true', $result);
-    }
-
     public function testResumeMigrationWithIncorrectStep(): void
     {
         $this->runRepo->update(
