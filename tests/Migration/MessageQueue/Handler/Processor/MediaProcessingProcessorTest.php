@@ -85,7 +85,7 @@ class MediaProcessingProcessorTest extends TestCase
         $this->migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $this->runEntity->getId());
 
         $result = $this->createMock(Result::class);
-        $result->method('fetchAllAssociative')->willReturnCallback(fn() => $this->mediaFiles);
+        $result->method('fetchAllAssociative')->willReturnCallback(fn () => $this->mediaFiles);
 
         $queryBuilder = $this->createMock(QueryBuilder::class);
         $queryBuilder->method('select')->willReturnSelf();
@@ -172,7 +172,7 @@ class MediaProcessingProcessorTest extends TestCase
                 'media_id' => Uuid::randomBytes(),
                 'entity' => 'media',
                 'written' => 1,
-                'file_size' => 10
+                'file_size' => 10,
             ],
         ];
 
@@ -230,7 +230,7 @@ class MediaProcessingProcessorTest extends TestCase
                 'media_id' => Uuid::randomBytes(),
                 'entity' => 'media',
                 'written' => 1,
-                'file_size' => 10
+                'file_size' => 10,
             ],
         ];
 
@@ -270,7 +270,7 @@ class MediaProcessingProcessorTest extends TestCase
                 MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
                 [],
                 0
-            )
+            ),
         ];
 
         $processorMock->expects(static::once())
@@ -287,7 +287,7 @@ class MediaProcessingProcessorTest extends TestCase
                 'media_id' => Uuid::randomBytes(),
                 'entity' => 'media',
                 'written' => 1,
-                'file_size' => 10
+                'file_size' => 10,
             ],
         ];
 
@@ -330,7 +330,7 @@ class MediaProcessingProcessorTest extends TestCase
                 MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
                 [],
                 1
-            )
+            ),
         ];
         $secondWorkload = [
             new MediaProcessWorkloadStruct(
@@ -339,7 +339,7 @@ class MediaProcessingProcessorTest extends TestCase
                 MediaProcessWorkloadStruct::IN_PROGRESS_STATE,
                 [],
                 0
-            )
+            ),
         ];
 
         $processorMock->expects(static::exactly(2))
@@ -356,7 +356,7 @@ class MediaProcessingProcessorTest extends TestCase
                 'media_id' => Uuid::randomBytes(),
                 'entity' => 'media',
                 'written' => 1,
-                'file_size' => 10
+                'file_size' => 10,
             ],
         ];
 
@@ -397,7 +397,7 @@ class MediaProcessingProcessorTest extends TestCase
                 MediaProcessWorkloadStruct::FINISH_STATE,
                 [],
                 0
-            )
+            ),
         ];
 
         $processorMock->expects(static::once())
@@ -414,7 +414,7 @@ class MediaProcessingProcessorTest extends TestCase
                 'media_id' => Uuid::randomBytes(),
                 'entity' => 'media',
                 'written' => 1,
-                'file_size' => 10
+                'file_size' => 10,
             ],
         ];
 
