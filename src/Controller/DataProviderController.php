@@ -51,7 +51,7 @@ final class DataProviderController
     #[Route(
         path: '/api/_action/data-provider/get-environment',
         name: 'api.admin.data-provider.get-environment',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getEnvironment(Context $context): JsonResponse
@@ -64,7 +64,7 @@ final class DataProviderController
     #[Route(
         path: '/api/_action/data-provider/get-data',
         name: 'api.admin.data-provider.get-data',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getData(Request $request, Context $context): JsonResponse
@@ -86,7 +86,7 @@ final class DataProviderController
     #[Route(
         path: '/api/_action/data-provider/get-total',
         name: 'api.admin.data-provider.get-total',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getTotal(Request $request, Context $context): JsonResponse
@@ -104,7 +104,7 @@ final class DataProviderController
     #[Route(
         path: '/api/_action/data-provider/get-table',
         name: 'api.admin.data-provider.get-table',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getTable(Request $request, Context $context): JsonResponse
@@ -124,7 +124,7 @@ final class DataProviderController
     #[Route(
         path: '/api/_action/data-provider/generate-document',
         name: 'api.admin.data-provider.generate-document',
-        defaults: ['_acl' => ['swag_migration.editor']],
+        defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function generateDocument(Request $request, Context $context): JsonResponse
@@ -151,7 +151,7 @@ final class DataProviderController
     #[Route(
         path: '/api/_action/data-provider/download-private-file/{file}',
         name: 'api.admin.data-provider.download-private-file',
-        defaults: ['_acl' => ['swag_migration.editor']],
+        defaults: ['_acl' => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function downloadPrivateFile(Request $request, Context $context): StreamedResponse|RedirectResponse
