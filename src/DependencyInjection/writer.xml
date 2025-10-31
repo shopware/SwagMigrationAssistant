@@ -223,5 +223,9 @@
             <argument type="service" id="Shopware\Core\System\Country\CountryDefinition"/>
             <tag name="shopware.migration.writer"/>
         </service>
+
+        <service id="SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier">
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+        </service>
     </services>
 </container>
