@@ -72,6 +72,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataWriterInterface;
 use SwagMigrationAssistant\Migration\Service\PremappingService;
 use SwagMigrationAssistant\Migration\Setting\GeneralSettingCollection;
 use SwagMigrationAssistant\Migration\Writer\CustomerWriter;
+use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 use SwagMigrationAssistant\Migration\Writer\ProductWriter;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistry;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
@@ -291,7 +292,8 @@ class MigrationDataWriterTest extends TestCase
             new DummyMediaFileService(),
             $this->loggingService,
             static::getContainer()->get(SwagMigrationDataDefinition::class),
-            $mappingRepo
+            $mappingRepo,
+            static::getContainer()->get(MigrationFixApplier::class)
         );
 
         $migrationContextFactoryMock = $this->createMock(MigrationContextFactory::class);
