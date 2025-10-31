@@ -47,14 +47,38 @@ class MigrationFix
      */
     public function apply(array &$item): void
     {
+        /*
+         * Explode the path to an array
+         * Path example: 'category.language.name'
+         * Results in an array like: ['category', 'language', 'name']
+         */
         $pathArray = explode(self::PATH_SEPARATOR, $this->path);
 
-        $temp = &$item;
+        /*
+         * Set current item as pointer
+         * Item structure for example has no valid value for name and looks like:
+         *  [
+         *       'someOtherKeys',
+         *       ...
+         *       category => [
+         *           ...
+         *           'language' => [
+         *               ...
+         *               'name' => null,
+         *           ]
+         *       ]
+         *  ]
+         */
+        $nestedPointer = &$item;
+
+        // Iterating over the path to follow them and set the nested pointer to the last key in pathArray
+        // In this example the result pointer is: $item['category']['language']['name']
         foreach ($pathArray as $key) {
-            $temp = &$temp[$key];
+            $nestedPointer = &$nestedPointer[$key];
         }
 
-        $temp = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
-        unset($temp);
+        // Now set the value to the pointer like: $item['category']['language']['name'] = 'new Value'
+        $nestedPointer = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
+        unset($nestedPointer);
     }
 }
