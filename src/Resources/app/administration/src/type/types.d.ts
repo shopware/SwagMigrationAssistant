@@ -16,6 +16,7 @@ type TRepository<T> = Repository<T>;
 type MigrationStep =
     | 'idle'
     | 'fetching'
+    | 'apply-fixes'
     | 'writing'
     | 'media-processing'
     | 'cleanup'

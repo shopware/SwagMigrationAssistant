@@ -397,4 +397,17 @@ class StatusController extends AbstractController
             $settings->isResettingChecksums()
         );
     }
+
+    #[Route(
+        path: '/api/_action/migration/resume-after-fixes',
+        name: 'api.admin.migration.resume-after-fixes',
+        defaults: ['_acl' => ['admin']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function resumeAfterFixes(Context $context): Response
+    {
+        $this->runService->resumeAfterFixes($context);
+
+        return new Response(null, Response::HTTP_NO_CONTENT);
+    }
 }

@@ -106,6 +106,8 @@ class MigrationException extends HttpException
 
     public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
 
+    public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -555,6 +557,16 @@ class MigrationException extends HttpException
             self::MISSING_MIGRATION_FIX_KEY,
             'Missing key "{{ missingKey }}" to construct MigrationFix.',
             ['missingKey' => $missingKey]
+        );
+    }
+
+    public static function migrationNotInStep(string $runUuid, string $step): self
+    {
+        return new NoRunningMigrationException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_NOT_IN_STEP,
+            'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
+            ['runUuid' => $runUuid, 'step' => $step]
         );
     }
 }

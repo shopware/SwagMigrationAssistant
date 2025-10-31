@@ -397,6 +397,7 @@
         "flowChart": {
           "premapping": "Checking",
           "fetchData": "Reading",
+          "applyFixes": "Applying fixes",
           "writeData": "Writing",
           "processMedia": "Downloading",
           "cleanup": "Cleanup",
@@ -442,6 +443,10 @@
           "caption": "The media download continues in the background. Large files can take some time.",
           "logSummary": "Logbook",
           "historyHint": "You can view this information any time in the migration history. It is possible that more log messages will be added at a later time because the media download is still running in the background."
+        },
+        "applyFixes": {
+          "title": "Apply fixes",
+          "resumeButton": "Continue migration"
         }
       },
       "confirmAbortDialog": {
