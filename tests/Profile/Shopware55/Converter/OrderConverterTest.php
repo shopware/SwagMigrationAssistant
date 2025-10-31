@@ -397,7 +397,7 @@ class OrderConverterTest extends TestCase
     }
 
     /**
-     * @return list<list<string>>
+     * @return array<string, mixed>
      */
     public static function requiredProperties(): array
     {

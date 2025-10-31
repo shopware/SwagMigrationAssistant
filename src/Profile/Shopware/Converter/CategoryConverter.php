@@ -107,7 +107,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $this->mappingIds[] = $parentMapping['id'];
             $converted['parentId'] = $parentMapping['entityUuid'];
             unset($parentMapping);
-        // get last root category as previous sibling
+            // get last root category as previous sibling
         } elseif (!isset($data['previousSiblingId'])) {
             $previousSiblingUuid = $this->lowestRootCategoryLookup->get($context);
             if ($previousSiblingUuid !== null) {
@@ -354,10 +354,12 @@ abstract class CategoryConverter extends ShopwareConverter
         $localeTranslation['id'] = $mapping['entityUuid'];
         $this->mappingIds[] = $mapping['id'];
 
-        $languageUuid = $this->languageLookup->get($this->locale, $this->context);
-        if ($languageUuid !== null) {
-            $localeTranslation['languageId'] = $languageUuid;
-            $media['translations'][$languageUuid] = $localeTranslation;
+        if ($this->locale !== null) {
+            $languageUuid = $this->languageLookup->get($this->locale, $this->context);
+            if ($languageUuid !== null) {
+                $localeTranslation['languageId'] = $languageUuid;
+                $media['translations'][$languageUuid] = $localeTranslation;
+            }
         }
     }
 }

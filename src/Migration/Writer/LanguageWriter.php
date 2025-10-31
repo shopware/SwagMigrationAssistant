@@ -43,6 +43,6 @@ class LanguageWriter extends AbstractWriter
             return $this->languageLookup->get($value['locale'], $context) === null;
         });
 
-        parent::writeData($data, $context);
+        return parent::writeData($data, $context);
     }
 }

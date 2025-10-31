@@ -162,8 +162,11 @@ class CurrencyConverterTest extends TestCase
             ],
         ];
 
+        $converted = $convertResult->getConverted();
+        static::assertIsArray($converted);
         foreach ($expected as $key => $value) {
-            static::assertSame($value, $convertResult->getConverted()[$key]);
+            static::assertArrayHasKey($key, $converted);
+            static::assertSame($value, $converted[$key]);
         }
 
         static::assertNull($convertResult->getUnmapped());

@@ -120,11 +120,6 @@ class MigrationDataWriterTest extends TestCase
     private EntityRepository $customerRepo;
 
     /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepo;
-
-    /**
      * @var EntityRepository<CurrencyCollection>
      */
     private EntityRepository $currencyRepo;
@@ -684,7 +679,6 @@ class MigrationDataWriterTest extends TestCase
         $this->mediaRepo = static::getContainer()->get('media.repository');
         $this->productRepo = static::getContainer()->get('product.repository');
         $this->categoryRepo = static::getContainer()->get('category.repository');
-        $this->orderRepo = static::getContainer()->get('order.repository');
         $this->customerRepo = static::getContainer()->get('customer.repository');
         $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
         $this->migrationDataRepo = static::getContainer()->get('swag_migration_data.repository');
