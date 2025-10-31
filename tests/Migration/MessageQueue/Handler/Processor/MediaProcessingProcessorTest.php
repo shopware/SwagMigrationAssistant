@@ -56,7 +56,7 @@ class MediaProcessingProcessorTest extends TestCase
     private MigrationProgress $progress;
 
     /**
-     * @var array<array<string, mixed>> $mediaFiles
+     * @var array<array<string, mixed>>
      */
     private array $mediaFiles = [];
 
