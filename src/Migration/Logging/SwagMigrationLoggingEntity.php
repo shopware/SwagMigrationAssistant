@@ -49,7 +49,6 @@ class SwagMigrationLoggingEntity extends Entity
      */
     protected ?array $convertedData = null;
 
-
     protected ?string $exceptionMessage = null;
 
     /**

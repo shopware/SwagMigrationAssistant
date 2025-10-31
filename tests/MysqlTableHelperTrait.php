@@ -9,7 +9,8 @@ namespace SwagMigrationAssistant\Test;
 
 use Doctrine\DBAL\Connection;
 
-trait MysqlTableHelperTrait {
+trait MysqlTableHelperTrait
+{
     protected function columnExists(Connection $connection, string $table, string $column): bool
     {
         $exists = $connection->fetchOne(
