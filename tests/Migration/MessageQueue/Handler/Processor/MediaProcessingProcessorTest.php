@@ -19,7 +19,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
-use Swag\MigrationMagento\Profile\Magento\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Exception\DataSetNotFoundException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
@@ -40,6 +39,7 @@ use SwagMigrationAssistant\Migration\Run\ProgressDataSet;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
+use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 
 #[Package('fundamentals@after-sales')]
@@ -55,6 +55,9 @@ class MediaProcessingProcessorTest extends TestCase
 
     private MigrationProgress $progress;
 
+    /**
+     * @var array<array<string, mixed>> $mediaFiles
+     */
     private array $mediaFiles = [];
 
     private Connection $dbalConnection;
