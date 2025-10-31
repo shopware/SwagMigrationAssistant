@@ -447,7 +447,6 @@ class MigrationDataWriterTest extends TestCase
         static::assertSame(2, $salesChannelTotalAfter - $salesChannelTotalBefore);
     }
 
-    // HERE
     public function testAssignThemeToSalesChannel(): void
     {
         $context = Context::createDefaultContext();
