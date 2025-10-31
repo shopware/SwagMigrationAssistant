@@ -104,6 +104,8 @@ class MigrationException extends HttpException
 
     public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
 
+    public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
+
     public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
@@ -545,6 +547,16 @@ class MigrationException extends HttpException
             self::UNEXPECTED_NULL_VALUE,
             'Unexpected null value for field "{{ fieldName }}".',
             ['fieldName' => $fieldName]
+        );
+    }
+
+    public static function couldNotConvertFix(string $missingKey): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::MISSING_MIGRATION_FIX_KEY,
+            'Missing key "{{ missingKey }}" to construct MigrationFix.',
+            ['missingKey' => $missingKey]
         );
     }
 
