@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -233,5 +234,52 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('countryState', $converted['addresses'][0]);
         static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
         static::assertSame($expectedStateId, $converted['addresses'][0]['countryState']['id']);
+    }
+
+    public function testConvertNotExistingCountryStateWithoutMapping(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][0]['state_id'] = '9999';
+        unset($customerData['addresses'][0]['state']);
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertArrayNotHasKey('countryStateId', $converted['addresses'][0]);
+
+        $logs = $this->loggingService->getLoggingArray();
+
+        static::assertCount(1, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_ENTITY_UNKNOWN');
+    }
+
+    public function testConvertBusinessCustomer(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[2];
+        $customerData['addresses'][0]['company'] = 'Shopware AG';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertSame('Shopware AG', $converted['company']);
+        static::assertSame(CustomerEntity::ACCOUNT_TYPE_BUSINESS, $converted['accountType']);
     }
 }

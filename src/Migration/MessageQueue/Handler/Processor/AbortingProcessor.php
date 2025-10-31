@@ -12,11 +12,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
-use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -35,7 +34,6 @@ class AbortingProcessor extends AbstractProcessor
         EntityRepository $migrationDataRepo,
         EntityRepository $migrationMediaFileRepo,
         RunTransitionServiceInterface $runTransitionService,
-        private readonly RunServiceInterface $runService,
         private readonly MessageBusInterface $bus,
     ) {
         parent::__construct(
@@ -57,12 +55,14 @@ class AbortingProcessor extends AbstractProcessor
         SwagMigrationRunEntity $run,
         MigrationProgress $progress,
     ): void {
-        $connection = $migrationContext->getConnection();
-        $this->runService->cleanupMappingChecksums($connection->getId(), $context);
-
-        $this->runTransitionService->forceTransitionToRunStep($migrationContext->getRunUuid(), MigrationStep::CLEANUP);
-        $progress->setIsAborted(true);
-        $this->updateProgress($migrationContext->getRunUuid(), $progress, $context);
-        $this->bus->dispatch(new MigrationProcessMessage($context, $migrationContext->getRunUuid()));
+        $this->bus->dispatch(new ResetChecksumMessage(
+            $migrationContext->getConnection()->getId(),
+            $context,
+            $run->getId(),
+            $progress->getCurrentEntity(),
+            null,
+            0,
+            true // abort flow flag
+        ));
     }
 }

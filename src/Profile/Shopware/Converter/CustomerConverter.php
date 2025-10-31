@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
 use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressDefinition;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -157,6 +158,7 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->convertValue($converted, 'birthday', $data, 'birthday', self::TYPE_DATETIME);
         $this->convertValue($converted, 'lockedUntil', $data, 'lockeduntil', self::TYPE_DATETIME);
 
+        $this->setAccountType($data, $converted);
         $this->setPassword($data, $converted);
 
         if (!isset($converted['customerNumber']) || $converted['customerNumber'] === '') {
@@ -707,5 +709,63 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         return \count($errors) === 0;
+    }
+
+    /**
+     * If the customer's default billing address or default shipping address contains a company,
+     * the account type is business, else private.
+     *
+     * @param array<string, mixed> $data
+     * @param array<string, mixed> $converted
+     */
+    private function setAccountType(array $data, array &$converted): void
+    {
+        $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_PRIVATE;
+
+        $defaultBillingAddress = isset($data['default_billing_address_id']) ? $this->getAddressWithId($data, $data['default_billing_address_id']) : null;
+
+        if ($defaultBillingAddress !== null
+            && isset($defaultBillingAddress['company'])
+            && $defaultBillingAddress['company'] !== ''
+        ) {
+            $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_BUSINESS;
+            $converted['company'] = $defaultBillingAddress['company'];
+
+            return;
+        }
+
+        $defaultShippingAddress = isset($data['default_shipping_address_id']) ? $this->getAddressWithId($data, $data['default_shipping_address_id']) : null;
+
+        if ($defaultShippingAddress !== null
+            && isset($defaultShippingAddress['company'])
+            && $defaultShippingAddress['company'] !== ''
+        ) {
+            $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_BUSINESS;
+            $converted['company'] = $defaultShippingAddress['company'];
+        }
+    }
+
+    /**
+     * @param array<string, mixed> $data
+     *
+     * @return array<string, mixed>|null
+     */
+    private function getAddressWithId(array $data, string $id): ?array
+    {
+        if (!isset($data['addresses'])) {
+            return null;
+        }
+
+        foreach ($data['addresses'] as $address) {
+            if (!isset($address['id'])) {
+                continue;
+            }
+
+            if ($address['id'] === $id) {
+                return $address;
+            }
+        }
+
+        return null;
     }
 }

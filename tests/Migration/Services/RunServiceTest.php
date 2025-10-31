@@ -23,7 +23,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollectio
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
@@ -116,7 +115,6 @@ class RunServiceTest extends TestCase
         $run->setProgress($progress);
 
         $this->runRepo = new StaticEntityRepository([
-            new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([$run]),
         ], new SwagMigrationRunDefinition());
@@ -298,7 +296,6 @@ class RunServiceTest extends TestCase
             $this->generalSettingRepo,
             $this->createMock(ThemeService::class),
             $this->createMock(MappingService::class),
-            new SwagMigrationDataDefinition(),
             $this->createMock(Connection::class),
             $this->createMock(LoggingService::class),
             $trackingEventClient,
