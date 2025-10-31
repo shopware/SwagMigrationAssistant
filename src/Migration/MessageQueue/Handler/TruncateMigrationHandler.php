@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\MessageQueue\Handler;
 
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\MessageQueue\Message\CleanupMigrationMessage;
+use SwagMigrationAssistant\Migration\MessageQueue\Message\TruncateMigrationMessage;
 use Symfony\Component\Messenger\Attribute\AsMessageHandler;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -18,15 +18,17 @@ use Symfony\Component\Messenger\MessageBusInterface;
 /**
  * @internal
  */
-final class CleanupMigrationHandler
+final class TruncateMigrationHandler
 {
+    private const BATCH_SIZE = 250;
+
     public function __construct(
         private readonly Connection $connection,
         private readonly MessageBusInterface $bus,
     ) {
     }
 
-    public function __invoke(CleanupMigrationMessage $message): void
+    public function __invoke(TruncateMigrationMessage $message): void
     {
         $currentStep = 0;
         $tablesToReset = [
@@ -38,16 +40,40 @@ final class CleanupMigrationHandler
             'swag_migration_connection',
         ];
 
-        $step = \array_search($message->getTableName(), $tablesToReset, true);
+        $step = \array_search(
+            $message->getTableName(),
+            $tablesToReset,
+            true
+        );
+
         if ($step !== false) {
             $currentStep = $step;
         }
 
-        $nextStep = $currentStep + 1;
-        if (isset($tablesToReset[$nextStep])) {
-            $nextMessage = new CleanupMigrationMessage($tablesToReset[$nextStep]);
-            $this->bus->dispatch($nextMessage);
+        $affectedRows = (int) $this->connection->executeStatement(
+            'DELETE FROM ' . $tablesToReset[$currentStep] . ' LIMIT ' . self::BATCH_SIZE
+        );
+
+        if ($affectedRows >= self::BATCH_SIZE) {
+            $this->bus->dispatch(new TruncateMigrationMessage(
+                $tablesToReset[$currentStep]
+            ));
+
+            return;
         }
-        $this->connection->executeStatement('DELETE FROM ' . $tablesToReset[$currentStep] . ';');
+
+        $nextStep = $currentStep + 1;
+
+        if (isset($tablesToReset[$nextStep])) {
+            $this->bus->dispatch(new TruncateMigrationMessage(
+                $tablesToReset[$nextStep]
+            ));
+
+            return;
+        }
+
+        $this->connection->executeStatement(
+            'UPDATE swag_migration_general_setting SET `is_reset` = 0;'
+        );
     }
 }

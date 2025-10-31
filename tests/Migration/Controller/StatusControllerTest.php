@@ -23,7 +23,6 @@ use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -177,7 +176,6 @@ class StatusControllerTest extends TestCase
                 static::getContainer()->get('swag_migration_general_setting.repository'),
                 static::getContainer()->get(ThemeService::class),
                 $mappingService,
-                static::getContainer()->get(SwagMigrationDataDefinition::class),
                 static::getContainer()->get(Connection::class),
                 new LoggingService($loggingRepo, new NullLogger()),
                 static::getContainer()->get(TrackingEventClient::class),
@@ -196,6 +194,50 @@ class StatusControllerTest extends TestCase
             $migrationContextFactory,
             $this->generalSettingRepo,
         );
+    }
+
+    public function tesIsTruncatingMigrationData(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
+
+        $result = $this->controller->isTruncatingMigrationData($this->context)->getContent();
+        static::assertSame('false', $result);
+
+        $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
+
+        $result = $this->controller->isTruncatingMigrationData($this->context)->getContent();
+        static::assertSame('true', $result);
+    }
+
+    public function testIsResettingChecksumsWhenTrue(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isResettingChecksums' => true]], $this->context);
+
+        $result = $this->controller->isResettingChecksums($this->context)->getContent();
+        static::assertSame('true', $result);
+    }
+
+    public function testIsResettingChecksumsWhenFalse(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+        $this->generalSettingRepo->update([['id' => $id, 'isResettingChecksums' => false]], $this->context);
+
+        $result = $this->controller->isResettingChecksums($this->context)->getContent();
+        static::assertSame('false', $result);
+    }
+
+    public function testIsResettingChecksumsWithoutSettings(): void
+    {
+        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
+
+        if ($id) {
+            $this->generalSettingRepo->delete([['id' => $id]], $this->context);
+        }
+
+        $result = $this->controller->isResettingChecksums($this->context);
+        static::assertSame('false', $result->getContent());
     }
 
     /**
@@ -568,20 +610,6 @@ class StatusControllerTest extends TestCase
         $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
         static::assertNotNull($run);
         static::assertSame(MigrationStep::FINISHED, $run->getStep());
-    }
-
-    public function testGetResetStatus(): void
-    {
-        $id = $this->generalSettingRepo->searchIds(new Criteria(), $this->context)->firstId();
-        $this->generalSettingRepo->update([['id' => $id, 'isReset' => false]], $this->context);
-
-        $result = $this->controller->getResetStatus($this->context)->getContent();
-        static::assertSame('false', $result);
-
-        $this->generalSettingRepo->update([['id' => $id, 'isReset' => true]], $this->context);
-
-        $result = $this->controller->getResetStatus($this->context)->getContent();
-        static::assertSame('true', $result);
     }
 
     private function createConnection(string $connectionId, string $profileName, string $connectionName): void
