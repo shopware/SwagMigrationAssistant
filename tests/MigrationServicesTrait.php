@@ -15,6 +15,7 @@ use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
 use Shopware\Core\Content\Category\CategoryCollection;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -52,6 +53,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
+use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
@@ -205,6 +207,13 @@ trait MigrationServicesTrait
             )
         );
 
+        $validationService = new SwagMigrationValidationService(
+            $this->getContainer()->get(DefinitionInstanceRegistry::class),
+            $this->getContainer()->get('event_dispatcher'),
+            $loggingService,
+            $mappingService,
+        );
+
         return new MigrationDataConverter(
             $entityWriter,
             $converterRegistry,
@@ -212,6 +221,7 @@ trait MigrationServicesTrait
             $loggingService,
             $dataDefinition,
             new DummyMappingService(),
+            $validationService
         );
     }
 
