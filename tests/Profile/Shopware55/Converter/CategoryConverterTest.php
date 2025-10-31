@@ -180,8 +180,6 @@ class CategoryConverterTest extends TestCase
         static::assertNotNull($converted);
 
         $expected = [
-            'cmsPageId' => '0199e1fca8de70f7bd5d47fb3ff0248e',
-            'afterCategoryId' => '0199e1fca31b7267a7ac118223a18055',
             'description' => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
             'level' => 0,
             'active' => true,
@@ -191,6 +189,12 @@ class CategoryConverterTest extends TestCase
 
         static::assertArrayHasKey('id', $converted);
         static::assertTrue(Uuid::isValid($converted['id']));
+
+        static::assertArrayHasKey('afterCategoryId', $converted);
+        static::assertTrue(Uuid::isValid($converted['afterCategoryId']));
+
+        static::assertArrayHasKey('cmsPageId', $converted);
+        static::assertTrue(Uuid::isValid($converted['cmsPageId']));
 
         foreach ($expected as $key => $value) {
             static::assertSame($value, $converted[$key]);
