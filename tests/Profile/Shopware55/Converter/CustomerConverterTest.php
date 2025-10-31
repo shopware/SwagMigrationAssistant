@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
@@ -467,5 +468,24 @@ class CustomerConverterTest extends TestCase
         static::assertCount(1, $logs);
 
         static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_ENTITY_UNKNOWN');
+    }
+
+    public function testConvertBusinessCustomer(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[2];
+        $customerData['addresses'][0]['company'] = 'Shopware AG';
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertSame('Shopware AG', $converted['company']);
+        static::assertSame(CustomerEntity::ACCOUNT_TYPE_BUSINESS, $converted['accountType']);
     }
 }

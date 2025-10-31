@@ -19,6 +19,8 @@
       "tabDataSelector": "Datenauswahl",
       "disabledMessages": {
         "noData": "Es sind keine Daten für die Migration verfügbar.",
+        "resettingChecksum": "Die Prüfsummen werden derzeit zurückgesetzt.",
+        "truncatingMigration": "Migrationsdaten werden zurzeit geleert.",
         "noSelectedData": "Es wurden keine Daten für die Migration ausgewählt.",
         "disabled": "Die Migration ist in dieser Umgebung deaktiviert.",
         "loading": "Die Migration wird derzeit ausgeführt.",
@@ -186,6 +188,16 @@
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
       "shopwareMajorVersionText": "Wir haben festgestellt, dass die Version deines Quellsystems {sourceSystem} nicht der Version des Zielsystems {targetSystem} entspricht. Bitte stelle sicher, dass beide Systeme in der gleichen Major-Version vorliegen, bevor Du mit der Migration startest.",
       "shopInfoCard": {
+        "updateBanner": {
+          "isResettingChecksums": {
+            "title": "Prüfsummen werden zurückgesetzt",
+            "message": "Die Prüfsummen werden zurückgesetzt. Dies kann einige Minuten dauern."
+          },
+          "isTruncatingMigration": {
+            "title": "Migrationsdaten werden geleert",
+            "message": "Die Migrationsdaten werden geleert. Dies kann einige Minuten dauern."
+          }
+        },
         "link": "Hilfe & Dokumentation",
         "cardTitle": "Shopsystem",
         "refreshButton": "Verbindung aktualisieren",
@@ -196,7 +208,7 @@
         "buttonRemoveCredentials": "Zugangsdaten löschen",
         "buttonProfileInstallation": "Weiteres Profil installieren",
         "buttonResetChecksums": "Reset der Prüfsummen",
-        "buttonResetMigration": "Migration abschließen",
+        "buttonResetMigration": "Migrationsdaten aufräumen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "noConnection": "Keine Verbindung",

@@ -755,6 +755,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                     'parentId' => (string) $mainOrContainerMapping['entityUuid'],
                     'type' => 'andContainer',
                     'position' => 0,
+                    'children' => [],
                 ],
             ],
         ];
@@ -779,10 +780,11 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @return array<array<string, string|array<string, string|int>>>
+     * @return list<array{id: string, ruleId: string, parentId: string, type: string, position: int, value: array<string, mixed>, children: list<array<string, mixed>>}>
      */
     private function getDayOfWeekChildren(int $from, int $to, string $ruleId, string $parentId): array
     {
+        /** @var list<array{id: string, ruleId: string, parentId: string, type: string, position: int, value: array<string, mixed>, children: list<array<string, mixed>>}> $values */
         $values = [];
         $oldTo = null;
         if ($from > $to) {
@@ -800,7 +802,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<int, mixed> $values
+     * @param list<array{id: string, ruleId: string, parentId: string, type: string, position: int, value: array<string, mixed>, children: list<array<string, mixed>>}> $values
      */
     private function setDayOfWeekValues(array &$values, int $from, int $to, string $ruleId, string $parentId): void
     {
@@ -814,7 +816,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             );
 
             $value = [
-                'id' => $dayMapping['entityUuid'],
+                'id' => (string) $dayMapping['entityUuid'],
                 'type' => 'dayOfWeek',
                 'ruleId' => $ruleId,
                 'parentId' => $parentId,
@@ -822,8 +824,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                     'operator' => '=',
                     'dayOfWeek' => $day,
                 ],
+                'children' => [],
             ];
 
+            // @phpstan-ignore-next-line parameterByRef.type
             $values[] = $value;
         }
     }
@@ -943,6 +947,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'position' => ++$position,
             'type' => 'timeRange',
             'value' => $value,
+            'children' => [],
         ];
 
         $mainOrContainer['children'][0]['children'][] = $condition;
@@ -981,6 +986,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'value' => [
                 'clearanceSale' => true,
             ],
+            'children' => [],
         ];
 
         $mainOrContainer['children'][0]['children'][] = $condition;
@@ -1028,8 +1034,10 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                     'operator' => $conditionValueMapping[$key]['operator'],
                     $conditionValueMapping[$key]['value'] => (float) $data,
                 ],
+                'children' => [],
             ];
 
+            // @phpstan-ignore-next-line parameterByRef.type
             $mainOrContainer['children'][0]['children'][] = $condition;
         }
     }
@@ -1077,6 +1085,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 'operator' => '=',
                 'countryIds' => $countries,
             ],
+            'children' => [],
         ];
 
         $mainOrContainer['children'][0]['children'][] = $condition;
@@ -1133,6 +1142,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 'operator' => '=',
                 'paymentMethodIds' => $paymentMethods,
             ],
+            'children' => [],
         ];
 
         $mainOrContainer['children'][0]['children'][] = $condition;
@@ -1189,6 +1199,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 'operator' => '!=',
                 'categoryIds' => $excludedCategories,
             ],
+            'children' => [],
         ];
 
         $mainOrContainer['children'][0]['children'][] = $condition;
@@ -1224,6 +1235,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             'parentId' => $mainAndContainerUuid,
             'type' => 'cartHasDeliveryFreeItem',
             'position' => ++$position,
+            'children' => [],
         ];
 
         $mainOrContainer['children'][0]['children'][] = $condition;

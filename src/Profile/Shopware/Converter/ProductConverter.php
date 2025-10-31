@@ -846,7 +846,7 @@ abstract class ProductConverter extends ShopwareConverter
     }
 
     /**
-     * @param array<string, mixed> $esdFiles
+     * @param array<int, array<string, mixed>> $esdFiles
      * @param array<string, mixed> $converted
      *
      * @return array<int, array<string, mixed>>
@@ -866,6 +866,7 @@ abstract class ProductConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
             $newProductMedia['productId'] = $converted['id'];
 
+            /** @var array<string, mixed> $newMedia */
             $newMedia = [];
             $mapping = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,

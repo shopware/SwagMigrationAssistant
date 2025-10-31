@@ -19,6 +19,8 @@
       "tabDataSelector": "Data selection",
       "disabledMessages": {
         "noData": "There is no data available for migration.",
+        "resettingChecksum": "Checksums are currently being reset.",
+        "truncatingMigration": "Migration data is currently being truncated.",
         "noSelectedData": "No items have been selected for migration.",
         "disabled": "Migration is disabled in this environment.",
         "loading": "Migration is currently in progress.",
@@ -195,6 +197,16 @@
       "pluginVersionText": "We have noticed that a plugin update is available in your source system {sourceSystem}. Please update the plugin \"{pluginName}\" before you start the migration.",
       "shopwareMajorVersionText": "We have noticed that your source system {sourceSystem} version does not match your target system {targetSystem} version. Please ensure to use the same major version for both systems before you start the migration.",
       "shopInfoCard": {
+        "updateBanner": {
+          "isResettingChecksums": {
+            "title": "Resetting checksums",
+            "message": "The checksums are being reset. This may take a few minutes."
+          },
+          "isTruncatingMigration": {
+            "title": "Truncating migration data",
+            "message": "The migration data is being truncated. This may take a few minutes."
+          }
+        },
         "link": "Help & documentation",
         "cardTitle": "Shop system",
         "refreshButton": "Refresh connection",
@@ -205,7 +217,7 @@
         "buttonRemoveCredentials": "Delete access data",
         "buttonProfileInstallation": "Install another profile",
         "buttonResetChecksums": "Reset checksums",
-        "buttonResetMigration": "Archive migration",
+        "buttonResetMigration": "Truncate migration",
         "connected": "Connected",
         "notConnected": "Not connected",
         "noConnection": "No connection",
@@ -229,7 +241,7 @@
           "confirmButtonText": "Reset"
         },
         "resetMigrationConfirmDialog": {
-            "title": "Archive migration",
+            "title": "Truncate migration",
             "header": "Are you done migrating your shop data?",
             "content": "If you have successfully migrated all of your shop data, go ahead and archive this migration. This will allow the system to clean up temporary files and unused data.",
             "abortButtonText": "Keep",

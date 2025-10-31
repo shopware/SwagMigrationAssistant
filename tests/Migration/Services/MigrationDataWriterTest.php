@@ -307,7 +307,6 @@ class MigrationDataWriterTest extends TestCase
             $this->generalSettingRepo,
             new DummyThemeService($this->themeSalesChannelRepo),
             $this->mappingService,
-            new SwagMigrationDataDefinition(),
             $this->dbConnection,
             new LoggingService($this->loggingRepo, new NullLogger()),
             static::getContainer()->get(TrackingEventClient::class),
