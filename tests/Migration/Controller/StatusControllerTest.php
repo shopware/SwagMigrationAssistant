@@ -612,6 +612,46 @@ class StatusControllerTest extends TestCase
         static::assertSame(MigrationStep::FINISHED, $run->getStep());
     }
 
+    public function testResumeMigrationWithIncorrectStep(): void
+    {
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'step' => MigrationStep::FETCHING->value,
+                ],
+            ],
+            $this->context
+        );
+
+        try {
+            $this->controller->resumeAfterFixes($this->context);
+        } catch (MigrationException $e) {
+            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(MigrationException::MIGRATION_NOT_IN_STEP, $e->getErrorCode());
+        }
+    }
+
+    public function testResumeMigration(): void
+    {
+        $this->runRepo->update(
+            [
+                [
+                    'id' => $this->runUuid,
+                    'step' => MigrationStep::APPLY_FIXES->value,
+                ],
+            ],
+            $this->context
+        );
+
+        $response = $this->controller->resumeAfterFixes($this->context);
+        static::assertSame(Response::HTTP_NO_CONTENT, $response->getStatusCode());
+
+        $run = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context)->getEntities()->first();
+        static::assertNotNull($run);
+        static::assertSame(MigrationStep::WRITING, $run->getStep());
+    }
+
     private function createConnection(string $connectionId, string $profileName, string $connectionName): void
     {
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId, $profileName, $connectionName): void {

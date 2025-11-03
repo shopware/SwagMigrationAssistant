@@ -19,10 +19,10 @@ interface RunServiceInterface
      * If no migration run is running, it returns the progress with the step status IDLE.
      *
      * After starting the migration run, the steps are as follows, if the migration run is not aborted:
-     * IDLE -> FETCHING -> WRITING -> MEDIA_PROCESSING -> CLEANUP -> INDEXING -> WAITING_FOR_APPROVE -> IDLE
+     * IDLE -> FETCHING -> APPLY_FIXES -> WRITING -> MEDIA_PROCESSING -> CLEANUP -> INDEXING -> WAITING_FOR_APPROVE -> IDLE
      *
      * If the migration run is aborted, the steps are as follows:
-     * IDLE -> [FETCHING || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
+     * IDLE -> [FETCHING || APPLY_FIXES || WRITING || MEDIA_PROCESSING] -> ABORTING -> CLEANUP -> INDEXING -> IDLE
      */
     public function getRunStatus(Context $context): MigrationState;
 
@@ -51,4 +51,6 @@ interface RunServiceInterface
     public function approveFinishingMigration(Context $context): void;
 
     public function assignThemeToSalesChannel(string $runUuid, Context $context): void;
+
+    public function resumeAfterFixes(Context $context): void;
 }

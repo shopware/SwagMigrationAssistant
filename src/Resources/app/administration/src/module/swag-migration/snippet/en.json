@@ -18,6 +18,7 @@
       "tabHistory": "History",
       "tabDataSelector": "Data selection",
       "disabledMessages": {
+        "noPermission": "You do not have the required permissions to perform a migration.",
         "noData": "There is no data available for migration.",
         "resettingChecksum": "Checksums are currently being reset.",
         "truncatingMigration": "Migration data is currently being truncated.",
@@ -397,6 +398,7 @@
         "flowChart": {
           "premapping": "Checking",
           "fetchData": "Reading",
+          "applyFixes": "Applying fixes",
           "writeData": "Writing",
           "processMedia": "Downloading",
           "cleanup": "Cleanup",
@@ -442,6 +444,10 @@
           "caption": "The media download continues in the background. Large files can take some time.",
           "logSummary": "Logbook",
           "historyHint": "You can view this information any time in the migration history. It is possible that more log messages will be added at a later time because the media download is still running in the background."
+        },
+        "applyFixes": {
+          "title": "Apply fixes",
+          "resumeButton": "Continue migration"
         }
       },
       "confirmAbortDialog": {
@@ -662,6 +668,13 @@
       "startMigration": "Failed to start migration.",
       "approveFinishedMigration": "Failed while completing the migration",
       "abortMigration": "Failed to abort migration."
+    }
+  },
+  "sw-privileges": {
+    "permissions": {
+      "swag_migration": {
+        "label": "Migration Assistant"
+      }
     }
   },
   "global": {

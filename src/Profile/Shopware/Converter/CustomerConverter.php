@@ -49,17 +49,6 @@ abstract class CustomerConverter extends ShopwareConverter
     /**
      * @var list<string>
      */
-    protected array $requiredDataFieldKeys = [
-        'firstname',
-        'lastname',
-        'email',
-        'salutation',
-        'customerGroupId',
-    ];
-
-    /**
-     * @var list<string>
-     */
     protected array $requiredAddressDataFieldKeys = [
         'firstname',
         'lastname',
@@ -196,6 +185,7 @@ abstract class CustomerConverter extends ShopwareConverter
                 $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
             }
         }
+
         unset($data['defaultpayment'], $data['paymentpreset']);
 
         if (!isset($converted['defaultPaymentMethodId'])) {
