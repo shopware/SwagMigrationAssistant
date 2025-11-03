@@ -318,11 +318,7 @@ class StatusController extends AbstractController
     )]
     public function abortMigration(Context $context): Response
     {
-        try {
-            $this->runService->abortMigration($context);
-        } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->runService->abortMigration($context);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
@@ -360,7 +356,7 @@ class StatusController extends AbstractController
     }
 
     #[Route(
-        path: '/api/_action/migration/get-reset-status',
+        path: '/api/_action/migration/is-truncating-migration-data',
         name: 'api.admin.migration.get-reset-status',
         defaults: ['_acl' => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]

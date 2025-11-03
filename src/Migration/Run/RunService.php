@@ -162,6 +162,7 @@ class RunService implements RunServiceInterface
         $runId = $run->getId();
         $runningSteps = [
             MigrationStep::FETCHING->value,
+            MigrationStep::APPLY_FIXES->value,
             MigrationStep::WRITING->value,
             MigrationStep::MEDIA_PROCESSING->value,
         ];
