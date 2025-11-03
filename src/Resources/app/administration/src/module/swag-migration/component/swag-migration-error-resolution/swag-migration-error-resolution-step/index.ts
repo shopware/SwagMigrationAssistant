@@ -131,25 +131,25 @@ export default Shopware.Component.wrapComponentConfig({
         tableColumns() {
             return [
                 {
-                    label: 'Fixed / Total',
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.count'),
                     property: 'count',
                     sortable: true,
                     position: 1,
                 },
                 {
-                    label: 'Error',
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.code'),
                     property: 'code',
                     sortable: true,
                     position: 2,
                 },
                 {
-                    label: 'Entity',
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.entity'),
                     property: 'entityName',
                     sortable: true,
                     position: 3,
                 },
                 {
-                    label: 'Field',
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.field'),
                     property: 'fieldName',
                     sortable: true,
                     position: 4,

@@ -454,7 +454,9 @@
       "error-resolution": {
         "errors": {
           "downloadLogsFailed": "Failed downloading log file.",
-          "continueMigrationFailed": "Failed continuing migration."
+          "continueMigrationFailed": "Failed continuing migration.",
+          "fetchLogsFailed": "Failed fetching log data.",
+          "fetchRunFailed": "Failed fetching migration run data."
         },
         "field": {
           "many-to-one": "Many to one",
@@ -490,6 +492,14 @@
               "errors": "Errors ({count})",
               "warnings": "Warnings ({count})",
               "infos": "Infos ({count})"
+            },
+            "table": {
+              "columns": {
+                "count": "Fixed / Total",
+                "code": "Error",
+                "entity": "Entity",
+                "field": "Field"
+              }
             },
             "action": {
               "edit": "Edit"
