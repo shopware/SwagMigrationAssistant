@@ -28,7 +28,7 @@ class PremappingController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/migration/generate-premapping', name: 'api.admin.migration.generate-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/generate-premapping', name: 'api.admin.migration.generate-premapping', methods: ['POST'], defaults: ['_acl' => ['swag_migration.editor']])]
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
         $dataSelectionIds = $request->request->all('dataSelectionIds');
@@ -41,7 +41,7 @@ class PremappingController extends AbstractController
         return new JsonResponse($this->premappingService->generatePremapping($context, $migrationContext, $dataSelectionIds));
     }
 
-    #[Route(path: '/api/_action/migration/write-premapping', name: 'api.admin.migration.write-premapping', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/write-premapping', name: 'api.admin.migration.write-premapping', methods: ['POST'], defaults: ['_acl' => ['swag_migration.editor']])]
     public function writePremapping(Request $request, Context $context): Response
     {
         $premapping = $request->request->all('premapping');

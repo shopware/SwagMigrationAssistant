@@ -66,12 +66,16 @@
                             <sw-context-menu-item :router-link="{ name: 'swag.migration.index.history.detail', params:{ id:item.id } }">
                                 {{ $tc('swag-migration.history.contextMenu.details') }}
                             </sw-context-menu-item>
+
                             <sw-context-menu-item @click="onContextDownloadLogFile(item.id)">
                                 {{ $tc('swag-migration.history.contextMenu.downloadLogs') }}
                             </sw-context-menu-item>
-                            <sw-context-menu-item variant="danger"
-                                                  :disabled="isMediaProcessing"
-                                                  @click="onContextClearRunClicked(item.id)">
+
+                            <sw-context-menu-item
+                                variant="danger"
+                                :disabled="isMediaProcessing || !acl.can('swag_migration.deleter')"
+                                @click="onContextClearRunClicked(item.id)"
+                            >
                                 {{ $tc('swag-migration.history.contextMenu.clearLogs') }}
                             </sw-context-menu-item>
                         </template>
@@ -142,7 +146,7 @@
                                 <mt-button
                                     size="small"
                                     variant="critical"
-                                    :disabled="runClearConfirmModalIsLoading"
+                                    :disabled="runClearConfirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                     @click="onClearRunConfirmed"
                                 >
                                     {{ $tc('global.default.delete') }}

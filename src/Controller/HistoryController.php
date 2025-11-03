@@ -29,7 +29,7 @@ class HistoryController extends AbstractController
     {
     }
 
-    #[Route(path: '/api/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['swag_migration.viewer']])]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->getAlnum('runUuid');
@@ -54,7 +54,7 @@ class HistoryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/migration/download-logs-of-run', name: 'api.admin.migration.download-logs-of-run', methods: ['POST'], defaults: ['auth_required' => false, '_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/download-logs-of-run', name: 'api.admin.migration.download-logs-of-run', methods: ['POST'], defaults: ['auth_required' => false, '_acl' => ['swag_migration.viewer']])]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -80,7 +80,7 @@ class HistoryController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/api/_action/migration/clear-data-of-run', name: 'api.admin.migration.clear-data-of-run', methods: ['POST'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/clear-data-of-run', name: 'api.admin.migration.clear-data-of-run', methods: ['POST'], defaults: ['_acl' => ['swag_migration.deleter']])]
     public function clearDataOfRun(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -98,7 +98,7 @@ class HistoryController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.is-media-processing', methods: ['GET'], defaults: ['_acl' => ['admin']])]
+    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.is-media-processing', methods: ['GET'], defaults: ['_acl' => ['swag_migration_history:read']])]
     public function isMediaProcessing(): JsonResponse
     {
         $result = $this->historyService->isMediaProcessing();

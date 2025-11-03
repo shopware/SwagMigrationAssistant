@@ -58,6 +58,7 @@ export default Shopware.Component.wrapComponentConfig({
     inject: [
         MIGRATION_API_SERVICE,
         'repositoryFactory',
+        'acl',
     ],
 
     mixins: [

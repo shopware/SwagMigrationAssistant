@@ -17,6 +17,7 @@
                 <sw-tabs-item
                     :route="{ name: 'swag.migration.index.dataSelector' }"
                     :title="$tc('swag-migration.general.tabDataSelector')"
+                    :disabled="!acl.can('swag_migration.editor')"
                 >
                     {{ $tc('swag-migration.general.tabDataSelector') }}
                 </sw-tabs-item>
