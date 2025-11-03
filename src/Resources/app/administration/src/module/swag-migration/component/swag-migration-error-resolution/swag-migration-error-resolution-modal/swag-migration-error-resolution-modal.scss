@@ -70,9 +70,8 @@
         min-width: 25rem;
 
         &-header {
-            // fixed padding needed for alignment with left side (top border)
             /* stylelint-disable-next-line meteor/prefer-sizing-token */
-            padding: 1.1rem var(--scale-size-24);fixedpaddingneededforalignmentwithleftsidepadding
+            padding: 1.1rem var(--scale-size-24);
             border-bottom: 1px solid var(--color-border-primary-default);
 
 
