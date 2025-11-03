@@ -4,6 +4,9 @@ import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migr
 import type MigrationApiService from '../../../../../core/service/api/swag-migration.api.service';
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 import type { MigrationStore } from '../../../store/migration.store';
+import type { TRepository } from '../../../../../type/types';
+
+const { Criteria } = Shopware.Data;
 
 /**
  * @private
@@ -19,19 +22,35 @@ export const MIGRATION_LOG_LEVEL = {
  */
 export type MigrationLogLevel = (typeof MIGRATION_LOG_LEVEL)[keyof typeof MIGRATION_LOG_LEVEL];
 
+type TableData = {
+    count: number;
+    code: string;
+    entityName: string;
+    fieldName: string;
+    resolved: boolean;
+};
+
 /**
  * @private
  */
 export interface SwagMigrationErrorResolutionStepData {
-    defaultTabItem: MigrationLogLevel;
+    tabItem: MigrationLogLevel;
     tablePage: number;
     tableLimit: number;
     tableTotal: number;
+    tableData: Array<TableData>;
+    tableLoading: boolean;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
     continueLoading: boolean;
+    runId: string | null;
     migrationStore: MigrationStore;
     migrationApiService: MigrationApiService;
+    levelCounts: {
+        error: number;
+        warning: number;
+        info: number;
+    };
 }
 
 /**
@@ -43,6 +62,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     inject: [
         MIGRATION_API_SERVICE,
+        'repositoryFactory',
     ],
 
     mixins: [
@@ -51,85 +71,57 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationErrorResolutionStepData {
         return {
-            defaultTabItem: MIGRATION_LOG_LEVEL.ERROR,
+            tabItem: MIGRATION_LOG_LEVEL.ERROR,
             tablePage: 1,
-            tableLimit: 25,
-            tableTotal: 145,
+            tableLimit: 10,
+            tableTotal: 0,
+            tableData: [],
+            tableLoading: true,
             openContinueModal: false,
             openErrorResolutionModal: false,
             continueLoading: false,
+            runId: null,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             migrationApiService: Shopware.Service(MIGRATION_API_SERVICE),
+            levelCounts: {
+                error: 0,
+                warning: 0,
+                info: 0,
+            },
         };
     },
 
+    created() {
+        this.componentCreated();
+    },
+
     computed: {
-        tableDataSource() {
-            return [
-                {
-                    id: 'test-id',
-                    count: '15 / 15',
-                    resolved: true,
-                    error: 'empty_required_field',
-                    entity: 'product',
-                    field: 'name',
-                },
-                {
-                    id: 'test-id',
-                    count: '15 / 15',
-                    resolved: true,
-                    error: 'empty_required_field',
-                    entity: 'product',
-                    field: 'name',
-                },
-                {
-                    id: 'test-id',
-                    count: '12 / 15',
-                    resolved: false,
-                    error: 'empty_required_field',
-                    entity: 'product',
-                    field: 'name',
-                },
-                {
-                    id: 'test-id',
-                    count: '12 / 15',
-                    resolved: false,
-                    error: 'empty_required_field',
-                    entity: 'product',
-                    field: 'name',
-                },
-                {
-                    id: 'test-id',
-                    count: '12 / 15',
-                    resolved: false,
-                    error: 'empty_required_field',
-                    entity: 'product',
-                    field: 'name',
-                },
-                {
-                    id: 'test-id',
-                    count: '12 / 15',
-                    resolved: false,
-                    error: 'empty_required_field',
-                    entity: 'product',
-                    field: 'name',
-                },
-            ];
+        migrationRunRepository(): TRepository<'swag_migration_run'> {
+            return this.repositoryFactory.create('swag_migration_run');
         },
 
         tabItems() {
             return [
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.errors', { count: 145 }),
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.errors', {
+                        count: this.levelCounts.error,
+                    }),
                     name: MIGRATION_LOG_LEVEL.ERROR,
+                    disabled: this.levelCounts.error === 0,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.warnings', { count: 35 }),
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.warnings', {
+                        count: this.levelCounts.warning,
+                    }),
                     name: MIGRATION_LOG_LEVEL.WARNING,
+                    disabled: this.levelCounts.warning === 0,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.infos', { count: 13 }),
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.infos', {
+                        count: this.levelCounts.info,
+                    }),
                     name: MIGRATION_LOG_LEVEL.INFO,
+                    disabled: this.levelCounts.info === 0,
                 },
             ];
         },
@@ -144,19 +136,19 @@ export default Shopware.Component.wrapComponentConfig({
                 },
                 {
                     label: 'Error',
-                    property: 'error',
+                    property: 'code',
                     sortable: true,
                     position: 2,
                 },
                 {
                     label: 'Entity',
-                    property: 'entity',
+                    property: 'entityName',
                     sortable: true,
                     position: 3,
                 },
                 {
                     label: 'Field',
-                    property: 'field',
+                    property: 'fieldName',
                     sortable: true,
                     position: 4,
                 },
@@ -165,6 +157,76 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
+        async componentCreated() {
+            await this.fetchLogByLevel(null);
+        },
+
+        async fetchLogByLevel(level: MigrationLogLevel | null) {
+            if (level !== null) {
+                this.tabItem = level;
+            }
+
+            if (!this.tabItem) {
+                return;
+            }
+
+            this.tableLoading = true;
+
+            if (!this.runId) {
+                await this.fetchRun();
+            }
+
+            if (!this.runId) {
+                this.tableLoading = false;
+                return;
+            }
+
+            try {
+                const result = await this.migrationApiService.getLogGroups(
+                    this.runId,
+                    this.tabItem,
+                    Number(this.tablePage),
+                    Number(this.tableLimit),
+                );
+
+                this.tableTotal = result.total;
+                this.levelCounts = result.levelCounts;
+
+                this.tableData = result.items.map((item) => ({
+                    count: item.count,
+                    code: item.code,
+                    entityName: item?.entityName || '-',
+                    fieldName: item?.fieldName || '-',
+                    resolved: false,
+                }));
+            } catch (error) {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
+                });
+            } finally {
+                this.tableLoading = false;
+            }
+        },
+
+        async fetchRun() {
+            const criteria = new Criteria(1, 1)
+                .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
+                .addIncludes({
+                    swag_migration_run: ['id'],
+                });
+
+            const result = await this.migrationRunRepository
+                .search(criteria, Shopware.Context.api)
+                .then((res) => res.first()?.id)
+                .catch(() => {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.fetchRunFailed'),
+                    });
+                });
+
+            this.runId = result || null;
+        },
+
         async onContinueMigration() {
             this.continueLoading = true;
 
@@ -182,7 +244,6 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onDownloadLogs() {
-            // TODO: fetch latest !?
             const runId = this.migrationStore.latestRun?.id;
 
             try {
@@ -204,6 +265,18 @@ export default Shopware.Component.wrapComponentConfig({
                     message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
                 });
             }
+        },
+
+        onPageChange(page: { page: number; limit: number }) {
+            this.tablePage = page.page;
+            this.tableLimit = page.limit;
+
+            this.fetchLogByLevel(null);
+        },
+
+        onTabChange(tab: MigrationLogLevel) {
+            this.tablePage = 1;
+            this.fetchLogByLevel(tab);
         },
     },
 });

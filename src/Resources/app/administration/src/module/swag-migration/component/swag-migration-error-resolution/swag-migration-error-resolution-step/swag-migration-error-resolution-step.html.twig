@@ -129,22 +129,24 @@
 
         <template #tabs>
             <mt-tabs
-                :defaultItem="defaultTabItem"
+                :defaultItem="tabItem"
                 :items="tabItems"
+                @new-item-active="onTabChange"
             />
         </template>
 
         <div class="swag-migration-error-resolution-step__card-table">
             <sw-data-grid
                 identifier="swag-migration-error-resolution-grid"
-                :data-source="tableDataSource"
+                :data-source="tableData"
                 :columns="tableColumns"
+                :is-loading="tableLoading"
                 :show-selection="false"
             >
                 <template #column-count="{ item }">
                     <div class="swag-migration-error-resolution-step__card-table-count">
                         <span class="swag-migration-error-resolution-step__card-table-count-text">
-                            {{ item.count }}
+                            0 / {{ item.count }}
                         </span>
 
                         <mt-icon
@@ -171,6 +173,7 @@
                         :limit="tableLimit"
                         :total="tableTotal"
                         :steps="[10, 25, 50]"
+                        @page-change="onPageChange"
                     />
                 </template>
             </sw-data-grid>

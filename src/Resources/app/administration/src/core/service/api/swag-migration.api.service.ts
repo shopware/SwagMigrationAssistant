@@ -441,19 +441,55 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
+    async getLogGroups(
+        runId: string,
+        level: string,
+        page: number,
+        limit: number,
+    ): Promise<{
+        total: number;
+        items: Array<{ code: string; entityName: string | null; fieldName: string | null; count: number }>;
+        levelCounts: { error: number; warning: number; info: number };
+    }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        return (
+            // @ts-ignore
+            this.httpClient
+                // @ts-ignore
+                .get(`${this.getApiBasePath()}/get-log-groups`, {
+                    ...this.basicConfig,
+                    params: {
+                        runId,
+                        level,
+                        page,
+                        limit,
+                    },
+                    headers,
+                })
+                .then((response: AxiosResponse) => {
+                    return ApiService.handleResponse(response);
+                })
+        );
+    }
+
     async isResettingChecksums(): Promise<boolean> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
         // @ts-ignore
-        return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
-                ...this.basicConfig,
-                headers,
-            })
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return (
+            this.httpClient
+                // @ts-ignore
+                .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
+                    ...this.basicConfig,
+                    headers,
+                })
+                .then((response: AxiosResponse) => {
+                    return ApiService.handleResponse(response);
+                })
+        );
     }
 
     async isTruncatingMigrationData(): Promise<boolean> {
@@ -461,13 +497,16 @@ export default class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders();
 
         // @ts-ignore
-        return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
-                ...this.basicConfig,
-                headers,
-            })
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return (
+            this.httpClient
+                // @ts-ignore
+                .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
+                    ...this.basicConfig,
+                    headers,
+                })
+                .then((response: AxiosResponse) => {
+                    return ApiService.handleResponse(response);
+                })
+        );
     }
 }

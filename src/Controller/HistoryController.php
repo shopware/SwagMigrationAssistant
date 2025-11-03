@@ -105,4 +105,45 @@ class HistoryController extends AbstractController
 
         return new JsonResponse($result);
     }
+
+    #[Route(
+        path: '/api/migration/get-log-groups',
+        name: 'api.admin.migration.get-log-groups',
+        methods: ['GET'],
+        defaults: ['_acl' => ['swag_migration.viewer']]
+    )]
+    public function getLogGroups(Request $request, Context $context): JsonResponse
+    {
+        $runId = $request->query->getAlnum('runId');
+        $level = $request->query->get('level', 'error');
+
+        $page = $request->query->get('page', 1);
+        $limit = $request->query->get('limit', 10);
+
+        if ($runId === '') {
+            throw RoutingException::missingRequestParameter('runId');
+        }
+
+        if ($level === '') {
+            throw RoutingException::missingRequestParameter('level');
+        }
+
+        if (!\is_numeric($page) || (int) $page < 1) {
+            throw RoutingException::invalidRequestParameter('page');
+        }
+
+        if (!\is_numeric($limit) || (int) $limit < 1) {
+            throw RoutingException::invalidRequestParameter('limit');
+        }
+
+        $result = $this->historyService->getGroupedLogsByCodeAndEntity(
+            $runId,
+            $level,
+            (int) $page,
+            (int) $limit,
+            $context
+        );
+
+        return new JsonResponse($result);
+    }
 }

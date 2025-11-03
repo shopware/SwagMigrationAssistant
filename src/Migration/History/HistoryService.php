@@ -8,6 +8,8 @@
 namespace SwagMigrationAssistant\Migration\History;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
+use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -322,5 +324,122 @@ class HistoryService implements HistoryServiceInterface
         }
 
         return $output;
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, count: int}>, levelCounts: array{error: int, warning: int, info: int}}
+     */
+    public function getGroupedLogsByCodeAndEntity(
+        string $runUuid,
+        string $level,
+        int $page,
+        int $limit,
+        Context $context,
+    ): array {
+        $runIdBytes = Uuid::fromHexToBytes($runUuid);
+        $offset = ($page - 1) * $limit;
+
+        $sql = '
+            SELECT
+                code,
+                entity_name,
+                field_name,
+                COUNT(*) as count,
+                COUNT(*) OVER() as total
+            FROM swag_migration_logging
+            WHERE run_id = :runId
+                AND level = :level
+                AND user_fixable = 1
+            GROUP BY code, entity_name, field_name
+            ORDER BY count DESC, code ASC, entity_name ASC, field_name ASC
+            LIMIT :limit OFFSET :offset
+        ';
+
+        $result = $this->connection->executeQuery(
+            $sql,
+            [
+                'runId' => $runIdBytes,
+                'level' => $level,
+                'limit' => $limit,
+                'offset' => $offset,
+            ],
+            [
+                'limit' => ParameterType::INTEGER,
+                'offset' => ParameterType::INTEGER,
+            ]
+        );
+
+        $groupedLogs = [];
+        $total = 0;
+
+        $rows = $result->fetchAllAssociative();
+        
+        if (\count($rows) > 0) {
+            $total = (int) $rows[0]['total'];
+        }
+
+        foreach ($rows as $row) {
+            $groupedLogs[] = [
+                'code' => $row['code'],
+                'entityName' => $row['entity_name'],
+                'fieldName' => $row['field_name'],
+                'count' => (int) $row['count'],
+            ];
+        }
+
+        $levelCounts = $this->getLogLevelCounts($runUuid);
+
+        return [
+            'total' => $total,
+            'items' => $groupedLogs,
+            'levelCounts' => $levelCounts,
+        ];
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @return array{error: int, warning: int, info: int}
+     */
+    private function getLogLevelCounts(string $runUuid): array
+    {
+        $runIdBytes = Uuid::fromHexToBytes($runUuid);
+
+        $sql = '
+            SELECT
+                level,
+                COUNT(DISTINCT CONCAT(code, \'|\', COALESCE(entity_name, \'\'), \'|\', COALESCE(field_name, \'\'))) as count
+            FROM swag_migration_logging
+            WHERE run_id = :runId
+                AND user_fixable = 1
+            GROUP BY level
+        ';
+
+        $result = $this->connection->executeQuery(
+            $sql,
+            [
+                'runId' => $runIdBytes,
+            ]
+        );
+
+        $rows = $result->fetchAllAssociative();
+
+        $counts = [
+            'error' => 0,
+            'warning' => 0,
+            'info' => 0,
+        ];
+
+        foreach ($rows as $row) {
+            $level = \strtolower($row['level']);
+
+            if (isset($counts[$level])) {
+                $counts[$level] = (int) $row['count'];
+            }
+        }
+
+        return $counts;
     }
 }

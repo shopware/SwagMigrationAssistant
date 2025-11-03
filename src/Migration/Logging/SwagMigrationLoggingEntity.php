@@ -19,7 +19,7 @@ class SwagMigrationLoggingEntity extends Entity
 
     protected string $runId;
 
-    protected SwagMigrationRunEntity $run;
+    protected ?SwagMigrationRunEntity $run = null;
 
     protected string $profileName;
 
@@ -71,7 +71,7 @@ class SwagMigrationLoggingEntity extends Entity
         $this->runId = $runId;
     }
 
-    public function getRun(): SwagMigrationRunEntity
+    public function getRun(): ?SwagMigrationRunEntity
     {
         return $this->run;
     }

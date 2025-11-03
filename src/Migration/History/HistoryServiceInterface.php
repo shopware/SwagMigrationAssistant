@@ -27,4 +27,15 @@ interface HistoryServiceInterface
     public function clearDataOfRun(string $runUuid, Context $context): void;
 
     public function isMediaProcessing(): bool;
+
+    /**
+     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, count: int}>, levelCounts: array{error: int, warning: int, info: int}}
+     */
+    public function getGroupedLogsByCodeAndEntity(
+        string $runUuid,
+        string $level,
+        int $page,
+        int $limit,
+        Context $context,
+    ): array;
 }
