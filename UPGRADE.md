@@ -67,6 +67,10 @@
     - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContext`
     - Added null checks to methods `getProfile()` and `getGateway()` in `SwagMigrationAssistant\Migration\MigrationContext` to ensure that a profile and gateway is set before usage
 
+- [BREAKING] [#57](https://github.com/shopware/SwagMigrationAssistant/pull/57) feat!: checksum and reset via mq
+    - [BREAKING] Renamed method `cleanupMappingChecksums()` to `startCleanupMappingChecksums()` in `SwagMigrationAssistant\Migration\Run\RunServiceInterface` and implementation `SwagMigrationAssistant\Migration\Run\RunService`
+    - [BREAKING] Renamed method `cleanupMigrationData()` to `startTruncateMigrationData()` in `SwagMigrationAssistant\Migration\Run\RunServiceInterface` and implementation `SwagMigrationAssistant\Migration\Run\RunService`
+
 # 14.0.0
 - [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.
 - [BREAKING] MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.

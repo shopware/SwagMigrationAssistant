@@ -1,18 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^Property SwagMigrationAssistant\\Migration\\Converter\\Converter\:\:\$mainMapping \(array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string\|null, additionalData\: array\<mixed\>\|null\}\|null\) does not accept array\{additionalData\: non\-empty\-array\<mixed\>\}\|array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string\|null, additionalData\: non\-empty\-array\<mixed\>\}\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Migration/Converter/Converter.php
-
-		-
-			message: '#^Property SwagMigrationAssistant\\Migration\\Converter\\Converter\:\:\$mainMapping \(array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string\|null, additionalData\: array\<mixed\>\|null\}\|null\) does not accept array\{checksum\: string\}\|array\{id\: string, connectionId\: string, oldIdentifier\: string\|null, entityUuid\: string\|null, entityValue\: string\|null, checksum\: string, additionalData\: array\<mixed\>\|null\}\.$#'
-			identifier: assign.propertyType
-			count: 1
-			path: src/Migration/Converter/Converter.php
-
-		-
 			message: '#^swag_migration_data\.run association has a configured autoload\=\=\=true, this is forbidden for platform integrations$#'
 			identifier: shopware.associationAutoload
 			count: 1
@@ -967,18 +955,6 @@ parameters:
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
 
 		-
-			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\ProductConverter\:\:checkDefaultCurrency\(\) has parameter \$source with no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductConverter.php
-
-		-
-			message: '#^Parameter \#1 \$source of method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\ProductConverter\:\:checkDefaultCurrency\(\) expects array, hasOffsetValue\(string, array\<string, mixed\>\) given\.$#'
-			identifier: argument.type
-			count: 1
-			path: src/Profile/Shopware6/Converter/ProductConverter.php
-
-		-
 			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\PropertyGroupConverter\:\:convertOption\(\) has parameter \$option with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
@@ -1193,18 +1169,6 @@ parameters:
 			identifier: missingType.iterableValue
 			count: 1
 			path: tests/Profile/Shopware/Gateway/LocalGatewayTest.php
-
-		-
-			message: '#^Parameter \#1 \$data of method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\ProductConverter\:\:convert\(\) expects array\<string, mixed\>, array\|ArrayAccess given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Profile/Shopware55/Converter/ProductConverterTest.php
-
-		-
-			message: '#^Parameter \#1 \$data of method SwagMigrationAssistant\\Profile\\Shopware\\Converter\\ProductConverter\:\:convert\(\) expects array\<string, mixed\>, hasOffsetValue\(string, mixed\) given\.$#'
-			identifier: argument.type
-			count: 1
-			path: tests/Profile/Shopware55/Converter/ProductConverterTest.php
 
 		-
 			message: '#^Method SwagMigrationAssistant\\Test\\Profile\\Shopware6\\Converter\\ProductSortingConverterTest\:\:loadMapping\(\) has parameter \$mappingArray with no value type specified in iterable type array\.$#'

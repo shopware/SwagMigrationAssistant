@@ -11,6 +11,7 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -23,7 +24,6 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollectio
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
-use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
@@ -39,6 +39,7 @@ use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSet;
 use SwagMigrationAssistant\Migration\Run\ProgressDataSetCollection;
 use SwagMigrationAssistant\Migration\Run\RunService;
+use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -116,7 +117,6 @@ class RunServiceTest extends TestCase
         $run->setProgress($progress);
 
         $this->runRepo = new StaticEntityRepository([
-            new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([]),
             new SwagMigrationRunCollection([$run]),
         ], new SwagMigrationRunDefinition());
@@ -272,6 +272,105 @@ class RunServiceTest extends TestCase
         }
     }
 
+    public function testResumeMigrationInWrongStep(): void
+    {
+        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus
+            ->expects(static::never())
+            ->method('dispatch');
+
+        $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
+        $runTransitionService
+            ->expects(static::never())
+            ->method('transitionToRunStep');
+
+        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
+        $runRepo = new StaticEntityRepository([
+            new SwagMigrationRunCollection([
+                (static function (): SwagMigrationRunEntity {
+                    $run = new SwagMigrationRunEntity();
+                    $run->setId(Uuid::randomHex());
+                    $run->setStep(MigrationStep::FETCHING);
+
+                    return $run;
+                })(),
+            ]),
+        ], new SwagMigrationRunDefinition());
+
+        $runService = new RunService(
+            $runRepo,
+            $this->createMock(EntityRepository::class),
+            $this->createMock(MigrationDataFetcher::class),
+            $this->createMock(DataSelectionRegistry::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(ThemeService::class),
+            $this->createMock(MappingService::class),
+            $this->createMock(Connection::class),
+            $this->createMock(LoggingService::class),
+            $this->createMock(TrackingEventClient::class),
+            $messageBus,
+            $this->createMock(MigrationContextFactory::class),
+            $this->createMock(PremappingService::class),
+            $runTransitionService
+        );
+
+        try {
+            $runService->resumeAfterFixes($this->context);
+        } catch (MigrationException $exception) {
+            static::assertSame(MigrationException::MIGRATION_NOT_IN_STEP, $exception->getErrorCode());
+        }
+    }
+
+    public function testResumeMigration(): void
+    {
+        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus
+            ->expects(static::once())
+            ->method('dispatch')
+            ->willReturn(new Envelope(new \stdClass()));
+
+        $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
+        $runTransitionService
+            ->expects(static::once())
+            ->method('transitionToRunStep');
+
+        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
+        $runRepo = new StaticEntityRepository([
+            new SwagMigrationRunCollection([
+                (static function (): SwagMigrationRunEntity {
+                    $run = new SwagMigrationRunEntity();
+                    $run->setId(Uuid::randomHex());
+                    $run->setStep(MigrationStep::APPLY_FIXES);
+
+                    return $run;
+                })(),
+            ]),
+        ], new SwagMigrationRunDefinition());
+
+        $runService = new RunService(
+            $runRepo,
+            $this->createMock(EntityRepository::class),
+            $this->createMock(MigrationDataFetcher::class),
+            $this->createMock(DataSelectionRegistry::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(EntityRepository::class),
+            $this->createMock(ThemeService::class),
+            $this->createMock(MappingService::class),
+            $this->createMock(Connection::class),
+            $this->createMock(LoggingService::class),
+            $this->createMock(TrackingEventClient::class),
+            $messageBus,
+            $this->createMock(MigrationContextFactory::class),
+            $this->createMock(PremappingService::class),
+            $runTransitionService
+        );
+
+        $runService->resumeAfterFixes($this->context);
+    }
+
     private function createRunService(
         MockObject&TrackingEventClient $trackingEventClient,
         MockObject&MessageBusInterface $messageBus,
@@ -298,7 +397,6 @@ class RunServiceTest extends TestCase
             $this->generalSettingRepo,
             $this->createMock(ThemeService::class),
             $this->createMock(MappingService::class),
-            new SwagMigrationDataDefinition(),
             $this->createMock(Connection::class),
             $this->createMock(LoggingService::class),
             $trackingEventClient,

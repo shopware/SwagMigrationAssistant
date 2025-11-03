@@ -49,7 +49,7 @@ export default Shopware.Component.wrapComponentConfig({
         async createdComponent() {
             this.$super('createdComponent');
 
-            if (!this.acl.isAdmin()) {
+            if (!this.acl.can('swag_migration.viewer')) {
                 this.loading = false;
                 return;
             }

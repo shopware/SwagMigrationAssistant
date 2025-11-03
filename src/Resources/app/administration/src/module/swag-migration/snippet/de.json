@@ -18,7 +18,10 @@
       "tabHistory": "Historie",
       "tabDataSelector": "Datenauswahl",
       "disabledMessages": {
+        "noPermission": "Es fehlen die erforderlichen Berechtigungen, um eine Migration durchzuführen.",
         "noData": "Es sind keine Daten für die Migration verfügbar.",
+        "resettingChecksum": "Die Prüfsummen werden derzeit zurückgesetzt.",
+        "truncatingMigration": "Migrationsdaten werden zurzeit geleert.",
         "noSelectedData": "Es wurden keine Daten für die Migration ausgewählt.",
         "disabled": "Die Migration ist in dieser Umgebung deaktiviert.",
         "loading": "Die Migration wird derzeit ausgeführt.",
@@ -186,6 +189,16 @@
       "pluginVersionText": "Wir haben festgestellt, dass ein Plugin-Update in deinem Quellsystem {sourceSystem} verfügbar ist. Bitte update das Plugin „{pluginName}“ bevor Du mit der Migration startest.",
       "shopwareMajorVersionText": "Wir haben festgestellt, dass die Version deines Quellsystems {sourceSystem} nicht der Version des Zielsystems {targetSystem} entspricht. Bitte stelle sicher, dass beide Systeme in der gleichen Major-Version vorliegen, bevor Du mit der Migration startest.",
       "shopInfoCard": {
+        "updateBanner": {
+          "isResettingChecksums": {
+            "title": "Prüfsummen werden zurückgesetzt",
+            "message": "Die Prüfsummen werden zurückgesetzt. Dies kann einige Minuten dauern."
+          },
+          "isTruncatingMigration": {
+            "title": "Migrationsdaten werden geleert",
+            "message": "Die Migrationsdaten werden geleert. Dies kann einige Minuten dauern."
+          }
+        },
         "link": "Hilfe & Dokumentation",
         "cardTitle": "Shopsystem",
         "refreshButton": "Verbindung aktualisieren",
@@ -196,7 +209,7 @@
         "buttonRemoveCredentials": "Zugangsdaten löschen",
         "buttonProfileInstallation": "Weiteres Profil installieren",
         "buttonResetChecksums": "Reset der Prüfsummen",
-        "buttonResetMigration": "Migration abschließen",
+        "buttonResetMigration": "Migrationsdaten aufräumen",
         "connected": "Verbunden",
         "notConnected": "Nicht verbunden",
         "noConnection": "Keine Verbindung",
@@ -364,6 +377,7 @@
         "flowChart": {
           "premapping": "Prüfen",
           "fetchData": "Lesen",
+          "applyFixes": "Fehler beheben",
           "writeData": "Schreiben",
           "processMedia": "Download",
           "cleanup": "Aufräumen",
@@ -409,6 +423,10 @@
           "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
           "logSummary": "Logbuch",
           "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen. Es kann sein, dass zu einem späteren Zeitpunkt noch mehr Log-Nachrichten hinzukommen, weil der Mediendownload noch im Hintergrund läuft."
+        },
+        "applyFixes": {
+          "title": "Fehler beheben",
+          "resumeButton": "Migration fortsetzen"
         }
       },
       "confirmAbortDialog": {
@@ -629,6 +647,13 @@
       "startMigration": "Fehler beim Starten der Migration",
       "approveFinishedMigration": "Fehler beim Abschließen der Migration",
       "abortMigration": "Fehler beim Abbrechen der Migration"
+    }
+  },
+  "sw-privileges": {
+    "permissions": {
+      "swag_migration": {
+        "label": "Migration Assistant"
+      }
     }
   },
   "global": {

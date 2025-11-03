@@ -248,6 +248,26 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
+    async resumeMigrationAfterFixes(): Promise<ApiResponse<unknown>> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/resume-after-fixes`,
+                {},
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     async getProfiles(): Promise<MigrationProfile[]> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
@@ -418,6 +438,36 @@ export default class MigrationApiService extends ApiService {
             )
             .then((response: AxiosResponse<Blob>) => {
                 return response.data;
+            });
+    }
+
+    async isResettingChecksums(): Promise<boolean> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
+                ...this.basicConfig,
+                headers,
+            })
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    async isTruncatingMigrationData(): Promise<boolean> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
+        return this.httpClient
+            .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
+                ...this.basicConfig,
+                headers,
+            })
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
             });
     }
 }

@@ -46,6 +46,7 @@ class GeneralSettingDefinition extends EntityDefinition
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
             new FkField('selected_connection_id', 'selectedConnectionId', SwagMigrationConnectionDefinition::class),
             new BoolField('is_reset', 'isReset'),
+            new BoolField('is_resetting_checksums', 'isResettingChecksums'),
             new CreatedAtField(),
             new UpdatedAtField(),
             new ManyToOneAssociationField('selectedConnection', 'selected_connection_id', SwagMigrationConnectionDefinition::class, 'id', true),

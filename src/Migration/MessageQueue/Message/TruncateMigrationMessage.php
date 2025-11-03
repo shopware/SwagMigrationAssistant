@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\MessageQueue\AsyncMessageInterface;
 
 #[Package('fundamentals@after-sales')]
-class CleanupMigrationMessage implements AsyncMessageInterface
+class TruncateMigrationMessage implements AsyncMessageInterface
 {
     public function __construct(private readonly ?string $tableName = null)
     {

@@ -32,6 +32,10 @@ class MigrationException extends HttpException
 
     public const MIGRATION_IS_ALREADY_RUNNING = 'SWAG_MIGRATION__MIGRATION_IS_ALREADY_RUNNING';
 
+    public const MIGRATION_IS_RESETTING_CHECKSUMS = 'SWAG_MIGRATION__MIGRATION_IS_RESETTING_CHECKSUMS';
+
+    public const MIGRATION_IS_TRUNCATING_DATA = 'SWAG_MIGRATION__MIGRATION_IS_TRUNCATING_DATA';
+
     public const NO_CONNECTION_IS_SELECTED = 'SWAG_MIGRATION__NO_CONNECTION_IS_SELECTED';
 
     public const NO_CONNECTION_FOUND = 'SWAG_MIGRATION__NO_CONNECTION_FOUND';
@@ -99,6 +103,10 @@ class MigrationException extends HttpException
     public const FAILED_TO_CREATE_MIGRATION_LOG = 'SWAG_MIGRATION__FAILED_TO_CREATE_MIGRATION_LOG';
 
     public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
+
+    public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
+
+    public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
@@ -291,6 +299,24 @@ class MigrationException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::MIGRATION_IS_ALREADY_RUNNING,
             'Migration is already running.',
+        );
+    }
+
+    public static function checksumResetRunning(): self
+    {
+        return new MigrationIsAlreadyRunningException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_IS_RESETTING_CHECKSUMS,
+            'Checksum reset is running.',
+        );
+    }
+
+    public static function truncatingDataRunning(): self
+    {
+        return new MigrationIsAlreadyRunningException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_IS_TRUNCATING_DATA,
+            'Data truncation is running.',
         );
     }
 
@@ -521,6 +547,26 @@ class MigrationException extends HttpException
             self::UNEXPECTED_NULL_VALUE,
             'Unexpected null value for field "{{ fieldName }}".',
             ['fieldName' => $fieldName]
+        );
+    }
+
+    public static function couldNotConvertFix(string $missingKey): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::MISSING_MIGRATION_FIX_KEY,
+            'Missing key "{{ missingKey }}" to construct MigrationFix.',
+            ['missingKey' => $missingKey]
+        );
+    }
+
+    public static function migrationNotInStep(string $runUuid, string $step): self
+    {
+        return new NoRunningMigrationException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_NOT_IN_STEP,
+            'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
+            ['runUuid' => $runUuid, 'step' => $step]
         );
     }
 }

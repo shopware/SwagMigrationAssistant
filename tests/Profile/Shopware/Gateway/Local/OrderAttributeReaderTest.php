@@ -50,12 +50,12 @@ class OrderAttributeReaderTest extends TestCase
 
         $data = $this->orderAttributeReader->read($this->migrationContext);
 
-        static::assertCount(7, $data);
-        static::assertSame('orderID', $data[0]['name']);
-        static::assertSame('integer', $data[0]['type']);
+        static::assertCount(6, $data);
+        static::assertSame('attribute1', $data[0]['name']);
+        static::assertSame('text', $data[0]['type']);
         static::assertSame('de-DE', $data[0]['_locale']);
 
-        static::assertSame('attribute1', $data[1]['name']);
+        static::assertSame('attribute2', $data[1]['name']);
         static::assertSame('text', $data[1]['type']);
         static::assertSame('de-DE', $data[1]['_locale']);
     }

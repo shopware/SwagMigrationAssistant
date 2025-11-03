@@ -27,6 +27,8 @@ type MigrationState = {
         isLoading: boolean;
         latestRun: TEntity<'swag_migration_run'> | null;
         currentConnection: TEntity<'swag_migration_connection'> | null;
+        isResettingChecksum: boolean;
+        isTruncatingMigration: boolean;
         warningConfirmed: boolean;
         dataSelectionIds: string[];
         connectionId: string | null;
@@ -49,6 +51,8 @@ type MigrationState = {
         setConnectionId: (id: string) => void;
         fetchConnectionId: () => Promise<boolean>;
         setIsLoading: (isLoading: boolean) => void;
+        setIsResettingChecksum: (isResetting: boolean) => void;
+        setIsTruncatingMigration: (isTruncating: boolean) => void;
         fetchDataSelectionIds: () => Promise<void>;
         setLastConnectionCheck: (date: Date) => void;
         setDataSelectionIds: (newIds: string[]) => void;
@@ -97,6 +101,14 @@ const migrationStore = Shopware.Store.register({
          */
         currentConnection: null,
         /**
+         * Flag which sets the checksum is resetting
+         */
+        isResettingChecksum: false,
+        /**
+         * Flag which sets the migration data is being truncated
+         */
+        isTruncatingMigration: false,
+        /**
          * The possible data that the user can migrate.
          */
         dataSelectionTableData: [],
@@ -133,6 +145,10 @@ const migrationStore = Shopware.Store.register({
         },
 
         migrationDisabledMessage(): string | null {
+            if (!Shopware.Service('acl').can('swag_migration.creator')) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noPermission');
+            }
+
             if (!this.dataSelectionTableData.length) {
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noData');
             }
@@ -144,6 +160,14 @@ const migrationStore = Shopware.Store.register({
 
                 return null;
             });
+
+            if (this.isResettingChecksum) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.resettingChecksum');
+            }
+
+            if (this.isTruncatingMigration) {
+                return Shopware.Snippet.tc('swag-migration.general.disabledMessages.truncatingMigration');
+            }
 
             if (!this.dataSelectionIds.some((id: string) => tableDataIds.includes(id))) {
                 return Shopware.Snippet.tc('swag-migration.general.disabledMessages.noSelectedData');
@@ -202,6 +226,14 @@ const migrationStore = Shopware.Store.register({
 
         setCurrentConnection(connection: TEntity<'swag_migration_connection'> | null) {
             this.currentConnection = connection;
+        },
+
+        setIsResettingChecksum(isResetting: boolean) {
+            this.isResettingChecksum = isResetting;
+        },
+
+        setIsTruncatingMigration(isTruncating: boolean) {
+            this.isTruncatingMigration = isTruncating;
         },
 
         setDataSelectionIds(newIds: string[]) {
