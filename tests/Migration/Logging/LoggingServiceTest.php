@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
@@ -114,6 +115,7 @@ class LoggingServiceTest extends TestCase
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(1, $result->getTotal());
         $resultLog = $result->getEntities()->first();
+        static::assertInstanceOf(SwagMigrationLoggingEntity::class, $resultLog);
         static::assertSame($entityId, $resultLog->getEntityId());
     }
 }

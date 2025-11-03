@@ -21,8 +21,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('fundamentals@after-sales')]
 class SwagMigrationLogBuilder
 {
-    public const DEFAULT_ENTITY_ID = 'NO-ENTITY-ID';
-
     /**
      * @param array<mixed>|null $sourceData
      * @param array<mixed>|null $convertedData
@@ -32,7 +30,7 @@ class SwagMigrationLogBuilder
         protected string $runId,
         protected string $profileName,
         protected string $gatewayName,
-        protected ?string $entityId = self::DEFAULT_ENTITY_ID,
+        protected ?string $entityId = null,
         protected ?string $entityName = null,
         protected ?string $fieldName = null,
         protected ?string $fieldSourcePath = null,
@@ -73,7 +71,7 @@ class SwagMigrationLogBuilder
         return $this;
     }
 
-    public function withEntityId(string $entityId): self
+    public function withEntityId(?string $entityId): self
     {
         $this->entityId = $entityId;
 

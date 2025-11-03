@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
 abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLogEntry

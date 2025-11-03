@@ -106,6 +106,8 @@ class MigrationException extends HttpException
 
     public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
 
+    public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -555,6 +557,16 @@ class MigrationException extends HttpException
             self::MISSING_MIGRATION_FIX_KEY,
             'Missing key "{{ missingKey }}" to construct MigrationFix.',
             ['missingKey' => $missingKey]
+        );
+    }
+
+    public static function invalidId(string $entityId, string $entityName): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::INVALID_ID,
+            'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
+            ['entityId' => $entityId, 'entityName' => $entityName]
         );
     }
 }

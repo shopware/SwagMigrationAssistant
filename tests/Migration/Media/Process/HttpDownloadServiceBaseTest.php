@@ -115,9 +115,10 @@ class HttpDownloadServiceBaseTest extends TestCase
 
     public function testProcessWithRequestFailure(): void
     {
+        $mediaFileId = Uuid::randomHex();
         $mediaFiles = [
             [
-                'mediaId' => Uuid::randomHex(),
+                'mediaId' => $mediaFileId,
                 'fileName' => 'test.jpg',
                 'fileContent' => null,
                 'uri' => 'http://test.localhost/test.jpg?random=123456789',
@@ -211,6 +212,7 @@ class HttpDownloadServiceBaseTest extends TestCase
                 'convertedData' => null,
                 'exceptionMessage' => null,
                 'exceptionTrace' => null,
+                'entityId' => $mediaFileId,
             ],
         ], $this->loggingService->getLoggingArray());
     }

@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteParameterBag;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -70,12 +71,12 @@ readonly class SwagMigrationValidationService
             $this->validateFields($context);
             $this->validateAssociations($context);
         } catch (\Throwable $e) {
-            $this->loggingService->addLogEntry(
+            $context->getValidationResult()->addLog(
                 SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
                     ->withEntityName($context->getEntityDefinition()->getEntityName())
                     ->withExceptionMessage($e->getMessage())
                     ->withExceptionTrace($e->getTrace())
-                    ->build(ValidationExceptionLog::class),
+                    ->build(ValidationExceptionLog::class)
             );
         }
 
@@ -135,6 +136,10 @@ readonly class SwagMigrationValidationService
 
         if (!isset($context->getConvertedData()['id'])) {
             throw MigrationException::unexpectedNullValue('id');
+        }
+
+        if (!Uuid::isValid($context->getConvertedData()['id'])) {
+            throw MigrationException::invalidId($context->getConvertedData()['id'], $context->getEntityDefinition()->getEntityName());
         }
 
         $entityExistence = EntityExistence::createForEntity(

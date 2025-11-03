@@ -26,6 +26,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
@@ -276,7 +277,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'id' => 'not-a-uuid',
             ],
             [
-                ValidationInvalidFieldValueLog::class,
+                ValidationExceptionLog::class,
             ],
         ];
 
