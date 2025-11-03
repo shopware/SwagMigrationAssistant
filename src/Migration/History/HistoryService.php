@@ -375,7 +375,7 @@ class HistoryService implements HistoryServiceInterface
         $total = 0;
 
         $rows = $result->fetchAllAssociative();
-        
+
         if (\count($rows) > 0) {
             $total = (int) $rows[0]['total'];
         }

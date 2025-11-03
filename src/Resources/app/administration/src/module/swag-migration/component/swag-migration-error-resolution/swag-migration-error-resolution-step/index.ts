@@ -40,6 +40,7 @@ export interface SwagMigrationErrorResolutionStepData {
     tableTotal: number;
     tableData: Array<TableData>;
     tableLoading: boolean;
+    downloadLoading: boolean;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
     continueLoading: boolean;
@@ -77,6 +78,7 @@ export default Shopware.Component.wrapComponentConfig({
             tableTotal: 0,
             tableData: [],
             tableLoading: true,
+            downloadLoading: false,
             openContinueModal: false,
             openErrorResolutionModal: false,
             continueLoading: false,
@@ -244,16 +246,20 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onDownloadLogs() {
-            const runId = this.migrationStore.latestRun?.id;
+            if (!this.runId) {
+                return;
+            }
+
+            this.downloadLoading = true;
 
             try {
-                const blob = await this.migrationApiService.downloadLogsOfRun(runId);
+                const blob = await this.migrationApiService.downloadLogsOfRun(this.runId);
 
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
 
                 link.href = url;
-                link.download = `migration-logs-${runId}.txt`;
+                link.download = `migration-logs-${this.runId}.txt`;
 
                 document.body.appendChild(link);
                 link.click();
@@ -264,6 +270,8 @@ export default Shopware.Component.wrapComponentConfig({
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
                 });
+            } finally {
+                this.downloadLoading = false;
             }
         },
 

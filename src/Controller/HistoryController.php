@@ -115,32 +115,27 @@ class HistoryController extends AbstractController
     public function getLogGroups(Request $request, Context $context): JsonResponse
     {
         $runId = $request->query->getAlnum('runId');
-        $level = $request->query->get('level', 'error');
+        $level = $request->query->get('level', '');
+        $pageParam = $request->query->get('page');
+        $limitParam = $request->query->get('limit');
 
-        $page = $request->query->get('page', 1);
-        $limit = $request->query->get('limit', 10);
-
-        if ($runId === '') {
-            throw RoutingException::missingRequestParameter('runId');
+        if ($runId === '' || $level === '') {
+            throw RoutingException::missingRequestParameter($runId === '' ? 'runId' : 'level');
         }
 
-        if ($level === '') {
-            throw RoutingException::missingRequestParameter('level');
-        }
-
-        if (!\is_numeric($page) || (int) $page < 1) {
+        if ($pageParam === null || $pageParam === '' || !\is_numeric($pageParam) || (int) $pageParam < 1) {
             throw RoutingException::invalidRequestParameter('page');
         }
 
-        if (!\is_numeric($limit) || (int) $limit < 1) {
+        if ($limitParam === null || $limitParam === '' || !\is_numeric($limitParam) || (int) $limitParam < 1) {
             throw RoutingException::invalidRequestParameter('limit');
         }
 
         $result = $this->historyService->getGroupedLogsByCodeAndEntity(
             $runId,
             $level,
-            (int) $page,
-            (int) $limit,
+            (int) $pageParam,
+            (int) $limitParam,
             $context
         );
 

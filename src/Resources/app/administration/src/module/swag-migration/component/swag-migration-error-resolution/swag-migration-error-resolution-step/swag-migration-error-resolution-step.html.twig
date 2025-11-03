@@ -64,6 +64,7 @@
                 <mt-button
                     class="swag-migration-error-resolution-step__header-buttons-download"
                     @click="onDownloadLogs"
+                    :is-loading="downloadLoading"
                     variant="secondary"
                 >
                     <template #iconFront>
