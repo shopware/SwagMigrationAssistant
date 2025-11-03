@@ -110,6 +110,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                             'source_path' => $sourcePath,
                             'media' => $mappedWorkload[$mediaId],
                         ])
+                        ->withEntityId($mediaId)
                         ->build(CannotGetFileRunLog::class)
                 );
                 $processedMedia[] = $mediaId;
@@ -139,6 +140,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                         ])
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
+                        ->withEntityId($mediaId)
                         ->build(ExceptionRunLog::class)
                 );
             }

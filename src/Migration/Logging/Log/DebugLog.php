@@ -95,4 +95,9 @@ readonly class DebugLog implements SwagMigrationLogEntry
     {
         return null;
     }
+
+    public function getEntityId(): ?string
+    {
+        return null;
+    }
 }

@@ -134,6 +134,7 @@ class SwagMigrationLogBuilder
             $this->runId,
             $this->profileName,
             $this->gatewayName,
+            $this->entityId,
             $this->entityName,
             $this->fieldName,
             $this->fieldSourcePath,

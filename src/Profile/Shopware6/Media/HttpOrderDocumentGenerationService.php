@@ -293,6 +293,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                     ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
                     ->withExceptionTrace($clientException?->getTrace() ?? [])
                     ->withSourceData($additionalData)
+                    ->withEntityId($uuid)
                     ->build(CannotGetFileRunLog::class)
             );
         }

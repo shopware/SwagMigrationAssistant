@@ -138,6 +138,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                                 'source_path' => $sourcePath,
                                 'media' => $mediaFile,
                             ])
+                            ->withEntityId($mediaId)
                             ->build(CannotGetFileRunLog::class)
                     );
                     $processedMedia[] = $mediaId;
@@ -161,6 +162,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                             'source_path' => $sourcePath,
                             'media' => $mediaFile,
                         ])
+                        ->withEntityId($mediaId)
                         ->build(TemporaryFileErrorLog::class)
                 );
 
@@ -198,6 +200,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                             ])
                             ->withExceptionMessage($e->getMessage())
                             ->withExceptionTrace($e->getTrace())
+                            ->withEntityId($mediaId)
                             ->build(ExceptionRunLog::class)
                     );
                 }
@@ -212,6 +215,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                             'source_path' => $sourcePath,
                             'media' => $mediaFile,
                         ])
+                        ->withEntityId($mediaId)
                         ->build(CannotGetFileRunLog::class)
                 );
                 $failedMedia[] = $mediaId;
@@ -254,6 +258,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                         'file_path' => $filePath,
                         'media' => $media,
                     ])
+                    ->withEntityId($mediaId)
                     ->build(MimeTypeErrorLog::class)
             );
 

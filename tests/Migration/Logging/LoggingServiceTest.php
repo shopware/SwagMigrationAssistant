@@ -94,4 +94,26 @@ class LoggingServiceTest extends TestCase
         }
         static::assertSame(2, $validCount);
     }
+
+    public function testAddLogEntryWithEntityId(): void
+    {
+        $entityId = Uuid::randomHex();
+        $log = (new SwagMigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))
+            ->withEntityId($entityId)
+            ->build(AssociationRequiredMissingLog::class);
+
+        $this->loggingService->addLogEntry($log);
+        $this->loggingService->saveLogging($this->context);
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+        $resultLog = $result->getEntities()->first();
+        static::assertSame($entityId, $resultLog->getEntityId());
+    }
 }

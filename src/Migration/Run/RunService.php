@@ -269,6 +269,7 @@ class RunService implements RunServiceInterface
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                        ->withEntityId($salesChannelId)
                         ->build(ThemeCompilingErrorRunLog::class)
                 );
             }

@@ -110,6 +110,7 @@ readonly class SwagMigrationValidationService
                     ->withEntityName($context->getEntityDefinition()->getEntityName())
                     ->withFieldName($missingField)
                     ->withConvertedData($context->getConvertedData())
+                    ->withEntityId($context->getConvertedData()['id'] ?? null)
                     ->build(ValidationMissingRequiredFieldLog::class)
             );
         }
@@ -122,6 +123,7 @@ readonly class SwagMigrationValidationService
                     ->withEntityName($context->getEntityDefinition()->getEntityName())
                     ->withFieldName($unexpectedField)
                     ->withConvertedData($context->getConvertedData())
+                    ->withEntityId($context->getConvertedData()['id'] ?? null)
                     ->build(ValidationUnexpectedFieldLog::class)
             );
         }
@@ -172,6 +174,7 @@ readonly class SwagMigrationValidationService
                         ->withConvertedData([$fieldName => $value])
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
+                        ->withEntityId($context->getConvertedData()['id'] ?? null)
                         ->build(ValidationInvalidFieldValueLog::class)
                 );
             }
@@ -223,6 +226,7 @@ readonly class SwagMigrationValidationService
                         ->withEntityName($context->getEntityDefinition()->getEntityName())
                         ->withFieldName($fkFieldName)
                         ->withConvertedData([$fkFieldName => $fkValue])
+                        ->withEntityId($context->getConvertedData()['id'] ?? null)
                         ->build(ValidationInvalidForeignKeyLog::class)
                 );
             }

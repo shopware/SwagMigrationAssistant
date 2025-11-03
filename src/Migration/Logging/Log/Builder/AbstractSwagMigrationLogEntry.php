@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
 abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLogEntry
@@ -26,6 +27,7 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
         protected string $runId,
         protected string $profileName,
         protected string $gatewayName,
+        protected ?string $entityId = null,
         protected ?string $entityName = null,
         protected ?string $fieldName = null,
         protected ?string $fieldSourcePath = null,
@@ -93,5 +95,10 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     public function getExceptionTrace(): ?array
     {
         return $this->exceptionTrace;
+    }
+
+    public function getEntityId(): ?string
+    {
+        return $this->entityId;
     }
 }
