@@ -232,7 +232,6 @@ abstract class ProductConverter extends ShopwareConverter
                     $converted['children'][0]['cover'] = $media;
                 }
             }
-            unset($media);
         }
         $converted['children'][0]['parentId'] = $containerUuid;
         unset($data['detail']['id'], $converted['children'][0]['translations'], $converted['children'][0]['customFields']);

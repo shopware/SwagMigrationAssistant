@@ -50,7 +50,7 @@ class SeoUrlWriter extends AbstractWriter
      */
     public function writeData(array $data, Context $context): array
     {
-        // modified seo urls should not be written
+        // only unmodified should be written
         $data = \array_filter($data, static function ($value) {
             return !(isset($value['isModified']) && $value['isModified'] === true);
         });

@@ -82,7 +82,7 @@ class TaxRuleConverter extends ShopwareConverter
         }
 
         // new types can not be created due to write protection on technical name
-        if ($taxRuleTypeUuid === null) {
+        if ($taxRuleTypeUuid !== null) {
             $converted['taxRuleTypeId'] = $taxRuleTypeUuid;
             unset($converted['type']);
         }
