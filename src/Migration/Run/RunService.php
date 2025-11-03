@@ -248,22 +248,23 @@ class RunService implements RunServiceInterface
         }
 
         $connectionId = $connection->getId();
-        $salesChannels = $this->getSalesChannels($connectionId, $context);
-        $defaultTheme = $this->getDefaultTheme($context);
+        $salesChannelIds = $this->getSalesChannels($connectionId, $context);
+        $defaultThemeId = $this->getDefaultTheme($context);
 
-        if ($defaultTheme === null) {
+        if ($defaultThemeId === null) {
             return;
         }
 
-        foreach ($salesChannels as $salesChannel) {
+        foreach ($salesChannelIds as $salesChannelId) {
             try {
-                $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
+                $this->themeService->assignTheme($defaultThemeId, $salesChannelId, $context);
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(
                     (new SwagMigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
+                        $salesChannelId,
                     ))
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())

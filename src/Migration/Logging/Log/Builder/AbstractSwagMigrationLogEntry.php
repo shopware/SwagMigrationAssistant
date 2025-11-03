@@ -20,7 +20,6 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     /**
      * @param array<mixed>|null $sourceData
      * @param array<mixed>|null $convertedData
-     * @param array<mixed>|null $usedMapping
      * @param array<mixed>|null $exceptionTrace
      */
     public function __construct(
@@ -32,7 +31,6 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
         protected ?string $fieldSourcePath = null,
         protected ?array $sourceData = null,
         protected ?array $convertedData = null,
-        protected ?array $usedMapping = null,
         protected ?string $exceptionMessage = null,
         protected ?array $exceptionTrace = null,
     ) {
@@ -82,14 +80,6 @@ abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLo
     public function getConvertedData(): ?array
     {
         return $this->convertedData;
-    }
-
-    /**
-     * @return array<mixed>|null
-     */
-    public function getUsedMapping(): ?array
-    {
-        return $this->usedMapping;
     }
 
     public function getExceptionMessage(): ?string

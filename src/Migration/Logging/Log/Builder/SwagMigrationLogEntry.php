@@ -40,11 +40,6 @@ interface SwagMigrationLogEntry
      */
     public function getConvertedData(): ?array;
 
-    /**
-     * @return array<mixed>|null
-     */
-    public function getUsedMapping(): ?array;
-
     public function getExceptionMessage(): ?string;
 
     /**

@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Core\Migration;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Migration\MigrationStep;
-use SwagMigrationAssistant\Test\MysqlTableHelperTrait;
 
 /**
  * @internal
@@ -18,7 +17,7 @@ use SwagMigrationAssistant\Test\MysqlTableHelperTrait;
 #[Package('fundamentals@after-sales')]
 class Migration1761903189AdjustSwagMigrationLoggingTable extends MigrationStep
 {
-    use MysqlTableHelperTrait;
+    use TableHelperTrait;
 
     public function getCreationTimestamp(): int
     {
@@ -32,7 +31,7 @@ class Migration1761903189AdjustSwagMigrationLoggingTable extends MigrationStep
         }
 
         if (!$this->columnExists($connection, 'swag_migration_logging', 'entity_id')) {
-            $connection->executeStatement('ALTER TABLE `swag_migration_logging` ADD COLUMN `entity_id` BINARY(16) NOT NULL;');
+            $connection->executeStatement('ALTER TABLE `swag_migration_logging` ADD COLUMN `entity_id` BINARY(16) NULL;');
         }
 
         if (!$this->indexExists($connection, 'swag_migration_logging', 'idx.entity_id')) {

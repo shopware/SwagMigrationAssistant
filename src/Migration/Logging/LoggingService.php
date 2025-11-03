@@ -65,7 +65,6 @@ class LoggingService implements LoggingServiceInterface
             'fieldSourcePath' => $logEntry->getFieldSourcePath(),
             'sourceData' => $logEntry->getSourceData(),
             'convertedData' => $logEntry->getConvertedData(),
-            'usedMapping' => $logEntry->getUsedMapping(),
             'exceptionMessage' => $logEntry->getExceptionMessage(),
             'exceptionTrace' => $logEntry->getExceptionTrace(),
         ];

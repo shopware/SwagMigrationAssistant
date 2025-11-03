@@ -74,7 +74,6 @@ class SwagMigrationLogTest extends TestCase
             ->withFieldSourcePath('test3')
             ->withSourceData(['test' => 'test4'])
             ->withConvertedData(['test' => 'test5'])
-            ->withUsedMapping(['test' => 'test6'])
             ->withExceptionMessage('test7')
             ->withExceptionTrace(['test' => 'test8'])
             ->build($logClass);
@@ -88,7 +87,6 @@ class SwagMigrationLogTest extends TestCase
         static::assertSame('test3', $logEntry->getFieldSourcePath());
         static::assertSame(['test' => 'test4'], $logEntry->getSourceData());
         static::assertSame(['test' => 'test5'], $logEntry->getConvertedData());
-        static::assertSame(['test' => 'test6'], $logEntry->getUsedMapping());
         static::assertSame('test7', $logEntry->getExceptionMessage());
         static::assertSame(['test' => 'test8'], $logEntry->getExceptionTrace());
     }

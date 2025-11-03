@@ -209,7 +209,6 @@ class HttpDownloadServiceBaseTest extends TestCase
                 'fieldSourcePath' => null,
                 'sourceData' => null,
                 'convertedData' => null,
-                'usedMapping' => null,
                 'exceptionMessage' => null,
                 'exceptionTrace' => null,
             ],

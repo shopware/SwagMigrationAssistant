@@ -21,22 +21,23 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('fundamentals@after-sales')]
 class SwagMigrationLogBuilder
 {
+    public const DEFAULT_ENTITY_ID = 'NO-ENTITY-ID';
+
     /**
      * @param array<mixed>|null $sourceData
      * @param array<mixed>|null $convertedData
-     * @param array<mixed>|null $usedMapping
      * @param array<mixed>|null $exceptionTrace
      */
     public function __construct(
         protected string $runId,
         protected string $profileName,
         protected string $gatewayName,
+        protected ?string $entityId = self::DEFAULT_ENTITY_ID,
         protected ?string $entityName = null,
         protected ?string $fieldName = null,
         protected ?string $fieldSourcePath = null,
         protected ?array $sourceData = null,
         protected ?array $convertedData = null,
-        protected ?array $usedMapping = null,
         protected ?string $exceptionMessage = null,
         protected ?array $exceptionTrace = null,
     ) {
@@ -72,6 +73,13 @@ class SwagMigrationLogBuilder
         return $this;
     }
 
+    public function withEntityId(string $entityId): self
+    {
+        $this->entityId = $entityId;
+
+        return $this;
+    }
+
     /**
      * @param array<mixed> $sourceData
      */
@@ -88,16 +96,6 @@ class SwagMigrationLogBuilder
     public function withConvertedData(array $convertedData): self
     {
         $this->convertedData = $convertedData;
-
-        return $this;
-    }
-
-    /**
-     * @param array<mixed> $usedMapping
-     */
-    public function withUsedMapping(array $usedMapping): self
-    {
-        $this->usedMapping = $usedMapping;
 
         return $this;
     }
@@ -141,7 +139,6 @@ class SwagMigrationLogBuilder
             $this->fieldSourcePath,
             $this->sourceData,
             $this->convertedData,
-            $this->usedMapping,
             $this->exceptionMessage,
             $this->exceptionTrace,
         );

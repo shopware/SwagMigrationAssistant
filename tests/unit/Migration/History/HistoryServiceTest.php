@@ -100,6 +100,7 @@ class HistoryServiceTest extends TestCase
         $migrationLog->setSourceData([['source' => 'data']]);
         $migrationLog->setConvertedData([['converted' => 'data']]);
         $migrationLog->setExceptionTrace([['exception' => 'trace']]);
+        $migrationLog->setEntityId($ids->get('entityId_log1'));
 
         $premapping = new PremappingStruct(
             'entity',
@@ -164,6 +165,7 @@ class HistoryServiceTest extends TestCase
         $minimalLog->setCode('TEST_CODE_MINIMAL');
         $minimalLog->setProfileName('profile name');
         $minimalLog->setGatewayName('gateway name');
+        $minimalLog->setEntityId($ids->get('entityId_log-minimal'));
 
         yield 'minimal log information' => [
             $migrationRun,

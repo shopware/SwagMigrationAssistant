@@ -11,12 +11,12 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Core\Migration\Migration1761903189AdjustSwagMigrationLoggingTable;
-use SwagMigrationAssistant\Test\MysqlTableHelperTrait;
+use SwagMigrationAssistant\Core\Migration\TableHelperTrait;
 
 class Migration1761903189AdjustSwagMigrationLoggingTableTest extends TestCase
 {
     use KernelTestBehaviour;
-    use MysqlTableHelperTrait;
+    use TableHelperTrait;
 
     public function testUpdate(): void
     {

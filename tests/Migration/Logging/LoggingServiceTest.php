@@ -64,11 +64,14 @@ class LoggingServiceTest extends TestCase
             $this->runUuid,
             'Profile name',
             'Gateway name',
+            Uuid::randomHex(),
         ))->build(AssociationRequiredMissingLog::class);
+
         $log2 = (new SwagMigrationLogBuilder(
             $this->runUuid,
             'Profile name',
             'Gateway name',
+            Uuid::randomHex(),
         ))->build(CannotConvertChildEntityLog::class);
 
         $this->loggingService->addLogEntry($log1);
