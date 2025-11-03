@@ -51,7 +51,7 @@ class SwagMigrationLoggingEntity extends Entity
 
     protected ?string $exceptionMessage = null;
 
-    protected string $entityId;
+    protected ?string $entityId;
 
     /**
      * @var array<int, array<string, mixed>>|null
@@ -226,7 +226,7 @@ class SwagMigrationLoggingEntity extends Entity
         $this->exceptionTrace = $exceptionTrace;
     }
 
-    public function getEntityId(): string
+    public function getEntityId(): ?string
     {
         return $this->entityId;
     }
