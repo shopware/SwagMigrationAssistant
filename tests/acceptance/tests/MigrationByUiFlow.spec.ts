@@ -103,9 +103,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     });
 
     await test.step('Expect entities to be there', async () => {
-        // sleep for 10 seconds
-        await new Promise((resolve) => setTimeout(resolve, 10_000));
-
         await EntityCounter.checkEntityCount('swag_migration_logging', 699);
 
         await EntityCounter.checkEntityCount('product', 427);
