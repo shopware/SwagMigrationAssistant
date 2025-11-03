@@ -29,6 +29,7 @@ export interface SwagMigrationErrorResolutionStepData {
     tableTotal: number;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
+    continueLoading: boolean;
     migrationStore: MigrationStore;
     migrationApiService: MigrationApiService;
 }
@@ -56,6 +57,7 @@ export default Shopware.Component.wrapComponentConfig({
             tableTotal: 145,
             openContinueModal: false,
             openErrorResolutionModal: false,
+            continueLoading: false,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             migrationApiService: Shopware.Service(MIGRATION_API_SERVICE),
         };
@@ -163,6 +165,22 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
+        async onContinueMigration() {
+            this.continueLoading = true;
+
+            return this.migrationApiService
+                .continueAfterErrorResolution()
+                .catch(() => {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
+                    });
+                })
+                .finally(() => {
+                    this.continueLoading = false;
+                    this.openContinueModal = false;
+                });
+        },
+
         async onDownloadLogs() {
             // TODO: fetch latest !?
             const runId = this.migrationStore.latestRun?.id;

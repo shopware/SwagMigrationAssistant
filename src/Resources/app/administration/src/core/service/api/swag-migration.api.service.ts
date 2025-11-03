@@ -28,7 +28,7 @@ export const MIGRATION_API_SERVICE = 'migrationApiService';
 export const MIGRATION_STEP = {
     IDLE: 'idle',
     FETCHING: 'fetching',
-    ERROR_RESOLUTION: 'error-resolution',
+    ERROR_RESOLUTION: 'apply-fixes',
     WRITING: 'writing',
     MEDIA_PROCESSING: 'media-processing',
     CLEANUP: 'cleanup',
@@ -248,7 +248,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async resumeMigrationAfterFixes(): Promise<ApiResponse<unknown>> {
+    async continueAfterErrorResolution(): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 

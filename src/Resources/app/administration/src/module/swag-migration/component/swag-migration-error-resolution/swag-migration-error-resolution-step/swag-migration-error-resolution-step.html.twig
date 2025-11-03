@@ -30,6 +30,8 @@
                     class="swag-migration-error-resolution-step__continue-modal-confirm"
                     variant="critical"
                     size="small"
+                    :is-loading="continueLoading"
+                    @click="onContinueMigration"
                 >
                     {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
                 </mt-button>
