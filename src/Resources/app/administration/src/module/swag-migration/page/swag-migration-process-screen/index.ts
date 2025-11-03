@@ -63,6 +63,12 @@ export default Shopware.Component.wrapComponentConfig({
     ],
 
     metaInfo() {
+        if (this.step === MIGRATION_STEP.ERROR_RESOLUTION) {
+            return {
+                title: this.errorResolutionMetaTitle,
+            };
+        }
+
         return {
             title:
                 this.progressPercentage !== null
@@ -96,6 +102,13 @@ export default Shopware.Component.wrapComponentConfig({
                 'dataSelectionIds',
             ],
         ),
+
+        errorResolutionMetaTitle() {
+            const stepName = this.$tc('swag-migration.index.error-resolution.step.header.title');
+            const adminName = this.$tc('global.sw-admin-menu.textShopwareAdmin');
+
+            return `${stepName} | ${adminName}`;
+        },
 
         abortButtonVisible() {
             return !this.isLoading && !this.componentIndexIsResult;
