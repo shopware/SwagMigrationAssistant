@@ -123,11 +123,11 @@ class HistoryController extends AbstractController
             throw RoutingException::missingRequestParameter($runId === '' ? 'runId' : 'level');
         }
 
-        if ($pageParam === null || $pageParam === '' || !\is_numeric($pageParam) || (int) $pageParam < 1) {
+        if ($pageParam === '' || !\is_numeric($pageParam)) {
             throw RoutingException::invalidRequestParameter('page');
         }
 
-        if ($limitParam === null || $limitParam === '' || !\is_numeric($limitParam) || (int) $limitParam < 1) {
+        if ($limitParam === '' || !\is_numeric($limitParam)) {
             throw RoutingException::invalidRequestParameter('limit');
         }
 
