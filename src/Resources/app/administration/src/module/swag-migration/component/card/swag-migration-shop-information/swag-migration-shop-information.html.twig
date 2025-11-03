@@ -93,6 +93,7 @@
                                                             class="swag-migration-shop-information__actions-initial"
                                                             size="small"
                                                             variant="secondary"
+                                                            :disabled="!acl.can('swag_migration.creator')"
                                                             @click="onClickCreateInitialConnection"
                                                         >
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonCreateInitialConnection') }}
@@ -103,6 +104,7 @@
                                                             class="swag-migration-shop-information__actions-edit"
                                                             size="small"
                                                             variant="secondary"
+                                                            :disabled="!acl.can('swag_migration.editor')"
                                                             @click="onClickEditConnectionCredentials"
                                                         >
                                                             {{ $tc('swag-migration.index.shopInfoCard.buttonEditSettings') }}
@@ -124,33 +126,50 @@
                                                         </template>
 
                                                         {% block swag_migration_shop_information_actions_refreshConnection %}
-                                                            <sw-context-menu-item @click="onClickRefreshConnection">
+                                                            <sw-context-menu-item
+                                                                @click="onClickRefreshConnection"
+                                                                :disabled="!acl.can('swag_migration.viewer')"
+                                                            >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.refreshButton') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_createConnectionItem %}
-                                                            <sw-context-menu-item @click="onClickCreateConnection">
+                                                            <sw-context-menu-item
+                                                                @click="onClickCreateConnection"
+                                                                :disabled="!acl.can('swag_migration.creator')"
+                                                            >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonCreateConnection') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_selectConnectionItem %}
-                                                            <sw-context-menu-item @click="onClickSelectConnection">
+                                                            <sw-context-menu-item
+                                                                @click="onClickSelectConnection"
+                                                                :disabled="!acl.can('swag_migration.editor')"
+                                                            >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonSelectConnection') }}
                                                             </sw-context-menu-item>
                                                         {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_profileInstallationItem %}
-                                                            <sw-context-menu-item @click="onClickProfileInstallation">
+                                                            <sw-context-menu-item
+                                                                @click="onClickProfileInstallation"
+                                                                :disabled="!acl.can('swag_migration.creator')"
+                                                            >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonProfileInstallation') }}
                                                             </sw-context-menu-item>
+                                                        {% endblock %}
+
+                                                        {% block swag_migration_shop_information_actions_divider %}
+                                                            <sw-context-menu-divider/>
                                                         {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_removeCredentialsItem %}
                                                             <sw-context-menu-item
                                                                 variant="danger"
                                                                 @click="showRemoveCredentialsConfirmModal = true"
+                                                                :disabled="!acl.can('swag_migration.deleter')"
                                                             >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonRemoveCredentials') }}
                                                             </sw-context-menu-item>
@@ -160,19 +179,17 @@
                                                             <sw-context-menu-item
                                                                 variant="danger"
                                                                 @click="showResetChecksumsConfirmModal = true"
+                                                                :disabled="!acl.can('swag_migration.deleter')"
                                                             >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonResetChecksums') }}
                                                             </sw-context-menu-item>
-                                                        {% endblock %}
-
-                                                        {% block swag_migration_shop_information_actions_divider %}
-                                                            <sw-context-menu-divider/>
                                                         {% endblock %}
 
                                                         {% block swag_migration_shop_information_actions_resetMigrationItem %}
                                                             <sw-context-menu-item
                                                                 variant="danger"
                                                                 @click="openResetMigrationModal"
+                                                                :disabled="!acl.can('swag_migration.deleter')"
                                                             >
                                                                 {{ $tc('swag-migration.index.shopInfoCard.buttonResetMigration') }}
                                                             </sw-context-menu-item>
@@ -310,7 +327,7 @@
                                     <mt-button
                                         size="small"
                                         variant="critical"
-                                        :disabled="confirmModalIsLoading"
+                                        :disabled="confirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                         @click="onClickRemoveConnectionCredentials"
                                     >
                                         {{ $tc('swag-migration.index.shopInfoCard.removeCredentialsConfirmDialog.confirmButtonText') }}
@@ -361,7 +378,7 @@
                                     <mt-button
                                         size="small"
                                         variant="critical"
-                                        :disabled="confirmModalIsLoading"
+                                        :disabled="confirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                         @click="onClickResetChecksums"
                                     >
                                         {{ $tc('swag-migration.index.shopInfoCard.resetChecksumsConfirmDialog.confirmButtonText') }}
@@ -414,7 +431,7 @@
                                     <mt-button
                                         size="small"
                                         variant="critical"
-                                        :disabled="confirmModalIsLoading"
+                                        :disabled="confirmModalIsLoading || !acl.can('swag_migration.deleter')"
                                         @click="onClickResetMigration"
                                     >
                                         {{ $tc('swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.confirmButtonText') }}

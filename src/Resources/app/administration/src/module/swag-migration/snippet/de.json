@@ -18,6 +18,7 @@
       "tabHistory": "Historie",
       "tabDataSelector": "Datenauswahl",
       "disabledMessages": {
+        "noPermission": "Es fehlen die erforderlichen Berechtigungen, um eine Migration durchzuführen.",
         "noData": "Es sind keine Daten für die Migration verfügbar.",
         "resettingChecksum": "Die Prüfsummen werden derzeit zurückgesetzt.",
         "truncatingMigration": "Migrationsdaten werden zurzeit geleert.",
@@ -646,6 +647,13 @@
       "startMigration": "Fehler beim Starten der Migration",
       "approveFinishedMigration": "Fehler beim Abschließen der Migration",
       "abortMigration": "Fehler beim Abbrechen der Migration"
+    }
+  },
+  "sw-privileges": {
+    "permissions": {
+      "swag_migration": {
+        "label": "Migration Assistant"
+      }
     }
   },
   "global": {
