@@ -65,6 +65,7 @@
                     class="swag-migration-error-resolution-step__header-buttons-download"
                     @click="onDownloadLogs"
                     :is-loading="downloadLoading"
+                    :disabled="loading || continueLoading"
                     variant="secondary"
                 >
                     <template #iconFront>
@@ -80,6 +81,7 @@
                 <mt-button
                     class="swag-migration-error-resolution-step__header-buttons-continue"
                     variant="primary"
+                    :disabled="loading || downloadLoading"
                     @click="() => openContinueModal = true"
                 >
                     {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
@@ -87,12 +89,17 @@
             </div>
         </div>
 
-        <div class="swag-migration-error-resolution-step__header-banner">
+        <div
+            v-if="totalUnfixableErrors > 0"
+            class="swag-migration-error-resolution-step__header-banner"
+        >
             <mt-banner
                 :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
                 variant="critical"
             >
-                <span>{{ $tc('swag-migration.index.error-resolution.step.header.banner.content') }}</span>
+                <span>
+                    {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
+                </span>
 
                 <mt-link
                     class="swag-migration-error-resolution-step__header-banner-link"
@@ -116,6 +123,7 @@
             <mt-button
                 class="swag-migration-error-resolution-step__card-header-filter"
                 variant="secondary"
+                :disabled="loading"
             >
                 <template #iconFront>
                     <mt-icon
@@ -141,7 +149,7 @@
                 identifier="swag-migration-error-resolution-grid"
                 :data-source="tableData"
                 :columns="tableColumns"
-                :is-loading="tableLoading"
+                :is-loading="loading"
                 :show-selection="false"
             >
                 <template #column-count="{ item }">
@@ -162,6 +170,7 @@
                 <template #actions="{ item }">
                     <sw-context-menu-item
                         class="swag-migration-error-resolution-step__card-table-edit"
+                        :disabld="loading"
                         @click="() => openErrorResolutionModal = true"
                     >
                         {{ $tc('swag-migration.index.error-resolution.step.card.action.edit') }}

@@ -39,12 +39,13 @@ export interface SwagMigrationErrorResolutionStepData {
     tableLimit: number;
     tableTotal: number;
     tableData: Array<TableData>;
-    tableLoading: boolean;
+    loading: boolean;
     downloadLoading: boolean;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
     continueLoading: boolean;
     runId: string | null;
+    totalUnfixableErrors: number;
     migrationStore: MigrationStore;
     migrationApiService: MigrationApiService;
     levelCounts: {
@@ -77,12 +78,13 @@ export default Shopware.Component.wrapComponentConfig({
             tableLimit: 10,
             tableTotal: 0,
             tableData: [],
-            tableLoading: true,
+            loading: true,
             downloadLoading: false,
             openContinueModal: false,
             openErrorResolutionModal: false,
             continueLoading: false,
             runId: null,
+            totalUnfixableErrors: 0,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             migrationApiService: Shopware.Service(MIGRATION_API_SERVICE),
             levelCounts: {
@@ -98,6 +100,10 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
+        migrationLoggingRepository(): TRepository<'swag_migration_logging'> {
+            return this.repositoryFactory.create('swag_migration_logging');
+        },
+
         migrationRunRepository(): TRepository<'swag_migration_run'> {
             return this.repositoryFactory.create('swag_migration_run');
         },
@@ -109,21 +115,21 @@ export default Shopware.Component.wrapComponentConfig({
                         count: this.levelCounts.error,
                     }),
                     name: MIGRATION_LOG_LEVEL.ERROR,
-                    disabled: this.levelCounts.error === 0,
+                    disabled: this.levelCounts.error === 0 || this.loading,
                 },
                 {
                     label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.warnings', {
                         count: this.levelCounts.warning,
                     }),
                     name: MIGRATION_LOG_LEVEL.WARNING,
-                    disabled: this.levelCounts.warning === 0,
+                    disabled: this.levelCounts.warning === 0 || this.loading,
                 },
                 {
                     label: this.$tc('swag-migration.index.error-resolution.step.card.tabs.infos', {
                         count: this.levelCounts.info,
                     }),
                     name: MIGRATION_LOG_LEVEL.INFO,
-                    disabled: this.levelCounts.info === 0,
+                    disabled: this.levelCounts.info === 0 || this.loading,
                 },
             ];
         },
@@ -160,28 +166,56 @@ export default Shopware.Component.wrapComponentConfig({
 
     methods: {
         async componentCreated() {
-            await this.fetchLogByLevel(null);
+            if (!this.runId) {
+                this.loading = true;
+                await this.fetchRun();
+            }
+
+            await Promise.all([
+                this.fetchLogByLevel(null),
+                this.fetchTotalUnfixableErrors(),
+            ]);
+        },
+
+        async fetchTotalUnfixableErrors() {
+            if (!this.runId) {
+                return;
+            }
+
+            const criteria = new Criteria(1, 1)
+                .addFilter(Criteria.equals('userFixable', false))
+                .addFilter(Criteria.equals('runId', this.runId));
+
+            const result = await this.migrationLoggingRepository
+                .search(criteria, Shopware.Context.api)
+                .then((res) => {
+                    return res.total;
+                })
+                .catch(() => {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.fetchUnfixableErrorsFailed'),
+                    });
+                });
+
+            this.totalUnfixableErrors = result || 0;
         },
 
         async fetchLogByLevel(level: MigrationLogLevel | null) {
-            if (level !== null) {
+            if (level) {
                 this.tabItem = level;
             }
 
             if (!this.tabItem) {
+                this.loading = false;
                 return;
             }
 
-            this.tableLoading = true;
-
             if (!this.runId) {
-                await this.fetchRun();
-            }
-
-            if (!this.runId) {
-                this.tableLoading = false;
+                this.loading = false;
                 return;
             }
+
+            this.loading = true;
 
             try {
                 const result = await this.migrationApiService.getLogGroups(
@@ -206,7 +240,7 @@ export default Shopware.Component.wrapComponentConfig({
                     message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
                 });
             } finally {
-                this.tableLoading = false;
+                this.loading = false;
             }
         },
 
