@@ -28,6 +28,7 @@ export const MIGRATION_API_SERVICE = 'migrationApiService';
 export const MIGRATION_STEP = {
     IDLE: 'idle',
     FETCHING: 'fetching',
+    APPLY_FIXES: 'apply-fixes',
     WRITING: 'writing',
     MEDIA_PROCESSING: 'media-processing',
     CLEANUP: 'cleanup',
@@ -236,6 +237,26 @@ export default class MigrationApiService extends ApiService {
             .post(
                 // @ts-ignore
                 `_action/${this.getApiBasePath()}/abort-migration`,
+                {},
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    async resumeMigrationAfterFixes(): Promise<ApiResponse<unknown>> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/resume-after-fixes`,
                 {},
                 {
                     ...this.basicConfig,

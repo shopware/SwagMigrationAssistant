@@ -37,6 +37,9 @@
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.fetchData') }}
                     </sw-step-item>
                     <sw-step-item>
+                        {{ $tc('swag-migration.index.loadingScreenCard.flowChart.applyFixes') }}
+                    </sw-step-item>
+                    <sw-step-item>
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.writeData') }}
                     </sw-step-item>
                     <sw-step-item>
@@ -60,6 +63,12 @@
                     :step="step"
                     :progress="progress"
                     :total="total" />
+            {% endblock %}
+
+            {% block swag_migration_index_main_page_card_applyFixes %}
+                <div v-if="componentIndex === UI_COMPONENT_INDEX.APPLY_FIXES">
+                    <swag-migration-apply-fixes/>
+                </div>
             {% endblock %}
 
             {% block swag_migration_index_main_page_card_loadingScreen_success %}
@@ -103,6 +112,7 @@
                                 <mt-button
                                     variant="critical"
                                     size="small"
+                                    :disabled="!acl.can('swag_migration.editor')"
                                     @click="onAbort"
                                 >
                                     {{ $tc('swag-migration.index.confirmAbortDialog.confirm') }}

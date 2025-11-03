@@ -13,17 +13,19 @@ const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
 const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
-    [MIGRATION_STEP.WRITING]: 1,
-    [MIGRATION_STEP.MEDIA_PROCESSING]: 2,
-    [MIGRATION_STEP.ABORTING]: 3,
-    [MIGRATION_STEP.CLEANUP]: 3,
-    [MIGRATION_STEP.INDEXING]: 4,
-    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 5,
+    [MIGRATION_STEP.APPLY_FIXES]: 1,
+    [MIGRATION_STEP.WRITING]: 2,
+    [MIGRATION_STEP.MEDIA_PROCESSING]: 3,
+    [MIGRATION_STEP.ABORTING]: 4,
+    [MIGRATION_STEP.CLEANUP]: 4,
+    [MIGRATION_STEP.INDEXING]: 5,
+    [MIGRATION_STEP.WAITING_FOR_APPROVE]: 6,
 } as const;
 
 const UI_COMPONENT_INDEX = {
     LOADING_SCREEN: 0,
-    RESULT_SUCCESS: 1,
+    APPLY_FIXES: 1,
+    RESULT_SUCCESS: 2,
 } as const;
 
 /**
@@ -53,6 +55,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     inject: [
         MIGRATION_API_SERVICE,
+        'acl',
     ],
 
     mixins: [
@@ -107,7 +110,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         abortButtonDisabled() {
-            return this.isLoading || this.step === MIGRATION_STEP.ABORTING;
+            return this.isLoading || this.step === MIGRATION_STEP.ABORTING || !this.acl.can('swag_migration.editor');
         },
 
         componentIndexIsResult() {
@@ -212,6 +215,9 @@ export default Shopware.Component.wrapComponentConfig({
                 state.step === MIGRATION_STEP.INDEXING
             ) {
                 this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
+                this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
+            } else if (state.step === MIGRATION_STEP.APPLY_FIXES) {
+                this.componentIndex = UI_COMPONENT_INDEX.APPLY_FIXES;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
             } else if (state.step === MIGRATION_STEP.WAITING_FOR_APPROVE || state.step === MIGRATION_STEP.IDLE) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
