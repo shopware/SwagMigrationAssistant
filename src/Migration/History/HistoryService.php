@@ -455,10 +455,10 @@ class HistoryService implements HistoryServiceInterface
         Context $context,
     ): array {
         $sql = '
-            SELECT LOWER(HEX(id)) as id 
-            FROM swag_migration_logging 
-            WHERE code = :code 
-                AND entity_name = :entityName 
+            SELECT LOWER(HEX(id)) as id
+            FROM swag_migration_logging
+            WHERE code = :code
+                AND entity_name = :entityName
                 AND field_name = :fieldName
                 AND user_fixable = 1
         ';

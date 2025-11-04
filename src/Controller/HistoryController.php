@@ -154,15 +154,15 @@ class HistoryController extends AbstractController
         $entityName = $request->request->get('entityName');
         $fieldName = $request->request->get('fieldName');
 
-        if ($code === null || $code === '') {
+        if (!\is_string($code) || $code === '') {
             throw RoutingException::missingRequestParameter('code');
         }
 
-        if ($entityName === null || $entityName === '') {
+        if (!\is_string($entityName) || $entityName === '') {
             throw RoutingException::missingRequestParameter('entityName');
         }
 
-        if ($fieldName === null || $fieldName === '') {
+        if (!\is_string($fieldName) || $fieldName === '') {
             throw RoutingException::missingRequestParameter('fieldName');
         }
 

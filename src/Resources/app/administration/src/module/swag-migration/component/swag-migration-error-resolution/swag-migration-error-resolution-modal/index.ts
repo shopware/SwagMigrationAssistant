@@ -222,6 +222,11 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
+            if (!selection || Object.keys(selection).length === 0) {
+                this.selectedLogIds = [];
+                return;
+            }
+
             const currentPageIds = this.tableData.map((row) => row.logId);
 
             this.selectedLogIds = this.selectedLogIds.filter((id) => !currentPageIds.includes(id));

@@ -80,7 +80,7 @@
                 <div class="swag-migration-error-resolution-modal__right-content">
                     <swag-migration-error-resolution-field
                         :log="selectedLog"
-                        :disabled="loading"
+                        :disabled="loading || selectedLogIds.length === 0"
                     />
 
                     <mt-banner
@@ -94,7 +94,7 @@
                     <mt-button
                         class="swag-migration-error-resolution-modal__right-content-button"
                         variant="primary"
-                        :disabled="loading"
+                        :disabled="loading || selectedLogIds.length === 0"
                     >
                         {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
                     </mt-button>
