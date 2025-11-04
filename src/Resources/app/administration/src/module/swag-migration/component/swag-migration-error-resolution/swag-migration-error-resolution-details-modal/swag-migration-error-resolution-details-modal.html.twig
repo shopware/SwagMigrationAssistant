@@ -1,13 +1,25 @@
 {% block swag_migration_error_resolution_details_modal %}
     <sw-modal
         class="swag-migration-error-resolution-details-modal"
+        variant="large"
         :title="modalTitle"
         @modal-close="() => $emit('close-error-resolution-details-modal')"
     >
         <div class="swag-migration-error-resolution-details-modal__container">
             <sw-code-editor
+                v-if="convertedData"
                 class="swag-migration-error-resolution-details-modal__code-editor"
                 name="migration-resolution-details-modal--code-editor"
+                :label="$tc('swag-migration.index.error-resolution.modals.details.convertedDataLabel')"
+                :value="convertedData"
+            />
+
+            <sw-code-editor
+                v-if="sourceData"
+                class="swag-migration-error-resolution-details-modal__code-editor"
+                name="migration-resolution-details-modal--code-editor"
+                :label="$tc('swag-migration.index.error-resolution.modals.details.sourceDataLabel')"
+                :value="sourceData"
             />
         </div>
     </sw-modal>

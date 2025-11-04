@@ -10,12 +10,23 @@ const { Criteria } = Shopware.Data;
 /**
  * @private
  */
+export type ResolutionModalRow = {
+    status: boolean;
+    convertedData: Record<string, unknown>;
+    sourceData: Record<string, unknown>;
+} & Record<string, unknown>;
+
+/**
+ * @private
+ */
 export interface SwagMigrationErrorResolutionModalData {
     openDetailsModal: boolean;
     tablePage: number;
     tableLimit: number;
     tableTotal: number;
-    tableData: Record<string, unknown>[];
+    tableData: ResolutionModalRow[];
+    selectedLogIds: string[];
+    selectedDetailsLog: ResolutionModalRow;
     loading: boolean;
 }
 
@@ -49,6 +60,8 @@ export default Shopware.Component.wrapComponentConfig({
             tableLimit: 25,
             tableTotal: 0,
             tableData: [],
+            selectedLogIds: [],
+            selectedDetailsLog: null,
             loading: false,
         };
     },
@@ -111,8 +124,10 @@ export default Shopware.Component.wrapComponentConfig({
                     this.tableData = result.map((log: MigrationLog) => {
                         const convertedData = log?.convertedData || {};
 
-                        const row = {
+                        const row: ResolutionModalRow = {
                             status: false,
+                            convertedData,
+                            sourceData: log?.sourceData || {},
                         };
 
                         entityFieldProperties.forEach((property) => {
@@ -144,6 +159,16 @@ export default Shopware.Component.wrapComponentConfig({
             return status
                 ? this.$tc('swag-migration.index.error-resolution.modals.error.left.status.resolved')
                 : this.$tc('swag-migration.index.error-resolution.modals.error.left.status.unresolved');
+        },
+
+        onOpenDetailsModal(row: ResolutionModalRow) {
+            this.selectedDetailsLog = row;
+            this.openDetailsModal = true;
+        },
+
+        onCloseDetailsModal() {
+            this.openDetailsModal = false;
+            this.selectedDetailsLog = null;
         },
 
         async onPageChange(page: { page: number; limit: number }) {

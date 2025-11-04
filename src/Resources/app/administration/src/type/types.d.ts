@@ -122,6 +122,7 @@ type MigrationLog = {
     entityName?: string;
     fieldName?: string;
     convertedData?: Record<string, unknown>;
+    sourceData?: Record<string, unknown>;
 };
 
 /**

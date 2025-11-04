@@ -527,7 +527,9 @@
             }
           },
           "details": {
-            "title": "Details: {entityName} - {value}"
+            "title": "Details: {entityName}",
+            "convertedDataLabel": "Converted data",
+            "sourceDataLabel": "Source data"
           }
         }
       },

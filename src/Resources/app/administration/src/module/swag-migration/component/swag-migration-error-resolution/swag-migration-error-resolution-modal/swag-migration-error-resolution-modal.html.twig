@@ -6,7 +6,9 @@
     >
         <swag-migration-error-resolution-details-modal
             v-if="openDetailsModal"
-            @close-error-resolution-details-modal="() => openDetailsModal = false"
+            :entity-name="selectedLog.entityName"
+            :selected-log="selectedDetailsLog"
+            @close-error-resolution-details-modal="onCloseDetailsModal"
         />
 
         <div class="swag-migration-error-resolution-modal__container">
@@ -46,7 +48,7 @@
                         <sw-context-menu-item
                             class="swag-migration-error-resolution-modal__left-modal-action"
                             :disabled="loading"
-                            @click="() => openDetailsModal = true"
+                            @click="onOpenDetailsModal(item)"
                         >
                             {{ $tc('swag-migration.index.error-resolution.modals.error.left.details') }}
                         </sw-context-menu-item>
