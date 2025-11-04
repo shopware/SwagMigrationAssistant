@@ -38,4 +38,14 @@ interface HistoryServiceInterface
         int $limit,
         Context $context,
     ): array;
+
+    /**
+     * @return array<string>
+     */
+    public function getAllLogIdsByCodeAndEntity(
+        string $code,
+        string $entityName,
+        string $fieldName,
+        Context $context,
+    ): array;
 }

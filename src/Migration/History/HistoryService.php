@@ -442,4 +442,38 @@ class HistoryService implements HistoryServiceInterface
 
         return $counts;
     }
+
+    /**
+     * @throws Exception
+     *
+     * @return array<string>
+     */
+    public function getAllLogIdsByCodeAndEntity(
+        string $code,
+        string $entityName,
+        string $fieldName,
+        Context $context,
+    ): array {
+        $sql = '
+            SELECT LOWER(HEX(id)) as id 
+            FROM swag_migration_logging 
+            WHERE code = :code 
+                AND entity_name = :entityName 
+                AND field_name = :fieldName
+                AND user_fixable = 1
+        ';
+
+        $result = $this->connection->executeQuery(
+            $sql,
+            [
+                'code' => $code,
+                'entityName' => $entityName,
+                'fieldName' => $fieldName,
+            ]
+        );
+
+        $rows = $result->fetchAllAssociative();
+
+        return \array_column($rows, 'id');
+    }
 }

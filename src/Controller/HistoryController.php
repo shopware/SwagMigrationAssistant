@@ -141,4 +141,40 @@ class HistoryController extends AbstractController
 
         return new JsonResponse($result);
     }
+
+    #[Route(
+        path: '/api/_action/migration/get-all-log-ids',
+        name: 'api.admin.migration.get-all-log-ids',
+        methods: ['POST'],
+        defaults: ['_acl' => ['swag_migration.viewer']]
+    )]
+    public function getAllLogIds(Request $request, Context $context): JsonResponse
+    {
+        $code = $request->request->get('code');
+        $entityName = $request->request->get('entityName');
+        $fieldName = $request->request->get('fieldName');
+
+        if ($code === null || $code === '') {
+            throw RoutingException::missingRequestParameter('code');
+        }
+
+        if ($entityName === null || $entityName === '') {
+            throw RoutingException::missingRequestParameter('entityName');
+        }
+
+        if ($fieldName === null || $fieldName === '') {
+            throw RoutingException::missingRequestParameter('fieldName');
+        }
+
+        $logIds = $this->historyService->getAllLogIdsByCodeAndEntity(
+            $code,
+            $entityName,
+            $fieldName,
+            $context
+        );
+
+        return new JsonResponse([
+            'ids' => $logIds,
+        ]);
+    }
 }

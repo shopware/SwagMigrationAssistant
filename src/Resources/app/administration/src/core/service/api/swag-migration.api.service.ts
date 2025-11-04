@@ -509,4 +509,28 @@ export default class MigrationApiService extends ApiService {
                 })
         );
     }
+
+    async getAllLogIds(code: string, entityName: string, fieldName: string): Promise<{ ids: string[] }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders();
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/get-all-log-ids`,
+                {
+                    code,
+                    entityName,
+                    fieldName,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
 }

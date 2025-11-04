@@ -119,6 +119,7 @@ type MigrationError = {
 };
 
 type MigrationLog = {
+    id: string;
     entityName?: string;
     fieldName?: string;
     convertedData?: Record<string, unknown>;

@@ -14,13 +14,16 @@
         <div class="swag-migration-error-resolution-modal__container">
             <div class="swag-migration-error-resolution-modal__left">
                 <sw-data-grid
+                    ref="errorResolutionGrid"
                     identifier="swag-migration-error-resolution-modal-grid"
+                    item-identifier-property="logId"
                     :data-source="tableData"
                     :show-selection="true"
                     :columns="tableColumns"
                     :is-loading="loading"
-
                     :skeleton-item-amount="tableLimit"
+                    :pre-selection="preSelection"
+                    @selection-change="onSelectionChanged"
                 >
                     <template #column-status="{ item }">
                         <div
@@ -37,10 +40,12 @@
 
                     <template #bulk>
                         <mt-link
+                            as="button"
                             class="swag-migration-error-resolution-step__header-content-link"
                             :disabled="loading"
+                            @click="onSelectAllLogs"
                         >
-                            {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: 300 }) }}
+                            {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: tableTotal }) }}
                         </mt-link>
                     </template>
 
