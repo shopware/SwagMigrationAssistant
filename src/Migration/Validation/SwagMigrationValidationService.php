@@ -32,7 +32,6 @@ use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyL
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationUnexpectedFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
-use function PHPUnit\Framework\isArray;
 
 #[Package('fundamentals@after-sales')]
 readonly class SwagMigrationValidationService
