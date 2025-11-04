@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
@@ -246,14 +247,18 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
                 $currentWriter->writeData([$entity], $this->writeContext);
             } catch (\Throwable $exception) {
+                $logBuilder = SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
+                    ->withEntityName($entityName)
+                    ->withConvertedData([$entity]);
+
+                if (isset($entity['id']) && Uuid::isValid($entity['id'])) {
+                    $logBuilder->withEntityId($entity['id']);
+                }
+
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withExceptionMessage($exception->getMessage())
-                        ->withExceptionTrace($exception->getTrace())
-                        ->withEntityName($entityName)
-                        ->withConvertedData([$entity])
-                        ->withEntityId($entity['id'] ?? null)
-                        ->build(ExceptionRunLog::class)
+                    $logBuilder->build(ExceptionRunLog::class)
                 );
 
                 $updateWrittenData[$dataId]['written'] = false;
