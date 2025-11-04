@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -71,9 +72,9 @@ class SwagMigrationLogBuilder
         return $this;
     }
 
-    public function withEntityId(string $entityId): self
+    public function withEntityId(?string $entityId): self
     {
-        $this->entityId = $entityId;
+        $this->entityId = $this->getRevisedId($entityId);
 
         return $this;
     }
@@ -141,5 +142,18 @@ class SwagMigrationLogBuilder
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
+    }
+
+    private function getRevisedId(?string $id): ?string
+    {
+        if ($id === null) {
+            return null;
+        }
+
+        if (Uuid::isValid($id)) {
+            return $id;
+        }
+
+        return null;
     }
 }

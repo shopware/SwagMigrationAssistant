@@ -115,13 +115,15 @@ class SwagMigrationValidationServiceTest extends TestCase
             $migrationContext,
             $this->context,
             [],
-            ProductDefinition::ENTITY_NAME
+            ProductDefinition::ENTITY_NAME,
+            []
         ));
         static::assertNull($this->validationService->validate(
             $migrationContext,
             $this->context,
             null,
-            ProductDefinition::ENTITY_NAME
+            ProductDefinition::ENTITY_NAME,
+            []
         ));
     }
 
@@ -149,7 +151,8 @@ class SwagMigrationValidationServiceTest extends TestCase
             $migrationContext,
             $this->context,
             $convertedData,
-            SwagMigrationLoggingDefinition::ENTITY_NAME
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
         );
 
         static::assertInstanceOf(SwagMigrationValidationResult::class, $result);
@@ -196,7 +199,8 @@ class SwagMigrationValidationServiceTest extends TestCase
             $migrationContext,
             $this->context,
             $convertedData,
-            SwagMigrationLoggingDefinition::ENTITY_NAME
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
         );
 
         static::assertInstanceOf(SwagMigrationValidationResult::class, $result);

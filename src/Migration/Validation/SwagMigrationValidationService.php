@@ -45,79 +45,83 @@ readonly class SwagMigrationValidationService
     }
 
     /**
-     * @param array<mixed>|null $converted
+     * @param array<string, mixed>|null $convertedEntity
+     * @param array<string, mixed> $sourceData
      */
-    public function validate(MigrationContextInterface $migrationContext, Context $shopwareContext, ?array $converted, string $entityName): ?SwagMigrationValidationResult
-    {
-        if (empty($converted)) {
+    public function validate(
+        MigrationContextInterface $migrationContext,
+        Context $shopwareContext,
+        ?array $convertedEntity,
+        string $entityName,
+        array $sourceData,
+    ): ?SwagMigrationValidationResult {
+        if (empty($convertedEntity)) {
             return null;
         }
 
         $entityDefinition = $this->definitionRegistry->getByEntityName($entityName);
 
-        $context = new SwagMigrationValidationContext(
+        $validationContext = new SwagMigrationValidationContext(
             $shopwareContext,
             $migrationContext,
             $entityDefinition,
-            $converted,
+            $convertedEntity,
+            $sourceData,
         );
 
         $this->eventDispatcher->dispatch(
-            new SwagMigrationPreValidationEvent($context),
+            new SwagMigrationPreValidationEvent($validationContext),
         );
 
         try {
-            $this->validateEntityStructure($context);
-            $this->validateFields($context);
-            $this->validateAssociations($context);
+            $this->validateEntityStructure($validationContext);
+            $this->validateFields($validationContext);
+            $this->validateAssociations($validationContext);
         } catch (\Throwable $e) {
-            $logBuilder = SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
-                ->withEntityName($context->getEntityDefinition()->getEntityName())
-                ->withConvertedData($context->getConvertedData())
-                ->withExceptionMessage($e->getMessage())
-                ->withExceptionTrace($e->getTrace());
-
-            if (isset($converted['id']) && Uuid::isValid($converted['id'])) {
-                $logBuilder->withEntityId($converted['id']);
-            }
-
-            $context->getValidationResult()->addLog(
-                $logBuilder->build(ValidationExceptionLog::class)
+            $validationContext->getValidationResult()->addLog(
+                SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                    ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                    ->withSourceData($validationContext->getSourceData())
+                    ->withConvertedData($validationContext->getConvertedData())
+                    ->withExceptionMessage($e->getMessage())
+                    ->withExceptionTrace($e->getTrace())
+                    ->withEntityId($convertedEntity['id'] ?? null)
+                    ->build(ValidationExceptionLog::class)
             );
         }
 
         $this->eventDispatcher->dispatch(
-            new SwagMigrationPostValidationEvent($context),
+            new SwagMigrationPostValidationEvent($validationContext),
         );
 
-        foreach ($context->getValidationResult()->getLogs() as $log) {
+        foreach ($validationContext->getValidationResult()->getLogs() as $log) {
             $this->loggingService->addLogEntry($log);
         }
 
-        $this->loggingService->saveLogging($context->getContext());
+        $this->loggingService->saveLogging($validationContext->getContext());
 
-        return $context->getValidationResult();
+        return $validationContext->getValidationResult();
     }
 
-    private function validateEntityStructure(SwagMigrationValidationContext $context): void
+    private function validateEntityStructure(SwagMigrationValidationContext $validationContext): void
     {
-        $fields = $context->getEntityDefinition()->getFields();
+        $fields = $validationContext->getEntityDefinition()->getFields();
 
         $requiredFields = array_values(array_map(
             static fn (Field $field) => $field->getPropertyName(),
             $fields->filterByFlag(Required::class)->getElements()
         ));
 
-        $convertedFieldNames = array_keys($context->getConvertedData());
+        $convertedFieldNames = array_keys($validationContext->getConvertedData());
         $missingRequiredFields = array_diff($requiredFields, $convertedFieldNames);
 
         foreach ($missingRequiredFields as $missingField) {
-            $context->getValidationResult()->addLog(
-                SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
-                    ->withEntityName($context->getEntityDefinition()->getEntityName())
+            $validationContext->getValidationResult()->addLog(
+                SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                    ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                     ->withFieldName($missingField)
-                    ->withConvertedData($context->getConvertedData())
-                    ->withEntityId($context->getConvertedData()['id'] ?? null)
+                    ->withConvertedData($validationContext->getConvertedData())
+                    ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
                     ->build(ValidationMissingRequiredFieldLog::class)
             );
         }
@@ -125,42 +129,42 @@ readonly class SwagMigrationValidationService
         $unexpectedFields = array_diff($convertedFieldNames, array_keys($fields->getElements()));
 
         foreach ($unexpectedFields as $unexpectedField) {
-            $context->getValidationResult()->addLog(
-                SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
-                    ->withEntityName($context->getEntityDefinition()->getEntityName())
+            $validationContext->getValidationResult()->addLog(
+                SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                    ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                     ->withFieldName($unexpectedField)
-                    ->withConvertedData($context->getConvertedData())
-                    ->withEntityId($context->getConvertedData()['id'] ?? null)
+                    ->withConvertedData($validationContext->getConvertedData())
+                    ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
                     ->build(ValidationUnexpectedFieldLog::class)
             );
         }
     }
 
-    private function validateFields(SwagMigrationValidationContext $context): void
+    private function validateFields(SwagMigrationValidationContext $validationContext): void
     {
-        $fields = $context->getEntityDefinition()->getFields();
+        $fields = $validationContext->getEntityDefinition()->getFields();
 
-        if (!isset($context->getConvertedData()['id'])) {
+        if (!isset($validationContext->getConvertedData()['id'])) {
             throw MigrationException::unexpectedNullValue('id');
         }
 
-        if (!Uuid::isValid($context->getConvertedData()['id'])) {
-            throw MigrationException::invalidId($context->getConvertedData()['id'], $context->getEntityDefinition()->getEntityName());
+        if (!Uuid::isValid($validationContext->getConvertedData()['id'])) {
+            throw MigrationException::invalidId($validationContext->getConvertedData()['id'], $validationContext->getEntityDefinition()->getEntityName());
         }
 
         $entityExistence = EntityExistence::createForEntity(
-            $context->getEntityDefinition()->getEntityName(),
-            ['id' => $context->getConvertedData()['id']],
+            $validationContext->getEntityDefinition()->getEntityName(),
+            ['id' => $validationContext->getConvertedData()['id']],
         );
 
         $parameters = new WriteParameterBag(
-            $context->getEntityDefinition(),
-            WriteContext::createFromContext($context->getContext()),
+            $validationContext->getEntityDefinition(),
+            WriteContext::createFromContext($validationContext->getContext()),
             '',
             new WriteCommandQueue(),
         );
 
-        foreach ($context->getConvertedData() as $fieldName => $value) {
+        foreach ($validationContext->getConvertedData() as $fieldName => $value) {
             if (!$fields->has($fieldName)) {
                 continue;
             }
@@ -178,23 +182,24 @@ readonly class SwagMigrationValidationService
                 $serializer = $field->getSerializer();
                 \iterator_to_array($serializer->encode($field, $entityExistence, $keyValue, $parameters), false);
             } catch (\Throwable $e) {
-                $context->getValidationResult()->addLog(
-                    SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
-                        ->withEntityName($context->getEntityDefinition()->getEntityName())
+                $validationContext->getValidationResult()->addLog(
+                    SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                        ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                         ->withFieldName($fieldName)
                         ->withConvertedData([$fieldName => $value])
+                        ->withSourceData($validationContext->getSourceData())
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
-                        ->withEntityId($context->getConvertedData()['id'] ?? null)
+                        ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
                         ->build(ValidationInvalidFieldValueLog::class)
                 );
             }
         }
     }
 
-    private function validateAssociations(SwagMigrationValidationContext $context): void
+    private function validateAssociations(SwagMigrationValidationContext $validationContext): void
     {
-        $fields = $context->getEntityDefinition()->getFields();
+        $fields = $validationContext->getEntityDefinition()->getFields();
 
         $fkFields = array_values(array_map(
             static fn (Field $field) => $field->getPropertyName(),
@@ -202,11 +207,11 @@ readonly class SwagMigrationValidationService
         ));
 
         foreach ($fkFields as $fkFieldName) {
-            if (!isset($context->getConvertedData()[$fkFieldName])) {
+            if (!isset($validationContext->getConvertedData()[$fkFieldName])) {
                 continue;
             }
 
-            $fkValue = $context->getConvertedData()[$fkFieldName];
+            $fkValue = $validationContext->getConvertedData()[$fkFieldName];
 
             if ($fkValue === '') {
                 continue;
@@ -225,19 +230,20 @@ readonly class SwagMigrationValidationService
             }
 
             $hasMapping = $this->mappingService->hasValidMappingByEntityUuid(
-                $context->getMigrationContext()->getConnection()->getId(),
+                $validationContext->getMigrationContext()->getConnection()->getId(),
                 $referenceEntity,
                 $fkValue,
-                $context->getContext()
+                $validationContext->getContext()
             );
 
             if (!$hasMapping) {
-                $context->getValidationResult()->addLog(
-                    SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
-                        ->withEntityName($context->getEntityDefinition()->getEntityName())
+                $validationContext->getValidationResult()->addLog(
+                    SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                        ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                         ->withFieldName($fkFieldName)
                         ->withConvertedData([$fkFieldName => $fkValue])
-                        ->withEntityId($context->getConvertedData()['id'] ?? null)
+                        ->withSourceData($validationContext->getSourceData())
+                        ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
                         ->build(ValidationInvalidForeignKeyLog::class)
                 );
             }
