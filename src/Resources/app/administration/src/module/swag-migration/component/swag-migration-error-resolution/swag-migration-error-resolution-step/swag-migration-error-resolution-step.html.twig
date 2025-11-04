@@ -151,6 +151,7 @@
                 :columns="tableColumns"
                 :is-loading="loading"
                 :show-selection="false"
+                :skeleton-item-amount="tableLimit"
             >
                 <template #column-count="{ item }">
                     <div class="swag-migration-error-resolution-step__card-table-count">

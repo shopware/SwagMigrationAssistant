@@ -78,7 +78,7 @@ export default Shopware.Component.wrapComponentConfig({
             tableLimit: 10,
             tableTotal: 0,
             tableData: [],
-            loading: true,
+            loading: false,
             downloadLoading: false,
             openContinueModal: false,
             openErrorResolutionModal: false,
@@ -317,6 +317,10 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onTabChange(tab: MigrationLogLevel) {
+            if (this.tabItem === tab) {
+                return;
+            }
+
             this.tablePage = 1;
             this.fetchLogByLevel(tab);
         },
