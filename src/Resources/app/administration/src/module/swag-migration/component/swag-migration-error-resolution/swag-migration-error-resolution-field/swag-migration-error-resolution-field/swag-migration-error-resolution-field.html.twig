@@ -3,6 +3,7 @@
         <swag-migration-error-resolution-field-scalar
             v-if="isScalarField"
             :component-type="fieldType"
+            :field-name="log?.fieldName"
             :disabled="disabled"
         />
 
@@ -10,6 +11,7 @@
             v-else
             :relation-type="fieldType"
             :entity-field="entityField"
+            :field-name="log?.fieldName"
             :disabled="disabled"
         />
     </div>

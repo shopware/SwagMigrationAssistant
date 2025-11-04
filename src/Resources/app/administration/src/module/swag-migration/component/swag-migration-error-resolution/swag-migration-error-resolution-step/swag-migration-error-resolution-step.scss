@@ -29,6 +29,7 @@
             }
 
             &-description {
+                max-width: 35rem;
                 font-size: var(--font-size-xs);
                 line-height: var(--font-line-height-xs);
                 font-weight: var(--font-weight-regular);

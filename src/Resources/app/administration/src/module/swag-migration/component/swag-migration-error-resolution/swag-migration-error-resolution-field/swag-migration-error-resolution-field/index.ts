@@ -1,5 +1,6 @@
 import type { Property } from '@administration/src/core/data/entity-definition.data';
 import template from './swag-migration-error-resolution-field.html.twig';
+import './swag-migration-error-resolution-field.scss';
 import type { ErrorResolutionTableData } from '../../swag-migration-error-resolution-step';
 
 const DATA_TYPES = {
@@ -23,10 +24,7 @@ const UNHANDLED_FIELD_TYPES = [
 const UNHANDLED_FIELD_NAMES = [
     'id',
     'autoIncrement',
-    'createdAt',
-    'updatedAt',
     'translated',
-    'versionId',
 ] as const;
 
 const HANDLED_RELATION_TYPES = {

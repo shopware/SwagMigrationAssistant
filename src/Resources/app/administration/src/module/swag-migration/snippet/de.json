@@ -174,6 +174,15 @@
       }
     },
     "index": {
+      "warningModal": {
+        "title": "Dateninkonsistenz erkannt",
+        "cancelButton": "Zurück",
+        "confirmButton": "Trotzdem fortfahren",
+        "message": {
+          "currency": "Eine Migration mit <b>unterschiedlichen Standardwährungen</b> kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen.",
+          "language": "Eine Migration mit <b>unterschiedlichen Standardsprachen</b> kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen."
+        }
+      },
       "title": "Übersicht",
       "migrateButton": "Migration starten",
       "savePremapping": {
@@ -377,6 +386,7 @@
         "flowChart": {
           "premapping": "Prüfen",
           "fetchData": "Lesen",
+          "errorResolution": "Fehlerbehebung",
           "writeData": "Schreiben",
           "processMedia": "Download",
           "cleanup": "Aufräumen",
@@ -388,6 +398,11 @@
             "long": "Die Daten werden von Deinem System gelesen",
             "caption": "Die neuen Zuordnungen werden verarbeitet.",
             "short": "Lesen"
+          },
+          "error-resolution": {
+            "long": "Fehler können behoben werden",
+            "caption": "Die Migration wird pausiert, bis alle Fehler behoben sind.",
+            "short": "Fehlerbehebung"
           },
           "writing": {
             "long": "Die Daten werden in Shopware 6 geschrieben",
@@ -583,6 +598,78 @@
         "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
           "title": "Ein Schreibfehler ist aufgetreten",
           "description": "{description}"
+        }
+      },
+      "error-resolution": {
+        "errors": {
+          "downloadLogsFailed": "Fehler beim Herunterladen der Log-Datei.",
+          "continueMigrationFailed": "Fehler beim Fortsetzen der Migration.",
+          "fetchLogsFailed": "Fehler beim Abrufen der Log-Datei.",
+          "fetchRunFailed": "Fehler beim Abrufen der Migrationsdaten."
+        },
+        "step": {
+          "continue-modal": {
+            "title": "Fortfahren",
+            "text": "Es gibt noch {count} Fehler, die nicht behoben wurden. Wenn Sie ohne Lösung der verbleibenden Fehler fortfahren, könnten Folgefehler auftreten."
+          },
+          "header": {
+            "title": "Fehlerbehebung",
+            "description": "Überprüfen und beheben Sie Migrationsfehler, die während des Imports aufgetreten sind. Beheben Sie Datenprobleme direkt in dieser Ansicht oder laden Sie die Protokolldatei für detaillierte Informationen herunter. Setzen Sie fort, sobald alle kritischen Fehler behoben sind.",
+            "documentation": "Dokumentation",
+            "download": "Log-Datei herunterladen",
+            "continue": "Fortfahren",
+            "banner": {
+              "title": "Einige Fehler können möglicherweise nicht über diese Ansicht behoben werden",
+              "content": "Es gibt {count} Fehler, die nicht über diese Ansicht behoben werden können. Bitte laden Sie die Protokolldatei herunter, um weitere Informationen zu erhalten. Und wenn Hilfe benötigt wird, kontaktieren Sie den",
+              "link": "Shopware Support"
+            }
+          },
+          "card": {
+            "title": "Fehler",
+            "filter": "Filter",
+            "tabs": {
+              "errors": "Fehler ({count})",
+              "warnings": "Warnungen ({count})",
+              "infos": "Informationen ({count})"
+            },
+            "table": {
+              "columns": {
+                "count": "Behoben / Gesamt",
+                "code": "Fehler",
+                "entity": "Entität",
+                "field": "Feld"
+              }
+            },
+            "action": {
+              "edit": "Bearbeiten"
+            }
+          }
+        },
+        "modals": {
+          "error": {
+            "title": "Fehler beheben: {code}, {entityName}, {fieldName}",
+            "left": {
+              "select-all": "Alle auswählen ({count})",
+              "details": "Details anzeigen",
+              "status": {
+                "resolved": "Behoben",
+                "unresolved": "Nicht behoben"
+              }
+            },
+            "right": {
+              "title": "Bearbeiten: {count} Elemente",
+              "banner": {
+                "title": "Keine Option verfügbar",
+                "content": "Bitte erstellen Sie mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich."
+              },
+              "apply": "Änderungen anwenden"
+            }
+          },
+          "details": {
+            "title": "Details: {entityName}",
+            "convertedDataLabel": "Konvertierte Daten",
+            "sourceDataLabel": "Quelldaten"
+          }
         }
       }
     },

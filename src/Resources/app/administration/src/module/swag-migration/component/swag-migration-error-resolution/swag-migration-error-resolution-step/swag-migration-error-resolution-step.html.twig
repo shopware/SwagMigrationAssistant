@@ -14,7 +14,7 @@
         :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
     >
         <p class="swag-migration-error-resolution-step__continue-modal-text">
-            {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text') }}
+            {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnfixableErrors }) }}
         </p>
 
         <template #modal-footer>

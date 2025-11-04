@@ -458,24 +458,14 @@
           "fetchLogsFailed": "Failed fetching log data.",
           "fetchRunFailed": "Failed fetching migration run data."
         },
-        "field": {
-          "many-to-one": "Many to one",
-          "one-to-many": "One to many",
-          "number": "Number",
-          "textarea": "Textarea",
-          "text": "Text",
-          "switch": "switch",
-          "datepicker": "datepicker",
-          "editor": "Code editor"
-        },
         "step": {
           "continue-modal": {
             "title": "Continue",
-            "text": "There are 23 errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+            "text": "There are {count} errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
           },
           "header": {
             "title": "Error resolution",
-            "description": "Short explanatory text. Click continue to finish this step.",
+            "description": "Review and resolve migration errors that occurred during the import. Fix data issues directly in this view or download the log file for detailed information. Continue once all critical errors are resolved.",
             "documentation": "Documentation",
             "download": "Download log file",
             "continue": "Continue",

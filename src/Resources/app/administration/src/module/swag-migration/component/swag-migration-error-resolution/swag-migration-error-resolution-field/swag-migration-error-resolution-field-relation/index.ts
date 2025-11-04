@@ -25,6 +25,10 @@ export default Shopware.Component.wrapComponentConfig({
             type: Object as PropType<Property>,
             required: true,
         },
+        fieldName: {
+            type: String,
+            required: true,
+        },
         disabled: {
             type: Boolean,
             required: false,

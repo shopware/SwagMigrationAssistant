@@ -3,10 +3,9 @@
     {% block swag_migration_error_resolution_field_scalar_number %}
         <mt-number-field
             v-if="componentType === 'number'"
-            :label="$tc('swag-migration.index.error-resolution.field.number')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__number"
             name="migration-resolution--number"
-            :placeholder="componentType"
             :disabled="disabled"
         />
     {% endblock %}
@@ -14,10 +13,9 @@
     {% block swag_migration_error_resolution_field_scalar_textarea %}
         <mt-textarea
             v-if="componentType === 'textarea'"
-            :label="$tc('swag-migration.index.error-resolution.field.textarea')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__textarea"
             name="migration-resolution--textarea"
-            :placeholder="componentType"
             :disabled="disabled"
         />
     {% endblock %}
@@ -25,10 +23,9 @@
     {% block swag_migration_error_resolution_field_scalar_text %}
         <mt-text-field
             v-if="componentType === 'text'"
-            :label="$tc('swag-migration.index.error-resolution.field.text')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__text"
             name="migration-resolution--text"
-            :placeholder="componentType"
             :disabled="disabled"
         />
     {% endblock %}
@@ -36,10 +33,9 @@
     {% block swag_migration_error_resolution_field_scalar_switch %}
         <mt-switch
             v-if="componentType === 'switch'"
-            :label="$tc('swag-migration.index.error-resolution.field.switch')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__switch"
             name="migration-resolution--switch"
-            :placeholder="componentType"
             :disabled="disabled"
         />
     {% endblock %}
@@ -47,10 +43,9 @@
     {% block swag_migration_error_resolution_field_scalar_date %}
         <mt-datepicker
             v-if="componentType === 'datepicker'"
-            :label="$tc('swag-migration.index.error-resolution.field.datepicker')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__datepicker"
             name="migration-resolution--datepicker"
-            :placeholder="componentType"
             :disabled="disabled"
         />
     {% endblock %}
@@ -58,7 +53,7 @@
     {% block swag_migration_error_resolution_field_scalar_editor %}
         <sw-code-editor
             v-if="componentType === 'editor'"
-            :label="$tc('swag-migration.index.error-resolution.field.editor')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__code-editor"
             name="migration-resolution--code-editor"
             :disabled="disabled"

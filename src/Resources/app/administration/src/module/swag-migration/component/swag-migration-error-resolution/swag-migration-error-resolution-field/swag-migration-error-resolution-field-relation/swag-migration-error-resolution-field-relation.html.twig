@@ -3,7 +3,7 @@
     {% block swag_migration_error_resolution_field_relation_many_to_one %}
         <sw-entity-single-select
             v-if="relationType === 'many_to_one' && entityName"
-            :label="$tc('swag-migration.index.error-resolution.field.many-to-one')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__many-to-one"
             name="migration-resolution--many-to-one"
             :placeholder="entityName"
@@ -15,7 +15,7 @@
     {% block swag_migration_error_resolution_field_relation_one_to_many %}
         <sw-entity-multi-id-select
             v-if="relationType === 'one_to_many' && entityName"
-            :label="$tc('swag-migration.index.error-resolution.field.one-to-many')"
+            :label="fieldName"
             class="sw-migration-error-resolution-field__one_to_many"
             name="migration-resolution--one_to_many"
             :placeholder="entityName"
