@@ -32,6 +32,7 @@ use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyL
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationUnexpectedFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use function PHPUnit\Framework\isArray;
 
 #[Package('fundamentals@after-sales')]
 readonly class SwagMigrationValidationService
@@ -71,12 +72,18 @@ readonly class SwagMigrationValidationService
             $this->validateFields($context);
             $this->validateAssociations($context);
         } catch (\Throwable $e) {
+            $logBuilder = SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
+                ->withEntityName($context->getEntityDefinition()->getEntityName())
+                ->withConvertedData($context->getConvertedData())
+                ->withExceptionMessage($e->getMessage())
+                ->withExceptionTrace($e->getTrace());
+
+            if (isset($converted['id']) && Uuid::isValid($converted['id'])) {
+                $logBuilder->withEntityId($converted['id']);
+            }
+
             $context->getValidationResult()->addLog(
-                SwagMigrationLogBuilder::fromMigrationContext($context->getMigrationContext())
-                    ->withEntityName($context->getEntityDefinition()->getEntityName())
-                    ->withExceptionMessage($e->getMessage())
-                    ->withExceptionTrace($e->getTrace())
-                    ->build(ValidationExceptionLog::class)
+                $logBuilder->build(ValidationExceptionLog::class)
             );
         }
 

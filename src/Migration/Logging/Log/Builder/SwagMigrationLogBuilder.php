@@ -71,7 +71,7 @@ class SwagMigrationLogBuilder
         return $this;
     }
 
-    public function withEntityId(?string $entityId): self
+    public function withEntityId(string $entityId): self
     {
         $this->entityId = $entityId;
 

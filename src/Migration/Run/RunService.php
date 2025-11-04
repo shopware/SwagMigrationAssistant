@@ -20,6 +20,7 @@ use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeCollection;
+use Shopware\Storefront\Theme\ThemeDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
@@ -264,12 +265,11 @@ class RunService implements RunServiceInterface
                         $runUuid,
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
-                        $salesChannelId,
                     ))
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
-                        ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
-                        ->withEntityId($salesChannelId)
+                        ->withEntityName(ThemeDefinition::ENTITY_NAME)
+                        ->withEntityId($defaultThemeId)
                         ->build(ThemeCompilingErrorRunLog::class)
                 );
             }
