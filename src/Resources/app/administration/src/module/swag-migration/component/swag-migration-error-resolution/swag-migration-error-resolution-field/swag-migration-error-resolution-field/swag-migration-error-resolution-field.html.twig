@@ -3,12 +3,14 @@
         <swag-migration-error-resolution-field-scalar
             v-if="isScalarField"
             :component-type="fieldType"
+            :disabled="disabled"
         />
 
         <swag-migration-error-resolution-field-relation
             v-else
             :relation-type="fieldType"
             :entity-field="entityField"
+            :disabled="disabled"
         />
     </div>
 {% endblock %}

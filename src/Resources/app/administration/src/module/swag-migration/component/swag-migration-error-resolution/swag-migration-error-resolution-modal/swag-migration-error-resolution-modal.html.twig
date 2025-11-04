@@ -13,9 +13,12 @@
             <div class="swag-migration-error-resolution-modal__left">
                 <sw-data-grid
                     identifier="swag-migration-error-resolution-modal-grid"
-                    :data-source="tableDataSource"
-                    :columns="tableColumns"
+                    :data-source="tableData"
                     :show-selection="true"
+                    :columns="tableColumns"
+                    :is-loading="loading"
+
+                    :skeleton-item-amount="tableLimit"
                 >
                     <template #column-status="{ item }">
                         <div
@@ -31,7 +34,10 @@
                     </template>
 
                     <template #bulk>
-                        <mt-link class="swag-migration-error-resolution-step__header-content-link">
+                        <mt-link
+                            class="swag-migration-error-resolution-step__header-content-link"
+                            :disabled="loading"
+                        >
                             {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: 300 }) }}
                         </mt-link>
                     </template>
@@ -39,6 +45,7 @@
                     <template #actions="{ item }">
                         <sw-context-menu-item
                             class="swag-migration-error-resolution-modal__left-modal-action"
+                            :disabled="loading"
                             @click="() => openDetailsModal = true"
                         >
                             {{ $tc('swag-migration.index.error-resolution.modals.error.left.details') }}
@@ -63,7 +70,10 @@
                 </div>
 
                 <div class="swag-migration-error-resolution-modal__right-content">
-                    <swag-migration-error-resolution-field :log="log" />
+                    <swag-migration-error-resolution-field
+                        :log="selectedLog"
+                        :disabled="loading"
+                    />
 
                     <mt-banner
                         class="swag-migration-error-resolution-modal__right-content-banner"
@@ -76,6 +86,7 @@
                     <mt-button
                         class="swag-migration-error-resolution-modal__right-content-button"
                         variant="primary"
+                        :disabled="loading"
                     >
                         {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
                     </mt-button>

@@ -7,6 +7,7 @@
             class="sw-migration-error-resolution-field__number"
             name="migration-resolution--number"
             :placeholder="componentType"
+            :disabled="disabled"
         />
     {% endblock %}
 
@@ -17,6 +18,7 @@
             class="sw-migration-error-resolution-field__textarea"
             name="migration-resolution--textarea"
             :placeholder="componentType"
+            :disabled="disabled"
         />
     {% endblock %}
 
@@ -27,6 +29,7 @@
             class="sw-migration-error-resolution-field__text"
             name="migration-resolution--text"
             :placeholder="componentType"
+            :disabled="disabled"
         />
     {% endblock %}
 
@@ -37,6 +40,7 @@
             class="sw-migration-error-resolution-field__switch"
             name="migration-resolution--switch"
             :placeholder="componentType"
+            :disabled="disabled"
         />
     {% endblock %}
 
@@ -47,6 +51,7 @@
             class="sw-migration-error-resolution-field__datepicker"
             name="migration-resolution--datepicker"
             :placeholder="componentType"
+            :disabled="disabled"
         />
     {% endblock %}
 
@@ -56,6 +61,7 @@
             :label="$tc('swag-migration.index.error-resolution.field.editor')"
             class="sw-migration-error-resolution-field__code-editor"
             name="migration-resolution--code-editor"
+            :disabled="disabled"
         />
     {% endblock %}
 </div>

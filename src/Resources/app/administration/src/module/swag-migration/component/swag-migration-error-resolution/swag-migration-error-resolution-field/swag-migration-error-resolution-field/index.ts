@@ -1,6 +1,6 @@
 import type { Property } from '@administration/src/core/data/entity-definition.data';
 import template from './swag-migration-error-resolution-field.html.twig';
-import type { MigrationLog } from '../../../../../../type/types';
+import type { ErrorResolutionTableData } from '../../swag-migration-error-resolution-step';
 
 const DATA_TYPES = {
     UUID: 'uuid',
@@ -76,8 +76,13 @@ export default Shopware.Component.wrapComponentConfig({
 
     props: {
         log: {
-            type: Object as PropType<MigrationLog>,
+            type: Object as PropType<ErrorResolutionTableData>,
             required: true,
+        },
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false,
         },
     },
 

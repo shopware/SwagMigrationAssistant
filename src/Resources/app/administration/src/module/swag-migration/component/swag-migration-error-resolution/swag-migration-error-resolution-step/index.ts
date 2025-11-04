@@ -22,7 +22,10 @@ export const MIGRATION_LOG_LEVEL = {
  */
 export type MigrationLogLevel = (typeof MIGRATION_LOG_LEVEL)[keyof typeof MIGRATION_LOG_LEVEL];
 
-type TableData = {
+/**
+ * @private
+ */
+export type ErrorResolutionTableData = {
     count: number;
     code: string;
     entityName: string;
@@ -38,13 +41,14 @@ export interface SwagMigrationErrorResolutionStepData {
     tablePage: number;
     tableLimit: number;
     tableTotal: number;
-    tableData: Array<TableData>;
+    tableData: Array<ErrorResolutionTableData>;
     loading: boolean;
     downloadLoading: boolean;
     openContinueModal: boolean;
     openErrorResolutionModal: boolean;
     continueLoading: boolean;
     runId: string | null;
+    selectedLog: ErrorResolutionTableData | null;
     totalUnfixableErrors: number;
     migrationStore: MigrationStore;
     migrationApiService: MigrationApiService;
@@ -84,6 +88,7 @@ export default Shopware.Component.wrapComponentConfig({
             openErrorResolutionModal: false,
             continueLoading: false,
             runId: null,
+            selectedLog: null,
             totalUnfixableErrors: 0,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             migrationApiService: Shopware.Service(MIGRATION_API_SERVICE),
@@ -300,7 +305,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                 document.body.removeChild(link);
                 window.URL.revokeObjectURL(url);
-            } catch (error) {
+            } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
                 });
@@ -323,6 +328,16 @@ export default Shopware.Component.wrapComponentConfig({
 
             this.tablePage = 1;
             this.fetchLogByLevel(tab);
+        },
+
+        onOpenEditLog(log: ErrorResolutionTableData) {
+            this.openErrorResolutionModal = true;
+            this.selectedLog = log;
+        },
+
+        onCloseEditLog() {
+            this.openErrorResolutionModal = false;
+            this.selectedLog = null;
         },
     },
 });

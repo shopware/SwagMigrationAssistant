@@ -1,8 +1,9 @@
 {% block swag_migration_error_resolution_step %}
 <div class="swag-migration-error-resolution-step">
     <swag-migration-error-resolution-modal
-        v-if="openErrorResolutionModal"
-        @close-error-resolution-modal="() => openErrorResolutionModal = false"
+        v-if="openErrorResolutionModal && selectedLog"
+        :selected-log="selectedLog"
+        @close-error-resolution-modal="onCloseEditLog"
     />
 
     <sw-modal
@@ -172,7 +173,7 @@
                     <sw-context-menu-item
                         class="swag-migration-error-resolution-step__card-table-edit"
                         :disabld="loading"
-                        @click="() => openErrorResolutionModal = true"
+                        @click="() => onOpenEditLog(item)"
                     >
                         {{ $tc('swag-migration.index.error-resolution.step.card.action.edit') }}
                     </sw-context-menu-item>

@@ -16,5 +16,10 @@ export default Shopware.Component.wrapComponentConfig({
                 return (Object.values(FIELD_COMPONENT_TYPES) as string[]).includes(value);
             },
         },
+        disabled: {
+            type: Boolean,
+            required: false,
+            default: false,
+        },
     },
 });

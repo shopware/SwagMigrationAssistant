@@ -8,6 +8,7 @@
             name="migration-resolution--many-to-one"
             :placeholder="entityName"
             :entity="entityName"
+            :disabled="disabled"
         />
     {% endblock %}
 
@@ -19,6 +20,7 @@
             name="migration-resolution--one_to_many"
             :placeholder="entityName"
             :repository="entityRepository"
+            :disabled="disabled"
         />
     {% endblock %}
 </div>
