@@ -314,20 +314,20 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        onPageChange(page: { page: number; limit: number }) {
+        async onPageChange(page: { page: number; limit: number }) {
             this.tablePage = page.page;
             this.tableLimit = page.limit;
 
-            this.fetchLogByLevel(null);
+            await this.fetchLogByLevel(null);
         },
 
-        onTabChange(tab: MigrationLogLevel) {
+        async onTabChange(tab: MigrationLogLevel) {
             if (this.tabItem === tab) {
                 return;
             }
 
             this.tablePage = 1;
-            this.fetchLogByLevel(tab);
+            await this.fetchLogByLevel(tab);
         },
 
         onOpenEditLog(log: ErrorResolutionTableData) {

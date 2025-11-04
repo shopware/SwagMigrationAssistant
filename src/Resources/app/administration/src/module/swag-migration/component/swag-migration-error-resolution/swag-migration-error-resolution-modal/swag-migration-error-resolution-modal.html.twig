@@ -58,6 +58,7 @@
                             :total="tableTotal"
                             :limit="tableLimit"
                             :steps="[25, 50, 100]"
+                            @page-change="onPageChange"
                         />
                     </template>
                 </sw-data-grid>

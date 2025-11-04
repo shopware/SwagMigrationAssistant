@@ -87,7 +87,7 @@ export default Shopware.Component.wrapComponentConfig({
             await this.fetchLogs();
         },
 
-        fetchLogs() {
+        async fetchLogs() {
             if (!this.selectedLog) {
                 return Promise.resolve();
             }
@@ -144,6 +144,13 @@ export default Shopware.Component.wrapComponentConfig({
             return status
                 ? this.$tc('swag-migration.index.error-resolution.modals.error.left.status.resolved')
                 : this.$tc('swag-migration.index.error-resolution.modals.error.left.status.unresolved');
+        },
+
+        async onPageChange(page: { page: number; limit: number }) {
+            this.tablePage = page.page;
+            this.tableLimit = page.limit;
+
+            await this.fetchLogs();
         },
     },
 });
