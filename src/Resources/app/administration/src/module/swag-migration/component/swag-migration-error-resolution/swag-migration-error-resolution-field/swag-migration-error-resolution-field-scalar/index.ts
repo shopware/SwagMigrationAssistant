@@ -1,5 +1,5 @@
 import template from './swag-migration-error-resolution-field-scalar.html.twig';
-import { FIELD_COMPONENT_TYPES } from '../swag-migration-error-resolution-field';
+import { FIELD_COMPONENT_TYPES } from '../../../../service/swag-migration-error-resolution.service';
 
 /**
  * @private

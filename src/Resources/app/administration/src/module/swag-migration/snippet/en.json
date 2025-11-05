@@ -520,6 +520,10 @@
                 "title": "No option available",
                 "content": "Please create atleast one option to select in the corresponding Admnistration area."
               },
+              "unhandledBanner": {
+                "title": "Unknown field type",
+                "content": "The field type could not be determined. Please correct the raw source data."
+              },
               "apply": "Apply changes"
             }
           },

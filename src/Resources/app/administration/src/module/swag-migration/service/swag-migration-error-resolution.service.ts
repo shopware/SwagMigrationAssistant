@@ -214,7 +214,7 @@ export default class SwagMigrationErrorResolutionService {
     /**
      * gets the entity schema for a given entity name.
      */
-    getEntitySchema(entityName: string | null | undefined): EntityDefinition<never> | null {
+    getEntitySchema(entityName: string | null | undefined): EntityDefinition<never> {
         if (entityName && Shopware.EntityDefinition.has(entityName)) {
             return Shopware.EntityDefinition.get(entityName);
         }
@@ -305,13 +305,39 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
+     * determines if a field is unhandled (not recognized or unsupported).
+     */
+    isUnhandledField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
+        if (!entityName) {
+            return true;
+        }
+
+        if (!Shopware.EntityDefinition.has(entityName)) {
+            return true;
+        }
+
+        const entityField = this.getEntityField(entityName, fieldName);
+
+        if (!entityField) {
+            return true;
+        }
+
+        if (UNHANDLED_FIELD_TYPES.includes(entityField.type as (typeof UNHANDLED_FIELD_TYPES)[number])) {
+            return true;
+        }
+
+        // field type is not supported
+        return this.getFieldType(entityName, fieldName) === null;
+    }
+
+    /**
      * determines if a field is a scalar field or should be treated as a relation field.
      */
     isScalarField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
         const entityField = this.getEntityField(entityName, fieldName);
 
         if (!entityField) {
-            return true;
+            return false;
         }
 
         if (entityField.type === DATA_TYPES.ASSOCIATION) {
@@ -386,7 +412,7 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * Sorts fields based on predefined priority. Fields with higher priority appear first.
+     * sorts fields based on predefined priority. Fields with higher priority appear first.
      */
     sortFieldsByPriority(fields: string[]): string[] {
         return fields.sort((a, b) => {

@@ -14,3 +14,7 @@ Shopware.Component.register(
     'swag-migration-error-resolution-field-relation',
     () => import('./swag-migration-error-resolution-field-relation'),
 );
+Shopware.Component.register(
+    'swag-migration-error-resolution-field-unhandled',
+    () => import('./swag-migration-error-resolution-field-unhandled'),
+);

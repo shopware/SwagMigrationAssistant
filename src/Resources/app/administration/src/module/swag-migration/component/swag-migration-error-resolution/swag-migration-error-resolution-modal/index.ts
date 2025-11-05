@@ -205,8 +205,8 @@ export default Shopware.Component.wrapComponentConfig({
 
         statusBadgeClass(isResolved: boolean): string {
             return isResolved
-                ? 'swag-migration-error-resolution-modal__left-status--resolved'
-                : 'swag-migration-error-resolution-modal__left-status--unresolved';
+                ? 'swag-migration-error-resolution-modal__left-status--unresolved'
+                : 'swag-migration-error-resolution-modal__left-status--resolved';
         },
 
         statusBadgeText(isResolved: boolean): string {

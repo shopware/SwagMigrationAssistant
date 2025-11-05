@@ -1,7 +1,14 @@
 {% block swag_migration_error_resolution_field %}
     <div class="swag-migration-error-resolution-field">
+        <swag-migration-error-resolution-field-unhandled
+            v-if="isUnhandledField"
+            :field-name="log?.fieldName"
+            :disabled="disabled"
+            @unhandled-field-value-changed="onUnhandledFieldValueChanged"
+        />
+
         <swag-migration-error-resolution-field-scalar
-            v-if="isScalarField"
+            v-else-if="isScalarField"
             :component-type="fieldType"
             :field-name="log?.fieldName"
             :entity-field="entityField"

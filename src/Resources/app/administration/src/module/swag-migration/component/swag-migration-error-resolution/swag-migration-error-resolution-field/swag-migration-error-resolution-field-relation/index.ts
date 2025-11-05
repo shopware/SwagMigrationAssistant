@@ -1,7 +1,9 @@
 import type { Property } from '@administration/src/core/data/entity-definition.data';
 import template from './swag-migration-error-resolution-field-relation.html.twig';
-import { HANDLED_RELATION_TYPES } from '../swag-migration-error-resolution-field';
-import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../../service/swag-migration-error-resolution.service';
+import {
+    HANDLED_RELATION_TYPES,
+    MIGRATION_ERROR_RESOLUTION_SERVICE,
+} from '../../../../service/swag-migration-error-resolution.service';
 import './swag-migration-error-resolution-field-relation.scss';
 
 export interface SwagMigrationErrorResolutionFieldRelationData {

@@ -669,6 +669,10 @@
                 "title": "Keine Option verfügbar",
                 "content": "Bitte erstellen Sie mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich."
               },
+              "unhandledBanner": {
+                "title": "Unbekannter Feldtyp",
+                "content": "Der Feldtyp konnte nicht ermittelt werden. Bitte korrigieren Sie die Rohdaten."
+              },
               "apply": "Änderungen anwenden"
             }
           },

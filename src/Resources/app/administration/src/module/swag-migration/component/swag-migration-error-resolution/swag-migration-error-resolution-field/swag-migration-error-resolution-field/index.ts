@@ -28,6 +28,10 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
+        isUnhandledField(): boolean {
+            return this.swagMigrationErrorResolutionService.isUnhandledField(this.log?.entityName, this.log?.fieldName);
+        },
+
         entityField(): Property | null {
             return this.swagMigrationErrorResolutionService.getEntityField(this.log?.entityName, this.log?.fieldName);
         },
@@ -58,6 +62,12 @@ export default Shopware.Component.wrapComponentConfig({
         onRelationFieldValueChanged(newValue: string | string[] | null) {
             console.log({
                 relationField: newValue,
+            });
+        },
+
+        onUnhandledFieldValueChanged(newValue: string) {
+            console.log({
+                unhandledField: newValue,
             });
         },
     },
