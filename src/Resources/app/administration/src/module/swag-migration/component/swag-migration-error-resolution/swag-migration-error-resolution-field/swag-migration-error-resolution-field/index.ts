@@ -53,6 +53,10 @@ const FIELD_TYPE_COMPONENT_MAPPING = {
     [DATA_TYPES.JSON_OBJECT]: FIELD_COMPONENT_TYPES.EDITOR,
 } as const;
 
+const FIELD_ASSOCIATION_MAPPING: Record<string, string> = {
+    productMediaVersionId: 'media',
+} as const;
+
 /**
  * @private
  */
@@ -62,6 +66,7 @@ export {
     UNHANDLED_FIELD_NAMES,
     HANDLED_RELATION_TYPES,
     FIELD_COMPONENT_TYPES,
+    FIELD_ASSOCIATION_MAPPING,
     FIELD_TYPE_COMPONENT_MAPPING,
 };
 
@@ -116,6 +121,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             let associationField: Property | null = null;
 
+            // try to find association field by checking all fields for matching localField
             this.entitySchema.forEachField((property: Property) => {
                 if (associationField) {
                     return;
@@ -128,6 +134,27 @@ export default Shopware.Component.wrapComponentConfig({
                     associationField = property;
                 }
             });
+
+            // fallback: try to infer association name from field name
+            // example: "productVersionId" -> "product"
+            if (!associationField && this.log.fieldName.endsWith('VersionId') && this.log.fieldName !== 'versionId') {
+                const inferredName = this.log.fieldName.slice(0, -9);
+                const inferredField = this.entitySchema.getField(inferredName);
+
+                if (inferredField?.type === DATA_TYPES.ASSOCIATION) {
+                    associationField = inferredField;
+                }
+            }
+
+            // fallback: use predefined mapping for special cases (naming pattern not followed)
+            if (!associationField && FIELD_ASSOCIATION_MAPPING[this.log.fieldName]) {
+                const mappedName = FIELD_ASSOCIATION_MAPPING[this.log.fieldName];
+                const mappedField = this.entitySchema.getField(mappedName);
+
+                if (mappedField?.type === DATA_TYPES.ASSOCIATION) {
+                    associationField = mappedField;
+                }
+            }
 
             return associationField;
         },
