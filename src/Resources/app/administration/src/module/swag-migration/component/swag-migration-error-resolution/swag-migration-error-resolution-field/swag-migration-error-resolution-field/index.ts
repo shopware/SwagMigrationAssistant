@@ -125,4 +125,12 @@ export default Shopware.Component.wrapComponentConfig({
             return FIELD_TYPE_COMPONENT_MAPPING[this.entityField.type] ?? null;
         },
     },
+
+    methods: {
+        onScalarFieldValueChanged(newValue: string | number | boolean | null) {
+            console.log({
+                scalarField: newValue,
+            });
+        },
+    },
 });

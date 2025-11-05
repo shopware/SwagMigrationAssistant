@@ -6,6 +6,7 @@
             :field-name="log?.fieldName"
             :entity-field="entityField"
             :disabled="disabled"
+            @scalar-field-value-changed="onScalarFieldValueChanged"
         />
 
         <swag-migration-error-resolution-field-relation

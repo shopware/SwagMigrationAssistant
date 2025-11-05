@@ -3,11 +3,11 @@
     {% block swag_migration_error_resolution_field_scalar_number %}
         <mt-number-field
             v-if="componentType === 'number'"
-            model-value="fieldValue"
-            :label="fieldName"
-            :number-type="entityField?.type"
+            v-model="fieldValue"
             class="sw-migration-error-resolution-field__number"
             name="migration-resolution--number"
+            :label="fieldName"
+            :number-type="numberFieldType"
             :disabled="disabled"
         />
     {% endblock %}
@@ -15,10 +15,10 @@
     {% block swag_migration_error_resolution_field_scalar_textarea %}
         <mt-textarea
             v-if="componentType === 'textarea'"
-            model-value="fieldValue"
-            :label="fieldName"
+            v-model="fieldValue"
             class="sw-migration-error-resolution-field__textarea"
             name="migration-resolution--textarea"
+            :label="fieldName"
             :disabled="disabled"
         />
     {% endblock %}
@@ -26,10 +26,10 @@
     {% block swag_migration_error_resolution_field_scalar_text %}
         <mt-text-field
             v-if="componentType === 'text'"
-            model-value="fieldValue"
-            :label="fieldName"
+            v-model="fieldValue"
             class="sw-migration-error-resolution-field__text"
             name="migration-resolution--text"
+            :label="fieldName"
             :disabled="disabled"
         />
     {% endblock %}
@@ -37,10 +37,10 @@
     {% block swag_migration_error_resolution_field_scalar_switch %}
         <mt-switch
             v-if="componentType === 'switch'"
-            model-value="fieldValue"
-            :label="fieldName"
+            v-model="fieldValue"
             class="sw-migration-error-resolution-field__switch"
             name="migration-resolution--switch"
+            :label="fieldName"
             :disabled="disabled"
         />
     {% endblock %}
@@ -48,10 +48,11 @@
     {% block swag_migration_error_resolution_field_scalar_date %}
         <mt-datepicker
             v-if="componentType === 'datepicker'"
-            model-value="fieldValue"
-            :label="fieldName"
+            v-model="fieldValue"
             class="sw-migration-error-resolution-field__datepicker"
             name="migration-resolution--datepicker"
+            date-type="datetime"
+            :label="fieldName"
             :disabled="disabled"
         />
     {% endblock %}
@@ -59,11 +60,11 @@
     {% block swag_migration_error_resolution_field_scalar_editor %}
         <sw-code-editor
             v-if="componentType === 'editor'"
-            model-value="fieldValue"
-            :label="fieldName"
+            v-model:value="fieldValue"
             class="sw-migration-error-resolution-field__code-editor"
             name="migration-resolution--code-editor"
-            :disabled="disabled"
+            :label="fieldName"
+            :disablewd="disabled"
         />
     {% endblock %}
 </div>
