@@ -190,5 +190,11 @@ export default Shopware.Component.wrapComponentConfig({
                 scalarField: newValue,
             });
         },
+
+        onRelationFieldValueChanged(newValue: string | string[] | null) {
+            console.log({
+                relationField: newValue,
+            });
+        },
     },
 });

@@ -46,6 +46,12 @@ export default Shopware.Component.wrapComponentConfig({
         };
     },
 
+    watch: {
+        fieldValue() {
+            this.$emit('scalar-field-value-changed', this.fieldValue);
+        },
+    },
+
     computed: {
         numberFieldType(): string | null {
             if (this.componentType !== FIELD_COMPONENT_TYPES.NUMBER) {
@@ -53,12 +59,6 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             return this.entityField?.type || 'int';
-        },
-    },
-
-    watch: {
-        fieldValue() {
-            this.$emit('scalar-field-value-changed', this.fieldValue);
         },
     },
 });

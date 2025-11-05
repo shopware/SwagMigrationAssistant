@@ -4,12 +4,18 @@ import { HANDLED_RELATION_TYPES } from '../swag-migration-error-resolution-field
 import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../../service/swag-migration-error-resolution.service';
 import './swag-migration-error-resolution-field-relation.scss';
 
+export interface SwagMigrationErrorResolutionFieldRelationData {
+    fieldValue: string | string[] | null;
+}
+
 /**
  * @private
  * @sw-package fundamentals@after-sales
  */
 export default Shopware.Component.wrapComponentConfig({
     template,
+
+    emits: ['relation-field-value-changed'],
 
     inject: [
         'repositoryFactory',
@@ -36,6 +42,18 @@ export default Shopware.Component.wrapComponentConfig({
             type: Boolean,
             required: false,
             default: false,
+        },
+    },
+
+    data(): SwagMigrationErrorResolutionFieldRelationData {
+        return {
+            fieldValue: this.isToOneRelation ? null : [],
+        };
+    },
+
+    watch: {
+        fieldValue() {
+            this.$emit('relation-field-value-changed', this.fieldValue);
         },
     },
 

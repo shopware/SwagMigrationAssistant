@@ -3,6 +3,7 @@
     {% block swag_migration_error_resolution_field_relation_many_to_one %}
         <sw-entity-single-select
             v-if="isToOneRelation && entityName"
+            v-model:value="fieldValue"
             :label="fieldName"
             class="sw-migration-error-resolution-field__many-to-one"
             name="migration-resolution--many-to-one"
@@ -24,6 +25,7 @@
     {% block swag_migration_error_resolution_field_relation_one_to_many %}
         <sw-entity-multi-id-select
             v-if="isToManyRelation && entityName"
+            v-model:value="fieldValue"
             :label="fieldName"
             class="sw-migration-error-resolution-field__one_to_many"
             name="migration-resolution--one_to_many"

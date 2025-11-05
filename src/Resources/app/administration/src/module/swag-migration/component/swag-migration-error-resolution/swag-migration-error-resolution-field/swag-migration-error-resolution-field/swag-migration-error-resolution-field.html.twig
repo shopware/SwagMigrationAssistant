@@ -15,6 +15,7 @@
             :entity-field="effectiveEntityField"
             :field-name="log?.fieldName"
             :disabled="disabled"
+            @relation-field-value-changed="onRelationFieldValueChanged"
         />
     </div>
 {% endblock %}
