@@ -346,6 +346,8 @@ class HistoryService implements HistoryServiceInterface
                 code,
                 entity_name,
                 field_name,
+                gateway_name,
+                profile_name,
                 COUNT(*) as count,
                 COUNT(*) OVER() as total
             FROM swag_migration_logging
@@ -385,6 +387,8 @@ class HistoryService implements HistoryServiceInterface
                 'code' => $row['code'],
                 'entityName' => $row['entity_name'],
                 'fieldName' => $row['field_name'],
+                'profileName' => $row['profile_name'],
+                'gatewayName' => $row['gateway_name'],
                 'count' => (int) $row['count'],
             ];
         }

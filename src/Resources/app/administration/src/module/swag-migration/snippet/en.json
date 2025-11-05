@@ -488,7 +488,9 @@
                 "count": "Fixed / Total",
                 "code": "Error",
                 "entity": "Entity",
-                "field": "Field"
+                "field": "Field",
+                "profileName": "Profile",
+                "gatewayName": "Gateway"
               }
             },
             "action": {
@@ -499,6 +501,11 @@
         "modals": {
           "error": {
             "title": "Fix error: {code}, {entityName}, {fieldName}",
+            "table": {
+              "columns": {
+                "status": "Status"
+              }
+            },
             "left": {
               "select-all": "Select all ({count})",
               "details": "Show details",

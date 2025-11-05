@@ -165,6 +165,18 @@ export default Shopware.Component.wrapComponentConfig({
                     sortable: true,
                     position: 4,
                 },
+                {
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.profileName'),
+                    property: 'profileName',
+                    sortable: true,
+                    visible: false,
+                },
+                {
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.gatewayName'),
+                    property: 'gatewayName',
+                    sortable: true,
+                    visible: false,
+                },
             ];
         },
     },
@@ -236,9 +248,11 @@ export default Shopware.Component.wrapComponentConfig({
                 this.tableData = result.items.map((item) => ({
                     count: item.count,
                     code: item.code,
+                    resolved: false,
                     entityName: item?.entityName || '-',
                     fieldName: item?.fieldName || '-',
-                    resolved: false,
+                    profileName: item.profileName,
+                    gatewayName: item.gatewayName,
                 }));
             } catch (error) {
                 this.createNotificationError({

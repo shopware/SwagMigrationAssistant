@@ -17,6 +17,7 @@ export interface TableColumn {
     property: string;
     sortable: boolean;
     position: number;
+    visible?: boolean;
 }
 
 /**
@@ -49,6 +50,8 @@ export const PRIORITY_FIELDS = [
     'email',
     'firstName',
     'lastName',
+    'alt',
+    'url',
     'company',
     'phone',
     'street',
@@ -144,16 +147,18 @@ export default class SwagMigrationErrorResolutionService {
     generateTableColumns(entityFields: EntityFields, selectedFieldName: string, selectedFieldLabel?: string): TableColumn[] {
         const columns: TableColumn[] = [
             {
-                label: 'Status',
+                label: Shopware.Snippet.tc('swag-migration.index.error-resolution.modals.error.table.columns.status'),
                 property: 'status',
                 sortable: true,
                 position: 1,
+                visible: true,
             },
             {
                 label: selectedFieldLabel || selectedFieldName,
                 property: selectedFieldName,
                 sortable: true,
                 position: 2,
+                visible: true,
             },
         ];
 
@@ -168,17 +173,32 @@ export default class SwagMigrationErrorResolutionService {
         const sortedRequiredFields = this.sortFieldsByPriority([...availableRequiredFields]);
         const sortedNonRequiredFields = this.sortFieldsByPriority([...nonRequiredFields]);
 
-        const fieldsToShow = [
+        const allFields = [
             ...sortedRequiredFields,
             ...sortedNonRequiredFields,
-        ].slice(0, 3);
+        ];
 
-        fieldsToShow.forEach((fieldName, index) => {
+        const visibleFields = allFields.slice(0, 3);
+
+        visibleFields.forEach((fieldName, index) => {
             columns.push({
                 label: fieldName,
                 property: fieldName,
                 sortable: true,
                 position: 3 + index,
+                visible: true,
+            });
+        });
+
+        const hiddenFields = allFields.slice(3);
+
+        hiddenFields.forEach((fieldName, index) => {
+            columns.push({
+                label: fieldName,
+                property: fieldName,
+                sortable: true,
+                position: 3 + visibleFields.length + index,
+                visible: false,
             });
         });
 

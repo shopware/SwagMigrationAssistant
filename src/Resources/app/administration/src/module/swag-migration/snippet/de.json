@@ -637,7 +637,9 @@
                 "count": "Behoben / Gesamt",
                 "code": "Fehler",
                 "entity": "Entität",
-                "field": "Feld"
+                "field": "Feld",
+                "profileName": "Profil",
+                "gatewayName": "Gateway"
               }
             },
             "action": {
@@ -648,6 +650,11 @@
         "modals": {
           "error": {
             "title": "Fehler beheben: {code}, {entityName}, {fieldName}",
+            "table": {
+              "columns": {
+                "status": "Status"
+              }
+            },
             "left": {
               "select-all": "Alle auswählen ({count})",
               "details": "Details anzeigen",
