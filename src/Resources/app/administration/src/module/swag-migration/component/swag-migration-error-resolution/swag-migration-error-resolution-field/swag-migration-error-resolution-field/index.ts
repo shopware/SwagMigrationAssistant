@@ -30,6 +30,7 @@ const UNHANDLED_FIELD_NAMES = [
 const HANDLED_RELATION_TYPES = {
     MANY_TO_ONE: 'many_to_one',
     ONE_TO_MANY: 'one_to_many',
+    MANY_TO_MANY: 'many_to_many',
 } as const;
 
 const FIELD_COMPONENT_TYPES = {
@@ -42,7 +43,6 @@ const FIELD_COMPONENT_TYPES = {
 } as const;
 
 const FIELD_TYPE_COMPONENT_MAPPING = {
-    [DATA_TYPES.UUID]: HANDLED_RELATION_TYPES.MANY_TO_ONE,
     [DATA_TYPES.INT]: FIELD_COMPONENT_TYPES.NUMBER,
     [DATA_TYPES.TEXT]: FIELD_COMPONENT_TYPES.TEXTAREA,
     [DATA_TYPES.FLOAT]: FIELD_COMPONENT_TYPES.NUMBER,
@@ -101,8 +101,59 @@ export default Shopware.Component.wrapComponentConfig({
             return null;
         },
 
+        correspondingAssociationField(): Property | null {
+            if (!this.entitySchema || !this.entityField || !this.log?.fieldName) {
+                return null;
+            }
+
+            if (this.entityField.type !== DATA_TYPES.UUID) {
+                return null;
+            }
+
+            if (this.entityField.flags?.primary_key === true) {
+                return null;
+            }
+
+            let associationField: Property | null = null;
+
+            this.entitySchema.forEachField((property: Property) => {
+                if (associationField) {
+                    return;
+                }
+
+                if (
+                    property.type === DATA_TYPES.ASSOCIATION &&
+                    (property as Property & { localField?: string }).localField === this.log.fieldName
+                ) {
+                    associationField = property;
+                }
+            });
+
+            return associationField;
+        },
+
         isScalarField() {
-            return this.entityField?.type !== DATA_TYPES.ASSOCIATION;
+            if (!this.entityField) {
+                return true;
+            }
+
+            if (this.entityField.type === DATA_TYPES.ASSOCIATION) {
+                return false;
+            }
+
+            if (this.entityField.type === DATA_TYPES.UUID && this.correspondingAssociationField) {
+                return false;
+            }
+
+            return true;
+        },
+
+        effectiveEntityField(): Property | null {
+            if (this.correspondingAssociationField) {
+                return this.correspondingAssociationField;
+            }
+
+            return this.entityField;
         },
 
         fieldType() {
@@ -116,6 +167,13 @@ export default Shopware.Component.wrapComponentConfig({
 
             if (isAssociation && hasValidRelation) {
                 return this.entityField.relation;
+            }
+
+            if (this.entityField.type === DATA_TYPES.UUID && this.correspondingAssociationField) {
+                const associationRelation = this.correspondingAssociationField.relation;
+                if (associationRelation && Object.values(HANDLED_RELATION_TYPES).includes(associationRelation)) {
+                    return associationRelation;
+                }
             }
 
             if (Object.values(HANDLED_RELATION_TYPES).includes(this.entityField.type)) {

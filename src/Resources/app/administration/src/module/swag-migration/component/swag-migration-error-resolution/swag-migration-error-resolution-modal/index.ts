@@ -2,10 +2,9 @@ import template from './swag-migration-error-resolution-modal.html.twig';
 import './swag-migration-error-resolution-modal.scss';
 import type { ErrorResolutionTableData } from '../swag-migration-error-resolution-step';
 import type { MigrationLog, TRepository } from '../../../../../type/types';
-import type { EntityFields, TableColumn } from '../../../service/swag-migration-error-resolution.service';
+import type { TableColumn } from '../../../service/swag-migration-error-resolution.service';
 import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
-import type MigrationApiService from '../../../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
 
@@ -78,10 +77,6 @@ export default Shopware.Component.wrapComponentConfig({
             return this.repositoryFactory.create('swag_migration_logging');
         },
 
-        migrationApiService(): MigrationApiService {
-            return Shopware.Service(MIGRATION_API_SERVICE);
-        },
-
         loggingCriteria() {
             return new Criteria(this.tablePage, this.tableLimit)
                 .addFilter(Criteria.equals('code', this.selectedLog.code))
@@ -97,13 +92,9 @@ export default Shopware.Component.wrapComponentConfig({
             });
         },
 
-        entityFields(): EntityFields {
-            return this.swagMigrationErrorResolutionService.extractEntityFields(this.selectedLog.entityName);
-        },
-
         tableColumns(): TableColumn[] {
             return this.swagMigrationErrorResolutionService.generateTableColumns(
-                this.entityFields,
+                this.selectedLog.entityName,
                 this.selectedLog.fieldName,
             );
         },

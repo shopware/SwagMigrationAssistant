@@ -1,6 +1,8 @@
 import type { Property } from '@administration/src/core/data/entity-definition.data';
 import template from './swag-migration-error-resolution-field-relation.html.twig';
 import { HANDLED_RELATION_TYPES } from '../swag-migration-error-resolution-field';
+import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../../service/swag-migration-error-resolution.service';
+import './swag-migration-error-resolution-field-relation.scss';
 
 /**
  * @private
@@ -11,6 +13,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     inject: [
         'repositoryFactory',
+        MIGRATION_ERROR_RESOLUTION_SERVICE,
     ],
 
     props: {
@@ -37,6 +40,17 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
+        isToOneRelation(): boolean {
+            return this.relationType === HANDLED_RELATION_TYPES.MANY_TO_ONE;
+        },
+
+        isToManyRelation(): boolean {
+            return (
+                this.relationType === HANDLED_RELATION_TYPES.ONE_TO_MANY ||
+                this.relationType === HANDLED_RELATION_TYPES.MANY_TO_MANY
+            );
+        },
+
         entityName() {
             return this.entityField?.entity ?? '';
         },
@@ -47,6 +61,26 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             return this.repositoryFactory.create(this.entityName);
+        },
+
+        labelProperty() {
+            return this.swagMigrationErrorResolutionService.getHighestPriorityFieldName(this.entityName);
+        },
+    },
+
+    methods: {
+        getLabelValue(item: Record<string, unknown>): string {
+            if (!this.labelProperty || !item) {
+                return '';
+            }
+
+            const value = item[this.labelProperty];
+
+            if (value === null || value === undefined) {
+                return '';
+            }
+
+            return String(value);
         },
     },
 });

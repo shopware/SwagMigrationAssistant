@@ -151,7 +151,28 @@ export default class SwagMigrationErrorResolutionService {
         });
     }
 
-    generateTableColumns(entityFields: EntityFields, selectedFieldName: string, selectedFieldLabel?: string): TableColumn[] {
+    getSortedScalarFields(entityFields: EntityFields, excludeFields: string[] = []): string[] {
+        const requiredFieldsSet = new Set(Object.keys(entityFields.required));
+
+        const scalarFields = Object.keys(entityFields.scalar).filter((field) => !excludeFields.includes(field));
+
+        const requiredFields = scalarFields.filter((field) => requiredFieldsSet.has(field));
+        const nonRequiredFields = scalarFields.filter((field) => !requiredFieldsSet.has(field));
+
+        this.sortFieldsByPriority(requiredFields);
+        this.sortFieldsByPriority(nonRequiredFields);
+
+        return [
+            ...requiredFields,
+            ...nonRequiredFields,
+        ];
+    }
+
+    generateTableColumns(
+        entityName: string | null | undefined,
+        selectedFieldName: string,
+        selectedFieldLabel?: string,
+    ): TableColumn[] {
         const columns: TableColumn[] = [
             {
                 label: Shopware.Snippet.tc('swag-migration.index.error-resolution.modals.error.table.columns.status'),
@@ -169,20 +190,8 @@ export default class SwagMigrationErrorResolutionService {
             },
         ];
 
-        const requiredFieldsSet = new Set(Object.keys(entityFields.required));
-
-        const scalarFields = Object.keys(entityFields.scalar).filter((field) => field !== selectedFieldName);
-
-        const requiredFields = scalarFields.filter((field) => requiredFieldsSet.has(field));
-        const nonRequiredFields = scalarFields.filter((field) => !requiredFieldsSet.has(field));
-
-        this.sortFieldsByPriority(requiredFields);
-        this.sortFieldsByPriority(nonRequiredFields);
-
-        const allFields = [
-            ...requiredFields,
-            ...nonRequiredFields,
-        ];
+        const entityFields = this.extractEntityFields(entityName);
+        const allFields = this.getSortedScalarFields(entityFields, [selectedFieldName]);
 
         allFields.forEach((fieldName, index) => {
             columns.push({
@@ -195,5 +204,15 @@ export default class SwagMigrationErrorResolutionService {
         });
 
         return columns;
+    }
+
+    getHighestPriorityFieldName(entityName: string | null | undefined): string | null {
+        const entityFields = this.extractEntityFields(entityName);
+        const allFields = this.getSortedScalarFields(entityFields, [
+            'id',
+            'createdAt',
+        ]);
+
+        return allFields[0] || null;
     }
 }

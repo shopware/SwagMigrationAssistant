@@ -2,26 +2,45 @@
 <div class="swag-migration-error-resolution-field-relation">
     {% block swag_migration_error_resolution_field_relation_many_to_one %}
         <sw-entity-single-select
-            v-if="relationType === 'many_to_one' && entityName"
+            v-if="isToOneRelation && entityName"
             :label="fieldName"
             class="sw-migration-error-resolution-field__many-to-one"
             name="migration-resolution--many-to-one"
             :placeholder="entityName"
             :entity="entityName"
             :disabled="disabled"
-        />
+        >
+            <template #result-label-property="{ item }">
+                <span class="swag-migration-error-resolution-field-relation__item-label">
+                    {{ getLabelValue(item) }}
+                </span>
+                <span class="swag-migration-error-resolution-field-relation__item-id">
+                    {{ item.id }}
+                </span>
+            </template>
+        </sw-entity-single-select>
     {% endblock %}
 
     {% block swag_migration_error_resolution_field_relation_one_to_many %}
         <sw-entity-multi-id-select
-            v-if="relationType === 'one_to_many' && entityName"
+            v-if="isToManyRelation && entityName"
             :label="fieldName"
             class="sw-migration-error-resolution-field__one_to_many"
             name="migration-resolution--one_to_many"
             :placeholder="entityName"
             :repository="entityRepository"
             :disabled="disabled"
-        />
+            label-property="id"
+        >
+            <template #result-label-property="{ item }">
+                <span class="swag-migration-error-resolution-field-relation__item-label">
+                    {{ getLabelValue(item) }}
+                </span>
+                <span class="swag-migration-error-resolution-field-relation__item-id">
+                    {{ item.id }}
+                </span>
+            </template>
+        </sw-entity-multi-id-select>
     {% endblock %}
 </div>
 {% endblock %}
