@@ -77,14 +77,14 @@ readonly class SwagMigrationValidationService
             $this->validateEntityStructure($validationContext);
             $this->validateFields($validationContext);
             $this->validateAssociations($validationContext);
-        } catch (\Throwable $e) {
+        } catch (\Throwable $exception) {
             $validationContext->getValidationResult()->addLog(
                 SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                     ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                     ->withSourceData($validationContext->getSourceData())
                     ->withConvertedData($validationContext->getConvertedData())
-                    ->withExceptionMessage($e->getMessage())
-                    ->withExceptionTrace($e->getTrace())
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
                     ->withEntityId($convertedEntity['id'] ?? null)
                     ->build(ValidationExceptionLog::class)
             );
