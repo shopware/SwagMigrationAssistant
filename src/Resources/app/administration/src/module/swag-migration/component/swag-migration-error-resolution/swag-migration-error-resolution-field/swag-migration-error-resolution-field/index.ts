@@ -99,6 +99,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         entityField(): Property | null {
+            // skip unhandled field names
             if (this.entitySchema && this.log?.fieldName && !UNHANDLED_FIELD_NAMES.includes(this.log.fieldName)) {
                 return this.entitySchema.getField(this.log.fieldName) ?? null;
             }
@@ -111,10 +112,12 @@ export default Shopware.Component.wrapComponentConfig({
                 return null;
             }
 
+            // only UUID fields can have corresponding association fields
             if (this.entityField.type !== DATA_TYPES.UUID) {
                 return null;
             }
 
+            // primary key fields do not have corresponding association fields
             if (this.entityField.flags?.primary_key === true) {
                 return null;
             }
@@ -168,11 +171,8 @@ export default Shopware.Component.wrapComponentConfig({
                 return false;
             }
 
-            if (this.entityField.type === DATA_TYPES.UUID && this.correspondingAssociationField) {
-                return false;
-            }
-
-            return true;
+            // uuid fields with corresponding association fields are treated as relation fields
+            return !(this.entityField.type === DATA_TYPES.UUID && this.correspondingAssociationField);
         },
 
         effectiveEntityField(): Property | null {
@@ -192,12 +192,15 @@ export default Shopware.Component.wrapComponentConfig({
             const hasValidRelation =
                 this.entityField.relation && Object.values(HANDLED_RELATION_TYPES).includes(this.entityField.relation);
 
+            // return relation type for association fields
             if (isAssociation && hasValidRelation) {
                 return this.entityField.relation;
             }
 
+            // return relation type for uuid fields with corresponding association fields
             if (this.entityField.type === DATA_TYPES.UUID && this.correspondingAssociationField) {
                 const associationRelation = this.correspondingAssociationField.relation;
+
                 if (associationRelation && Object.values(HANDLED_RELATION_TYPES).includes(associationRelation)) {
                     return associationRelation;
                 }

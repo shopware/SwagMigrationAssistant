@@ -128,6 +128,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             this.loading = true;
 
+            // get all property names except 'status' to map them later
             const entityFieldProperties = this.tableColumns
                 .filter((column) => column.property !== 'status')
                 .map((column) => column.property);
@@ -147,6 +148,7 @@ export default Shopware.Component.wrapComponentConfig({
                             sourceData: log?.sourceData || {},
                         };
 
+                        // map only the properties that are defined for the current entity field
                         entityFieldProperties.forEach((property) => {
                             if (property in convertedData) {
                                 row[property] = convertedData[property];
@@ -178,6 +180,7 @@ export default Shopware.Component.wrapComponentConfig({
                 .then((result) => {
                     this.selectedLogIds = result.ids;
 
+                    // re-select all rows in the current page
                     this.$nextTick(() => {
                         const gridRef = this.$refs.errorResolutionGrid;
 
@@ -213,16 +216,18 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
+            // clear current page selections if no selection
             if (!selection || Object.keys(selection).length === 0) {
                 this.selectedLogIds = [];
                 return;
             }
-
             const currentPageIds = this.tableData.map((row) => row.logId);
 
+            // remove deselected ids from selectedLogIds
             this.selectedLogIds = this.selectedLogIds.filter((id) => !currentPageIds.includes(id));
 
             const selectedIds = Object.keys(selection);
+
             this.selectedLogIds = [
                 ...this.selectedLogIds,
                 ...selectedIds,
