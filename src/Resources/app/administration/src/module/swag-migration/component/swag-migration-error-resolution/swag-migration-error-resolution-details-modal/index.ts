@@ -20,7 +20,7 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
-        convertedData() {
+        convertedData(): string {
             if (!this.selectedLog?.convertedData) {
                 return '';
             }
@@ -28,7 +28,7 @@ export default Shopware.Component.wrapComponentConfig({
             return JSON.stringify(this.selectedLog.convertedData, null, 2);
         },
 
-        sourceData() {
+        sourceData(): string {
             if (!this.selectedLog?.sourceData) {
                 return '';
             }
@@ -36,7 +36,7 @@ export default Shopware.Component.wrapComponentConfig({
             return JSON.stringify(this.selectedLog.sourceData, null, 2);
         },
 
-        modalTitle() {
+        modalTitle(): string {
             return this.$tc('swag-migration.index.error-resolution.modals.details.title', {
                 entityName: this.entityName,
             });

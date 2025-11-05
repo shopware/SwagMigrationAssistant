@@ -69,7 +69,7 @@ export default Shopware.Component.wrapComponentConfig({
             );
         },
 
-        entityName() {
+        entityName(): string {
             return this.entityField?.entity ?? '';
         },
 
@@ -81,7 +81,7 @@ export default Shopware.Component.wrapComponentConfig({
             return this.repositoryFactory.create(this.entityName);
         },
 
-        labelProperty() {
+        labelProperty(): string | null {
             return this.swagMigrationErrorResolutionService.getHighestPriorityFieldName(this.entityName);
         },
     },

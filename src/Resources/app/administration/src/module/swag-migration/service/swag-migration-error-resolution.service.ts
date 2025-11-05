@@ -1,4 +1,5 @@
 import type { Property } from '@administration/src/core/data/entity-definition.data';
+import type EntityDefinition from '@administration/src/core/data/entity-definition.data';
 
 /**
  * @private
@@ -19,6 +20,81 @@ export interface TableColumn {
     position: number;
     visible?: boolean;
 }
+
+/**
+ * @private
+ */
+export const DATA_TYPES = {
+    UUID: 'uuid',
+    INT: 'int',
+    TEXT: 'text',
+    FLOAT: 'float',
+    STRING: 'string',
+    BOOLEAN: 'boolean',
+    DATE: 'date',
+    JSON_LIST: 'json_list',
+    JSON_OBJECT: 'json_object',
+    ASSOCIATION: 'association',
+} as const;
+
+/**
+ * @private
+ */
+export const UNHANDLED_FIELD_TYPES = [
+    'blob',
+    'password',
+] as const;
+
+/**
+ * @private
+ */
+export const UNHANDLED_FIELD_NAMES = [
+    'id',
+    'autoIncrement',
+    'translated',
+] as const;
+
+/**
+ * @private
+ */
+export const HANDLED_RELATION_TYPES = {
+    MANY_TO_ONE: 'many_to_one',
+    ONE_TO_MANY: 'one_to_many',
+    MANY_TO_MANY: 'many_to_many',
+} as const;
+
+/**
+ * @private
+ */
+export const FIELD_COMPONENT_TYPES = {
+    NUMBER: 'number',
+    TEXTAREA: 'textarea',
+    TEXT: 'text',
+    SWITCH: 'switch',
+    DATEPICKER: 'datepicker',
+    EDITOR: 'editor',
+} as const;
+
+/**
+ * @private
+ */
+export const FIELD_TYPE_COMPONENT_MAPPING = {
+    [DATA_TYPES.INT]: FIELD_COMPONENT_TYPES.NUMBER,
+    [DATA_TYPES.TEXT]: FIELD_COMPONENT_TYPES.TEXTAREA,
+    [DATA_TYPES.FLOAT]: FIELD_COMPONENT_TYPES.NUMBER,
+    [DATA_TYPES.STRING]: FIELD_COMPONENT_TYPES.TEXT,
+    [DATA_TYPES.BOOLEAN]: FIELD_COMPONENT_TYPES.SWITCH,
+    [DATA_TYPES.DATE]: FIELD_COMPONENT_TYPES.DATEPICKER,
+    [DATA_TYPES.JSON_LIST]: FIELD_COMPONENT_TYPES.EDITOR,
+    [DATA_TYPES.JSON_OBJECT]: FIELD_COMPONENT_TYPES.EDITOR,
+} as const;
+
+/**
+ * @private
+ */
+export const FIELD_ASSOCIATION_MAPPING: Record<string, string> = {
+    productMediaVersionId: 'media',
+} as const;
 
 /**
  * @private
@@ -133,6 +209,180 @@ export default class SwagMigrationErrorResolutionService {
         });
 
         return fields;
+    }
+
+    /**
+     * gets the entity schema for a given entity name.
+     */
+    getEntitySchema(entityName: string | null | undefined): EntityDefinition<never> | null {
+        if (entityName && Shopware.EntityDefinition.has(entityName)) {
+            return Shopware.EntityDefinition.get(entityName);
+        }
+
+        return null;
+    }
+
+    /**
+     * gets the entity field definition for a specific field.
+     */
+    getEntityField(entityName: string | null | undefined, fieldName: string | null | undefined): Property | null {
+        if (!fieldName || UNHANDLED_FIELD_NAMES.includes(fieldName as (typeof UNHANDLED_FIELD_NAMES)[number])) {
+            return null;
+        }
+
+        const schema = this.getEntitySchema(entityName);
+
+        if (!schema) {
+            return null;
+        }
+
+        return schema.getField(fieldName) ?? null;
+    }
+
+    /**
+     * finds the corresponding association field for a id field.
+     * for example: "productVersionId", "productId" => "product" association.
+     */
+    findCorrespondingAssociationField(
+        entityName: string | null | undefined,
+        fieldName: string | null | undefined,
+    ): Property | null {
+        const schema = this.getEntitySchema(entityName);
+        const entityField = this.getEntityField(entityName, fieldName);
+
+        if (!schema || !entityField || !fieldName) {
+            return null;
+        }
+
+        // only id fields can have corresponding association fields
+        if (entityField.type !== DATA_TYPES.UUID) {
+            return null;
+        }
+
+        // primary key fields do not have corresponding association fields
+        if (entityField.flags?.primary_key === true) {
+            return null;
+        }
+
+        let associationField: Property | null = null;
+
+        // try to find association field by checking all fields for matching localField
+        schema.forEachField((property: Property) => {
+            if (associationField) {
+                return;
+            }
+
+            if (
+                property.type === DATA_TYPES.ASSOCIATION &&
+                (property as Property & { localField?: string }).localField === fieldName
+            ) {
+                associationField = property;
+            }
+        });
+
+        // fallback: try to infer association name from field name
+        // example: "productVersionId" -> "product"
+        if (!associationField && fieldName.endsWith('VersionId') && fieldName !== 'versionId') {
+            const inferredName = fieldName.slice(0, -9);
+            const inferredField = schema.getField(inferredName);
+
+            if (inferredField?.type === DATA_TYPES.ASSOCIATION) {
+                associationField = inferredField;
+            }
+        }
+
+        // fallback: use predefined mapping for special cases (naming pattern not followed)
+        if (!associationField && FIELD_ASSOCIATION_MAPPING[fieldName]) {
+            const mappedName = FIELD_ASSOCIATION_MAPPING[fieldName];
+            const mappedField = schema.getField(mappedName);
+
+            if (mappedField?.type === DATA_TYPES.ASSOCIATION) {
+                associationField = mappedField;
+            }
+        }
+
+        return associationField;
+    }
+
+    /**
+     * determines if a field is a scalar field or should be treated as a relation field.
+     */
+    isScalarField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
+        const entityField = this.getEntityField(entityName, fieldName);
+
+        if (!entityField) {
+            return true;
+        }
+
+        if (entityField.type === DATA_TYPES.ASSOCIATION) {
+            return false;
+        }
+
+        // id fields with corresponding association fields are treated as relation fields
+        const correspondingAssociation = this.findCorrespondingAssociationField(entityName, fieldName);
+
+        return !(entityField.type === DATA_TYPES.UUID && correspondingAssociation);
+    }
+
+    /**
+     * gets the effective entity field to use for a field.
+     * for id fields with associations, returns the association field instead.
+     */
+    getEffectiveEntityField(entityName: string | null | undefined, fieldName: string | null | undefined): Property | null {
+        const correspondingAssociation = this.findCorrespondingAssociationField(entityName, fieldName);
+
+        if (correspondingAssociation) {
+            return correspondingAssociation;
+        }
+
+        return this.getEntityField(entityName, fieldName);
+    }
+
+    /**
+     * checks if a value is a valid-handled relation type.
+     */
+    private isHandledRelationType(
+        value: unknown,
+    ): value is (typeof HANDLED_RELATION_TYPES)[keyof typeof HANDLED_RELATION_TYPES] {
+        return (Object.values(HANDLED_RELATION_TYPES) as unknown[]).includes(value);
+    }
+
+    /**
+     * determines the field type for rendering (either component type or relation type).
+     */
+    getFieldType(entityName: string | null | undefined, fieldName: string | null | undefined): string | null {
+        const entityField = this.getEntityField(entityName, fieldName);
+
+        if (!entityField || UNHANDLED_FIELD_TYPES.includes(entityField.type as (typeof UNHANDLED_FIELD_TYPES)[number])) {
+            return null;
+        }
+
+        const isAssociation = entityField.type === DATA_TYPES.ASSOCIATION;
+        const hasValidRelation = entityField.relation && this.isHandledRelationType(entityField.relation);
+
+        // return relation type for association fields
+        if (isAssociation && hasValidRelation) {
+            return entityField.relation as string;
+        }
+
+        // return relation type for uuid fields with corresponding association fields
+        if (entityField.type === DATA_TYPES.UUID) {
+            const correspondingAssociation = this.findCorrespondingAssociationField(entityName, fieldName);
+
+            if (correspondingAssociation) {
+                const associationRelation = correspondingAssociation.relation;
+
+                if (associationRelation && this.isHandledRelationType(associationRelation)) {
+                    return associationRelation as string;
+                }
+            }
+        }
+
+        if (this.isHandledRelationType(entityField.type)) {
+            return entityField.type;
+        }
+
+        return FIELD_TYPE_COMPONENT_MAPPING[entityField.type as keyof typeof FIELD_TYPE_COMPONENT_MAPPING] ?? null;
     }
 
     /**

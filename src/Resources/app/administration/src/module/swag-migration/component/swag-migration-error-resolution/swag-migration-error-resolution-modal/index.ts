@@ -203,14 +203,14 @@ export default Shopware.Component.wrapComponentConfig({
                 });
         },
 
-        statusBadgeClass(status: boolean) {
-            return status
-                ? 'swag-migration-error-resolution-modal__left-status--unresolved'
-                : 'swag-migration-error-resolution-modal__left-status--resolved';
+        statusBadgeClass(isResolved: boolean): string {
+            return isResolved
+                ? 'swag-migration-error-resolution-modal__left-status--resolved'
+                : 'swag-migration-error-resolution-modal__left-status--unresolved';
         },
 
-        statusBadgeText(status: boolean) {
-            return status
+        statusBadgeText(isResolved: boolean): string {
+            return isResolved
                 ? this.$tc('swag-migration.index.error-resolution.modals.error.left.status.resolved')
                 : this.$tc('swag-migration.index.error-resolution.modals.error.left.status.unresolved');
         },
@@ -221,9 +221,10 @@ export default Shopware.Component.wrapComponentConfig({
                 this.selectedLogIds = [];
                 return;
             }
+
             const currentPageIds = this.tableData.map((row) => row.logId);
 
-            // remove deselected ids from selectedLogIds
+            // remove deselected ids from current page
             this.selectedLogIds = this.selectedLogIds.filter((id) => !currentPageIds.includes(id));
 
             const selectedIds = Object.keys(selection);

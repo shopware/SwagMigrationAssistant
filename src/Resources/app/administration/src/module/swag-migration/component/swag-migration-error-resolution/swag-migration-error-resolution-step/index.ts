@@ -313,17 +313,7 @@ export default Shopware.Component.wrapComponentConfig({
             try {
                 const blob = await this.migrationApiService.downloadLogsOfRun(this.runId);
 
-                const url = window.URL.createObjectURL(blob);
-                const link = document.createElement('a');
-
-                link.href = url;
-                link.download = `migration-logs-${this.runId}.txt`;
-
-                document.body.appendChild(link);
-                link.click();
-
-                document.body.removeChild(link);
-                window.URL.revokeObjectURL(url);
+                this.downloadBlobAsFile(blob, `migration-logs-${this.runId}.txt`);
             } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
@@ -331,6 +321,20 @@ export default Shopware.Component.wrapComponentConfig({
             } finally {
                 this.downloadLoading = false;
             }
+        },
+
+        downloadBlobAsFile(blob: Blob, filename: string) {
+            const url = window.URL.createObjectURL(blob);
+            const link = document.createElement('a');
+
+            link.href = url;
+            link.download = filename;
+
+            document.body.appendChild(link);
+            link.click();
+
+            document.body.removeChild(link);
+            window.URL.revokeObjectURL(url);
         },
 
         async onPageChange(page: { page: number; limit: number }) {
