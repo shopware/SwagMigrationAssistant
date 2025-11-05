@@ -1,6 +1,6 @@
 import template from './swag-migration-error-resolution-step.html.twig';
 import './swag-migration-error-resolution-step.scss';
-import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.api.service';
 import type MigrationApiService from '../../../../../core/service/api/swag-migration.api.service';
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 import type { MigrationStore } from '../../../store/migration.store';
@@ -192,6 +192,10 @@ export default Shopware.Component.wrapComponentConfig({
                 this.fetchLogByLevel(null),
                 this.fetchTotalUnfixableErrors(),
             ]);
+
+            if (this.tableTotal === 0 && this.totalUnfixableErrors === 0) {
+                await this.onContinueMigration();
+            }
         },
 
         async fetchTotalUnfixableErrors() {
@@ -266,6 +270,7 @@ export default Shopware.Component.wrapComponentConfig({
         async fetchRun() {
             const criteria = new Criteria(1, 1)
                 .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
+                .addFilter(Criteria.equals('step', MIGRATION_STEP.ERROR_RESOLUTION))
                 .addIncludes({
                     swag_migration_run: ['id'],
                 });

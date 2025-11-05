@@ -124,7 +124,7 @@
             <mt-button
                 class="swag-migration-error-resolution-step__card-header-filter"
                 variant="secondary"
-                :disabled="loading"
+                :disabled="loading || tableTotal === 0"
             >
                 <template #iconFront>
                     <mt-icon
