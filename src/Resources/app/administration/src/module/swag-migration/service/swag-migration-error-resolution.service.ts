@@ -75,6 +75,13 @@ export const PRIORITY_FIELDS = [
     'length',
 ] as const;
 
+const PRIORITY_FIELD_MAP: Map<string, number> = new Map(
+    PRIORITY_FIELDS.map((field, index) => [
+        field,
+        index,
+    ]),
+);
+
 /**
  * @private
  */
@@ -125,18 +132,18 @@ export default class SwagMigrationErrorResolutionService {
 
     sortFieldsByPriority(fields: string[]): string[] {
         return fields.sort((a, b) => {
-            const indexA = PRIORITY_FIELDS.indexOf(a as (typeof PRIORITY_FIELDS)[number]);
-            const indexB = PRIORITY_FIELDS.indexOf(b as (typeof PRIORITY_FIELDS)[number]);
+            const priorityA = PRIORITY_FIELD_MAP.get(a);
+            const priorityB = PRIORITY_FIELD_MAP.get(b);
 
-            if (indexA !== -1 && indexB !== -1) {
-                return indexA - indexB;
+            if (priorityA !== undefined && priorityB !== undefined) {
+                return priorityA - priorityB;
             }
 
-            if (indexA !== -1) {
+            if (priorityA !== undefined) {
                 return -1;
             }
 
-            if (indexB !== -1) {
+            if (priorityB !== undefined) {
                 return 1;
             }
 
@@ -162,43 +169,28 @@ export default class SwagMigrationErrorResolutionService {
             },
         ];
 
-        const scalarFields = Object.keys(entityFields.scalar);
-        const requiredFields = Object.keys(entityFields.required);
+        const requiredFieldsSet = new Set(Object.keys(entityFields.required));
 
-        const availableScalarFields = scalarFields.filter((field) => field !== selectedFieldName);
-        const availableRequiredFields = requiredFields.filter((field) => availableScalarFields.includes(field));
+        const scalarFields = Object.keys(entityFields.scalar).filter((field) => field !== selectedFieldName);
 
-        const nonRequiredFields = availableScalarFields.filter((field) => !availableRequiredFields.includes(field));
+        const requiredFields = scalarFields.filter((field) => requiredFieldsSet.has(field));
+        const nonRequiredFields = scalarFields.filter((field) => !requiredFieldsSet.has(field));
 
-        const sortedRequiredFields = this.sortFieldsByPriority([...availableRequiredFields]);
-        const sortedNonRequiredFields = this.sortFieldsByPriority([...nonRequiredFields]);
+        this.sortFieldsByPriority(requiredFields);
+        this.sortFieldsByPriority(nonRequiredFields);
 
         const allFields = [
-            ...sortedRequiredFields,
-            ...sortedNonRequiredFields,
+            ...requiredFields,
+            ...nonRequiredFields,
         ];
 
-        const visibleFields = allFields.slice(0, 3);
-
-        visibleFields.forEach((fieldName, index) => {
+        allFields.forEach((fieldName, index) => {
             columns.push({
                 label: fieldName,
                 property: fieldName,
                 sortable: true,
                 position: 3 + index,
-                visible: true,
-            });
-        });
-
-        const hiddenFields = allFields.slice(3);
-
-        hiddenFields.forEach((fieldName, index) => {
-            columns.push({
-                label: fieldName,
-                property: fieldName,
-                sortable: true,
-                position: 3 + visibleFields.length + index,
-                visible: false,
+                visible: index < 3,
             });
         });
 
