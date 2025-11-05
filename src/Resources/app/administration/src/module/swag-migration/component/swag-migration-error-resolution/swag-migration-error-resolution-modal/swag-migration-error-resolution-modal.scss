@@ -23,7 +23,28 @@
         height: 100%;
         width: 75%;
         min-width: 30rem;
-        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+
+        .sw-data-grid {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            overflow: hidden;
+            min-height: 0;
+
+            .sw-data-grid__wrapper {
+                flex: 1;
+                overflow-y: auto;
+                overflow-x: auto;
+                min-height: 0;
+            }
+
+            .sw-data-grid__pagination {
+                flex-shrink: 0;
+            }
+        }
 
         &-status {
             display: flex;

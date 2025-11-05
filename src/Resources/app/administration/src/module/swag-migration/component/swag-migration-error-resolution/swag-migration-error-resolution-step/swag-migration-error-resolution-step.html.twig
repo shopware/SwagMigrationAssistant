@@ -170,6 +170,17 @@
                     </div>
                 </template>
 
+                <template #column-code="{ item }">
+                    <div class="swag-migration-error-resolution-step__card-table-error">
+                        <a
+                            class="swag-migration-error-resolution-step__card-table-error-link"
+                            @click="() => onOpenEditLog(item)"
+                        >
+                            {{ item.code }}
+                        </a>
+                    </div>
+                </template>
+
                 <template #actions="{ item }">
                     <sw-context-menu-item
                         class="swag-migration-error-resolution-step__card-table-edit"
