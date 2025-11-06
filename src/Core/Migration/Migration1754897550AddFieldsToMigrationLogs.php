@@ -12,7 +12,6 @@ use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\Platforms\MySQLPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Migration\ColumnExistsTrait;
 use Shopware\Core\Framework\Migration\MigrationStep;
 
 /**
