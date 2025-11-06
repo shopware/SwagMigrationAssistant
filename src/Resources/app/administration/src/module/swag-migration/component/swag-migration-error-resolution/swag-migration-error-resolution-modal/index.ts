@@ -192,14 +192,10 @@ export default Shopware.Component.wrapComponentConfig({
 
                 await Promise.all(submitPromises);
 
-                this.createNotificationSuccess({
-                    message: this.$tc(
-                        'swag-migration.index.error-resolution.modals.error.notifications.successfullyResolved',
-                    ),
-                });
+                // TODO: refresh current table page
             } catch {
                 this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.modals.error.notifications.resolutionFailed'),
+                    message: this.$tc('swag-migration.index.error-resolution.errors.submitResolutionFailed'),
                 });
             } finally {
                 this.submitLoading = false;

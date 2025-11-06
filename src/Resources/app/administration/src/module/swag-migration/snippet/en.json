@@ -456,7 +456,8 @@
           "downloadLogsFailed": "Failed downloading log file.",
           "continueMigrationFailed": "Failed continuing migration.",
           "fetchLogsFailed": "Failed fetching log data.",
-          "fetchRunFailed": "Failed fetching migration run data."
+          "fetchRunFailed": "Failed fetching migration run data.",
+          "submitResolutionFailed": "Failed submitting error resolution."
         },
         "step": {
           "continue-modal": {

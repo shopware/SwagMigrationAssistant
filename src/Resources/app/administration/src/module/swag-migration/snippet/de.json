@@ -605,7 +605,8 @@
           "downloadLogsFailed": "Fehler beim Herunterladen der Log-Datei.",
           "continueMigrationFailed": "Fehler beim Fortsetzen der Migration.",
           "fetchLogsFailed": "Fehler beim Abrufen der Log-Datei.",
-          "fetchRunFailed": "Fehler beim Abrufen der Migrationsdaten."
+          "fetchRunFailed": "Fehler beim Abrufen der Migrationsdaten.",
+          "submitResolutionFailed": "Fehler beim Senden der Fehlerbehebung."
         },
         "step": {
           "continue-modal": {
