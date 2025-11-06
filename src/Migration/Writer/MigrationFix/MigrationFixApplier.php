@@ -51,10 +51,9 @@ class MigrationFixApplier
     private function getMappings(array $ids, string $connectionId): array
     {
         $sql = <<<'SQL'
-SELECT mapping.entity_uuid as entityId, fix.id, fix.value, fix.path FROM swag_migration_mapping as mapping
-INNER JOIN swag_migration_fix as fix ON fix.main_mapping_id = mapping.id
-WHERE mapping.entity_uuid IN (:ids)
-AND mapping.connection_id = :connectionId
+SELECT fix.entity_id as entityId, fix.id, fix.value, fix.path FROM swag_migration_fix as fix
+WHERE fix.entity_id IN (:ids)
+AND fix.connection_id = :connectionId
 SQL;
 
         $result = $this->connection->fetchAllAssociative(

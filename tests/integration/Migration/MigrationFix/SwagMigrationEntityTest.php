@@ -51,14 +51,12 @@ class SwagMigrationEntityTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $connectionId = $this->createConnection($context);
-        $mappingId = $this->createMapping($connectionId);
 
         $fixId = Uuid::randomHex();
 
         $migrationFix = new SwagMigrationFixEntity();
         $migrationFix->setId($fixId);
         $migrationFix->setConnectionId($connectionId);
-        $migrationFix->setMainMappingId($mappingId);
         $migrationFix->setPath('this.is.any.path');
         $migrationFix->setValue($value);
 
