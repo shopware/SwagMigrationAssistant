@@ -1,7 +1,6 @@
 import template from './swag-migration-error-resolution-step.html.twig';
 import './swag-migration-error-resolution-step.scss';
 import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../../core/service/api/swag-migration.api.service';
-import type MigrationApiService from '../../../../../core/service/api/swag-migration.api.service';
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 import type { MigrationStore } from '../../../store/migration.store';
 import type { TRepository } from '../../../../../type/types';
@@ -51,7 +50,6 @@ export interface SwagMigrationErrorResolutionStepData {
     selectedLog: ErrorResolutionTableData | null;
     totalUnfixableErrors: number;
     migrationStore: MigrationStore;
-    migrationApiService: MigrationApiService;
     levelCounts: {
         error: number;
         warning: number;
@@ -91,7 +89,6 @@ export default Shopware.Component.wrapComponentConfig({
             selectedLog: null,
             totalUnfixableErrors: 0,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
-            migrationApiService: Shopware.Service(MIGRATION_API_SERVICE),
             levelCounts: {
                 error: 0,
                 warning: 0,

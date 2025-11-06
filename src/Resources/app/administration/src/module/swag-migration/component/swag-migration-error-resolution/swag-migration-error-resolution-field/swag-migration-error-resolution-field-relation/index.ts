@@ -24,11 +24,10 @@ export interface SwagMigrationErrorResolutionFieldRelationData {
 export default Shopware.Component.wrapComponentConfig({
     template,
 
-    emits: ['relation-field-value-changed'],
-
     inject: [
         'repositoryFactory',
         MIGRATION_ERROR_RESOLUTION_SERVICE,
+        'updateFieldValue',
     ],
 
     props: {
@@ -67,8 +66,13 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     watch: {
-        fieldValue() {
-            this.$emit('relation-field-value-changed', this.fieldValue);
+        fieldValue: {
+            handler() {
+                if (this.updateFieldValue) {
+                    this.updateFieldValue(this.fieldValue);
+                }
+            },
+            immediate: true,
         },
     },
 

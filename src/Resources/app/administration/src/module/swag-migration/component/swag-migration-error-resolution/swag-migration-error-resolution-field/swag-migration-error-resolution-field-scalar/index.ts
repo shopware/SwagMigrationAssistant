@@ -15,7 +15,7 @@ export interface SwagMigrationErrorResolutionFieldScalarData {
 export default Shopware.Component.wrapComponentConfig({
     template,
 
-    emits: ['scalar-field-value-changed'],
+    inject: ['updateFieldValue'],
 
     props: {
         componentType: {
@@ -47,8 +47,13 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     watch: {
-        fieldValue() {
-            this.$emit('scalar-field-value-changed', this.fieldValue);
+        fieldValue: {
+            handler() {
+                if (this.updateFieldValue) {
+                    this.updateFieldValue(this.fieldValue);
+                }
+            },
+            immediate: true,
         },
     },
 

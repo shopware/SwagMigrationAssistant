@@ -87,7 +87,9 @@
                     <mt-button
                         class="swag-migration-error-resolution-modal__right-content-button"
                         variant="primary"
+                        :is-loading="submitLoading"
                         :disabled="loading || selectedLogIds.length === 0"
+                        @click="onSubmitResolution"
                     >
                         {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
                     </mt-button>

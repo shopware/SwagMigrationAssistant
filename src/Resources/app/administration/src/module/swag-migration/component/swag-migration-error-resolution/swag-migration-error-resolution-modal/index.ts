@@ -5,6 +5,7 @@ import type { MigrationLog, TRepository } from '../../../../../type/types';
 import type { TableColumn } from '../../../service/swag-migration-error-resolution.service';
 import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
+import { MIGRATION_STORE_ID, type MigrationStore } from '../../../store/migration.store';
 
 const { Criteria } = Shopware.Data;
 
@@ -29,6 +30,9 @@ export interface SwagMigrationErrorResolutionModalData {
     selectedLogIds: string[];
     selectedDetailsLog: ResolutionModalRow;
     loading: boolean;
+    submitLoading: boolean;
+    fieldValue: string[] | string | boolean | number | null;
+    migrationStore: MigrationStore;
 }
 
 /**
@@ -65,6 +69,17 @@ export default Shopware.Component.wrapComponentConfig({
             selectedLogIds: [],
             selectedDetailsLog: null,
             loading: false,
+            submitLoading: false,
+            fieldValue: null,
+            migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
+        };
+    },
+
+    provide() {
+        return {
+            updateFieldValue: (value: string[] | string | boolean | number | null) => {
+                this.fieldValue = value;
+            },
         };
     },
 
@@ -75,6 +90,10 @@ export default Shopware.Component.wrapComponentConfig({
     computed: {
         migrationLoggingRepository(): TRepository<'swag_migration_logging'> {
             return this.repositoryFactory.create('swag_migration_logging');
+        },
+
+        migrationFixRepository(): TRepository<'swag_migration_fix'> {
+            return this.repositoryFactory.create('swag_migration_fix');
         },
 
         loggingCriteria() {
@@ -119,6 +138,87 @@ export default Shopware.Component.wrapComponentConfig({
     methods: {
         async createdComponent() {
             await this.fetchLogs();
+        },
+
+        async onSubmitResolution() {
+            if (this.selectedLogIds.length <= 0) {
+                return;
+            }
+
+            this.submitLoading = true;
+
+            try {
+                const entityIdsFromTableData: string[] = this.tableData
+                    .filter((row) => this.selectedLogIds.includes(row.logId))
+                    .map((row) => {
+                        const convertedData = row.convertedData || {};
+                        return convertedData.id ? String(convertedData.id) : null;
+                    })
+                    .filter((id: string | null): id is string => id !== null);
+
+                const currentPageLogIds = this.tableData.map((row) => row.logId);
+                const missingLogIds = this.selectedLogIds.filter((logId) => !currentPageLogIds.includes(logId));
+
+                let entityIdsFromMissingLogs: string[] = [];
+
+                if (missingLogIds.length > 0) {
+                    const criteria = new Criteria(1, missingLogIds.length)
+                        .addFilter(Criteria.equals('code', this.selectedLog.code))
+                        .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
+                        .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
+                        .addIncludes({
+                            swag_migration_logging: ['convertedData'],
+                        })
+                        .setIds(missingLogIds);
+
+                    const logs = await this.migrationLoggingRepository.search(criteria, Shopware.Context.api);
+
+                    entityIdsFromMissingLogs = logs
+                        .map((log: MigrationLog) => {
+                            const convertedData = log?.convertedData || {};
+                            return convertedData.id ? String(convertedData.id) : null;
+                        })
+                        .filter((id: string | null): id is string => id !== null);
+                }
+
+                const entityIds = [
+                    ...entityIdsFromTableData,
+                    ...entityIdsFromMissingLogs,
+                ];
+
+                const submitPromises = entityIds.map((entityId) => {
+                    return this.submitSingleResolution(entityId);
+                });
+
+                await Promise.all(submitPromises);
+
+                this.createNotificationSuccess({
+                    message: this.$tc(
+                        'swag-migration.index.error-resolution.modals.error.notifications.successfullyResolved',
+                    ),
+                });
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.modals.error.notifications.resolutionFailed'),
+                });
+            } finally {
+                this.submitLoading = false;
+            }
+        },
+
+        async submitSingleResolution(entityId: string) {
+            // TODO: use entityId & entityName when backend supports it
+            // TODO: remove main_mapping_id
+
+            const entity = this.migrationFixRepository.create();
+            entity.connectionId = this.migrationStore.connectionId;
+            entity.mainMappingId = '019a583caa7173db943932013bff39d5';
+            entity.path = this.selectedLog.fieldName;
+            entity.value = {
+                [this.selectedLog.fieldName]: this.fieldValue,
+            };
+
+            return this.migrationFixRepository.save(entity);
         },
 
         async fetchLogs() {

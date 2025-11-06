@@ -14,7 +14,7 @@ export interface SwagMigrationErrorResolutionFieldUnhandledData {
 export default Shopware.Component.wrapComponentConfig({
     template,
 
-    emits: ['unhandled-field-value-changed'],
+    inject: ['updateFieldValue'],
 
     props: {
         fieldName: {
@@ -35,8 +35,13 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     watch: {
-        fieldValue() {
-            this.$emit('unhandled-field-value-changed', this.fieldValue);
+        fieldValue: {
+            handler() {
+                if (this.updateFieldValue) {
+                    this.updateFieldValue(this.fieldValue);
+                }
+            },
+            immediate: true,
         },
     },
 

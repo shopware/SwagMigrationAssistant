@@ -51,27 +51,4 @@ export default Shopware.Component.wrapComponentConfig({
             return this.swagMigrationErrorResolutionService.getFieldType(this.log?.entityName, this.log?.fieldName);
         },
     },
-
-    methods: {
-        onScalarFieldValueChanged(newValue: string | number | boolean | null) {
-            // eslint-disable-next-line no-console
-            console.log({
-                scalarField: newValue,
-            });
-        },
-
-        onRelationFieldValueChanged(newValue: string | string[] | null) {
-            // eslint-disable-next-line no-console
-            console.log({
-                relationField: newValue,
-            });
-        },
-
-        onUnhandledFieldValueChanged(newValue: string) {
-            // eslint-disable-next-line no-console
-            console.log({
-                unhandledField: newValue,
-            });
-        },
-    },
 });
