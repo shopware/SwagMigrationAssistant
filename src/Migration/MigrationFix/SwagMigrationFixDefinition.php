@@ -46,6 +46,8 @@ class SwagMigrationFixDefinition extends EntityDefinition
             (new IdField('main_mapping_id', 'mainMappingId'))->addFlags(new Required()),
             (new AnyJsonField('value', 'value'))->addFlags(new Required()),
             (new StringField('path', 'path'))->addFlags(new Required()),
+            new IdField('entity_id', 'entityId'),
+            new StringField('entity_name', 'entityName'),
             new CreatedAtField(),
             new UpdatedAtField(),
         ]);
