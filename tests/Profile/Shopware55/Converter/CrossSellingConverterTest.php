@@ -248,9 +248,9 @@ class CrossSellingConverterTest extends TestCase
         static::assertNotNull($converted);
         $this->compareProduct['id'] = $converted['id'];
         $this->compareProduct['name'] = $type;
-        $this->compareProduct['productId'] = $this->products[$fromIndex]['entityUuid'];
+        $this->compareProduct['productId'] = $this->products[$fromIndex]['entityId'];
         $this->compareProduct['assignedProducts']['0']['id'] = $converted['assignedProducts']['0']['id'];
-        $this->compareProduct['assignedProducts']['0']['productId'] = $this->products[$toIndex]['entityUuid'];
+        $this->compareProduct['assignedProducts']['0']['productId'] = $this->products[$toIndex]['entityId'];
         $this->compareProduct['assignedProducts']['0']['position'] = $position;
 
         static::assertNull($convertStruct->getUnmapped());

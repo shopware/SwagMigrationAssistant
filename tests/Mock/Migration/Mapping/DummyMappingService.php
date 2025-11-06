@@ -42,7 +42,7 @@ class DummyMappingService extends MappingService
                     $item['connectionId'] === $connectionId
                     && $item['entity'] === $entityName
                     && $item['oldIdentifier'] === $oldIdentifier
-                    && $item['entityUuid'] === $newUuid
+                    && $item['entityId'] === $newUuid
                 ) {
                     return;
                 }
@@ -55,7 +55,7 @@ class DummyMappingService extends MappingService
                 'connectionId' => $connectionId,
                 'entity' => $entityName,
                 'oldIdentifier' => $oldIdentifier,
-                'entityUuid' => $uuid,
+                'entityId' => $uuid,
                 'additionalData' => $additionalData,
             ]
         );
@@ -97,14 +97,14 @@ class DummyMappingService extends MappingService
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
         return isset($this->mappings[\md5($entityName . $identifier)])
-            ? \array_column($this->mappings[\md5($entityName . $identifier)], 'entityUuid')
+            ? \array_column($this->mappings[\md5($entityName . $identifier)], 'entityId')
             : [];
     }
 
-    public function deleteMapping(string $entityUuid, string $connectionId, Context $context): void
+    public function deleteMapping(string $entityId, string $connectionId, Context $context): void
     {
         foreach ($this->writeArray as $writeMapping) {
-            if ($writeMapping['profile'] === $connectionId && $writeMapping['entityUuid'] === $entityUuid) {
+            if ($writeMapping['profile'] === $connectionId && $writeMapping['entityId'] === $entityId) {
                 unset($writeMapping);
 
                 break;

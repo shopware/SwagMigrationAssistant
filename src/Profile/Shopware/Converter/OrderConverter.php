@@ -161,7 +161,7 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $converted['id'] = (string) $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityId'];
         unset($data['id']);
         $this->uuid = $converted['id'];
 
@@ -194,8 +194,8 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         $converted['orderCustomer'] = [
-            'id' => $orderCustomerMapping['entityUuid'],
-            'customerId' => $customerMapping['entityUuid'],
+            'id' => $orderCustomerMapping['entityId'],
+            'customerId' => $customerMapping['entityId'],
         ];
         $this->mappingIds[] = $customerMapping['id'];
         $this->mappingIds[] = $orderCustomerMapping['id'];
@@ -264,7 +264,7 @@ abstract class OrderConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-        $converted['stateId'] = $stateMapping['entityUuid'];
+        $converted['stateId'] = $stateMapping['entityId'];
         $this->mappingIds[] = $stateMapping['id'];
 
         $shippingGross = (float) $data['invoice_shipping'];
@@ -360,7 +360,7 @@ abstract class OrderConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $converted['salesChannelId'] = $mapping['entityUuid'];
+                $converted['salesChannelId'] = $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
                 unset($data['subshopID']);
             }
@@ -453,7 +453,7 @@ abstract class OrderConverter extends ShopwareConverter
 
             return;
         }
-        $stateId = $mapping['entityUuid'];
+        $stateId = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -468,7 +468,7 @@ abstract class OrderConverter extends ShopwareConverter
         if ($paymentMethodUuid === null) {
             return;
         }
-        $id = $mapping['entityUuid'];
+        $id = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $transactions = [
@@ -515,7 +515,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->mappingIds[] = $paymentMethodMapping['id'];
 
-        return $paymentMethodMapping['entityUuid'];
+        return $paymentMethodMapping['entityId'];
     }
 
     /**
@@ -552,7 +552,7 @@ abstract class OrderConverter extends ShopwareConverter
             $originalData['id'],
             $this->context
         );
-        $address['id'] = $mapping['entityUuid'];
+        $address['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $address['country'] = $this->getCountry($originalData['country']);
@@ -605,7 +605,7 @@ abstract class OrderConverter extends ShopwareConverter
                 $oldCountryData['id'],
                 $this->context
             );
-            $country['id'] = $mapping['entityUuid'];
+            $country['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
         }
 
@@ -651,7 +651,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -724,7 +724,7 @@ abstract class OrderConverter extends ShopwareConverter
             return [];
         }
 
-        $state['id'] = $mapping['entityUuid'];
+        $state['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $oldStateData = $oldAddressData['state'];
@@ -765,7 +765,7 @@ abstract class OrderConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -815,8 +815,8 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $delivery = [
-            'id' => $mapping['entityUuid'],
-            'stateId' => $deliveryStateMapping['entityUuid'],
+            'id' => $mapping['entityId'],
+            'stateId' => $deliveryStateMapping['entityId'],
             'shippingDateEarliest' => $converted['orderDateTime'],
             'shippingDateLatest' => $converted['orderDateTime'],
         ];
@@ -852,7 +852,7 @@ abstract class OrderConverter extends ShopwareConverter
                 );
                 $this->mappingIds[] = $mapping['id'];
                 $positions[] = [
-                    'id' => $mapping['entityUuid'],
+                    'id' => $mapping['entityId'],
                     'orderLineItemId' => $lineItem['id'],
                     'price' => $lineItem['price'],
                 ];
@@ -890,7 +890,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
         $this->mappingIds[] = $shippingMethodMapping['id'];
 
-        return $shippingMethodMapping['entityUuid'];
+        return $shippingMethodMapping['entityId'];
     }
 
     /**
@@ -914,8 +914,8 @@ abstract class OrderConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
 
             $lineItem = [
-                'id' => $mapping['entityUuid'],
-                'identifier' => $mapping['entityUuid'],
+                'id' => $mapping['entityId'],
+                'identifier' => $mapping['entityId'],
             ];
 
             if ($isProduct) {
@@ -928,8 +928,8 @@ abstract class OrderConverter extends ShopwareConverter
                     );
 
                     if ($mapping !== null) {
-                        $lineItem['referencedId'] = $mapping['entityUuid'];
-                        $lineItem['productId'] = $mapping['entityUuid'];
+                        $lineItem['referencedId'] = $mapping['entityId'];
+                        $lineItem['productId'] = $mapping['entityId'];
                         $lineItem['payload']['productNumber'] = $originalLineItem['articleordernumber'] ?? '';
                         $this->mappingIds[] = $mapping['id'];
                     }
@@ -1059,7 +1059,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->mappingIds[] = $salutationMapping['id'];
 
-        return $salutationMapping['entityUuid'];
+        return $salutationMapping['entityId'];
     }
 
     /**
@@ -1108,8 +1108,8 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         return [
-            'id' => $mapping['entityUuid'],
-            'mediaId' => $mediaMapping['entityUuid'],
+            'id' => $mapping['entityId'],
+            'mediaId' => $mediaMapping['entityId'],
             'accessGranted' => $accessGranted,
             'position' => 0,
         ];

@@ -82,7 +82,7 @@ abstract class ShopwareConverter extends Converter
 
         $this->mappingIds[] = $mapping['id'];
 
-        return $mapping['entityUuid'];
+        return $mapping['entityId'];
     }
 
     protected function getOrCreateMappingIdFacade(
@@ -102,11 +102,11 @@ abstract class ShopwareConverter extends Converter
 
         $this->mappingIds[] = $mapping['id'];
 
-        return $mapping['entityUuid'];
+        return $mapping['entityId'];
     }
 
     /**
-     * @return array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     * @return array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
      */
     protected function getOrCreateMappingMainCompleteFacade(
         string $entityName,

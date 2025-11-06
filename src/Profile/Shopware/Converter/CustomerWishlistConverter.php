@@ -56,12 +56,12 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
         $this->mappingIds[] = $productMapping['id'];
 
         $converted = [];
-        $converted['id'] = $this->mainMapping['entityUuid'];
-        $converted['customerId'] = $customerMapping['entityUuid'];
-        $converted['salesChannelId'] = $shopMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
+        $converted['customerId'] = $customerMapping['entityId'];
+        $converted['salesChannelId'] = $shopMapping['entityId'];
         $converted['products'][] = [
-            'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityUuid'],
-            'productId' => $productMapping['entityUuid'],
+            'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityId'],
+            'productId' => $productMapping['entityId'],
         ];
 
         $this->updateMainMapping($migrationContext, $context);

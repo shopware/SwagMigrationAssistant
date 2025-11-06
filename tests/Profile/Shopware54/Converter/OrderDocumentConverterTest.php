@@ -162,8 +162,8 @@ class OrderDocumentConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
-        $mappingServiceMock->method('getMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
-        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
+        $mappingServiceMock->method('getMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
 
         $orderDocumentConverterClasses = [
             Shopware54OrderDocumentConverter::class => 'migration_unknown_type_test_foo_bar',
@@ -200,8 +200,8 @@ class OrderDocumentConverterTest extends TestCase
         $context = Context::createDefaultContext();
 
         $mappingServiceMock = $this->createMock(MappingServiceInterface::class);
-        $mappingServiceMock->method('getMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
-        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityUuid' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
+        $mappingServiceMock->method('getMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex()]);
+        $mappingServiceMock->method('getOrCreateMapping')->willReturn(['entityId' => Uuid::randomHex(), 'id' => Uuid::randomHex(), 'oldIdentifier' => $document['ID']]);
 
         $orderDocumentConverterClasses = [
             Shopware54OrderDocumentConverter::class,

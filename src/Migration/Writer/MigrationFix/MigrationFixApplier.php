@@ -51,9 +51,9 @@ class MigrationFixApplier
     private function getMappings(array $ids, string $connectionId): array
     {
         $sql = <<<'SQL'
-SELECT mapping.entity_uuid as entityId, fix.id, fix.value, fix.path FROM swag_migration_mapping as mapping
+SELECT mapping.entity_id as entityId, fix.id, fix.value, fix.path FROM swag_migration_mapping as mapping
 INNER JOIN swag_migration_fix as fix ON fix.main_mapping_id = mapping.id
-WHERE mapping.entity_uuid IN (:ids)
+WHERE mapping.entity_id IN (:ids)
 AND mapping.connection_id = :connectionId
 SQL;
 
@@ -70,12 +70,12 @@ SQL;
 
         $return = [];
         foreach ($result as $row) {
-            $entityUuid = Uuid::fromBytesToHex($row['entityId']);
-            if (!\array_key_exists($entityUuid, $return)) {
-                $return[$entityUuid] = [];
+            $entityId = Uuid::fromBytesToHex($row['entityId']);
+            if (!\array_key_exists($entityId, $return)) {
+                $return[$entityId] = [];
             }
 
-            $return[$entityUuid][] = MigrationFix::fromDatabaseQuery($row);
+            $return[$entityId][] = MigrationFix::fromDatabaseQuery($row);
         }
 
         return $return;
