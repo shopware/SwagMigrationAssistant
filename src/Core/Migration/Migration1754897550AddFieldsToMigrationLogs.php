@@ -21,8 +21,6 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 #[Package('fundamentals@after-sales')]
 class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 {
-    use ColumnExistsTrait;
-
     public const MIGRATION_LOGGING_TABLE = 'swag_migration_logging';
 
     public const REQUIRED_FIELDS = [
@@ -90,15 +88,7 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
     private function dropObsoleteColumns(Connection $connection): void
     {
         foreach (self::FIELDS_TO_DROP as $column) {
-            if ($this->columnExists($connection, 'swag_migration_logging', $column)) {
-                $connection->executeStatement(
-                    \sprintf(
-                        'ALTER TABLE `%s` DROP COLUMN `%s`;',
-                        self::MIGRATION_LOGGING_TABLE,
-                        $column
-                    )
-                );
-            }
+            $this->dropColumnIfExists($connection, 'swag_migration_logging', $column);
         }
     }
 
