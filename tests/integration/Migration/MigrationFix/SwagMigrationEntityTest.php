@@ -52,11 +52,15 @@ class SwagMigrationEntityTest extends TestCase
         $context = Context::createDefaultContext();
         $connectionId = $this->createConnection($context);
 
+        $entityId = $this->createMapping($connectionId);
+        static::assertNotNull($entityId);
+
         $fixId = Uuid::randomHex();
 
         $migrationFix = new SwagMigrationFixEntity();
         $migrationFix->setId($fixId);
         $migrationFix->setConnectionId($connectionId);
+        $migrationFix->setEntityId($entityId);
         $migrationFix->setPath('this.is.any.path');
         $migrationFix->setValue($value);
 
@@ -85,7 +89,7 @@ class SwagMigrationEntityTest extends TestCase
         ];
     }
 
-    private function createMapping(string $connectionId): string
+    private function createMapping(string $connectionId): ?string
     {
         $mapping = $this->mappingService->createMapping(
             $connectionId,
@@ -99,7 +103,7 @@ class SwagMigrationEntityTest extends TestCase
 
         $this->mappingService->writeMapping();
 
-        return $mapping['id'];
+        return $mapping['entityUuid'];
     }
 
     private function createConnection(Context $context): string
