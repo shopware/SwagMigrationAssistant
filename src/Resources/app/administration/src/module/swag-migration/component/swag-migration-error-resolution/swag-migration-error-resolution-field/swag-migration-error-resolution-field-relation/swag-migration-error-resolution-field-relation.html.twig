@@ -31,7 +31,7 @@
             name="migration-resolution--one_to_many"
             :placeholder="entityName"
             :repository="entityRepository"
-            :disabled="disabled"
+            :disabled="disabled || noOptionsFound"
             label-property="id"
         >
             <template #result-label-property="{ item }">
