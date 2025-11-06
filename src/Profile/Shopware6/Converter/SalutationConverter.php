@@ -40,7 +40,7 @@ class SalutationConverter extends ShopwareConverter
 
         $salutationMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALUTATION, $data['id'], $this->context);
         if ($salutationMapping !== null) {
-            $salutationUuid = $salutationMapping['entityUuid'];
+            $salutationUuid = $salutationMapping['entityId'];
         } else {
             $salutationUuid = $this->salutationLookup->get($data['salutationKey'], $this->context);
         }

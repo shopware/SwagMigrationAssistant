@@ -83,7 +83,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = (string) $this->mainMapping['entityUuid'];
+        $converted['id'] = (string) $this->mainMapping['entityId'];
 
         if (isset($data['children']) && \count($data['children']) > 0) {
             $this->setRelationMappings($data['children']);
@@ -108,7 +108,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-        $customerGroupUuid = $customerGroupMapping['entityUuid'];
+        $customerGroupUuid = $customerGroupMapping['entityId'];
         $this->mappingIds[] = $customerGroupMapping['id'];
         $converted['customerGroupId'] = $customerGroupUuid;
 
@@ -176,7 +176,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-        $categoryUuid = $categoryMapping['entityUuid'];
+        $categoryUuid = $categoryMapping['entityId'];
         $this->mappingIds[] = $categoryMapping['id'];
         $converted['navigationCategoryId'] = $categoryUuid;
 
@@ -270,7 +270,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
@@ -297,7 +297,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $id = (string) $mapping['entityUuid'];
+                $id = (string) $mapping['entityId'];
             }
         }
 
@@ -322,7 +322,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $id = (string) $mapping['entityUuid'];
+                $id = (string) $mapping['entityId'];
             }
         }
 
@@ -432,7 +432,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
      */
     private function setRelationMappings(array $children): void
     {
-        if (!isset($this->mainMapping['entityUuid'])) {
+        if (!isset($this->mainMapping['entityId'])) {
             return;
         }
 
@@ -444,7 +444,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
                 $this->context,
                 null,
                 null,
-                $this->mainMapping['entityUuid']
+                $this->mainMapping['entityId']
             );
             $this->mappingIds[] = $mapping['id'];
         }

@@ -115,7 +115,7 @@ abstract class CategoryConverter extends ShopwareConverter
                 throw MigrationException::parentEntityForChildNotFound(DefaultEntities::CATEGORY, $this->oldCategoryId);
             }
             $this->mappingIds[] = $parentMapping['id'];
-            $converted['parentId'] = $parentMapping['entityUuid'];
+            $converted['parentId'] = $parentMapping['entityId'];
             unset($parentMapping);
         // get last root category as previous sibling
         } elseif (!isset($data['previousSiblingId'])) {
@@ -135,7 +135,7 @@ abstract class CategoryConverter extends ShopwareConverter
             );
 
             if ($previousSiblingMapping !== null) {
-                $converted['afterCategoryId'] = $previousSiblingMapping['entityUuid'];
+                $converted['afterCategoryId'] = $previousSiblingMapping['entityId'];
                 $this->mappingIds[] = $previousSiblingMapping['id'];
             }
         }
@@ -149,7 +149,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $this->checksum
         );
 
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $this->convertValue($converted, 'description', $data, 'cmstext', self::TYPE_STRING);
@@ -260,7 +260,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $this->oldCategoryId . ':' . $data['_locale'],
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         try {
@@ -297,7 +297,7 @@ abstract class CategoryConverter extends ShopwareConverter
         );
 
         $categoryMedia = [];
-        $categoryMedia['id'] = $mapping['entityUuid'];
+        $categoryMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         if (empty($media['name'])) {
@@ -327,7 +327,7 @@ abstract class CategoryConverter extends ShopwareConverter
         );
 
         if ($albumMapping !== null) {
-            $categoryMedia['mediaFolderId'] = $albumMapping['entityUuid'];
+            $categoryMedia['mediaFolderId'] = $albumMapping['entityId'];
             $this->mappingIds[] = $albumMapping['id'];
         }
 
@@ -361,7 +361,7 @@ abstract class CategoryConverter extends ShopwareConverter
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->locale, $this->context);
