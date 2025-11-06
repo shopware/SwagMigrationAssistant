@@ -231,7 +231,7 @@ class SwagMigrationLoggingEntity extends Entity
         return $this->entityId;
     }
 
-    public function setEntityId(string $entityId): void
+    public function setEntityId(?string $entityId): void
     {
         $this->entityId = $entityId;
     }
