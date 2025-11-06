@@ -6,6 +6,9 @@ import {
 } from '../../../../service/swag-migration-error-resolution.service';
 import './swag-migration-error-resolution-field-relation.scss';
 
+/**
+ * @private
+ */
 export interface SwagMigrationErrorResolutionFieldRelationData {
     fieldValue: string | string[] | null;
 }

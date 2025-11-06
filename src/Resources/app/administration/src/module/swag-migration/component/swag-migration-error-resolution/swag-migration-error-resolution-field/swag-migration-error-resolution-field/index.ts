@@ -54,18 +54,21 @@ export default Shopware.Component.wrapComponentConfig({
 
     methods: {
         onScalarFieldValueChanged(newValue: string | number | boolean | null) {
+            // eslint-disable-next-line no-console
             console.log({
                 scalarField: newValue,
             });
         },
 
         onRelationFieldValueChanged(newValue: string | string[] | null) {
+            // eslint-disable-next-line no-console
             console.log({
                 relationField: newValue,
             });
         },
 
         onUnhandledFieldValueChanged(newValue: string) {
+            // eslint-disable-next-line no-console
             console.log({
                 unhandledField: newValue,
             });
