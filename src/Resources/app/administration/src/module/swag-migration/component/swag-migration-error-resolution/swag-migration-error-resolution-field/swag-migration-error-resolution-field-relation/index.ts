@@ -6,11 +6,15 @@ import {
 } from '../../../../service/swag-migration-error-resolution.service';
 import './swag-migration-error-resolution-field-relation.scss';
 
+const { Criteria } = Shopware.Data;
+
 /**
  * @private
  */
 export interface SwagMigrationErrorResolutionFieldRelationData {
     fieldValue: string | string[] | null;
+    noOptionsFound: boolean;
+    entityLink: { name: string } | null;
 }
 
 /**
@@ -53,7 +57,13 @@ export default Shopware.Component.wrapComponentConfig({
     data(): SwagMigrationErrorResolutionFieldRelationData {
         return {
             fieldValue: this.isToOneRelation ? null : [],
+            noOptionsFound: false,
+            entityLink: null,
         };
+    },
+
+    created() {
+        this.createdComponent();
     },
 
     watch: {
@@ -92,6 +102,27 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
+        async createdComponent() {
+            await this.fetchTotalOfEntity();
+        },
+
+        async fetchTotalOfEntity() {
+            if (!this.entityRepository) {
+                return;
+            }
+
+            const criteria = new Criteria(1, 1);
+
+            this.entityRepository.search(criteria).then((result) => {
+                if (result.total > 0) {
+                    return;
+                }
+
+                this.noOptionsFound = true;
+                this.entityLink = this.swagMigrationErrorResolutionService.getEntityLink(this.entityName);
+            });
+        },
+
         getLabelValue(item: Record<string, unknown>): string {
             if (!this.labelProperty || !item) {
                 return '';

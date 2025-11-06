@@ -44,5 +44,24 @@
             </template>
         </sw-entity-multi-id-select>
     {% endblock %}
+
+    <mt-banner
+        v-if="noOptionsFound"
+        class="swag-migration-error-resolution-field-relation__info-banner"
+        :title="$tc('swag-migration.index.error-resolution.modals.error.right.banner.title')"
+        variant="critical"
+    >
+        <p>{{ $tc('swag-migration.index.error-resolution.modals.error.right.banner.content') }}</p>
+
+        <mt-link
+            v-if="entityLink"
+            class="swag-migration-error-resolution-field-relation__info-banner-link"
+            :to="entityLink"
+            variant="primary"
+            type="internal"
+        >
+            {{ $tc('swag-migration.index.error-resolution.modals.error.right.banner.link') }}
+        </mt-link>
+    </mt-banner>
 </div>
 {% endblock %}

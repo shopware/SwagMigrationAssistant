@@ -179,6 +179,53 @@ export const MIGRATION_ERROR_RESOLUTION_SERVICE = 'swagMigrationErrorResolutionS
  */
 export default class SwagMigrationErrorResolutionService {
     /**
+     * gets the admin link for a given entity name.
+     * tries to find the route generatively by looking up modules registered for the entity.
+     */
+    getEntityLink(entityName: string | null | undefined): { name: string } | null {
+        if (!entityName) {
+            return null;
+        }
+
+        const findIndexRoute = (module: { routes: Map<string, { routeKey?: string; name?: string }> }): string | null => {
+            const indexRoute = Array.from(module.routes.values()).find((route) => {
+                return route.routeKey === 'index';
+            });
+
+            return indexRoute?.name ?? null;
+        };
+
+        const module = Shopware.Module.getModuleByEntityName(entityName);
+
+        if (module) {
+            const routeName = findIndexRoute(module);
+
+            if (routeName) {
+                return {
+                    name: routeName,
+                };
+            }
+        }
+
+        if (entityName.endsWith('_translation')) {
+            const baseEntityName = entityName.slice(0, -12);
+            const translationModule = Shopware.Module.getModuleByEntityName(baseEntityName);
+
+            if (translationModule) {
+                const routeName = findIndexRoute(translationModule);
+
+                if (routeName) {
+                    return {
+                        name: routeName,
+                    };
+                }
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * extracts the fields of an entity definition into categorized groups.
      * grouped by scalar fields, associations, and required fields.
      */

@@ -28,7 +28,6 @@ export interface SwagMigrationErrorResolutionModalData {
     tableData: ResolutionModalRow[];
     selectedLogIds: string[];
     selectedDetailsLog: ResolutionModalRow;
-    noOptionsFound: boolean;
     loading: boolean;
 }
 
@@ -65,7 +64,6 @@ export default Shopware.Component.wrapComponentConfig({
             tableData: [],
             selectedLogIds: [],
             selectedDetailsLog: null,
-            noOptionsFound: false,
             loading: false,
         };
     },
@@ -77,14 +75,6 @@ export default Shopware.Component.wrapComponentConfig({
     computed: {
         migrationLoggingRepository(): TRepository<'swag_migration_logging'> {
             return this.repositoryFactory.create('swag_migration_logging');
-        },
-
-        entityRepository() {
-            if (!this.selectedLog?.entityName) {
-                return null;
-            }
-
-            return this.repositoryFactory.create(this.selectedLog.entityName);
         },
 
         loggingCriteria() {
@@ -128,26 +118,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     methods: {
         async createdComponent() {
-            this.loading = true;
-
-            await Promise.all([
-                this.fetchTotalOfEntity(),
-                this.fetchLogs(),
-            ]);
-        },
-
-        async fetchTotalOfEntity() {
-            if (!this.entityRepository) {
-                return;
-            }
-
-            const criteria = new Criteria(1, 1);
-
-            this.entityRepository.search(criteria).then((result) => {
-                if (result.total === 0) {
-                    this.noOptionsFound = true;
-                }
-            });
+            await this.fetchLogs();
         },
 
         async fetchLogs() {

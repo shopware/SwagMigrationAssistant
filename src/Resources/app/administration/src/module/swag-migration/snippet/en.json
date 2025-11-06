@@ -518,7 +518,8 @@
               "title": "Edit: {count} Items",
               "banner": {
                 "title": "No option available",
-                "content": "Please create atleast one option to select in the corresponding Admnistration area."
+                "content": "Please create atleast one option to select in the corresponding Admnistration area.",
+                "link": "Add an Option"
               },
               "unhandledBanner": {
                 "title": "Unknown field type",

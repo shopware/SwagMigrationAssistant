@@ -84,15 +84,6 @@
                         :disabled="loading || selectedLogIds.length === 0"
                     />
 
-                    <mt-banner
-                        v-if="noOptionsFound"
-                        class="swag-migration-error-resolution-modal__right-content-banner"
-                        :title="$tc('swag-migration.index.error-resolution.modals.error.right.banner.title')"
-                        variant="critical"
-                    >
-                        {{ $tc('swag-migration.index.error-resolution.modals.error.right.banner.content') }}
-                    </mt-banner>
-
                     <mt-button
                         class="swag-migration-error-resolution-modal__right-content-button"
                         variant="primary"

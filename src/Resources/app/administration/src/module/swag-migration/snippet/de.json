@@ -667,7 +667,8 @@
               "title": "Bearbeiten: {count} Elemente",
               "banner": {
                 "title": "Keine Option verfügbar",
-                "content": "Bitte erstellen Sie mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich."
+                "content": "Bitte erstellen Sie mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich.",
+                "link": "Option hinzufügen"
               },
               "unhandledBanner": {
                 "title": "Unbekannter Feldtyp",
