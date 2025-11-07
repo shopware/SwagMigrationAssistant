@@ -10,16 +10,14 @@ namespace SwagMigrationAssistant\Test\Core\Migration;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
-use Shopware\Core\Framework\Test\TestCaseBase\DatabaseTransactionBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
-use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Core\Migration\Migration1758526242MigrationFixesTable;
+use SwagMigrationAssistant\Test\TableHelperTrait;
 
 #[CoversClass(Migration1758526242MigrationFixesTable::class)]
 class Migration1758526242MigrationFixesTableTest extends TestCase
 {
-    use DatabaseTransactionBehaviour;
-    use KernelTestBehaviour;
+    use TableHelperTrait;
 
     private Connection $connection;
 
