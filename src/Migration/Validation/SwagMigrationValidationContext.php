@@ -18,13 +18,15 @@ readonly class SwagMigrationValidationContext
     protected SwagMigrationValidationResult $validationResult;
 
     /**
-     * @param array<mixed> $convertedData
+     * @param array<string, mixed> $convertedData
+     * @param array<string, mixed> $sourceData
      */
     public function __construct(
         protected Context $shopwareContext,
         protected MigrationContextInterface $migrationContext,
         protected EntityDefinition $entityDefinition,
         protected array $convertedData,
+        protected array $sourceData,
     ) {
         $this->validationResult = new SwagMigrationValidationResult(
             $this->entityDefinition->getEntityName(),
@@ -42,11 +44,19 @@ readonly class SwagMigrationValidationContext
     }
 
     /**
-     * @return array<mixed>
+     * @return array<string, mixed>
      */
     public function getConvertedData(): array
     {
         return $this->convertedData;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getSourceData(): array
+    {
+        return $this->sourceData;
     }
 
     public function getEntityDefinition(): EntityDefinition

@@ -20,6 +20,7 @@ use Shopware\Core\Framework\Store\Services\TrackingEventClient;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use Shopware\Storefront\Theme\ThemeCollection;
+use Shopware\Storefront\Theme\ThemeDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
@@ -248,16 +249,16 @@ class RunService implements RunServiceInterface
         }
 
         $connectionId = $connection->getId();
-        $salesChannels = $this->getSalesChannels($connectionId, $context);
-        $defaultTheme = $this->getDefaultTheme($context);
+        $salesChannelIds = $this->getSalesChannels($connectionId, $context);
+        $defaultThemeId = $this->getDefaultTheme($context);
 
-        if ($defaultTheme === null) {
+        if ($defaultThemeId === null) {
             return;
         }
 
-        foreach ($salesChannels as $salesChannel) {
+        foreach ($salesChannelIds as $salesChannelId) {
             try {
-                $this->themeService->assignTheme($defaultTheme, $salesChannel, $context);
+                $this->themeService->assignTheme($defaultThemeId, $salesChannelId, $context);
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(
                     (new SwagMigrationLogBuilder(
@@ -267,7 +268,8 @@ class RunService implements RunServiceInterface
                     ))
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
-                        ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                        ->withEntityName(ThemeDefinition::ENTITY_NAME)
+                        ->withEntityId($defaultThemeId)
                         ->build(ThemeCompilingErrorRunLog::class)
                 );
             }

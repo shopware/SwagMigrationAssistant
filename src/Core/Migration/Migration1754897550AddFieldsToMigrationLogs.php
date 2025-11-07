@@ -49,6 +49,16 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
         'updated_at' => 'DATETIME(3) NULL',
     ];
 
+    public const FIELDS_TO_DROP = [
+        'title',
+        'description',
+        'parameters',
+        'title_snippet',
+        'description_snippet',
+        'entity',
+        'source_id',
+    ];
+
     public function getCreationTimestamp(): int
     {
         return 1754897550;
@@ -69,34 +79,15 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
         $this->dropIndexIfExists($connection, self::MIGRATION_LOGGING_TABLE, 'idx.swag_migration_logging.run_id_code');
         $this->dropConstraintIfExists($connection, 'json.swag_migration_logging.log_entry');
 
-        $this->dropObsoleteColumns($connection, $schemaManager);
+        $this->dropObsoleteColumns($connection);
         $this->addOrModifyColumns($connection, $schemaManager);
         $this->ensureRelations($connection, $schemaManager);
     }
 
-    /**
-     * @param AbstractSchemaManager<MySQLPlatform> $schemaManager
-     */
-    private function dropObsoleteColumns(Connection $connection, AbstractSchemaManager $schemaManager): void
+    private function dropObsoleteColumns(Connection $connection): void
     {
-        $columns = $schemaManager->listTableColumns(self::MIGRATION_LOGGING_TABLE);
-
-        $allFields = array_merge(
-            self::REQUIRED_FIELDS,
-            self::OPTIONAL_FIELDS,
-            self::SYSTEM_FIELDS
-        );
-
-        foreach ($columns as $column) {
-            if (!\array_key_exists($column->getName(), $allFields)) {
-                $connection->executeStatement(
-                    \sprintf(
-                        'ALTER TABLE `%s` DROP COLUMN `%s`;',
-                        self::MIGRATION_LOGGING_TABLE,
-                        $column->getName()
-                    )
-                );
-            }
+        foreach (self::FIELDS_TO_DROP as $column) {
+            $this->dropColumnIfExists($connection, 'swag_migration_logging', $column);
         }
     }
 

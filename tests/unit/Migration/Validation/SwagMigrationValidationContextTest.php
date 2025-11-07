@@ -48,6 +48,7 @@ class SwagMigrationValidationContextTest extends TestCase
             $migrationContext,
             $entityDefinition,
             ['id' => Uuid::randomHex()],
+            []
         );
 
         static::assertSame($context, $validationContext->getContext());

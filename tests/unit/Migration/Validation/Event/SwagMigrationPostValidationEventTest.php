@@ -31,6 +31,7 @@ class SwagMigrationPostValidationEventTest extends TestCase
             new MigrationContext(new SwagMigrationConnectionEntity()),
             new CustomerDefinition(),
             [],
+            []
         );
 
         $event = new SwagMigrationPostValidationEvent($context);
