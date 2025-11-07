@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\Converter;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -47,10 +48,7 @@ abstract class ShopwareConverter extends Converter
         $this->migrationContext = $migrationContext;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $this->runId = $this->migrationContext->getRunUuid();
 
@@ -147,12 +145,12 @@ abstract class ShopwareConverter extends Converter
 
             if (empty($newAssociationId)) {
                 if ($logMissing) {
-                    $this->loggingService->addLogEntry(new AssociationRequiredMissingLog(
-                        $this->runId,
-                        $entity,
-                        $oldAssociationId,
-                        $sourceEntity
-                    ));
+                    $this->loggingService->addLogEntry(
+                        SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->withEntityName($entity)
+                            ->withConvertedData($association)
+                            ->build(AssociationRequiredMissingLog::class)
+                    );
                 }
 
                 if ($unsetMissing) {

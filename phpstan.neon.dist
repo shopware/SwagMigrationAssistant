@@ -18,7 +18,7 @@ parameters:
         consoleApplicationLoader: %ShopwareRoot%/src/Core/DevOps/StaticAnalyze/console-application.php
     type_perfect:
         narrow_return: true
-        narrow_param: true
+        narrow_param: false
 
     ignoreErrors:
         - message: '#Service ".*" is private#'

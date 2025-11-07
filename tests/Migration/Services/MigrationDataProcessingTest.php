@@ -29,7 +29,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
@@ -181,10 +181,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new MediaDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -209,10 +210,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CategoryDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -233,10 +235,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new TranslationDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -257,10 +260,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -281,10 +285,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -304,10 +309,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new ProductDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -327,10 +333,11 @@ class MigrationDataProcessingTest extends TestCase
     {
         $context = Context::createDefaultContext();
         $migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runUuid,
+            new Shopware55Profile(),
+            null,
             new InvalidCustomerDataSet(),
+            $this->runUuid,
             0,
             250
         );
@@ -344,13 +351,13 @@ class MigrationDataProcessingTest extends TestCase
 
         $countValidLogging = 0;
         $countInvalidLogging = 0;
+
         foreach ($logs as $log) {
             $type = $log->getLevel();
 
             if (
-                ($type === LogEntryInterface::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_CUSTOMER_ENTITY_FIELD_REASSIGNED')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER_ADDRESS')
-                || ($type === LogEntryInterface::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_CUSTOMER')
+                ($type === AbstractSwagMigrationLogEntry::LOG_LEVEL_INFO && $log->getCode() === 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED')
+                || ($type === AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING && $log->getCode() === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD')
             ) {
                 ++$countValidLogging;
 
@@ -359,14 +366,15 @@ class MigrationDataProcessingTest extends TestCase
 
             ++$countInvalidLogging;
         }
+
         static::assertSame(5, $countValidLogging);
-        static::assertSame(0, $countInvalidLogging);
+        static::assertSame(4, $countInvalidLogging);
 
         $failureConvertCriteria = new Criteria();
         $failureConvertCriteria->addFilter(new EqualsFilter('convertFailure', true));
         $logs = $this->migrationDataRepo->search($failureConvertCriteria, $context);
 
-        static::assertSame(2, $logs->getTotal());
+        static::assertSame(4, $logs->getTotal());
     }
 
     private function createMappingService(): MappingService

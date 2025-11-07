@@ -32,10 +32,11 @@ class MediaAlbumReaderTest extends TestCase
         $this->mediaAlbumReader = new MediaAlbumReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new MediaFolderDataSet(),
+            $this->runId,
             0,
             10
         );

@@ -11,7 +11,6 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
@@ -19,7 +18,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
 use SwagMigrationAssistant\Migration\History\HistoryService;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
-use SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
@@ -99,16 +98,12 @@ class HistoryControllerTest extends TestCase
 
         $this->loggingRepo->create([
             [
-                'level' => LogEntryInterface::LOG_LEVEL_ERROR,
-                'code' => 'migration_error_1',
-                'title' => 'Error1',
-                'description' => 'Lorem Ipsum',
-                'parameters' => [],
-                'titleSnippet' => 'Random error snippet',
-                'descriptionSnippet' => 'Lorem Ipsum random error',
-                'entity' => 'product',
-                'sourceId' => Uuid::randomHex(),
                 'runId' => $this->runUuid,
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+                'code' => 'migration_error_1',
+                'userFixable' => false,
             ],
         ], $this->context);
     }
@@ -162,31 +157,6 @@ class HistoryControllerTest extends TestCase
 
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $result);
         static::assertNotNull($result->first());
-        static::assertSame('Lorem Ipsum', $result->first()->getDescription());
-    }
-
-    public function testGetPrefixLogInformation(): void
-    {
-        $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
-        $run = $result->first();
-        $result = $this->invokeMethod($this->historyService, 'getPrefixLogInformation', [$run]);
-
-        static::assertIsString($result);
-        static::assertStringContainsString('Migration log generated at', $result);
-        static::assertStringContainsString('Run id:', $result);
-        static::assertStringContainsString('Connection name: myConnection', $result);
-    }
-
-    public function testGetSuffixLogInformation(): void
-    {
-        $result = $this->runRepo->search(new Criteria([$this->runUuid]), $this->context);
-        $run = $result->first();
-        $result = $this->invokeMethod($this->historyService, 'getSuffixLogInformation', [$run]);
-
-        static::assertIsString($result);
-        static::assertStringContainsString('--------------------Additional-metadata---------------------', $result);
-        static::assertStringContainsString('Environment information {JSON}:', $result);
-        static::assertStringContainsString('Premapping {JSON}: ----------------------------------------------------', $result);
     }
 
     /**

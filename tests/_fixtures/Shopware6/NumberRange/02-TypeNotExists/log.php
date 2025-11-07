@@ -8,6 +8,5 @@
 return [
     [
         'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE',
-        'sourceId' => '69ed66543f8d401b82040533984e99ee',
     ],
 ];

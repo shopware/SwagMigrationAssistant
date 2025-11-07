@@ -31,8 +31,8 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 #[Package('fundamentals@after-sales')]
 class HistoryService implements HistoryServiceInterface
 {
-    private const LOG_FETCH_LIMIT = 50;
-    private const LOG_TIME_FORMAT = 'd.m.Y h:i:s e';
+    public const LOG_FETCH_LIMIT = 50;
+    public const LOG_TIME_FORMAT = 'Y-m-d H:i:s T';
 
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $runRepo
@@ -59,25 +59,14 @@ class HistoryService implements HistoryServiceInterface
                 null,
                 null,
                 new TermsAggregation(
-                    'titleSnippet',
-                    'titleSnippet',
-                    null,
-                    null,
-                    new TermsAggregation(
-                        'entity',
-                        'entity',
-                        null,
-                        null,
-                        new TermsAggregation(
-                            'level',
-                            'level'
-                        )
-                    )
+                    'level',
+                    'level'
                 )
             )
         );
 
         $result = $this->loggingRepo->aggregate($criteria, $context);
+
         /** @var TermsResult $termsResult */
         $termsResult = $result->get('count');
         $aggregateResult = $termsResult->getBuckets();
@@ -87,6 +76,7 @@ class HistoryService implements HistoryServiceInterface
         }
 
         $cleanResult = [];
+
         foreach ($aggregateResult as $bucket) {
             $detailInformation = $this->extractBucketInformation($bucket);
             $cleanResult[] = $detailInformation;
@@ -100,29 +90,38 @@ class HistoryService implements HistoryServiceInterface
      */
     public function downloadLogsOfRun(string $runUuid, Context $context): \Closure
     {
-        $offset = 0;
-        $total = $this->getTotalLogCount($runUuid, $context);
         $run = $this->getMigrationRun($runUuid, $context);
 
-        return function () use ($run, $runUuid, $offset, $total, $context): void {
-            if ($run !== null) {
-                \printf('%s%s', $this->getPrefixLogInformation($run), \PHP_EOL);
+        if ($run === null) {
+            throw MigrationException::entityNotExists(
+                SwagMigrationRunEntity::class,
+                $runUuid
+            );
+        }
+
+        $total = $this->getTotalLogCount($runUuid, $context);
+
+        return function () use ($run, $runUuid, $total, $context): void {
+            $offset = 0;
+
+            \printf('%s', $this->getPrefixLogInformation($run));
+
+            if ($total === 0) {
+                \printf('%sNo log entries found for this migration run.%s', \PHP_EOL, \PHP_EOL);
             }
 
             while ($offset < $total) {
                 $logChunk = $this->getLogChunk($runUuid, $offset, $context);
 
                 foreach ($logChunk->getElements() as $logEntry) {
-                    \printf('[%s] %s%s', $logEntry->getLevel(), $logEntry->getCode(), \PHP_EOL);
-                    \printf('%s%s', $logEntry->getTitle(), \PHP_EOL);
-                    \printf('%s%s%s', $logEntry->getDescription(), \PHP_EOL, \PHP_EOL);
+                    if (!$logEntry instanceof SwagMigrationLoggingEntity) {
+                        continue;
+                    }
+
+                    $this->printLogEntry($logEntry);
                 }
 
                 $offset += self::LOG_FETCH_LIMIT;
-            }
-
-            if ($run !== null) {
-                \printf('%s%s%s', $this->getSuffixLogInformation($run), \PHP_EOL, \PHP_EOL);
             }
         };
     }
@@ -151,31 +150,67 @@ class HistoryService implements HistoryServiceInterface
             'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
         )->fetchOne();
 
-        return $unprocessedCount !== '0';
+        return (int) $unprocessedCount !== 0;
+    }
+
+    private function printLogEntry(SwagMigrationLoggingEntity $logEntry): void
+    {
+        \printf('----- Log Entry #%d -----%s', $logEntry->getAutoIncrement(), \PHP_EOL);
+        \printf('ID: %s%s', $logEntry->getId(), \PHP_EOL);
+        \printf('Level: %s%s', $logEntry->getLevel(), \PHP_EOL);
+        \printf('Code: %s%s', $logEntry->getCode(), \PHP_EOL);
+        \printf('Profile name: %s%s', $logEntry->getProfileName(), \PHP_EOL);
+        \printf('Gateway name: %s%s', $logEntry->getGatewayName(), \PHP_EOL);
+        \printf('Created at: %s%s', $logEntry->getCreatedAt()?->format(self::LOG_TIME_FORMAT) ?? '-', \PHP_EOL);
+
+        if ($logEntry->getEntityName()) {
+            \printf('Entity: %s%s', $logEntry->getEntityName(), \PHP_EOL);
+        }
+
+        if ($logEntry->getFieldName()) {
+            \printf('Field: %s%s', $logEntry->getFieldName(), \PHP_EOL);
+        }
+
+        if ($logEntry->getFieldSourcePath()) {
+            \printf('Source path: %s%s', $logEntry->getFieldSourcePath(), \PHP_EOL);
+        }
+
+        if ($logEntry->getExceptionMessage()) {
+            \printf('Exception message: %s%s', $logEntry->getExceptionMessage(), \PHP_EOL);
+        }
+
+        if ($logEntry->getSourceData()) {
+            \printf('Source data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getSourceData(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
+        }
+
+        if ($logEntry->getConvertedData()) {
+            \printf('Converted data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getConvertedData(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
+        }
+
+        if ($logEntry->getExceptionTrace()) {
+            \printf('Exception trace (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getExceptionTrace(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
+        }
+
+        \printf(\PHP_EOL);
     }
 
     private function extractBucketInformation(Bucket $bucket): array
     {
-        /** @var TermsResult $titleResult */
-        $titleResult = $bucket->getResult();
-        $titleBucket = $titleResult->getBuckets()[0];
-
-        /** @var TermsResult $entityResult */
-        $entityResult = $titleBucket->getResult();
-        $entityString = empty($entityResult->getBuckets()) ? '' : $entityResult->getBuckets()[0]->getKey();
-
+        /** @var TermsResult|null $levelResult */
+        $levelResult = $bucket->getResult();
         $levelString = '';
-        if ($entityString !== '') {
-            /** @var TermsResult $levelResult */
-            $levelResult = $entityResult->getBuckets()[0]->getResult();
-            $levelString = empty($levelResult->getBuckets()) ? '' : $levelResult->getBuckets()[0]->getKey();
+
+        if ($levelResult !== null) {
+            $levelBuckets = $levelResult->getBuckets();
+
+            if (!empty($levelBuckets)) {
+                $levelString = $levelBuckets[0]->getKey();
+            }
         }
 
         return [
             'code' => $bucket->getKey(),
             'count' => $bucket->getCount(),
-            'titleSnippet' => $titleBucket->getKey(),
-            'entity' => $entityString,
             'level' => $levelString,
         ];
     }
@@ -187,6 +222,7 @@ class HistoryService implements HistoryServiceInterface
         $criteria->addAggregation(new CountAggregation('count', 'id'));
 
         $result = $this->loggingRepo->aggregate($criteria, $context);
+
         /** @var CountResult $countResult */
         $countResult = $result->get('count');
 
@@ -208,6 +244,7 @@ class HistoryService implements HistoryServiceInterface
     {
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('runId', $runUuid));
+        $criteria->addFilter(new EqualsFilter('userFixable', 0));
         $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
         $criteria->setOffset($offset);
         $criteria->setLimit(self::LOG_FETCH_LIMIT);
@@ -221,38 +258,38 @@ class HistoryService implements HistoryServiceInterface
         $profileName = '-';
         $gatewayName = '-';
         $connectionName = '-';
+
+        $premapping = 'Associated connection not found';
+
         if ($connection !== null) {
             $connectionName = $connection->getName();
             $profileName = $connection->getProfileName();
             $gatewayName = $connection->getGatewayName();
+            $premapping = $connection->getPremapping();
         }
 
-        $updatedAt = $run->getUpdatedAt();
-        if ($updatedAt !== null) {
-            $updatedAt = $updatedAt->format(self::LOG_TIME_FORMAT);
-        } else {
-            $updatedAt = '-';
-        }
-
-        $createdAt = $run->getCreatedAt();
-        if ($createdAt !== null) {
-            $createdAt = $createdAt->format(self::LOG_TIME_FORMAT);
-        } else {
-            $createdAt = '-';
-        }
+        $updatedAt = $run->getUpdatedAt()?->format(self::LOG_TIME_FORMAT) ?? '-';
+        $createdAt = $run->getCreatedAt()?->format(self::LOG_TIME_FORMAT) ?? '-';
 
         return \sprintf(
-            'Migration log generated at %s' . \PHP_EOL
-            . 'Run id: %s' . \PHP_EOL
+            '########## MIGRATION LOG ##########' . \PHP_EOL . \PHP_EOL
+            . '########## RUN INFORMATION ##########' . \PHP_EOL
+            . 'Generated at: %s' . \PHP_EOL
+            . 'Run ID: %s' . \PHP_EOL
             . 'Status: %s' . \PHP_EOL
             . 'Created at: %s' . \PHP_EOL
-            . 'Updated at: %s' . \PHP_EOL
-            . 'Connection id: %s' . \PHP_EOL
+            . 'Updated at: %s' . \PHP_EOL . \PHP_EOL
+            . '########## CONNECTION INFORMATION ##########' . \PHP_EOL
+            . 'Connection ID: %s' . \PHP_EOL
             . 'Connection name: %s' . \PHP_EOL
-            . 'Profile: %s' . \PHP_EOL
-            . 'Gateway: %s' . \PHP_EOL . \PHP_EOL
-            . 'Selected dataSets:' . \PHP_EOL . '%s' . \PHP_EOL
-            . '--------------------Log-entries---------------------' . \PHP_EOL,
+            . 'Profile name: %s' . \PHP_EOL
+            . 'Gateway name: %s' . \PHP_EOL . \PHP_EOL
+            . '########## SELECTED DATASETS ##########' . \PHP_EOL
+            . '%s' . \PHP_EOL
+            . '########## ADDITIONAL METADATA ##########' . \PHP_EOL
+            . 'Environment information (JSON):' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
+            . 'Pre-mapping (JSON):' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
+            . '########## LOG ENTRIES ##########' . \PHP_EOL,
             \date(self::LOG_TIME_FORMAT),
             $run->getId(),
             $run->getStepValue(),
@@ -262,38 +299,24 @@ class HistoryService implements HistoryServiceInterface
             $connectionName,
             $profileName,
             $gatewayName,
-            $this->getFormattedSelectedDataSets($run->getProgress())
+            $this->getFormattedSelectedDataSets($run->getProgress()),
+            \json_encode($run->getEnvironmentInformation(), \JSON_PRETTY_PRINT),
+            \json_encode($premapping, \JSON_PRETTY_PRINT)
         );
     }
 
     private function getFormattedSelectedDataSets(?MigrationProgress $progress): string
     {
         if ($progress === null || $progress->getDataSets()->count() < 1) {
-            return '';
+            return 'No datasets selected.' . \PHP_EOL;
         }
 
         $output = '';
+
         foreach ($progress->getDataSets() as $dataSet) {
-            $output .= \sprintf('- %s (total: %d)' . \PHP_EOL, $dataSet->getEntityName(), $dataSet->getTotal());
+            $output .= \sprintf('- %s (Total: %d)' . \PHP_EOL, $dataSet->getEntityName(), $dataSet->getTotal());
         }
 
         return $output;
-    }
-
-    private function getSuffixLogInformation(SwagMigrationRunEntity $run): string
-    {
-        $connection = $run->getConnection();
-        $premapping = 'Associated connection not found';
-        if ($connection !== null) {
-            $premapping = $connection->getPremapping();
-        }
-
-        return \sprintf(
-            '--------------------Additional-metadata---------------------' . \PHP_EOL
-            . 'Environment information {JSON}:' . \PHP_EOL . '%s' . \PHP_EOL . \PHP_EOL
-            . 'Premapping {JSON}: ----------------------------------------------------' . \PHP_EOL . '%s' . \PHP_EOL,
-            \json_encode($run->getEnvironmentInformation(), \JSON_PRETTY_PRINT),
-            \json_encode($premapping, \JSON_PRETTY_PRINT)
-        );
     }
 }

@@ -105,7 +105,9 @@ abstract class AttributeReader extends AbstractReader implements ReaderInterface
             ->setParameter('table', $table);
 
         /** @var array<string, array<string, string|null>> $attributeConfiguration */
-        $attributeConfiguration = FetchModeHelper::groupUnique($query->executeQuery()->fetchAllAssociative());
+        $attributeConfiguration = FetchModeHelper::groupUnique(
+            $query->executeQuery()->fetchAllAssociative()
+        );
 
         $sql = <<<SQL
 SELECT s.*, l.locale

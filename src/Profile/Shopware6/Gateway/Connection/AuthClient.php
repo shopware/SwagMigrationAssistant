@@ -14,6 +14,7 @@ use Psr\Http\Message\ResponseInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -95,16 +96,10 @@ class AuthClient implements HttpClientInterface
 
     private function renewBearerToken(): void
     {
-        $connection = $this->migrationContext->getConnection();
-
-        if ($connection === null) {
-            return; // TODO: throw exception
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
-            return; // TODO: throw exception
+            throw MigrationException::invalidConnectionCredentials();
         }
 
         $response = $this->apiClient->post('/api/oauth/token', [
@@ -126,25 +121,20 @@ class AuthClient implements HttpClientInterface
     private function saveBearerToken(): void
     {
         $connection = $this->migrationContext->getConnection();
+        $credentials = $connection->getCredentialFields();
 
-        if ($connection === null) {
-            return;
-        }
-
-        $credentialFields = $connection->getCredentialFields();
-
-        if ($credentialFields === null) {
-            return;
+        if ($credentials === null) {
+            throw MigrationException::invalidConnectionCredentials();
         }
 
         $connectionUuid = $connection->getId();
-        $credentialFields['bearer_token'] = $this->bearerToken;
+        $credentials['bearer_token'] = $this->bearerToken;
 
-        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields): void {
+        $this->context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentials): void {
             $this->connectionRepository->update([
                 [
                     'id' => $connectionUuid,
-                    'credentialFields' => $credentialFields,
+                    'credentialFields' => $credentials,
                 ],
             ], $context);
         });
@@ -152,15 +142,7 @@ class AuthClient implements HttpClientInterface
 
     private function loadBearerToken(): void
     {
-        $connection = $this->migrationContext->getConnection();
-
-        if ($connection === null) {
-            $this->renewBearerToken();
-
-            return;
-        }
-
-        $credentials = $connection->getCredentialFields();
+        $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
             $this->renewBearerToken();

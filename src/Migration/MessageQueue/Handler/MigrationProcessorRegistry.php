@@ -25,8 +25,12 @@ class MigrationProcessorRegistry
     {
     }
 
-    public function getProcessor(MigrationStep $step): MigrationProcessorInterface
+    public function getProcessor(MigrationStep $step): ?MigrationProcessorInterface
     {
+        if (!$step->needsProcessor()) {
+            return null;
+        }
+
         foreach ($this->processors as $processor) {
             if ($processor->supports($step)) {
                 return $processor;

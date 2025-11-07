@@ -8,22 +8,52 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class DebugLog implements LogEntryInterface
+readonly class DebugLog implements SwagMigrationLogEntry
 {
     /**
-     * @param array<mixed> $logData
+     * @param array<string, mixed> $logData
      */
     public function __construct(
-        private readonly array $logData,
-        private readonly ?string $runId,
+        private string $runId,
+        private array $logData,
     ) {
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getLogData(): array
+    {
+        return $this->logData;
+    }
+
+    public function getRunId(): string
+    {
+        return $this->runId;
+    }
+
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
+    public function getProfileName(): string
+    {
+        return 'Debug Profile';
+    }
+
+    public function getGatewayName(): string
+    {
+        return 'Debug Gateway';
     }
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_DEBUG;
+        return AbstractSwagMigrationLogEntry::LOG_LEVEL_DEBUG;
     }
 
     public function getCode(): string
@@ -31,53 +61,43 @@ class DebugLog implements LogEntryInterface
         return 'SWAG_MIGRATION__DEBUG';
     }
 
-    public function getTitle(): string
-    {
-        return 'Debug';
-    }
-
-    /**
-     * @return array{logData: array<mixed>}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'logData' => $this->logData,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        return (string) \json_encode($this->logData);
-    }
-
-    public function getSnippetRoot(): string
-    {
-        return 'swag-migration.index.error';
-    }
-
-    public function getTitleSnippet(): string
-    {
-        return \sprintf('%s.%s.title', $this->getSnippetRoot(), $this->getCode());
-    }
-
-    public function getDescriptionSnippet(): string
-    {
-        return \sprintf('%s.%s.description', $this->getSnippetRoot(), $this->getCode());
-    }
-
-    public function getEntity(): ?string
+    public function getEntityName(): ?string
     {
         return null;
     }
 
-    public function getSourceId(): ?string
+    public function getFieldName(): ?string
     {
         return null;
     }
 
-    public function getRunId(): ?string
+    public function getFieldSourcePath(): ?string
     {
-        return $this->runId;
+        return null;
+    }
+
+    public function getSourceData(): ?array
+    {
+        return null;
+    }
+
+    public function getConvertedData(): ?array
+    {
+        return null;
+    }
+
+    public function getExceptionMessage(): ?string
+    {
+        return null;
+    }
+
+    public function getExceptionTrace(): ?array
+    {
+        return null;
+    }
+
+    public function getEntityId(): ?string
+    {
+        return null;
     }
 }

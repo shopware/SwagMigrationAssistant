@@ -37,10 +37,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         $this->originalData = $data;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $productMapping = $this->mappingService->getMapping(
             $this->connectionId,

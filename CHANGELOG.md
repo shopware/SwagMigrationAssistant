@@ -1,3 +1,12 @@
+# 16.0.0
+- [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) feat!: add migration logging required fields
+- [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) refactor!: add migration logging optional fields
+- [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: migration connection usage
+- [#46](https://github.com/shopware/SwagMigrationAssistant/pull/46) feat: fill logs with meaningful data src/Migration
+- [#47](https://github.com/shopware/SwagMigrationAssistant/pull/47) fix: phpstan log array types
+- [#48](https://github.com/shopware/SwagMigrationAssistant/pull/48) feat: add iterative log building helper
+- [#49](https://github.com/shopware/SwagMigrationAssistant/pull/49) feat: fill logs with meaningful data
+
 # 15.0.3
 - Fixed translations of error groups missing details like the entity
 - Fixed handling of customers without default payment method in SW6.7 migrations

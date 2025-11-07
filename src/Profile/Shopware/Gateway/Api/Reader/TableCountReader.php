@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -68,14 +69,11 @@ class TableCountReader implements TableCountReaderInterface
     private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
     {
         foreach ($exceptionArray as $exception) {
-            $this->loggingService->addLogEntry(new CannotReadEntityCountLog(
-                $migrationContext->getRunUuid(),
-                $exception['entity'],
-                $exception['table'],
-                $exception['condition'],
-                $exception['code'],
-                $exception['message']
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception['message'])
+                    ->build(CannotReadEntityCountLog::class)
+            );
         }
 
         $this->loggingService->saveLogging($context);

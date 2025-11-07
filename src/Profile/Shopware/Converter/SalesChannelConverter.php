@@ -20,15 +20,16 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\Country\CountryCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
+use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 
@@ -72,10 +73,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $this->oldIdentifier = $data['id'];
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -100,12 +98,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if ($customerGroupMapping === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::CUSTOMER_GROUP,
-                    $data['customer_group_id'],
-                    DefaultEntities::SALES_CHANNEL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('customerGroupId')
+                    ->withFieldSourcePath('customer_group_id')
+                    ->withSourceData($data)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -117,12 +115,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $data['locale'],
-                    DefaultEntities::SALES_CHANNEL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('locale')
+                    ->withSourceData($data)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -141,12 +139,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::CURRENCY,
-                    $data['currency'],
-                    DefaultEntities::SALES_CHANNEL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('currencyId')
+                    ->withFieldSourcePath('currency')
+                    ->withSourceData($data)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -168,12 +166,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if ($categoryMapping === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::CATEGORY,
-                    $data['category_id'],
-                    DefaultEntities::SALES_CHANNEL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                    ->withFieldName('navigationCategoryId')
+                    ->withFieldSourcePath('category_id')
+                    ->withSourceData($data)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $data);
@@ -392,7 +390,10 @@ abstract class SalesChannelConverter extends ShopwareConverter
                 }
 
                 $this->loggingService->addLogEntry(
-                    new DeactivatedPackLanguageLog($this->migrationContext->getRunUuid(), SalesChannelDataSet::getEntity(), $this->oldIdentifier, $packLanguageId)
+                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
+                        ->withFieldName('languageId')
+                        ->build(DeactivatedPackLanguageLog::class)
                 );
             }
         }

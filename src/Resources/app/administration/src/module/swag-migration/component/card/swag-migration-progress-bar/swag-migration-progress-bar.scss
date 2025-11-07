@@ -27,12 +27,12 @@
 
   .swag-migration-progress-bar__point {
     position: absolute;
-    display:flex;
+    display: flex;
     flex-direction: column;
     align-items: center;
     top: var(--scale-size-30);
-    font-size: 14px;
-    font-weight: 600;
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-semibold);
   }
 
   .swag-migration-progress-bar__left-point {
@@ -51,28 +51,28 @@
   }
 
   .swag-migration-progress-bar__bubble--active {
-    background-color: $color-shopware-brand-50;
-    color: $color-shopware-brand-500;
+    background-color: var(--color-background-brand-default);
+    color: var(--color-icon-brand-default);
   }
 
   .swag-migration-progress-bar__bubble--disabled {
-    background-color: $color-gray-100;
+    background-color: var(--color-background-tertiary-default);
 
     .swag-migration-progress-bar__icon {
-      color: $color-gray-300;
+      color: var(--color-icon-secondary-default);
     }
   }
 
   .swag-migration-progress-bar__caption {
     margin-top: var(--scale-size-12);
-    font-size: 14px;
+    font-size: var(--font-size-xs);
     text-align: center;
   }
 
   .swag-migration-progress-bar__heading {
-    margin-bottom: 5px;
-    font-size: 14px;
+    margin-bottom: var(--scale-size-4);
+    font-size: var(--font-size-xs);
     text-align: center;
-    font-weight: 600;
+    font-weight: var(--font-weight-semibold);
   }
 }

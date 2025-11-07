@@ -8,18 +8,14 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class UnsupportedDocumentTypeLog extends BaseRunLogEntry
+readonly class UnsupportedDocumentTypeLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $entity,
-        string $sourceId,
-        private readonly string $technicalName,
-    ) {
-        parent::__construct($runId, $entity, $sourceId);
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -30,30 +26,5 @@ class UnsupportedDocumentTypeLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_DOCUMENT_TYPE';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Unsupported document type';
-    }
-
-    public function getParameters(): array
-    {
-        return [
-            'entity' => $this->getEntity(),
-            'sourceId' => $this->getSourceId(),
-            'technicalName' => $this->technicalName,
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'Document with source id "%s" could not be converted because of unsupported document type: %s.',
-            $args['sourceId'],
-            $args['technicalName']
-        );
     }
 }

@@ -110,19 +110,21 @@ class OrderConverterTest extends TestCase
         $connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new OrderDataSet(),
+            $runId,
             0,
             250
         );
 
         $this->customerMigrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new CustomerDataSet(),
+            $runId,
             0,
             250
         );
@@ -396,9 +398,7 @@ class OrderConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER');
-        static::assertSame($logs[0]['parameters']['sourceId'], $orderData['id']);
-        static::assertSame($logs[0]['parameters']['emptyField'], $missingProperty);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
     }
 
     /**
@@ -582,7 +582,7 @@ class OrderConverterTest extends TestCase
 
         $validLog = 0;
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            if ($log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_ADDRESS' || $log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER') {
+            if ($log['code'] === 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD') {
                 ++$validLog;
             }
         }
@@ -620,7 +620,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_ADDRESS', $log['code']);
+            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $log['code']);
         }
     }
 
@@ -649,8 +649,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER', $log['code']);
-            static::assertSame($log['parameters']['emptyField'], 'paymentMethod');
+            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $log['code']);
         }
     }
 
@@ -679,7 +678,7 @@ class OrderConverterTest extends TestCase
         static::assertCount(1, $this->loggingService->getLoggingArray());
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_ORDER_STATE_ENTITY_UNKNOWN', $log['code']);
+            static::assertSame('SWAG_MIGRATION_ENTITY_UNKNOWN', $log['code']);
         }
     }
 
@@ -893,11 +892,7 @@ class OrderConverterTest extends TestCase
 
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_COUNTRY_STATE_ENTITY_UNKNOWN');
-        static::assertSame($logs[0]['parameters']['sourceId'], '9999');
-        static::assertSame($logs[0]['parameters']['entity'], DefaultEntities::COUNTRY_STATE);
-        static::assertSame($logs[0]['parameters']['requiredForSourceId'], $orderData['id']);
-        static::assertSame($logs[0]['parameters']['requiredForEntity'], DefaultEntities::ORDER);
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_ENTITY_UNKNOWN');
     }
 
     public function testConvertWithShippingTaxRateNotSet(): void

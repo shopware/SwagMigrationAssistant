@@ -1,63 +1,5 @@
 {% block swag_migration_premapping %}
     <div class="swag-migration-premapping">
-
-        {% block swag_migration_premapping_unfilled_card %}
-            <mt-card
-                v-if="!isPremappingValid"
-                class="swag-migration-premapping__unfilled-card"
-                position-identifier="swag-migration-premapping"
-            >
-
-                {% block swag_migration_premapping_unfilled_title %}
-                    <div class="swag-migration-premapping__unfilled-title">
-                        {{ $tc('swag-migration.index.premappingCard.unfilledTitle') }}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_premapping_unfilled_caption %}
-                    <div class="swag-migration-premapping__unfilled-caption">
-                        {{ $tc('swag-migration.index.premappingCard.unfilledCaption') }}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_premapping_unfilled_alert %}
-                    <mt-banner v-if="!isPremappingValid"
-                              class="swag-migration-premapping__alert"
-                              variant="critical">
-                        {{ $tc('swag-migration.index.premappingCard.unfilledAlert') }}
-                    </mt-banner>
-                {% endblock %}
-            </mt-card>
-        {% endblock %}
-
-        {% block swag_migration_premapping_success_card %}
-            <mt-card v-if="!isLoading && isPremappingValid"
-                     class="swag-migration-premapping__success-card"
-                     position-identifier="swag-migration-premapping__success-card">
-
-                {% block swag_migration_premapping_success_bubble %}
-                    <div class="swag-migration-premapping__success-bubble">
-                        <mt-icon class="swag-migration-premapping__success-icon"
-                                 name="regular-checkmark"
-                                 size="36px"
-                                 decorative />
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_premapping_success_title %}
-                    <div class="swag-migration-premapping__success-title">
-                        {{ $tc('swag-migration.index.premappingCard.validTitle') }}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_premapping_success_caption %}
-                    <div class="swag-migration-premapping__success-caption">
-                        {{ $tc('swag-migration.index.premappingCard.validCaption') }}
-                    </div>
-                {% endblock %}
-            </mt-card>
-        {% endblock %}
-
         {% block swag_migration_premapping_unfilled_mapping %}
             <swag-migration-tab-card
                 v-if="!isLoading && premapping.length > 0"
@@ -74,28 +16,5 @@
                 </template>
             </swag-migration-tab-card>
         {% endblock %}
-
-        <mt-card v-if="isLoading"
-                 class="swag-migration-premapping__loading-card"
-                 position-identifier="swag-migration-premapping__loading-card">
-            <div>
-
-                {% block swag_migration_premapping_loader %}
-                    <mt-loader class="swag-migration-premapping__loader" />
-                {% endblock %}
-
-                {% block swag_migration_premapping_loading_title %}
-                    <div class="swag-migration-premapping__loading-title">
-                        {{ $tc('swag-migration.index.premappingCard.loadingTitle') }}
-                    </div>
-                {% endblock %}
-
-                {% block swag_migration_premapping_loading_caption %}
-                    <div class="swag-migration-premapping__loading-caption">
-                        {{ $tc('swag-migration.index.premappingCard.loadingCaption') }}
-                    </div>
-                {% endblock %}
-            </div>
-        </mt-card>
     </div>
 {% endblock %}

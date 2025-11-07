@@ -95,10 +95,11 @@ class PropertyGroupOptionConverterTest extends TestCase
         $this->connection->setName('shopware');
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $runId,
+            new Shopware55Profile(),
+            null,
             new PropertyGroupOptionDataSet(),
+            $runId,
             0,
             250
         );
@@ -174,6 +175,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -181,6 +183,8 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+
+        unset($relation);
 
         $iterator = 0;
         foreach ($propertyRelationData as &$relation) {
@@ -191,6 +195,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -198,6 +203,8 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+
+        unset($relation);
     }
 
     public function testConvertWithPropertiesAndProductConfiguratorsAndOldIdentifier(): void
@@ -253,6 +260,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -261,6 +269,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+        unset($relation);
 
         $iterator = 0;
         foreach ($propertyRelationData as &$relation) {
@@ -271,6 +280,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             static::assertNotNull($converted);
             static::assertSame($convertedMainProduct['id'], $converted['id']);
+
             $property = $properties[$iterator];
             $firstConverted = $property->getConverted();
             static::assertIsArray($firstConverted);
@@ -278,5 +288,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+
+        unset($relation);
     }
 }

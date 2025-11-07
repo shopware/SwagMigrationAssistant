@@ -71,6 +71,7 @@ class ServiceCorrectArgumentsTest extends TestCase
             if ($element instanceof \DOMElement) {
                 $id = $element->getAttribute('id');
                 $abstract = $element->getAttribute('abstract');
+
                 if (\strtolower($abstract) === 'true') {
                     // skipping abstract services,
                     // because objects of them can't be constructed

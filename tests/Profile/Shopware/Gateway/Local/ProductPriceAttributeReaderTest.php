@@ -32,10 +32,11 @@ class ProductPriceAttributeReaderTest extends TestCase
         $this->productPriceAttributeReader = new ProductPriceAttributeReader(new ConnectionFactory());
 
         $this->migrationContext = new MigrationContext(
-            new Shopware55Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware55Profile(),
+            null,
             new ProductPriceAttributeDataSet(),
+            $this->runId,
             0,
             10
         );

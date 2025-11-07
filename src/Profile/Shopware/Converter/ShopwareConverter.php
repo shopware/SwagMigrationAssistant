@@ -148,7 +148,7 @@ abstract class ShopwareConverter extends Converter
             }
 
             $connection = $this->migrationContext->getConnection();
-            if ($context !== null && $connection !== null) {
+            if ($context !== null) {
                 $connectionId = $connection->getId();
                 $mapping = $this->mappingService->getMapping(
                     $connectionId,

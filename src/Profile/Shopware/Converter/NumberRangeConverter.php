@@ -14,9 +14,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\NumberRange\NumberRangeCollection;
+use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -67,36 +69,35 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
 
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = $connection->getId();
+
         if (!\array_key_exists($data['name'], self::TYPE_MAPPING)) {
             $this->loggingService->addLogEntry(
-                new UnsupportedNumberRangeTypeLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::NUMBER_RANGE,
-                    $data['id'],
-                    $data['name']
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(NumberRangeDefinition::ENTITY_NAME)
+                    ->withFieldName('typeId')
+                    ->withFieldSourcePath('name')
+                    ->withSourceData($data)
+                    ->build(UnsupportedNumberRangeTypeLog::class)
             );
 
             return new ConvertStruct(null, $data);
         }
-
-        $connection = $migrationContext->getConnection();
-        if ($connection === null) {
-            return new ConvertStruct(null, $data);
-        }
-        $this->connectionId = $connection->getId();
 
         $converted = [];
         $converted['id'] = $this->getUuid($data, $migrationContext, $context);
         $converted['typeId'] = $this->getProductNumberRangeTypeUuid($data['name']);
 
         if (empty($converted['typeId'])) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $migrationContext->getRunUuid(),
-                DefaultEntities::NUMBER_RANGE,
-                $data['id'],
-                'typeId'
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(NumberRangeDefinition::ENTITY_NAME)
+                    ->withFieldName('typeId')
+                    ->withFieldSourcePath('name')
+                    ->withSourceData($data)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }

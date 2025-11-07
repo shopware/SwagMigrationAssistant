@@ -46,14 +46,17 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->context = Context::createDefaultContext();
-        $this->migrationContext = new MigrationContext(new Shopware55Profile());
-
         $this->connection = new SwagMigrationConnectionEntity();
         $this->connection->setId(Uuid::randomHex());
         $this->connection->setProfileName(Shopware55Profile::PROFILE_NAME);
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setCredentialFields([]);
+
+        $this->context = Context::createDefaultContext();
+        $this->migrationContext = new MigrationContext(
+            $this->connection,
+            new Shopware55Profile(),
+        );
 
         $this->ruleEntity = new RuleEntity();
         $this->ruleEntity->setId(Uuid::randomHex());
@@ -77,8 +80,9 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
         $mock->method('search')->willReturn(new EntitySearchResult(RuleDefinition::ENTITY_NAME, 2, new EntityCollection([$this->ruleEntity, $this->anotherRuleEntity]), null, new Criteria(), $this->context));
 
         $this->migrationContext = new MigrationContext(
+            $this->connection,
             new Shopware55Profile(),
-            $this->connection
+            null
         );
 
         $this->reader = new DefaultShippingAvailabilityRuleReader($mock);
@@ -107,8 +111,9 @@ class DefaultShippingAvailabilityRuleReaderTest extends TestCase
         $mock->method('search')->willReturn(new EntitySearchResult(RuleDefinition::ENTITY_NAME, 2, new EntityCollection([$this->ruleEntity, $this->anotherRuleEntity]), null, new Criteria(), $this->context));
 
         $this->migrationContext = new MigrationContext(
+            $this->connection,
             new Shopware55Profile(),
-            $this->connection
+            null
         );
 
         $this->reader = new DefaultShippingAvailabilityRuleReader($mock);

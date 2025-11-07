@@ -8,15 +8,14 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class ThemeCompilingErrorRunLog extends BaseRunLogEntry
+readonly class ThemeCompilingErrorRunLog extends AbstractSwagMigrationLogEntry
 {
-    public function __construct(
-        string $runId,
-        string $sourceId,
-    ) {
-        parent::__construct($runId, null, $sourceId);
+    public function isUserFixable(): bool
+    {
+        return false;
     }
 
     public function getLevel(): string
@@ -27,30 +26,5 @@ class ThemeCompilingErrorRunLog extends BaseRunLogEntry
     public function getCode(): string
     {
         return 'SWAG_MIGRATION__THEME_COMPILING_ERROR';
-    }
-
-    public function getTitle(): string
-    {
-        return 'Theme compiling error';
-    }
-
-    /**
-     * @return array{sourceId: ?string}
-     */
-    public function getParameters(): array
-    {
-        return [
-            'sourceId' => $this->getSourceId(),
-        ];
-    }
-
-    public function getDescription(): string
-    {
-        $args = $this->getParameters();
-
-        return \sprintf(
-            'The theme with id "%s" could not be compiled.',
-            $args['sourceId']
-        );
     }
 }

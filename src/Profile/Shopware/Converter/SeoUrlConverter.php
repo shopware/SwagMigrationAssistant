@@ -7,16 +7,18 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Seo\SeoUrl\SeoUrlDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedSeoUrlType;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedSeoUrlTypeLog;
 
 #[Package('fundamentals@after-sales')]
 abstract class SeoUrlConverter extends ShopwareConverter
@@ -43,10 +45,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $originalData = $data;
 
         $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-        }
+        $this->connectionId = $connection->getId();
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -68,12 +67,13 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::SALES_CHANNEL,
-                    $data['subshopID'],
-                    DefaultEntities::SEO_URL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('subshopID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);
@@ -85,12 +85,13 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
         if ($converted['languageId'] === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $data['_locale'],
-                    DefaultEntities::SEO_URL
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);
@@ -116,12 +117,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
                 if ($mapping === null) {
                     $this->loggingService->addLogEntry(
-                        new AssociationRequiredMissingLog(
-                            $migrationContext->getRunUuid(),
-                            DefaultEntities::PRODUCT,
-                            $data['typeId'],
-                            DefaultEntities::SEO_URL
-                        )
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                            ->withFieldName('foreignKey')
+                            ->withFieldSourcePath('type')
+                            ->withSourceData($data)
+                            ->build(AssociationRequiredMissingLog::class)
                     );
 
                     return new ConvertStruct(null, $originalData);
@@ -142,12 +143,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
             if ($mapping === null) {
                 $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $migrationContext->getRunUuid(),
-                        DefaultEntities::CATEGORY,
-                        $data['typeId'],
-                        DefaultEntities::SEO_URL
-                    )
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                        ->withFieldName('foreignKey')
+                        ->withFieldSourcePath('type')
+                        ->withSourceData($data)
+                        ->build(AssociationRequiredMissingLog::class)
                 );
 
                 return new ConvertStruct(null, $originalData);
@@ -158,12 +159,12 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
         } else {
             $this->loggingService->addLogEntry(
-                new UnsupportedSeoUrlType(
-                    $migrationContext->getRunUuid(),
-                    $data['type'],
-                    DefaultEntities::SEO_URL,
-                    $originalData['id']
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('foreignKey')
+                    ->withFieldSourcePath('type')
+                    ->withSourceData($data)
+                    ->build(UnsupportedSeoUrlTypeLog::class)
             );
 
             return new ConvertStruct(null, $originalData);

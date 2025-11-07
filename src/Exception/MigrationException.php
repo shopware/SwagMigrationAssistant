@@ -32,6 +32,10 @@ class MigrationException extends HttpException
 
     public const MIGRATION_IS_ALREADY_RUNNING = 'SWAG_MIGRATION__MIGRATION_IS_ALREADY_RUNNING';
 
+    public const MIGRATION_IS_RESETTING_CHECKSUMS = 'SWAG_MIGRATION__MIGRATION_IS_RESETTING_CHECKSUMS';
+
+    public const MIGRATION_IS_TRUNCATING_DATA = 'SWAG_MIGRATION__MIGRATION_IS_TRUNCATING_DATA';
+
     public const NO_CONNECTION_IS_SELECTED = 'SWAG_MIGRATION__NO_CONNECTION_IS_SELECTED';
 
     public const NO_CONNECTION_FOUND = 'SWAG_MIGRATION__NO_CONNECTION_FOUND';
@@ -95,6 +99,16 @@ class MigrationException extends HttpException
     public const INVALID_WRITE_CONTEXT = 'SWAG_MIGRATION__INVALID_WRITE_CONTEXT';
 
     public const API_CONNECTION_ERROR = 'SWAG_MIGRATION__API_CONNECTION_ERROR';
+
+    public const FAILED_TO_CREATE_MIGRATION_LOG = 'SWAG_MIGRATION__FAILED_TO_CREATE_MIGRATION_LOG';
+
+    public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
+
+    public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
+
+    public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
+
+    public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
@@ -287,6 +301,24 @@ class MigrationException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::MIGRATION_IS_ALREADY_RUNNING,
             'Migration is already running.',
+        );
+    }
+
+    public static function checksumResetRunning(): self
+    {
+        return new MigrationIsAlreadyRunningException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_IS_RESETTING_CHECKSUMS,
+            'Checksum reset is running.',
+        );
+    }
+
+    public static function truncatingDataRunning(): self
+    {
+        return new MigrationIsAlreadyRunningException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_IS_TRUNCATING_DATA,
+            'Data truncation is running.',
         );
     }
 
@@ -497,6 +529,56 @@ class MigrationException extends HttpException
             [
                 'sourceType' => $invalidContext->getSource()::class,
             ]
+        );
+    }
+
+    public static function failedToCreateMigrationLog(string $logClass): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::FAILED_TO_CREATE_MIGRATION_LOG,
+            'Failed to create migration log of class "{{ logClass }}".',
+            ['logClass' => $logClass]
+        );
+    }
+
+    public static function unexpectedNullValue(string $fieldName): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::UNEXPECTED_NULL_VALUE,
+            'Unexpected null value for field "{{ fieldName }}".',
+            ['fieldName' => $fieldName]
+        );
+    }
+
+    public static function couldNotConvertFix(string $missingKey): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::MISSING_MIGRATION_FIX_KEY,
+            'Missing key "{{ missingKey }}" to construct MigrationFix.',
+            ['missingKey' => $missingKey]
+        );
+    }
+
+    public static function migrationNotInStep(string $runUuid, string $step): self
+    {
+        return new NoRunningMigrationException(
+            Response::HTTP_BAD_REQUEST,
+            self::MIGRATION_NOT_IN_STEP,
+            'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
+            ['runUuid' => $runUuid, 'step' => $step]
+        );
+    }
+
+    public static function invalidId(string $entityId, string $entityName): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::INVALID_ID,
+            'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
+            ['entityId' => $entityId, 'entityName' => $entityName]
         );
     }
 }

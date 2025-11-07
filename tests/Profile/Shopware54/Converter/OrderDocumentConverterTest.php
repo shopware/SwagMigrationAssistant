@@ -15,7 +15,6 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
@@ -73,10 +72,11 @@ class OrderDocumentConverterTest extends TestCase
         $this->connection->setGatewayName(ShopwareLocalGateway::GATEWAY_NAME);
         $this->connection->setName('shopware');
         $this->migrationContext = new MigrationContext(
-            new Shopware54Profile(),
             $this->connection,
-            $this->runId,
+            new Shopware54Profile(),
+            null,
             new OrderDocumentDataSet(),
+            $this->runId,
             0,
             250
         );
@@ -103,7 +103,7 @@ class OrderDocumentConverterTest extends TestCase
         );
         static::assertEmpty($convertResult->getConverted());
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING_ORDER', $logs[0]['code']);
+        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
     }
 
     public function testConvertWithoutDocumentType(): void
@@ -119,9 +119,7 @@ class OrderDocumentConverterTest extends TestCase
         );
         static::assertEmpty($convertResult->getConverted());
         $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD_ORDER_DOCUMENT', $logs[0]['code']);
-        static::assertSame('1', $logs[0]['parameters']['sourceId']);
-        static::assertSame('documenttype', $logs[0]['parameters']['emptyField']);
+        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $logs[0]['code']);
     }
 
     public function testConvert(): void
@@ -176,8 +174,7 @@ class OrderDocumentConverterTest extends TestCase
 
         foreach ($orderDocumentConverterClasses as $orderDocumentConverterClass => $expected) {
             $loggerMock = $this->createMock(LoggingServiceInterface::class);
-            $loggerMock->expects(static::exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
-
+            $loggerMock->expects(static::exactly(1))->method('addLogEntry');
             $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock, $loggerMock);
             $convertResult = $orderDocumentConverter->convert(
                 $document,

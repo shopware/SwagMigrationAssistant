@@ -167,6 +167,7 @@ class TransactionStateReader extends AbstractPremappingReader
     private function getPreselectionValue(string $sourceId): ?string
     {
         $preselectionValue = null;
+
         switch ((int) $sourceId) {
             case 9: // partially_invoiced
                 $preselectionValue = $this->preselectionDictionary[OrderTransactionStates::STATE_OPEN] ?? null;

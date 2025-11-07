@@ -1,48 +1,90 @@
 @import "~scss/variables";
 
+.swag-migration-shop-information__updating-info {
+    max-width: 60rem;
+    margin: 0 auto var(--scale-size-40);
+}
+
 .swag-migration-shop-information {
+    .mt-card__header {
+        display: flex;
+        align-items: center;
+    }
 
-    .swag-migration-shop-information__connection {
-        display: grid;
-        grid-gap: 8px;
-        grid-template-columns: (112px - 8px) 1fr min-content;
+    .swag-migration-shop-information__header-right {
+        display: flex;
+        align-items: center;
+        height: 100%;
 
-        @media screen and (max-width: 650px) {
-            grid-template-columns: 1fr;
+        a {
+            font-size: var(--font-size-xs);
+            line-height: var(--font-line-height-xs);
         }
     }
 
+    .swag-migration-shop-information__connection {
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .swag-migration-shop-information__connection-wrapper-left {
+        display: flex;
+        gap: var(--scale-size-10);
+        flex: 1;
+    }
+
     .swag-migration-shop-information__shop-domain {
-        font-size: $font-size-xxs;
+        display: flex;
+        align-items: center;
+        font-size: var(--font-size-xs);
         white-space: nowrap;
+        gap: var(--scale-size-4);
+    }
+
+    .swag-migration-shop-information__profile-avatar {
+        height: 100%;
     }
 
     .swag-migration-shop-information__shop-domain-prefix {
-        color: $color-pumpkin-spice-300;
+        color: var(--color-icon-attention-default);
     }
 
     .swag-migration-shop-information__shop-domain-prefix--is-ssl {
-        color: $color-emerald-500;
+        color: var(--color-icon-attention-default);
+    }
+
+    .swag-migration-shop-information__connection-info {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
     }
 
     .swag-migration-shop-information__connection-name {
-        font-size: $font-size-m;
-        font-weight: 600;
+        font-size: var(--font-size-m);
+        font-weight: var(--font-weight-semibold);
         margin-bottom: var(--scale-size-4);
     }
 
     .swag-migration-shop-information__actions {
-        margin-top: var(--scale-size-16);
+        display: flex;
+        gap: var(--scale-size-6);
+        align-items: center;
 
-        .sw-button {
-            margin-right: var(--scale-size-8);
+        &-initial {
+            margin-top: var(--scale-size-2);
+        }
+
+        &-edit, &-context-menu {
+            margin-top: var(--scale-size-16);
         }
     }
 
+    .swag-migration-shop-information__connection-badge {
+        width: fit-content;
+    }
+
     .swag-migration-shop-information__connection-status {
-        white-space: nowrap;
-        max-width: unset;
-        display: inline-flex;
+        margin: 0;
     }
 
     .swag-migration-shop-information__connection-status-dot {
@@ -51,73 +93,45 @@
 
     .swag-migration-shop-information__connection-status-text {
         margin: auto 0;
-        font-size: 12px;
-        font-weight: 600;
+        font-size: var(--font-size-xs);
+        font-weight: var(--font-weight-semibold);
     }
 
     .swag-migration-shop-information__metadata {
-        color: $color-darkgray-200;
-        font-size: 14px;
+        color: var(--color-text-secondary-default);
+        font-size: var(--font-size-xs);
     }
 
     .swag-migration-shop-information__metadata-columns {
         dt {
-            padding: var(--scale-size-8) var(--scale-size-4) var(--scale-size-4) var(--scale-size-4);
+            padding: var(--scale-size-8) var(--scale-size-4) var(--scale-size-2) var(--scale-size-4);
         }
 
         dd {
-            padding: var(--scale-size-4);
+            padding: 0 var(--scale-size-4) var(--scale-size-4) var(--scale-size-4);
         }
     }
 }
 
 .swag-migration-shop-information__confirm-modal {
-    .sw-modal__body {
-        padding: var(--scale-size-32);
+    .swag-migration-shop-information__confirm-modal-header {
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-xs);
+        line-height: var(--font-line-height-xs);
+        padding-bottom: var(--scale-size-6);
     }
 
     .swag-migration-shop-information__confirm-modal-content {
-        text-align: center;
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-xs);
     }
 
     .swag-migration-shop-information__confirm-modal-content-hint {
-        text-align: center;
-        padding-top: var(--scale-size-32);
-        font-weight: 600;
-    }
-}
-
-.swag-migration-shop-information__reset-confirm-modal {
-    .swag-migration-shop-information__reset-confirm-modal-icon-wrapper {
-        width: var(--scale-size-72);
-        height: var(--scale-size-72);
-        border-radius: var(--border-radius-round);
-        background-color: $color-emerald-50;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        margin: 0 auto var(--scale-size-40) auto;
-    }
-
-    .swag-migration-shop-information__reset-confirm-modal-header {
-        font-weight: $font-weight-semi-bold;
-        font-size: $font-size-m;
-        text-align: center;
-    }
-
-    .swag-migration-shop-information__reset-confirm-modal-content {
-        font-size: $font-size-xxs;
-        text-align: center;
-        padding-top: var(--scale-size-20);
-        max-width: 500px;
-        margin: auto;
-    }
-
-    .swag-migration-shop-information__reset-confirm-modal-content-hint {
-        text-align: center;
-        padding-top: var(--scale-size-32);
-        padding-bottom: var(--scale-size-20);
-        font-weight: $font-weight-semi-bold;
-        font-size: $font-size-xxs;
+        font-weight: var(--font-weight-semibold);
+        font-size: var(--font-size-xs);
+        color: var(--color-text-primary-default);
+        line-height: var(--font-line-height-xs);
+        padding-bottom: var(--scale-size-6);
     }
 }

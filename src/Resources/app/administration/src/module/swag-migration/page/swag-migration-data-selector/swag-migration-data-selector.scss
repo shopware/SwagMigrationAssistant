@@ -2,47 +2,32 @@
 
 .swag-migration-data-selector {
     .swag-migration-data-selector__warning {
-        max-width: 800px;
+        max-width: 60rem;
         margin: 0 auto var(--scale-size-40) auto;
-        color: $color-darkgray-200;
-
-        @media screen and (max-width: 1360px) {
-            max-width: 770px;
-        }
-    }
-
-    .swag-migration-index-data-selector__tou {
-        font-size: $font-size-xxs;
-        display: block;
-        margin: var(--scale-size-20) 38px var(--scale-size-20) 38px;
     }
 
     .swag-migration-index-data-selector__no-data {
-        background-color: $color-gray-50;
-        height: 230px;
-        line-height: 230px;
-        text-align: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
         width: 100%;
 
-        .swag-migration-index-data-selector__no-data-label {
-            font-size: 18px;
-            font-weight: 600;
-            letter-spacing: 0.1px;
+        .mt-empty-state {
+            place-items: center;
         }
     }
 
     .sw-grid-row.is--disabled .sw-grid__cell-content {
-        color: $color-gray-500;
+        color: var(--color-text-primary-disabled);
     }
 
     .swag-migration-data-selector__help-text {
-        margin-left: 5px;
+        margin-left: var(--scale-size-4);
     }
 
     .swag-migration-data-selector__help-text-placeholder {
         width: var(--scale-size-14);
         height: var(--scale-size-14);
-        margin-left: 5px;
+        margin-left: var(--scale-size-4);
     }
-
 }

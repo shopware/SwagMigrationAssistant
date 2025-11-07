@@ -7,6 +7,8 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Checkout\Customer\Aggregate\CustomerAddress\CustomerAddressDefinition;
+use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
@@ -17,6 +19,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
@@ -26,7 +29,6 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\InvalidEmailAddressLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
 use Symfony\Component\Validator\Constraints\Email;
@@ -44,17 +46,6 @@ abstract class CustomerConverter extends ShopwareConverter
     protected string $oldCustomerId;
 
     protected string $runId;
-
-    /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        'firstname',
-        'lastname',
-        'email',
-        'salutation',
-        'customerGroupId',
-    ];
 
     /**
      * @var list<string>
@@ -96,45 +87,16 @@ abstract class CustomerConverter extends ShopwareConverter
         MigrationContextInterface $migrationContext,
     ): ConvertStruct {
         $this->generateChecksum($data);
-        $oldData = $data;
         $this->runId = $migrationContext->getRunUuid();
         $this->migrationContext = $migrationContext;
 
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-
-        if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $data['id'],
-                \implode(',', $fields)
-            ));
-
-            return new ConvertStruct(null, $oldData);
-        }
-
-        if (!$this->checkEmailValidity($data['email'])) {
-            $this->loggingService->addLogEntry(new InvalidEmailAddressLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $data['id'],
-                $data['email']
-            ));
-
-            return new ConvertStruct(null, $oldData);
-        }
+        $connection = $migrationContext->getConnection();
+        $this->connectionId = $connection->getId();
+        $this->connectionName = $connection->getName();
 
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $this->connectionId = '';
-        $this->connectionName = '';
-        if ($connection !== null) {
-            $this->connectionId = $connection->getId();
-            $this->connectionName = $connection->getName();
-        }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -206,25 +168,26 @@ abstract class CustomerConverter extends ShopwareConverter
         $mapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::CUSTOMER_GROUP,
-            $data['customerGroupId'],
+            $data['customerGroupId'] ?? '',
             $context
         );
-        if ($mapping === null) {
-            return new ConvertStruct(null, $oldData);
+
+        if (\is_array($mapping) && \array_key_exists('entityUuid', $mapping)) {
+            $converted['groupId'] = $mapping['entityUuid'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['customerGroupId'], $data['customergroup']);
+        } else {
+            $converted['groupId'] = null;
         }
-        $converted['groupId'] = $mapping['entityUuid'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['customerGroupId'], $data['customergroup']);
 
         if (isset($data['defaultpayment']['id'])) {
             $defaultPaymentMethodUuid = $this->getDefaultPaymentMethod($data['defaultpayment']);
 
-            if ($defaultPaymentMethodUuid === null) {
-                return new ConvertStruct(null, $oldData);
+            if ($defaultPaymentMethodUuid !== null) {
+                $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
             }
-
-            $converted['defaultPaymentMethodId'] = $defaultPaymentMethodUuid;
         }
+
         unset($data['defaultpayment'], $data['paymentpreset']);
 
         if (!isset($converted['defaultPaymentMethodId'])) {
@@ -235,25 +198,20 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->context
             );
 
-            if ($mapping === null) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId,
-                    'defaultpayment'
-                ));
-
-                return new ConvertStruct(null, $oldData);
+            if (\is_array($mapping) && \array_key_exists('entityUuid', $mapping)) {
+                $converted['defaultPaymentMethodId'] = $mapping['entityUuid'];
+                $this->mappingIds[] = $mapping['id'];
+            } else {
+                $converted['defaultPaymentMethodId'] = null;
             }
-            $converted['defaultPaymentMethodId'] = $mapping['entityUuid'];
-            $this->mappingIds[] = $mapping['id'];
         }
 
         $salutationUuid = $this->getSalutation($data['salutation']);
-        if ($salutationUuid === null) {
-            return new ConvertStruct(null, $oldData);
+        if ($salutationUuid !== null) {
+            $converted['salutationId'] = $salutationUuid;
+        } else {
+            $converted['salutationId'] = null;
         }
-        $converted['salutationId'] = $salutationUuid;
 
         if (isset($data['addresses']) && isset($this->mainMapping['entityUuid'])) {
             $this->applyAddresses($data, $converted, $this->mainMapping['entityUuid']);
@@ -295,19 +253,6 @@ abstract class CustomerConverter extends ShopwareConverter
             $returnData = null;
         }
 
-        if (!isset($converted['defaultBillingAddressId'], $converted['defaultShippingAddressId'])) {
-            $this->mappingService->deleteMapping($converted['id'], $this->connectionId, $this->context);
-
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId,
-                'address data'
-            ));
-
-            return new ConvertStruct(null, $oldData);
-        }
-
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -345,13 +290,14 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($paymentMethodMapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                DefaultEntities::PAYMENT_METHOD,
-                $originalData['id'],
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerDefinition::ENTITY_NAME)
+                    ->withFieldName('defaultPaymentMethodId')
+                    ->withFieldSourcePath('default_payment_method')
+                    ->withSourceData($originalData)
+                    ->build(UnknownEntityLog::class)
+            );
 
             return null;
         }
@@ -373,12 +319,14 @@ abstract class CustomerConverter extends ShopwareConverter
 
             $fields = $this->checkForEmptyRequiredDataFields($address, $this->requiredAddressDataFieldKeys);
             if (!empty($fields)) {
-                $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                    $this->runId,
-                    DefaultEntities::CUSTOMER_ADDRESS,
-                    $address['id'],
-                    \implode(',', $fields)
-                ));
+                $this->loggingService->addLogForEach(
+                    $fields,
+                    fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                        ->withFieldSourcePath($key)
+                        ->withSourceData($address)
+                        ->build(EmptyNecessaryFieldRunLog::class)
+                );
 
                 continue;
             }
@@ -558,13 +506,12 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if (!isset($oldAddressData['state_id'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
             $this->loggingService->addLogEntry(
-                new UnknownEntityLog(
-                    $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['state_id'] ?? 'unknown',
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('stateId')
+                    ->withFieldSourcePath('state_id')
+                    ->withSourceData($oldAddressData)
+                    ->build(UnknownEntityLog::class)
             );
 
             return [];
@@ -596,13 +543,12 @@ abstract class CustomerConverter extends ShopwareConverter
             $oldAddressData['state']['active']
         )) {
             $this->loggingService->addLogEntry(
-                new UnknownEntityLog(
-                    $this->runId,
-                    DefaultEntities::COUNTRY_STATE,
-                    $oldAddressData['state_id'],
-                    DefaultEntities::CUSTOMER,
-                    $this->oldCustomerId
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('stateId')
+                    ->withFieldSourcePath('state.name')
+                    ->withSourceData($oldAddressData['state'])
+                    ->build(UnknownEntityLog::class)
             );
 
             return [];
@@ -671,13 +617,18 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultShippingAddressId'] = $addresses[0]['id'];
             unset($originalData['default_billing_address_id'], $originalData['default_shipping_address_id']);
 
-            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
-                'default billing and shipping address',
-                'first address'
-            ));
+            $this->loggingService->addLogForEach(
+                [
+                    'defaultBillingAddressId' => 'default_billing_address_id',
+                    'defaultShippingAddressId' => 'default_shipping_address_id',
+                ],
+                fn (string $key, string $value) => SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName($key)
+                    ->withFieldSourcePath($value)
+                    ->withSourceData($originalData)
+                    ->build(FieldReassignedRunLog::class)
+            );
         }
     }
 
@@ -691,13 +642,14 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
             unset($originalData['default_shipping_address_id']);
 
-            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
-                'default shipping address',
-                'default billing address'
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('defaultShippingAddressId')
+                    ->withFieldSourcePath('default_shipping_address_id')
+                    ->withSourceData($originalData)
+                    ->build(FieldReassignedRunLog::class)
+            );
         }
     }
 
@@ -711,13 +663,14 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
             unset($originalData['default_billing_address_id']);
 
-            $this->loggingService->addLogEntry(new FieldReassignedRunLog(
-                $this->runId,
-                DefaultEntities::CUSTOMER,
-                $customerUuid,
-                'default billing address',
-                'default shipping address'
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
+                    ->withFieldName('defaultBillingAddressId')
+                    ->withFieldSourcePath('default_billing_address_id')
+                    ->withSourceData($originalData)
+                    ->build(FieldReassignedRunLog::class)
+            );
         }
     }
 
@@ -731,13 +684,14 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(new UnknownEntityLog(
-                $this->runId,
-                DefaultEntities::SALUTATION,
-                $salutation,
-                DefaultEntities::CUSTOMER,
-                $this->oldCustomerId
-            ));
+            $this->loggingService->addLogEntry(
+                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomerDefinition::ENTITY_NAME)
+                    ->withFieldName('salutationId')
+                    ->withFieldSourcePath('salutation')
+                    ->withSourceData(['salutation' => $salutation])
+                    ->build(UnknownEntityLog::class)
+            );
 
             return null;
         }

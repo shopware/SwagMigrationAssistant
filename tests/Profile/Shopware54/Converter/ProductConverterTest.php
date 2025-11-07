@@ -65,10 +65,11 @@ class ProductConverterTest extends TestCase
         $runId = Uuid::randomHex();
 
         $migrationContext = new MigrationContext(
-            new Shopware54Profile(),
             $connection,
-            $runId,
+            new Shopware54Profile(),
+            null,
             new ProductDataSet(),
+            $runId,
             0,
             250
         );

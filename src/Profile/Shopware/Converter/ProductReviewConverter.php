@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -41,13 +43,18 @@ abstract class ProductReviewConverter extends ShopwareConverter
     {
         $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
+        $connection = $migrationContext->getConnection();
+        $connectionId = $connection->getId();
+
         if (!empty($fields)) {
-            $this->loggingService->addLogEntry(new EmptyNecessaryFieldRunLog(
-                $migrationContext->getRunUuid(),
-                DefaultEntities::PRODUCT_REVIEW,
-                $data['id'],
-                \implode(',', $fields)
-            ));
+            $this->loggingService->addLogForEach(
+                $fields,
+                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath($key)
+                    ->withSourceData($data)
+                    ->build(EmptyNecessaryFieldRunLog::class)
+            );
 
             return new ConvertStruct(null, $data);
         }
@@ -55,12 +62,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $originalData = $data;
         $mainLocale = $data['_locale'];
         unset($data['_locale']);
-
-        $connection = $migrationContext->getConnection();
-        $connectionId = '';
-        if ($connection !== null) {
-            $connectionId = $connection->getId();
-        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -90,12 +91,13 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
             if ($mapping === null) {
                 $this->loggingService->addLogEntry(
-                    new AssociationRequiredMissingLog(
-                        $migrationContext->getRunUuid(),
-                        DefaultEntities::PRODUCT,
-                        $data['articleID'],
-                        DefaultEntities::PRODUCT_REVIEW
-                    )
+                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                        ->withFieldName('productId')
+                        ->withFieldSourcePath('articleID')
+                        ->withSourceData($data)
+                        ->withConvertedData($converted)
+                        ->build(AssociationRequiredMissingLog::class)
                 );
 
                 return new ConvertStruct(null, $originalData);
@@ -131,12 +133,13 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::SALES_CHANNEL,
-                    $shopId,
-                    DefaultEntities::PRODUCT_REVIEW
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('shop_id')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);
@@ -148,12 +151,13 @@ abstract class ProductReviewConverter extends ShopwareConverter
         $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
         if ($converted['languageId'] === null) {
             $this->loggingService->addLogEntry(
-                new AssociationRequiredMissingLog(
-                    $migrationContext->getRunUuid(),
-                    DefaultEntities::LANGUAGE,
-                    $mainLocale,
-                    DefaultEntities::PRODUCT_REVIEW
-                )
+                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(AssociationRequiredMissingLog::class)
             );
 
             return new ConvertStruct(null, $originalData);

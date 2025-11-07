@@ -1,57 +1,10 @@
 @import "~scss/variables";
 
 .swag-migration-confirm-warning {
-    .swag-migration-confirm-warning__card {
-        text-align: center;
-        font-size: 14px;
-    }
+    max-width: 60rem;
+    margin: 0 auto 0 auto;
 
-    .swag-migration-confirm-warning__bubble {
-        margin: var(--scale-size-12) auto var(--scale-size-20) auto;
-        width: var(--scale-size-72);
-        height: var(--scale-size-72);
-        border-radius: var(--border-radius-round);
-        background-color: $color-pumpkin-spice-50;
-        flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    .swag-migration-confirm-warning__bubble-icon {
-        color: $color-pumpkin-spice-500;
-    }
-
-    h5.swag-migration-confirm-warning__title {
-        font-size: 18px;
-        font-weight: 600;
-        line-height: 25px;
-    }
-
-    .swag-migration-confirm-warning__alert {
-        text-align: center;
-        display: inline-flex;
-    }
-
-    .swag-migration-confirm-warning__text {
-        padding-bottom: var(--scale-size-24);
-    }
-
-    .swag-migration-confirm-warning__question {
-        font-weight: 600;
-        padding-bottom: var(--scale-size-32);
-    }
-
-    .swag-migration-confirm-warning__checkbox .mt-field--checkbox__content {
-        display: flex;
-        justify-content: center;
-
-        .mt-field {
-            width: auto;
-        }
-
-        .mt-field__label label {
-            flex-grow: 0;
-        }
+    .swag-migration-confirm-warning__banner {
+        margin: 0 auto var(--scale-size-40);
     }
 }

@@ -1,7 +1,6 @@
 {% block swag_migration_base_smart_bar_actions %}
     {# <!-- eslint-disable-next-line vue/valid-v-slot --> #}
     <template #smart-bar-actions>
-
         {% block swag_migration_index_smart_bar_abort_button %}
             <mt-button v-if="abortButtonVisible"
                        variant="secondary"
@@ -19,7 +18,6 @@
                 {{ $tc('swag-migration.index.backToOverviewButton') }}
             </mt-button>
         {% endblock %}
-
     </template>
 {% endblock %}
 
@@ -37,6 +35,9 @@
                                  :initial-item-variants="flowChartInitialItemVariants">
                     <sw-step-item>
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.fetchData') }}
+                    </sw-step-item>
+                    <sw-step-item>
+                        {{ $tc('swag-migration.index.loadingScreenCard.flowChart.applyFixes') }}
                     </sw-step-item>
                     <sw-step-item>
                         {{ $tc('swag-migration.index.loadingScreenCard.flowChart.writeData') }}
@@ -64,16 +65,29 @@
                     :total="total" />
             {% endblock %}
 
+            {% block swag_migration_index_main_page_card_applyFixes %}
+                <div v-if="componentIndex === UI_COMPONENT_INDEX.APPLY_FIXES">
+                    <swag-migration-apply-fixes/>
+                </div>
+            {% endblock %}
+
             {% block swag_migration_index_main_page_card_loadingScreen_success %}
                 <swag-migration-result-screen v-if="componentIndex === UI_COMPONENT_INDEX.RESULT_SUCCESS" />
             {% endblock %}
 
             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog %}
-                <sw-modal v-if="showAbortMigrationConfirmDialog"
-                          class="swag-migration-index-modal-abort-migration-confirm-dialog"
-                          :title="$tc('swag-migration.index.confirmAbortDialog.title')"
-                          variant="small"
-                          @modal-close="onCloseAbortMigrationConfirmDialog">
+                <sw-modal
+                    v-if="showAbortMigrationConfirmDialog"
+                    class="swag-migration-index-modal-abort-migration-confirm-dialog"
+                    :title="$tc('swag-migration.index.confirmAbortDialog.title')"
+                    variant="small"
+                    @modal-close="onCloseAbortMigrationConfirmDialog"
+                >
+                    {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message_hint %}
+                        <p class="swag-migration-index-modal-abort-migration-confirm-dialog-hint">
+                            {{ $tc('swag-migration.index.confirmAbortDialog.hint') }}
+                        </p>
+                    {% endblock %}
 
                     {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message %}
                         <p class="swag-migration-index-modal-abort-migration-confirm-dialog-content">
@@ -81,27 +95,26 @@
                         </p>
                     {% endblock %}
 
-                    {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_message_hint %}
-                        <p class="swag-migration-index-modal-abort-migration-confirm-dialog-hint">
-                            {{ $tc('swag-migration.index.confirmAbortDialog.hint') }}
-                        </p>
-                    {% endblock %}
-
                     {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer %}
                         <template #modal-footer>
 
                             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer_cancelAction %}
-                                <mt-button size="small"
-                                           variant="secondary"
-                                           @click="onCloseAbortMigrationConfirmDialog">
-                                    {{ $tc('global.default.cancel') }}
+                                <mt-button
+                                    size="small"
+                                    variant="secondary"
+                                    @click="onCloseAbortMigrationConfirmDialog"
+                                >
+                                    {{ $tc('swag-migration.index.confirmAbortDialog.cancel') }}
                                 </mt-button>
                             {% endblock %}
 
                             {% block swag_migration_index_main_page_modal_abort_migration_confirmDialog_footer_confirmAction %}
-                                <mt-button variant="primary"
-                                           size="small"
-                                           @click="onAbort">
+                                <mt-button
+                                    variant="critical"
+                                    size="small"
+                                    :disabled="!acl.can('swag_migration.editor')"
+                                    @click="onAbort"
+                                >
                                     {{ $tc('swag-migration.index.confirmAbortDialog.confirm') }}
                                 </mt-button>
                             {% endblock %}

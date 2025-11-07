@@ -1,5 +1,5 @@
-import {test as base, expect, test} from '@shopware-ag/acceptance-test-suite';
-import {FixtureTypes} from './AcceptanceTest';
+import { test as base, expect, test } from '@shopware-ag/acceptance-test-suite';
+import { FixtureTypes } from './AcceptanceTest';
 
 export interface EntityCounterStruct {
     checkEntityCount: (entityName: string, expectedCount: number) => Promise<void>;

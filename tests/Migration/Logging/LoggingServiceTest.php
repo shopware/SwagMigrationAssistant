@@ -15,11 +15,12 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 
 #[Package('fundamentals@after-sales')]
@@ -60,8 +61,19 @@ class LoggingServiceTest extends TestCase
 
     public function testAddLogEntry(): void
     {
-        $log1 = new AssociationRequiredMissingLog($this->runUuid, DefaultEntities::PRODUCT, '2', DefaultEntities::PRODUCT_MANUFACTURER);
-        $log2 = new CannotConvertChildEntity($this->runUuid, DefaultEntities::PRODUCT_MANUFACTURER, DefaultEntities::PRODUCT, '200');
+        $log1 = (new SwagMigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(AssociationRequiredMissingLog::class);
+
+        $log2 = (new SwagMigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(CannotConvertChildEntityLog::class);
 
         $this->loggingService->addLogEntry($log1);
         $this->loggingService->addLogEntry($log2);
@@ -82,5 +94,28 @@ class LoggingServiceTest extends TestCase
             }
         }
         static::assertSame(2, $validCount);
+    }
+
+    public function testAddLogEntryWithEntityId(): void
+    {
+        $entityId = Uuid::randomHex();
+        $log = (new SwagMigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))
+            ->withEntityId($entityId)
+            ->build(AssociationRequiredMissingLog::class);
+
+        $this->loggingService->addLogEntry($log);
+        $this->loggingService->saveLogging($this->context);
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+        $resultLog = $result->getEntities()->first();
+        static::assertInstanceOf(SwagMigrationLoggingEntity::class, $resultLog);
+        static::assertSame($entityId, $resultLog->getEntityId());
     }
 }
