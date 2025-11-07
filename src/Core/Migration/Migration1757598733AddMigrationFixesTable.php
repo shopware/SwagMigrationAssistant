@@ -19,12 +19,15 @@ class Migration1757598733AddMigrationFixesTable extends MigrationStep
 {
     public const MIGRATION_FIXES_TABLE = 'swag_migration_fix';
 
+    // wenn diese migration in tests nach meiner ausgeführt wird, dann ist die col nicht da
     public const FIELDS = [
         'id' => 'BINARY(16) NOT NULL',
         'connection_id' => 'BINARY(16) NOT NULL',
         'main_mapping_id' => 'BINARY(16) NOT NULL',
         'value' => 'JSON NOT NULL',
         'path' => 'VARCHAR(255) NOT NULL',
+        'entity_name' => 'VARCHAR(255) NULL',
+        'entity_id' => 'BINARY(16) NULL',
         'created_at' => 'DATETIME(3) NOT NULL',
         'updated_at' => 'DATETIME(3) NULL',
     ];
