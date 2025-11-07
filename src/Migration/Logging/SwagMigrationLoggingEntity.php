@@ -49,12 +49,9 @@ class SwagMigrationLoggingEntity extends Entity
      */
     protected ?array $convertedData = null;
 
-    /**
-     * @var array<string, mixed>|null
-     */
-    protected ?array $usedMapping = null;
-
     protected ?string $exceptionMessage = null;
+
+    protected ?string $entityId;
 
     /**
      * @var array<int, array<string, mixed>>|null
@@ -203,22 +200,6 @@ class SwagMigrationLoggingEntity extends Entity
         $this->convertedData = $convertedData;
     }
 
-    /**
-     * @return array<string, mixed>|null
-     */
-    public function getUsedMapping(): ?array
-    {
-        return $this->usedMapping;
-    }
-
-    /**
-     * @param array<string, mixed> $usedMapping
-     */
-    public function setUsedMapping(array $usedMapping): void
-    {
-        $this->usedMapping = $usedMapping;
-    }
-
     public function getExceptionMessage(): ?string
     {
         return $this->exceptionMessage;
@@ -243,5 +224,15 @@ class SwagMigrationLoggingEntity extends Entity
     public function setExceptionTrace(array $exceptionTrace): void
     {
         $this->exceptionTrace = $exceptionTrace;
+    }
+
+    public function getEntityId(): ?string
+    {
+        return $this->entityId;
+    }
+
+    public function setEntityId(?string $entityId): void
+    {
+        $this->entityId = $entityId;
     }
 }
