@@ -64,18 +64,6 @@ abstract class AbstractWriter implements WriterInterface
             );
         });
 
-        // TODO: REMOVE AFTER DEBUG
-        $sessionKey = 'debug_migration' . $this->definition->getEntityName();
-        if ($_SESSION[$sessionKey] !== true) {
-            // $errorLogFile = Shopware()->Container()->getParameter('kernel.root_dir') . '/error.log';
-            $errorLogFile = __DIR__ . '/error.log';
-            \file_put_contents($errorLogFile, \var_export($this->definition->getEntityName(), true) . \PHP_EOL, \FILE_APPEND);
-            \file_put_contents($errorLogFile, \var_export($data, true) . \PHP_EOL, \FILE_APPEND);
-
-            $_SESSION[$sessionKey] = true;
-        }
-        // TODO: REMOVE AFTER DEBUG
-
         return $writeResults;
     }
 }
