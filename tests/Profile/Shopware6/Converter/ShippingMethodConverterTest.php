@@ -38,7 +38,10 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
                 1, // trigger already existing technical name check
                 [[
                     'primaryKey' => Uuid::randomHex(),
-                    'data' => [],
+                    'data' => [
+                        'name' => 'Standard',
+                        'technicalName' => 'standard',
+                    ],
                 ]],
                 new Criteria(),
                 Context::createDefaultContext()
