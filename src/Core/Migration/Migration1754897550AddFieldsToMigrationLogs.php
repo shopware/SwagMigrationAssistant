@@ -34,11 +34,11 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 
     public const OPTIONAL_FIELDS = [
         'entity_name' => 'VARCHAR(64) NULL',
+        'entity_id' => 'BINARY(16) NULL',
         'field_name' => 'VARCHAR(64) NULL',
         'field_source_path' => 'VARCHAR(255) NULL',
         'source_data' => 'JSON NULL',
         'converted_data' => 'JSON NULL',
-        'used_mapping' => 'JSON NULL',
         'exception_message' => 'VARCHAR(255) NULL',
         'exception_trace' => 'JSON NULL',
     ];
@@ -162,6 +162,16 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
                 self::MIGRATION_LOGGING_TABLE
             )
         );
+
+        // ensure entity_id index
+        if (!$this->indexExists($connection, self::MIGRATION_LOGGING_TABLE, 'idx.entity_id')) {
+            $connection->executeStatement(
+                \sprintf(
+                    'ALTER TABLE `%s` ADD INDEX `idx.entity_id` (`entity_id`);',
+                    self::MIGRATION_LOGGING_TABLE
+                )
+            );
+        }
 
         // ensure foreign key constraint
         $connection->executeStatement(

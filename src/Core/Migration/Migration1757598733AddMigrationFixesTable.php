@@ -22,7 +22,6 @@ class Migration1757598733AddMigrationFixesTable extends MigrationStep
     public const FIELDS = [
         'id' => 'BINARY(16) NOT NULL',
         'connection_id' => 'BINARY(16) NOT NULL',
-        'main_mapping_id' => 'BINARY(16) NOT NULL',
         'value' => 'JSON NOT NULL',
         'path' => 'VARCHAR(255) NOT NULL',
         'entity_name' => 'VARCHAR(255) NULL',
@@ -49,7 +48,7 @@ class Migration1757598733AddMigrationFixesTable extends MigrationStep
                 %s,
                 PRIMARY KEY (`id`),
                 CONSTRAINT `fk.swag_migration_fix.connection_id` FOREIGN KEY (`connection_id`) REFERENCES `swag_migration_connection` (`id`) ON DELETE CASCADE,
-                CONSTRAINT `fk.swag_migration_fix.main_mapping_id` FOREIGN KEY (`main_mapping_id`) REFERENCES `swag_migration_mapping` (`id`) ON DELETE CASCADE
+                INDEX `idx.entity_id` (`entity_id`)
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
         ', self::MIGRATION_FIXES_TABLE, implode(', ', $columns));
 
