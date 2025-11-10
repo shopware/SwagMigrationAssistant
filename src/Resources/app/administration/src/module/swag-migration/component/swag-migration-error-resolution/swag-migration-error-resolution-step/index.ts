@@ -40,6 +40,8 @@ export interface SwagMigrationErrorResolutionStepData {
     tablePage: number;
     tableLimit: number;
     tableTotal: number;
+    tableSortBy: string;
+    tableSortDirection: 'ASC' | 'DESC';
     tableData: Array<ErrorResolutionTableData>;
     loading: boolean;
     downloadLoading: boolean;
@@ -79,6 +81,8 @@ export default Shopware.Component.wrapComponentConfig({
             tablePage: 1,
             tableLimit: 10,
             tableTotal: 0,
+            tableSortBy: 'createdAt',
+            tableSortDirection: 'ASC',
             tableData: [],
             loading: false,
             downloadLoading: false,
@@ -202,7 +206,10 @@ export default Shopware.Component.wrapComponentConfig({
 
             const criteria = new Criteria(1, 1)
                 .addFilter(Criteria.equals('userFixable', false))
-                .addFilter(Criteria.equals('runId', this.runId));
+                .addFilter(Criteria.equals('runId', this.runId))
+                .addIncludes({
+                    swag_migration_logging: ['id'],
+                });
 
             const result = await this.migrationLoggingRepository
                 .search(criteria, Shopware.Context.api)
@@ -236,6 +243,7 @@ export default Shopware.Component.wrapComponentConfig({
             this.loading = true;
 
             try {
+                // TODO: add sorting
                 const result = await this.migrationApiService.getLogGroups(
                     this.runId,
                     this.tabItem,
@@ -337,6 +345,16 @@ export default Shopware.Component.wrapComponentConfig({
         async onPageChange(page: { page: number; limit: number }) {
             this.tablePage = page.page;
             this.tableLimit = page.limit;
+
+            await this.fetchLogByLevel(null);
+        },
+
+        async onSortColumn(column: { dataIndex: string; sortDirection: 'ASC' | 'DESC' }) {
+            if (this.tableSortBy === column.dataIndex) {
+                this.tableSortDirection = this.tableSortDirection === 'ASC' ? 'DESC' : 'ASC';
+            } else {
+                this.tableSortBy = column.dataIndex;
+            }
 
             await this.fetchLogByLevel(null);
         },

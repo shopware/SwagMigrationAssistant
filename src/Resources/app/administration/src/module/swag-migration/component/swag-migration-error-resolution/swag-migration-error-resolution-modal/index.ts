@@ -186,11 +186,11 @@ export default Shopware.Component.wrapComponentConfig({
                     ...entityIdsFromMissingLogs,
                 ];
 
-                const submitPromises = entityIds.map((entityId) => {
-                    return this.submitSingleResolution(entityId);
+                const entities = entityIds.map((entityId) => {
+                    return this.createResolutionEntity(entityId);
                 });
 
-                await Promise.all(submitPromises);
+                await this.migrationFixRepository.saveAll(entities, Shopware.Context.api);
 
                 // TODO: refresh current table page
             } catch {
@@ -202,19 +202,19 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        async submitSingleResolution(entityId: string) {
+        createResolutionEntity(entityId: string) {
             // TODO: use entityId & entityName when backend supports it
             // TODO: remove main_mapping_id
 
             const entity = this.migrationFixRepository.create();
             entity.connectionId = this.migrationStore.connectionId;
-            entity.mainMappingId = '019a583caa7173db943932013bff39d5';
+            entity.mainMappingId = '019a6cd857ea73d8a0aab2f52c7e5ba5';
             entity.path = this.selectedLog.fieldName;
             entity.value = {
                 [this.selectedLog.fieldName]: this.fieldValue,
             };
 
-            return this.migrationFixRepository.save(entity);
+            return entity;
         },
 
         async fetchLogs() {

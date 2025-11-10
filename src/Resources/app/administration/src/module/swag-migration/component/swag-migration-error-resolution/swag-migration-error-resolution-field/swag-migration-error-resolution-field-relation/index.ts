@@ -115,7 +115,9 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const criteria = new Criteria(1, 1);
+            const criteria = new Criteria(1, 1).addIncludes({
+                [this.entityName]: ['id'],
+            });
 
             this.entityRepository.search(criteria).then((result) => {
                 if (result.total > 0) {
