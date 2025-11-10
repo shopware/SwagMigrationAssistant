@@ -217,7 +217,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
 
         $mediaId = null;
         if ($mapping !== null) {
-            $mediaId = $mapping['entityUuid'];
+            $mediaId = $mapping['entityId'];
         }
 
         $context->scope(Context::SYSTEM_SCOPE, function (Context $context) use (

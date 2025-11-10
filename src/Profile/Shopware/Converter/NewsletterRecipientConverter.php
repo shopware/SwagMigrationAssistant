@@ -90,7 +90,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
         $this->convertValue($converted, 'email', $data, 'email');
         $this->convertValue($converted, 'createdAt', $data, 'added', 'datetime');
@@ -173,7 +173,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
         $this->mappingIds[] = $salutationMapping['id'];
 
-        return $salutationMapping['entityUuid'];
+        return $salutationMapping['entityId'];
     }
 
     /**
@@ -204,7 +204,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
         $this->mappingIds[] = $salesChannelMapping['id'];
 
-        return $salesChannelMapping['entityUuid'];
+        return $salesChannelMapping['entityId'];
     }
 
     protected function getStatus(MigrationContextInterface $migrationContext): ?string

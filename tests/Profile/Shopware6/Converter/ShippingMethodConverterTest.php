@@ -38,12 +38,10 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
         $shippingMethodRepository = new StaticEntityRepository([
             new IdSearchResult(
                 1, // trigger already existing technical name check
-                [
-                    $primaryKey => [
-                        'primaryKey' => $primaryKey,
-                        'data' => [],
-                    ],
-                ],
+                [$primaryKey => [
+                    'primaryKey' => $primaryKey,
+                    'data' => [],
+                ]],
                 new Criteria(),
                 Context::createDefaultContext()
             ),

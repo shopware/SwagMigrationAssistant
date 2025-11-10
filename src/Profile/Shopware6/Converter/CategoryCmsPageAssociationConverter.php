@@ -43,7 +43,7 @@ class CategoryCmsPageAssociationConverter extends ShopwareConverter
             if ($mapping === null) {
                 return new ConvertStruct(null, $converted);
             }
-            $converted['cmsPageId'] = $mapping['entityUuid'];
+            $converted['cmsPageId'] = $mapping['entityId'];
         }
 
         return new ConvertStruct($converted, null, $this->mainMapping['id']);

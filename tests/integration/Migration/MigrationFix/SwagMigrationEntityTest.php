@@ -16,7 +16,6 @@ use Shopware\Core\Framework\Test\TestCaseBase\DatabaseTransactionBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixCollection;
 use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixEntity;
@@ -37,13 +36,10 @@ class SwagMigrationEntityTest extends TestCase
      */
     private EntityRepository $connectionRepository;
 
-    private MappingService $mappingService;
-
     protected function setUp(): void
     {
         $this->migrationFixRepository = $this->getContainer()->get('swag_migration_fix.repository');
         $this->connectionRepository = $this->getContainer()->get('swag_migration_connection.repository');
-        $this->mappingService = $this->getContainer()->get(MappingService::class);
     }
 
     #[DataProvider('valueData')]
@@ -52,15 +48,11 @@ class SwagMigrationEntityTest extends TestCase
         $context = Context::createDefaultContext();
         $connectionId = $this->createConnection($context);
 
-        $entityId = $this->createMapping($connectionId);
-        static::assertNotNull($entityId);
-
         $fixId = Uuid::randomHex();
 
         $migrationFix = new SwagMigrationFixEntity();
         $migrationFix->setId($fixId);
         $migrationFix->setConnectionId($connectionId);
-        $migrationFix->setEntityId($entityId);
         $migrationFix->setPath('this.is.any.path');
         $migrationFix->setValue($value);
 
@@ -87,23 +79,6 @@ class SwagMigrationEntityTest extends TestCase
             'empty' => ['value' => ''],
             'null' => ['value' => null],
         ];
-    }
-
-    private function createMapping(string $connectionId): ?string
-    {
-        $mapping = $this->mappingService->createMapping(
-            $connectionId,
-            'any',
-            'old_id_1',
-            null,
-            null,
-            Uuid::randomHex(),
-            'value'
-        );
-
-        $this->mappingService->writeMapping();
-
-        return $mapping['entityUuid'];
     }
 
     private function createConnection(Context $context): string
