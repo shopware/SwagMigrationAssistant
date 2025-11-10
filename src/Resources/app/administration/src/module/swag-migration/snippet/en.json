@@ -457,7 +457,11 @@
           "continueMigrationFailed": "Failed continuing migration.",
           "fetchLogsFailed": "Failed fetching log data.",
           "fetchRunFailed": "Failed fetching migration run data.",
-          "submitResolutionFailed": "Failed submitting error resolution."
+          "submitResolutionFailed": "Failed submitting error resolution.",
+          "invalidFieldValueFormat": "Invalid field value format.",
+          "fieldValueNotSet": "Field value not set.",
+          "noLogsSelected": "Please select at least one log entry to resolve.",
+          "noEntityIdsFound": "No valid entity IDs found in the selected log entries."
         },
         "step": {
           "continue-modal": {

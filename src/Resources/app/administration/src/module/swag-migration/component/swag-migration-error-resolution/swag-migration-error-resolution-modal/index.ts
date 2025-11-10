@@ -142,7 +142,39 @@ export default Shopware.Component.wrapComponentConfig({
 
         async onSubmitResolution() {
             if (this.selectedLogIds.length <= 0) {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.noLogsSelected'),
+                });
+
                 return;
+            }
+
+            if (!this.fieldValue) {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.fieldValueNotSet'),
+                });
+
+                return;
+            }
+
+            const isToMany = this.swagMigrationErrorResolutionService.isToManyAssociationField(
+                this.selectedLog.entityName,
+                this.selectedLog.fieldName,
+            );
+
+            if (isToMany) {
+                // for "to many" relations, fieldValue should be an array or EntityCollection
+                const isArray = Array.isArray(this.fieldValue);
+                const isEntityCollection =
+                    this.fieldValue && typeof this.fieldValue === 'object' && 'getIds' in this.fieldValue;
+
+                if (!isArray && !isEntityCollection) {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.invalidFieldValueFormat'),
+                    });
+
+                    return;
+                }
             }
 
             this.submitLoading = true;
@@ -186,6 +218,14 @@ export default Shopware.Component.wrapComponentConfig({
                     ...entityIdsFromMissingLogs,
                 ];
 
+                if (entityIds.length === 0) {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
+                    });
+
+                    return;
+                }
+
                 const entities = entityIds.map((entityId) => {
                     return this.createResolutionEntity(entityId);
                 });
@@ -207,8 +247,16 @@ export default Shopware.Component.wrapComponentConfig({
             entity.path = this.selectedLog.fieldName;
             entity.entityName = this.selectedLog.entityName;
             entity.entityId = entityId;
+
+            let valueToSave = this.fieldValue;
+
+            // extract ids if fieldValue is an EntityCollection
+            if (this.fieldValue && typeof this.fieldValue === 'object' && 'getIds' in this.fieldValue) {
+                valueToSave = (this.fieldValue as { getIds: () => string[] }).getIds();
+            }
+
             entity.value = {
-                [this.selectedLog.fieldName]: this.fieldValue,
+                [this.selectedLog.fieldName]: valueToSave,
             };
 
             return entity;
@@ -239,14 +287,12 @@ export default Shopware.Component.wrapComponentConfig({
                             status: false,
                             convertedData,
                             sourceData: log?.sourceData || {},
+                            ...this.swagMigrationErrorResolutionService.mapEntityFieldProperties(
+                                this.selectedLog.entityName,
+                                entityFieldProperties,
+                                convertedData,
+                            ),
                         };
-
-                        // map only the properties that are defined for the current entity field
-                        entityFieldProperties.forEach((property) => {
-                            if (property in convertedData) {
-                                row[property] = convertedData[property];
-                            }
-                        });
 
                         return row;
                     });

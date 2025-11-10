@@ -606,7 +606,11 @@
           "continueMigrationFailed": "Fehler beim Fortsetzen der Migration.",
           "fetchLogsFailed": "Fehler beim Abrufen der Log-Datei.",
           "fetchRunFailed": "Fehler beim Abrufen der Migrationsdaten.",
-          "submitResolutionFailed": "Fehler beim Senden der Fehlerbehebung."
+          "submitResolutionFailed": "Fehler beim Senden der Fehlerbehebung.",
+          "invalidFieldValueFormat": "Ungültiges Feldwertformat.",
+          "fieldValueNotSet": "Feldwert nicht festgelegt.",
+          "noLogsSelected": "Bitte wählen Sie mindestens einen Log-Eintrag zur Behebung aus.",
+          "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden."
         },
         "step": {
           "continue-modal": {

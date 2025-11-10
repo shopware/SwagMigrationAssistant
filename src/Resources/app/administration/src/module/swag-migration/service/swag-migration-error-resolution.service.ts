@@ -398,6 +398,21 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
+     * checks if a field is a "to many" association (one_to_many or many_to_many).
+     */
+    isToManyAssociationField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
+        const entityField = this.getEntityField(entityName, fieldName);
+
+        if (!entityField || entityField.type !== DATA_TYPES.ASSOCIATION) {
+            return false;
+        }
+
+        const relationType = entityField.relation;
+
+        return relationType === HANDLED_RELATION_TYPES.ONE_TO_MANY || relationType === HANDLED_RELATION_TYPES.MANY_TO_MANY;
+    }
+
+    /**
      * gets the effective entity field to use for a field.
      * for id fields with associations, returns the association field instead.
      */
@@ -555,5 +570,86 @@ export default class SwagMigrationErrorResolutionService {
         ]);
 
         return allFields[0] || null;
+    }
+
+    /**
+     * formats association field values to display only IDs in a comma-separated list.
+     * for "to many" relations, extracts IDs from array of objects.
+     */
+    formatAssociationFieldValue(
+        entityName: string | null | undefined,
+        fieldName: string | null | undefined,
+        value: unknown,
+    ): string {
+        if (!value) {
+            return '';
+        }
+
+        // handle arrays (for "to many" relations)
+        if (Array.isArray(value)) {
+            const ids = value
+                .filter((item) => item)
+                .map((item) => {
+                    if (typeof item === 'object' && 'id' in item) {
+                        const id = (item as { id: unknown }).id;
+
+                        return id ? String(id) : null;
+                    }
+
+                    if (typeof item === 'string') {
+                        return item;
+                    }
+
+                    return null;
+                })
+                .filter((id): id is string => id !== null);
+
+            return ids.join(', ');
+        }
+
+        // handle objects (for "to one" relations or objects with id property)
+        if (typeof value === 'object') {
+            if ('id' in value) {
+                const id = (value as { id: unknown }).id;
+
+                return id ? String(id) : '';
+            }
+
+            return '';
+        }
+
+        return String(value);
+    }
+
+    /**
+     * maps entity field properties from converted data and formats association fields.
+     * extracts only the specified properties and formats "to many" association fields to display IDs.
+     */
+    mapEntityFieldProperties(
+        entityName: string | null | undefined,
+        fieldProperties: string[],
+        convertedData: Record<string, unknown>,
+    ): Record<string, unknown> {
+        const mappedProperties: Record<string, unknown> = {};
+
+        fieldProperties.forEach((property) => {
+            if (property in convertedData) {
+                const value = convertedData[property];
+
+                // format association fields to display only IDs
+                // also format values that look like associations (arrays or objects with id) even if not detected
+                if (
+                    this.isToManyAssociationField(entityName, property) ||
+                    Array.isArray(value) ||
+                    (typeof value === 'object' && value && 'id' in value)
+                ) {
+                    mappedProperties[property] = this.formatAssociationFieldValue(entityName, property, value);
+                } else {
+                    mappedProperties[property] = value;
+                }
+            }
+        });
+
+        return mappedProperties;
     }
 }
