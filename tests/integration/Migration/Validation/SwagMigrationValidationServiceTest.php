@@ -336,7 +336,7 @@ class SwagMigrationValidationServiceTest extends TestCase
             'connectionId' => self::CONNECTION_ID,
             'entity' => SwagMigrationRunDefinition::ENTITY_NAME,
             'oldIdentifier' => $runId,
-            'entityUuid' => $runId,
+            'entityId' => $runId,
         ];
 
         yield 'valid fk' => [

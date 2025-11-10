@@ -105,6 +105,7 @@ class SwagMigrationAssistant extends Plugin
         /** @var Connection $connection */
         $connection = $this->container->get(Connection::class);
         $connection->executeStatement('
+SET foreign_key_checks = 0;
 DROP TABLE IF EXISTS swag_migration_general_setting;
 DROP TABLE IF EXISTS swag_migration_data;
 DROP TABLE IF EXISTS swag_migration_fix;

@@ -70,7 +70,7 @@ abstract class PromotionConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         $converted['active'] = true;
         $converted['useCodes'] = true;
         $converted['useIndividualCodes'] = false;
@@ -131,7 +131,7 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             $newCode = [];
-            $newCode['id'] = $codeMapping['entityUuid'];
+            $newCode['id'] = $codeMapping['entityId'];
             $this->mappingIds[] = $codeMapping['id'];
 
             $this->convertValue($newCode, 'code', $code, 'code');
@@ -156,7 +156,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 );
 
                 if ($customerMapping !== null) {
-                    $newCode['payload']['customerId'] = $customerMapping['entityUuid'];
+                    $newCode['payload']['customerId'] = $customerMapping['entityId'];
                     $this->mappingIds[] = $customerMapping['id'];
                 }
             }
@@ -185,7 +185,7 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         $discount = [
-            'id' => $discountMapping['entityUuid'],
+            'id' => $discountMapping['entityId'],
             'scope' => PromotionDiscountEntity::SCOPE_CART,
             'type' => $type,
             'value' => (float) $data['value'],
@@ -264,20 +264,20 @@ abstract class PromotionConverter extends ShopwareConverter
         $this->mappingIds[] = $orConditionContainerMapping['id'];
 
         $rule = [
-            'id' => $ruleMapping['entityUuid'],
+            'id' => $ruleMapping['entityId'],
             'name' => 'Promotion discount rule: ' . $data['description'],
             'priority' => 0,
             'conditions' => [
                 [
-                    'id' => $orContainerMapping['entityUuid'],
+                    'id' => $orContainerMapping['entityId'],
                     'type' => (new OrRule())->getName(),
                     'value' => [],
                 ],
 
                 [
-                    'id' => $orConditionContainerMapping['entityUuid'],
+                    'id' => $orConditionContainerMapping['entityId'],
                     'type' => (new OrRule())->getName(),
-                    'parentId' => $orContainerMapping['entityUuid'],
+                    'parentId' => $orContainerMapping['entityId'],
                     'value' => [],
                 ],
             ],
@@ -294,9 +294,9 @@ abstract class PromotionConverter extends ShopwareConverter
             $this->mappingIds[] = $conditionMapping['id'];
 
             $rule['conditions'][] = [
-                'id' => $conditionMapping['entityUuid'],
+                'id' => $conditionMapping['entityId'],
                 'type' => 'cartLineItem',
-                'parentId' => $orConditionContainerMapping['entityUuid'],
+                'parentId' => $orConditionContainerMapping['entityId'],
                 'position' => 1,
                 'value' => [
                     'identifiers' => $this->productUuids,
@@ -323,12 +323,12 @@ abstract class PromotionConverter extends ShopwareConverter
                 );
 
                 $manufacturerRule = [
-                    'id' => $manufacturerConditionMapping['entityUuid'],
+                    'id' => $manufacturerConditionMapping['entityId'],
                     'type' => 'cartLineItemOfManufacturer',
-                    'parentId' => $orConditionContainerMapping['entityUuid'],
+                    'parentId' => $orConditionContainerMapping['entityId'],
                     'position' => 1,
                     'value' => [
-                        'manufacturerIds' => [$manufacturerMapping['entityUuid']],
+                        'manufacturerIds' => [$manufacturerMapping['entityId']],
                         'operator' => '=',
                     ],
                 ];
@@ -379,7 +379,7 @@ abstract class PromotionConverter extends ShopwareConverter
                     continue;
                 }
 
-                $this->productUuids[] = (string) $productMapping['entityUuid'];
+                $this->productUuids[] = (string) $productMapping['entityId'];
                 $this->mappingIds[] = $productMapping['id'];
                 unset($data['restrictarticles']);
             }
@@ -429,20 +429,20 @@ abstract class PromotionConverter extends ShopwareConverter
         $this->mappingIds[] = $andContainerMapping['id'];
 
         $rule = [
-            'id' => $ruleMapping['entityUuid'],
+            'id' => $ruleMapping['entityId'],
             'name' => 'Promotion cart rule: ' . $data['description'],
             'priority' => 0,
             'conditions' => [
                 [
-                    'id' => $orContainerMapping['entityUuid'],
+                    'id' => $orContainerMapping['entityId'],
                     'type' => (new OrRule())->getName(),
                     'value' => [],
                 ],
 
                 [
-                    'id' => $andContainerMapping['entityUuid'],
+                    'id' => $andContainerMapping['entityId'],
                     'type' => (new AndRule())->getName(),
-                    'parentId' => $orContainerMapping['entityUuid'],
+                    'parentId' => $orContainerMapping['entityId'],
                     'value' => [],
                 ],
             ],
@@ -459,9 +459,9 @@ abstract class PromotionConverter extends ShopwareConverter
             $this->mappingIds[] = $conditionMapping['id'];
 
             $rule['conditions'][] = [
-                'id' => $conditionMapping['entityUuid'],
+                'id' => $conditionMapping['entityId'],
                 'type' => 'cartLineItem',
-                'parentId' => $andContainerMapping['entityUuid'],
+                'parentId' => $andContainerMapping['entityId'],
                 'position' => 1,
                 'value' => [
                     'identifiers' => $this->productUuids,
@@ -488,12 +488,12 @@ abstract class PromotionConverter extends ShopwareConverter
                 );
 
                 $manufacturerRule = [
-                    'id' => $manufacturerConditionMapping['entityUuid'],
+                    'id' => $manufacturerConditionMapping['entityId'],
                     'type' => 'cartLineItemOfManufacturer',
-                    'parentId' => $andContainerMapping['entityUuid'],
+                    'parentId' => $andContainerMapping['entityId'],
                     'position' => 1,
                     'value' => [
-                        'manufacturerIds' => [$manufacturerMapping['entityUuid']],
+                        'manufacturerIds' => [$manufacturerMapping['entityId']],
                         'operator' => '=',
                     ],
                 ];
@@ -522,9 +522,9 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             $cartGoodsPriceRule = [
-                'id' => $cartGoodsPriceConditionMapping['entityUuid'],
+                'id' => $cartGoodsPriceConditionMapping['entityId'],
                 'type' => 'cartGoodsPrice',
-                'parentId' => $andContainerMapping['entityUuid'],
+                'parentId' => $andContainerMapping['entityId'],
                 'position' => 1,
                 'value' => [
                     'amount' => (float) $data['minimumcharge'],
@@ -580,8 +580,8 @@ abstract class PromotionConverter extends ShopwareConverter
             $this->mappingIds[] = $salesChannelRelationMapping['id'];
 
             $converted['salesChannels'][] = [
-                'id' => $salesChannelRelationMapping['entityUuid'],
-                'salesChannelId' => $salesChannelMapping['entityUuid'],
+                'id' => $salesChannelRelationMapping['entityId'],
+                'salesChannelId' => $salesChannelMapping['entityId'],
                 'priority' => 0,
             ];
             unset($data['subshopID']);
@@ -604,7 +604,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 $this->mappingIds[] = $salesChannelRelationMapping['id'];
 
                 $converted['salesChannels'][] = [
-                    'id' => $salesChannelRelationMapping['entityUuid'],
+                    'id' => $salesChannelRelationMapping['entityId'],
                     'salesChannelId' => $salesChannelId,
                     'priority' => $priority++,
                 ];
@@ -685,30 +685,30 @@ abstract class PromotionConverter extends ShopwareConverter
         $this->mappingIds[] = $conditionMapping['id'];
 
         $rule = [
-            'id' => $ruleMapping['entityUuid'],
+            'id' => $ruleMapping['entityId'],
             'name' => 'Promotion customer rule: ' . $data['description'],
             'priority' => 0,
             'conditions' => [
                 [
-                    'id' => $orContainerMapping['entityUuid'],
+                    'id' => $orContainerMapping['entityId'],
                     'type' => (new OrRule())->getName(),
                     'value' => [],
                 ],
 
                 [
-                    'id' => $andContainerMapping['entityUuid'],
+                    'id' => $andContainerMapping['entityId'],
                     'type' => (new AndRule())->getName(),
-                    'parentId' => $orContainerMapping['entityUuid'],
+                    'parentId' => $orContainerMapping['entityId'],
                     'value' => [],
                 ],
                 [
-                    'id' => $conditionMapping['entityUuid'],
+                    'id' => $conditionMapping['entityId'],
                     'type' => 'customerCustomerGroup',
-                    'parentId' => $andContainerMapping['entityUuid'],
+                    'parentId' => $andContainerMapping['entityId'],
                     'position' => 1,
                     'value' => [
                         'customerGroupIds' => [
-                            $customerGroupMapping['entityUuid'],
+                            $customerGroupMapping['entityId'],
                         ],
                         'operator' => '=',
                     ],
@@ -738,7 +738,7 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         $deliveryDiscount = [
-            'id' => $deliveryDiscountMapping['entityUuid'],
+            'id' => $deliveryDiscountMapping['entityId'],
             'scope' => PromotionDiscountEntity::SCOPE_DELIVERY,
             'type' => PromotionDiscountEntity::TYPE_PERCENTAGE,
             'value' => 100,

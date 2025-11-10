@@ -186,10 +186,10 @@ class ProductConverterTest extends TestCase
 
         $downloadId = $this->mappingService->getMapping('', DefaultEntities::PRODUCT_DOWNLOAD, '6_5', $context);
         static::assertNotNull($downloadId);
-        static::assertSame($downloadId['entityUuid'], $converted['downloads'][0]['id']);
+        static::assertSame($downloadId['entityId'], $converted['downloads'][0]['id']);
         $esdMediaId = $this->mappingService->getMapping('', DefaultEntities::MEDIA, 'esd_5', $context);
         static::assertNotNull($esdMediaId);
-        static::assertSame($esdMediaId['entityUuid'], $converted['downloads'][0]['media']['id']);
+        static::assertSame($esdMediaId['entityId'], $converted['downloads'][0]['media']['id']);
     }
 
     public function testConvertWithCategory(): void

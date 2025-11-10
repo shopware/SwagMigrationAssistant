@@ -153,7 +153,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
         if ($mapping !== null) {
             $this->mainMapping = $mapping;
 
-            return (string) $mapping['entityUuid'];
+            return (string) $mapping['entityId'];
         }
 
         // use global number range uuid for products if available
@@ -169,7 +169,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
                         'connectionId' => $this->connectionId,
                         'entity' => DefaultEntities::NUMBER_RANGE,
                         'oldIdentifier' => $data['id'],
-                        'entityUuid' => $productNumberRageUuid,
+                        'entityId' => $productNumberRageUuid,
                         'checksum' => null,
                         'entityValue' => null,
                         'additionalData' => null,
@@ -187,7 +187,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $this->checksum
         );
 
-        return (string) $this->mainMapping['entityUuid'];
+        return (string) $this->mainMapping['entityId'];
     }
 
     protected function getProductNumberRangeTypeUuid(string $type): ?string
@@ -240,7 +240,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
             $data['id'] . ':' . $data['_locale'],
             $context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
 
         $languageUuid = $this->languageLookup->get($data['_locale'], $context);
         if ($languageUuid !== null) {
@@ -265,7 +265,7 @@ abstract class NumberRangeConverter extends ShopwareConverter
                 $context
             );
             $numberRangeSalesChannel = [];
-            $numberRangeSalesChannel['id'] = $mapping['entityUuid'];
+            $numberRangeSalesChannel['id'] = $mapping['entityId'];
             $numberRangeSalesChannel['numberRangeId'] = $converted['id'];
             $numberRangeSalesChannel['salesChannelId'] = $saleChannelId;
             $numberRangeSalesChannel['numberRangeTypeId'] = $converted['typeId'];

@@ -67,7 +67,7 @@ abstract class MediaConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
         if (empty($data['name'])) {
             $data['name'] = $converted['id'];
@@ -97,7 +97,7 @@ abstract class MediaConverter extends ShopwareConverter
         );
 
         if ($albumMapping !== null) {
-            $converted['mediaFolderId'] = $albumMapping['entityUuid'];
+            $converted['mediaFolderId'] = $albumMapping['entityId'];
             $this->mappingIds[] = $albumMapping['id'];
         }
 
@@ -148,7 +148,7 @@ abstract class MediaConverter extends ShopwareConverter
             $data['id'] . ':' . $this->locale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->locale, $this->context);

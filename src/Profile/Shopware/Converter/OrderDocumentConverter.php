@@ -127,7 +127,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return new ConvertStruct(null, $oldData);
         }
         unset($data['orderID']);
-        $orderUuid = $orderMapping['entityUuid'];
+        $orderUuid = $orderMapping['entityId'];
         $this->mappingIds[] = $orderMapping['id'];
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -137,7 +137,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         $converted['orderId'] = $orderUuid;
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
@@ -219,7 +219,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
         $this->mappingIds[] = $mapping['id'];
 
-        $documentType['id'] = $mapping['entityUuid'];
+        $documentType['id'] = $mapping['entityId'];
         $documentType['name'] = $data['name'];
         $documentType['technicalName'] = $mappedKey;
 
@@ -241,7 +241,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
 
         $newMedia = [];
-        $newMedia['id'] = $mapping['entityUuid'];
+        $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $this->mediaFileService->saveMediaFile(
