@@ -41,7 +41,7 @@ use Symfony\Component\Messenger\MessageBusInterface;
 class MediaProcessingProcessor extends AbstractProcessor
 {
     final public const MEDIA_ERROR_THRESHOLD = 3;
-    final public const MESSAGE_SIZE = 5;
+    final public const MESSAGE_SIZE = 10;
 
     /**
      * @param EntityRepository<SwagMigrationRunCollection> $migrationRunRepo
