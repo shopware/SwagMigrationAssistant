@@ -319,7 +319,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             return;
         }
 
-        $fileHash = Hasher::hash($filePath);
+        $fileHash = Hasher::hash(\file_get_contents($filePath));
         $mediaFile = new MediaFile(
             $filePath,
             $mimeType,

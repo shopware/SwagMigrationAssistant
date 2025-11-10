@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -176,7 +177,7 @@ class CrossSellingConverterTest extends TestCase
         $crossSellingData = require __DIR__ . '/../../../_fixtures/cross_selling_data.php';
 
         $context = Context::createDefaultContext();
-        $checksum = \md5(\serialize($crossSellingData[1]));
+        $checksum = Hasher::hash(\serialize($crossSellingData[1]));
         $connectionId = $this->connection->getId();
 
         $mappingServiceMock = $this->createMock(MappingService::class);
