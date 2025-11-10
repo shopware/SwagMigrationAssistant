@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -24,19 +25,18 @@ class SwagMigrationLogBuilder
     /**
      * @param array<mixed>|null $sourceData
      * @param array<mixed>|null $convertedData
-     * @param array<mixed>|null $usedMapping
      * @param array<mixed>|null $exceptionTrace
      */
     public function __construct(
         protected string $runId,
         protected string $profileName,
         protected string $gatewayName,
+        protected ?string $entityId = null,
         protected ?string $entityName = null,
         protected ?string $fieldName = null,
         protected ?string $fieldSourcePath = null,
         protected ?array $sourceData = null,
         protected ?array $convertedData = null,
-        protected ?array $usedMapping = null,
         protected ?string $exceptionMessage = null,
         protected ?array $exceptionTrace = null,
     ) {
@@ -72,6 +72,13 @@ class SwagMigrationLogBuilder
         return $this;
     }
 
+    public function withEntityId(?string $entityId): self
+    {
+        $this->entityId = $this->getRevisedId($entityId);
+
+        return $this;
+    }
+
     /**
      * @param array<mixed> $sourceData
      */
@@ -88,16 +95,6 @@ class SwagMigrationLogBuilder
     public function withConvertedData(array $convertedData): self
     {
         $this->convertedData = $convertedData;
-
-        return $this;
-    }
-
-    /**
-     * @param array<mixed> $usedMapping
-     */
-    public function withUsedMapping(array $usedMapping): self
-    {
-        $this->usedMapping = $usedMapping;
 
         return $this;
     }
@@ -136,14 +133,27 @@ class SwagMigrationLogBuilder
             $this->runId,
             $this->profileName,
             $this->gatewayName,
+            $this->entityId,
             $this->entityName,
             $this->fieldName,
             $this->fieldSourcePath,
             $this->sourceData,
             $this->convertedData,
-            $this->usedMapping,
             $this->exceptionMessage,
             $this->exceptionTrace,
         );
+    }
+
+    private function getRevisedId(?string $id): ?string
+    {
+        if ($id === null) {
+            return null;
+        }
+
+        if (Uuid::isValid($id)) {
+            return $id;
+        }
+
+        return null;
     }
 }

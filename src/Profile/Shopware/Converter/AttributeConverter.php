@@ -48,7 +48,7 @@ abstract class AttributeConverter extends Converter
             $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
         );
-        $converted['id'] = $mapping['entityUuid'];
+        $converted['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $connectionName = ConnectionNameSanitizer::sanitize($this->connectionName);
@@ -70,7 +70,7 @@ abstract class AttributeConverter extends Converter
 
         $converted['relations'] = [
             [
-                'id' => $mapping['entityUuid'],
+                'id' => $mapping['entityId'],
                 'entityName' => $this->getCustomFieldEntityName(),
             ],
         ];
@@ -91,7 +91,7 @@ abstract class AttributeConverter extends Converter
 
         $converted['customFields'] = [
             [
-                'id' => $this->mainMapping['entityUuid'],
+                'id' => $this->mainMapping['entityId'],
                 'name' => $converted['name'] . '_' . $data['name'],
                 'type' => $this->getCustomFieldType($data),
                 'config' => $this->getCustomFieldConfiguration($data),

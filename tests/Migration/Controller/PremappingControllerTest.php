@@ -190,8 +190,8 @@ class PremappingControllerTest extends TestCase
 
         static::assertNotNull($firstMapping);
         static::assertNotNull($secondMapping);
-        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
-        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityId']);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityId']);
     }
 
     public function testWritePremappingWithoutPremapping(): void
@@ -234,8 +234,8 @@ class PremappingControllerTest extends TestCase
 
         static::assertNotNull($firstMapping);
         static::assertNotNull($secondMapping);
-        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityUuid']);
-        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+        static::assertSame($this->firstState->getDestinationUuid(), $firstMapping['entityId']);
+        static::assertSame($this->secondState->getDestinationUuid(), $secondMapping['entityId']);
 
         $firstStateUuid = Uuid::randomHex();
         $firstState = new PremappingEntityStruct('0', 'First State', $firstStateUuid);
@@ -275,8 +275,8 @@ class PremappingControllerTest extends TestCase
 
         static::assertNotNull($firstMapping);
         static::assertNotNull($secondMapping);
-        static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityUuid']);
-        static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityUuid']);
+        static::assertSame($firstState->getDestinationUuid(), $firstMapping['entityId']);
+        static::assertSame($secondState->getDestinationUuid(), $secondMapping['entityId']);
     }
 
     private function createMappingService(): void

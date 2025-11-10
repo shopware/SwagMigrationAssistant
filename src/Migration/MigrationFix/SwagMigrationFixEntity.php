@@ -18,11 +18,13 @@ class SwagMigrationFixEntity extends Entity
 
     protected string $connectionId;
 
-    protected string $mainMappingId;
-
     protected mixed $value;
 
     protected string $path;
+
+    protected string $entityId;
+
+    protected string $entityName;
 
     public function getConnectionId(): string
     {
@@ -32,16 +34,6 @@ class SwagMigrationFixEntity extends Entity
     public function setConnectionId(string $connectionId): void
     {
         $this->connectionId = $connectionId;
-    }
-
-    public function getMainMappingId(): string
-    {
-        return $this->mainMappingId;
-    }
-
-    public function setMainMappingId(string $mainMappingId): void
-    {
-        $this->mainMappingId = $mainMappingId;
     }
 
     public function getValue(): mixed
@@ -62,5 +54,25 @@ class SwagMigrationFixEntity extends Entity
     public function setPath(string $path): void
     {
         $this->path = $path;
+    }
+
+    public function getEntityId(): string
+    {
+        return $this->entityId;
+    }
+
+    public function setEntityId(string $entityId): void
+    {
+        $this->entityId = $entityId;
+    }
+
+    public function getEntityName(): string
+    {
+        return $this->entityName;
+    }
+
+    public function setEntityName(string $entityName): void
+    {
+        $this->entityName = $entityName;
     }
 }

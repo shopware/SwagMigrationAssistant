@@ -66,7 +66,7 @@ class TaxRuleConverter extends ShopwareConverter
         );
 
         if ($taxRuleTypeMapping) {
-            $taxRuleTypeUuid = $taxRuleTypeMapping['entityUuid'];
+            $taxRuleTypeUuid = $taxRuleTypeMapping['entityId'];
         } else {
             $taxRuleTypeUuid = $this->taxRuleTypeLookup->get(
                 $converted['type']['technicalName'] ?? '',

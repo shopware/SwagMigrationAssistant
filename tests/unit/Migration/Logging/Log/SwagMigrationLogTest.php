@@ -68,15 +68,17 @@ class SwagMigrationLogTest extends TestCase
             Uuid::randomHex(),
         );
 
+        $entityId = Uuid::randomHex();
+
         $logEntry = SwagMigrationLogBuilder::fromMigrationContext($context)
             ->withEntityName('test1')
             ->withFieldName('test2')
             ->withFieldSourcePath('test3')
             ->withSourceData(['test' => 'test4'])
             ->withConvertedData(['test' => 'test5'])
-            ->withUsedMapping(['test' => 'test6'])
             ->withExceptionMessage('test7')
             ->withExceptionTrace(['test' => 'test8'])
+            ->withEntityId($entityId)
             ->build($logClass);
 
         static::assertInstanceOf($logClass, $logEntry);
@@ -88,9 +90,9 @@ class SwagMigrationLogTest extends TestCase
         static::assertSame('test3', $logEntry->getFieldSourcePath());
         static::assertSame(['test' => 'test4'], $logEntry->getSourceData());
         static::assertSame(['test' => 'test5'], $logEntry->getConvertedData());
-        static::assertSame(['test' => 'test6'], $logEntry->getUsedMapping());
         static::assertSame('test7', $logEntry->getExceptionMessage());
         static::assertSame(['test' => 'test8'], $logEntry->getExceptionTrace());
+        static::assertSame($entityId, $logEntry->getEntityId());
     }
 
     public static function logProvider(): \Generator

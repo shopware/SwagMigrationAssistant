@@ -26,6 +26,7 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyLog;
 use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
@@ -114,13 +115,15 @@ class SwagMigrationValidationServiceTest extends TestCase
             $migrationContext,
             $this->context,
             [],
-            ProductDefinition::ENTITY_NAME
+            ProductDefinition::ENTITY_NAME,
+            []
         ));
         static::assertNull($this->validationService->validate(
             $migrationContext,
             $this->context,
             null,
-            ProductDefinition::ENTITY_NAME
+            ProductDefinition::ENTITY_NAME,
+            []
         ));
     }
 
@@ -148,7 +151,8 @@ class SwagMigrationValidationServiceTest extends TestCase
             $migrationContext,
             $this->context,
             $convertedData,
-            SwagMigrationLoggingDefinition::ENTITY_NAME
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
         );
 
         static::assertInstanceOf(SwagMigrationValidationResult::class, $result);
@@ -195,7 +199,8 @@ class SwagMigrationValidationServiceTest extends TestCase
             $migrationContext,
             $this->context,
             $convertedData,
-            SwagMigrationLoggingDefinition::ENTITY_NAME
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
         );
 
         static::assertInstanceOf(SwagMigrationValidationResult::class, $result);
@@ -276,7 +281,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'id' => 'not-a-uuid',
             ],
             [
-                ValidationInvalidFieldValueLog::class,
+                ValidationExceptionLog::class,
             ],
         ];
 
@@ -331,7 +336,7 @@ class SwagMigrationValidationServiceTest extends TestCase
             'connectionId' => self::CONNECTION_ID,
             'entity' => SwagMigrationRunDefinition::ENTITY_NAME,
             'oldIdentifier' => $runId,
-            'entityUuid' => $runId,
+            'entityId' => $runId,
         ];
 
         yield 'valid fk' => [

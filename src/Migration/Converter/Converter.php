@@ -21,7 +21,7 @@ abstract class Converter implements ConverterInterface
     protected LoggingServiceInterface $loggingService;
 
     /**
-     * @var ?array{id: string, connectionId: string, oldIdentifier: ?string, entityUuid: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
+     * @var ?array{id: string, connectionId: string, oldIdentifier: ?string, entityId: ?string, entityValue: ?string, checksum: ?string, additionalData: ?array<mixed>}
      */
     protected ?array $mainMapping = null;
 
