@@ -12,7 +12,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     MigrationUser,
     DatabaseCredentials,
     EntityCounter,
-    MediaProcessObserver,
 }) => {
     const page = MigrationUser.page;
     await page.goto('/admin');
