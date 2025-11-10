@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\Migration\Converter;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -58,7 +59,7 @@ abstract class Converter implements ConverterInterface
      */
     protected function generateChecksum(array $data): void
     {
-        $this->checksum = \md5(\serialize($data));
+        $this->checksum = Hasher::hash(\serialize($data));
     }
 
     /**
