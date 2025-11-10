@@ -198,7 +198,7 @@ class HttpDownloadServiceBaseTest extends TestCase
                 'level' => 'warning',
                 'code' => 'SWAG_MIGRATION_CANNOT_GET_MEDIA_FILE',
                 'title' => 'The media file cannot be downloaded / copied',
-                'description' => 'The media file with the uri "' . $mediaFiles[0]['uri'] . '" and media id "' . $mediaFiles[0]['mediaId'] . '" cannot be downloaded / copied. The following request error occurred: Request failed',
+                'description' => 'The media file with the uri "' . $mediaFiles[0]['uri'] . '" and media id "' . $mediaFiles[0]['mediaId'] . '" cannot be downloaded / copied. The following error occurred: Request failed',
                 'parameters' => [
                     'entity' => 'media',
                     'sourceId' => $mediaFiles[0]['mediaId'],

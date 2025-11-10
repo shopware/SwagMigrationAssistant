@@ -1060,6 +1060,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 ],
             ];
 
+            // @phpstan-ignore-next-line parameterByRef.type
             $mainOrContainer['children'][0]['children'][] = $condition;
         }
     }
