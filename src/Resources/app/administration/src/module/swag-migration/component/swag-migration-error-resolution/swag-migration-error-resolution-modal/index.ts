@@ -182,10 +182,7 @@ export default Shopware.Component.wrapComponentConfig({
             try {
                 const entityIdsFromTableData: string[] = this.tableData
                     .filter((row) => this.selectedLogIds.includes(row.logId))
-                    .map((row) => {
-                        const convertedData = row.convertedData || {};
-                        return convertedData.id ? String(convertedData.id) : null;
-                    })
+                    .map((row) => row?.convertedData?.id)
                     .filter((id: string | null): id is string => id !== null);
 
                 const currentPageLogIds = this.tableData.map((row) => row.logId);
@@ -206,10 +203,7 @@ export default Shopware.Component.wrapComponentConfig({
                     const logs = await this.migrationLoggingRepository.search(criteria, Shopware.Context.api);
 
                     entityIdsFromMissingLogs = logs
-                        .map((log: MigrationLog) => {
-                            const convertedData = log?.convertedData || {};
-                            return convertedData.id ? String(convertedData.id) : null;
-                        })
+                        .map((log: MigrationLog) => log?.convertedData?.id)
                         .filter((id: string | null): id is string => id !== null);
                 }
 
@@ -231,6 +225,20 @@ export default Shopware.Component.wrapComponentConfig({
                 });
 
                 await this.migrationFixRepository.saveAll(entities, Shopware.Context.api);
+
+                await this.fetchLogs();
+
+                // clear selection after successful submission
+                this.selectedLogIds = [];
+
+                await this.$nextTick();
+                const gridRef = this.$refs.errorResolutionGrid as { resetSelection?: () => void } | undefined;
+
+                if (gridRef?.resetSelection) {
+                    gridRef.resetSelection();
+                }
+
+                this.$emit('fixes-created');
             } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.submitResolutionFailed'),
@@ -262,49 +270,80 @@ export default Shopware.Component.wrapComponentConfig({
             return entity;
         },
 
-        async fetchLogs() {
+        async fetchLogs(): Promise<void> {
             if (!this.selectedLog) {
-                return Promise.resolve();
+                return;
             }
 
             this.loading = true;
 
-            // get all property names except 'status' to map them later
-            const entityFieldProperties = this.tableColumns
-                .filter((column) => column.property !== 'status')
-                .map((column) => column.property);
+            try {
+                // get all property names except 'status' to map them later
+                const entityFieldProperties = this.tableColumns
+                    .filter((column) => column.property !== 'status')
+                    .map((column) => column.property);
 
-            return this.migrationLoggingRepository
-                .search(this.loggingCriteria, Shopware.Context.api)
-                .then((result) => {
-                    this.tableTotal = result.total;
+                const logsResult = await this.migrationLoggingRepository.search(this.loggingCriteria, Shopware.Context.api);
 
-                    this.tableData = result.map((log: MigrationLog) => {
-                        const convertedData = log?.convertedData || {};
+                this.tableTotal = logsResult.total;
 
-                        const row: ResolutionModalRow = {
-                            logId: log.id,
-                            status: false,
+                // extract entityIds from logs to fetch only relevant fixes
+                const entityIds = logsResult
+                    .map((log: MigrationLog) => log?.convertedData?.id)
+                    .filter((id: string | null): id is string => id !== null);
+
+                const existingFixes = await this.fetchExistingFixesForEntityIds(entityIds);
+                const fixesSet = new Set(existingFixes.map((fix) => fix.entityId));
+
+                this.tableData = logsResult.map((log: MigrationLog) => {
+                    const convertedData = log?.convertedData || {};
+                    const hasFix = fixesSet.has(convertedData?.id);
+
+                    const row: ResolutionModalRow = {
+                        logId: log.id,
+                        status: hasFix,
+                        convertedData,
+                        sourceData: log?.sourceData || {},
+                        ...this.swagMigrationErrorResolutionService.mapEntityFieldProperties(
+                            this.selectedLog.entityName,
+                            entityFieldProperties,
                             convertedData,
-                            sourceData: log?.sourceData || {},
-                            ...this.swagMigrationErrorResolutionService.mapEntityFieldProperties(
-                                this.selectedLog.entityName,
-                                entityFieldProperties,
-                                convertedData,
-                            ),
-                        };
+                        ),
+                    };
 
-                        return row;
-                    });
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
-                    });
-                })
-                .finally(() => {
-                    this.loading = false;
+                    return row;
                 });
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
+                });
+            } finally {
+                this.loading = false;
+            }
+        },
+
+        async fetchExistingFixesForEntityIds(entityIds: string[]): Promise<Array<{ entityId: string }>> {
+            if (!this.selectedLog || entityIds.length === 0) {
+                return [];
+            }
+
+            try {
+                const criteria = new Criteria()
+                    .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
+                    .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
+                    .addFilter(Criteria.equalsAny('entityId', entityIds))
+                    .addIncludes({
+                        swag_migration_fix: ['entityId'],
+                    });
+
+                const result = await this.migrationFixRepository.search(criteria, Shopware.Context.api);
+
+                return result.map((fix) => ({
+                    entityId: fix.entityId,
+                }));
+            } catch {
+                return [];
+            }
         },
 
         async onSelectAllLogs() {
@@ -317,7 +356,12 @@ export default Shopware.Component.wrapComponentConfig({
             return this.migrationApiService
                 .getAllLogIds(this.selectedLog.code, this.selectedLog.entityName, this.selectedLog.fieldName)
                 .then((result) => {
-                    this.selectedLogIds = result.ids;
+                    // filter out resolved logs from selection
+                    this.selectedLogIds = result.ids.filter((logId) => {
+                        const row = this.tableData.find((element) => element.logId === logId);
+
+                        return row && !row.status;
+                    });
 
                     // re-select all rows in the current page
                     this.$nextTick(() => {
@@ -325,7 +369,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                         if (gridRef && this.tableData.length > 0) {
                             this.tableData.forEach((row) => {
-                                if (this.selectedLogIds.includes(row.logId)) {
+                                if (this.selectedLogIds.includes(row.logId) && !row.status) {
                                     gridRef.selectItem(true, row);
                                 }
                             });
@@ -368,10 +412,21 @@ export default Shopware.Component.wrapComponentConfig({
 
             const selectedIds = Object.keys(selection);
 
+            // filter out resolved logs from selection
+            const selectableLogIds = selectedIds.filter((logId) => {
+                const row = this.tableData.find((element) => element.logId === logId);
+
+                return row && !row.status;
+            });
+
             this.selectedLogIds = [
                 ...this.selectedLogIds,
-                ...selectedIds,
+                ...selectableLogIds,
             ];
+        },
+
+        isRecordSelectable(item: ResolutionModalRow): boolean {
+            return !item.status;
         },
 
         onOpenDetailsModal(row: ResolutionModalRow) {

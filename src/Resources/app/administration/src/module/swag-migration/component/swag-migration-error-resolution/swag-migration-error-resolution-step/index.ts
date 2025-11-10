@@ -26,6 +26,7 @@ export type MigrationLogLevel = (typeof MIGRATION_LOG_LEVEL)[keyof typeof MIGRAT
  */
 export type ErrorResolutionTableData = {
     count: number;
+    fixCount: number;
     code: string;
     entityName: string;
     fieldName: string;
@@ -256,8 +257,9 @@ export default Shopware.Component.wrapComponentConfig({
 
                 this.tableData = result.items.map((item) => ({
                     count: item.count,
+                    fixCount: item.fixCount || 0,
                     code: item.code,
-                    resolved: false,
+                    resolved: (item.fixCount || 0) === item.count && item.count > 0,
                     entityName: item?.entityName || '-',
                     fieldName: item?.fieldName || '-',
                     profileName: item.profileName,
@@ -376,6 +378,10 @@ export default Shopware.Component.wrapComponentConfig({
         onCloseEditLog() {
             this.openErrorResolutionModal = false;
             this.selectedLog = null;
+        },
+
+        async onFixesCreated() {
+            await this.fetchLogByLevel(null);
         },
     },
 });

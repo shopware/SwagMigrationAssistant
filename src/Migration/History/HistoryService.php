@@ -325,7 +325,7 @@ class HistoryService implements HistoryServiceInterface
     /**
      * @throws Exception
      *
-     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, count: int}>, levelCounts: array{error: int, warning: int, info: int}}
+     * @return array{total: int, items: array<int, array{code: string, entityName: string|null, fieldName: string|null, count: int, fixCount: int}>, levelCounts: array{error: int, warning: int, info: int}}
      */
     public function getGroupedLogsByCodeAndEntity(
         string $runUuid,
@@ -337,36 +337,72 @@ class HistoryService implements HistoryServiceInterface
         $runIdBytes = Uuid::fromHexToBytes($runUuid);
         $offset = ($page - 1) * $limit;
 
+        $runCriteria = new Criteria();
+        $runCriteria->addFilter(new EqualsFilter('id', $runUuid));
+
+        $run = $this->runRepo->search($runCriteria, $context)->first();
+
+        if ($run === null) {
+            throw MigrationException::entityNotExists(
+                SwagMigrationRunEntity::class,
+                $runUuid
+            );
+        }
+
+        if ($run->getConnectionId() === null) {
+            throw MigrationException::noConnectionFound();
+        }
+
+        $connectionIdBytes = Uuid::fromHexToBytes($run->getConnectionId());
+
         $sql = '
             SELECT
-                code,
-                entity_name,
-                field_name,
-                gateway_name,
-                profile_name,
-                COUNT(*) as count,
-                COUNT(*) OVER() as total
-            FROM swag_migration_logging
-            WHERE run_id = :runId
-                AND level = :level
-                AND user_fixable = 1
-            GROUP BY code, entity_name, field_name
-            ORDER BY count DESC, code ASC, entity_name ASC, field_name ASC
+                l.code,
+                l.entity_name,
+                l.field_name,
+                l.gateway_name,
+                l.profile_name,
+                COUNT(DISTINCT l.id) as count,
+                (
+                    SELECT COUNT(DISTINCT CONCAT(l2.code, \'|\', COALESCE(l2.entity_name, \'\'), \'|\', COALESCE(l2.field_name, \'\')))
+                    FROM swag_migration_logging l2
+                    WHERE l2.run_id = :runId
+                        AND l2.level = :level
+                        AND l2.user_fixable = 1
+                ) as total,
+                COUNT(DISTINCT f.id) as fix_count
+            FROM swag_migration_logging l
+            LEFT JOIN swag_migration_fix f ON (
+                f.connection_id = :connectionId
+                AND f.entity_name = l.entity_name
+                AND f.path = l.field_name
+                AND f.entity_id = UNHEX(JSON_UNQUOTE(JSON_EXTRACT(l.converted_data, "$.id")))
+            )
+            WHERE l.run_id = :runId
+                AND l.level = :level
+                AND l.user_fixable = 1
+            GROUP BY l.code, l.entity_name, l.field_name, l.gateway_name, l.profile_name
+            ORDER BY count DESC, l.code ASC, l.entity_name ASC, l.field_name ASC
             LIMIT :limit OFFSET :offset
         ';
 
+        $params = [
+            'runId' => $runIdBytes,
+            'level' => $level,
+            'limit' => $limit,
+            'offset' => $offset,
+            'connectionId' => $connectionIdBytes,
+        ];
+
+        $types = [
+            'limit' => ParameterType::INTEGER,
+            'offset' => ParameterType::INTEGER,
+        ];
+
         $result = $this->connection->executeQuery(
             $sql,
-            [
-                'runId' => $runIdBytes,
-                'level' => $level,
-                'limit' => $limit,
-                'offset' => $offset,
-            ],
-            [
-                'limit' => ParameterType::INTEGER,
-                'offset' => ParameterType::INTEGER,
-            ]
+            $params,
+            $types
         );
 
         $groupedLogs = [];
@@ -386,6 +422,7 @@ class HistoryService implements HistoryServiceInterface
                 'profileName' => $row['profile_name'],
                 'gatewayName' => $row['gateway_name'],
                 'count' => (int) $row['count'],
+                'fixCount' => (int) $row['fix_count'],
             ];
         }
 

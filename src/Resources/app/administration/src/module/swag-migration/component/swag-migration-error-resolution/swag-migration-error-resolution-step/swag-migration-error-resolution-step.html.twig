@@ -4,6 +4,7 @@
         v-if="openErrorResolutionModal && selectedLog"
         :selected-log="selectedLog"
         @close-error-resolution-modal="onCloseEditLog"
+        @fixes-created="onFixesCreated"
     />
 
     <sw-modal
@@ -161,7 +162,7 @@
                 <template #column-count="{ item }">
                     <div class="swag-migration-error-resolution-step__card-table-count">
                         <span class="swag-migration-error-resolution-step__card-table-count-text">
-                            0 / {{ item.count }}
+                            {{ item.fixCount }} / {{ item.count }}
                         </span>
 
                         <mt-icon

@@ -24,6 +24,7 @@
                     :is-loading="loading"
                     :skeleton-item-amount="tableLimit"
                     :pre-selection="preSelection"
+                    :is-record-selectable="isRecordSelectable"
                     @selection-change="onSelectionChanged"
                 >
                     <template #column-status="{ item }">
