@@ -42,7 +42,7 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
                     $uuid => [
                         'primaryKey' => $uuid,
                         'data' => [],
-                    ]
+                    ],
                 ],
                 new Criteria(),
                 Context::createDefaultContext()
