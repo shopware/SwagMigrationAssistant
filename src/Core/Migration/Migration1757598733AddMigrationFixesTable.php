@@ -25,6 +25,8 @@ class Migration1757598733AddMigrationFixesTable extends MigrationStep
         'main_mapping_id' => 'BINARY(16) NOT NULL',
         'value' => 'JSON NOT NULL',
         'path' => 'VARCHAR(255) NOT NULL',
+        'entity_name' => 'VARCHAR(255) NULL',
+        'entity_id' => 'BINARY(16) NULL',
         'created_at' => 'DATETIME(3) NOT NULL',
         'updated_at' => 'DATETIME(3) NULL',
     ];

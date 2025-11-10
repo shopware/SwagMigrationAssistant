@@ -106,9 +106,9 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         $this->mappingIds[] = $propertyGroupMapping['id'];
 
         $converted = [
-            'id' => $mapping['entityUuid'],
+            'id' => $mapping['entityId'],
             'group' => [
-                'id' => $propertyGroupMapping['entityUuid'],
+                'id' => $propertyGroupMapping['entityId'],
             ],
         ];
 
@@ -152,7 +152,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $data['media']['id'],
             $this->context
         );
-        $newMedia['id'] = $mapping['entityUuid'];
+        $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         if (empty($data['media']['name'])) {
@@ -182,7 +182,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
         );
 
         if ($albumMapping !== null) {
-            $newMedia['mediaFolderId'] = $albumMapping['entityUuid'];
+            $newMedia['mediaFolderId'] = $albumMapping['entityId'];
             $this->mappingIds[] = $albumMapping['id'];
         }
 
@@ -216,7 +216,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             $data['media']['id'] . ':' . $this->locale,
             $this->context
         );
-        $localeTranslation['id'] = $mapping['entityUuid'];
+        $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->locale, $this->context);
