@@ -191,8 +191,6 @@ export default Shopware.Component.wrapComponentConfig({
                 });
 
                 await this.migrationFixRepository.saveAll(entities, Shopware.Context.api);
-
-                // TODO: refresh current table page
             } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.submitResolutionFailed'),
@@ -203,13 +201,12 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         createResolutionEntity(entityId: string) {
-            // TODO: use entityId & entityName when backend supports it
-            // TODO: remove main_mapping_id
-
             const entity = this.migrationFixRepository.create();
+
             entity.connectionId = this.migrationStore.connectionId;
-            entity.mainMappingId = '019a6cd857ea73d8a0aab2f52c7e5ba5';
             entity.path = this.selectedLog.fieldName;
+            entity.entityName = this.selectedLog.entityName;
+            entity.entityId = entityId;
             entity.value = {
                 [this.selectedLog.fieldName]: this.fieldValue,
             };
