@@ -124,7 +124,7 @@ class MigrationFixTest extends TestCase
                 'data' => [
                     'id' => 'anyIdentifier',
                     'connection_id' => 'anyConnectionIdentifier',
-                    'main_mapping_id' => 'anyMappingId',
+                    'entity_id' => 'anyEntityId',
                     'value' => json_encode('anyValue', \JSON_THROW_ON_ERROR),
                 ],
                 'expectedMissingKey' => 'path',

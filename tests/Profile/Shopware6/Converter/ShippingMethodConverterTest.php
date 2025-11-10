@@ -32,12 +32,14 @@ class ShippingMethodConverterTest extends ShopwareConverterTest
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
+        $primaryKey = Uuid::randomHex();
+
         /** @var StaticEntityRepository<ShippingMethodCollection> $shippingMethodRepository */
         $shippingMethodRepository = new StaticEntityRepository([
             new IdSearchResult(
                 1, // trigger already existing technical name check
-                [[
-                    'primaryKey' => Uuid::randomHex(),
+                [$primaryKey => [
+                    'primaryKey' => $primaryKey,
                     'data' => [],
                 ]],
                 new Criteria(),
