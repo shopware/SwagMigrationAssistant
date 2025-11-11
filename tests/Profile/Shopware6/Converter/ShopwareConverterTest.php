@@ -128,6 +128,7 @@ abstract class ShopwareConverterTest extends TestCase
             $realLog = $logs[$index];
 
             foreach (\array_keys($expectedLog) as $key) {
+                static::assertArrayHasKey($key, $realLog, $fixtureName . ': Array key: "' . $key . '" not found in converted log result.');
                 static::assertSame($expectedLog[$key], $realLog[$key], $this->getAssertMessage($fixtureName . ': Log key not as expected (make sure the log array order matches the logging order).'));
             }
         }
