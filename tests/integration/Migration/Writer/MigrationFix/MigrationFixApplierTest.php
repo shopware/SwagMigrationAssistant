@@ -9,15 +9,15 @@ namespace SwagMigrationAssistant\Test\integration\Migration\Writer\MigrationFix;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
-use Psr\Log\NullLogger;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Migration\Mapping\MappingService;
-use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingDefinition;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixEntity;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 
@@ -25,23 +25,11 @@ class MigrationFixApplierTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    private MappingService $mappingService;
-
-    protected function setUp(): void
-    {
-        $this->mappingService = new MappingService(
-            $this->getContainer()->get('swag_migration_mapping.repository'),
-            $this->getContainer()->get(EntityWriter::class),
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
-            new NullLogger()
-        );
-    }
-
     public function testApply(): void
     {
         $connectionId = Uuid::randomHex();
-        $this->createConnection($connectionId);
+        $connection = $this->createConnection($connectionId);
+        $run = $this->createRun($connection);
 
         $idOne = Uuid::randomHex();
         $idTwo = Uuid::randomHex();
@@ -49,24 +37,11 @@ class MigrationFixApplierTest extends TestCase
 
         $fixApplier = new MigrationFixApplier($this->getContainer()->get(Connection::class));
 
-        // create also mapping without fix
-        $this->mappingService->createMapping(
-            $connectionId,
-            'any_other',
-            'old_id_3',
-            null,
-            null,
-            $idThree,
-            'value three'
-        );
+        $this->createFixAndLogging($connection->getId(), $idOne, 'val1', 'first.path', $run);
+        $this->createFixAndLogging($connection->getId(), $idOne, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path', $run);
 
-        $this->mappingService->writeMapping();
-
-        $this->createFix($connectionId, $idOne, 'val1', 'first.path');
-        $this->createFix($connectionId, $idOne, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path');
-
-        $this->createFix($connectionId, $idTwo, 'val3', 'third.path');
-        $this->createFix($connectionId, $idTwo, 'val4', 'fourth.other.path');
+        $this->createFixAndLogging($connection->getId(), $idTwo, 'val3', 'third.path', $run);
+        $this->createFixAndLogging($connection->getId(), $idTwo, 'val4', 'fourth.other.path', $run);
 
         $data = [
             [
@@ -81,7 +56,7 @@ class MigrationFixApplierTest extends TestCase
             ['id' => $idThree],
         ];
 
-        $fixApplier->apply($data, $connectionId);
+        $fixApplier->apply($data, $connection->getId(), $run->getId());
 
         $expected = [[
             'id' => $idOne,
@@ -110,7 +85,7 @@ class MigrationFixApplierTest extends TestCase
         static::assertSame($expected, $data);
     }
 
-    private function createFix(string $connectionId, string $entityId, mixed $value, string $path): void
+    private function createFixAndLogging(string $connectionId, string $entityId, mixed $value, string $path, SwagMigrationRunEntity $swagMigrationRunEntity): void
     {
         $migrationFix = new SwagMigrationFixEntity();
         $migrationFix->setId(Uuid::randomHex());
@@ -119,13 +94,57 @@ class MigrationFixApplierTest extends TestCase
         $migrationFix->setPath($path);
         $migrationFix->setValue($value);
 
-        $this->getContainer()->get('swag_migration_fix.repository')->create([$migrationFix->jsonSerialize()], Context::createDefaultContext());
+        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($migrationFix): void {
+            $this->getContainer()->get('swag_migration_fix.repository')->create([\json_decode(\json_encode($migrationFix, \JSON_THROW_ON_ERROR), true)], $context);
+        });
+
+        $loggingEntity = new SwagMigrationLoggingEntity();
+        $loggingEntity->setId(Uuid::randomHex());
+        $loggingEntity->setEntityId($entityId);
+        $loggingEntity->setLevel('level');
+        $loggingEntity->setCode('code');
+        $loggingEntity->setRunId($swagMigrationRunEntity->getId());
+        $loggingEntity->setRun($swagMigrationRunEntity);
+        $loggingEntity->setProfileName('profileName');
+        $loggingEntity->setGatewayName('gatewayName');
+        $loggingEntity->setUserFixable(true);
+        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($loggingEntity): void {
+            $this->getContainer()->get('swag_migration_logging.repository')->create([\json_decode(\json_encode($loggingEntity, \JSON_THROW_ON_ERROR), true)], $context);
+        });
     }
 
-    private function createConnection(string $connectionId): void
+    private function createRun(SwagMigrationConnectionEntity $connection): SwagMigrationRunEntity
     {
-        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionId): void {
-            $this->getContainer()->get('swag_migration_connection.repository')->create(
+        $swagMigrationRun = null;
+        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use (&$swagMigrationRun, $connection): void {
+            $runRepository = $this->getContainer()->get('swag_migration_run.repository');
+            $runId = Uuid::randomHex();
+            $runData = [
+                [
+                    'id' => $runId,
+                    'connection_id' => $connection->getId(),
+                    'connection' => $connection->jsonSerialize(),
+                    'step' => 'apply-fixes',
+                ],
+            ];
+
+            $runRepository->create($runData, $context);
+            $criteria = new Criteria([$runId]);
+            $swagMigrationRun = $runRepository->search($criteria, $context)->first();
+        });
+
+        static::assertInstanceOf(SwagMigrationRunEntity::class, $swagMigrationRun);
+
+        return $swagMigrationRun;
+    }
+
+    private function createConnection(string $connectionId): SwagMigrationConnectionEntity
+    {
+        $connection = null;
+        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use (&$connection, $connectionId): void {
+            $connectionRepository = $this->getContainer()->get('swag_migration_connection.repository');
+
+            $connectionRepository->create(
                 [
                     [
                         'id' => $connectionId,
@@ -141,6 +160,13 @@ class MigrationFixApplierTest extends TestCase
                 ],
                 $context
             );
+
+            $criteria = new Criteria([$connectionId]);
+            $connection = $connectionRepository->search($criteria, $context)->first();
         });
+
+        static::assertInstanceOf(SwagMigrationConnectionEntity::class, $connection);
+
+        return $connection;
     }
 }
