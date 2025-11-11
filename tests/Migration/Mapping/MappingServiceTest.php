@@ -79,7 +79,7 @@ class MappingServiceTest extends TestCase
 
         $mapping1 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context);
         static::assertNotNull($mapping1['id']);
-        static::assertNotNull($mapping1['entityUuid']);
+        static::assertNotNull($mapping1['entityId']);
         static::assertNull($mapping1['entityValue']);
 
         $mapping2 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context);
@@ -91,7 +91,7 @@ class MappingServiceTest extends TestCase
         ];
 
         $expectedData = $mapping2;
-        $expectedData['entityUuid'] = $uuid;
+        $expectedData['entityId'] = $uuid;
         $expectedData['additionalData'] = $additionalData;
         $mapping3 = $this->mappingService->getOrCreateMapping($this->connectionId, 'product', '123', $context, null, ['key' => 'value'], $uuid);
         static::assertSame($expectedData, $mapping3);
@@ -136,7 +136,7 @@ class MappingServiceTest extends TestCase
         $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::LANGUAGE, 'en-GB', $context);
         $this->mappingService->writeMapping();
 
-        $this->mappingService->deleteMapping((string) $languageMapping['entityUuid'], $this->connectionId, $context);
+        $this->mappingService->deleteMapping((string) $languageMapping['entityId'], $this->connectionId, $context);
         $mapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::LANGUAGE, $localeCode, $context);
 
         static::assertNull($mapping);
@@ -299,7 +299,7 @@ class MappingServiceTest extends TestCase
     {
         $entity = DefaultEntities::PRODUCT;
         $oldIdentifier = '42';
-        $entityUuid = Uuid::randomHex();
+        $entityId = Uuid::randomHex();
 
         $conn = static::getContainer()->get(Connection::class);
         $qb = $conn->createQueryBuilder();
@@ -309,7 +309,7 @@ class MappingServiceTest extends TestCase
                 'connection_id' => ':connection_id',
                 'entity' => ':entity',
                 'old_identifier' => ':old_identifier',
-                'entity_uuid' => ':entity_uuid',
+                'entity_id' => ':entity_id',
                 'created_at' => 'NOW()',
                 // 'additional_data' left with NULL, some older shops might have this data
             ])
@@ -317,7 +317,7 @@ class MappingServiceTest extends TestCase
             ->setParameter('connection_id', Uuid::fromHexToBytes($this->connectionId))
             ->setParameter('entity', $entity)
             ->setParameter('old_identifier', $oldIdentifier)
-            ->setParameter('entity_uuid', Uuid::fromHexToBytes($entityUuid))
+            ->setParameter('entity_id', Uuid::fromHexToBytes($entityId))
         ->executeStatement();
         static::assertSame(1, $rowsAffected);
 
@@ -325,8 +325,8 @@ class MappingServiceTest extends TestCase
         $retrievedMapping = $this->mappingService->getMapping($this->connectionId, $entity, $oldIdentifier, Context::createDefaultContext());
 
         static::assertNotNull($retrievedMapping);
-        static::assertArrayHasKey('entityUuid', $retrievedMapping);
-        static::assertSame($entityUuid, $retrievedMapping['entityUuid']);
+        static::assertArrayHasKey('entityId', $retrievedMapping);
+        static::assertSame($entityId, $retrievedMapping['entityId']);
         static::assertArrayHasKey('additionalData', $retrievedMapping);
         static::assertNull($retrievedMapping['additionalData']);
     }

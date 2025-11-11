@@ -123,10 +123,10 @@ class ProductReviewConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertNotNull($convertResult->getMappingUuid());
-        static::assertSame($this->products['145']['entityUuid'], $converted['productId']);
-        static::assertSame($this->customer['max@mustermann.de']['entityUuid'], $converted['customerId']);
+        static::assertSame($this->products['145']['entityId'], $converted['productId']);
+        static::assertSame($this->customer['max@mustermann.de']['entityId'], $converted['customerId']);
         static::assertSame('max@mustermann.de', $converted['externalEmail']);
-        static::assertSame($this->salesChannel['1']['entityUuid'], $converted['salesChannelId']);
+        static::assertSame($this->salesChannel['1']['entityId'], $converted['salesChannelId']);
     }
 
     public function testConvertWithoutCustomer(): void
@@ -142,9 +142,9 @@ class ProductReviewConverterTest extends TestCase
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertNotNull($convertResult->getMappingUuid());
-        static::assertSame($this->products['198']['entityUuid'], $converted['productId']);
+        static::assertSame($this->products['198']['entityId'], $converted['productId']);
         static::assertArrayNotHasKey('customerId', $converted);
         static::assertArrayNotHasKey('externalEmail', $converted);
-        static::assertSame($this->salesChannel['1']['entityUuid'], $converted['salesChannelId']);
+        static::assertSame($this->salesChannel['1']['entityId'], $converted['salesChannelId']);
     }
 }

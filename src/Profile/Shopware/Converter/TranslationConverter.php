@@ -135,7 +135,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $product['id'] = $mapping['entityUuid'];
+        $product['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
@@ -196,7 +196,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $productTranslation['id'] = $this->mainMapping['entityUuid'];
+        $productTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         if (isset($data['locale'])) {
@@ -248,7 +248,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $product['id'] = $mapping['entityUuid'];
+        $product['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
@@ -277,7 +277,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $productTranslation['id'] = $this->mainMapping['entityUuid'];
+        $productTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
@@ -324,7 +324,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $manufacturer['id'] = $mapping['entityUuid'];
+        $manufacturer['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $manufacturer['entityDefinitionClass'] = ProductManufacturerDefinition::class;
 
@@ -341,7 +341,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $manufacturerTranslation['id'] = $this->mainMapping['entityUuid'];
+        $manufacturerTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id'], $data['objectkey']);
 
         $this->convertValue($manufacturerTranslation, 'name', $data, 'name');
@@ -406,7 +406,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $unit['id'] = $mapping['entityUuid'];
+        $unit['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $unit['entityDefinitionClass'] = UnitDefinition::class;
 
@@ -423,7 +423,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $unitTranslation['id'] = $this->mainMapping['entityUuid'];
+        $unitTranslation['id'] = $this->mainMapping['entityId'];
 
         $objectData = \array_pop($objectData);
 
@@ -493,7 +493,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $category['id'] = $mapping['entityUuid'];
+        $category['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $category['entityDefinitionClass'] = CategoryDefinition::class;
 
@@ -517,7 +517,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $categoryTranslation['id'] = $this->mainMapping['entityUuid'];
+        $categoryTranslation['id'] = $this->mainMapping['entityId'];
 
         $this->convertValue($categoryTranslation, 'name', $objectData, 'description');
         $this->convertValue($categoryTranslation, 'description', $objectData, 'cmstext');
@@ -590,7 +590,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $configuratorOption['id'] = $mapping['entityUuid'];
+        $configuratorOption['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
@@ -606,7 +606,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['id'],
             $this->context
         );
-        $propertyGroupOptionTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyGroupOptionTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
@@ -669,7 +669,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $configuratorOptionGroup['id'] = $mapping['entityUuid'];
+        $configuratorOptionGroup['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
@@ -686,7 +686,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $propertyGroupTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyGroupTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'name') {
@@ -751,7 +751,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $propertyValue['id'] = $mapping['entityUuid'];
+        $propertyValue['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $propertyValue['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
@@ -767,7 +767,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $data['id'],
             $this->context
         );
-        $propertyValueTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyValueTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionValue') {
@@ -828,7 +828,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $sourceData);
         }
-        $propertyOption['id'] = $mapping['entityUuid'];
+        $propertyOption['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $propertyOption['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
@@ -845,7 +845,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $propertyOptionTranslation['id'] = $this->mainMapping['entityUuid'];
+        $propertyOptionTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach ($objectData as $key => $value) {
             if ($key === 'optionName') {
@@ -998,7 +998,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
         unset($data['objectkey'], $data['mediaId']);
 
-        $media['id'] = $mapping['entityUuid'];
+        $media['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
         $media['entityDefinitionClass'] = MediaDefinition::class;
 
@@ -1015,7 +1015,7 @@ abstract class TranslationConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $mediaTranslation['id'] = $this->mainMapping['entityUuid'];
+        $mediaTranslation['id'] = $this->mainMapping['entityId'];
 
         foreach (\array_keys($objectData) as $key) {
             if ($key === 'description') {

@@ -85,7 +85,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         if ($orderMapping !== null) {
             $this->mappingIds[] = $orderMapping['id'];
-            $converted['orderId'] = $orderMapping['entityUuid'];
+            $converted['orderId'] = $orderMapping['entityId'];
         }
         unset($data['orderID']);
 
@@ -97,7 +97,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $this->checksum
         );
 
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
         $converted['deepLinkCode'] = Random::getAlphanumericString(32);
@@ -178,7 +178,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
         $this->mappingIds[] = $mapping['id'];
 
-        $documentType['id'] = $mapping['entityUuid'];
+        $documentType['id'] = $mapping['entityId'];
         $documentType['name'] = $data['name'];
         $documentType['technicalName'] = $mappedKey;
 
@@ -200,7 +200,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
 
         $newMedia = [];
-        $newMedia['id'] = $mapping['entityUuid'];
+        $newMedia['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         if (!empty($data['hash'])) {

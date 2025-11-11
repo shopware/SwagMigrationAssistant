@@ -16,7 +16,6 @@ use Shopware\Core\Framework\Test\TestCaseBase\DatabaseTransactionBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
-use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixCollection;
 use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixEntity;
@@ -36,8 +35,6 @@ class SwagMigrationEntityTest extends TestCase
      * @var EntityRepository<SwagMigrationConnectionCollection>
      */
     private EntityRepository $connectionRepository;
-
-    private MappingService $mappingService;
 
     protected function setUp(): void
     {

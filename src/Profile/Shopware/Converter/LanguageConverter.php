@@ -52,7 +52,7 @@ abstract class LanguageConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
         $this->convertValue($converted, 'name', $data, 'language');
 

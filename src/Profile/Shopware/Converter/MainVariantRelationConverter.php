@@ -58,14 +58,14 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
 
         if ($mainProductMapping !== null) {
             $this->mappingIds[] = $mainProductMapping['id'];
-            $converted['id'] = $mainProductMapping['entityUuid'];
+            $converted['id'] = $mainProductMapping['entityId'];
         }
 
         if ($variantProductMapping !== null) {
             $this->mappingIds[] = $variantProductMapping['id'];
             $converted['variantListingConfig'] = [
                 'displayParent' => true,
-                'mainVariantId' => $variantProductMapping['entityUuid'],
+                'mainVariantId' => $variantProductMapping['entityId'],
             ];
         }
 

@@ -25,6 +25,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
@@ -46,6 +47,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollectio
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
@@ -340,6 +342,20 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
+        $entity = new SwagMigrationDataEntity();
+        $entity->setId('randomId');
+        $entity->setRaw(['name' => 'myProduct']);
+        $collection = new SwagMigrationDataCollection([$entity]);
+
+        $searchResult = new EntitySearchResult(
+            SwagMigrationDataEntity::class,
+            1,
+            $collection,
+            null,
+            new Criteria(),
+            $this->context,
+        );
+
         $updateWrittenData = [];
         $this->invokeMethod($this->migrationDataWriter, 'handleWriteException', [
             new WriteException(),
@@ -352,6 +368,7 @@ class MigrationDataWriterTest extends TestCase
             &$updateWrittenData,
             $migrationContext,
             $this->context,
+            $searchResult,
         ]);
 
         $loggingServiceProperty = (new \ReflectionClass(MigrationDataWriter::class))->getProperty('loggingService');

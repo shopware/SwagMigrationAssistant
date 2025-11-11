@@ -108,6 +108,8 @@ class MigrationException extends HttpException
 
     public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
 
+    public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -567,6 +569,16 @@ class MigrationException extends HttpException
             self::MIGRATION_NOT_IN_STEP,
             'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
             ['runUuid' => $runUuid, 'step' => $step]
+        );
+    }
+
+    public static function invalidId(string $entityId, string $entityName): self
+    {
+        return new self(
+            Response::HTTP_INTERNAL_SERVER_ERROR,
+            self::INVALID_ID,
+            'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
+            ['entityId' => $entityId, 'entityName' => $entityName]
         );
     }
 }

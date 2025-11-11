@@ -49,7 +49,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $this->checksum
         );
 
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
@@ -69,7 +69,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         }
 
         if ($mapping !== null) {
-            $converted['productId'] = $mapping['entityUuid'];
+            $converted['productId'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
             unset($data['articleID']);
         }
@@ -83,7 +83,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $converted['customerId'] = $mapping['entityUuid'];
+                $converted['customerId'] = $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
             }
         }
@@ -100,7 +100,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         );
 
         if ($mapping !== null) {
-            $converted['salesChannelId'] = $mapping['entityUuid'];
+            $converted['salesChannelId'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
             unset($data['shop_id'], $data['mainShopId']);
         }

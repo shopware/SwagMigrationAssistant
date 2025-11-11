@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
@@ -20,6 +21,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteException;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
+use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
@@ -134,7 +136,8 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $dataSet::getEntity(),
                 $updateWrittenData,
                 $migrationContext,
-                $context
+                $context,
+                $migrationData
             );
         } catch (\Throwable) {
             // Worst case: something unknown goes wrong (most likely some foreign key constraint that fails)
@@ -163,6 +166,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
     /**
      * @param array<string, mixed> $converted
      * @param array<string, mixed> $updateWrittenData
+     * @param EntitySearchResult<SwagMigrationDataCollection> $migrationData
      */
     private function handleWriteException(
         WriteException $exception,
@@ -171,6 +175,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         array &$updateWrittenData,
         MigrationContextInterface $migrationContext,
         Context $context,
+        EntitySearchResult $migrationData,
     ): void {
         $writeErrors = $this->extractWriteErrorsWithIndex($exception);
         $currentWriter = $this->writerRegistry->getWriter($entityName);
@@ -188,12 +193,18 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $updateWrittenData[$dataId]['written'] = false;
             $updateWrittenData[$dataId]['writeFailure'] = true;
 
+            $currentData = $migrationData->firstWhere(function (SwagMigrationDataEntity $item) use ($dataId) {
+                return $item->getId() === $dataId;
+            });
+
             $this->loggingService->addLogEntry(
                 SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($entityName)
                     ->withConvertedData($entity)
+                    ->withEntityId($entity['id'] ?? null)
+                    ->withSourceData($currentData?->getRaw() ?? [])
                     ->build(WriteExceptionRunLog::class)
             );
 
@@ -251,6 +262,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName($entityName)
                         ->withConvertedData([$entity])
+                        ->withEntityId($entity['id'] ?? null)
                         ->build(ExceptionRunLog::class)
                 );
 

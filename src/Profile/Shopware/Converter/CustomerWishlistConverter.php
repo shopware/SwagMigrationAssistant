@@ -42,25 +42,25 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
         $customerMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CUSTOMER, $data['userID'], $context);
         if ($customerMapping !== null) {
             $this->mappingIds[] = $customerMapping['id'];
-            $converted['customerId'] = $customerMapping['entityUuid'];
+            $converted['customerId'] = $customerMapping['entityId'];
         }
 
         $productId = null;
         $productMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::PRODUCT, $data['ordernumber'], $context);
         if ($productMapping !== null) {
             $this->mappingIds[] = $productMapping['id'];
-            $productId = $productMapping['entityUuid'];
+            $productId = $productMapping['entityId'];
         }
 
         $shopMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALES_CHANNEL, $data['subshopID'], $context);
         if ($shopMapping !== null) {
-            $converted['salesChannelId'] = $shopMapping['entityUuid'];
+            $converted['salesChannelId'] = $shopMapping['entityId'];
         }
 
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
 
         $converted['products'][] = [
-            'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityUuid'],
+            'id' => $this->mappingService->getOrCreateMapping($this->connectionId, DefaultEntities::CUSTOMER_WISHLIST_PRODUCT, $data['userID'] . '_' . $data['ordernumber'], $context)['entityId'],
             'productId' => $productId,
         ];
 

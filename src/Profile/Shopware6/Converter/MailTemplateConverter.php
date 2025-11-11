@@ -59,7 +59,7 @@ class MailTemplateConverter extends ShopwareMediaConverter
         if (isset($converted['mailTemplateType']['technicalName'])) {
             $mailTemplateTypeMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::MAIL_TEMPLATE_TYPE, $data['mailTemplateTypeId'], $this->context);
             if ($mailTemplateTypeMapping !== null) {
-                $typeUuid = $mailTemplateTypeMapping['entityUuid'];
+                $typeUuid = $mailTemplateTypeMapping['entityId'];
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid !== null) {
@@ -81,7 +81,7 @@ class MailTemplateConverter extends ShopwareMediaConverter
         if ($data['systemDefault'] && isset($converted['mailTemplateTypeId'])) {
             $defaultMailTemplateMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::MAIL_TEMPLATE, $data['id'], $this->context);
             if ($defaultMailTemplateMapping !== null) {
-                $defaultMailTemplateUuid = $defaultMailTemplateMapping['entityUuid'];
+                $defaultMailTemplateUuid = $defaultMailTemplateMapping['entityId'];
             } else {
                 $defaultMailTemplateUuid = $this->systemDefaultMailTemplateLookup->get($converted['mailTemplateTypeId'], $this->context);
             }

@@ -50,7 +50,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
@@ -61,7 +61,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         );
 
         if ($mapping !== null) {
-            $converted['salesChannelId'] = $mapping['entityUuid'];
+            $converted['salesChannelId'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
             unset($data['subshopID']);
         }
@@ -90,9 +90,9 @@ abstract class SeoUrlConverter extends ShopwareConverter
             }
 
             if ($mapping !== null) {
-                $converted['foreignKey'] = $mapping['entityUuid'];
+                $converted['foreignKey'] = $mapping['entityId'];
                 $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
-                $converted['pathInfo'] = '/detail/' . $mapping['entityUuid'];
+                $converted['pathInfo'] = '/detail/' . $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
             }
         } elseif ($data['type'] === self::TYPE_CATEGORY && isset($data['typeId'])) {
@@ -104,9 +104,9 @@ abstract class SeoUrlConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $converted['foreignKey'] = $mapping['entityUuid'];
+                $converted['foreignKey'] = $mapping['entityId'];
                 $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
-                $converted['pathInfo'] = '/navigation/' . $mapping['entityUuid'];
+                $converted['pathInfo'] = '/navigation/' . $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
             }
         }

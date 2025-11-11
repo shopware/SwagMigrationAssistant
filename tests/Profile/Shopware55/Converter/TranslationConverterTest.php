@@ -435,11 +435,11 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
 
         $expected = [
-            'id' => $categoryMapping['entityUuid'],
+            'id' => $categoryMapping['entityId'],
             'entityDefinitionClass' => CategoryDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
-                    'id' => $translationMapping['entityUuid'],
+                    'id' => $translationMapping['entityId'],
                     'customFields' => [
                         'migration_Shopware55_category_attribute1' => 'DE: Attribute 1',
                         'migration_Shopware55_category_attribute2' => 'DE: Attribute 2',
@@ -658,14 +658,14 @@ class TranslationConverterTest extends TestCase
         static::assertIsArray($converted);
 
         $expected = [
-            'id' => $productMapping['entityUuid'],
+            'id' => $productMapping['entityId'],
             'entityDefinitionClass' => ProductDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
                     'customFields' => [
                         'migration_Shopware55_product_attr1' => 'My free textfield',
                     ],
-                    'id' => $translationMapping['entityUuid'],
+                    'id' => $translationMapping['entityId'],
                     'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
                 ],
             ],
@@ -697,11 +697,11 @@ class TranslationConverterTest extends TestCase
         );
 
         $expectedData = [
-            'id' => $mediaMapping['entityUuid'],
+            'id' => $mediaMapping['entityId'],
             'entityDefinitionClass' => MediaDefinition::class,
             'translations' => [
                 DummyMappingService::DEFAULT_LANGUAGE_UUID => [
-                    'id' => $translationMapping['entityUuid'],
+                    'id' => $translationMapping['entityId'],
                     'alt' => 'EN - Nice Spachtelmasse',
                     'languageId' => DummyMappingService::DEFAULT_LANGUAGE_UUID,
                 ],

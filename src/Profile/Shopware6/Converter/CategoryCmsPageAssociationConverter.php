@@ -41,7 +41,7 @@ class CategoryCmsPageAssociationConverter extends ShopwareConverter
             );
 
             if ($mapping !== null) {
-                $converted['cmsPageId'] = $mapping['entityUuid'];
+                $converted['cmsPageId'] = $mapping['entityId'];
             }
         }
 

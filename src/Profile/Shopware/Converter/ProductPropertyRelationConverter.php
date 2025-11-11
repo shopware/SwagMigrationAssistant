@@ -58,7 +58,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
 
         if ($productMapping !== null) {
             $this->mappingIds[] = $productMapping['id'];
-            $converted['id'] = $productMapping['entityUuid'];
+            $converted['id'] = $productMapping['entityId'];
         }
 
         $optionMapping = $this->mappingService->getMapping(
@@ -72,7 +72,7 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
             $this->mappingIds[] = $optionMapping['id'];
 
             $converted['properties'][] = [
-                'id' => $optionMapping['entityUuid'],
+                'id' => $optionMapping['entityId'],
             ];
         }
 
