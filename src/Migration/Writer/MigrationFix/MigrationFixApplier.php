@@ -50,13 +50,6 @@ class MigrationFixApplier
      */
     private function getFixes(array $ids, string $connectionId, string $runId): array
     {
-        //        $logSql = "SELECT LOWER(HEX(id)), LOWER(HEX(run_id)), user_fixable, entity_name, LOWER(HEX(entity_id)), field_name FROM swag_migration_logging";
-        //
-        //        $fixSql = "SELECT LOWER(HEX(id)), LOWER(HEX(connection_id)), value, path, LOWER(HEX(entity_id)) FROM swag_migration_fix";
-        //
-        //        $logRes = $this->connection->fetchAllAssociative($logSql);
-        //        $fixRes = $this->connection->fetchAllAssociative($fixSql);
-
         $sql = <<<'SQL'
 SELECT fix.entity_id AS entityId, fix.id, fix.value, fix.path
 FROM swag_migration_fix AS fix
