@@ -21,6 +21,7 @@ use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSe
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DeliveryTimeDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\DocumentBaseConfigDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\LanguageDataSet;
+use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailHeaderFooterDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MailTemplateDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\MediaFolderInheritanceDataSet;
@@ -79,6 +80,7 @@ class BasicSettingsDataSelection implements DataSelectionInterface
             new RuleDataSet(),
             new SnippetSetDataSet(),
             new SnippetDataSet(),
+            new MailHeaderFooterDataSet(),
             new MailTemplateDataSet(),
             new DeliveryTimeDataSet(),
             new ShippingMethodDataSet(),
