@@ -245,7 +245,7 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('addresses', $converted);
         static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('Mustermann', $converted['lastName']);
-        static::assertSame($mapping['entityUuid'], $converted['defaultPaymentMethodId']);
+        static::assertSame($mapping['entityId'], $converted['defaultPaymentMethodId']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
