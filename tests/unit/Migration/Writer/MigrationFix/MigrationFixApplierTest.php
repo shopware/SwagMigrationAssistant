@@ -4,23 +4,24 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  */
- /*
- * (c) shopware AG <info@shopware.com>
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
 
- namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
+/*
+* (c) shopware AG <info@shopware.com>
+* For the full copyright and license information, please view the LICENSE
+* file that was distributed with this source code.
+*/
 
- use Doctrine\DBAL\Connection;
- use PHPUnit\Framework\TestCase;
- use Shopware\Core\Framework\Log\Package;
- use Shopware\Core\Framework\Uuid\Uuid;
- use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
+namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
 
- #[Package('after-sales')]
- class MigrationFixApplierTest extends TestCase
- {
+use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
+
+#[Package('after-sales')]
+class MigrationFixApplierTest extends TestCase
+{
     public function testApply(): void
     {
         $expected = 'newValue';
@@ -156,4 +157,4 @@
 
         return $connectionMock;
     }
- }
+}
