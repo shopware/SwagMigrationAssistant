@@ -106,6 +106,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                             'source_path' => $sourcePath,
                             'media' => $mappedWorkload[$mediaId],
                         ])
+                        ->withEntityId($mediaId)
                         ->build(CannotGetFileRunLog::class)
                 );
 
@@ -135,6 +136,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
                             'source_path' => $sourcePath,
                             'media' => $mappedWorkload[$mediaId],
                         ])
+                        ->withEntityId($mediaId)
                         ->build(ExceptionRunLog::class)
                 );
             }

@@ -56,7 +56,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
             $this->checksum
         );
 
-        $converted['id'] = $crossSellingMapping['entityUuid'];
+        $converted['id'] = $crossSellingMapping['entityId'];
 
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
         if ($sourceProductMapping === null) {
@@ -105,12 +105,12 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $converted['type'] = 'productList';
         $converted['active'] = true;
-        $converted['productId'] = $sourceProductMapping['entityUuid'];
+        $converted['productId'] = $sourceProductMapping['entityId'];
         $converted['assignedProducts'] = [
             [
-                'id' => $relationMapping['entityUuid'],
+                'id' => $relationMapping['entityId'],
                 'position' => $data['position'],
-                'productId' => $relatedProductMapping['entityUuid'],
+                'productId' => $relatedProductMapping['entityId'],
             ],
         ];
 

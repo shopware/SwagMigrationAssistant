@@ -38,7 +38,7 @@ class SwagMigrationMappingDefinition extends EntityDefinition
             (new FkField('connection_id', 'connectionId', SwagMigrationConnectionDefinition::class))->addFlags(new Required()),
             (new StringField('entity', 'entity'))->addFlags(new Required()),
             new StringField('old_identifier', 'oldIdentifier'),
-            new IdField('entity_uuid', 'entityUuid'),
+            new IdField('entity_id', 'entityId'),
             new StringField('entity_value', 'entityValue'),
             new StringField('checksum', 'checksum'),
             new JsonField('additional_data', 'additionalData'),

@@ -34,11 +34,11 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 
     public const OPTIONAL_FIELDS = [
         'entity_name' => 'VARCHAR(64) NULL',
+        'entity_id' => 'BINARY(16) NULL',
         'field_name' => 'VARCHAR(64) NULL',
         'field_source_path' => 'VARCHAR(255) NULL',
         'source_data' => 'JSON NULL',
         'converted_data' => 'JSON NULL',
-        'used_mapping' => 'JSON NULL',
         'exception_message' => 'VARCHAR(255) NULL',
         'exception_trace' => 'JSON NULL',
     ];
@@ -47,6 +47,16 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
         'auto_increment' => 'BIGINT UNSIGNED AUTO_INCREMENT UNIQUE',
         'created_at' => 'DATETIME(3) NOT NULL',
         'updated_at' => 'DATETIME(3) NULL',
+    ];
+
+    public const FIELDS_TO_DROP = [
+        'title',
+        'description',
+        'parameters',
+        'title_snippet',
+        'description_snippet',
+        'entity',
+        'source_id',
     ];
 
     public function getCreationTimestamp(): int
@@ -69,34 +79,15 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
         $this->dropIndexIfExists($connection, self::MIGRATION_LOGGING_TABLE, 'idx.swag_migration_logging.run_id_code');
         $this->dropConstraintIfExists($connection, 'json.swag_migration_logging.log_entry');
 
-        $this->dropObsoleteColumns($connection, $schemaManager);
+        $this->dropObsoleteColumns($connection);
         $this->addOrModifyColumns($connection, $schemaManager);
         $this->ensureRelations($connection, $schemaManager);
     }
 
-    /**
-     * @param AbstractSchemaManager<MySQLPlatform> $schemaManager
-     */
-    private function dropObsoleteColumns(Connection $connection, AbstractSchemaManager $schemaManager): void
+    private function dropObsoleteColumns(Connection $connection): void
     {
-        $columns = $schemaManager->listTableColumns(self::MIGRATION_LOGGING_TABLE);
-
-        $allFields = array_merge(
-            self::REQUIRED_FIELDS,
-            self::OPTIONAL_FIELDS,
-            self::SYSTEM_FIELDS
-        );
-
-        foreach ($columns as $column) {
-            if (!\array_key_exists($column->getName(), $allFields)) {
-                $connection->executeStatement(
-                    \sprintf(
-                        'ALTER TABLE `%s` DROP COLUMN `%s`;',
-                        self::MIGRATION_LOGGING_TABLE,
-                        $column->getName()
-                    )
-                );
-            }
+        foreach (self::FIELDS_TO_DROP as $column) {
+            $this->dropColumnIfExists($connection, 'swag_migration_logging', $column);
         }
     }
 
@@ -171,6 +162,16 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
                 self::MIGRATION_LOGGING_TABLE
             )
         );
+
+        // ensure entity_id index
+        if (!$this->indexExists($connection, self::MIGRATION_LOGGING_TABLE, 'idx.entity_id')) {
+            $connection->executeStatement(
+                \sprintf(
+                    'ALTER TABLE `%s` ADD INDEX `idx.entity_id` (`entity_id`);',
+                    self::MIGRATION_LOGGING_TABLE
+                )
+            );
+        }
 
         // ensure foreign key constraint
         $connection->executeStatement(

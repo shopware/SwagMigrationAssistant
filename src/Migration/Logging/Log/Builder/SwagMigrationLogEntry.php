@@ -24,6 +24,8 @@ interface SwagMigrationLogEntry
 
     public function isUserFixable(): bool;
 
+    public function getEntityId(): ?string;
+
     public function getEntityName(): ?string;
 
     public function getFieldName(): ?string;
@@ -39,11 +41,6 @@ interface SwagMigrationLogEntry
      * @return array<mixed>|null
      */
     public function getConvertedData(): ?array;
-
-    /**
-     * @return array<mixed>|null
-     */
-    public function getUsedMapping(): ?array;
 
     public function getExceptionMessage(): ?string;
 

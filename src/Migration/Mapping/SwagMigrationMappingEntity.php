@@ -25,7 +25,7 @@ class SwagMigrationMappingEntity extends Entity
 
     protected ?string $oldIdentifier;
 
-    protected ?string $entityUuid;
+    protected ?string $entityId;
 
     protected ?string $entityValue;
 
@@ -76,14 +76,14 @@ class SwagMigrationMappingEntity extends Entity
         $this->oldIdentifier = $oldIdentifier;
     }
 
-    public function getEntityUuid(): ?string
+    public function getEntityId(): ?string
     {
-        return $this->entityUuid;
+        return $this->entityId;
     }
 
-    public function setEntityUuid(string $entityUuid): void
+    public function setEntityId(string $entityId): void
     {
-        $this->entityUuid = $entityUuid;
+        $this->entityId = $entityId;
     }
 
     public function getEntityValue(): ?string

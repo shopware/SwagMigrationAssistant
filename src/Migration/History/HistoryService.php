@@ -187,10 +187,6 @@ class HistoryService implements HistoryServiceInterface
             \printf('Converted data (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getConvertedData(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
         }
 
-        if ($logEntry->getUsedMapping()) {
-            \printf('Used mapping (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getUsedMapping(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
-        }
-
         if ($logEntry->getExceptionTrace()) {
             \printf('Exception trace (JSON):%s%s%s', \PHP_EOL, \json_encode($logEntry->getExceptionTrace(), \JSON_PRETTY_PRINT) ?: '{}', \PHP_EOL);
         }

@@ -99,8 +99,8 @@ class HistoryServiceTest extends TestCase
         $migrationLog->setExceptionMessage('exception message');
         $migrationLog->setSourceData([['source' => 'data']]);
         $migrationLog->setConvertedData([['converted' => 'data']]);
-        $migrationLog->setUsedMapping(['used' => 'mapping']);
         $migrationLog->setExceptionTrace([['exception' => 'trace']]);
+        $migrationLog->setEntityId($ids->get('entityId_log1'));
 
         $premapping = new PremappingStruct(
             'entity',
@@ -165,6 +165,7 @@ class HistoryServiceTest extends TestCase
         $minimalLog->setCode('TEST_CODE_MINIMAL');
         $minimalLog->setProfileName('profile name');
         $minimalLog->setGatewayName('gateway name');
+        $minimalLog->setEntityId($ids->get('entityId_log-minimal'));
 
         yield 'minimal log information' => [
             $migrationRun,
@@ -262,13 +263,6 @@ class HistoryServiceTest extends TestCase
                 static::assertNotFalse($convertedData);
                 static::assertStringContainsString('Converted data (JSON):', $output);
                 static::assertStringContainsString($convertedData, $output);
-            }
-
-            if (!empty($log->getUsedMapping())) {
-                $usedMapping = \json_encode($log->getUsedMapping(), \JSON_PRETTY_PRINT);
-                static::assertNotFalse($usedMapping);
-                static::assertStringContainsString('Used mapping (JSON):', $output);
-                static::assertStringContainsString($usedMapping, $output);
             }
 
             if (!empty($log->getExceptionTrace())) {

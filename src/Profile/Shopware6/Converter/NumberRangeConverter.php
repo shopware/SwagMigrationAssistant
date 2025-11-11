@@ -54,7 +54,7 @@ class NumberRangeConverter extends ShopwareConverter
         if (isset($converted['type']['technicalName'])) {
             $numberRangeTypeMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::NUMBER_RANGE_TYPE, $converted['type']['technicalName'], $this->context);
             if ($numberRangeTypeMapping !== null) {
-                $typeUuid = $numberRangeTypeMapping['entityUuid'];
+                $typeUuid = $numberRangeTypeMapping['entityId'];
             } else {
                 $typeUuid = $this->numberRangeTypeLookup->get($converted['type']['technicalName'], $this->context);
                 if ($typeUuid === null) {

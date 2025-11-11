@@ -86,17 +86,17 @@ readonly class DebugLog implements SwagMigrationLogEntry
         return null;
     }
 
-    public function getUsedMapping(): ?array
-    {
-        return null;
-    }
-
     public function getExceptionMessage(): ?string
     {
         return null;
     }
 
     public function getExceptionTrace(): ?array
+    {
+        return null;
+    }
+
+    public function getEntityId(): ?string
     {
         return null;
     }

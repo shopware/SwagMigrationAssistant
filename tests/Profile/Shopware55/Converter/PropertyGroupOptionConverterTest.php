@@ -233,7 +233,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $propertyData[4]['id'] . '_' . $convertedMainProduct['id'],
             $this->context
         );
-        $oldMappingId[] = $mapping['entityUuid'];
+        $oldMappingId[] = $mapping['entityId'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
@@ -241,7 +241,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $propertyData[2]['id'] . '_' . $convertedMainProduct['id'],
             $this->context
         );
-        $oldMappingId[] = $mapping['entityUuid'];
+        $oldMappingId[] = $mapping['entityId'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connection->getId(),
@@ -249,7 +249,7 @@ class PropertyGroupOptionConverterTest extends TestCase
             $propertyData[3]['id'] . '_' . $convertedMainProduct['id'],
             $this->context
         );
-        $oldMappingId[] = $mapping['entityUuid'];
+        $oldMappingId[] = $mapping['entityId'];
 
         $iterator = 0;
         foreach ($optionRelationData as &$relation) {
