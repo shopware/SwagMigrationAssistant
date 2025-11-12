@@ -491,7 +491,7 @@
             "table": {
               "columns": {
                 "count": "Fixed / Total",
-                "code": "Error",
+                "code": "Code",
                 "entity": "Entity",
                 "field": "Field",
                 "profileName": "Profile",

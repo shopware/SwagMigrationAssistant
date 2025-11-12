@@ -640,7 +640,7 @@
             "table": {
               "columns": {
                 "count": "Behoben / Gesamt",
-                "code": "Fehler",
+                "code": "Fehlercode",
                 "entity": "Entität",
                 "field": "Feld",
                 "profileName": "Profil",
