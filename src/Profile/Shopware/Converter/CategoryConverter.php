@@ -337,7 +337,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         $locale = $language->getLocale();
-        if ($this->locale === null || $locale?->getCode() === $this->locale) {
+        if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
 
