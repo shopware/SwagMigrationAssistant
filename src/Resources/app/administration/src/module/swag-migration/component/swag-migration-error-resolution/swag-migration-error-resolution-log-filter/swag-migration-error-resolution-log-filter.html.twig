@@ -32,6 +32,7 @@
                         :model-value="value.code"
                         :options="codeOptions"
                         :disabled="disabled"
+                        :search-function="(value) => onSearch(value, 'code')"
                         @update:model-value="(newValue) => onValueChange({ code: newValue })"
                     />
 
@@ -50,6 +51,7 @@
                         :model-value="value.entity"
                         :options="entityOptions"
                         :disabled="disabled"
+                        :search-function="(value) => onSearch(value, 'entity')"
                         @update:model-value="(newValue) => onValueChange({ entity: newValue })"
                     />
 
@@ -59,6 +61,7 @@
                         :model-value="value.field"
                         :options="fieldOptions"
                         :disabled="disabled"
+                        :search-function="(value) => onSearch(value, 'field')"
                         @update:model-value="(newValue) => onValueChange({ field: newValue })"
                     />
                 </div>
