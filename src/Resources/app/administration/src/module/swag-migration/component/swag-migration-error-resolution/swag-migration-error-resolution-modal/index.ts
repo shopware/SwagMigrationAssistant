@@ -293,11 +293,18 @@ export default Shopware.Component.wrapComponentConfig({
                     .filter((id: string | null): id is string => id !== null);
 
                 const existingFixes = await this.fetchExistingFixesForEntityIds(entityIds);
-                const fixesSet = new Set(existingFixes.map((fix) => fix.entityId));
+                const fixesMap = new Map(
+                    existingFixes.map((fix) => [
+                        fix.entityId,
+                        fix.value,
+                    ]),
+                );
 
                 this.tableData = logsResult.map((log: MigrationLog) => {
                     const convertedData = log?.convertedData || {};
-                    const hasFix = fixesSet.has(convertedData?.id);
+
+                    const fixValue = fixesMap.get(convertedData?.id);
+                    const hasFix = fixValue !== undefined;
 
                     const row: ResolutionModalRow = {
                         logId: log.id,
@@ -311,6 +318,11 @@ export default Shopware.Component.wrapComponentConfig({
                         ),
                     };
 
+                    // apply fix value to the specific field if exists
+                    if (hasFix && fixValue) {
+                        row[this.selectedLog.fieldName] = fixValue[this.selectedLog.fieldName];
+                    }
+
                     return row;
                 });
             } catch {
@@ -322,7 +334,9 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        async fetchExistingFixesForEntityIds(entityIds: string[]): Promise<Array<{ entityId: string }>> {
+        async fetchExistingFixesForEntityIds(
+            entityIds: string[],
+        ): Promise<Array<{ entityId: string; value: Record<string, unknown> }>> {
             if (!this.selectedLog || entityIds.length === 0) {
                 return [];
             }
@@ -333,13 +347,17 @@ export default Shopware.Component.wrapComponentConfig({
                     .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
                     .addFilter(Criteria.equalsAny('entityId', entityIds))
                     .addIncludes({
-                        swag_migration_fix: ['entityId'],
+                        swag_migration_fix: [
+                            'entityId',
+                            'value',
+                        ],
                     });
 
                 const result = await this.migrationFixRepository.search(criteria, Shopware.Context.api);
 
                 return result.map((fix) => ({
                     entityId: fix.entityId,
+                    value: fix.value || {},
                 }));
             } catch {
                 return [];
