@@ -86,6 +86,8 @@ abstract class CategoryConverter extends ShopwareConverter
 
         if (isset($data['_locale'])) {
             $this->locale = $data['_locale'];
+        } else {
+            $this->locale = null;
         }
 
         $cmsPageUuid = $this->defaultCmsPageLookup->get($context);
@@ -234,8 +236,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         $locale = $language->getLocale();
-
-        if (!isset($data['_locale']) || $locale === null || $locale->getCode() === $data['_locale']) {
+        if (!isset($data['_locale']) || $locale?->getCode() === $data['_locale']) {
             return;
         }
 
@@ -336,7 +337,7 @@ abstract class CategoryConverter extends ShopwareConverter
         }
 
         $locale = $language->getLocale();
-        if ($locale === null || $this->locale === null || $locale->getCode() === $this->locale) {
+        if ($this->locale === null || $locale?->getCode() === $this->locale) {
             return;
         }
 

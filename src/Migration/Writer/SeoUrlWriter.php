@@ -50,9 +50,9 @@ class SeoUrlWriter extends AbstractWriter
      */
     public function writeData(array $data, Context $context): array
     {
-        // only unmodified should be written
+        // only modified should be written
         $data = \array_filter($data, static function ($value) {
-            return !(isset($value['isModified']) && $value['isModified'] === true);
+            return !(isset($value['isModified']) && $value['isModified'] === false);
         });
 
         $writeResults = [];
