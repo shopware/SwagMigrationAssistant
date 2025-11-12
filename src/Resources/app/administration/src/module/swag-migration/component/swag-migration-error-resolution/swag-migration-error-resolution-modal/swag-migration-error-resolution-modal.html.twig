@@ -15,7 +15,7 @@
             <div class="swag-migration-error-resolution-modal__left">
                 <sw-data-grid
                     ref="errorResolutionGrid"
-                    identifier="swag-migration-error-resolution-modal-grid"
+                    :identifier="tableIdentifier"
                     item-identifier-property="logId"
                     :data-source="tableData"
                     :show-selection="true"

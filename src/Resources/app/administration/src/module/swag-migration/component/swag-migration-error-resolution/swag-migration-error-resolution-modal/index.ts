@@ -96,6 +96,11 @@ export default Shopware.Component.wrapComponentConfig({
             return this.repositoryFactory.create('swag_migration_fix');
         },
 
+        tableIdentifier(): string {
+            // unique identifier for each modal grid based on selected log, to avoid selection conflicts
+            return `swag-migration-error-resolution-modal-grid-${this.selectedLog.entityName}-${this.selectedLog.fieldName}`;
+        },
+
         loggingCriteria() {
             return new Criteria(this.tablePage, this.tableLimit)
                 .addFilter(Criteria.equals('code', this.selectedLog.code))
@@ -303,8 +308,8 @@ export default Shopware.Component.wrapComponentConfig({
                 this.tableData = logsResult.map((log: MigrationLog) => {
                     const convertedData = log?.convertedData || {};
 
-                    const fixValue = fixesMap.get(convertedData?.id);
-                    const hasFix = fixValue !== undefined;
+                    const fixValue = fixesMap.get(convertedData?.id) as Record<string, unknown> | undefined;
+                    const hasFix = !!(fixValue && Object.prototype.hasOwnProperty.call(fixValue, this.selectedLog.fieldName));
 
                     const row: ResolutionModalRow = {
                         logId: log.id,
@@ -320,7 +325,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                     // apply fix value to the specific field if exists
                     if (hasFix && fixValue) {
-                        row[this.selectedLog.fieldName] = fixValue[this.selectedLog.fieldName];
+                        row[this.selectedLog.fieldName] = (fixValue as Record<string, unknown>)[this.selectedLog.fieldName];
                     }
 
                     return row;
@@ -345,6 +350,7 @@ export default Shopware.Component.wrapComponentConfig({
                 const criteria = new Criteria()
                     .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
                     .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
+                    .addFilter(Criteria.equals('path', this.selectedLog.fieldName))
                     .addFilter(Criteria.equalsAny('entityId', entityIds))
                     .addIncludes({
                         swag_migration_fix: [
