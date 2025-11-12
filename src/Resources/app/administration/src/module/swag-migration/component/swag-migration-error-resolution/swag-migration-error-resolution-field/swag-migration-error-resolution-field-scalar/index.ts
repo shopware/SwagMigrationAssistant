@@ -1,3 +1,4 @@
+import type { Property } from '@administration/src/core/data/entity-definition.data';
 import template from './swag-migration-error-resolution-field-scalar.html.twig';
 import { FIELD_COMPONENT_TYPES } from '../../../../service/swag-migration-error-resolution.service';
 
@@ -26,7 +27,7 @@ export default Shopware.Component.wrapComponentConfig({
             },
         },
         entityField: {
-            type: Object,
+            type: Object as PropType<Property>,
             required: true,
         },
         fieldName: {
@@ -58,9 +59,9 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
-        numberFieldType(): string | null {
+        numberFieldType(): string {
             if (this.componentType !== FIELD_COMPONENT_TYPES.NUMBER) {
-                return null;
+                return 'int';
             }
 
             return this.entityField?.type || 'int';

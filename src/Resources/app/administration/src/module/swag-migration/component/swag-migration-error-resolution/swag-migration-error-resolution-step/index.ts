@@ -205,25 +205,22 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const criteria = new Criteria(1, 1)
-                .addFilter(Criteria.equals('userFixable', false))
-                .addFilter(Criteria.equals('runId', this.runId))
-                .addIncludes({
-                    swag_migration_logging: ['id'],
-                });
-
-            const result = await this.migrationLoggingRepository
-                .search(criteria, Shopware.Context.api)
-                .then((res) => {
-                    return res.total;
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.fetchUnfixableErrorsFailed'),
+            try {
+                const criteria = new Criteria(1, 1)
+                    .addFilter(Criteria.equals('userFixable', false))
+                    .addFilter(Criteria.equals('runId', this.runId))
+                    .addIncludes({
+                        swag_migration_logging: ['id'],
                     });
-                });
 
-            this.totalUnfixableErrors = result || 0;
+                const result = await this.migrationLoggingRepository.search(criteria);
+
+                this.totalUnfixableErrors = result.total;
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchUnfixableErrorsFailed'),
+                });
+            }
         },
 
         async fetchLogByLevel(level: MigrationLogLevel | null) {
@@ -274,23 +271,22 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async fetchRun() {
-            const criteria = new Criteria(1, 1)
-                .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
-                .addFilter(Criteria.equals('step', MIGRATION_STEP.ERROR_RESOLUTION))
-                .addIncludes({
-                    swag_migration_run: ['id'],
-                });
-
-            const result = await this.migrationRunRepository
-                .search(criteria, Shopware.Context.api)
-                .then((res) => res.first()?.id)
-                .catch(() => {
-                    this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.fetchRunFailed'),
+            try {
+                const criteria = new Criteria(1, 1)
+                    .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
+                    .addFilter(Criteria.equals('step', MIGRATION_STEP.ERROR_RESOLUTION))
+                    .addIncludes({
+                        swag_migration_run: ['id'],
                     });
-                });
 
-            this.runId = result || null;
+                const result = await this.migrationRunRepository.search(criteria);
+
+                this.runId = result.first()?.id || null;
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchRunFailed'),
+                });
+            }
         },
 
         async onContinueMigration() {

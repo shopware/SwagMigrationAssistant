@@ -25,6 +25,10 @@ export interface SwagMigrationErrorResolutionLogFilterData {
     value: LogFilterValue;
 }
 
+/**
+ * @private
+ * @sw-package fundamentals@after-sales
+ */
 export default Shopware.Component.wrapComponentConfig({
     template,
 
@@ -37,7 +41,7 @@ export default Shopware.Component.wrapComponentConfig({
             default: false,
         },
         tableData: {
-            type: Array,
+            type: Array as PropType<ErrorResolutionTableData[]>,
             required: true,
             default: () => [],
         },
@@ -46,12 +50,7 @@ export default Shopware.Component.wrapComponentConfig({
     data(): SwagMigrationErrorResolutionLogFilterData {
         return {
             open: false,
-            value: {
-                code: null,
-                status: null,
-                entity: null,
-                field: null,
-            },
+            value: this.getInitialFilterValue(),
         };
     },
 
@@ -70,27 +69,40 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         codeOptions(): Option[] {
-            return this.getOptionsFromTableData('code');
+            return this.buildOptionsFromProperty('code');
         },
 
         entityOptions(): Option[] {
-            return this.getOptionsFromTableData('entityName');
+            return this.buildOptionsFromProperty('entityName');
         },
 
         fieldOptions(): Option[] {
-            return this.getOptionsFromTableData('fieldName');
+            return this.buildOptionsFromProperty('fieldName');
         },
     },
 
     methods: {
-        getOptionsFromTableData(property: keyof ErrorResolutionTableData): Option[] {
-            const uniqueValues = [
-                ...new Set(
-                    (this.tableData as ErrorResolutionTableData[])
-                        .map((item) => item[property])
-                        .filter((value): value is string => Boolean(value)),
-                ),
+        getInitialFilterValue(): LogFilterValue {
+            return {
+                code: null,
+                status: null,
+                entity: null,
+                field: null,
+            };
+        },
+
+        extractUniqueValuesFromTableData(property: keyof ErrorResolutionTableData): string[] {
+            const values: string[] = this.tableData
+                .map((item) => item[property])
+                .filter((value): value is string => Boolean(value) && typeof value === 'string');
+
+            return [
+                ...new Set(values),
             ];
+        },
+
+        buildOptionsFromProperty(property: keyof ErrorResolutionTableData): Option[] {
+            const uniqueValues = this.extractUniqueValuesFromTableData(property);
 
             return uniqueValues.map((value) => ({
                 value,
@@ -112,12 +124,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onReset() {
-            this.onValueChange({
-                code: null,
-                status: null,
-                entity: null,
-                field: null,
-            });
+            this.onValueChange(this.getInitialFilterValue());
         },
     },
 });

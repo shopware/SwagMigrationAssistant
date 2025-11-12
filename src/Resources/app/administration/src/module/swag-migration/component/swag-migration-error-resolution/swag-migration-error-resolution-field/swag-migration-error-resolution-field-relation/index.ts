@@ -55,14 +55,14 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationErrorResolutionFieldRelationData {
         return {
-            fieldValue: this.isToOneRelation ? null : [],
+            fieldValue: this.getInitialFieldValue(),
             noOptionsFound: false,
             entityLink: null,
         };
     },
 
     created() {
-        this.createdComponent();
+        this.checkEntityAvailability();
     },
 
     watch: {
@@ -106,11 +106,11 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        async createdComponent() {
-            await this.fetchTotalOfEntity();
+        getInitialFieldValue(): string | string[] | null {
+            return this.isToOneRelation ? null : [];
         },
 
-        async fetchTotalOfEntity() {
+        async checkEntityAvailability() {
             if (!this.entityRepository) {
                 return;
             }
@@ -119,14 +119,12 @@ export default Shopware.Component.wrapComponentConfig({
                 [this.entityName]: ['id'],
             });
 
-            this.entityRepository.search(criteria).then((result) => {
-                if (result.total > 0) {
-                    return;
-                }
+            const result = await this.entityRepository.search(criteria);
 
+            if (result.total === 0) {
                 this.noOptionsFound = true;
                 this.entityLink = this.swagMigrationErrorResolutionService.getEntityLink(this.entityName);
-            });
+            }
         },
 
         getLabelValue(item: Record<string, unknown>): string {
@@ -136,7 +134,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             const value = item[this.labelProperty];
 
-            if (value === null || value === undefined) {
+            if (!value) {
                 return '';
             }
 

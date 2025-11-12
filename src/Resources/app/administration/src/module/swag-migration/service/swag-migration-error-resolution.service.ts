@@ -475,9 +475,10 @@ export default class SwagMigrationErrorResolutionService {
 
     /**
      * sorts fields based on predefined priority. Fields with higher priority appear first.
+     * returns a new sorted array without mutating the input.
      */
     sortFieldsByPriority(fields: string[]): string[] {
-        return fields.sort((a, b) => {
+        return [...fields].sort((a, b) => {
             const priorityA = PRIORITY_FIELD_MAP.get(a);
             const priorityB = PRIORITY_FIELD_MAP.get(b);
 
@@ -511,12 +512,12 @@ export default class SwagMigrationErrorResolutionService {
         const requiredFields = scalarFields.filter((field) => requiredFieldsSet.has(field));
         const nonRequiredFields = scalarFields.filter((field) => !requiredFieldsSet.has(field));
 
-        this.sortFieldsByPriority(requiredFields);
-        this.sortFieldsByPriority(nonRequiredFields);
+        const sortedRequiredFields = this.sortFieldsByPriority(requiredFields);
+        const sortedNonRequiredFields = this.sortFieldsByPriority(nonRequiredFields);
 
         return [
-            ...requiredFields,
-            ...nonRequiredFields,
+            ...sortedRequiredFields,
+            ...sortedNonRequiredFields,
         ];
     }
 
@@ -525,7 +526,7 @@ export default class SwagMigrationErrorResolutionService {
      * the first two columns are fixed (status and selected field), followed by other scalar fields ordered by priority.
      */
     generateTableColumns(entityName: string | null | undefined, selectedFieldName: string): TableColumn[] {
-        const columns: TableColumn[] = [
+        const fixedColumns: TableColumn[] = [
             {
                 label: Shopware.Snippet.tc('swag-migration.index.error-resolution.modals.error.table.columns.status'),
                 property: 'status',
@@ -545,17 +546,18 @@ export default class SwagMigrationErrorResolutionService {
         const entityFields = this.extractEntityFields(entityName);
         const allFields = this.getSortedScalarFields(entityFields, [selectedFieldName]);
 
-        allFields.forEach((fieldName, index) => {
-            columns.push({
-                label: fieldName,
-                property: fieldName,
-                sortable: true,
-                position: 3 + index,
-                visible: index < 3,
-            });
-        });
+        const additionalColumns = allFields.map((fieldName, index) => ({
+            label: fieldName,
+            property: fieldName,
+            sortable: true,
+            position: 3 + index,
+            visible: index < 3,
+        }));
 
-        return columns;
+        return [
+            ...fixedColumns,
+            ...additionalColumns,
+        ];
     }
 
     /**
@@ -573,8 +575,8 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * formats association field values to display only IDs in a comma-separated list.
-     * for "to many" relations, extracts IDs from array of objects.
+     * formats association field values to display only ids in a comma-separated list.
+     * for "to many" relations, extracts ids from array of objects.
      */
     formatAssociationFieldValue(
         entityName: string | null | undefined,
@@ -623,33 +625,76 @@ export default class SwagMigrationErrorResolutionService {
 
     /**
      * maps entity field properties from converted data and formats association fields.
-     * extracts only the specified properties and formats "to many" association fields to display IDs.
+     * extracts only the specified properties and formats "to many" association fields to display ids.
      */
     mapEntityFieldProperties(
         entityName: string | null | undefined,
         fieldProperties: string[],
         convertedData: Record<string, unknown>,
     ): Record<string, unknown> {
-        const mappedProperties: Record<string, unknown> = {};
-
-        fieldProperties.forEach((property) => {
+        return fieldProperties.reduce<Record<string, unknown>>((acc, property) => {
             if (property in convertedData) {
                 const value = convertedData[property];
 
-                // format association fields to display only IDs
+                // format association fields to display only ids
                 // also format values that look like associations (arrays or objects with id) even if not detected
-                if (
+                const shouldFormat =
                     this.isToManyAssociationField(entityName, property) ||
                     Array.isArray(value) ||
-                    (typeof value === 'object' && value && 'id' in value)
-                ) {
-                    mappedProperties[property] = this.formatAssociationFieldValue(entityName, property, value);
-                } else {
-                    mappedProperties[property] = value;
-                }
-            }
-        });
+                    (typeof value === 'object' && value && 'id' in value);
 
-        return mappedProperties;
+                return {
+                    ...acc,
+                    [property]: shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value,
+                };
+            }
+
+            return acc;
+        }, {});
+    }
+
+    /**
+     * validates if a field value is valid for submission based on field type.
+     * returns error message snippet suffix if invalid, null if valid.
+     */
+    validateFieldValue(
+        entityName: string | null | undefined,
+        fieldName: string | null | undefined,
+        fieldValue: unknown,
+    ): string | null {
+        if (!fieldValue) {
+            return 'fieldValueNotSet';
+        }
+
+        const isToMany = this.isToManyAssociationField(entityName, fieldName);
+
+        if (isToMany) {
+            const isArray = Array.isArray(fieldValue);
+            const isEntityCollection = this.isEntityCollection(fieldValue);
+
+            if (!isArray && !isEntityCollection) {
+                return 'invalidFieldValueFormat';
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * checks if a value is an EntityCollection.
+     */
+    isEntityCollection(value: unknown): boolean {
+        return !!(value && typeof value === 'object' && 'getIds' in value);
+    }
+
+    /**
+     * normalizes field value for saving, extracting ids from EntityCollections.
+     */
+    normalizeFieldValueForSave(fieldValue: unknown): unknown {
+        if (this.isEntityCollection(fieldValue)) {
+            return (fieldValue as { getIds: () => string[] }).getIds();
+        }
+
+        return fieldValue;
     }
 }
