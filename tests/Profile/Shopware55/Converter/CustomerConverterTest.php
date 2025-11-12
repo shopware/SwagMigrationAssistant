@@ -250,7 +250,7 @@ class CustomerConverterTest extends TestCase
     }
 
     /**
-     *  @return array<string, array<int, string|null>>
+     * @return array<string, array<int, string|null>>
      */
     public static function requiredAddressProperties(): array
     {
