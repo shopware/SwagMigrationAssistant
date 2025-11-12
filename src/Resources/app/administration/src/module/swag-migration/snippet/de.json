@@ -610,7 +610,8 @@
           "invalidFieldValueFormat": "Ungültiges Feldwertformat.",
           "fieldValueNotSet": "Feldwert nicht festgelegt.",
           "noLogsSelected": "Bitte wählen Sie mindestens einen Log-Eintrag zur Behebung aus.",
-          "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden."
+          "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
+          "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen."
         },
         "step": {
           "continue-modal": {
@@ -631,7 +632,30 @@
           },
           "card": {
             "title": "Fehler",
-            "filter": "Filter",
+            "filter": {
+              "title": "Filter",
+              "reset": "Filter zurücksetzen",
+              "code": {
+                "label": "Fehlercode",
+                "placeholder": "Fehlercode auswählen"
+              },
+              "status": {
+                "label": "Fehlerstatus",
+                "placeholder": "Fehlerstatus auswählen",
+                "options": {
+                  "resolved": "Behoben",
+                  "unresolved": "Nicht behoben"
+                }
+              },
+              "entity": {
+                "label": "Entität",
+                "placeholder": "Entität auswählen"
+              },
+              "field": {
+                "label": "Feld",
+                "placeholder": "Feld auswählen"
+              }
+            },
             "tabs": {
               "errors": "Fehler ({count})",
               "warnings": "Warnungen ({count})",

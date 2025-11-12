@@ -1,0 +1,11 @@
+.swag-migration-error-resolution-log-filter__popover {
+    &-content-form {
+        .mt-field {
+            margin-bottom: var(--scale-size-20);
+        }
+    }
+
+    &-content-reset {
+        margin-bottom: var(--scale-size-12);
+    }
+}

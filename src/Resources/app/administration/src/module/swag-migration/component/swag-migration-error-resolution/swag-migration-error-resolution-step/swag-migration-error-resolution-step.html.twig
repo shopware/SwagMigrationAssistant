@@ -122,20 +122,10 @@
         :title="$tc('swag-migration.index.error-resolution.step.card.title')"
     >
         <template #headerRight>
-            <mt-button
-                class="swag-migration-error-resolution-step__card-header-filter"
-                variant="secondary"
+            <swag-migration-error-resolution-log-filter
                 :disabled="loading || tableTotal === 0"
-            >
-                <template #iconFront>
-                    <mt-icon
-                        size="12"
-                        name="solid-filter"
-                    />
-                </template>
-
-                <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter') }}</span>
-            </mt-button>
+                :table-data="tableData"
+            />
         </template>
 
         <template #tabs>

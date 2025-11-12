@@ -461,7 +461,8 @@
           "invalidFieldValueFormat": "Invalid field value format.",
           "fieldValueNotSet": "Field value not set.",
           "noLogsSelected": "Please select at least one log entry to resolve.",
-          "noEntityIdsFound": "No valid entity IDs found in the selected log entries."
+          "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
+          "fetchFilterDataFailed": "Failed fetching filter data."
         },
         "step": {
           "continue-modal": {
@@ -482,7 +483,30 @@
           },
           "card": {
             "title": "Errors",
-            "filter": "Filter",
+            "filter": {
+              "title": "Filter",
+              "reset": "Reset filters",
+              "code": {
+                "label": "Error code",
+                "placeholder": "Select an error code"
+              },
+              "status": {
+                "label": "Error status",
+                "placeholder": "Select an error status",
+                "options": {
+                  "resolved": "Resolved",
+                  "unresolved": "Unresolved"
+                }
+              },
+              "entity": {
+                "label": "Entity",
+                "placeholder": "Select an entity"
+              },
+              "field": {
+                "label": "Field",
+                "placeholder": "Select a field"
+              }
+            },
             "tabs": {
               "errors": "Errors ({count})",
               "warnings": "Warnings ({count})",
