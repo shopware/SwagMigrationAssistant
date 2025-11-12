@@ -50,13 +50,14 @@ class MigrationFixApplier
      */
     private function getFixes(array $ids, string $connectionId, string $runId): array
     {
+        // To ensure, only select fixes for the current run, join swag_migration_logging table and filter by run_id
         $sql = <<<'SQL'
 SELECT fix.entity_id AS entityId, fix.id, fix.value, fix.path
 FROM swag_migration_fix AS fix
-INNER JOIN swag_migration_logging  AS log ON log.entity_id = fix.entity_id
+INNER JOIN swag_migration_logging AS log ON log.entity_id = fix.entity_id
 WHERE fix.entity_id IN (:ids)
 AND fix.connection_id = :connectionId
-AND log.run_id = :runId;
+AND log.run_id = :runId
 AND log.user_fixable = 1;
 SQL;
 

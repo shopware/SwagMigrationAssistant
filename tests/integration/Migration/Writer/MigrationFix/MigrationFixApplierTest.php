@@ -87,16 +87,14 @@ class MigrationFixApplierTest extends TestCase
 
     private function createFixAndLogging(string $connectionId, string $entityId, mixed $value, string $path, SwagMigrationRunEntity $swagMigrationRunEntity): void
     {
+        $context = Context::createDefaultContext();
         $migrationFix = new SwagMigrationFixEntity();
         $migrationFix->setId(Uuid::randomHex());
         $migrationFix->setConnectionId($connectionId);
         $migrationFix->setEntityId($entityId);
         $migrationFix->setPath($path);
         $migrationFix->setValue($value);
-
-        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($migrationFix): void {
-            $this->getContainer()->get('swag_migration_fix.repository')->create([\json_decode(\json_encode($migrationFix, \JSON_THROW_ON_ERROR), true)], $context);
-        });
+        $this->getContainer()->get('swag_migration_fix.repository')->create([\json_decode(\json_encode($migrationFix, \JSON_THROW_ON_ERROR), true)], $context);
 
         $loggingEntity = new SwagMigrationLoggingEntity();
         $loggingEntity->setId(Uuid::randomHex());
@@ -108,7 +106,7 @@ class MigrationFixApplierTest extends TestCase
         $loggingEntity->setProfileName('profileName');
         $loggingEntity->setGatewayName('gatewayName');
         $loggingEntity->setUserFixable(true);
-        Context::createDefaultContext()->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($loggingEntity): void {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($loggingEntity): void {
             $this->getContainer()->get('swag_migration_logging.repository')->create([\json_decode(\json_encode($loggingEntity, \JSON_THROW_ON_ERROR), true)], $context);
         });
     }
