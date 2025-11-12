@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
+use SwagMigrationAssistant\Migration\History\LogGroupingServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,8 +26,10 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
-    public function __construct(private readonly HistoryServiceInterface $historyService)
-    {
+    public function __construct(
+        private readonly HistoryServiceInterface $historyService,
+        private readonly LogGroupingServiceInterface $logGroupingService,
+    ) {
     }
 
     #[Route(path: '/api/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['swag_migration.viewer']])]
@@ -119,6 +122,14 @@ class HistoryController extends AbstractController
         $pageParam = $request->query->get('page');
         $limitParam = $request->query->get('limit');
 
+        $sortBy = $request->query->get('sortBy', 'count');
+        $sortDirection = $request->query->get('sortDirection', 'DESC');
+
+        $filterCode = $request->query->get('filterCode');
+        $filterStatus = $request->query->get('filterStatus');
+        $filterEntity = $request->query->get('filterEntity');
+        $filterField = $request->query->get('filterField');
+
         if ($runId === '' || $level === '') {
             throw RoutingException::missingRequestParameter($runId === '' ? 'runId' : 'level');
         }
@@ -131,11 +142,25 @@ class HistoryController extends AbstractController
             throw RoutingException::invalidRequestParameter('limit');
         }
 
-        $result = $this->historyService->getGroupedLogsByCodeAndEntity(
+        if (!\is_string($sortBy) || $sortBy === '') {
+            $sortBy = 'count';
+        }
+
+        if (!\is_string($sortDirection) || !\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'], true)) {
+            $sortDirection = 'DESC';
+        }
+
+        $result = $this->logGroupingService->getGroupedLogsByCodeAndEntity(
             $runId,
             $level,
             (int) $pageParam,
             (int) $limitParam,
+            $sortBy,
+            \strtoupper($sortDirection),
+            \is_string($filterCode) ? $filterCode : null,
+            \is_string($filterStatus) ? $filterStatus : null,
+            \is_string($filterEntity) ? $filterEntity : null,
+            \is_string($filterField) ? $filterField : null,
             $context
         );
 
@@ -166,11 +191,10 @@ class HistoryController extends AbstractController
             throw RoutingException::missingRequestParameter('fieldName');
         }
 
-        $logIds = $this->historyService->getAllLogIdsByCodeAndEntity(
+        $logIds = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
             $code,
             $entityName,
-            $fieldName,
-            $context
+            $fieldName
         );
 
         return new JsonResponse([

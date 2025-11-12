@@ -4,6 +4,7 @@ import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../../core/servi
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 import type { MigrationStore } from '../../../store/migration.store';
 import type { TRepository } from '../../../../../type/types';
+import type { LogFilterValue } from '../swag-migration-error-resolution-log-filter';
 
 const { Criteria } = Shopware.Data;
 
@@ -53,6 +54,7 @@ export interface SwagMigrationErrorResolutionStepData {
     selectedLog: ErrorResolutionTableData | null;
     totalUnfixableErrors: number;
     migrationStore: MigrationStore;
+    logFilter: LogFilterValue;
     levelCounts: {
         error: number;
         warning: number;
@@ -80,10 +82,10 @@ export default Shopware.Component.wrapComponentConfig({
         return {
             tabItem: MIGRATION_LOG_LEVEL.ERROR,
             tablePage: 1,
-            tableLimit: 10,
+            tableLimit: 25,
             tableTotal: 0,
-            tableSortBy: 'createdAt',
-            tableSortDirection: 'ASC',
+            tableSortBy: 'count',
+            tableSortDirection: 'DESC',
             tableData: [],
             loading: false,
             downloadLoading: false,
@@ -98,6 +100,12 @@ export default Shopware.Component.wrapComponentConfig({
                 error: 0,
                 warning: 0,
                 info: 0,
+            },
+            logFilter: {
+                code: null,
+                status: null,
+                entity: null,
+                field: null,
             },
         };
     },
@@ -246,6 +254,9 @@ export default Shopware.Component.wrapComponentConfig({
                     this.tabItem,
                     Number(this.tablePage),
                     Number(this.tableLimit),
+                    this.tableSortBy,
+                    this.tableSortDirection,
+                    this.logFilter,
                 );
 
                 this.tableTotal = result.total;
@@ -376,6 +387,13 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onFixesCreated() {
+            await this.fetchLogByLevel(null);
+        },
+
+        async onLogFilterChange(filter: LogFilterValue) {
+            this.logFilter = filter;
+            this.tablePage = 1;
+
             await this.fetchLogByLevel(null);
         },
     },

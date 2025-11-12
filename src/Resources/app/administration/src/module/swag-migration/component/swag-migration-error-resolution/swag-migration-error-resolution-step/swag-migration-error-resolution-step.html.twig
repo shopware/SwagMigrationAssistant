@@ -123,8 +123,9 @@
     >
         <template #headerRight>
             <swag-migration-error-resolution-log-filter
-                :disabled="loading || tableTotal === 0"
+                :disabled="loading"
                 :table-data="tableData"
+                @log-filter-change="onLogFilterChange"
             />
         </template>
 

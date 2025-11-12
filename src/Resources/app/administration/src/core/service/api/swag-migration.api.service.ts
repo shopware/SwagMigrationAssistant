@@ -446,6 +446,14 @@ export default class MigrationApiService extends ApiService {
         level: string,
         page: number,
         limit: number,
+        sortBy: string,
+        sortDirection: 'ASC' | 'DESC',
+        filter: {
+            code: string | null;
+            status: 'resolved' | 'unresolved' | null;
+            entity: string | null;
+            field: string | null;
+        },
     ): Promise<{
         total: number;
         items: Array<{ code: string; entityName: string | null; fieldName: string | null; count: number }>;
@@ -454,18 +462,38 @@ export default class MigrationApiService extends ApiService {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
+        const params: Record<string, string | number> = {
+            runId,
+            level,
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+        };
+
+        if (filter.code) {
+            params.filterCode = filter.code;
+        }
+
+        if (filter.status) {
+            params.filterStatus = filter.status;
+        }
+
+        if (filter.entity) {
+            params.filterEntity = filter.entity;
+        }
+
+        if (filter.field) {
+            params.filterField = filter.field;
+        }
+
         return (
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
                 .get(`${this.getApiBasePath()}/get-log-groups`, {
                     ...this.basicConfig,
-                    params: {
-                        runId,
-                        level,
-                        page,
-                        limit,
-                    },
+                    params,
                     headers,
                 })
                 .then((response: AxiosResponse) => {
