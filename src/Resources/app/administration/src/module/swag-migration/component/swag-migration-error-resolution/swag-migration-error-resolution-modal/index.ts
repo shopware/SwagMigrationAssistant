@@ -264,11 +264,7 @@ export default Shopware.Component.wrapComponentConfig({
             entity.entityName = this.selectedLog.entityName;
             entity.entityId = entityId;
 
-            const normalizedValue = this.swagMigrationErrorResolutionService.normalizeFieldValueForSave(this.fieldValue);
-
-            entity.value = {
-                [this.selectedLog.fieldName]: normalizedValue,
-            };
+            entity.value = this.swagMigrationErrorResolutionService.normalizeFieldValueForSave(this.fieldValue);
 
             return entity;
         },
@@ -310,7 +306,7 @@ export default Shopware.Component.wrapComponentConfig({
                 .filter((id: string | null): id is string => id !== null);
         },
 
-        async buildFixesMap(entityIds: string[]): Promise<Map<string, Record<string, unknown>>> {
+        async buildFixesMap(entityIds: string[]): Promise<Map<string, unknown>> {
             const existingFixes = await this.fetchExistingFixesForEntityIds(entityIds);
 
             return new Map(
@@ -323,7 +319,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         mapLogsToTableData(
             logs: MigrationLog[],
-            fixesMap: Map<string, Record<string, unknown>>,
+            fixesMap: Map<string, unknown>,
             entityFieldProperties: string[],
         ): ResolutionModalRow[] {
             return logs.map((log: MigrationLog) => {
@@ -345,16 +341,16 @@ export default Shopware.Component.wrapComponentConfig({
                     ),
                 };
 
-                if (hasFix && fixValue) {
-                    row[this.selectedLog.fieldName] = fixValue[this.selectedLog.fieldName];
+                if (hasFix && fixValue !== undefined) {
+                    row[this.selectedLog.fieldName] = fixValue;
                 }
 
                 return row;
             });
         },
 
-        isLogResolved(fixValue: Record<string, unknown> | undefined): boolean {
-            return !!(fixValue && Object.prototype.hasOwnProperty.call(fixValue, this.selectedLog.fieldName));
+        isLogResolved(fixValue: unknown | undefined): boolean {
+            return fixValue !== undefined;
         },
 
         filterUnresolvedLogIds(logIds: string[]): string[] {
@@ -365,9 +361,7 @@ export default Shopware.Component.wrapComponentConfig({
             });
         },
 
-        async fetchExistingFixesForEntityIds(
-            entityIds: string[],
-        ): Promise<Array<{ entityId: string; value: Record<string, unknown> }>> {
+        async fetchExistingFixesForEntityIds(entityIds: string[]): Promise<Array<{ entityId: string; value: unknown }>> {
             if (!this.selectedLog || entityIds.length === 0) {
                 return [];
             }
@@ -389,7 +383,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                 return result.map((fix) => ({
                     entityId: fix.entityId,
-                    value: fix.value || {},
+                    value: fix.value,
                 }));
             } catch {
                 return [];

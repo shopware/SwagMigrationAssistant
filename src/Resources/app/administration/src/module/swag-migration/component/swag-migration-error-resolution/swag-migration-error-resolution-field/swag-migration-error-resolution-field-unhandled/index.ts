@@ -30,7 +30,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationErrorResolutionFieldUnhandledData {
         return {
-            fieldValue: this.formatInitialJsonValue(),
+            fieldValue: '""',
         };
     },
 
@@ -48,10 +48,6 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        formatInitialJsonValue(): string {
-            return `{\n  "${this.fieldName}": "",\n}`;
-        },
-
         cleanJsonString(jsonString: string): string {
             return jsonString.replace(/,(\s*[}\]])/g, '$1').trim();
         },
@@ -63,13 +59,8 @@ export default Shopware.Component.wrapComponentConfig({
 
             try {
                 const cleanedJson = this.cleanJsonString(this.fieldValue);
-                const parsed = JSON.parse(cleanedJson);
 
-                if (typeof parsed === 'object' && parsed !== null && this.fieldName in parsed) {
-                    return parsed[this.fieldName];
-                }
-
-                return parsed;
+                return JSON.parse(cleanedJson);
             } catch {
                 return this.fieldValue;
             }

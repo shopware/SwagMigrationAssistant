@@ -675,6 +675,18 @@ export default class SwagMigrationErrorResolutionService {
             if (!isArray && !isEntityCollection) {
                 return 'invalidFieldValueFormat';
             }
+
+            if (isArray && fieldValue.length === 0) {
+                return 'fieldValueNotSet';
+            }
+
+            if (isEntityCollection) {
+                const ids = new Array(...(fieldValue as Iterable<unknown>));
+
+                if (ids.length === 0) {
+                    return 'fieldValueNotSet';
+                }
+            }
         }
 
         return null;
@@ -688,11 +700,12 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * normalizes field value for saving, extracting ids from EntityCollections.
+     * normalizes field value for saving, converting EntityCollections to plain arrays.
      */
     normalizeFieldValueForSave(fieldValue: unknown): unknown {
         if (this.isEntityCollection(fieldValue)) {
-            return (fieldValue as { getIds: () => string[] }).getIds();
+            // because EntityCollection has a modified map() function that doesn't work like standard arrays
+            return new Array(...(fieldValue as Iterable<unknown>));
         }
 
         return fieldValue;
