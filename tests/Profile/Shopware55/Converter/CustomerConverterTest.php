@@ -156,20 +156,20 @@ class CustomerConverterTest extends TestCase
     }
 
     /**
-     * @return list<array{0: string, 1: string|null}>
+     * @return array<string, array<int, string|null>>
      */
     public static function requiredProperties(): array
     {
         return [
-            ['email', null],
-            ['email', ''],
-            ['firstname', null],
-            ['firstname', ''],
-            ['lastname', null],
-            ['lastname', ''],
-            ['defaultpayment', null],
-            ['customerGroupId', ''],
-            ['customerGroupId', null],
+            'email is null' => ['email', null],
+            'email is empty' => ['email', ''],
+            'firstname is null' => ['firstname', null],
+            'firstname is empty' => ['firstname', ''],
+            'lastname is null' => ['lastname', null],
+            'lastname is empty' => ['lastname', ''],
+            'defaultpayment is null' => ['defaultpayment', null],
+            'customerGroupId is empty' => ['customerGroupId', ''],
+            'customerGroupId is null' => ['customerGroupId', null],
         ];
     }
 
@@ -250,21 +250,21 @@ class CustomerConverterTest extends TestCase
     }
 
     /**
-     * @return list<array{0: string, 1: string|null}>
+     *  @return array<string, array<int, string|null>>
      */
     public static function requiredAddressProperties(): array
     {
         return [
-            ['firstname', null],
-            ['firstname', ''],
-            ['lastname', null],
-            ['lastname', ''],
-            ['zipcode', null],
-            ['zipcode', ''],
-            ['city', null],
-            ['city', ''],
-            ['street', null],
-            ['street', ''],
+            'firstname is null' => ['firstname', null],
+            'firstname is empty' => ['firstname', ''],
+            'lastname is null' => ['lastname', null],
+            'lastname is empty' => ['lastname', ''],
+            'zipcode is null' => ['zipcode', null],
+            'zipcode is empty' => ['zipcode', ''],
+            'city is null' => ['city', null],
+            'city is empty' => ['city', ''],
+            'street is null' => ['street', null],
+            'street is empty' => ['street', ''],
         ];
     }
 
