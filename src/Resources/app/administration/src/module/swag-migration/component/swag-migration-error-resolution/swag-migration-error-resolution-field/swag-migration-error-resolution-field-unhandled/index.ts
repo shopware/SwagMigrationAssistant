@@ -38,7 +38,9 @@ export default Shopware.Component.wrapComponentConfig({
         fieldValue: {
             handler() {
                 if (this.updateFieldValue) {
-                    this.updateFieldValue(this.fieldValue);
+                    const parsedValue = this.parseJsonValue();
+
+                    this.updateFieldValue(parsedValue);
                 }
             },
             immediate: true,
@@ -48,6 +50,30 @@ export default Shopware.Component.wrapComponentConfig({
     methods: {
         formatInitialValue(): string {
             return `{\n  "${this.fieldName}": "",\n}`;
+        },
+
+        cleanJsonString(jsonString: string): string {
+            // remove trailing commas before closing braces and brackets
+            return jsonString.replace(/,(\s*[}\]])/g, '$1').trim();
+        },
+
+        parseJsonValue(): string | number | boolean | null | object | unknown[] {
+            if (!this.fieldValue || typeof this.fieldValue !== 'string') {
+                return this.fieldValue;
+            }
+
+            try {
+                const cleanedJson = this.cleanJsonString(this.fieldValue);
+                const parsed = JSON.parse(cleanedJson);
+
+                if (typeof parsed === 'object' && parsed !== null && this.fieldName in parsed) {
+                    return parsed[this.fieldName];
+                }
+
+                return parsed;
+            } catch {
+                return this.fieldValue;
+            }
         },
     },
 });

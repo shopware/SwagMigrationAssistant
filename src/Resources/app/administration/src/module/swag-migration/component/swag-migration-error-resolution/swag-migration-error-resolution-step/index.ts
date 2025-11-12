@@ -244,7 +244,6 @@ export default Shopware.Component.wrapComponentConfig({
             this.loading = true;
 
             try {
-                // TODO: add sorting
                 const result = await this.migrationApiService.getLogGroups(
                     this.runId,
                     this.tabItem,
