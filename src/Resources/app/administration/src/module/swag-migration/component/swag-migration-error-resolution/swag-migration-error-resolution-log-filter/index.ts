@@ -37,12 +37,13 @@ export type LogFilterValue = {
  */
 export interface SwagMigrationErrorResolutionLogFilterData {
     open: boolean;
+    loading: boolean;
     value: LogFilterValue;
     migrationStore: MigrationStore;
     searchResults: {
-        code: Option[] | null;
-        entity: Option[] | null;
-        field: Option[] | null;
+        code: Option[];
+        entity: Option[];
+        field: Option[];
     };
 }
 
@@ -73,12 +74,13 @@ export default Shopware.Component.wrapComponentConfig({
     data(): SwagMigrationErrorResolutionLogFilterData {
         return {
             open: false,
+            loading: false,
             value: this.getInitialFilterValue(),
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             searchResults: {
-                code: null,
-                entity: null,
-                field: null,
+                code: [],
+                entity: [],
+                field: [],
             },
         };
     },
@@ -102,15 +104,15 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         codeOptions(): Option[] {
-            return this.searchResults.code ?? this.buildOptionsFromProperty('code');
+            return this.searchResults.code;
         },
 
         entityOptions(): Option[] {
-            return this.searchResults.entity ?? this.buildOptionsFromProperty('entityName');
+            return this.searchResults.entity;
         },
 
         fieldOptions(): Option[] {
-            return this.searchResults.field ?? this.buildOptionsFromProperty('fieldName');
+            return this.searchResults.field;
         },
     },
 
@@ -122,18 +124,6 @@ export default Shopware.Component.wrapComponentConfig({
                 entity: null,
                 field: null,
             };
-        },
-
-        extractUniqueValuesFromTableData(property: keyof ErrorResolutionTableData): string[] {
-            const values: string[] = this.tableData
-                .map((item) => item[property])
-                .filter((value): value is string => Boolean(value) && typeof value === 'string');
-
-            return [...new Set(values)];
-        },
-
-        buildOptionsFromProperty(property: keyof ErrorResolutionTableData): Option[] {
-            return this.extractUniqueValuesFromTableData(property).map((value) => ({ value, label: value }));
         },
 
         onSearch({ searchTerm }: { searchTerm: string | null }, type: keyof LogFilterValue): Option[] {
@@ -154,13 +144,7 @@ export default Shopware.Component.wrapComponentConfig({
             type: keyof LogFilterValue,
         ) {
             if (!searchTerm || searchTerm.length < 2) {
-                // this prevents the selected value from disappearing after selection
-                if (!this.value[type]) {
-                    this.searchResults = {
-                        ...this.searchResults,
-                        [type]: null,
-                    };
-                }
+                await this.loadInitialOptions(type);
 
                 return;
             }
@@ -175,26 +159,28 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const criteria = new Criteria(1, 5)
-                .setTerm(searchTerm)
-                .addFilter(Criteria.equals('userFixable', 1))
-                .addIncludes({
-                    swag_migration_logging: [
-                        'code',
-                        'entityName',
-                        'fieldName',
-                    ],
-                });
+            const aggregationName = `${type}Aggregation`;
+
+            const criteria = new Criteria(1, 1)
+                .addAggregation(Criteria.terms(aggregationName, field, 25, null, null))
+                .addFilter(Criteria.equals('userFixable', 1));
+
+            if (searchTerm) {
+                criteria.setTerm(searchTerm);
+            }
 
             const result = await this.migrationLoggingRepository.search(criteria);
+            const aggregation = result.aggregations?.[aggregationName];
 
-            const uniqueValues = [
-                ...new Set(
-                    result
-                        .map((item) => item[field])
-                        .filter((value): value is string => Boolean(value) && typeof value === 'string'),
-                ),
-            ];
+            if (!aggregation || !aggregation.buckets) {
+                this.searchResults = {
+                    ...this.searchResults,
+                    [type]: [],
+                };
+                return;
+            }
+
+            const uniqueValues = aggregation.buckets.map((bucket) => bucket.key);
 
             this.searchResults = {
                 ...this.searchResults,
@@ -202,8 +188,53 @@ export default Shopware.Component.wrapComponentConfig({
             };
         },
 
-        onTogglePopover() {
-            this.open = !this.open;
+        async loadInitialOptions(type: keyof LogFilterValue) {
+            const field = fieldMap[type];
+
+            if (!field) {
+                return;
+            }
+
+            const aggregationName = `${type}Aggregation`;
+
+            const criteria = new Criteria(1, 1)
+                .addAggregation(Criteria.terms(`${type}Aggregation`, field, 250, null, null))
+                .addFilter(Criteria.equals('userFixable', 1));
+
+            const result = await this.migrationLoggingRepository.search(criteria);
+            const aggregation = result.aggregations?.[aggregationName];
+
+            if (aggregation && aggregation.buckets) {
+                this.searchResults = {
+                    ...this.searchResults,
+                    [type]: aggregation.buckets.map((bucket) => ({
+                        value: bucket.key,
+                        label: bucket.key,
+                    })),
+                };
+            }
+        },
+
+        async onTogglePopover() {
+            if (this.open) {
+                this.open = false;
+
+                return;
+            }
+
+            this.loading = true;
+
+            try {
+                await Promise.all([
+                    this.loadInitialOptions('code'),
+                    this.loadInitialOptions('entity'),
+                    this.loadInitialOptions('field'),
+                ]);
+
+                this.open = true;
+            } finally {
+                this.loading = false;
+            }
         },
 
         onValueChange(newValue: Partial<LogFilterValue>) {
@@ -212,15 +243,12 @@ export default Shopware.Component.wrapComponentConfig({
                 ...newValue,
             };
 
-            // reset search results for fields that were cleared
+            // reload initial options for fields that were cleared
             Object.keys(newValue).forEach((key) => {
                 const filterKey = key as keyof LogFilterValue;
 
                 if (newValue[filterKey] === null && filterKey !== 'status') {
-                    this.searchResults = {
-                        ...this.searchResults,
-                        [filterKey]: null,
-                    };
+                    void this.loadInitialOptions(filterKey);
                 }
             });
 
@@ -229,11 +257,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         onReset() {
             this.onValueChange(this.getInitialFilterValue());
-            this.searchResults = {
-                code: null,
-                entity: null,
-                field: null,
-            };
         },
     },
 });

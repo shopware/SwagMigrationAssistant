@@ -110,7 +110,7 @@ class HistoryController extends AbstractController
     }
 
     #[Route(
-        path: '/api/migration/get-log-groups',
+        path: '/api/_action/migration/get-log-groups',
         name: 'api.admin.migration.get-log-groups',
         methods: ['GET'],
         defaults: ['_acl' => ['swag_migration.viewer']]
@@ -130,19 +130,19 @@ class HistoryController extends AbstractController
         $filterEntity = $request->query->get('filterEntity');
         $filterField = $request->query->get('filterField');
 
-        if ($runId === '' || $level === '') {
+        if (empty($runId) || empty($level)) {
             throw RoutingException::missingRequestParameter($runId === '' ? 'runId' : 'level');
         }
 
-        if ($pageParam === '' || !\is_numeric($pageParam)) {
+        if (!\is_numeric($pageParam)) {
             throw RoutingException::invalidRequestParameter('page');
         }
 
-        if ($limitParam === '' || !\is_numeric($limitParam)) {
+        if (!\is_numeric($limitParam)) {
             throw RoutingException::invalidRequestParameter('limit');
         }
 
-        if (!\is_string($sortBy) || $sortBy === '') {
+        if (!\is_string($sortBy) || empty($sortBy)) {
             $sortBy = 'count';
         }
 
@@ -173,21 +173,21 @@ class HistoryController extends AbstractController
         methods: ['POST'],
         defaults: ['_acl' => ['swag_migration.viewer']]
     )]
-    public function getAllLogIds(Request $request, Context $context): JsonResponse
+    public function getAllLogIds(Request $request): JsonResponse
     {
         $code = $request->request->get('code');
         $entityName = $request->request->get('entityName');
         $fieldName = $request->request->get('fieldName');
 
-        if (!\is_string($code) || $code === '') {
+        if (!\is_string($code) || empty($code)) {
             throw RoutingException::missingRequestParameter('code');
         }
 
-        if (!\is_string($entityName) || $entityName === '') {
+        if (!\is_string($entityName) || empty($entityName)) {
             throw RoutingException::missingRequestParameter('entityName');
         }
 
-        if (!\is_string($fieldName) || $fieldName === '') {
+        if (!\is_string($fieldName) || empty($fieldName)) {
             throw RoutingException::missingRequestParameter('fieldName');
         }
 

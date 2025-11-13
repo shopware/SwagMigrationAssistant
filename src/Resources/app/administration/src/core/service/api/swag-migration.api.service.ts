@@ -491,7 +491,7 @@ export default class MigrationApiService extends ApiService {
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
-                .get(`${this.getApiBasePath()}/get-log-groups`, {
+                .get(`_action/${this.getApiBasePath()}/get-log-groups`, {
                     ...this.basicConfig,
                     params,
                     headers,
