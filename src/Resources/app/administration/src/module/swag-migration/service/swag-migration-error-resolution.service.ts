@@ -91,13 +91,6 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
 
 /**
  * @private
- */
-export const FIELD_ASSOCIATION_MAPPING: Record<string, string> = {
-    productMediaVersionId: 'media',
-} as const;
-
-/**
- * @private
  * List of fields prioritized for sorting purposes, to determined most meaningful fields first.
  */
 export const PRIORITY_FIELDS = [
@@ -180,7 +173,7 @@ export const MIGRATION_ERROR_RESOLUTION_SERVICE = 'swagMigrationErrorResolutionS
 export default class SwagMigrationErrorResolutionService {
     /**
      * gets the admin link for a given entity name.
-     * tries to find the route generatively by looking up modules registered for the entity.
+     * tries to find the route by looking up modules registered for the entity.
      */
     getEntityLink(entityName: string | null | undefined): { name: string } | null {
         if (!entityName) {
@@ -338,16 +331,6 @@ export default class SwagMigrationErrorResolutionService {
             }
         }
 
-        // fallback: use predefined mapping for special cases (naming pattern not followed)
-        if (!associationField && FIELD_ASSOCIATION_MAPPING[fieldName]) {
-            const mappedName = FIELD_ASSOCIATION_MAPPING[fieldName];
-            const mappedField = schema.getField(mappedName);
-
-            if (mappedField?.type === DATA_TYPES.ASSOCIATION) {
-                associationField = mappedField;
-            }
-        }
-
         return associationField;
     }
 
@@ -427,15 +410,6 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * checks if a value is a valid-handled relation type.
-     */
-    private isHandledRelationType(
-        value: unknown,
-    ): value is (typeof HANDLED_RELATION_TYPES)[keyof typeof HANDLED_RELATION_TYPES] {
-        return (Object.values(HANDLED_RELATION_TYPES) as unknown[]).includes(value);
-    }
-
-    /**
      * determines the field type for rendering (either component type or relation type).
      */
     getFieldType(entityName: string | null | undefined, fieldName: string | null | undefined): string | null {
@@ -445,11 +419,8 @@ export default class SwagMigrationErrorResolutionService {
             return null;
         }
 
-        const isAssociation = entityField.type === DATA_TYPES.ASSOCIATION;
-        const hasValidRelation = entityField.relation && this.isHandledRelationType(entityField.relation);
-
         // return relation type for association fields
-        if (isAssociation && hasValidRelation) {
+        if (entityField.type === DATA_TYPES.ASSOCIATION && entityField.relation) {
             return entityField.relation as string;
         }
 
@@ -457,17 +428,9 @@ export default class SwagMigrationErrorResolutionService {
         if (entityField.type === DATA_TYPES.UUID) {
             const correspondingAssociation = this.findCorrespondingAssociationField(entityName, fieldName);
 
-            if (correspondingAssociation) {
-                const associationRelation = correspondingAssociation.relation;
-
-                if (associationRelation && this.isHandledRelationType(associationRelation)) {
-                    return associationRelation as string;
-                }
+            if (correspondingAssociation?.relation) {
+                return correspondingAssociation.relation as string;
             }
-        }
-
-        if (this.isHandledRelationType(entityField.type)) {
-            return entityField.type;
         }
 
         return FIELD_TYPE_COMPONENT_MAPPING[entityField.type as keyof typeof FIELD_TYPE_COMPONENT_MAPPING] ?? null;
@@ -576,51 +539,33 @@ export default class SwagMigrationErrorResolutionService {
 
     /**
      * formats association field values to display only ids in a comma-separated list.
-     * for "to many" relations, extracts ids from array of objects.
      */
     formatAssociationFieldValue(
         entityName: string | null | undefined,
         fieldName: string | null | undefined,
         value: unknown,
     ): string {
-        if (!value) {
-            return '';
+        if (!value || typeof value !== 'object') {
+            return value ? String(value) : '';
         }
 
-        // handle arrays (for "to many" relations)
         if (Array.isArray(value)) {
-            const ids = value
-                .filter((item) => item)
-                .map((item) => {
-                    if (typeof item === 'object' && 'id' in item) {
-                        const id = (item as { id: unknown }).id;
-
-                        return id ? String(id) : null;
-                    }
-
-                    if (typeof item === 'string') {
-                        return item;
-                    }
-
-                    return null;
-                })
-                .filter((id): id is string => id !== null);
-
-            return ids.join(', ');
+            return value
+                .filter(Boolean)
+                .map((item) => (typeof item === 'object' && 'id' in item ? String(item.id) : String(item)))
+                .join(', ');
         }
 
-        // handle objects (for "to one" relations or objects with id property)
-        if (typeof value === 'object') {
-            if ('id' in value) {
-                const id = (value as { id: unknown }).id;
-
-                return id ? String(id) : '';
-            }
-
-            return '';
+        if ('id' in value && value.id) {
+            return String(value.id);
         }
 
-        return String(value);
+        // handle to-many relations where ids are object keys
+        if (this.isToManyAssociationField(entityName, fieldName)) {
+            return Object.keys(value).join(', ');
+        }
+
+        return '';
     }
 
     /**
@@ -631,26 +576,44 @@ export default class SwagMigrationErrorResolutionService {
         entityName: string | null | undefined,
         fieldProperties: string[],
         convertedData: Record<string, unknown>,
+        fieldName?: string | null | undefined,
     ): Record<string, unknown> {
-        return fieldProperties.reduce<Record<string, unknown>>((acc, property) => {
-            if (property in convertedData) {
-                const value = convertedData[property];
+        const isToManyRelation = fieldName && this.isToManyAssociationField(entityName, fieldName);
+        const dataToMap = isToManyRelation ? this.getFirstNestedItem(convertedData[fieldName]) : convertedData;
 
-                // format association fields to display only ids
-                // also format values that look like associations (arrays or objects with id) even if not detected
+        return fieldProperties.reduce<Record<string, unknown>>((acc, property) => {
+            if (isToManyRelation && property === fieldName) {
+                acc[property] = this.formatAssociationFieldValue(entityName, property, convertedData[property]);
+
+                return acc;
+            }
+
+            if (property in dataToMap) {
+                const value = dataToMap[property];
+
                 const shouldFormat =
                     this.isToManyAssociationField(entityName, property) ||
                     Array.isArray(value) ||
-                    (typeof value === 'object' && value && 'id' in value);
+                    (typeof value === 'object' && value !== null && 'id' in value);
 
-                return {
-                    ...acc,
-                    [property]: shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value,
-                };
+                acc[property] = shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value;
             }
 
             return acc;
         }, {});
+    }
+
+    private getFirstNestedItem(fieldValue: unknown): Record<string, unknown> {
+        if (fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
+            const firstKey = Object.keys(fieldValue)[0];
+            const firstItem = firstKey ? (fieldValue as Record<string, unknown>)[firstKey] : null;
+
+            if (firstItem && typeof firstItem === 'object') {
+                return firstItem as Record<string, unknown>;
+            }
+        }
+
+        return {};
     }
 
     /**
@@ -666,30 +629,20 @@ export default class SwagMigrationErrorResolutionService {
             return 'fieldValueNotSet';
         }
 
-        const isToMany = this.isToManyAssociationField(entityName, fieldName);
-
-        if (isToMany) {
-            const isArray = Array.isArray(fieldValue);
-            const isEntityCollection = this.isEntityCollection(fieldValue);
-
-            if (!isArray && !isEntityCollection) {
-                return 'invalidFieldValueFormat';
-            }
-
-            if (isArray && fieldValue.length === 0) {
-                return 'fieldValueNotSet';
-            }
-
-            if (isEntityCollection) {
-                const ids = new Array(...(fieldValue as Iterable<unknown>));
-
-                if (ids.length === 0) {
-                    return 'fieldValueNotSet';
-                }
-            }
+        if (!this.isToManyAssociationField(entityName, fieldName)) {
+            return null;
         }
 
-        return null;
+        const isArray = Array.isArray(fieldValue);
+        const isEntityCollection = this.isEntityCollection(fieldValue);
+
+        if (!isArray && !isEntityCollection) {
+            return 'invalidFieldValueFormat';
+        }
+
+        const isEmpty = isArray ? fieldValue.length === 0 : new Array(...(fieldValue as Iterable<unknown>)).length === 0;
+
+        return isEmpty ? 'fieldValueNotSet' : null;
     }
 
     /**
@@ -704,7 +657,7 @@ export default class SwagMigrationErrorResolutionService {
      */
     normalizeFieldValueForSave(fieldValue: unknown): unknown {
         if (this.isEntityCollection(fieldValue)) {
-            // because EntityCollection has a modified map() function that doesn't work like standard arrays
+            // because EntityCollection has a modified map() function
             return new Array(...(fieldValue as Iterable<unknown>));
         }
 

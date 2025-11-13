@@ -129,18 +129,11 @@ export default Shopware.Component.wrapComponentConfig({
                 .map((item) => item[property])
                 .filter((value): value is string => Boolean(value) && typeof value === 'string');
 
-            return [
-                ...new Set(values),
-            ];
+            return [...new Set(values)];
         },
 
         buildOptionsFromProperty(property: keyof ErrorResolutionTableData): Option[] {
-            const uniqueValues = this.extractUniqueValuesFromTableData(property);
-
-            return uniqueValues.map((value) => ({
-                value,
-                label: value,
-            }));
+            return this.extractUniqueValuesFromTableData(property).map((value) => ({ value, label: value }));
         },
 
         onSearch({ searchTerm }: { searchTerm: string | null }, type: keyof LogFilterValue): Option[] {
@@ -176,7 +169,7 @@ export default Shopware.Component.wrapComponentConfig({
         }, 400),
 
         async fetchSearchResults(searchTerm: string, type: keyof LogFilterValue) {
-            const field = fieldMap[type] ?? null;
+            const field = fieldMap[type];
 
             if (!field) {
                 return;
@@ -195,20 +188,17 @@ export default Shopware.Component.wrapComponentConfig({
 
             const result = await this.migrationLoggingRepository.search(criteria);
 
-            const uniqueValues: string[] = Array.from(
-                new Set(
+            const uniqueValues = [
+                ...new Set(
                     result
                         .map((item) => item[field])
                         .filter((value): value is string => Boolean(value) && typeof value === 'string'),
                 ),
-            );
+            ];
 
             this.searchResults = {
                 ...this.searchResults,
-                [type]: uniqueValues.map((value) => ({
-                    value,
-                    label: value,
-                })),
+                [type]: uniqueValues.map((value) => ({ value, label: value })),
             };
         },
 

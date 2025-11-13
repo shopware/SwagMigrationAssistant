@@ -14,6 +14,7 @@ const { Criteria } = Shopware.Data;
  */
 export type ResolutionModalRow = {
     status: boolean;
+    entityId?: string;
     convertedData: Record<string, unknown>;
     sourceData: Record<string, unknown>;
 } & Record<string, unknown>;
@@ -105,7 +106,15 @@ export default Shopware.Component.wrapComponentConfig({
             return new Criteria(this.tablePage, this.tableLimit)
                 .addFilter(Criteria.equals('code', this.selectedLog.code))
                 .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
-                .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName));
+                .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
+                .addIncludes({
+                    swag_migration_logging: [
+                        'id',
+                        'entityId',
+                        'convertedData',
+                        'sourceData',
+                    ],
+                });
         },
 
         modalTitle() {
@@ -217,14 +226,14 @@ export default Shopware.Component.wrapComponentConfig({
         extractEntityIdsFromTableData(): string[] {
             return this.tableData
                 .filter((row) => this.selectedLogIds.includes(row.logId))
-                .map((row) => row?.convertedData?.id)
+                .map((row) => row.entityId)
                 .filter((id: string | null): id is string => id !== null);
         },
 
         getMissingLogIds(): string[] {
-            const currentPageLogIds = this.tableData.map((row) => row.logId);
+            const currentPageLogIds = new Set(this.tableData.map((row) => row.logId));
 
-            return this.selectedLogIds.filter((logId) => !currentPageLogIds.includes(logId));
+            return this.selectedLogIds.filter((logId) => !currentPageLogIds.has(logId));
         },
 
         async fetchEntityIdsFromMissingLogs(missingLogIds: string[]): Promise<string[]> {
@@ -232,16 +241,14 @@ export default Shopware.Component.wrapComponentConfig({
                 .addFilter(Criteria.equals('code', this.selectedLog.code))
                 .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
                 .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
-                .addIncludes({
-                    swag_migration_logging: ['convertedData'],
-                })
+                .addIncludes({ swag_migration_logging: ['entityId'] })
                 .setIds(missingLogIds);
 
             const logs = await this.migrationLoggingRepository.search(criteria);
 
             return logs
-                .map((log: MigrationLog) => log?.convertedData?.id)
-                .filter((id: string | null): id is string => id !== null);
+                .map((log: MigrationLog) => log.entityId)
+                .filter((id: string | null | undefined): id is string => id !== null && id !== undefined);
         },
 
         resetSelection() {
@@ -277,16 +284,17 @@ export default Shopware.Component.wrapComponentConfig({
             this.loading = true;
 
             try {
-                const entityFieldProperties = this.getEntityFieldProperties();
-
                 const logsResult = await this.migrationLoggingRepository.search(this.loggingCriteria);
-
                 this.tableTotal = logsResult.total;
 
                 const entityIds = this.extractEntityIdsFromLogs(logsResult);
-                const fixesMap = await this.buildFixesMap(entityIds);
 
-                this.tableData = this.mapLogsToTableData(logsResult, fixesMap, entityFieldProperties);
+                const fixesMap = await this.buildFixesMap(entityIds);
+                const entityFieldProperties = this.getEntityFieldProperties();
+
+                this.tableData = logsResult.map((log: MigrationLog) =>
+                    this.mapLogToTableRow(log, fixesMap, entityFieldProperties),
+                );
             } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
@@ -302,8 +310,8 @@ export default Shopware.Component.wrapComponentConfig({
 
         extractEntityIdsFromLogs(logs: MigrationLog[]): string[] {
             return logs
-                .map((log: MigrationLog) => log?.convertedData?.id)
-                .filter((id: string | null): id is string => id !== null);
+                .map((log: MigrationLog) => log.entityId)
+                .filter((id: string | null | undefined): id is string => id !== null && id !== undefined);
         },
 
         async buildFixesMap(entityIds: string[]): Promise<Map<string, unknown>> {
@@ -317,48 +325,41 @@ export default Shopware.Component.wrapComponentConfig({
             );
         },
 
-        mapLogsToTableData(
-            logs: MigrationLog[],
+        mapLogToTableRow(
+            log: MigrationLog,
             fixesMap: Map<string, unknown>,
             entityFieldProperties: string[],
-        ): ResolutionModalRow[] {
-            return logs.map((log: MigrationLog) => {
-                const convertedData = log?.convertedData || {};
+        ): ResolutionModalRow {
+            const convertedData = log?.convertedData || {};
 
-                const entityId = convertedData?.id as string | undefined;
-                const fixValue = entityId ? fixesMap.get(entityId) : undefined;
-                const hasFix = this.isLogResolved(fixValue);
+            const fixValue = log.entityId ? fixesMap.get(log.entityId) : undefined;
+            const hasFixApplied = fixValue !== undefined;
 
-                const row: ResolutionModalRow = {
-                    logId: log.id,
-                    status: hasFix,
+            const row: ResolutionModalRow = {
+                logId: log.id,
+                entityId: log.entityId,
+                status: hasFixApplied,
+                convertedData,
+                sourceData: log?.sourceData || {},
+                ...this.swagMigrationErrorResolutionService.mapEntityFieldProperties(
+                    this.selectedLog.entityName,
+                    entityFieldProperties,
                     convertedData,
-                    sourceData: log?.sourceData || {},
-                    ...this.swagMigrationErrorResolutionService.mapEntityFieldProperties(
-                        this.selectedLog.entityName,
-                        entityFieldProperties,
-                        convertedData,
-                    ),
-                };
+                    this.selectedLog.fieldName,
+                ),
+            };
 
-                if (hasFix && fixValue !== undefined) {
-                    row[this.selectedLog.fieldName] = fixValue;
-                }
+            if (hasFixApplied) {
+                row[this.selectedLog.fieldName] = fixValue;
+            }
 
-                return row;
-            });
-        },
-
-        isLogResolved(fixValue: unknown | undefined): boolean {
-            return fixValue !== undefined;
+            return row;
         },
 
         filterUnresolvedLogIds(logIds: string[]): string[] {
-            return logIds.filter((logId) => {
-                const row = this.tableData.find((element) => element.logId === logId);
+            const unresolvedRows = new Set(this.tableData.filter((row) => !row.status).map((row) => row.logId));
 
-                return row && !row.status;
-            });
+            return logIds.filter((logId) => unresolvedRows.has(logId));
         },
 
         async fetchExistingFixesForEntityIds(entityIds: string[]): Promise<Array<{ entityId: string; value: unknown }>> {
@@ -450,8 +451,8 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            const currentPageIds = this.tableData.map((row) => row.logId);
-            const idsFromOtherPages = this.selectedLogIds.filter((id) => !currentPageIds.includes(id));
+            const currentPageIds = new Set(this.tableData.map((row) => row.logId));
+            const idsFromOtherPages = this.selectedLogIds.filter((id) => !currentPageIds.has(id));
 
             const selectedIds = Object.keys(selection);
             const selectableLogIds = this.filterUnresolvedLogIds(selectedIds);

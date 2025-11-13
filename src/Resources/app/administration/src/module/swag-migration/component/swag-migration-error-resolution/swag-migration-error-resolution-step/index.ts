@@ -217,12 +217,9 @@ export default Shopware.Component.wrapComponentConfig({
                 const criteria = new Criteria(1, 1)
                     .addFilter(Criteria.equals('userFixable', false))
                     .addFilter(Criteria.equals('runId', this.runId))
-                    .addIncludes({
-                        swag_migration_logging: ['id'],
-                    });
+                    .addIncludes({ swag_migration_logging: ['id'] });
 
                 const result = await this.migrationLoggingRepository.search(criteria);
-
                 this.totalUnfixableErrors = result.total;
             } catch {
                 this.createNotificationError({
@@ -286,12 +283,9 @@ export default Shopware.Component.wrapComponentConfig({
                 const criteria = new Criteria(1, 1)
                     .addFilter(Criteria.equals('connectionId', this.migrationStore.connectionId))
                     .addFilter(Criteria.equals('step', MIGRATION_STEP.ERROR_RESOLUTION))
-                    .addIncludes({
-                        swag_migration_run: ['id'],
-                    });
+                    .addIncludes({ swag_migration_run: ['id'] });
 
                 const result = await this.migrationRunRepository.search(criteria);
-
                 this.runId = result.first()?.id || null;
             } catch {
                 this.createNotificationError({
@@ -303,17 +297,16 @@ export default Shopware.Component.wrapComponentConfig({
         async onContinueMigration() {
             this.continueLoading = true;
 
-            return this.migrationApiService
-                .continueAfterErrorResolution()
-                .catch(() => {
-                    this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
-                    });
-                })
-                .finally(() => {
-                    this.continueLoading = false;
-                    this.openContinueModal = false;
+            try {
+                await this.migrationApiService.continueAfterErrorResolution();
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
                 });
+            } finally {
+                this.continueLoading = false;
+                this.openContinueModal = false;
+            }
         },
 
         async onDownloadLogs() {
@@ -325,8 +318,15 @@ export default Shopware.Component.wrapComponentConfig({
 
             try {
                 const blob = await this.migrationApiService.downloadLogsOfRun(this.runId);
+                const url = window.URL.createObjectURL(blob);
+                const link = document.createElement('a');
 
-                this.downloadBlobAsFile(blob, `migration-logs-${this.runId}.txt`);
+                link.href = url;
+                link.download = `migration-logs-${this.runId}.txt`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
             } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.downloadLogsFailed'),
@@ -336,24 +336,9 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        downloadBlobAsFile(blob: Blob, filename: string) {
-            const url = window.URL.createObjectURL(blob);
-            const link = document.createElement('a');
-
-            link.href = url;
-            link.download = filename;
-
-            document.body.appendChild(link);
-            link.click();
-
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        },
-
         async onPageChange(page: { page: number; limit: number }) {
             this.tablePage = page.page;
             this.tableLimit = page.limit;
-
             await this.fetchLogByLevel(null);
         },
 
@@ -362,6 +347,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.tableSortDirection = this.tableSortDirection === 'ASC' ? 'DESC' : 'ASC';
             } else {
                 this.tableSortBy = column.dataIndex;
+                this.tableSortDirection = 'DESC';
             }
 
             await this.fetchLogByLevel(null);

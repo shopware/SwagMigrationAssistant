@@ -52,9 +52,10 @@ class LogGroupingService implements LogGroupingServiceInterface
     ): array {
         $run = $this->getMigrationRunForLogs($runUuid, $context);
         $connectionIdBytes = Uuid::fromHexToBytes($run->getConnectionId() ?? '');
+        $runIdBytes = Uuid::fromHexToBytes($runUuid);
 
-        $queryParams = $this->buildQueryParameters(
-            $runUuid,
+        $params = $this->buildParams(
+            $runIdBytes,
             $level,
             $page,
             $limit,
@@ -64,35 +65,35 @@ class LogGroupingService implements LogGroupingServiceInterface
             $filterField
         );
 
-        $sql = $this->buildGroupedLogsQuery(
-            $sortBy,
-            $sortDirection,
-            $filterStatus,
-            $queryParams
+        $whereClause = $this->buildWhereClause($filterCode, $filterEntity, $filterField);
+        $havingClause = $this->buildHavingClause($filterStatus);
+        $orderByClause = $this->buildOrderByClause($sortBy, $sortDirection);
+
+        $sql = $this->buildQuery(
+            $whereClause,
+            $havingClause,
+            $orderByClause,
+            $filterStatus !== null
         );
 
-        $result = $this->connection->executeQuery(
-            $sql,
-            $queryParams['params'],
-            $queryParams['types']
-        );
+        $result = $this->connection->executeQuery($sql, $params, [
+            'limit' => ParameterType::INTEGER,
+            'offset' => ParameterType::INTEGER,
+        ]);
 
         $rows = $result->fetchAllAssociative();
-        $groupedLogs = $this->mapLogsFromRows($rows);
         $total = \count($rows) > 0 ? (int) $rows[0]['total'] : 0;
 
         $levelCounts = $this->getLogLevelCounts(
-            $runUuid,
-            $filterCode,
-            $filterEntity,
-            $filterField,
-            $filterStatus,
-            $connectionIdBytes
+            $params,
+            $whereClause,
+            $havingClause,
+            $filterStatus !== null
         );
 
         return [
             'total' => $total,
-            'items' => $groupedLogs,
+            'items' => $this->mapLogsFromRows($rows),
             'levelCounts' => $levelCounts,
         ];
     }
@@ -131,10 +132,10 @@ class LogGroupingService implements LogGroupingServiceInterface
     }
 
     /**
-     * @return array{params: array<string, mixed>, types: array<string, ParameterType>, whereClause: string}
+     * @return array<string, mixed>
      */
-    private function buildQueryParameters(
-        string $runUuid,
+    private function buildParams(
+        string $runIdBytes,
         string $level,
         int $page,
         int $limit,
@@ -143,75 +144,55 @@ class LogGroupingService implements LogGroupingServiceInterface
         ?string $filterEntity,
         ?string $filterField,
     ): array {
-        $runIdBytes = Uuid::fromHexToBytes($runUuid);
-        $offset = ($page - 1) * $limit;
-
         $params = [
             'runId' => $runIdBytes,
             'level' => $level,
             'limit' => $limit,
-            'offset' => $offset,
+            'offset' => ($page - 1) * $limit,
             'connectionId' => $connectionIdBytes,
         ];
 
-        $whereConditions = $this->buildFilterConditions(
-            $filterCode,
-            $filterEntity,
-            $filterField,
-            $params
-        );
+        if ($filterCode !== null) {
+            $params['filterCode'] = $filterCode;
+        }
 
-        return [
-            'params' => $params,
-            'types' => [
-                'limit' => ParameterType::INTEGER,
-                'offset' => ParameterType::INTEGER,
-            ],
-            'whereClause' => $whereConditions ? ' AND ' . \implode(' AND ', $whereConditions) : '',
-        ];
+        if ($filterEntity !== null) {
+            $params['filterEntity'] = $filterEntity;
+        }
+
+        if ($filterField !== null) {
+            $params['filterField'] = $filterField;
+        }
+
+        return $params;
     }
 
-    /**
-     * @param array<string, mixed> $params
-     *
-     * @return array<string>
-     */
-    private function buildFilterConditions(?string $filterCode, ?string $filterEntity, ?string $filterField, array &$params): array
+    private function buildWhereClause(?string $filterCode, ?string $filterEntity, ?string $filterField): string
     {
         $conditions = [];
 
         if ($filterCode !== null) {
             $conditions[] = 'l.code = :filterCode';
-            $params['filterCode'] = $filterCode;
         }
 
         if ($filterEntity !== null) {
             $conditions[] = 'l.entity_name = :filterEntity';
-            $params['filterEntity'] = $filterEntity;
         }
 
         if ($filterField !== null) {
             $conditions[] = 'l.field_name = :filterField';
-            $params['filterField'] = $filterField;
         }
 
-        return $conditions;
+        return $conditions ? ' AND ' . \implode(' AND ', $conditions) : '';
     }
 
-    /**
-     * @param array{params: array<string, mixed>, types: array<string, ParameterType>, whereClause: string} $queryParams
-     */
-    private function buildGroupedLogsQuery(string $sortBy, string $sortDirection, ?string $filterStatus, array $queryParams): string
+    private function buildQuery(string $whereClause, string $havingClause, string $orderByClause, bool $includeFixJoin, ?string $filterStatus = null): string
     {
-        $whereClause = $queryParams['whereClause'];
-        $havingClause = $this->buildHavingClause($filterStatus);
-        $orderByClause = $this->buildOrderByClause($sortBy, $sortDirection);
-        $fixJoinClause = $this->getFixJoinClause();
+        $fixJoin = $this->getFixJoinClause();
         $countSubquery = $this->buildCountSubquery(
-            $filterStatus,
             $whereClause,
-            $havingClause,
-            $fixJoinClause
+            $filterStatus,
+            $includeFixJoin,
         );
 
         return "
@@ -225,7 +206,7 @@ class LogGroupingService implements LogGroupingServiceInterface
                 {$countSubquery} as total,
                 COUNT(DISTINCT f.id) as fix_count
             FROM swag_migration_logging l
-            {$fixJoinClause}
+            {$fixJoin}
             WHERE l.run_id = :runId
                 AND l.level = :level
                 AND l.user_fixable = 1
@@ -237,20 +218,24 @@ class LogGroupingService implements LogGroupingServiceInterface
         ";
     }
 
-    private function buildCountSubquery(?string $filterStatus, string $whereClause, string $havingClause, string $fixJoinClause): string
+    private function buildCountSubquery(string $whereClause, ?string $filterStatus, bool $includeFixJoin): string
     {
-        $fixJoinForSubquery = $filterStatus !== null ? $fixJoinClause : '';
+        if ($includeFixJoin) {
+            $fixJoin = $this->getFixJoinClause('l2', 'f2');
+            $subqueryHaving = $this->buildHavingClause($filterStatus, 'l2', 'f2');
+        } else {
+            $fixJoin = '';
+            $subqueryHaving = '';
+        }
 
-        $subqueryWhere = \str_replace(['l.', 'f.'], ['l2.', 'f2.'], $whereClause);
-        $subqueryHaving = $filterStatus !== null ? \str_replace(['l.', 'f.'], ['l2.', 'f2.'], $havingClause) : '';
-        $subqueryJoin = \str_replace(['l.', 'f.'], ['l2.', 'f2.'], $fixJoinForSubquery);
+        $subqueryWhere = \str_replace('l.', 'l2.', $whereClause);
 
         return "(
                 SELECT COUNT(*)
                 FROM (
                     SELECT 1
                     FROM swag_migration_logging l2
-                    {$subqueryJoin}
+                    {$fixJoin}
                     WHERE l2.run_id = :runId
                         AND l2.level = :level
                         AND l2.user_fixable = 1
@@ -261,24 +246,24 @@ class LogGroupingService implements LogGroupingServiceInterface
             )";
     }
 
-    private function getFixJoinClause(): string
+    private function getFixJoinClause(string $loggingAlias = 'l', string $fixAlias = 'f'): string
     {
-        return 'LEFT JOIN swag_migration_fix f ON (
-                f.connection_id = :connectionId
-                AND f.entity_name = l.entity_name
-                AND f.path = l.field_name
-                AND f.entity_id = UNHEX(JSON_UNQUOTE(JSON_EXTRACT(l.converted_data, "$.id")))
+        return 'LEFT JOIN swag_migration_fix ' . $fixAlias . ' ON (
+                ' . $fixAlias . '.connection_id = :connectionId
+                AND ' . $fixAlias . '.entity_name = ' . $loggingAlias . '.entity_name
+                AND ' . $fixAlias . '.path = ' . $loggingAlias . '.field_name
+                AND ' . $fixAlias . '.entity_id = ' . $loggingAlias . '.entity_id
             )';
     }
 
-    private function buildHavingClause(?string $filterStatus): string
+    private function buildHavingClause(?string $filterStatus, string $loggingAlias = 'l', string $fixAlias = 'f'): string
     {
         if ($filterStatus === 'resolved') {
-            return ' HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)';
+            return ' HAVING COUNT(DISTINCT ' . $loggingAlias . '.id) > 0 AND COUNT(DISTINCT ' . $loggingAlias . '.id) = COUNT(DISTINCT ' . $fixAlias . '.id)';
         }
 
         if ($filterStatus === 'unresolved') {
-            return ' HAVING COUNT(DISTINCT l.id) = 0 OR COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)';
+            return ' HAVING COUNT(DISTINCT ' . $loggingAlias . '.id) > 0 AND COUNT(DISTINCT ' . $loggingAlias . '.id) != COUNT(DISTINCT ' . $fixAlias . '.id)';
         }
 
         return '';
@@ -344,38 +329,26 @@ class LogGroupingService implements LogGroupingServiceInterface
     }
 
     /**
+     * @param array<string, mixed> $params
+     *
      * @throws Exception
      *
      * @return array{error: int, warning: int, info: int}
      */
     private function getLogLevelCounts(
-        string $runUuid,
-        ?string $filterCode = null,
-        ?string $filterEntity = null,
-        ?string $filterField = null,
-        ?string $filterStatus = null,
-        ?string $connectionIdBytes = null,
+        array $params,
+        string $whereClause,
+        string $havingClause,
+        bool $includeFixJoin,
     ): array {
-        $runIdBytes = Uuid::fromHexToBytes($runUuid);
-        $params = ['runId' => $runIdBytes];
-
-        $whereConditions = $this->buildFilterConditions(
-            $filterCode,
-            $filterEntity,
-            $filterField,
-            $params
-        );
-
-        $additionalWhere = $whereConditions ? ' AND ' . \implode(' AND ', $whereConditions) : '';
-
-        $joinClause = '';
-        $havingClause = '';
         $groupByClause = ', l.code, l.entity_name, l.field_name';
 
-        if ($filterStatus !== null && $connectionIdBytes !== null) {
-            $params['connectionId'] = $connectionIdBytes;
+        if ($includeFixJoin) {
             $joinClause = $this->getFixJoinClause();
-            $havingClause = $this->buildHavingClause($filterStatus);
+            $havingClauseForQuery = $havingClause;
+        } else {
+            $joinClause = '';
+            $havingClauseForQuery = '';
         }
 
         $sql = "
@@ -392,9 +365,9 @@ class LogGroupingService implements LogGroupingServiceInterface
                 {$joinClause}
                 WHERE l.run_id = :runId
                     AND l.user_fixable = 1
-                    {$additionalWhere}
+                    {$whereClause}
                 GROUP BY l.level{$groupByClause}
-                {$havingClause}
+                {$havingClauseForQuery}
             ) as filtered_logs
             GROUP BY level
         ";

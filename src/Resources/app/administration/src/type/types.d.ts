@@ -120,6 +120,7 @@ type MigrationError = {
 
 type MigrationLog = {
     id: string;
+    entityId?: string;
     entityName?: string;
     fieldName?: string;
     convertedData?: Record<string, unknown>;
