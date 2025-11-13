@@ -46,16 +46,20 @@ class Migration1754897550AddFieldsToMigrationLogsTest extends TestCase
         $schemaManager = $this->connection->createSchemaManager();
         $columns = $schemaManager->listTableColumns(Migration1754897550AddFieldsToMigrationLogs::MIGRATION_LOGGING_TABLE);
 
-        $fields = array_merge(
-            Migration1754897550AddFieldsToMigrationLogs::REQUIRED_FIELDS,
-            Migration1754897550AddFieldsToMigrationLogs::OPTIONAL_FIELDS,
-            Migration1754897550AddFieldsToMigrationLogs::SYSTEM_FIELDS
+        $fields = array_keys(
+            array_merge(
+                Migration1754897550AddFieldsToMigrationLogs::REQUIRED_FIELDS,
+                Migration1754897550AddFieldsToMigrationLogs::OPTIONAL_FIELDS,
+                Migration1754897550AddFieldsToMigrationLogs::SYSTEM_FIELDS
+            )
         );
 
-        static::assertCount(\count($fields), $columns);
-
-        foreach ($fields as $fieldName => $type) {
+        foreach ($fields as $fieldName) {
             static::assertArrayHasKey($fieldName, $columns);
+        }
+
+        foreach (Migration1754897550AddFieldsToMigrationLogs::FIELDS_TO_DROP as $fieldName) {
+            static::assertArrayNotHasKey($fieldName, $columns);
         }
     }
 

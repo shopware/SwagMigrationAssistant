@@ -49,26 +49,6 @@ class MigrationFixApplierTest extends TestCase
 
         $fixApplier = new MigrationFixApplier($this->getContainer()->get(Connection::class));
 
-        $mappingOne = $this->mappingService->createMapping(
-            $connectionId,
-            'any',
-            'old_id_1',
-            null,
-            null,
-            $idOne,
-            'value'
-        );
-
-        $mappingTwo = $this->mappingService->createMapping(
-            $connectionId,
-            'any_other',
-            'old_id_2',
-            null,
-            null,
-            $idTwo,
-            'any other value'
-        );
-
         // create also mapping without fix
         $this->mappingService->createMapping(
             $connectionId,
@@ -82,11 +62,11 @@ class MigrationFixApplierTest extends TestCase
 
         $this->mappingService->writeMapping();
 
-        $this->createFix($mappingOne['id'], $connectionId, 'val1', 'first.path');
-        $this->createFix($mappingOne['id'], $connectionId, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path');
+        $this->createFix($connectionId, $idOne, 'val1', 'first.path');
+        $this->createFix($connectionId, $idOne, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path');
 
-        $this->createFix($mappingTwo['id'], $connectionId, 'val3', 'third.path');
-        $this->createFix($mappingTwo['id'], $connectionId, 'val4', 'fourth.other.path');
+        $this->createFix($connectionId, $idTwo, 'val3', 'third.path');
+        $this->createFix($connectionId, $idTwo, 'val4', 'fourth.other.path');
 
         $data = [
             [
@@ -130,12 +110,12 @@ class MigrationFixApplierTest extends TestCase
         static::assertSame($expected, $data);
     }
 
-    private function createFix(string $mappingId, string $connectionId, mixed $value, string $path): void
+    private function createFix(string $connectionId, string $entityId, mixed $value, string $path): void
     {
         $migrationFix = new SwagMigrationFixEntity();
         $migrationFix->setId(Uuid::randomHex());
         $migrationFix->setConnectionId($connectionId);
-        $migrationFix->setMainMappingId($mappingId);
+        $migrationFix->setEntityId($entityId);
         $migrationFix->setPath($path);
         $migrationFix->setValue($value);
 

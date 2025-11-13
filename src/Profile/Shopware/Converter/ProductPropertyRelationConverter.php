@@ -79,9 +79,9 @@ abstract class ProductPropertyRelationConverter extends ShopwareConverter
         );
 
         $converted = [];
-        $converted['id'] = $productMapping['entityUuid'];
+        $converted['id'] = $productMapping['entityId'];
         $converted['properties'][] = [
-            'id' => $optionMapping['entityUuid'],
+            'id' => $optionMapping['entityId'],
         ];
 
         $this->updateMainMapping($migrationContext, $context);

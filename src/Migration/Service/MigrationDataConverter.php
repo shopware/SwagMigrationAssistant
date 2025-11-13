@@ -102,7 +102,8 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     $migrationContext,
                     $context,
                     $convertStruct->getConverted(),
-                    $dataSet::getEntity()
+                    $dataSet::getEntity(),
+                    $item
                 );
 
                 $createData[] = [

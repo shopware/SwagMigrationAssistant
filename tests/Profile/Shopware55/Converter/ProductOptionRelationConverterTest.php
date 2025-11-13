@@ -69,7 +69,7 @@ class ProductOptionRelationConverterTest extends TestCase
             '2',
             $context
         );
-        $this->productUuid = (string) $productMapping['entityUuid'];
+        $this->productUuid = (string) $productMapping['entityId'];
 
         $relationData = require __DIR__ . '/../../../_fixtures/product_option_relation.php';
 
@@ -80,7 +80,7 @@ class ProductOptionRelationConverterTest extends TestCase
                 Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
                 $context
             );
-            $this->propertyUuids[$key] = (string) $mapping['entityUuid'];
+            $this->propertyUuids[$key] = (string) $mapping['entityId'];
         }
 
         $this->oldMappingId = Uuid::randomHex();
@@ -100,7 +100,7 @@ class ProductOptionRelationConverterTest extends TestCase
             $relationData[0]['id'] . '_' . $this->productUuid,
             $context
         );
-        $this->oldMappingId = (string) $mapping['entityUuid'];
+        $this->oldMappingId = (string) $mapping['entityId'];
     }
 
     public function testConvert(): void

@@ -127,6 +127,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $this->loggingService->addLogEntry(
                         SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
+                            ->withEntityId($uuid)
                             ->build(CannotGetFileRunLog::class)
                     );
                 }
@@ -147,6 +148,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 $this->loggingService->addLogEntry(
                     SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
+                        ->withEntityId($uuid)
                         ->build(TemporaryFileErrorLog::class)
                 );
 
@@ -190,6 +192,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                             ->withExceptionMessage($e->getMessage())
                             ->withExceptionTrace($e->getTrace())
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
+                            ->withEntityId($uuid)
                             ->build(ExceptionRunLog::class)
                     );
                 } finally {

@@ -60,7 +60,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityUuid'];
+        $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $defaultFolderId = $this->getDefaultFolderId();
@@ -77,7 +77,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             );
 
             if ($parentMapping !== null) {
-                $converted['parentId'] = $parentMapping['entityUuid'];
+                $converted['parentId'] = $parentMapping['entityId'];
                 $this->mappingIds[] = $parentMapping['id'];
             }
             unset($parentMapping);
@@ -101,10 +101,10 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $this->mappingIds[] = $configurationMapping['id'];
 
             $converted['parent'] = [
-                'id' => $parentMapping['entityUuid'],
+                'id' => $parentMapping['entityId'],
                 'name' => 'Migration media folder',
                 'configuration' => [
-                    'id' => $configurationMapping['entityUuid'],
+                    'id' => $configurationMapping['entityId'],
                 ],
             ];
         }
@@ -148,7 +148,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
             $setting['id'],
             $this->context
         );
-        $configuration['id'] = $mapping['entityUuid'];
+        $configuration['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $this->convertValue($configuration, 'createThumbnails', $setting, 'create_thumbnails', self::TYPE_BOOLEAN);
@@ -173,7 +173,7 @@ abstract class MediaFolderConverter extends ShopwareConverter
                         $thumbnailSize['width'] . '-' . $thumbnailSize['height'],
                         $this->context
                     );
-                    $uuid = $mapping['entityUuid'];
+                    $uuid = $mapping['entityId'];
                     $this->mappingIds[] = $mapping['id'];
                 }
 
