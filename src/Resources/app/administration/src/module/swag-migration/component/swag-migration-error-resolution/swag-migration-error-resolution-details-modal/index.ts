@@ -33,7 +33,13 @@ export default Shopware.Component.wrapComponentConfig({
                 return '';
             }
 
-            return JSON.stringify(this.selectedLog.sourceData, null, 2);
+            const sourceData = JSON.stringify(this.selectedLog.sourceData, null, 2);
+
+            if (sourceData.trim() === '{}') {
+                return null;
+            }
+
+            return sourceData;
         },
 
         modalTitle(): string {
