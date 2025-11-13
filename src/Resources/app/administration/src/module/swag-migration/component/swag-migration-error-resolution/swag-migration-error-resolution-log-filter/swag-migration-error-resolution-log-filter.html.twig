@@ -33,6 +33,7 @@
                         :options="codeOptions"
                         :disabled="disabled"
                         :search-function="(value) => onSearch(value, 'code')"
+                        small
                         @update:model-value="(newValue) => onValueChange({ code: newValue })"
                     />
 
@@ -42,6 +43,7 @@
                         :model-value="value.status"
                         :options="statusOptions"
                         :disabled="disabled"
+                        small
                         @update:model-value="(newValue) => onValueChange({ status: newValue })"
                     />
 
@@ -52,6 +54,7 @@
                         :options="entityOptions"
                         :disabled="disabled"
                         :search-function="(value) => onSearch(value, 'entity')"
+                        small
                         @update:model-value="(newValue) => onValueChange({ entity: newValue })"
                     />
 
@@ -62,19 +65,20 @@
                         :options="fieldOptions"
                         :disabled="disabled"
                         :search-function="(value) => onSearch(value, 'field')"
+                        small
                         @update:model-value="(newValue) => onValueChange({ field: newValue })"
                     />
                 </div>
 
-                <mt-button
+                <mt-link
+                    as="button"
                     class="swag-migration-error-resolution-log-filter__popover-content-reset"
                     :disabled="disabled"
                     variant="critical"
-                    ghost
                     @click="onReset"
                 >
                     {{ $tc('swag-migration.index.error-resolution.step.card.filter.reset') }}
-                </mt-button>
+                </mt-link>
             </div>
         </template>
     </mt-popover>

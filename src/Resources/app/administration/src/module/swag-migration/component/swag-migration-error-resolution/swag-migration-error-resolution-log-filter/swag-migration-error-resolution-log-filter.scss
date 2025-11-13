@@ -6,6 +6,7 @@
     }
 
     &-content-reset {
-        margin-bottom: var(--scale-size-12);
+        font-size: var(--font-size-xs);
+        margin-bottom: var(--scale-size-12) !important;
     }
 }

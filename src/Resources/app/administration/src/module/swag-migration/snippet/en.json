@@ -484,7 +484,7 @@
           "card": {
             "title": "Errors",
             "filter": {
-              "title": "Filter",
+              "title": "Filters",
               "reset": "Reset filters",
               "code": {
                 "label": "Error code",
