@@ -1,86 +1,94 @@
-<div class="swag-migration-error-resolution-log-filter">
-    <mt-popover
-        class="swag-migration-error-resolution-log-filter__popover"
-        :title="$tc('swag-migration.index.error-resolution.step.card.filter.title')"
-        :is-opened="open"
-        width="large"
-    >
-        <template #trigger>
-            <mt-button
-                class="swag-migration-error-resolution-log-filter__button"
-                variant="secondary"
-                :disabled="disabled"
-                :is-loading="loading"
-                @click="onTogglePopover"
-            >
-                <template #iconFront>
-                    <mt-icon
-                        size="12"
-                        name="solid-filter"
-                    />
-                </template>
-
-                <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter.title') }}</span>
-            </mt-button>
-        </template>
-
-        <template #popover-items__base>
-            <div class="swag-migration-error-resolution-log-filter__popover-content">
-                <div class="swag-migration-error-resolution-log-filter__popover-content-form">
-                    <mt-select
-                        :label="$t('swag-migration.index.error-resolution.step.card.filter.code.label')"
-                        :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.code.placeholder')"
-                        :model-value="value.code"
-                        :options="codeOptions"
+{% block swag_migration_error_resolution_log_filter %}
+    <div class="swag-migration-error-resolution-log-filter">
+        <mt-popover
+            class="swag-migration-error-resolution-log-filter__popover"
+            :title="$tc('swag-migration.index.error-resolution.step.card.filter.title')"
+            :is-opened="open"
+            width="large"
+        >
+            <template #trigger>
+                {% block swag_migration_error_resolution_log_filter_trigger %}
+                    <mt-button
+                        class="swag-migration-error-resolution-log-filter__button"
+                        variant="secondary"
                         :disabled="disabled"
-                        :search-function="(value) => onSearch(value, 'code')"
-                        small
-                        @update:model-value="(newValue) => onValueChange({ code: newValue })"
-                    />
+                        :is-loading="loading"
+                        @click="onTogglePopover"
+                    >
+                        <template #iconFront>
+                            <mt-icon
+                                size="12"
+                                name="solid-filter"
+                            />
+                        </template>
 
-                    <mt-select
-                        :label="$t('swag-migration.index.error-resolution.step.card.filter.status.label')"
-                        :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.status.placeholder')"
-                        :model-value="value.status"
-                        :options="statusOptions"
-                        :disabled="disabled"
-                        small
-                        @update:model-value="(newValue) => onValueChange({ status: newValue })"
-                    />
+                        <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter.title') }}</span>
+                    </mt-button>
+                {% endblock %}
+            </template>
 
-                    <mt-select
-                        :label="$t('swag-migration.index.error-resolution.step.card.filter.entity.label')"
-                        :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.entity.placeholder')"
-                        :model-value="value.entity"
-                        :options="entityOptions"
-                        :disabled="disabled"
-                        :search-function="(value) => onSearch(value, 'entity')"
-                        small
-                        @update:model-value="(newValue) => onValueChange({ entity: newValue })"
-                    />
+            <template #popover-items__base>
+                <div class="swag-migration-error-resolution-log-filter__popover-content">
+                    {% block swag_migration_error_resolution_log_filter_content_form %}
+                        <div class="swag-migration-error-resolution-log-filter__popover-content-form">
+                            <mt-select
+                                :label="$t('swag-migration.index.error-resolution.step.card.filter.code.label')"
+                                :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.code.placeholder')"
+                                :model-value="value.code"
+                                :options="codeOptions"
+                                :disabled="disabled"
+                                :search-function="(value) => onSearch(value, 'code')"
+                                small
+                                @update:model-value="(newValue) => onValueChange({ code: newValue })"
+                            />
 
-                    <mt-select
-                        :label="$t('swag-migration.index.error-resolution.step.card.filter.field.label')"
-                        :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.field.placeholder')"
-                        :model-value="value.field"
-                        :options="fieldOptions"
-                        :disabled="disabled"
-                        :search-function="(value) => onSearch(value, 'field')"
-                        small
-                        @update:model-value="(newValue) => onValueChange({ field: newValue })"
-                    />
+                            <mt-select
+                                :label="$t('swag-migration.index.error-resolution.step.card.filter.status.label')"
+                                :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.status.placeholder')"
+                                :model-value="value.status"
+                                :options="statusOptions"
+                                :disabled="disabled"
+                                small
+                                @update:model-value="(newValue) => onValueChange({ status: newValue })"
+                            />
+
+                            <mt-select
+                                :label="$t('swag-migration.index.error-resolution.step.card.filter.entity.label')"
+                                :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.entity.placeholder')"
+                                :model-value="value.entity"
+                                :options="entityOptions"
+                                :disabled="disabled"
+                                :search-function="(value) => onSearch(value, 'entity')"
+                                small
+                                @update:model-value="(newValue) => onValueChange({ entity: newValue })"
+                            />
+
+                            <mt-select
+                                :label="$t('swag-migration.index.error-resolution.step.card.filter.field.label')"
+                                :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.field.placeholder')"
+                                :model-value="value.field"
+                                :options="fieldOptions"
+                                :disabled="disabled"
+                                :search-function="(value) => onSearch(value, 'field')"
+                                small
+                                @update:model-value="(newValue) => onValueChange({ field: newValue })"
+                            />
+                        </div>
+                    {% endblock %}
+
+                    {% block swag_migration_error_resolution_log_filter_reset %}
+                        <mt-link
+                            as="button"
+                            class="swag-migration-error-resolution-log-filter__popover-content-reset"
+                            :disabled="disabled"
+                            variant="critical"
+                            @click="onReset"
+                        >
+                            {{ $tc('swag-migration.index.error-resolution.step.card.filter.reset') }}
+                        </mt-link>
+                    {% endblock %}
                 </div>
-
-                <mt-link
-                    as="button"
-                    class="swag-migration-error-resolution-log-filter__popover-content-reset"
-                    :disabled="disabled"
-                    variant="critical"
-                    @click="onReset"
-                >
-                    {{ $tc('swag-migration.index.error-resolution.step.card.filter.reset') }}
-                </mt-link>
-            </div>
-        </template>
-    </mt-popover>
-</div>
+            </template>
+        </mt-popover>
+    </div>
+{% endblock %}

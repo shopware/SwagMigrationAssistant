@@ -1,202 +1,214 @@
 {% block swag_migration_error_resolution_step %}
-<div class="swag-migration-error-resolution-step">
-    <swag-migration-error-resolution-modal
-        v-if="openErrorResolutionModal && selectedLog"
-        :selected-log="selectedLog"
-        @close-error-resolution-modal="onCloseEditLog"
-        @fixes-created="onFixesCreated"
-    />
+    <div class="swag-migration-error-resolution-step">
+        <swag-migration-error-resolution-modal
+            v-if="openErrorResolutionModal && selectedLog"
+            :selected-log="selectedLog"
+            @close-error-resolution-modal="onCloseEditLog"
+            @fixes-created="onFixesCreated"
+        />
 
-    <sw-modal
-        v-if="openContinueModal"
-        class="swag-migration-error-resolution-step__continue-modal"
-        variant="small"
-        @modal-close="() => openContinueModal = false"
-        :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
-    >
-        <p class="swag-migration-error-resolution-step__continue-modal-text">
-            {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnfixableErrors }) }}
-        </p>
-
-        <template #modal-footer>
-                <mt-button
-                    class="swag-migration-error-resolution-step__continue-modal-cancel"
-                    size="small"
-                    variant="secondary"
-                    @click="() => openContinueModal = false"
-                >
-                    {{ $tc('global.default.cancel') }}
-                </mt-button>
-
-                <mt-button
-                    class="swag-migration-error-resolution-step__continue-modal-confirm"
-                    variant="critical"
-                    size="small"
-                    :is-loading="continueLoading"
-                    @click="onContinueMigration"
-                >
-                    {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
-                </mt-button>
-        </template>
-    </sw-modal>
-
-    <div class="swag-migration-error-resolution-step__header">
-        <div class="swag-migration-error-resolution-step__header-container">
-            <div class="swag-migration-error-resolution-step__header-content">
-                <h2 class="swag-migration-error-resolution-step__header-content-title">
-                    {{ $tc('swag-migration.index.error-resolution.step.header.title') }}
-                </h2>
-
-                <p class="swag-migration-error-resolution-step__header-content-description">
-                    {{ $tc('swag-migration.index.error-resolution.step.header.description') }}
+        {% block swag_migration_error_resolution_step_continue_modal %}
+            <sw-modal
+                v-if="openContinueModal"
+                class="swag-migration-error-resolution-step__continue-modal"
+                variant="small"
+                @modal-close="() => openContinueModal = false"
+                :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
+            >
+                <p class="swag-migration-error-resolution-step__continue-modal-text">
+                    {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnfixableErrors }) }}
                 </p>
 
-                <mt-link
-                    class="swag-migration-error-resolution-step__header-content-link"
-                    to="https://developer.shopware.com/docs/concepts/framework/migrations.html"
-                    target="_blank"
-                    type="external"
-                    as="a"
-                >
-                    {{ $tc('swag-migration.index.error-resolution.step.header.documentation') }}
-                </mt-link>
+                <template #modal-footer>
+                        <mt-button
+                            class="swag-migration-error-resolution-step__continue-modal-cancel"
+                            size="small"
+                            variant="secondary"
+                            @click="() => openContinueModal = false"
+                        >
+                            {{ $tc('global.default.cancel') }}
+                        </mt-button>
+
+                        <mt-button
+                            class="swag-migration-error-resolution-step__continue-modal-confirm"
+                            variant="critical"
+                            size="small"
+                            :is-loading="continueLoading"
+                            @click="onContinueMigration"
+                        >
+                            {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
+                        </mt-button>
+                </template>
+            </sw-modal>
+        {% endblock %}
+
+        <div class="swag-migration-error-resolution-step__header">
+            <div class="swag-migration-error-resolution-step__header-container">
+                {% block swag_migration_error_resolution_step_header_content %}
+                    <div class="swag-migration-error-resolution-step__header-content">
+                        <h2 class="swag-migration-error-resolution-step__header-content-title">
+                            {{ $tc('swag-migration.index.error-resolution.step.header.title') }}
+                        </h2>
+
+                        <p class="swag-migration-error-resolution-step__header-content-description">
+                            {{ $tc('swag-migration.index.error-resolution.step.header.description') }}
+                        </p>
+
+                        <mt-link
+                            class="swag-migration-error-resolution-step__header-content-link"
+                            to="https://developer.shopware.com/docs/concepts/framework/migrations.html"
+                            target="_blank"
+                            type="external"
+                            as="a"
+                        >
+                            {{ $tc('swag-migration.index.error-resolution.step.header.documentation') }}
+                        </mt-link>
+                    </div>
+                {% endblock %}
+
+                {% block swag_migration_error_resolution_step_header_buttons %}
+                    <div class="swag-migration-error-resolution-step__header-buttons">
+                        <mt-button
+                            class="swag-migration-error-resolution-step__header-buttons-download"
+                            @click="onDownloadLogs"
+                            :is-loading="downloadLoading"
+                            :disabled="loading || continueLoading"
+                            variant="secondary"
+                        >
+                            <template #iconFront>
+                                <mt-icon
+                                    size="12"
+                                    name="solid-download"
+                                />
+                            </template>
+
+                            <span>{{ $tc('swag-migration.index.error-resolution.step.header.download') }}</span>
+                        </mt-button>
+
+                        <mt-button
+                            class="swag-migration-error-resolution-step__header-buttons-continue"
+                            variant="primary"
+                            :disabled="loading || downloadLoading"
+                            @click="() => openContinueModal = true"
+                        >
+                            {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
+                        </mt-button>
+                    </div>
+                {% endblock %}
             </div>
 
-            <div class="swag-migration-error-resolution-step__header-buttons">
-                <mt-button
-                    class="swag-migration-error-resolution-step__header-buttons-download"
-                    @click="onDownloadLogs"
-                    :is-loading="downloadLoading"
-                    :disabled="loading || continueLoading"
-                    variant="secondary"
+            {% block swag_migration_error_resolution_step_total_unfixable_error_banner %}
+                <div
+                    v-if="totalUnfixableErrors > 0"
+                    class="swag-migration-error-resolution-step__header-banner"
                 >
-                    <template #iconFront>
-                        <mt-icon
-                            size="12"
-                            name="solid-download"
-                        />
-                    </template>
-
-                    <span>{{ $tc('swag-migration.index.error-resolution.step.header.download') }}</span>
-                </mt-button>
-
-                <mt-button
-                    class="swag-migration-error-resolution-step__header-buttons-continue"
-                    variant="primary"
-                    :disabled="loading || downloadLoading"
-                    @click="() => openContinueModal = true"
-                >
-                    {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
-                </mt-button>
-            </div>
-        </div>
-
-        <div
-            v-if="totalUnfixableErrors > 0"
-            class="swag-migration-error-resolution-step__header-banner"
-        >
-            <mt-banner
-                :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
-                variant="critical"
-            >
-                <span>
-                    {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
-                </span>
-
-                <mt-link
-                    class="swag-migration-error-resolution-step__header-banner-link"
-                    to="https://account.shopware.com/"
-                    target="_blank"
-                    type="external"
-                    as="a"
-                >
-                    {{ $tc('swag-migration.index.error-resolution.step.header.banner.link') }}
-                </mt-link>
-            </mt-banner>
-        </div>
-    </div>
-
-    <mt-card
-        class="swag-migration-error-resolution-step__card"
-        position-identifier="swag-migration-error-resolution-step__card"
-        :title="$tc('swag-migration.index.error-resolution.step.card.title')"
-    >
-        <template #headerRight>
-            <swag-migration-error-resolution-log-filter
-                :disabled="loading"
-                :table-data="tableData"
-                @log-filter-change="onLogFilterChange"
-            />
-        </template>
-
-        <template #tabs>
-            <mt-tabs
-                :defaultItem="tabItem"
-                :items="tabItems"
-                @new-item-active="onTabChange"
-            />
-        </template>
-
-        <div class="swag-migration-error-resolution-step__card-table">
-            <sw-data-grid
-                identifier="swag-migration-error-resolution-grid"
-                :data-source="tableData"
-                :columns="tableColumns"
-                :is-loading="loading"
-                :show-selection="false"
-                :show-settings="true"
-                :skeleton-item-amount="tableLimit"
-                :sort-by="tableSortBy"
-                :sort-direction="tableSortDirection"
-                @column-sort="onSortColumn"
-            >
-                <template #column-count="{ item }">
-                    <div class="swag-migration-error-resolution-step__card-table-count">
-                        <span class="swag-migration-error-resolution-step__card-table-count-text">
-                            {{ item.fixCount }} / {{ item.count }}
+                    <mt-banner
+                        :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
+                        variant="critical"
+                    >
+                        <span>
+                            {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
                         </span>
 
-                        <mt-icon
-                            v-if="item.resolved"
-                            class="swag-migration-error-resolution-step__card-table-count-icon"
-                            name="solid-check-circle"
-                            size="16"
-                        />
-                    </div>
-                </template>
-
-                <template #column-code="{ item }">
-                    <div class="swag-migration-error-resolution-step__card-table-error">
-                        <a
-                            class="swag-migration-error-resolution-step__card-table-error-link"
-                            @click="() => onOpenEditLog(item)"
+                        <mt-link
+                            class="swag-migration-error-resolution-step__header-banner-link"
+                            to="https://account.shopware.com/"
+                            target="_blank"
+                            type="external"
+                            as="a"
                         >
-                            {{ item.code }}
-                        </a>
-                    </div>
-                </template>
+                            {{ $tc('swag-migration.index.error-resolution.step.header.banner.link') }}
+                        </mt-link>
+                    </mt-banner>
+                </div>
+            {% endblock %}
+        </div>
 
-                <template #actions="{ item }">
-                    <sw-context-menu-item
-                        class="swag-migration-error-resolution-step__card-table-edit"
-                        :disabld="loading"
-                        @click="() => onOpenEditLog(item)"
-                    >
-                        {{ $tc('swag-migration.index.error-resolution.step.card.action.edit') }}
-                    </sw-context-menu-item>
-                </template>
-
-                <template #pagination>
-                    <sw-pagination
-                        :page="tablePage"
-                        :limit="tableLimit"
-                        :total="tableTotal"
-                        :steps="[10, 25, 50]"
-                        @page-change="onPageChange"
+        {% block swag_migration_error_resolution_step_card %}
+            <mt-card
+                class="swag-migration-error-resolution-step__card"
+                position-identifier="swag-migration-error-resolution-step__card"
+                :title="$tc('swag-migration.index.error-resolution.step.card.title')"
+            >
+                <template #headerRight>
+                    <swag-migration-error-resolution-log-filter
+                        :disabled="loading"
+                        :table-data="tableData"
+                        @log-filter-change="onLogFilterChange"
                     />
                 </template>
-            </sw-data-grid>
-        </div>
-    </mt-card>
-</div>
+
+                <template #tabs>
+                    <mt-tabs
+                        :defaultItem="tabItem"
+                        :items="tabItems"
+                        @new-item-active="onTabChange"
+                    />
+                </template>
+
+                {% block swag_migration_error_resolution_step_card_table %}
+                    <div class="swag-migration-error-resolution-step__card-table">
+                        <sw-data-grid
+                            identifier="swag-migration-error-resolution-grid"
+                            :data-source="tableData"
+                            :columns="tableColumns"
+                            :is-loading="loading"
+                            :show-selection="false"
+                            :show-settings="true"
+                            :skeleton-item-amount="tableLimit"
+                            :sort-by="tableSortBy"
+                            :sort-direction="tableSortDirection"
+                            @column-sort="onSortColumn"
+                        >
+                            <template #column-count="{ item }">
+                                <div class="swag-migration-error-resolution-step__card-table-count">
+                                    <span class="swag-migration-error-resolution-step__card-table-count-text">
+                                        {{ item.fixCount }} / {{ item.count }}
+                                    </span>
+
+                                    <mt-icon
+                                        v-if="item.resolved"
+                                        class="swag-migration-error-resolution-step__card-table-count-icon"
+                                        name="solid-check-circle"
+                                        size="16"
+                                    />
+                                </div>
+                            </template>
+
+                            <template #column-code="{ item }">
+                                <div class="swag-migration-error-resolution-step__card-table-error">
+                                    <a
+                                        class="swag-migration-error-resolution-step__card-table-error-link"
+                                        @click="() => onOpenEditLog(item)"
+                                    >
+                                        {{ item.code }}
+                                    </a>
+                                </div>
+                            </template>
+
+                            <template #actions="{ item }">
+                                <sw-context-menu-item
+                                    class="swag-migration-error-resolution-step__card-table-edit"
+                                    :disabld="loading"
+                                    @click="() => onOpenEditLog(item)"
+                                >
+                                    {{ $tc('swag-migration.index.error-resolution.step.card.action.edit') }}
+                                </sw-context-menu-item>
+                            </template>
+
+                            <template #pagination>
+                                <sw-pagination
+                                    :page="tablePage"
+                                    :limit="tableLimit"
+                                    :total="tableTotal"
+                                    :steps="[10, 25, 50]"
+                                    @page-change="onPageChange"
+                                />
+                            </template>
+                        </sw-data-grid>
+                    </div>
+                {% endblock %}
+            </mt-card>
+        {% endblock %}
+    </div>
 {% endblock %}

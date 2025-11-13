@@ -1,25 +1,31 @@
 {% block swag_migration_error_resolution_field %}
     <div class="swag-migration-error-resolution-field">
-        <swag-migration-error-resolution-field-unhandled
-            v-if="isUnhandledField"
-            :field-name="log?.fieldName"
-            :disabled="disabled"
-        />
+        {% block swag_migration_error_resolution_field_unhandled %}
+            <swag-migration-error-resolution-field-unhandled
+                v-if="isUnhandledField"
+                :field-name="log?.fieldName"
+                :disabled="disabled"
+            />
+        {% endblock %}
 
-        <swag-migration-error-resolution-field-scalar
-            v-else-if="isScalarField"
-            :component-type="fieldType"
-            :field-name="log?.fieldName"
-            :entity-field="entityField"
-            :disabled="disabled"
-        />
+        {% block swag_migration_error_resolution_field_scalar %}
+            <swag-migration-error-resolution-field-scalar
+                v-else-if="isScalarField"
+                :component-type="fieldType"
+                :field-name="log?.fieldName"
+                :entity-field="entityField"
+                :disabled="disabled"
+            />
+        {% endblock %}
 
-        <swag-migration-error-resolution-field-relation
-            v-else
-            :relation-type="fieldType"
-            :entity-field="effectiveEntityField"
-            :field-name="log?.fieldName"
-            :disabled="disabled"
-        />
+        {% block swag_migration_error_resolution_field_relation %}
+            <swag-migration-error-resolution-field-relation
+                v-else
+                :relation-type="fieldType"
+                :entity-field="effectiveEntityField"
+                :field-name="log?.fieldName"
+                :disabled="disabled"
+            />
+        {% endblock %}
     </div>
 {% endblock %}
