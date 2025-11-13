@@ -506,8 +506,8 @@ export default class MigrationApiService extends ApiService {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
-        // @ts-ignore
         return (
+            // @ts-ignore
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
@@ -524,8 +524,8 @@ export default class MigrationApiService extends ApiService {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
-        // @ts-ignore
         return (
+            // @ts-ignore
             this.httpClient
                 // @ts-ignore
                 .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
@@ -538,7 +538,12 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async getAllLogIds(code: string, entityName: string, fieldName: string): Promise<{ ids: string[] }> {
+    async getAllLogIds(
+        code: string,
+        entityName: string,
+        fieldName: string,
+        connectionId?: string,
+    ): Promise<{ ids: string[] }> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -551,6 +556,7 @@ export default class MigrationApiService extends ApiService {
                     code,
                     entityName,
                     fieldName,
+                    connectionId,
                 },
                 {
                     ...this.basicConfig,

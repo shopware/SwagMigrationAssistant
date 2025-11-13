@@ -37,5 +37,6 @@ interface LogGroupingServiceInterface
         string $code,
         string $entityName,
         string $fieldName,
+        ?string $connectionId = null,
     ): array;
 }

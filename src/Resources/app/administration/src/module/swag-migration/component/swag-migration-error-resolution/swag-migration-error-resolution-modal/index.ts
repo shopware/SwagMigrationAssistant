@@ -403,9 +403,10 @@ export default Shopware.Component.wrapComponentConfig({
                     this.selectedLog.code,
                     this.selectedLog.entityName,
                     this.selectedLog.fieldName,
+                    this.migrationStore.connectionId,
                 );
 
-                this.selectedLogIds = this.filterUnresolvedLogIds(result.ids);
+                this.selectedLogIds = result.ids;
 
                 await this.$nextTick();
                 this.applySelectionToGrid();

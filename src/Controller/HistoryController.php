@@ -178,6 +178,7 @@ class HistoryController extends AbstractController
         $code = $request->request->get('code');
         $entityName = $request->request->get('entityName');
         $fieldName = $request->request->get('fieldName');
+        $connectionId = $request->request->getAlnum('connectionId');
 
         if (!\is_string($code) || empty($code)) {
             throw RoutingException::missingRequestParameter('code');
@@ -194,7 +195,8 @@ class HistoryController extends AbstractController
         $logIds = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
             $code,
             $entityName,
-            $fieldName
+            $fieldName,
+            empty($connectionId) ? $connectionId : null
         );
 
         return new JsonResponse([

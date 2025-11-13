@@ -107,24 +107,40 @@ class LogGroupingService implements LogGroupingServiceInterface
         string $code,
         string $entityName,
         string $fieldName,
+        ?string $connectionId = null,
     ): array {
-        $sql = '
-            SELECT LOWER(HEX(id)) as id
-            FROM swag_migration_logging
-            WHERE code = :code
-                AND entity_name = :entityName
-                AND field_name = :fieldName
-                AND user_fixable = 1
+        $join = '
+            LEFT JOIN swag_migration_fix f ON (
+                f.entity_name = l.entity_name
+                AND f.path = l.field_name
+                AND f.entity_id = l.entity_id
         ';
 
-        $result = $this->connection->executeQuery(
-            $sql,
-            [
-                'code' => $code,
-                'entityName' => $entityName,
-                'fieldName' => $fieldName,
-            ]
-        );
+        $params = [
+            'code' => $code,
+            'entityName' => $entityName,
+            'fieldName' => $fieldName,
+        ];
+
+        if ($connectionId !== null && $connectionId !== '') {
+            $join .= ' AND f.connection_id = :connectionId';
+            $params['connectionId'] = Uuid::fromHexToBytes($connectionId);
+        }
+
+        $join .= ')';
+
+        $sql = "
+            SELECT LOWER(HEX(l.id)) as id
+            FROM swag_migration_logging l
+            {$join}
+            WHERE l.code = :code
+                AND l.entity_name = :entityName
+                AND l.field_name = :fieldName
+                AND l.user_fixable = 1
+                AND f.id IS NULL
+        ";
+
+        $result = $this->connection->executeQuery($sql, $params);
 
         $rows = $result->fetchAllAssociative();
 
