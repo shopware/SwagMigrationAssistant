@@ -68,7 +68,7 @@ class SeoUrlWriterTest extends TestCase
                 'salesChannelId' => self::SALES_CHANNEL_ID,
                 'languageId' => Defaults::LANGUAGE_SYSTEM,
                 'seoPathInfo' => 'new-seo-url',
-                'isModified' => false,
+                'isModified' => true,
                 'isDeleted' => false,
             ],
         ];
