@@ -198,12 +198,6 @@
             <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\History\LogGroupingServiceInterface"
-                 class="SwagMigrationAssistant\Migration\History\LogGroupingService">
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Migration\History\LogGroupingService">
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
@@ -290,7 +284,7 @@
 
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\History\LogGroupingServiceInterface"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\History\LogGroupingService"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
