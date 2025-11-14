@@ -1,9 +1,7 @@
 /**
  * @sw-package after-sales
  */
-
 const aclRegisterMock = jest.fn();
-
 const componentRegisterMock = jest.fn();
 const componentExtendMock = jest.fn();
 const componentOverrideMock = jest.fn();
