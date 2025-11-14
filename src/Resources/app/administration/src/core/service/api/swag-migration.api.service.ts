@@ -341,7 +341,7 @@ export default class MigrationApiService extends ApiService {
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
-                .get(`${this.getApiBasePath()}/get-grouped-logs-of-run`, {
+                .get(`_action/${this.getApiBasePath()}/get-grouped-logs-of-run`, {
                     ...this.basicConfig,
                     params: {
                         runUuid,
@@ -403,10 +403,14 @@ export default class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         // @ts-ignore
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
-            ...this.basicConfig,
-            headers,
-        });
+        return this.httpClient.post(
+            `_action/${this.getApiBasePath()}/cleanup-migration-data`,
+            {},
+            {
+                ...this.basicConfig,
+                headers,
+            },
+        );
     }
 
     async isMediaProcessing(additionalHeaders: AdditionalHeaders = {}): Promise<boolean> {
@@ -454,13 +458,14 @@ export default class MigrationApiService extends ApiService {
             entity: string | null;
             field: string | null;
         },
+        additionalHeaders: AdditionalHeaders = {},
     ): Promise<{
         total: number;
         items: Array<{ code: string; entityName: string | null; fieldName: string | null; count: number }>;
         levelCounts: { error: number; warning: number; info: number };
     }> {
         // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const headers = this.getBasicHeaders(additionalHeaders);
 
         const params: Record<string, string | number> = {
             runId,
@@ -543,9 +548,10 @@ export default class MigrationApiService extends ApiService {
         entityName: string,
         fieldName: string,
         connectionId?: string,
+        additionalHeaders: AdditionalHeaders = {},
     ): Promise<{ ids: string[] }> {
         // @ts-ignore
-        const headers = this.getBasicHeaders();
+        const headers = this.getBasicHeaders(additionalHeaders);
 
         // @ts-ignore
         return this.httpClient
