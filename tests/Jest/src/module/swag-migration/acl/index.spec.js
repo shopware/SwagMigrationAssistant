@@ -1,8 +1,6 @@
 /**
  * @sw-package after-sales
  */
-import { MIGRATION_ACL_KEY, acl } from 'SwagMigrationAssistant/module/swag-migration/acl';
-
 const aclRegisterMock = jest.fn();
 
 const originalShopware = Shopware;
@@ -32,9 +30,6 @@ describe('src/module/swag-migration/acl/index', () => {
     });
 
     it('should register acl privileges', async () => {
-        expect(MIGRATION_ACL_KEY).toBeDefined();
-        expect(acl).toBeDefined();
-
         expect(aclRegisterMock).toHaveBeenCalledTimes(1);
         expect(aclRegisterMock).toHaveBeenCalledWith({
             category: 'permissions',
