@@ -41,10 +41,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         effectiveEntityField(): Property | null {
-            return this.swagMigrationErrorResolutionService.getEffectiveEntityField(
-                this.log.entityName,
-                this.log.fieldName,
-            );
+            return this.swagMigrationErrorResolutionService.getEffectiveEntityField(this.log.entityName, this.log.fieldName);
         },
 
         fieldType(): string | null {
