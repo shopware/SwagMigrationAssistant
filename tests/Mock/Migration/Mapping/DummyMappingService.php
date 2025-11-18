@@ -11,6 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
@@ -67,7 +68,7 @@ class DummyMappingService extends MappingService
 
     public function getMapping(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?array
     {
-        return $this->mappings[\md5($entityName . $oldIdentifier)] ?? null;
+        return $this->mappings[Hasher::hash($entityName . $oldIdentifier)] ?? null;
     }
 
     public function getMappingArray(): array
@@ -87,17 +88,17 @@ class DummyMappingService extends MappingService
 
     public function getValue(string $connectionId, string $entityName, string $oldIdentifier, Context $context): ?string
     {
-        if (!isset($this->mappings[\md5($entityName . $oldIdentifier)])) {
+        if (!isset($this->mappings[Hasher::hash($entityName . $oldIdentifier)])) {
             return null;
         }
 
-        return $this->mappings[\md5($entityName . $oldIdentifier)]['entityValue'];
+        return $this->mappings[Hasher::hash($entityName . $oldIdentifier)]['entityValue'];
     }
 
     public function getUuidList(string $connectionId, string $entityName, string $identifier, Context $context): array
     {
-        return isset($this->mappings[\md5($entityName . $identifier)])
-            ? \array_column($this->mappings[\md5($entityName . $identifier)], 'entityId')
+        return isset($this->mappings[Hasher::hash($entityName . $identifier)])
+            ? \array_column($this->mappings[Hasher::hash($entityName . $identifier)], 'entityId')
             : [];
     }
 
@@ -121,6 +122,6 @@ class DummyMappingService extends MappingService
     {
         $entity = $mapping['entity'];
         $oldIdentifier = $mapping['oldIdentifier'];
-        $this->mappings[\md5($entity . $oldIdentifier)] = $mapping;
+        $this->mappings[Hasher::hash($entity . $oldIdentifier)] = $mapping;
     }
 }
