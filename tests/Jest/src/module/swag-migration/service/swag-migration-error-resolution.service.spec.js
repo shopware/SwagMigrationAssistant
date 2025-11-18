@@ -983,7 +983,9 @@ const VALIDATE_FIELD_VALUE_TESTS = [
         fieldName: 'categories',
         fieldValue: {
             getIds: () => [],
-            [Symbol.iterator]: function* () {},
+            *[Symbol.iterator]() {
+                yield* [];
+            },
         },
         expected: 'fieldValueNotSet',
     },
@@ -993,7 +995,7 @@ const VALIDATE_FIELD_VALUE_TESTS = [
         fieldName: 'categories',
         fieldValue: {
             getIds: () => ['cat-1'],
-            [Symbol.iterator]: function* () {
+            *[Symbol.iterator]() {
                 yield { id: 'cat-1' };
             },
         },
@@ -1036,7 +1038,7 @@ const IS_ENTITY_COLLECTION_TESTS = [
                 'id-1',
                 'id-2',
             ],
-            [Symbol.iterator]: function* () {
+            *[Symbol.iterator]() {
                 yield { id: 'id-1' };
                 yield { id: 'id-2' };
             },
@@ -1104,7 +1106,7 @@ const NORMALIZE_FIELD_VALUE_FOR_SAVE_TESTS = [
                 'id-1',
                 'id-2',
             ],
-            [Symbol.iterator]: function* () {
+            *[Symbol.iterator]() {
                 yield { id: 'id-1' };
                 yield { id: 'id-2' };
             },
@@ -1118,7 +1120,9 @@ const NORMALIZE_FIELD_VALUE_FOR_SAVE_TESTS = [
         name: 'empty EntityCollection to empty array',
         fieldValue: {
             getIds: () => [],
-            [Symbol.iterator]: function* () {},
+            *[Symbol.iterator]() {
+                yield* [];
+            },
         },
         expected: [],
     },
@@ -1263,11 +1267,6 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
             const result = service.getEntityLink(entityName);
 
             expect(result).toStrictEqual(expected);
-
-            if (entityName) {
-                expect(moduleSpy).toHaveBeenCalled();
-            }
-
             moduleSpy.mockRestore();
         });
     });

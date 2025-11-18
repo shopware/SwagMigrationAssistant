@@ -93,7 +93,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
 
         expect(
             wrapper.find('.sw-migration-error-resolution-field__textarea textarea').attributes('disabled'),
-        ).not.toBeDefined();
+        ).toBeUndefined();
         await wrapper.setProps({ disabled: true });
         expect(wrapper.find('.sw-migration-error-resolution-field__textarea textarea').attributes('disabled')).toBeDefined();
     });
@@ -146,7 +146,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         await wrapper.find('.sw-migration-error-resolution-field__switch input').setChecked(true);
         expect(updateFieldValueMock).toHaveBeenCalledWith(true);
 
-        expect(wrapper.find('.sw-migration-error-resolution-field__switch input').attributes('disabled')).not.toBeDefined();
+        expect(wrapper.find('.sw-migration-error-resolution-field__switch input').attributes('disabled')).toBeUndefined();
         await wrapper.setProps({ disabled: true });
         expect(wrapper.find('.sw-migration-error-resolution-field__switch input').attributes('disabled')).toBeDefined();
     });
@@ -171,7 +171,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
 
         expect(
             wrapper.find('.sw-migration-error-resolution-field__datepicker input').attributes('disabled'),
-        ).not.toBeDefined();
+        ).toBeUndefined();
         await wrapper.setProps({ disabled: true });
         expect(wrapper.find('.sw-migration-error-resolution-field__datepicker input').attributes('disabled')).toBeDefined();
     });

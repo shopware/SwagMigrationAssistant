@@ -56,7 +56,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         expect(field.attributes('field-name')).toBe(props.log.fieldName);
     });
 
-    it('should display scalar component & pass data ', async () => {
+    it('should display scalar component & pass data', async () => {
         const props = {
             ...defaultProps,
             log: {
@@ -77,7 +77,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         expect(field.attributes('component-type')).toBe('text');
     });
 
-    it('should display relation component & pass data ', async () => {
+    it('should display relation component & pass data', async () => {
         const props = {
             ...defaultProps,
             log: {

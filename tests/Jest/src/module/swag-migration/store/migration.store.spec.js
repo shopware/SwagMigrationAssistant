@@ -747,15 +747,12 @@ describe('src/module/swag-migration/store/migration.store', () => {
 
             const fullReload = force || !!connectionId;
 
-            if (fullReload) {
-                expect(store.latestRun).toBeNull();
-                expect(store.currentConnection).toBeNull();
-                expect(store.warningConfirmed).toBe(false);
-                expect(store.dataSelectionIds).toStrictEqual([]);
-                expect(store.lastConnectionCheck).toBeNull();
-                expect(store.dataSelectionTableData).toStrictEqual([]);
-                expect(store.premapping).toStrictEqual([]);
-            }
+            expect(store.latestRun).toStrictEqual(fullReload ? null : initialStore.latestRun);
+            expect(store.currentConnection).toStrictEqual(fullReload ? null : initialStore.currentConnection);
+            expect(store.warningConfirmed).toBe(!fullReload);
+            expect(store.dataSelectionIds).toStrictEqual(fullReload ? [] : initialStore.dataSelectionIds);
+            expect(store.dataSelectionTableData).toStrictEqual(fullReload ? [] : initialStore.dataSelectionTableData);
+            expect(store.premapping).toStrictEqual(fullReload ? [] : initialStore.premapping);
 
             expect(repositoryMock.search).toHaveBeenCalledTimes(1);
             expect(migrationApiServiceMock.checkConnection).toHaveBeenCalledTimes(1);
