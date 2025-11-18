@@ -29,26 +29,26 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         isUnhandledField(): boolean {
-            return this.swagMigrationErrorResolutionService.isUnhandledField(this.log?.entityName, this.log?.fieldName);
+            return this.swagMigrationErrorResolutionService.isUnhandledField(this.log.entityName, this.log.fieldName);
         },
 
         entityField(): Property | null {
-            return this.swagMigrationErrorResolutionService.getEntityField(this.log?.entityName, this.log?.fieldName);
+            return this.swagMigrationErrorResolutionService.getEntityField(this.log.entityName, this.log.fieldName);
         },
 
         isScalarField(): boolean {
-            return this.swagMigrationErrorResolutionService.isScalarField(this.log?.entityName, this.log?.fieldName);
+            return this.swagMigrationErrorResolutionService.isScalarField(this.log.entityName, this.log.fieldName);
         },
 
         effectiveEntityField(): Property | null {
             return this.swagMigrationErrorResolutionService.getEffectiveEntityField(
-                this.log?.entityName,
-                this.log?.fieldName,
+                this.log.entityName,
+                this.log.fieldName,
             );
         },
 
         fieldType(): string | null {
-            return this.swagMigrationErrorResolutionService.getFieldType(this.log?.entityName, this.log?.fieldName);
+            return this.swagMigrationErrorResolutionService.getFieldType(this.log.entityName, this.log.fieldName);
         },
     },
 });
