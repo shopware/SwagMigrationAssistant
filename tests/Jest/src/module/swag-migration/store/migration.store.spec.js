@@ -182,6 +182,21 @@ const CONTINUE_ALLOWED_TESTS = [
         },
     },
     {
+        name: 'no selected data with optional requiredSelection false',
+        expected: false,
+        disabledMessage: 'swag-migration.general.disabledMessages.noSelectedData',
+        aclRight: true,
+        storeData: {
+            dataSelectionTableData: [
+                {
+                    id: 'optional-selection',
+                    requiredSelection: false,
+                },
+            ],
+            dataSelectionIds: ['other-id'],
+        },
+    },
+    {
         name: 'disabled migration',
         expected: false,
         disabledMessage: 'swag-migration.general.disabledMessages.disabled',
@@ -328,6 +343,54 @@ const SET_PREMAPPING_TESTS = [
             },
         ],
     },
+    {
+        name: 'should not override existing mapping with set destinationUuid',
+        initialPremapping: [
+            {
+                entity: 'test-entity',
+                choices: [
+                    { uuid: 'choice-1' },
+                ],
+                mapping: [
+                    {
+                        uuid: 'existing-mapping',
+                        sourceId: 'source-1',
+                        destinationUuid: 'already-set-destination',
+                    },
+                ],
+            },
+        ],
+        premapping: [
+            {
+                entity: 'test-entity',
+                choices: [
+                    { uuid: 'choice-1' },
+                ],
+                mapping: [
+                    {
+                        uuid: 'existing-mapping',
+                        sourceId: 'source-1',
+                        destinationUuid: 'new-destination',
+                    },
+                ],
+            },
+        ],
+        expected: [
+            {
+                entity: 'test-entity',
+                choices: [
+                    { uuid: 'choice-1' },
+                ],
+                mapping: [
+                    {
+                        uuid: 'existing-mapping',
+                        sourceId: 'source-1',
+                        destinationUuid: 'already-set-destination',
+                    },
+                ],
+            },
+        ],
+    },
 ];
 
 const INIT_STORE_TESTS = [
@@ -454,7 +517,6 @@ describe('src/module/swag-migration/store/migration.store', () => {
     beforeEach(async () => {
         jest.resetAllMocks();
 
-        // Reset API service mocks to default behavior
         migrationApiServiceMock.checkConnection.mockResolvedValue({});
         migrationApiServiceMock.getDataSelection.mockResolvedValue([]);
 
@@ -767,6 +829,38 @@ describe('src/module/swag-migration/store/migration.store', () => {
             expect(store.dataSelectionIds).toStrictEqual([]);
             expect(dispatchMock).toHaveBeenNthCalledWith(1, 'notification/createNotification', {
                 message: 'swag-migration.api-error.getDataSelection',
+                title: 'global.default.error',
+                variant: 'error',
+            });
+        });
+
+        it('should return false when connectionId has not changed', async () => {
+            store.connectionId = 'existing-connection-id';
+
+            repositoryMock.search.mockResolvedValueOnce({
+                length: 1,
+                first: () => ({
+                    selectedConnectionId: 'existing-connection-id',
+                }),
+            });
+
+            const result = await store.fetchConnectionId();
+
+            expect(result).toBe(false);
+            expect(store.connectionId).toBe('existing-connection-id');
+        });
+
+        it('should handle fetchConnectionId error and create notification', async () => {
+            store.connectionId = 'initial-connection-id';
+
+            repositoryMock.search.mockRejectedValueOnce(new Error('fetch failed'));
+
+            const result = await store.fetchConnectionId();
+
+            expect(result).toBe(false);
+            expect(store.connectionId).toBeNull();
+            expect(dispatchMock).toHaveBeenNthCalledWith(1, 'notification/createNotification', {
+                message: 'swag-migration.api-error.fetchConnectionId',
                 title: 'global.default.error',
                 variant: 'error',
             });
