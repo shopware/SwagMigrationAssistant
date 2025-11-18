@@ -55,7 +55,8 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationErrorResolutionFieldRelationData {
         return {
-            fieldValue: this.getInitialFieldValue(),
+            // don't use `isToOneRelation` here, because data() is called before computed properties are set up
+            fieldValue: this.relationType === HANDLED_RELATION_TYPES.MANY_TO_ONE ? null : [],
             noOptionsFound: false,
             entityLink: null,
         };
@@ -106,10 +107,6 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        getInitialFieldValue(): string | string[] | null {
-            return this.isToOneRelation ? null : [];
-        },
-
         async checkEntityAvailability() {
             if (!this.entityRepository) {
                 return;
@@ -128,7 +125,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         getLabelValue(item: Record<string, unknown>): string {
-            if (!this.labelProperty || !item) {
+            if (!this.labelProperty) {
                 return '';
             }
 
