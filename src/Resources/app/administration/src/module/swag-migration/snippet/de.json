@@ -632,7 +632,7 @@
           "card": {
             "title": "Fehler",
             "filter": {
-              "title": "Filter",
+              "title": "Filter ({filterCount})",
               "reset": "Filter zurücksetzen",
               "code": {
                 "label": "Fehlercode",

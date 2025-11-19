@@ -2,7 +2,7 @@
     <div class="swag-migration-error-resolution-log-filter">
         <mt-popover
             class="swag-migration-error-resolution-log-filter__popover"
-            :title="$tc('swag-migration.index.error-resolution.step.card.filter.title')"
+            :title="$tc('swag-migration.index.error-resolution.step.card.filter.title', { filterCount })"
             :is-opened="open"
             width="large"
         >
@@ -22,7 +22,7 @@
                             />
                         </template>
 
-                        <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter.title') }}</span>
+                        <span>{{ $tc('swag-migration.index.error-resolution.step.card.filter.title', { filterCount }) }}</span>
                     </mt-button>
                 {% endblock %}
             </template>
