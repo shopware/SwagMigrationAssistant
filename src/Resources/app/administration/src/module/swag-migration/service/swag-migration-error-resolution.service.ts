@@ -102,7 +102,7 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
 
 /**
  * @private
- * List of fields prioritized for sorting purposes, to determined most meaningful fields first.
+ * list of fields prioritized for sorting purposes, to determined most meaningful fields first.
  */
 export const PRIORITY_FIELDS = [
     'id',
@@ -118,6 +118,7 @@ export const PRIORITY_FIELDS = [
     'status',
     'type',
     'available',
+    'createdAt',
     'orderDateTime',
     'releaseDate',
     'birthday',

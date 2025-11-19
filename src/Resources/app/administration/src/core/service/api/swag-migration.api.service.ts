@@ -404,6 +404,7 @@ export default class MigrationApiService extends ApiService {
 
         // @ts-ignore
         return this.httpClient.post(
+            // @ts-ignore
             `_action/${this.getApiBasePath()}/cleanup-migration-data`,
             {},
             {
