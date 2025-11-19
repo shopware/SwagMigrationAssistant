@@ -356,13 +356,14 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 
         const data = {
+            runId: '987654321',
             code: 'MIGRATION_001',
             entityName: 'product',
             fieldName: 'name',
             connectionId: '123456789',
         };
 
-        await migrationApiService.getAllLogIds(data.code, data.entityName, data.fieldName, data.connectionId, {
+        await migrationApiService.getAllLogIds(data.runId, data.code, data.entityName, data.fieldName, data.connectionId, {
             'test-header': 'test-value',
         });
 

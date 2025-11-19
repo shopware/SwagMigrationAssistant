@@ -9,6 +9,7 @@ import SwagMigrationErrorResolutionService, {
     FIELD_TYPE_COMPONENT_MAPPING,
     PRIORITY_FIELDS,
     PRIORITY_FIELD_MAP,
+    CONTENT_TEXT_MAX_LENGTH,
     createEmptyEntityFields,
 } from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
 
@@ -904,6 +905,20 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             categories: '',
         },
     },
+    {
+        name: 'too long text field',
+        entityName: 'order',
+        fieldProperties: [
+            'customerComment',
+        ],
+        convertedData: {
+            customerComment: 'A'.repeat(CONTENT_TEXT_MAX_LENGTH + 1),
+        },
+        fieldName: 'customerComment',
+        expected: {
+            customerComment: `${'A'.repeat(CONTENT_TEXT_MAX_LENGTH)}...`,
+        },
+    },
 ];
 
 const VALIDATE_FIELD_VALUE_TESTS = [
@@ -1239,6 +1254,10 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
 
             const uniqueFields = new Set(PRIORITY_FIELDS);
             expect(uniqueFields.size).toBe(PRIORITY_FIELDS.length);
+        });
+
+        it('should set a max text content lenght', () => {
+            expect(CONTENT_TEXT_MAX_LENGTH).toBe(100);
         });
     });
 

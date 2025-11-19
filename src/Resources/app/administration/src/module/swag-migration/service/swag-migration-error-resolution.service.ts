@@ -635,7 +635,7 @@ export default class SwagMigrationErrorResolutionService {
 
                 // truncate long text values
                 if (typeof finalValue === 'string' && finalValue.length > CONTENT_TEXT_MAX_LENGTH) {
-                    finalValue = `${finalValue.substring(0, 100)}...`;
+                    finalValue = `${finalValue.substring(0, CONTENT_TEXT_MAX_LENGTH)}...`;
                 }
 
                 acc[property] = finalValue;

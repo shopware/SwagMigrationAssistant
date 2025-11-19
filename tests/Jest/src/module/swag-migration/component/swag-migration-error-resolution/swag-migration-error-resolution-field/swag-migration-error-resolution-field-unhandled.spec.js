@@ -71,7 +71,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         const wrapper = await createWrapper();
         await flushPromises();
 
-        expect(wrapper.find('.sw-code-editor__editor').attributes('content')).toBe('""');
+        expect(wrapper.find('.sw-code-editor__editor').attributes('content')).toBe('');
         expect(updateFieldValueMock).toHaveBeenCalledWith('');
     });
 
