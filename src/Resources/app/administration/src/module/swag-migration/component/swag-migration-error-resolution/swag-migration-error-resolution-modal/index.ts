@@ -490,6 +490,9 @@ export default Shopware.Component.wrapComponentConfig({
             this.tableLimit = page.limit;
 
             await this.fetchLogs();
+
+            await this.$nextTick();
+            this.applySelectionToGrid();
         },
     },
 });
