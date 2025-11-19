@@ -106,19 +106,7 @@
                         :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
                         variant="critical"
                     >
-                        <span>
-                            {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
-                        </span>
-
-                        <mt-link
-                            class="swag-migration-error-resolution-step__header-banner-link"
-                            to="https://account.shopware.com/"
-                            target="_blank"
-                            type="external"
-                            as="a"
-                        >
-                            {{ $tc('swag-migration.index.error-resolution.step.header.banner.link') }}
-                        </mt-link>
+                        {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
                     </mt-banner>
                 </div>
             {% endblock %}

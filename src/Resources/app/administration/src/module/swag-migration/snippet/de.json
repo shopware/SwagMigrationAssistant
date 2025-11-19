@@ -626,8 +626,7 @@
             "continue": "Fortfahren",
             "banner": {
               "title": "Einige Fehler können möglicherweise nicht über diese Ansicht behoben werden",
-              "content": "Es gibt {count} Fehler, die nicht über diese Ansicht behoben werden können. Bitte laden Sie die Protokolldatei herunter, um weitere Informationen zu erhalten. Und wenn Hilfe benötigt wird, kontaktieren Sie den",
-              "link": "Shopware Support"
+              "content": "Es gibt {count} Fehler, die nicht über diese Ansicht behoben werden können. Bitte laden Sie die Protokolldatei herunter, um weitere Informationen zu erhalten."
             }
           },
           "card": {

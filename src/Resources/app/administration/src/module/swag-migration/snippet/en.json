@@ -477,8 +477,7 @@
             "continue": "Continue",
             "banner": {
               "title": "Some errors may not be fixable via this view",
-              "content": "There are {count} errors that cannot be fixed via this view. Please download log file to get more info. And if help is needed contact the",
-              "link": "Shopware Support"
+              "content": "There are {count} errors that cannot be fixed via this view. Please download log file to get more info."
             }
           },
           "card": {
