@@ -53,6 +53,7 @@ export interface SwagMigrationErrorResolutionStepData {
     runId: string | null;
     selectedLog: ErrorResolutionTableData | null;
     totalUnfixableErrors: number;
+    totalUnresolvedErrors: number;
     migrationStore: MigrationStore;
     logFilter: LogFilterValue;
     levelCounts: {
@@ -89,12 +90,13 @@ export default Shopware.Component.wrapComponentConfig({
             tableData: [],
             loading: false,
             downloadLoading: false,
+            continueLoading: false,
             openContinueModal: false,
             openErrorResolutionModal: false,
-            continueLoading: false,
             runId: null,
             selectedLog: null,
             totalUnfixableErrors: 0,
+            totalUnresolvedErrors: 0,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             levelCounts: {
                 error: 0,
@@ -295,6 +297,35 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onContinueMigration() {
+            this.continueLoading = true;
+
+            try {
+                const result = await this.migrationApiService.getLogGroups(
+                    this.runId,
+                    MIGRATION_LOG_LEVEL.ERROR,
+                    1,
+                    1,
+                    this.tableSortBy,
+                    this.tableSortDirection,
+                    { status: 'unresolved' },
+                );
+
+                if (result?.levelCounts?.error > 0) {
+                    this.totalUnresolvedErrors = result.levelCounts.error;
+                    this.continueLoading = false;
+                    this.openContinueModal = true;
+                } else {
+                    await this.commitContinueMigration();
+                }
+            } catch {
+                this.continueLoading = false;
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
+                });
+            }
+        },
+
+        async commitContinueMigration() {
             this.continueLoading = true;
 
             try {

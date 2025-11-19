@@ -3,6 +3,7 @@
         <swag-migration-error-resolution-modal
             v-if="openErrorResolutionModal && selectedLog"
             :selected-log="selectedLog"
+            :run-id="runId"
             @close-error-resolution-modal="onCloseEditLog"
             @fixes-created="onFixesCreated"
         />
@@ -16,7 +17,7 @@
                 :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
             >
                 <p class="swag-migration-error-resolution-step__continue-modal-text">
-                    {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnfixableErrors }) }}
+                    {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnresolvedErrors }) }}
                 </p>
 
                 <template #modal-footer>
@@ -34,7 +35,7 @@
                             variant="critical"
                             size="small"
                             :is-loading="continueLoading"
-                            @click="onContinueMigration"
+                            @click="commitContinueMigration"
                         >
                             {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
                         </mt-button>
@@ -89,7 +90,8 @@
                             class="swag-migration-error-resolution-step__header-buttons-continue"
                             variant="primary"
                             :disabled="loading || downloadLoading"
-                            @click="() => openContinueModal = true"
+                            :is-loading="continueLoading"
+                            @click="onContinueMigration"
                         >
                             {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
                         </mt-button>
@@ -122,6 +124,7 @@
                     <swag-migration-error-resolution-log-filter
                         :disabled="loading"
                         :table-data="tableData"
+                        :run-id="runId"
                         @log-filter-change="onLogFilterChange"
                     />
                 </template>

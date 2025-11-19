@@ -467,7 +467,7 @@
         "step": {
           "continue-modal": {
             "title": "Continue",
-            "text": "There are {count} errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+            "text": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
           },
           "header": {
             "title": "Error resolution",
@@ -555,7 +555,7 @@
               },
               "unhandledBanner": {
                 "title": "Unknown field type",
-                "content": "The field type could not be determined. Please correct the raw source data."
+                "content": "The field type could not be determined. Please correct the raw source data. The value has to be in the correct format."
               },
               "apply": "Apply changes"
             }

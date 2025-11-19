@@ -70,6 +70,10 @@ export default Shopware.Component.wrapComponentConfig({
             required: true,
             default: () => [],
         },
+        runId: {
+            type: String,
+            required: true,
+        },
     },
 
     data(): SwagMigrationErrorResolutionLogFilterData {
@@ -168,6 +172,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             const criteria = new Criteria(1, 1)
                 .addAggregation(Criteria.terms(aggregationName, field, 25, null, null))
+                .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('userFixable', 1));
 
             if (searchTerm) {
@@ -204,6 +209,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             const criteria = new Criteria(1, 1)
                 .addAggregation(Criteria.terms(`${type}Aggregation`, field, 250, null, null))
+                .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('userFixable', 1));
 
             const result = await this.migrationLoggingRepository.search(criteria);

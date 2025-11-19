@@ -616,7 +616,7 @@
         "step": {
           "continue-modal": {
             "title": "Fortfahren",
-            "text": "Es gibt noch {count} Fehler, die nicht behoben wurden. Wenn Sie ohne Lösung der verbleibenden Fehler fortfahren, könnten Folgefehler auftreten."
+            "text": "Es gibt {count} Gruppen von behebbaren Fehlern, die noch nicht behoben wurden. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten."
           },
           "header": {
             "title": "Fehlerbehebung",
