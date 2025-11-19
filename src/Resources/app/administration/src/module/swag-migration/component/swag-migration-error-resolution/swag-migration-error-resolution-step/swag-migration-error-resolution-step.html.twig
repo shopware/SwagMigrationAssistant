@@ -137,6 +137,7 @@
                 {% block swag_migration_error_resolution_step_card_table %}
                     <div class="swag-migration-error-resolution-step__card-table">
                         <sw-data-grid
+                            v-if="tableData?.length > 0"
                             identifier="swag-migration-error-resolution-grid"
                             :data-source="tableData"
                             :columns="tableColumns"
@@ -194,6 +195,17 @@
                                 />
                             </template>
                         </sw-data-grid>
+
+                        <div
+                            v-else
+                            class="swag-migration-error-resolution-step__card-table-empty-state"
+                        >
+                            <mt-empty-state
+                                :headline="$tc('swag-migration.index.error-resolution.step.card.table.empty-state.headline')"
+                                :description="$tc('swag-migration.index.error-resolution.step.card.table.empty-state.description')"
+                                icon="solid-question-circle"
+                            />
+                        </div>
                     </div>
                 {% endblock %}
             </mt-card>

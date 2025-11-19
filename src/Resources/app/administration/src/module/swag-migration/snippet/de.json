@@ -668,6 +668,10 @@
                 "field": "Feld",
                 "profileName": "Profil",
                 "gatewayName": "Gateway"
+              },
+              "empty-state": {
+                "headline": "Keine Ergebnisse",
+                "description": "Wir konnten keine Logs finden, die Ihren aktuellen Filtern entsprechen."
               }
             },
             "action": {

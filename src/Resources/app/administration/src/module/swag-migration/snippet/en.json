@@ -519,7 +519,11 @@
                 "field": "Field",
                 "profileName": "Profile",
                 "gatewayName": "Gateway"
-              }
+              },
+              "empty-state": {
+                "headline": "Nothing found",
+                "description": "No logs matching the selected filters were found."
+               }
             },
             "action": {
               "edit": "Edit"
