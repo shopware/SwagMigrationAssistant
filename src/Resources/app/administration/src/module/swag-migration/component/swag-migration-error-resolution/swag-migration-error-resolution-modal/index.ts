@@ -123,8 +123,10 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         modalTitle() {
+            const translatedCode = this.swagMigrationErrorResolutionService.translateErrorCode(this.selectedLog.code);
+
             return this.$tc('swag-migration.index.error-resolution.modals.error.title', {
-                code: this.selectedLog.code,
+                code: translatedCode,
                 entityName: this.selectedLog.entityName,
                 fieldName: this.selectedLog.fieldName,
             });

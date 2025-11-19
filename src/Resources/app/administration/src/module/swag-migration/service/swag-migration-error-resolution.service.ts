@@ -169,6 +169,11 @@ export const CONTENT_TEXT_MAX_LENGTH = 100;
 /**
  * @private
  */
+export const MIGRATION_ERROR_TRANSLATION_SNIPPET_PREFIX = 'swag-migration.index.error-resolution.codes';
+
+/**
+ * @private
+ */
 export const MIGRATION_ERROR_RESOLUTION_SERVICE = 'swagMigrationErrorResolutionService';
 
 /**
@@ -176,6 +181,16 @@ export const MIGRATION_ERROR_RESOLUTION_SERVICE = 'swagMigrationErrorResolutionS
  * @sw-package fundamentals@after-sales
  */
 export default class SwagMigrationErrorResolutionService {
+    /**
+     * translates a migration error code into a human-readable message.
+     * if no translation is found, returns the original code.
+     */
+    translateErrorCode(code: string): string {
+        const translationKey = `${MIGRATION_ERROR_TRANSLATION_SNIPPET_PREFIX}.${code}`;
+
+        return Shopware.Snippet.tc(translationKey) ?? code;
+    }
+
     /**
      * gets the admin link for a given entity name.
      * tries to find the route by looking up modules registered for the entity.

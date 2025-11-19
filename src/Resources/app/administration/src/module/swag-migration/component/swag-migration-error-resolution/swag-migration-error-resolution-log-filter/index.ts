@@ -5,6 +5,7 @@ import type { ErrorResolutionTableData } from '../swag-migration-error-resolutio
 import type { TRepository } from '../../../../../type/types';
 import type { MigrationStore } from '../../../store/migration.store';
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
+import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 
 const { debounce } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
@@ -57,7 +58,10 @@ export default Shopware.Component.wrapComponentConfig({
 
     emits: ['log-filter-change'],
 
-    inject: ['repositoryFactory'],
+    inject: [
+        MIGRATION_ERROR_RESOLUTION_SERVICE,
+        'repositoryFactory',
+    ],
 
     props: {
         disabled: {
@@ -135,6 +139,22 @@ export default Shopware.Component.wrapComponentConfig({
             };
         },
 
+        buildResultsMap(type: keyof LogFilterValue, values: string[]): { value: string; label: string }[] {
+            return values.map((value) => {
+                if (type === fieldMap.code) {
+                    return {
+                        value,
+                        label: this.swagMigrationErrorResolutionService.translateErrorCode(value),
+                    };
+                }
+
+                return {
+                    value,
+                    label: value,
+                };
+            });
+        },
+
         onSearch({ searchTerm }: { searchTerm: string | null }, type: keyof LogFilterValue): Option[] {
             this.debouncedFetchSearchResults(searchTerm, type);
 
@@ -194,7 +214,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             this.searchResults = {
                 ...this.searchResults,
-                [type]: uniqueValues.map((value) => ({ value, label: value })),
+                [type]: this.buildResultsMap(type, uniqueValues),
             };
         },
 
@@ -218,10 +238,10 @@ export default Shopware.Component.wrapComponentConfig({
             if (aggregation && aggregation.buckets) {
                 this.searchResults = {
                     ...this.searchResults,
-                    [type]: aggregation.buckets.map((bucket) => ({
-                        value: bucket.key,
-                        label: bucket.key,
-                    })),
+                    [type]: this.buildResultsMap(
+                        type,
+                        aggregation.buckets.map((bucket) => bucket.key),
+                    ),
                 };
             }
         },

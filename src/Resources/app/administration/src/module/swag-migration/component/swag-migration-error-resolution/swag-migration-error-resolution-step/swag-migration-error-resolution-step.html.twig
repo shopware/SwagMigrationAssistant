@@ -167,13 +167,13 @@
                                 </div>
                             </template>
 
-                            <template #column-code="{ item }">
+                            <template #column-name="{ item }">
                                 <div class="swag-migration-error-resolution-step__card-table-error">
                                     <a
                                         class="swag-migration-error-resolution-step__card-table-error-link"
                                         @click="() => onOpenEditLog(item)"
                                     >
-                                        {{ item.code }}
+                                        {{ item.name }}
                                     </a>
                                 </div>
                             </template>
