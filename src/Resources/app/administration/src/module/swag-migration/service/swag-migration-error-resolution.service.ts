@@ -164,6 +164,11 @@ export const createEmptyEntityFields = (): EntityFields => ({
 /**
  * @private
  */
+export const CONTENT_TEXT_MAX_LENGTH = 100;
+
+/**
+ * @private
+ */
 export const MIGRATION_ERROR_RESOLUTION_SERVICE = 'swagMigrationErrorResolutionService';
 
 /**
@@ -596,7 +601,14 @@ export default class SwagMigrationErrorResolutionService {
                     Array.isArray(value) ||
                     (typeof value === 'object' && value !== null && 'id' in value);
 
-                acc[property] = shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value;
+                let finalValue = shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value;
+
+                // truncate long text values
+                if (typeof finalValue === 'string' && finalValue.length > CONTENT_TEXT_MAX_LENGTH) {
+                    finalValue = `${finalValue.substring(0, 100)}...`;
+                }
+
+                acc[property] = finalValue;
             }
 
             return acc;
