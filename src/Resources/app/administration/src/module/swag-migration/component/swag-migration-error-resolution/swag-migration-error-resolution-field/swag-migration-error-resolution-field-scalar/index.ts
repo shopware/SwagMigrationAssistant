@@ -60,10 +60,6 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         numberFieldType(): string {
-            if (this.componentType !== FIELD_COMPONENT_TYPES.NUMBER) {
-                return 'int';
-            }
-
             return this.entityField?.type || 'int';
         },
     },

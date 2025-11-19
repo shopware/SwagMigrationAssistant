@@ -251,7 +251,7 @@ const migrationStore = Shopware.Store.register({
         // merges the existing premapping (in the state) with the newly provided one.
         // resets the state premapping if an empty array is passed as an argument.
         setPremapping(newPremapping: MigrationPremapping[]) {
-            if (newPremapping === undefined || newPremapping === null || newPremapping.length < 1) {
+            if (!newPremapping?.length) {
                 this.premapping = [];
                 return;
             }
@@ -313,11 +313,9 @@ const migrationStore = Shopware.Store.register({
             this.isLoading = true;
 
             const connectionIdChanged = await this.fetchConnectionId();
-            // Always fetch latest environment info
             await this.fetchEnvironmentInformation();
 
             if (forceFullStateReload || connectionIdChanged) {
-                // First, clear old user input
                 this.latestRun = null;
                 this.currentConnection = null;
                 this.warningConfirmed = false;
@@ -326,7 +324,6 @@ const migrationStore = Shopware.Store.register({
                 this.premapping = [];
                 this.dataSelectionTableData = [];
 
-                // Then fetch new data
                 await this.fetchDataSelectionIds();
             }
 

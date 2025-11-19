@@ -3,6 +3,7 @@ import type EntityDefinition from '@administration/src/core/data/entity-definiti
 
 /**
  * @private
+ * structure holding categorized entity fields.
  */
 export interface EntityFields {
     scalar: Record<string, Property>;
@@ -12,6 +13,7 @@ export interface EntityFields {
 
 /**
  * @private
+ * table column definition for error resolution modal.
  */
 export interface TableColumn {
     label: string;
@@ -23,6 +25,8 @@ export interface TableColumn {
 
 /**
  * @private
+ * data types used in entity definitions.
+ * `scalarTypes` & `jsonTypes` in `entity-definition.data.ts`
  */
 export const DATA_TYPES = {
     UUID: 'uuid',
@@ -39,6 +43,8 @@ export const DATA_TYPES = {
 
 /**
  * @private
+ * list of field types that are not handled for error resolution.
+ * blob and password fields are excluded due to their sensitive or complex nature.
  */
 export const UNHANDLED_FIELD_TYPES = [
     'blob',
@@ -47,6 +53,7 @@ export const UNHANDLED_FIELD_TYPES = [
 
 /**
  * @private
+ * list of field names that are not handled for error resolution.
  */
 export const UNHANDLED_FIELD_NAMES = [
     'id',
@@ -56,6 +63,8 @@ export const UNHANDLED_FIELD_NAMES = [
 
 /**
  * @private
+ * list of relation types that are handled for error resolution.
+ * `Property.relation` in `entity-definition.data.ts`
  */
 export const HANDLED_RELATION_TYPES = {
     MANY_TO_ONE: 'many_to_one',
@@ -65,6 +74,7 @@ export const HANDLED_RELATION_TYPES = {
 
 /**
  * @private
+ * field component types used for rendering fields in the ui.
  */
 export const FIELD_COMPONENT_TYPES = {
     NUMBER: 'number',
@@ -77,6 +87,7 @@ export const FIELD_COMPONENT_TYPES = {
 
 /**
  * @private
+ * mapping of data types to corresponding field component types for rendering in the ui.
  */
 export const FIELD_TYPE_COMPONENT_MAPPING = {
     [DATA_TYPES.INT]: FIELD_COMPONENT_TYPES.NUMBER,
@@ -91,7 +102,7 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
 
 /**
  * @private
- * List of fields prioritized for sorting purposes, to determined most meaningful fields first.
+ * list of fields prioritized for sorting purposes, to determined most meaningful fields first.
  */
 export const PRIORITY_FIELDS = [
     'id',
@@ -145,6 +156,10 @@ export const PRIORITY_FIELDS = [
     'length',
 ] as const;
 
+/**
+ * @private
+ * mapping of priority fields to their respective priority index for quick lookup.
+ */
 const PRIORITY_FIELD_MAP: Map<string, number> = new Map(
     PRIORITY_FIELDS.map((field, index) => [
         field,
@@ -300,7 +315,7 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * finds the corresponding association field for a id field.
+     * finds the corresponding association field for an id field.
      * for example: "productVersionId", "productId" => "product" association.
      */
     findCorrespondingAssociationField(
@@ -544,7 +559,7 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * gets the highest priority field name from the entity.
+     * gets the highest priority field name from the entity (excluding id and createdAt).
      * used to suggest a default field for error resolution, to maximize meaningful data display.
      */
     getHighestPriorityFieldName(entityName: string | null | undefined): string | null {
@@ -620,7 +635,7 @@ export default class SwagMigrationErrorResolutionService {
 
                 // truncate long text values
                 if (typeof finalValue === 'string' && finalValue.length > CONTENT_TEXT_MAX_LENGTH) {
-                    finalValue = `${finalValue.substring(0, 100)}...`;
+                    finalValue = `${finalValue.substring(0, CONTENT_TEXT_MAX_LENGTH)}...`;
                 }
 
                 acc[property] = finalValue;
@@ -652,7 +667,7 @@ export default class SwagMigrationErrorResolutionService {
         fieldName: string | null | undefined,
         fieldValue: unknown,
     ): string | null {
-        if (!fieldValue) {
+        if (fieldValue === null || fieldValue === undefined || fieldValue === '') {
             return 'fieldValueNotSet';
         }
 
