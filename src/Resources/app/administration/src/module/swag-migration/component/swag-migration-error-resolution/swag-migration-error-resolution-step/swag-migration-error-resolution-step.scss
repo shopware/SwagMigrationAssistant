@@ -51,6 +51,12 @@
     }
 
     &__card {
+        &-table-empty-state {
+            .mt-empty-state {
+                max-width: none;
+            }
+        }
+
         .mt-card__content {
             padding: 0;
         }

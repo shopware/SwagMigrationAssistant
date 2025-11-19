@@ -104,6 +104,7 @@ class LogGroupingService implements LogGroupingServiceInterface
      * @return array<string>
      */
     public function getAllLogIdsByCodeAndEntity(
+        string $runId,
         string $code,
         string $entityName,
         string $fieldName,
@@ -117,6 +118,7 @@ class LogGroupingService implements LogGroupingServiceInterface
         ';
 
         $params = [
+            'runId' => Uuid::fromHexToBytes($runId),
             'code' => $code,
             'entityName' => $entityName,
             'fieldName' => $fieldName,
@@ -133,7 +135,8 @@ class LogGroupingService implements LogGroupingServiceInterface
             SELECT LOWER(HEX(l.id)) as id
             FROM swag_migration_logging l
             {$join}
-            WHERE l.code = :code
+            WHERE l.run_id = :runId
+                AND l.code = :code
                 AND l.entity_name = :entityName
                 AND l.field_name = :fieldName
                 AND l.user_fixable = 1

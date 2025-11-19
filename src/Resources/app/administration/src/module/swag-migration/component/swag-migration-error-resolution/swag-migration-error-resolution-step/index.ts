@@ -5,6 +5,7 @@ import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 import type { MigrationStore } from '../../../store/migration.store';
 import type { TRepository } from '../../../../../type/types';
 import type { LogFilterValue } from '../swag-migration-error-resolution-log-filter';
+import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 
 const { Criteria } = Shopware.Data;
 
@@ -53,6 +54,7 @@ export interface SwagMigrationErrorResolutionStepData {
     runId: string | null;
     selectedLog: ErrorResolutionTableData | null;
     totalUnfixableErrors: number;
+    totalUnresolvedErrors: number;
     migrationStore: MigrationStore;
     logFilter: LogFilterValue;
     levelCounts: {
@@ -71,6 +73,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     inject: [
         MIGRATION_API_SERVICE,
+        MIGRATION_ERROR_RESOLUTION_SERVICE,
         'repositoryFactory',
     ],
 
@@ -89,12 +92,13 @@ export default Shopware.Component.wrapComponentConfig({
             tableData: [],
             loading: false,
             downloadLoading: false,
+            continueLoading: false,
             openContinueModal: false,
             openErrorResolutionModal: false,
-            continueLoading: false,
             runId: null,
             selectedLog: null,
             totalUnfixableErrors: 0,
+            totalUnresolvedErrors: 0,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             levelCounts: {
                 error: 0,
@@ -158,8 +162,8 @@ export default Shopware.Component.wrapComponentConfig({
                     position: 1,
                 },
                 {
-                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.code'),
-                    property: 'code',
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.name'),
+                    property: 'name',
                     sortable: true,
                     position: 2,
                 },
@@ -174,6 +178,12 @@ export default Shopware.Component.wrapComponentConfig({
                     property: 'fieldName',
                     sortable: true,
                     position: 4,
+                },
+                {
+                    label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.code'),
+                    property: 'code',
+                    sortable: true,
+                    visible: false,
                 },
                 {
                     label: this.$tc('swag-migration.index.error-resolution.step.card.table.columns.profileName'),
@@ -261,11 +271,12 @@ export default Shopware.Component.wrapComponentConfig({
 
                 this.tableData = result.items.map((item) => ({
                     count: item.count,
+                    name: this.swagMigrationErrorResolutionService.translateErrorCode(item.code),
                     fixCount: item.fixCount || 0,
-                    code: item.code,
                     resolved: (item.fixCount || 0) === item.count && item.count > 0,
                     entityName: item?.entityName || '-',
                     fieldName: item?.fieldName || '-',
+                    code: item.code,
                     profileName: item.profileName,
                     gatewayName: item.gatewayName,
                 }));
@@ -295,6 +306,35 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onContinueMigration() {
+            this.continueLoading = true;
+
+            try {
+                const result = await this.migrationApiService.getLogGroups(
+                    this.runId,
+                    MIGRATION_LOG_LEVEL.ERROR,
+                    1,
+                    1,
+                    this.tableSortBy,
+                    this.tableSortDirection,
+                    { status: 'unresolved' },
+                );
+
+                if (result?.levelCounts?.error > 0) {
+                    this.totalUnresolvedErrors = result.levelCounts.error;
+                    this.continueLoading = false;
+                    this.openContinueModal = true;
+                } else {
+                    await this.commitContinueMigration();
+                }
+            } catch {
+                this.continueLoading = false;
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.continueMigrationFailed'),
+                });
+            }
+        },
+
+        async commitContinueMigration() {
             this.continueLoading = true;
 
             try {

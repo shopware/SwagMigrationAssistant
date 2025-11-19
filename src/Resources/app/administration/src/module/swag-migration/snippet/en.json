@@ -452,6 +452,42 @@
         }
       },
       "error-resolution": {
+        "codes": {
+          "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": "Associated entity not found but is required for migration",
+          "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": "Child entity could not be converted",
+          "SWAG_MIGRATION_CANNOT_CONVERT": "Entity could not be converted",
+          "SWAG_MIGRATION_CANNOT_GET_FILE": "File cannot be downloaded or copied",
+          "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": "Could not read entity count from source system",
+          "SWAG_MIGRATION__DATASET_NOT_FOUND": "DataSet for entity not found",
+          "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": "Document type is not supported",
+          "SWAG_MIGRATION_EMPTY_NECESSARY_FIELD": "Entity has an empty necessary field",
+          "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": "Entity already exists and cannot be written",
+          "SWAG_MIGRATION_RUN_EXCEPTION": "An exception occurred during migration",
+          "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": "Entity field was automatically reassigned",
+          "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": "Invalid unserialized data in entity",
+          "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": "Exception occurred while processing message queue",
+          "SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED": "MIME type of file could not be determined",
+          "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": "Processor for entity not found",
+          "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": "Migration aborted automatically due to too many consecutive exceptions",
+          "SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED": "Temporary file could not be created",
+          "SWAG_MIGRATION__THEME_COMPILING_ERROR": "Theme could not be compiled",
+          "SWAG_MIGRATION_ENTITY_UNKNOWN": "Cannot find dependent entity",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": "Unsupported object type",
+          "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": "A write exception has occurred",
+          "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validation exception occurred",
+          "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Field has an invalid value",
+          "SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY": "Invalid foreign key reference",
+          "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Required field is missing",
+          "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unexpected field found in data",
+          "SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE": "Pack language is deactivated",
+          "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": "Invalid email address",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE": "Unsupported mail template type",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": "Unsupported number range type",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": "Unsupported shipping calculation type",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Unsupported shipping factor price calculation",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_DOCUMENT_TYPE": "Unsupported document type",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER": "Unsupported media default folder"
+        },
         "errors": {
           "downloadLogsFailed": "Failed downloading log file.",
           "continueMigrationFailed": "Failed continuing migration.",
@@ -467,7 +503,7 @@
         "step": {
           "continue-modal": {
             "title": "Continue",
-            "text": "There are {count} errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+            "text": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
           },
           "header": {
             "title": "Error resolution",
@@ -477,18 +513,17 @@
             "continue": "Continue",
             "banner": {
               "title": "Some errors may not be fixable via this view",
-              "content": "There are {count} errors that cannot be fixed via this view. Please download log file to get more info. And if help is needed contact the",
-              "link": "Shopware Support"
+              "content": "There are {count} errors that cannot be fixed via this view. Please download log file to get more info."
             }
           },
           "card": {
             "title": "Errors",
             "filter": {
-              "title": "Filters",
+              "title": "Filters ({filterCount})",
               "reset": "Reset filters",
               "code": {
-                "label": "Error code",
-                "placeholder": "Select an error code"
+                "label": "Error name",
+                "placeholder": "Select an error name"
               },
               "status": {
                 "label": "Error status",
@@ -515,12 +550,17 @@
             "table": {
               "columns": {
                 "count": "Fixed / Total",
-                "code": "Code",
+                "name": "Name",
                 "entity": "Entity",
                 "field": "Field",
+                "code": "Code",
                 "profileName": "Profile",
                 "gatewayName": "Gateway"
-              }
+              },
+              "empty-state": {
+                "headline": "Nothing found",
+                "description": "No logs matching the selected filters were found."
+               }
             },
             "action": {
               "edit": "Edit"
@@ -552,7 +592,7 @@
               },
               "unhandledBanner": {
                 "title": "Unknown field type",
-                "content": "The field type could not be determined. Please correct the raw source data."
+                "content": "The field type could not be determined. Please correct the raw source data. The value has to be in the correct format."
               },
               "apply": "Apply changes"
             }

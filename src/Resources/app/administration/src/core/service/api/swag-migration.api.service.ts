@@ -544,6 +544,7 @@ export default class MigrationApiService extends ApiService {
     }
 
     async getAllLogIds(
+        runId: string,
         code: string,
         entityName: string,
         fieldName: string,
@@ -559,6 +560,7 @@ export default class MigrationApiService extends ApiService {
                 // @ts-ignore
                 `_action/${this.getApiBasePath()}/get-all-log-ids`,
                 {
+                    runId,
                     code,
                     entityName,
                     fieldName,

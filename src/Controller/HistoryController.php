@@ -175,10 +175,15 @@ class HistoryController extends AbstractController
     )]
     public function getAllLogIds(Request $request): JsonResponse
     {
+        $runId = $request->request->getAlnum('runId');
         $code = $request->request->get('code');
         $entityName = $request->request->get('entityName');
         $fieldName = $request->request->get('fieldName');
         $connectionId = $request->request->getAlnum('connectionId');
+
+        if (empty($runId)) {
+            throw RoutingException::missingRequestParameter('runId');
+        }
 
         if (!\is_string($code) || empty($code)) {
             throw RoutingException::missingRequestParameter('code');
@@ -193,10 +198,11 @@ class HistoryController extends AbstractController
         }
 
         $logIds = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
+            $runId,
             $code,
             $entityName,
             $fieldName,
-            empty($connectionId) ? $connectionId : null
+            empty($connectionId) ? null : $connectionId
         );
 
         return new JsonResponse([

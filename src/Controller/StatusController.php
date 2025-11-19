@@ -14,8 +14,10 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
@@ -88,7 +90,10 @@ class StatusController extends AbstractController
         }
 
         $profile = $this->profileRegistry->getProfile($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($profile);
+        $context = new MigrationContext(new SwagMigrationConnectionEntity());
+        $context->setProfile($profile);
+
+        $gateways = $this->gatewayRegistry->getGateways($context);
 
         $currentGateway = null;
         foreach ($gateways as $gateway) {
@@ -152,7 +157,10 @@ class StatusController extends AbstractController
         }
 
         $profile = $this->profileRegistry->getProfile($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($profile);
+        $context = new MigrationContext(new SwagMigrationConnectionEntity());
+        $context->setProfile($profile);
+
+        $gateways = $this->gatewayRegistry->getGateways($context);
 
         $gatewayNames = [];
         foreach ($gateways as $gateway) {

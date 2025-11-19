@@ -1,9 +1,11 @@
+import type { PropType } from 'vue';
 import template from './swag-migration-error-resolution-log-filter.html.twig';
 import './swag-migration-error-resolution-log-filter.scss';
 import type { ErrorResolutionTableData } from '../swag-migration-error-resolution-step';
 import type { TRepository } from '../../../../../type/types';
 import type { MigrationStore } from '../../../store/migration.store';
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
+import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 
 const { debounce } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
@@ -56,7 +58,10 @@ export default Shopware.Component.wrapComponentConfig({
 
     emits: ['log-filter-change'],
 
-    inject: ['repositoryFactory'],
+    inject: [
+        MIGRATION_ERROR_RESOLUTION_SERVICE,
+        'repositoryFactory',
+    ],
 
     props: {
         disabled: {
@@ -68,6 +73,10 @@ export default Shopware.Component.wrapComponentConfig({
             type: Array as PropType<ErrorResolutionTableData[]>,
             required: true,
             default: () => [],
+        },
+        runId: {
+            type: String,
+            required: true,
         },
     },
 
@@ -114,6 +123,10 @@ export default Shopware.Component.wrapComponentConfig({
         fieldOptions(): Option[] {
             return this.searchResults.field;
         },
+
+        filterCount(): number {
+            return Object.values(this.value).filter((val) => !!val)?.length;
+        },
     },
 
     methods: {
@@ -124,6 +137,22 @@ export default Shopware.Component.wrapComponentConfig({
                 entity: null,
                 field: null,
             };
+        },
+
+        buildResultsMap(type: keyof LogFilterValue, values: string[]): { value: string; label: string }[] {
+            return values.map((value) => {
+                if (type === fieldMap.code) {
+                    return {
+                        value,
+                        label: this.swagMigrationErrorResolutionService.translateErrorCode(value),
+                    };
+                }
+
+                return {
+                    value,
+                    label: value,
+                };
+            });
         },
 
         onSearch({ searchTerm }: { searchTerm: string | null }, type: keyof LogFilterValue): Option[] {
@@ -163,6 +192,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             const criteria = new Criteria(1, 1)
                 .addAggregation(Criteria.terms(aggregationName, field, 25, null, null))
+                .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('userFixable', 1));
 
             if (searchTerm) {
@@ -184,7 +214,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             this.searchResults = {
                 ...this.searchResults,
-                [type]: uniqueValues.map((value) => ({ value, label: value })),
+                [type]: this.buildResultsMap(type, uniqueValues),
             };
         },
 
@@ -199,6 +229,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             const criteria = new Criteria(1, 1)
                 .addAggregation(Criteria.terms(`${type}Aggregation`, field, 250, null, null))
+                .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('userFixable', 1));
 
             const result = await this.migrationLoggingRepository.search(criteria);
@@ -207,10 +238,10 @@ export default Shopware.Component.wrapComponentConfig({
             if (aggregation && aggregation.buckets) {
                 this.searchResults = {
                     ...this.searchResults,
-                    [type]: aggregation.buckets.map((bucket) => ({
-                        value: bucket.key,
-                        label: bucket.key,
-                    })),
+                    [type]: this.buildResultsMap(
+                        type,
+                        aggregation.buckets.map((bucket) => bucket.key),
+                    ),
                 };
             }
         },

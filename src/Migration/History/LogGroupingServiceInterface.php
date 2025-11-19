@@ -34,6 +34,7 @@ interface LogGroupingServiceInterface
      * @return array<string>
      */
     public function getAllLogIdsByCodeAndEntity(
+        string $runId,
         string $code,
         string $entityName,
         string $fieldName,

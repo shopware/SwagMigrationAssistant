@@ -3,6 +3,7 @@
         <swag-migration-error-resolution-modal
             v-if="openErrorResolutionModal && selectedLog"
             :selected-log="selectedLog"
+            :run-id="runId"
             @close-error-resolution-modal="onCloseEditLog"
             @fixes-created="onFixesCreated"
         />
@@ -16,7 +17,7 @@
                 :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
             >
                 <p class="swag-migration-error-resolution-step__continue-modal-text">
-                    {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnfixableErrors }) }}
+                    {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnresolvedErrors }) }}
                 </p>
 
                 <template #modal-footer>
@@ -34,7 +35,7 @@
                             variant="critical"
                             size="small"
                             :is-loading="continueLoading"
-                            @click="onContinueMigration"
+                            @click="commitContinueMigration"
                         >
                             {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
                         </mt-button>
@@ -89,7 +90,8 @@
                             class="swag-migration-error-resolution-step__header-buttons-continue"
                             variant="primary"
                             :disabled="loading || downloadLoading"
-                            @click="() => openContinueModal = true"
+                            :is-loading="continueLoading"
+                            @click="onContinueMigration"
                         >
                             {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
                         </mt-button>
@@ -106,19 +108,7 @@
                         :title="$tc('swag-migration.index.error-resolution.step.header.banner.title')"
                         variant="critical"
                     >
-                        <span>
-                            {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
-                        </span>
-
-                        <mt-link
-                            class="swag-migration-error-resolution-step__header-banner-link"
-                            to="https://account.shopware.com/"
-                            target="_blank"
-                            type="external"
-                            as="a"
-                        >
-                            {{ $tc('swag-migration.index.error-resolution.step.header.banner.link') }}
-                        </mt-link>
+                        {{ $tc('swag-migration.index.error-resolution.step.header.banner.content', { count: totalUnfixableErrors }) }}
                     </mt-banner>
                 </div>
             {% endblock %}
@@ -134,6 +124,7 @@
                     <swag-migration-error-resolution-log-filter
                         :disabled="loading"
                         :table-data="tableData"
+                        :run-id="runId"
                         @log-filter-change="onLogFilterChange"
                     />
                 </template>
@@ -149,6 +140,7 @@
                 {% block swag_migration_error_resolution_step_card_table %}
                     <div class="swag-migration-error-resolution-step__card-table">
                         <sw-data-grid
+                            v-if="tableData?.length > 0"
                             identifier="swag-migration-error-resolution-grid"
                             :data-source="tableData"
                             :columns="tableColumns"
@@ -175,13 +167,13 @@
                                 </div>
                             </template>
 
-                            <template #column-code="{ item }">
+                            <template #column-name="{ item }">
                                 <div class="swag-migration-error-resolution-step__card-table-error">
                                     <a
                                         class="swag-migration-error-resolution-step__card-table-error-link"
                                         @click="() => onOpenEditLog(item)"
                                     >
-                                        {{ item.code }}
+                                        {{ item.name }}
                                     </a>
                                 </div>
                             </template>
@@ -206,6 +198,17 @@
                                 />
                             </template>
                         </sw-data-grid>
+
+                        <div
+                            v-else
+                            class="swag-migration-error-resolution-step__card-table-empty-state"
+                        >
+                            <mt-empty-state
+                                :headline="$tc('swag-migration.index.error-resolution.step.card.table.empty-state.headline')"
+                                :description="$tc('swag-migration.index.error-resolution.step.card.table.empty-state.description')"
+                                icon="solid-question-circle"
+                            />
+                        </div>
                     </div>
                 {% endblock %}
             </mt-card>

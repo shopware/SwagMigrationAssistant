@@ -30,7 +30,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationErrorResolutionFieldUnhandledData {
         return {
-            fieldValue: '""',
+            fieldValue: '',
         };
     },
 

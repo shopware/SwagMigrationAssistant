@@ -58,6 +58,10 @@ export default Shopware.Component.wrapComponentConfig({
             type: Object as PropType<ErrorResolutionTableData>,
             required: true,
         },
+        runId: {
+            type: String,
+            required: true,
+        },
     },
 
     data(): SwagMigrationErrorResolutionModalData {
@@ -104,6 +108,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         loggingCriteria() {
             return new Criteria(this.tablePage, this.tableLimit)
+                .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('code', this.selectedLog.code))
                 .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
                 .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
@@ -118,8 +123,10 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         modalTitle() {
+            const translatedCode = this.swagMigrationErrorResolutionService.translateErrorCode(this.selectedLog.code);
+
             return this.$tc('swag-migration.index.error-resolution.modals.error.title', {
-                code: this.selectedLog.code,
+                code: translatedCode,
                 entityName: this.selectedLog.entityName,
                 fieldName: this.selectedLog.fieldName,
             });
@@ -238,6 +245,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         async fetchEntityIdsFromMissingLogs(missingLogIds: string[]): Promise<string[]> {
             const criteria = new Criteria(1, missingLogIds.length)
+                .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('code', this.selectedLog.code))
                 .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
                 .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
@@ -400,6 +408,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             try {
                 const result = await this.migrationApiService.getAllLogIds(
+                    this.runId,
                     this.selectedLog.code,
                     this.selectedLog.entityName,
                     this.selectedLog.fieldName,
@@ -483,6 +492,9 @@ export default Shopware.Component.wrapComponentConfig({
             this.tableLimit = page.limit;
 
             await this.fetchLogs();
+
+            await this.$nextTick();
+            this.applySelectionToGrid();
         },
     },
 });
