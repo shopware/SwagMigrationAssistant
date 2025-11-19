@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance, PropType } from 'vue';
+import type { PropType } from 'vue';
 import template from './swag-migration-error-resolution-log-filter.html.twig';
 import './swag-migration-error-resolution-log-filter.scss';
 import type { ErrorResolutionTableData } from '../swag-migration-error-resolution-step';
@@ -118,7 +118,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         filterCount(): number {
             return Object.values(this.value).filter((val) => !!val)?.length;
-        }
+        },
     },
 
     methods: {
