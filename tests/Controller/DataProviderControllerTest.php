@@ -58,6 +58,8 @@ class DataProviderControllerTest extends TestCase
             ]
         );
 
+        static::assertNotNull($browser->getResponse()->getContent());
+
         $response = json_decode($browser->getResponse()->getContent(), true);
 
         foreach ($response as $configEntry) {
