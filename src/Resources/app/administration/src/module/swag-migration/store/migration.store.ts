@@ -6,11 +6,9 @@ import type {
     MigrationPremapping,
 } from '../../../type/types';
 import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
-import { MIGRATION_API_SERVICE } from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
 
-const migrationApiService: MigrationApiService = Shopware.Service(MIGRATION_API_SERVICE);
 const repositoryFactory = Shopware.Service('repositoryFactory');
 
 const migrationGeneralSettingRepository = repositoryFactory.create(
@@ -309,11 +307,11 @@ const migrationStore = Shopware.Store.register({
             });
         },
 
-        async init(forceFullStateReload = false) {
+        async init(migrationApiService: MigrationApiService, forceFullStateReload = false) {
             this.isLoading = true;
 
             const connectionIdChanged = await this.fetchConnectionId();
-            await this.fetchEnvironmentInformation();
+            await this.fetchEnvironmentInformation(migrationApiService);
 
             if (forceFullStateReload || connectionIdChanged) {
                 this.latestRun = null;
@@ -324,7 +322,7 @@ const migrationStore = Shopware.Store.register({
                 this.premapping = [];
                 this.dataSelectionTableData = [];
 
-                await this.fetchDataSelectionIds();
+                await this.fetchDataSelectionIds(migrationApiService);
             }
 
             this.isLoading = false;
@@ -347,7 +345,7 @@ const migrationStore = Shopware.Store.register({
 
                 this.connectionId = newConnectionId;
                 return true;
-            } catch {
+            } catch (e) {
                 await this.createErrorNotification('swag-migration.api-error.fetchConnectionId');
                 this.connectionId = null;
 
@@ -355,7 +353,7 @@ const migrationStore = Shopware.Store.register({
             }
         },
 
-        async fetchEnvironmentInformation() {
+        async fetchEnvironmentInformation(migrationApiService: MigrationApiService) {
             this.environmentInformation = {};
 
             if (this.connectionId === null) {
@@ -365,12 +363,12 @@ const migrationStore = Shopware.Store.register({
             try {
                 this.environmentInformation = await migrationApiService.checkConnection(this.connectionId);
                 this.lastConnectionCheck = new Date();
-            } catch {
+            } catch (e) {
                 await this.createErrorNotification('swag-migration.api-error.checkConnection');
             }
         },
 
-        async fetchDataSelectionIds() {
+        async fetchDataSelectionIds(migrationApiService: MigrationApiService) {
             this.dataSelectionTableData = [];
 
             if (this.connectionId === null) {

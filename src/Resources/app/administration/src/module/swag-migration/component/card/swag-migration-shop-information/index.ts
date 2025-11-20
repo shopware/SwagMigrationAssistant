@@ -385,7 +385,7 @@ export default Shopware.Component.wrapComponentConfig({
                     this.unregisterPolling(type);
 
                     if (type === 'truncate') {
-                        this.migrationStore.init(true);
+                        await this.migrationStore.init(this.migrationApiService, true);
                     }
                 }
             } catch {
@@ -442,7 +442,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onClickRefreshConnection() {
-            return this.migrationStore.init(true);
+            return this.migrationStore.init(this.migrationApiService, true);
         },
 
         async onClickRemoveConnectionCredentials() {

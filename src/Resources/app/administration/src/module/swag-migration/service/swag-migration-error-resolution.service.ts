@@ -118,7 +118,6 @@ export const PRIORITY_FIELDS = [
     'status',
     'type',
     'available',
-    'createdAt',
     'orderDateTime',
     'releaseDate',
     'birthday',

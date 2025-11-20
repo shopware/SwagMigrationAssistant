@@ -490,10 +490,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
     beforeAll(() => {
         Shopware = {
             ...originalShopware,
-            Service: (name) => {
-                if (name === 'migrationApiService') {
-                    return migrationApiServiceMock;
-                }
+            Service: () => {
                 return {
                     can: aclCanMock,
                     create: () => repositoryMock,
@@ -738,7 +735,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
                 }),
             });
 
-            const initPromise = store.init(force);
+            const initPromise = store.init(migrationApiServiceMock, force);
             expect(store.isLoading).toBe(true);
 
             await initPromise;
@@ -769,7 +766,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
                 expect(store.environmentInformation).toStrictEqual({});
                 expect(store.lastConnectionCheck).toBeNull();
 
-                await store.fetchEnvironmentInformation();
+                await store.fetchEnvironmentInformation(migrationApiServiceMock);
 
                 expect(migrationApiServiceMock.checkConnection).toHaveBeenCalledTimes(connectionId ? 1 : 0);
                 expect(store.environmentInformation).toStrictEqual(expected);
@@ -783,7 +780,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
             migrationApiServiceMock.checkConnection.mockRejectedValueOnce(new Error('fetch failed'));
             expect(store.environmentInformation).toStrictEqual({});
 
-            await store.fetchEnvironmentInformation();
+            await store.fetchEnvironmentInformation(migrationApiServiceMock);
 
             expect(migrationApiServiceMock.checkConnection).toHaveBeenCalledTimes(1);
             expect(store.environmentInformation).toStrictEqual({});
@@ -804,7 +801,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
                 expect(store.dataSelectionTableData).toStrictEqual([]);
                 expect(store.dataSelectionIds).toStrictEqual([]);
 
-                await store.fetchDataSelectionIds();
+                await store.fetchDataSelectionIds(migrationApiServiceMock);
 
                 expect(migrationApiServiceMock.getDataSelection).toHaveBeenCalledTimes(connectionId ? 1 : 0);
                 expect(store.dataSelectionIds).toStrictEqual(expected);
@@ -819,7 +816,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
             expect(store.dataSelectionTableData).toStrictEqual([]);
             expect(store.dataSelectionIds).toStrictEqual([]);
 
-            await store.fetchDataSelectionIds();
+            await store.fetchDataSelectionIds(migrationApiServiceMock);
 
             expect(migrationApiServiceMock.getDataSelection).toHaveBeenCalledTimes(1);
             expect(store.dataSelectionTableData).toStrictEqual([]);

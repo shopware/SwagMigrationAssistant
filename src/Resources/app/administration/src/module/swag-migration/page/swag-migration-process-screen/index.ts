@@ -8,9 +8,15 @@ import { MIGRATION_STORE_ID } from '../../store/migration.store';
 const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
-const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
+/**
+ * @private
+ */
+export const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
 
-const MIGRATION_STEP_DISPLAY_INDEX = {
+/**
+ * @private
+ */
+export const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
     [MIGRATION_STEP.ERROR_RESOLUTION]: 1,
@@ -22,7 +28,10 @@ const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.WAITING_FOR_APPROVE]: 6,
 } as const;
 
-const UI_COMPONENT_INDEX = {
+/**
+ * @private
+ */
+export const UI_COMPONENT_INDEX = {
     LOADING_SCREEN: 0,
     ERROR_RESOLUTION: 1,
     RESULT_SUCCESS: 2,
@@ -157,6 +166,7 @@ export default Shopware.Component.wrapComponentConfig({
             let migrationRunning = false;
             try {
                 const state = await this.migrationApiService.getState();
+
                 if (state?.step !== MIGRATION_STEP.IDLE) {
                     migrationRunning = true;
                     this.visualizeMigrationState(state);

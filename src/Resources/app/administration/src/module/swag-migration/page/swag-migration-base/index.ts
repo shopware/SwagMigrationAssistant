@@ -139,7 +139,9 @@ export default Shopware.Component.wrapComponentConfig({
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-            await this.migrationStore.init(forceFullStateReload);
+
+            await this.migrationStore.init(this.migrationApiService, forceFullStateReload);
+
             this.storesInitializing = false;
         },
 
