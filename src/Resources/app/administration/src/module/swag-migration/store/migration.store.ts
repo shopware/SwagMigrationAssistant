@@ -1,19 +1,13 @@
-import type RepositoryType from '@administration/src/core/data/repository.data';
 import type {
     TEntity,
     MigrationDataSelection,
     MigrationEnvironmentInformation,
     MigrationPremapping,
+    TRepository,
 } from '../../../type/types';
 import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
-
-const repositoryFactory = Shopware.Service('repositoryFactory');
-
-const migrationGeneralSettingRepository = repositoryFactory.create(
-    'swag_migration_general_setting',
-) as RepositoryType<'swag_migration_general_setting'>;
 
 /**
  * @private
@@ -307,11 +301,16 @@ const migrationStore = Shopware.Store.register({
             });
         },
 
-        async init(migrationApiService: MigrationApiService, forceFullStateReload = false) {
+        async init(
+            migrationApiService: MigrationApiService,
+            migrationGeneralSettingRepository: TRepository<'swag_migration_general_setting'>,
+            forceFullStateReload = false,
+        ) {
             this.isLoading = true;
 
-            const connectionIdChanged = await this.fetchConnectionId();
-            await this.fetchEnvironmentInformation(migrationApiService);
+            const connectionIdChanged = await this.fetchConnectionId(migrationGeneralSettingRepository);
+
+            await this.fetchEnvironmentInformation(migrationApiService, migrationGeneralSettingRepository);
 
             if (forceFullStateReload || connectionIdChanged) {
                 this.latestRun = null;
@@ -328,7 +327,9 @@ const migrationStore = Shopware.Store.register({
             this.isLoading = false;
         },
 
-        async fetchConnectionId(): Promise<boolean> {
+        async fetchConnectionId(
+            migrationGeneralSettingRepository: TRepository<'swag_migration_general_setting'>,
+        ): Promise<boolean> {
             try {
                 const criteria = new Criteria(1, 1);
                 const settings = await migrationGeneralSettingRepository.search(criteria, Shopware.Context.api);
@@ -345,7 +346,7 @@ const migrationStore = Shopware.Store.register({
 
                 this.connectionId = newConnectionId;
                 return true;
-            } catch (e) {
+            } catch {
                 await this.createErrorNotification('swag-migration.api-error.fetchConnectionId');
                 this.connectionId = null;
 
@@ -363,7 +364,7 @@ const migrationStore = Shopware.Store.register({
             try {
                 this.environmentInformation = await migrationApiService.checkConnection(this.connectionId);
                 this.lastConnectionCheck = new Date();
-            } catch (e) {
+            } catch {
                 await this.createErrorNotification('swag-migration.api-error.checkConnection');
             }
         },

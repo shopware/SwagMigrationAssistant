@@ -180,6 +180,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             if (!migrationRunning) {
                 await this.startMigration();
+
                 // update to the new state immediately
                 try {
                     const state = await this.migrationApiService.getState();

@@ -127,6 +127,36 @@ export default Shopware.Component.wrapComponentConfig({
             return this.repositoryFactory.create('swag_migration_run');
         },
 
+        continueMigrationButtonTooltip() {
+            if (this.totalUnresolvedErrors > 0) {
+                return {
+                    message: this.$tc('swag-migration.index.error-resolution.step.header.continueTooltip'),
+                    disabled: false,
+                };
+            }
+
+            return {
+                message: '',
+                disabled: true,
+            };
+        },
+
+        continueMigrationWarningText() {
+            if (this.totalUnresolvedErrors > 0) {
+                return this.$tc('swag-migration.index.error-resolution.step.continue-modal.text-fixable', {
+                    count: this.totalUnresolvedErrors,
+                });
+            }
+
+            if (this.totalUnfixableErrors > 0) {
+                return this.$tc('swag-migration.index.error-resolution.step.continue-modal.text-unfixable', {
+                    count: this.totalUnfixableErrors,
+                });
+            }
+
+            return '';
+        },
+
         tabItems() {
             return [
                 {
@@ -319,7 +349,9 @@ export default Shopware.Component.wrapComponentConfig({
                     { status: 'unresolved' },
                 );
 
-                if (result?.levelCounts?.error > 0) {
+                await this.fetchTotalUnfixableErrors();
+
+                if (result?.levelCounts?.error > 0 || this.totalUnfixableErrors > 0) {
                     this.totalUnresolvedErrors = result.levelCounts.error;
                     this.continueLoading = false;
                     this.openContinueModal = true;
@@ -379,6 +411,7 @@ export default Shopware.Component.wrapComponentConfig({
         async onPageChange(page: { page: number; limit: number }) {
             this.tablePage = page.page;
             this.tableLimit = page.limit;
+
             await this.fetchLogByLevel(null);
         },
 

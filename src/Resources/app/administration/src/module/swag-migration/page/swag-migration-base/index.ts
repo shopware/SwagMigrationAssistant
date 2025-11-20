@@ -3,6 +3,7 @@ import { MIGRATION_API_SERVICE, MIGRATION_STEP } from '../../../../core/service/
 import type { MigrationStore } from '../../store/migration.store';
 import { MIGRATION_STORE_ID } from '../../store/migration.store';
 import './swag-migration-base.scss';
+import type { TRepository } from '../../../../type/types';
 
 const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
@@ -26,6 +27,7 @@ export default Shopware.Component.wrapComponentConfig({
 
     inject: [
         MIGRATION_API_SERVICE,
+        'repositoryFactory',
     ],
 
     data(): SwagMigrationBaseData {
@@ -44,6 +46,10 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
+        migrationGeneralSettingRepository(): TRepository<'swag_migration_general_setting'> {
+            return this.repositoryFactory.create('swag_migration_general_setting');
+        },
+
         warningModalMessage() {
             if (this.hasCurrencyMismatch) {
                 return this.$tc('swag-migration.index.warningModal.message.currency');
@@ -139,8 +145,11 @@ export default Shopware.Component.wrapComponentConfig({
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-
-            await this.migrationStore.init(this.migrationApiService, forceFullStateReload);
+            await this.migrationStore.init(
+                this.migrationApiService,
+                this.migrationGeneralSettingRepository,
+                forceFullStateReload,
+            );
 
             this.storesInitializing = false;
         },
