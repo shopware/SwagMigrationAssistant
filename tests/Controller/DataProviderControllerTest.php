@@ -58,9 +58,11 @@ class DataProviderControllerTest extends TestCase
             ]
         );
 
-        static::assertNotNull($browser->getResponse()->getContent());
+        $response = $browser->getResponse()->getContent();
 
-        $response = json_decode($browser->getResponse()->getContent(), true);
+        static::assertNotNull($response);
+
+        $response = json_decode($response, true);
 
         foreach ($response as $configEntry) {
             static::assertNotContains($configEntry['configurationKey'], SystemConfigProvider::$CONFIG_KEY_BLOCK_LIST);
