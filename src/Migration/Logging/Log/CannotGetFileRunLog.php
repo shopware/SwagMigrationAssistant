@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
-use GuzzleHttp\Exception\RequestException;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('fundamentals@after-sales')]
@@ -18,7 +17,7 @@ class CannotGetFileRunLog extends BaseRunLogEntry
         string $entity,
         string $sourceId,
         private readonly string $uri,
-        private readonly ?RequestException $requestException = null,
+        private readonly ?\Throwable $error = null,
     ) {
         parent::__construct($runId, $entity, $sourceId);
     }
@@ -71,10 +70,10 @@ class CannotGetFileRunLog extends BaseRunLogEntry
             $args['sourceId']
         );
 
-        if ($this->requestException !== null) {
+        if ($this->error !== null) {
             $description .= \sprintf(
-                ' The following request error occurred: %s',
-                $this->requestException->getMessage()
+                ' The following error occurred: %s',
+                $this->error->getMessage()
             );
         }
 

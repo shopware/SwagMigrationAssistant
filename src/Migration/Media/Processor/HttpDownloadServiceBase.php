@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Migration\Media\Processor;
 
 use Doctrine\DBAL\Connection;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Promise\Utils;
 use Psr\Http\Message\ResponseInterface;
@@ -30,7 +29,7 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
-use SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler;
+use SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
@@ -114,7 +113,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 $work->setAdditionalData($additionalData);
                 $work->setErrorCount($work->getErrorCount() + 1);
 
-                if ($work->getErrorCount() > ProcessMediaHandler::MEDIA_ERROR_THRESHOLD) {
+                if ($work->getErrorCount() > MediaProcessingProcessor::MEDIA_ERROR_THRESHOLD) {
                     $failureUuids[] = $uuid;
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->addLogEntry(new CannotGetFileRunLog(
