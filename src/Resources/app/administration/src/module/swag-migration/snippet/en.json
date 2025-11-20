@@ -503,14 +503,16 @@
         "step": {
           "continue-modal": {
             "title": "Continue",
-            "text": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+            "text-unfixable": "There are {count} unfixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear.",
+            "text-fixable": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
           },
           "header": {
             "title": "Error resolution",
-            "description": "Review and resolve migration errors that occurred during the import. Fix data issues directly in this view or download the log file for detailed information. Continue once all critical errors are resolved.",
+            "description": "Review and resolve migration errors that occurred during the import. Fix data issues directly in this view or download the log file for detailed information. Continue once all fixable errors are resolved.",
             "documentation": "Documentation",
             "download": "Download log file",
             "continue": "Continue",
+            "continueTooltip": "Please fix all fixable errors before continuing.",
             "banner": {
               "title": "Some errors may not be fixable via this view",
               "content": "There are {count} errors that cannot be fixed via this view. Please download log file to get more info."
@@ -519,7 +521,7 @@
           "card": {
             "title": "Errors",
             "filter": {
-              "title": "Filters ({filterCount})",
+              "title": "Filters | Filters ({count}) | Filters ({count})",
               "reset": "Reset filters",
               "code": {
                 "label": "Error name",

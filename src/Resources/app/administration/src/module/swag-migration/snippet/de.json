@@ -652,14 +652,16 @@
         "step": {
           "continue-modal": {
             "title": "Fortfahren",
-            "text": "Es gibt {count} Gruppen von behebbaren Fehlern, die noch nicht behoben wurden. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten."
+            "text-unfixable": "There are {count} unfixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear.",
+            "text-fixable": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
           },
           "header": {
             "title": "Fehlerbehebung",
-            "description": "Überprüfen und beheben Sie Migrationsfehler, die während des Imports aufgetreten sind. Beheben Sie Datenprobleme direkt in dieser Ansicht oder laden Sie die Protokolldatei für detaillierte Informationen herunter. Setzen Sie fort, sobald alle kritischen Fehler behoben sind.",
+            "description": "Überprüfen und beheben Sie Migrationsfehler, die während des Imports aufgetreten sind. Beheben Sie Datenprobleme direkt in dieser Ansicht oder laden Sie die Protokolldatei für detaillierte Informationen herunter. Setzen Sie fort, sobald alle lösbaren Fehler behoben sind.",
             "documentation": "Dokumentation",
             "download": "Log-Datei herunterladen",
             "continue": "Fortfahren",
+            "continueTooltip": "Bitte beheben Sie alle behebbaren Fehler, bevor Sie fortfahren.",
             "banner": {
               "title": "Einige Fehler können möglicherweise nicht über diese Ansicht behoben werden",
               "content": "Es gibt {count} Fehler, die nicht über diese Ansicht behoben werden können. Bitte laden Sie die Protokolldatei herunter, um weitere Informationen zu erhalten."
@@ -668,7 +670,7 @@
           "card": {
             "title": "Fehler",
             "filter": {
-              "title": "Filter ({filterCount})",
+              "title": "Filter | Filter ({count}) | Filter ({count})",
               "reset": "Filter zurücksetzen",
               "code": {
                 "label": "Fehlercode",

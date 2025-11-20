@@ -17,7 +17,7 @@
                 :title="$tc('swag-migration.index.error-resolution.step.continue-modal.title')"
             >
                 <p class="swag-migration-error-resolution-step__continue-modal-text">
-                    {{ $tc('swag-migration.index.error-resolution.step.continue-modal.text', { count: totalUnresolvedErrors }) }}
+                    {{ continueMigrationWarningText }}
                 </p>
 
                 <template #modal-footer>
@@ -31,9 +31,11 @@
                         </mt-button>
 
                         <mt-button
+                            v-tooltip="continueMigrationButtonTooltip"
                             class="swag-migration-error-resolution-step__continue-modal-confirm"
                             variant="critical"
                             size="small"
+                            :disabled="continueLoading || totalUnresolvedErrors > 0"
                             :is-loading="continueLoading"
                             @click="commitContinueMigration"
                         >
