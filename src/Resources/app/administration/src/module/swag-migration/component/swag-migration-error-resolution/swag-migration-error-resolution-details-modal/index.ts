@@ -21,29 +21,31 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         convertedData(): string {
-            if (!this.selectedLog?.convertedData) {
-                return '';
-            }
-
-            return JSON.stringify(this.selectedLog.convertedData, null, 2);
+            return this.prepareData(this.selectedLog.convertedData);
         },
 
         sourceData(): string {
-            if (!this.selectedLog?.sourceData) {
-                return '';
-            }
-
-            const sourceData = JSON.stringify(this.selectedLog.sourceData, null, 2);
-
-            if (sourceData.trim() === '{}') {
-                return null;
-            }
-
-            return sourceData;
+            return this.prepareData(this.selectedLog.sourceData);
         },
 
         modalTitle(): string {
             return this.$tc('swag-migration.index.error-resolution.modals.details.title', { entityName: this.entityName });
+        },
+    },
+
+    methods: {
+        prepareData(data: Record<string, never> | null | undefined): string {
+            if (!data) {
+                return '';
+            }
+
+            const string = JSON.stringify(data, null, 2);
+
+            if (string.trim() === '{}') {
+                return null;
+            }
+
+            return string;
         },
     },
 });
