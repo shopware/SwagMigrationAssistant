@@ -182,6 +182,8 @@ class PropertyGroupOptionConverterTest extends TestCase
             ++$iterator;
         }
 
+        unset($relation);
+
         $iterator = 0;
         foreach ($propertyRelationData as &$relation) {
             $relation['productId'] = $productData[5]['detail']['articleID'];
@@ -198,6 +200,8 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+
+        unset($relation);
     }
 
     public function testConvertWithPropertiesAndProductConfiguratorsAndOldIdentifier(): void
@@ -261,6 +265,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+        unset($relation);
 
         $iterator = 0;
         foreach ($propertyRelationData as &$relation) {
@@ -278,5 +283,7 @@ class PropertyGroupOptionConverterTest extends TestCase
 
             ++$iterator;
         }
+
+        unset($relation);
     }
 }
