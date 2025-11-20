@@ -21,8 +21,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 #[Package('fundamentals@after-sales')]
 class DataProviderControllerTest extends TestCase
 {
-    use IntegrationTestBehaviour;
     use AdminApiTestBehaviour;
+    use IntegrationTestBehaviour;
     use SalesChannelApiTestBehaviour;
 
     public function testSystemConfigEntriesGetFiltered(): void
@@ -33,14 +33,14 @@ class DataProviderControllerTest extends TestCase
 
         $configEntries = [];
         foreach (SystemConfigProvider::$CONFIG_KEY_BLOCK_LIST as $configKey) {
-            $configEntries[] =  [
+            $configEntries[] = [
                 'configurationKey' => $configKey,
                 'configurationValue' => 'should be filtered',
                 'salesChannelId' => $salesChannelId,
             ];
         }
 
-        $configEntries[] =  [
+        $configEntries[] = [
             'configurationKey' => 'core.some.allowedConfigKey',
             'configurationValue' => 'should be visible',
             'salesChannelId' => $salesChannelId,
