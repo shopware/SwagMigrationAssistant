@@ -118,7 +118,6 @@ export const PRIORITY_FIELDS = [
     'status',
     'type',
     'available',
-    'createdAt',
     'orderDateTime',
     'releaseDate',
     'birthday',
@@ -154,13 +153,14 @@ export const PRIORITY_FIELDS = [
     'width',
     'height',
     'length',
+    'createdAt',
 ] as const;
 
 /**
  * @private
  * mapping of priority fields to their respective priority index for quick lookup.
  */
-const PRIORITY_FIELD_MAP: Map<string, number> = new Map(
+export const PRIORITY_FIELD_MAP: Map<string, number> = new Map(
     PRIORITY_FIELDS.map((field, index) => [
         field,
         index,
