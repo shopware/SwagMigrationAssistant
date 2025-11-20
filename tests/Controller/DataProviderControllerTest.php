@@ -60,7 +60,7 @@ class DataProviderControllerTest extends TestCase
 
         $response = $browser->getResponse()->getContent();
 
-        static::assertNotNull($response);
+        static::assertNotFalse($response);
 
         $response = json_decode($response, true);
 
