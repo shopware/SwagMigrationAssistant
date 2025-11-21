@@ -183,7 +183,7 @@ class OrderDocumentConverterTest extends TestCase
 
         foreach ($orderDocumentConverterClasses as $orderDocumentConverterClass => $expected) {
             $loggerMock = $this->createMock(LoggingServiceInterface::class);
-            $loggerMock->expects($this->exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
+            $loggerMock->expects(static::exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
 
             $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock, $loggerMock);
             $convertResult = $orderDocumentConverter->convert(

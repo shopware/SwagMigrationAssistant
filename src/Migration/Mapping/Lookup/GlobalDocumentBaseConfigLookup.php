@@ -19,9 +19,14 @@ use Symfony\Contracts\Service\ResetInterface;
 class GlobalDocumentBaseConfigLookup implements ResetInterface
 {
     /**
-     * @var array<string, array<string, mixed>|string|null>
+     * @var array<string, string|null>
      */
     private array $cache = [];
+
+    /**
+     * @var array<string, array<string, mixed>|null>
+     */
+    private array $configCache = [];
 
     /**
      * @param EntityRepository<DocumentBaseConfigCollection> $documentBaseConfigRepository
@@ -56,8 +61,8 @@ class GlobalDocumentBaseConfigLookup implements ResetInterface
      */
     public function getBaseConfig(string $baseConfigId, Context $context): ?array
     {
-        if (\array_key_exists($baseConfigId, $this->cache)) {
-            return $this->cache[$baseConfigId];
+        if (\array_key_exists($baseConfigId, $this->configCache)) {
+            return $this->configCache[$baseConfigId];
         }
 
         $criteria = new Criteria([$baseConfigId]);
@@ -65,7 +70,7 @@ class GlobalDocumentBaseConfigLookup implements ResetInterface
         $baseConfig = $this->documentBaseConfigRepository->search($criteria, $context)->first();
 
         $config = $baseConfig?->getConfig();
-        $this->cache[$baseConfigId] = $config;
+        $this->configCache[$baseConfigId] = $config;
 
         return $config;
     }

@@ -230,6 +230,9 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         return $documentType;
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getBaseDocumentTypeConfig(string $documentTypeId, Context $context): array
     {
         $documentConfigId = $this->globalDocumentBaseConfigLookup->get($documentTypeId, $context);

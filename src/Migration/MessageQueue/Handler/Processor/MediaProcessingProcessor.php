@@ -98,7 +98,7 @@ class MediaProcessingProcessor extends AbstractProcessor
             if ($currentDataSet === null) {
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                    $migrationContext->setDataset($currentDataSet);
+                    $migrationContext->setDataSet($currentDataSet);
                 } catch (DataSetNotFoundException $e) {
                     $this->logDataSetNotFoundException($migrationContext, $mediaFile);
 
