@@ -78,5 +78,6 @@ class GlobalDocumentBaseConfigLookup implements ResetInterface
     public function reset(): void
     {
         $this->cache = [];
+        $this->configCache = [];
     }
 }
