@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -45,6 +46,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         protected MediaFileServiceInterface $mediaFileService,
         protected readonly MediaDefaultFolderLookup $mediaFolderLookup,
         protected readonly DocumentTypeLookup $documentTypeLookup,
+        protected readonly GlobalDocumentBaseConfigLookup $globalDocumentBaseConfigLookup,
     ) {
         parent::__construct($mappingService, $loggingService);
     }
@@ -143,7 +145,13 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
         $converted['deepLinkCode'] = Random::getAlphanumericString(32);
-        $converted['config'] = [];
+
+        $documentType = $this->getDocumentType($data['documenttype']);
+
+        $converted['documentType'] = $documentType;
+        unset($data['documenttype']);
+
+        $converted['config'] = $this->getBaseDocumentTypeConfig($documentType['id'], $context);
         if (isset($data['docID'])) {
             $converted['config']['documentNumber'] = $data['docID'];
 
@@ -153,11 +161,6 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
             unset($data['docID']);
         }
-
-        $documentType = $this->getDocumentType($data['documenttype']);
-
-        $converted['documentType'] = $documentType;
-        unset($data['documenttype']);
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $this->connectionName, ['id', 'documentID'], $this->context);
@@ -221,6 +224,21 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $documentType['technicalName'] = $mappedKey;
 
         return $documentType;
+    }
+
+    protected function getBaseDocumentTypeConfig(string $documentTypeId, Context $context): array
+    {
+        $documentConfigId = $this->globalDocumentBaseConfigLookup->get($documentTypeId, $context);
+        if ($documentConfigId === null) {
+            return [];
+        }
+
+        $documentConfig = $this->globalDocumentBaseConfigLookup->getBaseConfig($documentConfigId, $context);
+        if ($documentConfig === null) {
+            return [];
+        }
+
+        return $documentConfig;
     }
 
     /**
