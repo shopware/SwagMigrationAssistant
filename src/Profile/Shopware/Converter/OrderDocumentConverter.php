@@ -145,12 +145,15 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         $converted['fileType'] = FileTypes::PDF;
         $converted['static'] = true;
         $converted['deepLinkCode'] = Random::getAlphanumericString(32);
+        if (\array_key_exists('sent', $data)) {
+            $converted['sent'] = $data['sent'];
+        } else {
+            // In Shopware 5 "sent" not exists, so we force it to true, because we assume that if there is a document, the customer received it.
+            $converted['sent'] = true;
+        }
 
         $documentType = $this->getDocumentType($data['documenttype']);
-
         $converted['documentType'] = $documentType;
-        unset($data['documenttype']);
-
         $converted['config'] = $this->getBaseDocumentTypeConfig($documentType['id'], $context);
         if (isset($data['docID'])) {
             $converted['config']['documentNumber'] = $data['docID'];
@@ -161,6 +164,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
             unset($data['docID']);
         }
+        unset($data['documenttype']);
 
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER_DOCUMENT, $this->connectionName, ['id', 'documentID'], $this->context);

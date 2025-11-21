@@ -18,6 +18,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupported;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -63,7 +64,8 @@ class OrderDocumentConverterTest extends TestCase
             $this->loggingService,
             $mediaFileService,
             $this->createMock(MediaDefaultFolderLookup::class),
-            $this->createMock(DocumentTypeLookup::class)
+            $this->createMock(DocumentTypeLookup::class),
+            $this->createDocumentBaseConfigLookupMock(),
         );
         $connectionId = Uuid::randomHex();
         $this->runId = Uuid::randomHex();
@@ -145,10 +147,15 @@ class OrderDocumentConverterTest extends TestCase
         static::assertArrayHasKey('documentType', $converted);
         static::assertSame('pdf', $converted['fileType']);
         static::assertTrue($converted['static']);
+        static::assertTrue($converted['sent']);
         static::assertSame('Rechnung', $converted['documentType']['name']);
         static::assertSame('invoice', $converted['documentType']['technicalName']);
-        static::assertSame($orderDocumentData[0]['docID'], $converted['config']['documentNumber']);
-        static::assertSame($orderDocumentData[0]['docID'], $converted['config']['custom']['invoiceNumber']);
+
+        $expectedConfig = $this->getDefaultConfig();
+        $expectedConfig['documentNumber'] = $orderDocumentData[0]['docID'];
+        $expectedConfig['custom']['invoiceNumber'] = $orderDocumentData[0]['docID'];
+
+        static::assertSame($expectedConfig, $converted['config']);
     }
 
     public function testConvertShouldLogUnknownType(): void
@@ -176,7 +183,7 @@ class OrderDocumentConverterTest extends TestCase
 
         foreach ($orderDocumentConverterClasses as $orderDocumentConverterClass => $expected) {
             $loggerMock = $this->createMock(LoggingServiceInterface::class);
-            $loggerMock->expects(static::exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
+            $loggerMock->expects($this->exactly(1))->method('addLogEntry')->with(new DocumentTypeNotSupported($this->runId, '999', $expected));
 
             $orderDocumentConverter = $this->createDocumentConverter($orderDocumentConverterClass, $mappingServiceMock, $loggerMock);
             $convertResult = $orderDocumentConverter->convert(
@@ -270,15 +277,65 @@ class OrderDocumentConverterTest extends TestCase
             $loggingService = new DummyLoggingService();
         }
 
+        $documentBaseConfigLookupMock = $this->createMock(GlobalDocumentBaseConfigLookup::class);
+        $documentBaseConfigLookupMock->method('getBaseConfig')->willReturn([]);
+
         $instance = new $converterClass(
             $mappingService,
             $loggingService,
             new DummyMediaFileService(),
             $this->createMock(MediaDefaultFolderLookup::class),
-            $this->createMock(DocumentTypeLookup::class)
+            $this->createMock(DocumentTypeLookup::class),
+            $documentBaseConfigLookupMock,
         );
         static::assertInstanceOf(ShopwareConverter::class, $instance);
 
         return $instance;
+    }
+
+    private function createDocumentBaseConfigLookupMock(): GlobalDocumentBaseConfigLookup
+    {
+        $documentBaseConfigLookupMock = $this->createMock(GlobalDocumentBaseConfigLookup::class);
+        $documentBaseConfigLookupMock->method('get')->willReturn(Uuid::randomHex());
+        $documentBaseConfigLookupMock->method('getBaseConfig')->willReturn($this->getDefaultConfig());
+
+        return $documentBaseConfigLookupMock;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getDefaultConfig(): array
+    {
+        return [
+            'vatId' => '',
+            'bankBic' => '',
+            'bankIban' => '',
+            'bankName' => '',
+            'pageSize' => 'a4',
+            'fileTypes' => [
+                'html',
+                'pdf',
+            ],
+            'taxNumber' => '',
+            'taxOffice' => '',
+            'companyName' => 'Example Company',
+            'itemsPerPage' => 10,
+            'displayFooter' => true,
+            'displayHeader' => true,
+            'displayPrices' => true,
+            'companyAddress' => '',
+            'pageOrientation' => 'portrait',
+            'displayLineItems' => true,
+            'displayPageCount' => true,
+            'executiveDirector' => '',
+            'placeOfFulfillment' => '',
+            'placeOfJurisdiction' => '',
+            'displayReturnAddress' => true,
+            'displayCompanyAddress' => true,
+            'displayLineItemPosition' => true,
+            'referencedDocumentType' => 'invoice',
+            'displayAdditionalNoteDelivery' => false,
+        ];
     }
 }
