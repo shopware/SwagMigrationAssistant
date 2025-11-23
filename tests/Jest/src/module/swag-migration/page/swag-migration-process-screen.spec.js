@@ -18,31 +18,22 @@ const defaultMigrationState = {
     step: MIGRATION_STEP.FETCHING,
 };
 
+const repositoryMock = {
+    search: jest.fn(() =>
+        Promise.resolve({
+            first: () => ({
+                id: '1',
+                selectedConnectionId: 'connection-id',
+            }),
+        }),
+    ),
+};
+
 const migrationApiServiceMock = {
     getState: jest.fn(() => Promise.resolve(defaultMigrationState)),
     checkConnection: jest.fn(() => Promise.resolve({})),
     getDataSelection: jest.fn(() => Promise.resolve([])),
 };
-
-const responses = global.repositoryFactoryMock.responses;
-
-responses.addResponse({
-    method: 'Post',
-    url: '/search/swag-migration-general-setting',
-    status: 200,
-    response: {
-        data: [
-            {
-                id: '1',
-                type: 'swag_migration_general_setting',
-                attributes: {
-                    id: '1',
-                },
-                relationships: {},
-            },
-        ],
-    },
-});
 
 async function createWrapper() {
     return mount(await Shopware.Component.build('swag-migration-process-screen'), {
@@ -68,7 +59,7 @@ async function createWrapper() {
             provide: {
                 migrationApiService: migrationApiServiceMock,
                 repositoryFactory: {
-                    create: () => ({}),
+                    create: () => repositoryMock,
                 },
             },
             mocks: {

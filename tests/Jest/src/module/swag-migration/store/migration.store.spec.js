@@ -493,7 +493,6 @@ describe('src/module/swag-migration/store/migration.store', () => {
             Service: () => {
                 return {
                     can: aclCanMock,
-                    create: () => repositoryMock,
                 };
             },
             Snippet: {
@@ -735,7 +734,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
                 }),
             });
 
-            const initPromise = store.init(migrationApiServiceMock, force);
+            const initPromise = store.init(migrationApiServiceMock, repositoryMock, force);
             expect(store.isLoading).toBe(true);
 
             await initPromise;
@@ -838,7 +837,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
                 }),
             });
 
-            const result = await store.fetchConnectionId();
+            const result = await store.fetchConnectionId(repositoryMock);
 
             expect(result).toBe(false);
             expect(store.connectionId).toBe('existing-connection-id');

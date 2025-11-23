@@ -142,7 +142,8 @@
                 {% block swag_migration_error_resolution_step_card_table %}
                     <div class="swag-migration-error-resolution-step__card-table">
                         <sw-data-grid
-                            v-if="tableData?.length > 0"
+                            v-if="tableData?.length > 0 || loading"
+                            class="swag-migration-error-resolution-step__card-table-grid"
                             identifier="swag-migration-error-resolution-grid"
                             :data-source="tableData"
                             :columns="tableColumns"

@@ -233,10 +233,9 @@ export default Shopware.Component.wrapComponentConfig({
 
     methods: {
         async componentCreated() {
-            if (!this.runId) {
-                this.loading = true;
-                await this.fetchRun();
-            }
+            this.loading = true;
+
+            await this.fetchRun();
 
             await Promise.all([
                 this.fetchLogByLevel(null),
@@ -244,7 +243,7 @@ export default Shopware.Component.wrapComponentConfig({
             ]);
 
             if (this.tableTotal === 0 && this.totalUnfixableErrors === 0) {
-                await this.onContinueMigration();
+                await this.commitContinueMigration();
             }
         },
 
@@ -271,11 +270,6 @@ export default Shopware.Component.wrapComponentConfig({
         async fetchLogByLevel(level: MigrationLogLevel | null) {
             if (level) {
                 this.tabItem = level;
-            }
-
-            if (!this.tabItem) {
-                this.loading = false;
-                return;
             }
 
             if (!this.runId) {
@@ -450,8 +444,13 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onLogFilterChange(filter: LogFilterValue) {
-            this.logFilter = filter;
             this.tablePage = 1;
+            this.logFilter = {
+                code: filter.code,
+                status: filter.status,
+                entity: filter.entity,
+                field: filter.field,
+            };
 
             await this.fetchLogByLevel(null);
         },

@@ -1,3 +1,6 @@
+/**
+ * @private
+ */
 export const fixturePreMapping = [
     {
         entity: 'salutation',
@@ -25,6 +28,9 @@ export const fixturePreMapping = [
     },
 ];
 
+/**
+ * @private
+ */
 export const fixtureDataSelection = [
     {
         id: 'customersOrders',
@@ -66,6 +72,9 @@ export const fixtureDataSelection = [
     },
 ];
 
+/**
+ * @private
+ */
 export const fixtureEnvironmentInformation = {
     extensions: [],
     displayWarnings: [],
@@ -85,3 +94,27 @@ export const fixtureEnvironmentInformation = {
         },
     },
 };
+
+/**
+ * @private
+ */
+export const fixtureLogs = [
+    {
+        code: 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+        count: 591,
+        entityName: 'media',
+        fieldName: 'createdAt',
+        fixCount: 591,
+        gatewayName: 'local',
+        profileName: 'shopware55',
+    },
+    {
+        code: 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
+        count: 161,
+        entityName: 'product',
+        fieldName: 'options',
+        fixCount: 13,
+        gatewayName: 'local',
+        profileName: 'shopware55',
+    },
+];
