@@ -34,8 +34,33 @@ class CmsPageConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === CmsPageDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ?ConvertStruct
     {
+        // handle locked default layouts
+        if (isset($data['locked']) && $data['locked'] === true) {
+            $cmsPageMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CMS_PAGE, $data['id'], $this->context);
+            if ($cmsPageMapping !== null) {
+                return null;
+            }
+
+            $cmpPageUuid = $this->cmsPageLookup->getLockedByNamesAndType(
+                \array_column($data['translations'], 'name'),
+                $data['type'],
+                $this->context
+            );
+
+            $this->mappingService->createMapping(
+                $this->connectionId,
+                DefaultEntities::CMS_PAGE,
+                $data['id'],
+                $this->checksum,
+                null,
+                $cmpPageUuid,
+            );
+
+            return null;
+        }
+
         $converted = $data;
 
         $this->updateTranslations($converted);

@@ -33,8 +33,12 @@ class SeoUrlConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === SeoUrlDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ?ConvertStruct
     {
+        if (isset($data['isModified']) && $data['isModified'] === false) {
+            return null;
+        }
+
         $converted = $data;
 
         if (isset($converted['foreignKey'])) {

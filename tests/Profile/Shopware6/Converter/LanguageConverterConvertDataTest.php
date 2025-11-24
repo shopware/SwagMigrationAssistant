@@ -52,7 +52,7 @@ class LanguageConverterConvertDataTest extends TestCase
         ];
 
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertSame($languageId, $converted['id']);
@@ -80,7 +80,7 @@ class LanguageConverterConvertDataTest extends TestCase
         ];
 
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertNotSame($defaultLanguageId, $converted['id']);
@@ -106,7 +106,7 @@ class LanguageConverterConvertDataTest extends TestCase
 
         $languageConverter = $this->createLanguageConverter($mappingServiceMock, null, $languageLookupMock);
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertSame($expectedId, $converted['id']);
@@ -133,7 +133,7 @@ class LanguageConverterConvertDataTest extends TestCase
 
         $languageConverter = $this->createLanguageConverter($mappingServiceMock);
         $result = $languageConverter->convert($data, $context, $migrationContext);
-        $converted = $result->getConverted() ?? [];
+        $converted = $result?->getConverted() ?? [];
 
         static::assertArrayHasKey('id', $converted);
         static::assertSame($expectedId, $converted['id']);

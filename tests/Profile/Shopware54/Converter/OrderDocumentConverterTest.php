@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
@@ -151,6 +152,7 @@ class OrderDocumentConverterTest extends TestCase
                 $this->migrationContext
             );
 
+            static::assertInstanceOf(ConvertStruct::class, $convertResult);
             $converted = $convertResult->getConverted();
 
             static::assertIsArray($converted);
@@ -187,6 +189,7 @@ class OrderDocumentConverterTest extends TestCase
                 $this->migrationContext
             );
 
+            static::assertInstanceOf(ConvertStruct::class, $convertResult);
             $converted = $convertResult->getConverted();
 
             static::assertIsArray($converted);

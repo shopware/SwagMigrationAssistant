@@ -40,7 +40,7 @@ interface ConverterInterface
      *
      * @param array<string, mixed> $data
      */
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct;
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct;
 
     public function writeMapping(Context $context): void;
 }

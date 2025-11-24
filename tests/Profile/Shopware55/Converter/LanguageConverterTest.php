@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\LanguageDataSet;
@@ -39,6 +40,7 @@ class LanguageConverterTest extends TestCase
             new BasicSettingsMappingService(),
             $this->loggingService,
             static::getContainer()->get(LocaleLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -70,6 +72,7 @@ class LanguageConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($languageData[0], $context, $this->migrationContext);
+        static::assertNotNull($convertResult);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
         static::assertNotNull($converted);

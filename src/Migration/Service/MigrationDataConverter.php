@@ -15,9 +15,11 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\NotConvertedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -96,6 +98,17 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         foreach ($data as $item) {
             try {
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
+                if (!$convertStruct instanceof ConvertStruct) {
+                    $this->loggingService->addLogEntry(
+                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withSourceData($item)
+                            ->withEntityName($dataSet::getEntity())
+                            ->build(NotConvertedLog::class)
+                    );
+
+                    continue;
+                }
+
                 $convertFailureFlag = empty($convertStruct->getConverted());
 
                 $this->validationService->validate(

@@ -50,11 +50,6 @@ class SeoUrlWriter extends AbstractWriter
      */
     public function writeData(array $data, Context $context): array
     {
-        // only modified should be written
-        $data = \array_filter($data, static function ($value) {
-            return !(isset($value['isModified']) && $value['isModified'] === false);
-        });
-
         $writeResults = [];
 
         $context->addExtension(

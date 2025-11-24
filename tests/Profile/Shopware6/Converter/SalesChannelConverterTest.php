@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -44,6 +45,7 @@ class SalesChannelConverterTest extends ShopwareConverterTest
 
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($input, $context, $this->migrationContext);
+        static::assertInstanceOf(ConvertStruct::class, $convertResult);
         $output = $convertResult->getConverted();
 
         static::assertNotNull($output);
