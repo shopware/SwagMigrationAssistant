@@ -31,4 +31,6 @@ interface MigrationContextInterface
     public function getGateway(): GatewayInterface;
 
     public function setGateway(GatewayInterface $gateway): void;
+
+    public function setDataSet(DataSet $dataSet): void;
 }

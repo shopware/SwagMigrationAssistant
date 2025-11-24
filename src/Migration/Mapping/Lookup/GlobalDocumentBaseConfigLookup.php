@@ -24,6 +24,11 @@ class GlobalDocumentBaseConfigLookup implements ResetInterface
     private array $cache = [];
 
     /**
+     * @var array<string, array<string, mixed>|null>
+     */
+    private array $configCache = [];
+
+    /**
      * @param EntityRepository<DocumentBaseConfigCollection> $documentBaseConfigRepository
      *
      * @internal
@@ -51,8 +56,28 @@ class GlobalDocumentBaseConfigLookup implements ResetInterface
         return $baseConfigId;
     }
 
+    /**
+     * @return array<string, mixed>|null
+     */
+    public function getBaseConfig(string $baseConfigId, Context $context): ?array
+    {
+        if (\array_key_exists($baseConfigId, $this->configCache)) {
+            return $this->configCache[$baseConfigId];
+        }
+
+        $criteria = new Criteria([$baseConfigId]);
+
+        $baseConfig = $this->documentBaseConfigRepository->search($criteria, $context)->first();
+
+        $config = $baseConfig?->getConfig();
+        $this->configCache[$baseConfigId] = $config;
+
+        return $config;
+    }
+
     public function reset(): void
     {
         $this->cache = [];
+        $this->configCache = [];
     }
 }

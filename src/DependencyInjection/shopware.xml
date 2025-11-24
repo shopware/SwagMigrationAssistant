@@ -178,6 +178,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\MediaDefaultFolderLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\CustomerGroupAttributeConverter"
