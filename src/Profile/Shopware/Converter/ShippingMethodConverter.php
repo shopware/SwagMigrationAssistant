@@ -13,6 +13,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Rule\Container\AndRule;
 use Shopware\Core\Framework\Rule\Container\OrRule;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
@@ -705,7 +706,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $ruleData = $this->getRelevantDataForAvailabilityRule($data);
 
         $jsonRuleData = \json_encode($ruleData, \JSON_THROW_ON_ERROR);
-        $hash = \md5($jsonRuleData);
+        $hash = Hasher::hash($jsonRuleData, 'md5');
 
         $mainRuleMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

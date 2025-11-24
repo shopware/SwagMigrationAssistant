@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -76,7 +77,7 @@ class ProductOptionRelationConverterTest extends TestCase
             $mapping = $mappingService->getOrCreateMapping(
                 $connectionId,
                 DefaultEntities::PROPERTY_GROUP_OPTION,
-                \hash('md5', \mb_strtolower($data['name'] . '_' . $data['group']['name'])),
+                Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
                 $context
             );
             $this->propertyUuids[$key] = (string) $mapping['entityId'];
