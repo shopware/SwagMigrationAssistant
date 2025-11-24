@@ -324,6 +324,7 @@
           "custom_field_set": "Zusatzfelder",
           "snippet": "Textbausteine",
           "snippet_set": "Textbaustein-Sets",
+          "mail_header_footer": "E-Mail-Kopf- und Fußzeilen",
           "mail_template": "E-Mail-Template",
           "product_feature_set": "Wesentliche Merkmale",
           "product_sorting": "Produkt-Sortierungen",
