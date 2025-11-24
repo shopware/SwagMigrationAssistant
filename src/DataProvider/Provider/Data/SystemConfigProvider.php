@@ -26,6 +26,7 @@ class SystemConfigProvider extends AbstractProvider
     public static array $CONFIG_KEY_BLOCK_LIST = [
         // shop instance, license related or consent data
         'core.app.shopId',
+        'core.app.shopIdV2',
         'core.basicInformation.shopName',
         'core.basicInformation.activeCaptchas',
         'core.basicInformation.activeCaptchasV2',
