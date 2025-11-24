@@ -107,6 +107,7 @@ export const fixtureLogs = [
         fixCount: 591,
         gatewayName: 'local',
         profileName: 'shopware55',
+        resolved: true,
     },
     {
         code: 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
@@ -116,5 +117,6 @@ export const fixtureLogs = [
         fixCount: 13,
         gatewayName: 'local',
         profileName: 'shopware55',
+        resolved: false,
     },
 ];
