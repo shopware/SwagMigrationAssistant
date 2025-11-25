@@ -10,24 +10,61 @@ namespace SwagMigrationAssistant\Migration\History;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\ParameterType;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
+/**
+ * @internal
+ *
+ * @SECURITY-NOTICE
+ *
+ * This service builds dynamic SQL queries with string interpolation for performance reasons.
+ * While this looks dangerous, it is SAFE because:
+ *
+ * 1. All user-controllable values that get interpolated into SQL (sortBy, sortDirection, filterStatus)
+ *    are validated against explicit allowlists BEFORE being used in query construction.
+ *    See: ALLOWED_SORT_COLUMNS, ALLOWED_SORT_DIRECTIONS, ALLOWED_FILTER_STATUSES constants.
+ *
+ * 2. All data values (runId, connectionId, filterCode, filterEntity, filterField) are passed
+ *    as bound parameters (:paramName), never interpolated into SQL strings.
+ *
+ * The validation is centralized at the top of getGroupedLogsByCodeAndEntity() to make
+ * security review straightforward. Do not scatter validation logic across multiple methods.
+ */
 #[Package('fundamentals@after-sales')]
 class LogGroupingService implements LogGroupingServiceInterface
 {
     /**
-     * @param EntityRepository<SwagMigrationRunCollection> $runRepo
+     * allowlist of columns that can be used for ORDER BY.
+     * keys are API parameter names, values are actual SQL column references.
+     *
+     * @SECURITY only these exact values can be interpolated into ORDER BY clauses.
      */
+    private const ALLOWED_SORT_COLUMNS = [
+        'count' => 'count',
+        'code' => 'l.code',
+        'entityName' => 'l.entity_name',
+        'fieldName' => 'l.field_name',
+        'profileName' => 'l.profile_name',
+        'gatewayName' => 'l.gateway_name',
+    ];
+
+    /**
+     * allowlist of valid sort directions.
+     *
+     * @SECURITY only these exact values can be interpolated into ORDER BY clauses.
+     */
+    private const ALLOWED_SORT_DIRECTIONS = ['ASC', 'DESC'];
+
+    /**
+     * allowlist of valid filter status values.
+     *
+     * @SECURITY only these exact values can trigger HAVING clause generation.
+     */
+    private const ALLOWED_FILTER_STATUSES = ['resolved', 'unresolved'];
+
     public function __construct(
-        private readonly EntityRepository $runRepo,
         private readonly Connection $connection,
     ) {
     }
@@ -48,32 +85,52 @@ class LogGroupingService implements LogGroupingServiceInterface
         ?string $filterStatus,
         ?string $filterEntity,
         ?string $filterField,
-        Context $context,
     ): array {
-        $run = $this->getMigrationRunForLogs($runUuid, $context);
-        $connectionIdBytes = Uuid::fromHexToBytes($run->getConnectionId() ?? '');
+        /** @SECURITY validates all values that will be interpolated into SQL - do not skip this step. */
+        $orderColumn = $this->validateSortColumn($sortBy);
+        $orderDirection = $this->validateSortDirection($sortDirection);
+        $validatedFilterStatus = $this->validateFilterStatus($filterStatus);
+
         $runIdBytes = Uuid::fromHexToBytes($runUuid);
+        $connectionIdBytes = $this->getConnectionIdForRun($runIdBytes);
 
-        $params = $this->buildParams(
-            $runIdBytes,
-            $level,
-            $page,
-            $limit,
-            $connectionIdBytes,
-            $filterCode,
-            $filterEntity,
-            $filterField
-        );
+        $params = [
+            'runId' => $runIdBytes,
+            'level' => $level,
+            'limit' => $limit,
+            'offset' => ($page - 1) * $limit,
+            'connectionId' => $connectionIdBytes,
+        ];
 
-        $whereClause = $this->buildWhereClause($filterCode, $filterEntity, $filterField);
-        $havingClause = $this->buildHavingClause($filterStatus);
-        $orderByClause = $this->buildOrderByClause($sortBy, $sortDirection);
+        // build optional WHERE conditions
+        $whereConditions = [];
 
-        $sql = $this->buildQuery(
-            $whereClause,
-            $havingClause,
-            $orderByClause,
-            $filterStatus !== null
+        if ($filterCode !== null) {
+            $whereConditions[] = 'l.code = :filterCode';
+            $params['filterCode'] = $filterCode;
+        }
+
+        if ($filterEntity !== null) {
+            $whereConditions[] = 'l.entity_name = :filterEntity';
+            $params['filterEntity'] = $filterEntity;
+        }
+
+        if ($filterField !== null) {
+            $whereConditions[] = 'l.field_name = :filterField';
+            $params['filterField'] = $filterField;
+        }
+
+        $additionalWhere = $whereConditions !== [] ? ' AND ' . \implode(' AND ', $whereConditions) : '';
+
+        // determine if we need the fix join for status filtering
+        $includeFixJoin = $validatedFilterStatus !== null;
+
+        $sql = $this->buildMainQuery(
+            $additionalWhere,
+            $validatedFilterStatus,
+            $orderColumn,
+            $orderDirection,
+            $includeFixJoin
         );
 
         $result = $this->connection->executeQuery($sql, $params, [
@@ -82,13 +139,13 @@ class LogGroupingService implements LogGroupingServiceInterface
         ]);
 
         $rows = $result->fetchAllAssociative();
-        $total = \count($rows) > 0 ? (int) $rows[0]['total'] : 0;
+        $total = $rows !== [] ? (int) $rows[0]['total'] : 0;
 
         $levelCounts = $this->getLogLevelCounts(
             $params,
-            $whereClause,
-            $havingClause,
-            $filterStatus !== null
+            $additionalWhere,
+            $validatedFilterStatus,
+            $includeFixJoin
         );
 
         return [
@@ -110,13 +167,6 @@ class LogGroupingService implements LogGroupingServiceInterface
         string $fieldName,
         ?string $connectionId = null,
     ): array {
-        $join = '
-            LEFT JOIN swag_migration_fix f ON (
-                f.entity_name = l.entity_name
-                AND f.path = l.field_name
-                AND f.entity_id = l.entity_id
-        ';
-
         $params = [
             'runId' => Uuid::fromHexToBytes($runId),
             'code' => $code,
@@ -124,17 +174,23 @@ class LogGroupingService implements LogGroupingServiceInterface
             'fieldName' => $fieldName,
         ];
 
+        // this is safe, it's a static string, not user input
+        $connectionJoinCondition = '';
+
         if ($connectionId !== null && $connectionId !== '') {
-            $join .= ' AND f.connection_id = :connectionId';
+            $connectionJoinCondition = ' AND f.connection_id = :connectionId';
             $params['connectionId'] = Uuid::fromHexToBytes($connectionId);
         }
-
-        $join .= ')';
 
         $sql = "
             SELECT LOWER(HEX(l.id)) as id
             FROM swag_migration_logging l
-            {$join}
+            LEFT JOIN swag_migration_fix f ON (
+                f.entity_name = l.entity_name
+                AND f.path = l.field_name
+                AND f.entity_id = l.entity_id
+                {$connectionJoinCondition}
+            )
             WHERE l.run_id = :runId
                 AND l.code = :code
                 AND l.entity_name = :entityName
@@ -145,75 +201,82 @@ class LogGroupingService implements LogGroupingServiceInterface
 
         $result = $this->connection->executeQuery($sql, $params);
 
-        $rows = $result->fetchAllAssociative();
-
-        return \array_column($rows, 'id');
+        return \array_column($result->fetchAllAssociative(), 'id');
     }
 
     /**
-     * @return array<string, mixed>
+     * validates sortBy parameter against allowlist and returns the SQL column name.
+     * returns 'count' as default if input is not in ALLOWED_SORT_COLUMNS.
      */
-    private function buildParams(
-        string $runIdBytes,
-        string $level,
-        int $page,
-        int $limit,
-        string $connectionIdBytes,
-        ?string $filterCode,
-        ?string $filterEntity,
-        ?string $filterField,
-    ): array {
-        $params = [
-            'runId' => $runIdBytes,
-            'level' => $level,
-            'limit' => $limit,
-            'offset' => ($page - 1) * $limit,
-            'connectionId' => $connectionIdBytes,
-        ];
-
-        if ($filterCode !== null) {
-            $params['filterCode'] = $filterCode;
-        }
-
-        if ($filterEntity !== null) {
-            $params['filterEntity'] = $filterEntity;
-        }
-
-        if ($filterField !== null) {
-            $params['filterField'] = $filterField;
-        }
-
-        return $params;
+    private function validateSortColumn(string $sortBy): string
+    {
+        return self::ALLOWED_SORT_COLUMNS[$sortBy] ?? 'count';
     }
 
-    private function buildWhereClause(?string $filterCode, ?string $filterEntity, ?string $filterField): string
+    /**
+     * validates sortDirection parameter against allowlist.
+     * returns 'DESC' as default if input is not in ALLOWED_SORT_DIRECTIONS.
+     */
+    private function validateSortDirection(string $sortDirection): string
     {
-        $conditions = [];
+        $normalized = \strtoupper($sortDirection);
 
-        if ($filterCode !== null) {
-            $conditions[] = 'l.code = :filterCode';
-        }
-
-        if ($filterEntity !== null) {
-            $conditions[] = 'l.entity_name = :filterEntity';
-        }
-
-        if ($filterField !== null) {
-            $conditions[] = 'l.field_name = :filterField';
-        }
-
-        return $conditions ? ' AND ' . \implode(' AND ', $conditions) : '';
+        return \in_array($normalized, self::ALLOWED_SORT_DIRECTIONS, true) ? $normalized : 'DESC';
     }
 
-    private function buildQuery(string $whereClause, string $havingClause, string $orderByClause, bool $includeFixJoin, ?string $filterStatus = null): string
+    /**
+     * validates filterStatus parameter against allowlist.
+     * returns null if input is not in ALLOWED_FILTER_STATUSES.
+     */
+    private function validateFilterStatus(?string $filterStatus): ?string
     {
-        $fixJoin = $this->getFixJoinClause();
-        $countSubquery = $this->buildCountSubquery(
-            $whereClause,
-            $filterStatus,
-            $includeFixJoin,
-        );
+        if ($filterStatus === null) {
+            return null;
+        }
 
+        return \in_array($filterStatus, self::ALLOWED_FILTER_STATUSES, true) ? $filterStatus : null;
+    }
+
+    /**
+     * builds the main grouped logs query.
+     */
+    private function buildMainQuery(
+        string $additionalWhere,
+        ?string $filterStatus,
+        string $orderColumn,
+        string $orderDirection,
+        bool $includeFixJoin,
+    ): string {
+        // build HAVING clause from validated filter status
+        $havingClause = match ($filterStatus) {
+            'resolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)',
+            'unresolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)',
+            default => '',
+        };
+
+        // build count subquery components
+        $countSubqueryFixJoin = $includeFixJoin
+            ? 'LEFT JOIN swag_migration_fix f2 ON (
+                        f2.connection_id = :connectionId
+                        AND f2.entity_name = l2.entity_name
+                        AND f2.path = l2.field_name
+                        AND f2.entity_id = l2.entity_id
+                    )'
+            : '';
+
+        $countSubqueryHaving = match ($filterStatus) {
+            'resolved' => 'HAVING COUNT(DISTINCT l2.id) > 0 AND COUNT(DISTINCT l2.id) = COUNT(DISTINCT f2.id)',
+            'unresolved' => 'HAVING COUNT(DISTINCT l2.id) > 0 AND COUNT(DISTINCT l2.id) != COUNT(DISTINCT f2.id)',
+            default => '',
+        };
+
+        $countSubqueryWhere = \str_replace('l.', 'l2.', $additionalWhere);
+
+        /*
+         * MAIN QUERY STRUCTURE:
+         * this query groups logs by code, entity_name, and field_name, counting occurrences
+         * and tracking fix status. The subquery calculates total count for pagination.
+         */
         return "
             SELECT
                 l.code,
@@ -222,89 +285,112 @@ class LogGroupingService implements LogGroupingServiceInterface
                 l.gateway_name,
                 l.profile_name,
                 COUNT(DISTINCT l.id) as count,
-                {$countSubquery} as total,
+                (
+                    SELECT COUNT(*)
+                    FROM (
+                        SELECT 1
+                        FROM swag_migration_logging l2
+                        {$countSubqueryFixJoin}
+                        WHERE l2.run_id = :runId
+                            AND l2.level = :level
+                            AND l2.user_fixable = 1
+                            {$countSubqueryWhere}
+                        GROUP BY l2.code, l2.entity_name, l2.field_name
+                        {$countSubqueryHaving}
+                    ) as grouped_logs
+                ) as total,
                 COUNT(DISTINCT f.id) as fix_count
             FROM swag_migration_logging l
-            {$fixJoin}
+            LEFT JOIN swag_migration_fix f ON (
+                f.connection_id = :connectionId
+                AND f.entity_name = l.entity_name
+                AND f.path = l.field_name
+                AND f.entity_id = l.entity_id
+            )
             WHERE l.run_id = :runId
                 AND l.level = :level
                 AND l.user_fixable = 1
-                {$whereClause}
+                {$additionalWhere}
             GROUP BY l.code, l.entity_name, l.field_name
             {$havingClause}
-            {$orderByClause}
+            ORDER BY {$orderColumn} {$orderDirection}, l.code ASC, l.entity_name ASC, l.field_name ASC
             LIMIT :limit OFFSET :offset
         ";
     }
 
-    private function buildCountSubquery(string $whereClause, ?string $filterStatus, bool $includeFixJoin): string
-    {
-        if ($includeFixJoin) {
-            $fixJoin = $this->getFixJoinClause('l2', 'f2');
-            $subqueryHaving = $this->buildHavingClause($filterStatus, 'l2', 'f2');
-        } else {
-            $fixJoin = '';
-            $subqueryHaving = '';
-        }
+    /**
+     * gets log counts grouped by level for the filter badge counts.
+     *
+     * @param array<string, mixed> $params
+     *
+     * @throws Exception
+     *
+     * @return array{error: int, warning: int, info: int}
+     */
+    private function getLogLevelCounts(
+        array $params,
+        string $additionalWhere,
+        ?string $filterStatus,
+        bool $includeFixJoin,
+    ): array {
+        $joinClause = $includeFixJoin
+            ? 'LEFT JOIN swag_migration_fix f ON (
+                    f.connection_id = :connectionId
+                    AND f.entity_name = l.entity_name
+                    AND f.path = l.field_name
+                    AND f.entity_id = l.entity_id
+                )'
+            : '';
 
-        $subqueryWhere = \str_replace('l.', 'l2.', $whereClause);
+        $havingClause = $includeFixJoin
+            ? match ($filterStatus) {
+                'resolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) = COUNT(DISTINCT f.id)',
+                'unresolved' => 'HAVING COUNT(DISTINCT l.id) > 0 AND COUNT(DISTINCT l.id) != COUNT(DISTINCT f.id)',
+                default => '',
+            }
+        : '';
 
-        return "(
-                SELECT COUNT(*)
-                FROM (
-                    SELECT 1
-                    FROM swag_migration_logging l2
-                    {$fixJoin}
-                    WHERE l2.run_id = :runId
-                        AND l2.level = :level
-                        AND l2.user_fixable = 1
-                        {$subqueryWhere}
-                    GROUP BY l2.code, l2.entity_name, l2.field_name
-                    {$subqueryHaving}
-                ) as grouped_logs
-            )";
+        $sql = "
+            SELECT
+                level,
+                COUNT(DISTINCT CONCAT(code, '|', COALESCE(entity_name, ''), '|', COALESCE(field_name, ''))) as count
+            FROM (
+                SELECT
+                    l.level,
+                    l.code,
+                    l.entity_name,
+                    l.field_name
+                FROM swag_migration_logging l
+                {$joinClause}
+                WHERE l.run_id = :runId
+                    AND l.user_fixable = 1
+                    {$additionalWhere}
+                GROUP BY l.level, l.code, l.entity_name, l.field_name
+                {$havingClause}
+            ) as filtered_logs
+            GROUP BY level
+        ";
+
+        $result = $this->connection->executeQuery($sql, $params);
+
+        return $this->mapLevelCountsFromRows($result->fetchAllAssociative());
     }
 
-    private function getFixJoinClause(string $loggingAlias = 'l', string $fixAlias = 'f'): string
+    /**
+     * @throws Exception
+     */
+    private function getConnectionIdForRun(string $runIdBytes): string
     {
-        return 'LEFT JOIN swag_migration_fix ' . $fixAlias . ' ON (
-                ' . $fixAlias . '.connection_id = :connectionId
-                AND ' . $fixAlias . '.entity_name = ' . $loggingAlias . '.entity_name
-                AND ' . $fixAlias . '.path = ' . $loggingAlias . '.field_name
-                AND ' . $fixAlias . '.entity_id = ' . $loggingAlias . '.entity_id
-            )';
-    }
+        $result = $this->connection->fetchOne(
+            'SELECT connection_id FROM swag_migration_run WHERE id = :runId',
+            ['runId' => $runIdBytes]
+        );
 
-    private function buildHavingClause(?string $filterStatus, string $loggingAlias = 'l', string $fixAlias = 'f'): string
-    {
-        if ($filterStatus === 'resolved') {
-            return ' HAVING COUNT(DISTINCT ' . $loggingAlias . '.id) > 0 AND COUNT(DISTINCT ' . $loggingAlias . '.id) = COUNT(DISTINCT ' . $fixAlias . '.id)';
+        if ($result === false) {
+            throw MigrationException::noConnectionFound();
         }
 
-        if ($filterStatus === 'unresolved') {
-            return ' HAVING COUNT(DISTINCT ' . $loggingAlias . '.id) > 0 AND COUNT(DISTINCT ' . $loggingAlias . '.id) != COUNT(DISTINCT ' . $fixAlias . '.id)';
-        }
-
-        return '';
-    }
-
-    private function buildOrderByClause(string $sortBy, string $sortDirection): string
-    {
-        $columnMap = [
-            'count' => 'count',
-            'code' => 'l.code',
-            'entityName' => 'l.entity_name',
-            'fieldName' => 'l.field_name',
-            'profileName' => 'l.profile_name',
-            'gatewayName' => 'l.gateway_name',
-            'createdAt' => 'l.code',
-        ];
-
-        $orderColumn = $columnMap[$sortBy] ?? 'count';
-        $direction = \in_array(\strtoupper($sortDirection), ['ASC', 'DESC'], true) ?
-            \strtoupper($sortDirection) : 'DESC';
-
-        return "ORDER BY {$orderColumn} {$direction}, l.code ASC, l.entity_name ASC, l.field_name ASC";
+        return $result;
     }
 
     /**
@@ -326,75 +412,6 @@ class LogGroupingService implements LogGroupingServiceInterface
             ],
             $rows
         );
-    }
-
-    private function getMigrationRunForLogs(string $runUuid, Context $context): SwagMigrationRunEntity
-    {
-        $runCriteria = new Criteria();
-        $runCriteria->addFilter(new EqualsFilter('id', $runUuid));
-
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->runRepo->search($runCriteria, $context)->first();
-
-        if ($run === null) {
-            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
-        }
-
-        if ($run->getConnectionId() === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
-        return $run;
-    }
-
-    /**
-     * @param array<string, mixed> $params
-     *
-     * @throws Exception
-     *
-     * @return array{error: int, warning: int, info: int}
-     */
-    private function getLogLevelCounts(
-        array $params,
-        string $whereClause,
-        string $havingClause,
-        bool $includeFixJoin,
-    ): array {
-        $groupByClause = ', l.code, l.entity_name, l.field_name';
-
-        if ($includeFixJoin) {
-            $joinClause = $this->getFixJoinClause();
-            $havingClauseForQuery = $havingClause;
-        } else {
-            $joinClause = '';
-            $havingClauseForQuery = '';
-        }
-
-        $sql = "
-            SELECT
-                level,
-                COUNT(DISTINCT CONCAT(code, '|', COALESCE(entity_name, ''), '|', COALESCE(field_name, ''))) as count
-            FROM (
-                SELECT
-                    l.level,
-                    l.code,
-                    l.entity_name,
-                    l.field_name
-                FROM swag_migration_logging l
-                {$joinClause}
-                WHERE l.run_id = :runId
-                    AND l.user_fixable = 1
-                    {$whereClause}
-                GROUP BY l.level{$groupByClause}
-                {$havingClauseForQuery}
-            ) as filtered_logs
-            GROUP BY level
-        ";
-
-        $result = $this->connection->executeQuery($sql, $params);
-        $rows = $result->fetchAllAssociative();
-
-        return $this->mapLevelCountsFromRows($rows);
     }
 
     /**

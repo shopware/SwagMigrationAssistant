@@ -20,11 +20,11 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     computed: {
-        convertedData(): string {
+        convertedData(): string | null {
             return this.prepareData(this.selectedLog.convertedData);
         },
 
-        sourceData(): string {
+        sourceData(): string | null {
             return this.prepareData(this.selectedLog.sourceData);
         },
 
@@ -34,14 +34,14 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        prepareData(data: Record<string, never> | null | undefined): string {
+        prepareData(data: Record<string, unknown> | null | undefined): string | null {
             if (!data) {
-                return '';
+                return null;
             }
 
             const string = JSON.stringify(data, null, 2);
 
-            if (string.trim() === '{}') {
+            if (string?.trim() === '{}') {
                 return null;
             }
 

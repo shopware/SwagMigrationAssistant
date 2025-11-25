@@ -39,6 +39,25 @@ export const MIGRATION_STEP = {
 
 /**
  * @private
+ */
+export type LogGroup = {
+    code: string;
+    entityName: string | null;
+    fieldName: string | null;
+    count: number;
+};
+
+/**
+ * @private
+ */
+export type LogLevelCounts = {
+    error: number;
+    warning: number;
+    info: number;
+};
+
+/**
+ * @private
  * @sw-package fundamentals@after-sales
  */
 export default class MigrationApiService extends ApiService {
@@ -462,8 +481,8 @@ export default class MigrationApiService extends ApiService {
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<{
         total: number;
-        items: Array<{ code: string; entityName: string | null; fieldName: string | null; count: number }>;
-        levelCounts: { error: number; warning: number; info: number };
+        items: LogGroup[];
+        levelCounts: LogLevelCounts;
     }> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);

@@ -7,9 +7,11 @@
 
 namespace SwagMigrationAssistant\Migration\History;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 interface LogGroupingServiceInterface
 {
@@ -27,7 +29,6 @@ interface LogGroupingServiceInterface
         ?string $filterStatus,
         ?string $filterEntity,
         ?string $filterField,
-        Context $context,
     ): array;
 
     /**
