@@ -118,49 +118,43 @@ class HistoryController extends AbstractController
     public function getLogGroups(Request $request, Context $context): JsonResponse
     {
         $runId = $request->query->getAlnum('runId');
-        $level = $request->query->get('level', '');
-        $pageParam = $request->query->get('page');
-        $limitParam = $request->query->get('limit');
 
-        $sortBy = $request->query->get('sortBy', 'count');
-        $sortDirection = $request->query->get('sortDirection', 'DESC');
+        if (empty($runId)) {
+            throw RoutingException::missingRequestParameter('runId');
+        }
+
+        $level = $request->query->getAlpha('level');
+
+        if (empty($level)) {
+            throw RoutingException::missingRequestParameter('level');
+        }
+
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 25);
+
+        $sortBy = $request->query->getAlpha('sortBy') ?: 'count';
+        $sortDirection = $request->query->getAlpha('sortDirection') ?: 'DESC';
+
+        if (!\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'], true)) {
+            $sortDirection = 'DESC';
+        }
 
         $filterCode = $request->query->get('filterCode');
         $filterStatus = $request->query->get('filterStatus');
         $filterEntity = $request->query->get('filterEntity');
         $filterField = $request->query->get('filterField');
 
-        if (empty($runId) || empty($level)) {
-            throw RoutingException::missingRequestParameter($runId === '' ? 'runId' : 'level');
-        }
-
-        if (!\is_numeric($pageParam)) {
-            throw RoutingException::invalidRequestParameter('page');
-        }
-
-        if (!\is_numeric($limitParam)) {
-            throw RoutingException::invalidRequestParameter('limit');
-        }
-
-        if (!\is_string($sortBy) || empty($sortBy)) {
-            $sortBy = 'count';
-        }
-
-        if (!\is_string($sortDirection) || !\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'], true)) {
-            $sortDirection = 'DESC';
-        }
-
         $result = $this->logGroupingService->getGroupedLogsByCodeAndEntity(
             $runId,
             $level,
-            (int) $pageParam,
-            (int) $limitParam,
+            $page,
+            $limit,
             $sortBy,
             \strtoupper($sortDirection),
-            \is_string($filterCode) ? $filterCode : null,
-            \is_string($filterStatus) ? $filterStatus : null,
-            \is_string($filterEntity) ? $filterEntity : null,
-            \is_string($filterField) ? $filterField : null,
+            \is_string($filterCode) && !empty($filterCode) ? $filterCode : null,
+            \is_string($filterStatus) && !empty($filterStatus) ? $filterStatus : null,
+            \is_string($filterEntity) && !empty($filterEntity) ? $filterEntity : null,
+            \is_string($filterField) && !empty($filterField) ? $filterField : null,
             $context
         );
 
@@ -176,33 +170,37 @@ class HistoryController extends AbstractController
     public function getAllLogIds(Request $request): JsonResponse
     {
         $runId = $request->request->getAlnum('runId');
-        $code = $request->request->get('code');
-        $entityName = $request->request->get('entityName');
-        $fieldName = $request->request->get('fieldName');
-        $connectionId = $request->request->getAlnum('connectionId');
 
         if (empty($runId)) {
             throw RoutingException::missingRequestParameter('runId');
         }
 
+        $code = $request->request->get('code');
+
         if (!\is_string($code) || empty($code)) {
             throw RoutingException::missingRequestParameter('code');
         }
+
+        $entityName = $request->request->get('entityName');
 
         if (!\is_string($entityName) || empty($entityName)) {
             throw RoutingException::missingRequestParameter('entityName');
         }
 
+        $fieldName = $request->request->get('fieldName');
+
         if (!\is_string($fieldName) || empty($fieldName)) {
             throw RoutingException::missingRequestParameter('fieldName');
         }
+
+        $connectionId = $request->request->getAlnum('connectionId');
 
         $logIds = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
             $runId,
             $code,
             $entityName,
             $fieldName,
-            empty($connectionId) ? null : $connectionId
+            !empty($connectionId) ? $connectionId : null
         );
 
         return new JsonResponse([
