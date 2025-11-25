@@ -162,14 +162,6 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSubmitResolution() {
-            if (this.selectedLogIds.length === 0) {
-                this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.noLogsSelected'),
-                });
-
-                return;
-            }
-
             const validationError = this.swagMigrationErrorResolutionService.validateFieldValue(
                 this.selectedLog.entityName,
                 this.selectedLog.fieldName,
@@ -285,10 +277,6 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async fetchLogs(): Promise<void> {
-            if (!this.selectedLog) {
-                return;
-            }
-
             this.loading = true;
 
             try {
@@ -395,6 +383,10 @@ export default Shopware.Component.wrapComponentConfig({
                     value: fix.value,
                 }));
             } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchExistingFixesFailed'),
+                });
+
                 return [];
             }
         },
@@ -430,10 +422,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         applySelectionToGrid() {
             const gridRef = this.$refs.errorResolutionGrid;
-
-            if (!gridRef || this.tableData.length === 0) {
-                return;
-            }
 
             this.tableData.forEach((row) => {
                 if (this.selectedLogIds.includes(row.logId) && !row.status) {

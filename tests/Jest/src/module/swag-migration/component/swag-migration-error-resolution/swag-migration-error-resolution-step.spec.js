@@ -6,17 +6,17 @@ import SwagMigrationErrorResolutionStep, {
     MIGRATION_LOG_LEVEL,
 } from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-step';
 import SwagMigrationErrorResolutionService from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
-import { fixtureLogs } from '@/fixture';
+import { fixtureLogGroups } from '@/fixture';
 
 Shopware.Component.register('swag-migration-error-resolution-step', () => SwagMigrationErrorResolutionStep);
 
 const logGroupResponseMock = {
-    items: fixtureLogs,
-    total: fixtureLogs.length,
+    items: fixtureLogGroups,
+    total: fixtureLogGroups.length,
     levelCounts: {
         info: 0,
         warning: 1,
-        error: fixtureLogs.length,
+        error: fixtureLogGroups.length,
     },
 };
 
@@ -359,7 +359,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 expect(wrapper.vm.openErrorResolutionModal).toBe(true);
                 expect(wrapper.vm.selectedLog).toStrictEqual(
                     expect.objectContaining({
-                        ...fixtureLogs.at(0),
+                        ...fixtureLogGroups.at(0),
                     }),
                 );
 
@@ -385,7 +385,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 expect(wrapper.vm.openErrorResolutionModal).toBe(true);
                 expect(wrapper.vm.selectedLog).toStrictEqual(
                     expect.objectContaining({
-                        ...fixtureLogs.at(0),
+                        ...fixtureLogGroups.at(0),
                     }),
                 );
 
@@ -523,7 +523,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
             it('should paginate logs', async () => {
                 migrationApiServiceMock.getLogGroups.mockReturnValue(
                     Promise.resolve({
-                        items: Array.from({ length: 25 }, () => fixtureLogs[0]),
+                        items: Array.from({ length: 25 }, () => fixtureLogGroups[0]),
                         total: 50,
                         levelCounts: {
                             info: 1,
@@ -564,7 +564,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 // change limit
                 migrationApiServiceMock.getLogGroups.mockReturnValue(
                     Promise.resolve({
-                        items: Array.from({ length: 10 }, () => fixtureLogs[0]),
+                        items: Array.from({ length: 10 }, () => fixtureLogGroups[0]),
                         total: 50,
                         levelCounts: {
                             info: 1,

@@ -685,7 +685,7 @@ describe('src/module/swag-migration/store/migration.store', () => {
         it.each(testCases.setPremapping)(
             'should set & merge premapping: $name',
             async ({ expected, initialPremapping, premapping }) => {
-                store.premapping = initialPremapping;
+                store.premapping = [...initialPremapping];
                 store.setPremapping(premapping);
 
                 expect(store.premapping).toStrictEqual(expected);

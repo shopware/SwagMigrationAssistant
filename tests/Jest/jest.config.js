@@ -28,7 +28,6 @@ module.exports = {
 
     testMatch: [
         '<rootDir>/tests/Jest/**/*.spec.js',
-        '<rootDir>/tests/Jest/**/*.spec.ts',
     ],
 
     collectCoverage: true,

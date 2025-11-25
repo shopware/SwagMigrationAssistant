@@ -647,7 +647,8 @@
           "fieldValueNotSet": "Feldwert nicht festgelegt.",
           "noLogsSelected": "Bitte wählen Sie mindestens einen Log-Eintrag zur Behebung aus.",
           "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
-          "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen."
+          "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
+          "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen."
         },
         "step": {
           "continue-modal": {

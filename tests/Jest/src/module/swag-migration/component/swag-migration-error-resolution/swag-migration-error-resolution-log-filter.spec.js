@@ -6,13 +6,13 @@ import SwagMigrationErrorResolutionLogFilter, {
     fieldMap,
 } from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-log-filter';
 import SwagMigrationErrorResolutionService from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
-import { fixtureLogs } from '@/fixture';
+import { fixtureLogGroups } from '@/fixture';
 
 Shopware.Component.register('swag-migration-error-resolution-log-filter', SwagMigrationErrorResolutionLogFilter);
 
 const defaultProps = {
     disabled: false,
-    tableData: fixtureLogs,
+    tableData: fixtureLogGroups,
     runId: 'test-run-id',
 };
 
@@ -265,6 +265,65 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
 
             popoverContent.dispatchEvent(pointerDownEvent);
             expect(stopPropagationSpy).not.toHaveBeenCalled();
+        });
+
+        it('should disable filter button when disabled prop is true', async () => {
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            const body = new DOMWrapper(document.body);
+
+            await wrapper.find('.swag-migration-error-resolution-log-filter__button').trigger('click');
+            await flushPromises();
+
+            expect(body.find('.swag-migration-error-resolution-log-filter__button').attributes('disabled')).toBeUndefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-code input')
+                    .attributes('disabled'),
+            ).toBeUndefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-status input')
+                    .attributes('disabled'),
+            ).toBeUndefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-entity input')
+                    .attributes('disabled'),
+            ).toBeUndefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-field input')
+                    .attributes('disabled'),
+            ).toBeUndefined();
+            expect(body.find('.mt-link--disabled').exists()).toBe(false);
+
+            await wrapper.setProps({ disabled: true });
+            await flushPromises();
+
+            expect(body.find('.swag-migration-error-resolution-log-filter__button').attributes('disabled')).toBeDefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-code input')
+                    .attributes('disabled'),
+            ).toBeDefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-status input')
+                    .attributes('disabled'),
+            ).toBeDefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-entity input')
+                    .attributes('disabled'),
+            ).toBeDefined();
+            expect(
+                body
+                    .find('.swag-migration-error-resolution-log-filter__popover-content-form-field input')
+                    .attributes('disabled'),
+            ).toBeDefined();
+            expect(body.find('.mt-link--disabled').exists()).toBe(true);
         });
     });
 
