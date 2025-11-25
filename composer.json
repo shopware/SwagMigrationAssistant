@@ -68,11 +68,7 @@
         "admin:lint:fix": [
             "@npm:jest run lint:fix",
             "@npm:admin run lint:fix",
-            "@npm:acceptance run lint:fix",
-            "@npm:admin run lint:scss:fix"
-        ],
-        "admin:lint:scss": [
-            "@npm:admin run lint:scss"
+            "@npm:acceptance run lint:fix"
         ],
         "admin:format": [
             "@npm:jest run format",
