@@ -3,17 +3,18 @@
         <mt-popover
             class="swag-migration-error-resolution-log-filter__popover"
             :title="$tc('swag-migration.index.error-resolution.step.card.filter.title', { count: filterCount })"
-            :is-opened="open"
+            :child-views="[{ name: 'base' }]"
             width="large"
+            @update:isOpened="onPopoverOpenChange"
         >
-            <template #trigger>
+            <template #trigger="{ isOpened, toggleFloatingUi }">
                 {% block swag_migration_error_resolution_log_filter_trigger %}
                     <mt-button
                         class="swag-migration-error-resolution-log-filter__button"
                         variant="secondary"
                         :disabled="disabled"
                         :is-loading="loading"
-                        @click="onTogglePopover"
+                        @click="() => onTogglePopover(isOpened, toggleFloatingUi)"
                     >
                         <template #iconFront>
                             <mt-icon
@@ -32,6 +33,7 @@
                     {% block swag_migration_error_resolution_log_filter_content_form %}
                         <div class="swag-migration-error-resolution-log-filter__popover-content-form">
                             <mt-select
+                                class="swag-migration-error-resolution-log-filter__popover-content-form-code"
                                 :label="$t('swag-migration.index.error-resolution.step.card.filter.code.label')"
                                 :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.code.placeholder')"
                                 :model-value="value.code"
@@ -43,6 +45,7 @@
                             />
 
                             <mt-select
+                                class="swag-migration-error-resolution-log-filter__popover-content-form-status"
                                 :label="$t('swag-migration.index.error-resolution.step.card.filter.status.label')"
                                 :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.status.placeholder')"
                                 :model-value="value.status"
@@ -53,6 +56,7 @@
                             />
 
                             <mt-select
+                                class="swag-migration-error-resolution-log-filter__popover-content-form-entity"
                                 :label="$t('swag-migration.index.error-resolution.step.card.filter.entity.label')"
                                 :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.entity.placeholder')"
                                 :model-value="value.entity"
@@ -64,6 +68,7 @@
                             />
 
                             <mt-select
+                                class="swag-migration-error-resolution-log-filter__popover-content-form-field"
                                 :label="$t('swag-migration.index.error-resolution.step.card.filter.field.label')"
                                 :placeholder="$t('swag-migration.index.error-resolution.step.card.filter.field.placeholder')"
                                 :model-value="value.field"

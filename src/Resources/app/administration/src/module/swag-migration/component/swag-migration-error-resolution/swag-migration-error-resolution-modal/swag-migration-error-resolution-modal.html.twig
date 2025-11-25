@@ -15,6 +15,7 @@
             {% block swag_migration_error_resolution_modal_left %}
                 <div class="swag-migration-error-resolution-modal__left">
                     <sw-data-grid
+                        class="swag-migration-error-resolution-modal__left-grid"
                         ref="errorResolutionGrid"
                         :identifier="tableIdentifier"
                         item-identifier-property="logId"

@@ -498,7 +498,8 @@
           "fieldValueNotSet": "Field value not set.",
           "noLogsSelected": "Please select at least one log entry to resolve.",
           "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
-          "fetchFilterDataFailed": "Failed fetching filter data."
+          "fetchFilterDataFailed": "Failed fetching filter data.",
+          "fetchExistingFixesFailed": "Failed fetching existing fixes."
         },
         "step": {
           "continue-modal": {

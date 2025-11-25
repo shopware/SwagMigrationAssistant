@@ -38,7 +38,6 @@ export type LogFilterValue = {
  * @private
  */
 export interface SwagMigrationErrorResolutionLogFilterData {
-    open: boolean;
     loading: boolean;
     value: LogFilterValue;
     migrationStore: MigrationStore;
@@ -82,7 +81,6 @@ export default Shopware.Component.wrapComponentConfig({
 
     data(): SwagMigrationErrorResolutionLogFilterData {
         return {
-            open: false,
             loading: false,
             value: this.getInitialFilterValue(),
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
@@ -172,7 +170,7 @@ export default Shopware.Component.wrapComponentConfig({
             searchTerm: string | null,
             type: keyof LogFilterValue,
         ) {
-            if (!searchTerm || searchTerm.length < 2) {
+            if (!searchTerm || searchTerm.length < 3) {
                 await this.loadInitialOptions(type);
 
                 return;
@@ -183,10 +181,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         async fetchSearchResults(searchTerm: string, type: keyof LogFilterValue) {
             const field = fieldMap[type];
-
-            if (!field) {
-                return;
-            }
 
             const aggregationName = `${type}Aggregation`;
 
@@ -207,6 +201,7 @@ export default Shopware.Component.wrapComponentConfig({
                     ...this.searchResults,
                     [type]: [],
                 };
+
                 return;
             }
 
@@ -220,10 +215,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         async loadInitialOptions(type: keyof LogFilterValue) {
             const field = fieldMap[type];
-
-            if (!field) {
-                return;
-            }
 
             const aggregationName = `${type}Aggregation`;
 
@@ -246,9 +237,9 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        async onTogglePopover() {
-            if (this.open) {
-                this.open = false;
+        async onTogglePopover(isOpened: boolean, toggleFloatingUi: () => void) {
+            if (isOpened) {
+                toggleFloatingUi();
 
                 return;
             }
@@ -262,7 +253,7 @@ export default Shopware.Component.wrapComponentConfig({
                     this.loadInitialOptions('field'),
                 ]);
 
-                this.open = true;
+                toggleFloatingUi();
             } finally {
                 this.loading = false;
             }
@@ -288,6 +279,24 @@ export default Shopware.Component.wrapComponentConfig({
 
         onReset() {
             this.onValueChange(this.getInitialFilterValue());
+        },
+
+        onPopoverOpenChange(isOpened: boolean) {
+            if (isOpened) {
+                document.addEventListener('pointerdown', this.globalPointerDownHandler, true);
+
+                return;
+            }
+
+            document.removeEventListener('pointerdown', this.globalPointerDownHandler, true);
+        },
+
+        globalPointerDownHandler(event: PointerEvent) {
+            const target = event.target as HTMLElement;
+
+            if (target.closest('.mt-select-result-list-popover-wrapper') !== null) {
+                event.stopPropagation();
+            }
         },
     },
 });
