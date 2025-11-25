@@ -171,7 +171,7 @@ export default Shopware.Component.wrapComponentConfig({
             type: keyof LogFilterValue,
         ) {
             if (!searchTerm || searchTerm.length < 3) {
-                await this.loadInitialOptions(type);
+                await this.fetchSearchResults(null, type);
 
                 return;
             }
@@ -179,17 +179,17 @@ export default Shopware.Component.wrapComponentConfig({
             await this.fetchSearchResults(searchTerm, type);
         }, 400),
 
-        async fetchSearchResults(searchTerm: string, type: keyof LogFilterValue) {
+        async fetchSearchResults(searchTerm: string | null, type: keyof LogFilterValue) {
             const field = fieldMap[type];
-
             const aggregationName = `${type}Aggregation`;
+            const limit = searchTerm && searchTerm.length >= 3 ? 25 : 250;
 
             const criteria = new Criteria(1, 1)
-                .addAggregation(Criteria.terms(aggregationName, field, 25, null, null))
+                .addAggregation(Criteria.terms(aggregationName, field, limit, null, null))
                 .addFilter(Criteria.equals('runId', this.runId))
                 .addFilter(Criteria.equals('userFixable', 1));
 
-            if (searchTerm) {
+            if (searchTerm && searchTerm.length >= 3) {
                 criteria.setTerm(searchTerm);
             }
 
@@ -213,30 +213,6 @@ export default Shopware.Component.wrapComponentConfig({
             };
         },
 
-        async loadInitialOptions(type: keyof LogFilterValue) {
-            const field = fieldMap[type];
-
-            const aggregationName = `${type}Aggregation`;
-
-            const criteria = new Criteria(1, 1)
-                .addAggregation(Criteria.terms(`${type}Aggregation`, field, 250, null, null))
-                .addFilter(Criteria.equals('runId', this.runId))
-                .addFilter(Criteria.equals('userFixable', 1));
-
-            const result = await this.migrationLoggingRepository.search(criteria);
-            const aggregation = result.aggregations?.[aggregationName];
-
-            if (aggregation && aggregation.buckets) {
-                this.searchResults = {
-                    ...this.searchResults,
-                    [type]: this.buildResultsMap(
-                        type,
-                        aggregation.buckets.map((bucket) => bucket.key),
-                    ),
-                };
-            }
-        },
-
         async onTogglePopover(isOpened: boolean, toggleFloatingUi: () => void) {
             if (isOpened) {
                 toggleFloatingUi();
@@ -248,9 +224,9 @@ export default Shopware.Component.wrapComponentConfig({
 
             try {
                 await Promise.all([
-                    this.loadInitialOptions('code'),
-                    this.loadInitialOptions('entity'),
-                    this.loadInitialOptions('field'),
+                    this.fetchSearchResults(null, 'code'),
+                    this.fetchSearchResults(null, 'entity'),
+                    this.fetchSearchResults(null, 'field'),
                 ]);
 
                 toggleFloatingUi();
@@ -270,7 +246,7 @@ export default Shopware.Component.wrapComponentConfig({
                 const filterKey = key as keyof LogFilterValue;
 
                 if (newValue[filterKey] === null && filterKey !== 'status') {
-                    void this.loadInitialOptions(filterKey);
+                    void this.fetchSearchResults(null, filterKey);
                 }
             });
 
