@@ -20,6 +20,9 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 class LogGroupingService implements LogGroupingServiceInterface
 {
