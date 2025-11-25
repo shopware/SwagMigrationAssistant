@@ -38,8 +38,7 @@
             "@ecs-fix",
             "@phpstan",
             "@phpunit",
-            "@admin:lint",
-            "@admin:format"
+            "@admin:lint"
         ],
         "ecs": "../../../vendor/bin/php-cs-fixer fix --dry-run",
         "ecs-fix": "../../../vendor/bin/php-cs-fixer fix",
