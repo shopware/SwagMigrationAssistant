@@ -116,7 +116,7 @@ class MigrationFixApplierTest extends TestCase
 
         $migrationFixApplier = new MigrationFixApplier($this->createConnection($fixes));
 
-        $migrationFixApplier->apply($data, Uuid::randomHex());
+        $migrationFixApplier->apply($data, Uuid::randomHex(), Uuid::randomHex());
 
         static::assertSame($expected, $data[0]['the']['path']['to']['value']);
         static::assertSame($expected, $data[0]['other']['path']['to']['value']);

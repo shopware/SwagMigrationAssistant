@@ -18,6 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
@@ -244,7 +245,7 @@ class MappingServiceTest extends TestCase
                 $set['entity'],
                 $set['oldIdentifier'],
                 Context::createDefaultContext(),
-                \md5($set['entity'] . $set['oldIdentifier']),
+                Hasher::hash($set['entity'] . $set['oldIdentifier']),
                 null,
                 Uuid::randomHex(),
                 $set['value']
@@ -265,7 +266,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame($set['value'], $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -289,7 +290,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame('EV_newValue', $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -345,7 +346,7 @@ class MappingServiceTest extends TestCase
                 $set['entity'],
                 $set['oldIdentifier'],
                 Context::createDefaultContext(),
-                \md5($set['entity'] . $set['oldIdentifier']),
+                Hasher::hash($set['entity'] . $set['oldIdentifier']),
                 null,
                 Uuid::randomHex(),
                 $set['value']
@@ -368,7 +369,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame($set['value'], $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }
@@ -388,7 +389,7 @@ class MappingServiceTest extends TestCase
                 if ($set['oldIdentifier'] === $resultEntry['old_identifier']) {
                     static::assertSame($set['entity'], $resultEntry['entity']);
                     static::assertSame('EV_newValue', $resultEntry['entity_value']);
-                    static::assertSame(\md5($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
+                    static::assertSame(Hasher::hash($set['entity'] . $set['oldIdentifier']), $resultEntry['checksum']);
                 }
             }
         }

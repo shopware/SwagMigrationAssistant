@@ -23,10 +23,10 @@ class MigrationFixApplier
     /**
      * @param array<int|string, array<int|string, mixed>> $data
      */
-    public function apply(array &$data, string $connectionId): void
+    public function apply(array &$data, string $connectionId, string $runId): void
     {
         $itemIds = \array_column($data, 'id');
-        $fixes = $this->getMappings($itemIds, $connectionId);
+        $fixes = $this->getFixes($itemIds, $connectionId, $runId);
 
         foreach ($data as &$item) {
             $id = $item['id'];
@@ -48,12 +48,17 @@ class MigrationFixApplier
      *
      * @return array<string, list<MigrationFix>>
      */
-    private function getMappings(array $ids, string $connectionId): array
+    private function getFixes(array $ids, string $connectionId, string $runId): array
     {
+        // To ensure, only select fixes for the current run, join swag_migration_logging table and filter by run_id
         $sql = <<<'SQL'
-SELECT fix.entity_id as entityId, fix.id, fix.value, fix.path FROM swag_migration_fix as fix
+SELECT fix.entity_id AS entityId, fix.id, fix.value, fix.path
+FROM swag_migration_fix AS fix
+INNER JOIN swag_migration_logging AS log ON log.entity_id = fix.entity_id
 WHERE fix.entity_id IN (:ids)
 AND fix.connection_id = :connectionId
+AND log.run_id = :runId
+AND log.user_fixable = 1;
 SQL;
 
         $result = $this->connection->fetchAllAssociative(
@@ -61,6 +66,7 @@ SQL;
             [
                 'ids' => Uuid::fromHexToBytesList($ids),
                 'connectionId' => Uuid::fromHexToBytes($connectionId),
+                'runId' => Uuid::fromHexToBytes($runId),
             ],
             [
                 'ids' => ArrayParameterType::STRING,
