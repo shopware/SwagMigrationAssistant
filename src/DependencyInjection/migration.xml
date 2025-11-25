@@ -199,7 +199,6 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\History\LogGroupingService">
-            <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
 

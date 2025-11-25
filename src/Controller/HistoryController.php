@@ -155,7 +155,6 @@ class HistoryController extends AbstractController
             \is_string($filterStatus) && !empty($filterStatus) ? $filterStatus : null,
             \is_string($filterEntity) && !empty($filterEntity) ? $filterEntity : null,
             \is_string($filterField) && !empty($filterField) ? $filterField : null,
-            $context
         );
 
         return new JsonResponse($result);

@@ -10,15 +10,9 @@ namespace SwagMigrationAssistant\Migration\History;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\Exception;
 use Doctrine\DBAL\ParameterType;
-use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
-use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 
 /**
  * @internal
@@ -26,11 +20,7 @@ use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 #[Package('fundamentals@after-sales')]
 class LogGroupingService implements LogGroupingServiceInterface
 {
-    /**
-     * @param EntityRepository<SwagMigrationRunCollection> $runRepo
-     */
     public function __construct(
-        private readonly EntityRepository $runRepo,
         private readonly Connection $connection,
     ) {
     }
@@ -51,11 +41,9 @@ class LogGroupingService implements LogGroupingServiceInterface
         ?string $filterStatus,
         ?string $filterEntity,
         ?string $filterField,
-        Context $context,
     ): array {
-        $run = $this->getMigrationRunForLogs($runUuid, $context);
-        $connectionIdBytes = Uuid::fromHexToBytes($run->getConnectionId() ?? '');
         $runIdBytes = Uuid::fromHexToBytes($runUuid);
+        $connectionIdBytes = $this->getConnectionIdForRun($runIdBytes);
 
         $params = $this->buildParams(
             $runIdBytes,
@@ -331,23 +319,21 @@ class LogGroupingService implements LogGroupingServiceInterface
         );
     }
 
-    private function getMigrationRunForLogs(string $runUuid, Context $context): SwagMigrationRunEntity
+    /**
+     * @throws Exception
+     */
+    private function getConnectionIdForRun(string $runIdBytes): string
     {
-        $runCriteria = new Criteria();
-        $runCriteria->addFilter(new EqualsFilter('id', $runUuid));
+        $result = $this->connection->fetchOne(
+            'SELECT connection_id FROM swag_migration_run WHERE id = :runId',
+            ['runId' => $runIdBytes]
+        );
 
-        /** @var SwagMigrationRunEntity|null $run */
-        $run = $this->runRepo->search($runCriteria, $context)->first();
-
-        if ($run === null) {
-            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
-        }
-
-        if ($run->getConnectionId() === null) {
+        if (!$result) {
             throw MigrationException::noConnectionFound();
         }
 
-        return $run;
+        return $result;
     }
 
     /**
