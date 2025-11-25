@@ -43,7 +43,6 @@
     "eslint-plugin-vuejs-accessibility": "file:../../../../../../../src/Administration/Resources/app/administration/node_modules/eslint-plugin-vuejs-accessibility",
     "prettier": "^3.4.2",
     "prettier-plugin-multiline-arrays": "^3.0.6",
-    "shopware-administration": "file:../../../../../../../src/Administration/Resources/app/administration",
     "stylelint": "^16.16.0",
     "stylelint-define-config": "^16.22.0",
     "typescript": "^5.7.3",
