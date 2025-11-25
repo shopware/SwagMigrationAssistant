@@ -3,7 +3,7 @@
         class="swag-migration-error-resolution-details-modal"
         variant="large"
         :title="modalTitle"
-        @modal-close="() => $emit('close-error-resolution-details-modal')"
+        @modal-close="() => $emit('modal-close')"
     >
         <div class="swag-migration-error-resolution-details-modal__container">
             {% block swag_migration_error_resolution_details_modal_converted_data_editor %}

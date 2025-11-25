@@ -2,13 +2,13 @@
     <sw-modal
         class="swag-migration-error-resolution-modal"
         :title="modalTitle"
-        @modal-close="() => $emit('close-error-resolution-modal')"
+        @modal-close="() => $emit('modal-close')"
     >
         <swag-migration-error-resolution-details-modal
             v-if="openDetailsModal"
             :entity-name="selectedLog.entityName"
             :selected-log="selectedDetailsLog"
-            @close-error-resolution-details-modal="onCloseDetailsModal"
+            @modal-close="onCloseDetailsModal"
         />
 
         <div class="swag-migration-error-resolution-modal__container">

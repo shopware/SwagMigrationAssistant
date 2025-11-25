@@ -4,7 +4,7 @@
             v-if="openErrorResolutionModal && selectedLog"
             :selected-log="selectedLog"
             :run-id="runId"
-            @close-error-resolution-modal="onCloseEditLog"
+            @modal-close="onCloseEditLog"
             @fixes-created="onFixesCreated"
         />
 
