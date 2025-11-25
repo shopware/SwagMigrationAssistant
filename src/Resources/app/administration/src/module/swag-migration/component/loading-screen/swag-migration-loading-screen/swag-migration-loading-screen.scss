@@ -1,5 +1,3 @@
-@import "~scss/variables";
-
 .swag-migration-loading-screen {
     .swag-migration-loading-screen__header {
         text-align: center;
@@ -19,7 +17,7 @@
 
     .swag-migration-loading-screen__progress-bar-group {
         display: grid;
-        margin: 0 10% 0 10%;
+        margin: 0 10%;
 
         .sw-progress-bar {
             padding: 0 var(--scale-size-10) 0 var(--scale-size-10);

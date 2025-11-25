@@ -38,7 +38,8 @@
             "@ecs-fix",
             "@phpstan",
             "@phpunit",
-            "@admin:lint"
+            "@admin:lint",
+            "@admin:format"
         ],
         "ecs": "../../../vendor/bin/php-cs-fixer fix --dry-run",
         "ecs-fix": "../../../vendor/bin/php-cs-fixer fix",
@@ -68,7 +69,11 @@
         "admin:lint:fix": [
             "@npm:jest run lint:fix",
             "@npm:admin run lint:fix",
-            "@npm:acceptance run lint:fix"
+            "@npm:acceptance run lint:fix",
+            "@npm:admin run lint:scss:fix"
+        ],
+        "admin:lint:scss": [
+            "@npm:admin run lint:scss"
         ],
         "admin:format": [
             "@npm:jest run format",
