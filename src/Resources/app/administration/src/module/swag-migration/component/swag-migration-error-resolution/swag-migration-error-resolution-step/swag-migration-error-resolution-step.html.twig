@@ -144,6 +144,7 @@
                         <sw-data-grid
                             v-if="tableData?.length > 0 || loading"
                             class="swag-migration-error-resolution-step__card-table-grid"
+                            identifier="swag-migration-error-resolution-grid"
                             :data-source="tableData"
                             :columns="tableColumns"
                             :is-loading="loading"
