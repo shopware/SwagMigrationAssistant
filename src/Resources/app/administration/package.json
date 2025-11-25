@@ -15,7 +15,7 @@
   "devDependencies": {
     "@eslint/js": "^9.18.0",
     "@shopware-ag/eslint-config-base": "^2.0.0",
-    "@shopware-ag/meteor-tokens": "1.3.1",
+    "@shopware-ag/meteor-tokens": "1.0.0",
     "@shopware-ag/stylelint-plugin-meteor": "^1.1.0",
     "@types/node": "^22.10.10",
     "@typescript-eslint/eslint-plugin": "^7.9.0",
