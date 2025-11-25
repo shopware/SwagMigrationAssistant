@@ -19,14 +19,12 @@ const defaultMigrationState = {
 };
 
 const repositoryMock = {
-    search: jest.fn(() =>
-        Promise.resolve({
-            first: () => ({
-                id: '1',
-                selectedConnectionId: 'connection-id',
-            }),
+    search: jest.fn(() => Promise.resolve({
+        first: () => ({
+            id: '1',
+            selectedConnectionId: 'connection-id',
         }),
-    ),
+    })),
 };
 
 const migrationApiServiceMock = {

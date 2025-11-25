@@ -58,11 +58,9 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
-    getAllLogIds: jest.fn(() =>
-        Promise.resolve({
-            ids: logMocks.map((log) => log.id),
-        }),
-    ),
+    getAllLogIds: jest.fn(() => Promise.resolve({
+        ids: logMocks.map((log) => log.id),
+    })),
 };
 
 const migrationLoggingRepositoryMock = {
