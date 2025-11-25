@@ -288,7 +288,6 @@ class LogGroupingService implements LogGroupingServiceInterface
             'fieldName' => 'l.field_name',
             'profileName' => 'l.profile_name',
             'gatewayName' => 'l.gateway_name',
-            'createdAt' => 'l.code',
         ];
 
         $orderColumn = $columnMap[$sortBy] ?? 'count';
