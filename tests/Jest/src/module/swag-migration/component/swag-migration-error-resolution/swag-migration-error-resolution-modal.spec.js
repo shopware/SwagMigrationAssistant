@@ -358,9 +358,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(true);
             expect(wrapper.vm.selectedDetailsLog).toStrictEqual(wrapper.vm.tableData.at(0));
 
-            await wrapper
-                .find('.swag-migration-error-resolution-details-modal')
-                .trigger('close-error-resolution-details-modal');
+            await wrapper.find('.swag-migration-error-resolution-details-modal').trigger('modal-close');
             await flushPromises();
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(false);

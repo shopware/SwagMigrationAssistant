@@ -44,7 +44,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         await wrapper.find('.sw-modal__close').trigger('click');
         await flushPromises();
 
-        expect(wrapper.emitted('close-error-resolution-details-modal')).toBeDefined();
+        expect(wrapper.emitted('modal-close')).toBeDefined();
     });
 
     it.each([

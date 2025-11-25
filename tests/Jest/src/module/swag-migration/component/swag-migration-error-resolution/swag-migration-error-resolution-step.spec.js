@@ -390,7 +390,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 expect(modal.attributes('run-id')).toBe('run-id-1');
 
                 // should also close the modal on emit
-                await modal.trigger('close-error-resolution-modal');
+                await modal.trigger('modal-close');
                 await flushPromises();
 
                 expect(wrapper.vm.openErrorResolutionModal).toBe(false);
