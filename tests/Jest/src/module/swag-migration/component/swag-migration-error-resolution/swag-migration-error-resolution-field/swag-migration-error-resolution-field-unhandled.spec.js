@@ -105,23 +105,16 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         {
             name: 'trailing comma in object',
             value: '{"key": "value",}',
-            expected: { key: 'value' },
         },
         {
             name: 'trailing comma in array',
             value: '[1, 2, 3,]',
-            expected: [
-                1,
-                2,
-                3,
-            ],
         },
         {
             name: 'nested trailing commas',
             value: '{"outer": {"inner": "value",},}',
-            expected: { outer: { inner: 'value' } },
         },
-    ])('should clean trailing commas: $name', async ({ value, expected }) => {
+    ])('should return null and set error for trailing commas: $name', async ({ value }) => {
         const wrapper = await createWrapper();
         await flushPromises();
         jest.clearAllMocks();
@@ -129,7 +122,9 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         await wrapper.setData({ fieldValue: value });
         await flushPromises();
 
-        expect(updateFieldValueMock).toHaveBeenCalledWith(expected);
+        expect(updateFieldValueMock).toHaveBeenCalledWith(null);
+        expect(wrapper.vm.error).not.toBeNull();
+        expect(wrapper.vm.error.detail).toBeDefined();
     });
 
     it.each([
@@ -145,7 +140,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
             name: 'single quotes',
             value: "{'key': 'value'}",
         },
-    ])('should return original string for invalid JSON: $name', async ({ value }) => {
+    ])('should return null and set error for invalid JSON: $name', async ({ value }) => {
         const wrapper = await createWrapper();
         await flushPromises();
         jest.clearAllMocks();
@@ -153,7 +148,9 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         await wrapper.setData({ fieldValue: value });
         await flushPromises();
 
-        expect(updateFieldValueMock).toHaveBeenCalledWith(value);
+        expect(updateFieldValueMock).toHaveBeenCalledWith(null);
+        expect(wrapper.vm.error).not.toBeNull();
+        expect(wrapper.vm.error.detail).toBeDefined();
     });
 
     it('should trim whitespace from JSON string', async () => {
@@ -165,5 +162,22 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         await flushPromises();
 
         expect(updateFieldValueMock).toHaveBeenCalledWith({ key: 'value' });
+        expect(wrapper.vm.error).toBeNull();
+    });
+
+    it('should clear error when valid JSON is entered after invalid JSON', async () => {
+        const wrapper = await createWrapper();
+        await flushPromises();
+
+        await wrapper.setData({ fieldValue: 'invalid json' });
+        await flushPromises();
+        expect(wrapper.vm.error).not.toBeNull();
+
+        jest.clearAllMocks();
+        await wrapper.setData({ fieldValue: '{"valid": "json"}' });
+        await flushPromises();
+
+        expect(wrapper.vm.error).toBeNull();
+        expect(updateFieldValueMock).toHaveBeenCalledWith({ valid: 'json' });
     });
 });
