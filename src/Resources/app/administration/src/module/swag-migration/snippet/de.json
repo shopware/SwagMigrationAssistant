@@ -648,7 +648,8 @@
           "noLogsSelected": "Bitte wählen Sie mindestens einen Log-Eintrag zur Behebung aus.",
           "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
           "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
-          "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen."
+          "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
+          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON."
         },
         "step": {
           "continue-modal": {
