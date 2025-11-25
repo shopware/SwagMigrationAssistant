@@ -5,6 +5,7 @@ import template from './swag-migration-error-resolution-field-unhandled.html.twi
  */
 export interface SwagMigrationErrorResolutionFieldUnhandledData {
     fieldValue: string;
+    error: { detail: string } | null;
 }
 
 /**
@@ -31,6 +32,7 @@ export default Shopware.Component.wrapComponentConfig({
     data(): SwagMigrationErrorResolutionFieldUnhandledData {
         return {
             fieldValue: '',
+            error: null,
         };
     },
 
@@ -48,21 +50,24 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     methods: {
-        cleanJsonString(jsonString: string): string {
-            return jsonString.replace(/,(\s*[}\]])/g, '$1').trim();
-        },
-
         parseJsonFieldValue(): string | number | boolean | null | object | unknown[] {
             if (!this.fieldValue || typeof this.fieldValue !== 'string') {
+                this.error = null;
+
                 return this.fieldValue;
             }
 
             try {
-                const cleanedJson = this.cleanJsonString(this.fieldValue);
+                const value = JSON.parse(this.fieldValue);
+                this.error = null;
 
-                return JSON.parse(cleanedJson);
-            } catch {
-                return this.fieldValue;
+                return value;
+            } catch (e) {
+                this.error = {
+                    detail: this.$tc('swag-migration.index.error-resolution.errors.invalidJsonInput'),
+                };
+
+                return null;
             }
         },
     },

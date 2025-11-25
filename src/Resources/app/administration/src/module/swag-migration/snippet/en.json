@@ -499,7 +499,8 @@
           "noLogsSelected": "Please select at least one log entry to resolve.",
           "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
           "fetchFilterDataFailed": "Failed fetching filter data.",
-          "fetchExistingFixesFailed": "Failed fetching existing fixes."
+          "fetchExistingFixesFailed": "Failed fetching existing fixes.",
+          "invalidJsonInput": "This input is not valid JSON."
         },
         "step": {
           "continue-modal": {
