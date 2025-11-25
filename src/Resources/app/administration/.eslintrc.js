@@ -26,13 +26,8 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     settings: {
         'import/resolver': {
-            node: {},
-            webpack: {
-                config: {
-                    resolve: {
-                        extensions: ['.js', '.ts', '.vue', '.json', '.less', '.twig'],
-                    },
-                },
+            node: {
+                extensions: ['.js', '.ts', '.vue', '.json', '.less', '.twig'],
             },
         },
     },
