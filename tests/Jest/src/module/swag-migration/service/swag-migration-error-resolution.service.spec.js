@@ -542,9 +542,9 @@ const SORT_FIELDS_BY_PRIORITY_TESTS = [
             'description',
         ],
         expected: [
-            'id',
             'name',
             'description',
+            'id',
             'createdAt',
             'taxId',
             'unknown_field',
@@ -682,8 +682,8 @@ const GENERATE_TABLE_COLUMNS_TESTS = [
         expected: [
             'status',
             'name',
-            'id',
             'productNumber',
+            'id',
             'createdAt',
         ],
     },
@@ -694,9 +694,9 @@ const GENERATE_TABLE_COLUMNS_TESTS = [
         expected: [
             'status',
             'updatedAt',
-            'id',
             'customerNumber',
             'email',
+            'firstName',
         ],
     },
     {

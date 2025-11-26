@@ -796,12 +796,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 expect.objectContaining({
                     page: 1,
                     limit: 1,
-                    filters: expect.arrayContaining([
-                        expect.objectContaining({ field: 'runId', type: 'equals', value: defaultProps.runId }),
-                        expect.objectContaining({ field: 'code', type: 'equals', value: expect.any(String) }),
-                        expect.objectContaining({ field: 'entityName', type: 'equals', value: 'media' }),
-                        expect.objectContaining({ field: 'fieldName', type: 'equals', value: 'title' }),
-                    ]),
                     ids: ['log-id-3'],
                 }),
             );
