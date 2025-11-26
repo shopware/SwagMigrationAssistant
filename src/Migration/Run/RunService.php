@@ -288,8 +288,8 @@ class RunService implements RunServiceInterface
 
         $runId = $run->getId();
 
-        if ($run->getStepValue() !== MigrationStep::APPLY_FIXES->value) {
-            throw MigrationException::migrationNotInStep($runId, MigrationStep::APPLY_FIXES->value);
+        if ($run->getStepValue() !== MigrationStep::ERROR_RESOLUTION->value) {
+            throw MigrationException::migrationNotInStep($runId, MigrationStep::ERROR_RESOLUTION->value);
         }
 
         $this->runTransitionService->transitionToRunStep($runId, MigrationStep::WRITING);

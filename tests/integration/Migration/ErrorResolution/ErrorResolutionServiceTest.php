@@ -127,7 +127,7 @@ class ErrorResolutionServiceTest extends TestCase
                     'id' => $runId,
                     'connection_id' => $connection->getId(),
                     'connection' => $connection->jsonSerialize(),
-                    'step' => 'apply-fixes',
+                    'step' => 'error-resolution',
                 ],
             ];
 
