@@ -1,5 +1,5 @@
 /**
- * @sw-package after-sales
+ * @sw-package fundamentals@after-sales
  * @private
  */
 import type Repository from 'shopware-administration/src/core/data/repository.data';
