@@ -20,6 +20,7 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionFingerprintService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -313,7 +314,8 @@ class RunServiceTest extends TestCase
             $messageBus,
             $this->createMock(MigrationContextFactory::class),
             $this->createMock(PremappingService::class),
-            $runTransitionService
+            $runTransitionService,
+            $this->createMock(ConnectionFingerprintService::class),
         );
 
         try {
@@ -365,7 +367,8 @@ class RunServiceTest extends TestCase
             $messageBus,
             $this->createMock(MigrationContextFactory::class),
             $this->createMock(PremappingService::class),
-            $runTransitionService
+            $runTransitionService,
+            $this->createMock(ConnectionFingerprintService::class),
         );
 
         $runService->resumeAfterFixes($this->context);
@@ -404,6 +407,7 @@ class RunServiceTest extends TestCase
             $this->migrationContextFactory,
             $premappingService,
             new DummyRunTransitionService(MigrationStep::WAITING_FOR_APPROVE),
+            $this->createMock(ConnectionFingerprintService::class),
         );
     }
 }

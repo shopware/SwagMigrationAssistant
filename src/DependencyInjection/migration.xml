@@ -175,6 +175,10 @@
             <tag name="kernel.reset" method="reset"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Connection\Helper\ConnectionFingerprintService">
+            <argument type="service" id="swag_migration_connection.repository"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Migration\Run\RunService">
             <argument type="service" id="swag_migration_run.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
@@ -192,6 +196,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Connection\Helper\ConnectionFingerprintService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Run\RunTransitionService">
