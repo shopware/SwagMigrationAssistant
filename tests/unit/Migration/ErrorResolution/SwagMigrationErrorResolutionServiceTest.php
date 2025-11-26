@@ -5,16 +5,21 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
+namespace SwagMigrationAssistant\Test\unit\Migration\ErrorResolution;
 
 use Doctrine\DBAL\Connection;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\ErrorResolution\SwagMigrationErrorResolutionService;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
-class MigrationFixApplierTest extends TestCase
+#[CoversClass(SwagMigrationErrorResolutionService::class)]
+class SwagMigrationErrorResolutionServiceTest extends TestCase
 {
     public function testApply(): void
     {

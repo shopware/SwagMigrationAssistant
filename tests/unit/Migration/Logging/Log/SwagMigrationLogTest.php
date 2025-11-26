@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\unit\Migration\Logging\Log;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
@@ -15,6 +16,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
@@ -48,6 +50,7 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
+#[CoversClass(SwagMigrationLogEntry::class)]
 class SwagMigrationLogTest extends TestCase
 {
     /**

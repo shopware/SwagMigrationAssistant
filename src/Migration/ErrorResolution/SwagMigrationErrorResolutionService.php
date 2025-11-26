@@ -46,7 +46,7 @@ class SwagMigrationErrorResolutionService
     /**
      * @param array<int, string> $ids
      *
-     * @return SwagMigrationErrorResolution
+     * @return array<string, list<SwagMigrationErrorResolution>>
      */
     private function getFixes(array $ids, string $connectionId, string $runId): array
     {

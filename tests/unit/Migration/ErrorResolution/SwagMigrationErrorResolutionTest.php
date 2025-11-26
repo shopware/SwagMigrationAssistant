@@ -5,8 +5,9 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\unit\Migration\Writer\MigrationFix;
+namespace SwagMigrationAssistant\Test\unit\Migration\ErrorResolution;
 
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
@@ -14,8 +15,12 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\ErrorResolution\SwagMigrationErrorResolution;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
-class MigrationFixTest extends TestCase
+#[CoversClass(SwagMigrationErrorResolution::class)]
+class SwagMigrationErrorResolutionTest extends TestCase
 {
     public function testApplyFix(): void
     {

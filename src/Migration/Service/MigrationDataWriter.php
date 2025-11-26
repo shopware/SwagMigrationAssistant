@@ -42,14 +42,14 @@ class MigrationDataWriter implements MigrationDataWriterInterface
      * @param EntityRepository<SwagMigrationMappingCollection> $mappingRepo
      */
     public function __construct(
-        private readonly EntityWriterInterface               $entityWriter,
-        private readonly EntityRepository                    $migrationDataRepo,
-        private readonly WriterRegistryInterface             $writerRegistry,
-        private readonly MediaFileServiceInterface           $mediaFileService,
-        private readonly LoggingServiceInterface             $loggingService,
-        private readonly EntityDefinition                    $dataDefinition,
-        private readonly EntityRepository                    $mappingRepo,
-        private readonly SwagMigrationErrorResolutionService $fixApplier,
+        private readonly EntityWriterInterface $entityWriter,
+        private readonly EntityRepository $migrationDataRepo,
+        private readonly WriterRegistryInterface $writerRegistry,
+        private readonly MediaFileServiceInterface $mediaFileService,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly EntityDefinition $dataDefinition,
+        private readonly EntityRepository $mappingRepo,
+        private readonly SwagMigrationErrorResolutionService $errorResolutionService,
     ) {
         // write / upsert entities only with this single context,
         // otherwise the migration behaves differently when started in the administration
@@ -106,7 +106,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         $convertedValues = array_values($converted);
-        $this->fixApplier->apply($convertedValues, $migrationContext->getConnection()->getId(), $migrationContext->getRunUuid());
+        $this->errorResolutionService->apply($convertedValues, $migrationContext->getConnection()->getId(), $migrationContext->getRunUuid());
 
         try {
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
