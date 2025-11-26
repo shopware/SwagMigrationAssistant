@@ -1,4 +1,8 @@
 .swag-migration-grid-selection {
+    .sw-grid {
+        border: none;
+    }
+
     .swag-migration-grid-selection__choice-column {
         .sw-grid__cell-content {
             justify-content: normal;
