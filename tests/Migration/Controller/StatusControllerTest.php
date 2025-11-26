@@ -318,8 +318,9 @@ class StatusControllerTest extends TestCase
         $params = [
             'connectionId' => $this->connectionId,
             'credentialFields' => [
-                'testCredentialField1' => 'field1',
-                'testCredentialField2' => 'field2',
+                'dbHost' => 'localhost',
+                'dbPort' => '3306',
+                'dbName' => 'shopware',
             ],
         ];
 
