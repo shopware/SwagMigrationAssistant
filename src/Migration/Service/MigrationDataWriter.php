@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
+use SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolutionService;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
@@ -29,7 +30,6 @@ use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -42,14 +42,14 @@ class MigrationDataWriter implements MigrationDataWriterInterface
      * @param EntityRepository<SwagMigrationMappingCollection> $mappingRepo
      */
     public function __construct(
-        private readonly EntityWriterInterface $entityWriter,
-        private readonly EntityRepository $migrationDataRepo,
-        private readonly WriterRegistryInterface $writerRegistry,
+        private readonly EntityWriterInterface     $entityWriter,
+        private readonly EntityRepository          $migrationDataRepo,
+        private readonly WriterRegistryInterface   $writerRegistry,
         private readonly MediaFileServiceInterface $mediaFileService,
-        private readonly LoggingServiceInterface $loggingService,
-        private readonly EntityDefinition $dataDefinition,
-        private readonly EntityRepository $mappingRepo,
-        private readonly MigrationFixApplier $fixApplier,
+        private readonly LoggingServiceInterface   $loggingService,
+        private readonly EntityDefinition          $dataDefinition,
+        private readonly EntityRepository          $mappingRepo,
+        private readonly ErrorResolutionService    $fixApplier,
     ) {
         // write / upsert entities only with this single context,
         // otherwise the migration behaves differently when started in the administration

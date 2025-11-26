@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Log\Package;
  *
  * @internal
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class AnyJsonField extends Field implements StorageAware
 {
     public function __construct(
