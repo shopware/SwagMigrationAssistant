@@ -5,13 +5,13 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\MigrationFix;
+namespace SwagMigrationAssistant\Migration\ErrorResolution\Entity;
 
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityIdTrait;
 use Shopware\Core\Framework\Log\Package;
 
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationFixEntity extends Entity
 {
     use EntityIdTrait;

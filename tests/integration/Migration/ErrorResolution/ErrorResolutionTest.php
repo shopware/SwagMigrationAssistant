@@ -5,23 +5,28 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\integration\Migration\MigrationFix;
+namespace SwagMigrationAssistant\Test\integration\Migration\ErrorResolution;
 
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\DatabaseTransactionBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixCollection;
+use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixCollection;
-use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 
-class SwagMigrationEntityTest extends TestCase
+/**
+ * @internal
+ */
+#[Package('fundamentals@after-sales')]
+class ErrorResolutionTest extends TestCase
 {
     use DatabaseTransactionBehaviour;
     use KernelTestBehaviour;

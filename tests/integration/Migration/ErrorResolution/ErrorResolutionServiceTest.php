@@ -5,23 +5,28 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Test\integration\Migration\Writer\MigrationFix;
+namespace SwagMigrationAssistant\Test\integration\Migration\ErrorResolution;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixEntity;
+use SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolutionService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\MigrationFix\SwagMigrationFixEntity;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
-use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 
-class MigrationFixApplierTest extends TestCase
+/**
+ * @internal
+ */
+#[Package('fundamentals@after-sales')]
+class ErrorResolutionServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
@@ -35,7 +40,7 @@ class MigrationFixApplierTest extends TestCase
         $idTwo = Uuid::randomHex();
         $idThree = Uuid::randomHex();
 
-        $fixApplier = new MigrationFixApplier($this->getContainer()->get(Connection::class));
+        $service = new ErrorResolutionService($this->getContainer()->get(Connection::class));
 
         $this->createFixAndLogging($connection->getId(), $idOne, 'val1', 'first.path', $run);
         $this->createFixAndLogging($connection->getId(), $idOne, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path', $run);
@@ -56,7 +61,7 @@ class MigrationFixApplierTest extends TestCase
             ['id' => $idThree],
         ];
 
-        $fixApplier->apply($data, $connection->getId(), $run->getId());
+        $service->apply($data, $connection->getId(), $run->getId());
 
         $expected = [[
             'id' => $idOne,

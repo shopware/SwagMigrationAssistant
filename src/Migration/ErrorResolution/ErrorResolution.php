@@ -5,14 +5,14 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
+namespace SwagMigrationAssistant\Migration\ErrorResolution;
 
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 
-#[Package('after-sales')]
-class MigrationFix
+#[Package('fundamentals@after-sales')]
+class ErrorResolution
 {
     private const PATH_SEPARATOR = '.';
 

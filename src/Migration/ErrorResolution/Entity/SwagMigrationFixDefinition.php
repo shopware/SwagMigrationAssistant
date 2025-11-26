@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\MigrationFix;
+namespace SwagMigrationAssistant\Migration\ErrorResolution\Entity;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
@@ -18,7 +18,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Core\Field\AnyJsonField;
 
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationFixDefinition extends EntityDefinition
 {
     public const ENTITY_NAME = 'swag_migration_fix';

@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\MigrationFix;
+namespace SwagMigrationAssistant\Migration\ErrorResolution\Entity;
 
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\Log\Package;
@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 /**
  * @extends EntityCollection<SwagMigrationFixEntity>
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class SwagMigrationFixCollection extends EntityCollection
 {
     protected function getExpectedClass(): string

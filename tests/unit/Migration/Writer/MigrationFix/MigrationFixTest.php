@@ -12,16 +12,16 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFix;
+use SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolution;
 
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class MigrationFixTest extends TestCase
 {
     public function testApplyFix(): void
     {
         $expectedValue = 'This is the new Value';
 
-        $fix = new MigrationFix(
+        $fix = new ErrorResolution(
             'anyId',
             \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
             'path.to.the.value.which.needs.to.be.replaced',
@@ -81,7 +81,7 @@ class MigrationFixTest extends TestCase
             'path' => 'any.path',
         ];
 
-        $migrationFix = MigrationFix::fromDatabaseQuery($data);
+        $migrationFix = ErrorResolution::fromDatabaseQuery($data);
 
         static::assertSame(Uuid::fromBytesToHex($data['id']), $migrationFix->id);
         static::assertSame($data['value'], $migrationFix->value);
@@ -97,7 +97,7 @@ class MigrationFixTest extends TestCase
         $this->expectException(MigrationException::class);
         $this->expectExceptionMessage(\sprintf('Missing key "%s" to construct MigrationFix.', $expectedMissingKey));
 
-        MigrationFix::fromDatabaseQuery($data);
+        ErrorResolution::fromDatabaseQuery($data);
     }
 
     /**

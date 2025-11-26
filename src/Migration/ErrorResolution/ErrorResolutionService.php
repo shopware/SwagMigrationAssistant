@@ -5,15 +5,15 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\Writer\MigrationFix;
+namespace SwagMigrationAssistant\Migration\ErrorResolution;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 
-#[Package('after-sales')]
-class MigrationFixApplier
+#[Package('fundamentals@after-sales')]
+class ErrorResolutionService
 {
     public function __construct(
         private readonly Connection $connection,
@@ -46,7 +46,7 @@ class MigrationFixApplier
     /**
      * @param array<int, string> $ids
      *
-     * @return array<string, list<MigrationFix>>
+     * @return ErrorResolution
      */
     private function getFixes(array $ids, string $connectionId, string $runId): array
     {
@@ -81,7 +81,7 @@ SQL;
                 $return[$entityId] = [];
             }
 
-            $return[$entityId][] = MigrationFix::fromDatabaseQuery($row);
+            $return[$entityId][] = ErrorResolution::fromDatabaseQuery($row);
         }
 
         return $return;

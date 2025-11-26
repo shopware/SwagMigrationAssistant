@@ -11,9 +11,9 @@ use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
+use SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolutionService;
 
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class MigrationFixApplierTest extends TestCase
 {
     public function testApply(): void
@@ -114,7 +114,7 @@ class MigrationFixApplierTest extends TestCase
             ],
         ];
 
-        $migrationFixApplier = new MigrationFixApplier($this->createConnection($fixes));
+        $migrationFixApplier = new ErrorResolutionService($this->createConnection($fixes));
 
         $migrationFixApplier->apply($data, Uuid::randomHex(), Uuid::randomHex());
 
