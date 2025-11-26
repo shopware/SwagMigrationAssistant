@@ -105,7 +105,6 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
  * list of fields prioritized for sorting purposes, to determined most meaningful fields first.
  */
 export const PRIORITY_FIELDS = [
-    'id',
     'name',
     'number',
     'productNumber',
@@ -153,6 +152,7 @@ export const PRIORITY_FIELDS = [
     'width',
     'height',
     'length',
+    'id',
     'createdAt',
 ] as const;
 
@@ -203,7 +203,11 @@ export default class SwagMigrationErrorResolutionService {
     translateErrorCode(code: string): string {
         const translationKey = `${MIGRATION_ERROR_TRANSLATION_SNIPPET_PREFIX}.${code}`;
 
-        return Shopware.Snippet.tc(translationKey) ?? code;
+        if (!Shopware.Snippet.te(translationKey)) {
+            return code;
+        }
+
+        return Shopware.Snippet.t(translationKey);
     }
 
     /**

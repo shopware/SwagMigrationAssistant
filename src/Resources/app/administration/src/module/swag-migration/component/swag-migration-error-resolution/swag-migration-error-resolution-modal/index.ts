@@ -237,10 +237,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         async fetchEntityIdsFromMissingLogs(missingLogIds: string[]): Promise<string[]> {
             const criteria = new Criteria(1, missingLogIds.length)
-                .addFilter(Criteria.equals('runId', this.runId))
-                .addFilter(Criteria.equals('code', this.selectedLog.code))
-                .addFilter(Criteria.equals('entityName', this.selectedLog.entityName))
-                .addFilter(Criteria.equals('fieldName', this.selectedLog.fieldName))
                 .addIncludes({ swag_migration_logging: ['entityId'] })
                 .setIds(missingLogIds);
 
