@@ -14,6 +14,9 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
 use SwagMigrationAssistant\Core\Migration\Migration1764145444AddFingerprintToConnectionTable;
 use SwagMigrationAssistant\Test\TableHelperTrait;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 #[CoversClass(Migration1764145444AddFingerprintToConnectionTable::class)]
 class Migration1764145444AddFingerprintToConnectionTableTest extends TestCase
