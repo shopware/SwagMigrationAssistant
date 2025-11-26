@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('fundamentals@after-sales')]
-class ErrorResolution
+class SwagMigrationErrorResolution
 {
     private const PATH_SEPARATOR = '.';
 

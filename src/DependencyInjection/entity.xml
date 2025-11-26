@@ -56,6 +56,5 @@
 
             <tag name="shopware.field_serializer"/>
         </service>
-
     </services>
 </container>

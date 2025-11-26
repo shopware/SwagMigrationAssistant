@@ -51,7 +51,7 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolutionService;
+use SwagMigrationAssistant\Migration\ErrorResolution\SwagMigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
@@ -295,7 +295,7 @@ class MigrationDataWriterTest extends TestCase
             $this->loggingService,
             static::getContainer()->get(SwagMigrationDataDefinition::class),
             $mappingRepo,
-            static::getContainer()->get(ErrorResolutionService::class)
+            static::getContainer()->get(SwagMigrationErrorResolutionService::class)
         );
 
         $migrationContextFactoryMock = $this->createMock(MigrationContextFactory::class);

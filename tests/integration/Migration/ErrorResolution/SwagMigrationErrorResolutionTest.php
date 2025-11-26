@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-class ErrorResolutionTest extends TestCase
+class SwagMigrationErrorResolutionTest extends TestCase
 {
     use DatabaseTransactionBehaviour;
     use KernelTestBehaviour;

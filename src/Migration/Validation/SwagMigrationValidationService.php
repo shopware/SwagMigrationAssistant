@@ -229,7 +229,7 @@ readonly class SwagMigrationValidationService
                 throw MigrationException::unexpectedNullValue($fkFieldName);
             }
 
-            $hasMapping = $this->mappingService->hasValidMappingByEntityUuid(
+            $hasMapping = $this->mappingService->hasValidMappingByEntityId(
                 $validationContext->getMigrationContext()->getConnection()->getId(),
                 $referenceEntity,
                 $fkValue,

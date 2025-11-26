@@ -224,7 +224,7 @@
             <tag name="shopware.migration.writer"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolutionService">
+        <service id="SwagMigrationAssistant\Migration\ErrorResolution\SwagMigrationErrorResolutionService">
             <argument type="service" id="Doctrine\DBAL\Connection"/>
         </service>
     </services>

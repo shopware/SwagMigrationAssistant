@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixEntity;
-use SwagMigrationAssistant\Migration\ErrorResolution\ErrorResolutionService;
+use SwagMigrationAssistant\Migration\ErrorResolution\SwagMigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
@@ -26,7 +26,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-class ErrorResolutionServiceTest extends TestCase
+class SwagMigrationErrorResolutionServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
@@ -40,7 +40,7 @@ class ErrorResolutionServiceTest extends TestCase
         $idTwo = Uuid::randomHex();
         $idThree = Uuid::randomHex();
 
-        $service = new ErrorResolutionService($this->getContainer()->get(Connection::class));
+        $service = new SwagMigrationErrorResolutionService($this->getContainer()->get(Connection::class));
 
         $this->createFixAndLogging($connection->getId(), $idOne, 'val1', 'first.path', $run);
         $this->createFixAndLogging($connection->getId(), $idOne, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path', $run);
