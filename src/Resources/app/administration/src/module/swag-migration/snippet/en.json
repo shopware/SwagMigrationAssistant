@@ -168,7 +168,8 @@
             "SWAG_MIGRATION__DATABASE_CONNECTION_ERROR": "Database connection could not be established.",
             "SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG": "Database connection does not have the right attributes and they can not be set.",
             "SWAG_MIGRATION__IS_RUNNING": "A migration is currently in progress. Therefore, you cannot edit the credentials until the migration is complete.",
-            "SWAG_MIGRATION__SSL_REQUIRED": "We have determined that the given shop domain is required a SSL connection."
+            "SWAG_MIGRATION__SSL_REQUIRED": "We have determined that the given shop domain is required a SSL connection.",
+            "SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION": "A connection with the same access data already exists. Please use another connection or edit the existing one."
           }
         }
       }
