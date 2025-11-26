@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Core\Migration;
+namespace SwagMigrationAssistant\Test\Core\Migration;
 
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;

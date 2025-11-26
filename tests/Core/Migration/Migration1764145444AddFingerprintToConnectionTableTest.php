@@ -11,27 +11,27 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelLifecycleManager;
-use SwagMigrationAssistant\Core\Migration\Migration1759000000AddIsResettingChecksumsToSetting;
+use SwagMigrationAssistant\Core\Migration\Migration1764145444AddFingerprintToConnectionTable;
 use SwagMigrationAssistant\Test\TableHelperTrait;
 
 #[Package('fundamentals@after-sales')]
-#[CoversClass(Migration1759000000AddIsResettingChecksumsToSetting::class)]
-class Migration1759000000AddIsResettingChecksumsToSettingTest extends TestCase
+#[CoversClass(Migration1764145444AddFingerprintToConnectionTable::class)]
+class Migration1764145444AddFingerprintToConnectionTableTest extends TestCase
 {
     use TableHelperTrait;
 
-    public function testShouldAddIsResettingChecksumsFieldToSettingTable(): void
+    public function testShouldAddFingerprintFieldToConnectionTable(): void
     {
         $connection = KernelLifecycleManager::getConnection();
 
-        $table = Migration1759000000AddIsResettingChecksumsToSetting::TABLE;
-        $column = Migration1759000000AddIsResettingChecksumsToSetting::COLUMN;
+        $table = Migration1764145444AddFingerprintToConnectionTable::TABLE;
+        $column = Migration1764145444AddFingerprintToConnectionTable::COLUMN;
 
         static::assertTrue($this->tableExists($connection, $table));
 
         $this->dropColumnIfExists($connection, $table, $column);
 
-        $migration = new Migration1759000000AddIsResettingChecksumsToSetting();
+        $migration = new Migration1764145444AddFingerprintToConnectionTable();
         $migration->update($connection);
         $migration->update($connection);
 
