@@ -5,7 +5,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Core\Migration;
+namespace SwagMigrationAssistant\Test\Core\Migration;
 
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;

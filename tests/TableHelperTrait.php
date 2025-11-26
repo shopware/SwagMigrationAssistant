@@ -27,13 +27,27 @@ trait TableHelperTrait
         return !empty($exists);
     }
 
-    protected function dropTable(Connection $connection, string $table): void
+    protected function columnExists(Connection $connection, string $table, string $column): bool
+    {
+        $exists = $connection->fetchOne('SHOW COLUMNS FROM `' . $table . '` LIKE :columnName', ['columnName' => $column]);
+
+        return !empty($exists);
+    }
+
+    protected function tableExists(Connection $connection, string $table): bool
+    {
+        $exists = $connection->fetchOne('SHOW TABLES LIKE :tableName', ['tableName' => $table]);
+
+        return !empty($exists);
+    }
+
+    protected function dropTableIfExists(Connection $connection, string $table): void
     {
         $sql = \sprintf('DROP TABLE IF EXISTS `%s`', $table);
         $connection->executeStatement($sql);
     }
 
-    protected function dropColumn(Connection $connection, string $table, string $columnName): void
+    protected function dropColumnIfExists(Connection $connection, string $table, string $columnName): void
     {
         if (!$this->columnExists($connection, $table, $columnName)) {
             return;
@@ -42,7 +56,7 @@ trait TableHelperTrait
         $connection->executeStatement(\sprintf('ALTER TABLE `%s` DROP COLUMN `%s`', $table, $columnName));
     }
 
-    protected function dropIndex(Connection $connection, string $table, string $indexName): void
+    protected function dropIndexIfExists(Connection $connection, string $table, string $indexName): void
     {
         if (!$this->indexExists($connection, $table, $indexName)) {
             return;
@@ -92,7 +106,7 @@ trait TableHelperTrait
         $connection->executeStatement($sql);
     }
 
-    protected function dropForeignKey(Connection $connection, string $table, string $foreignKeyName): void
+    protected function dropForeignKeyIfExists(Connection $connection, string $table, string $foreignKeyName): void
     {
         if (!$this->foreignKeyExists($connection, $table, $foreignKeyName)) {
             return;
