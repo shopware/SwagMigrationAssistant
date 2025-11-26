@@ -43,6 +43,7 @@ use Shopware\Core\System\Salutation\SalutationCollection;
 use Shopware\Core\System\StateMachine\Aggregation\StateMachineState\StateMachineStateCollection;
 use Shopware\Core\System\StateMachine\StateMachineCollection;
 use Shopware\Storefront\Theme\ThemeCollection;
+use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionFingerprintService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
@@ -312,6 +313,7 @@ class MigrationDataWriterTest extends TestCase
             $migrationContextFactoryMock,
             $premappingService,
             static::getContainer()->get(RunTransitionService::class),
+            static::getContainer()->get(ConnectionFingerprintService::class),
         );
     }
 

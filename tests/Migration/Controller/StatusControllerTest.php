@@ -22,6 +22,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionFingerprintService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -183,6 +184,7 @@ class StatusControllerTest extends TestCase
                 static::getContainer()->get(MigrationContextFactory::class),
                 static::getContainer()->get(PremappingService::class),
                 static::getContainer()->get(RunTransitionService::class),
+                static::getContainer()->get(ConnectionFingerprintService::class),
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),

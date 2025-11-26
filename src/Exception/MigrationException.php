@@ -110,6 +110,8 @@ class MigrationException extends HttpException
 
     public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
 
+    public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -579,6 +581,15 @@ class MigrationException extends HttpException
             self::INVALID_ID,
             'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
             ['entityId' => $entityId, 'entityName' => $entityName]
+        );
+    }
+
+    public static function duplicateSourceConnection(): self
+    {
+        return new self(
+            Response::HTTP_CONFLICT,
+            self::DUPLICATE_SOURCE_CONNECTION,
+            'A connection to this source system already exists.',
         );
     }
 }
