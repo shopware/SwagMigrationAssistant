@@ -22,7 +22,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionFingerprintService;
+use SwagMigrationAssistant\Migration\Connection\ConnectionFingerprintService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
