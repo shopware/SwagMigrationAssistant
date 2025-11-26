@@ -13,7 +13,7 @@ const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
 const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
-    [MIGRATION_STEP.APPLY_FIXES]: 1,
+    [MIGRATION_STEP.ERROR_RESOLUTION]: 1,
     [MIGRATION_STEP.WRITING]: 2,
     [MIGRATION_STEP.MEDIA_PROCESSING]: 3,
     [MIGRATION_STEP.ABORTING]: 4,
@@ -24,7 +24,7 @@ const MIGRATION_STEP_DISPLAY_INDEX = {
 
 const UI_COMPONENT_INDEX = {
     LOADING_SCREEN: 0,
-    APPLY_FIXES: 1,
+    ERROR_RESOLUTION: 1,
     RESULT_SUCCESS: 2,
 } as const;
 
@@ -216,8 +216,8 @@ export default Shopware.Component.wrapComponentConfig({
             ) {
                 this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (state.step === MIGRATION_STEP.APPLY_FIXES) {
-                this.componentIndex = UI_COMPONENT_INDEX.APPLY_FIXES;
+            } else if (state.step === MIGRATION_STEP.ERROR_RESOLUTION) {
+                this.componentIndex = UI_COMPONENT_INDEX.ERROR_RESOLUTION;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
             } else if (state.step === MIGRATION_STEP.WAITING_FOR_APPROVE || state.step === MIGRATION_STEP.IDLE) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
