@@ -341,21 +341,12 @@ export default class SwagMigrationErrorResolutionService {
             return null;
         }
 
-        let associationField: Property | null = null;
-
         // try to find association field by checking all fields for matching localField
-        schema.forEachField((property: Property) => {
-            if (associationField) {
-                return;
-            }
-
-            if (
+        let associationField = Object.values(schema.properties).find(
+            (property) =>
                 property.type === DATA_TYPES.ASSOCIATION &&
-                (property as Property & { localField?: string }).localField === fieldName
-            ) {
-                associationField = property;
-            }
-        });
+                (property as Property & { localField?: string }).localField === fieldName,
+        );
 
         const versionIdSuffix = 'VersionId';
 
@@ -499,7 +490,7 @@ export default class SwagMigrationErrorResolutionService {
             }
 
             // fallback to alphabetical order
-            if (a < b ) {
+            if (a < b) {
                 return -1;
             }
 
