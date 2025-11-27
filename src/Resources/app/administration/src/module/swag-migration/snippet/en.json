@@ -179,8 +179,8 @@
         "cancelButton": "Go back",
         "confirmButton": "Continue anyway",
         "message": {
-          "currency": "A migration with <b>different default currencies</b> can lead to corrupted data records and cause unpredictable side effects.",
-          "language": "A migration with <b>different default languages</b> can lead to corrupted data records and cause unpredictable side effects."
+          "currency": "A migration with different default currencies can lead to corrupted data records and cause unpredictable side effects.",
+          "language": "A migration with different default languages can lead to corrupted data records and cause unpredictable side effects."
         }
       },
       "title": "General",

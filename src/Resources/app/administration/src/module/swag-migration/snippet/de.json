@@ -179,8 +179,8 @@
         "cancelButton": "Zurück",
         "confirmButton": "Trotzdem fortfahren",
         "message": {
-          "currency": "Eine Migration mit <b>unterschiedlichen Standardwährungen</b> kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen.",
-          "language": "Eine Migration mit <b>unterschiedlichen Standardsprachen</b> kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen."
+          "currency": "Eine Migration mit unterschiedlichen Standardwährungen kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen.",
+          "language": "Eine Migration mit unterschiedlichen Standardsprachen kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen."
         }
       },
       "title": "Übersicht",
@@ -640,7 +640,7 @@
         "errors": {
           "downloadLogsFailed": "Fehler beim Herunterladen der Log-Datei.",
           "continueMigrationFailed": "Fehler beim Fortsetzen der Migration.",
-          "fetchLogsFailed": "Fehler beim Abrufen der Log-Datei.",
+          "fetchLogsFailed": "Fehler beim Abrufen der Log-Daten.",
           "fetchRunFailed": "Fehler beim Abrufen der Migrationsdaten.",
           "submitResolutionFailed": "Fehler beim Senden der Fehlerbehebung.",
           "invalidFieldValueFormat": "Ungültiges Feldwertformat.",
@@ -654,8 +654,8 @@
         "step": {
           "continue-modal": {
             "title": "Fortfahren",
-            "text-unfixable": "There are {count} unfixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear.",
-            "text-fixable": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+            "text-unfixable": "Es gibt {count} nicht behebbare Fehler, die noch ungelöst sind. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten.",
+            "text-fixable": "Es gibt {count} Gruppen von behebbaren Fehlern, die noch nicht behoben sind. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten."
           },
           "header": {
             "title": "Fehlerbehebung",
