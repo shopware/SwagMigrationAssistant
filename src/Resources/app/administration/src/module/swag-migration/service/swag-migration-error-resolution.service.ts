@@ -303,7 +303,7 @@ export default class SwagMigrationErrorResolutionService {
      * gets the entity field definition for a specific field.
      */
     getEntityField(entityName: string | null | undefined, fieldName: string | null | undefined): Property | null {
-        if (!fieldName || UNHANDLED_FIELD_NAMES.includes(fieldName as (typeof UNHANDLED_FIELD_NAMES)[number])) {
+        if (!fieldName || (UNHANDLED_FIELD_NAMES as readonly string[]).includes(fieldName)) {
             return null;
         }
 
@@ -357,10 +357,12 @@ export default class SwagMigrationErrorResolutionService {
             }
         });
 
+        const versionIdSuffix = 'VersionId';
+
         // fallback: try to infer association name from field name
         // example: "productVersionId" -> "product"
-        if (!associationField && fieldName.endsWith('VersionId') && fieldName !== 'versionId') {
-            const inferredName = fieldName.slice(0, -9);
+        if (!associationField && fieldName.endsWith(versionIdSuffix) && fieldName !== 'versionId') {
+            const inferredName = fieldName.slice(0, -versionIdSuffix.length);
             const inferredField = schema.getField(inferredName);
 
             if (inferredField?.type === DATA_TYPES.ASSOCIATION) {
@@ -389,7 +391,7 @@ export default class SwagMigrationErrorResolutionService {
             return true;
         }
 
-        if (UNHANDLED_FIELD_TYPES.includes(entityField.type as (typeof UNHANDLED_FIELD_TYPES)[number])) {
+        if ((UNHANDLED_FIELD_NAMES as readonly string[]).includes(entityField.type)) {
             return true;
         }
 
@@ -452,7 +454,7 @@ export default class SwagMigrationErrorResolutionService {
     getFieldType(entityName: string | null | undefined, fieldName: string | null | undefined): string | null {
         const entityField = this.getEntityField(entityName, fieldName);
 
-        if (!entityField || UNHANDLED_FIELD_TYPES.includes(entityField.type as (typeof UNHANDLED_FIELD_TYPES)[number])) {
+        if (!entityField || (UNHANDLED_FIELD_NAMES as readonly string[]).includes(entityField.type)) {
             return null;
         }
 
