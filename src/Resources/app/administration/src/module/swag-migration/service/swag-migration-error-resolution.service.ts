@@ -423,15 +423,14 @@ export default class SwagMigrationErrorResolutionService {
      * checks if a field is a "to many" association (one_to_many or many_to_many).
      */
     isToManyAssociationField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
+        const schema = this.getEntitySchema(entityName);
         const entityField = this.getEntityField(entityName, fieldName);
 
-        if (!entityField || entityField.type !== DATA_TYPES.ASSOCIATION) {
+        if (!schema || !entityField) {
             return false;
         }
 
-        const relationType = entityField.relation;
-
-        return relationType === HANDLED_RELATION_TYPES.ONE_TO_MANY || relationType === HANDLED_RELATION_TYPES.MANY_TO_MANY;
+        return schema.isToManyAssociation(entityField);
     }
 
     /**
