@@ -430,7 +430,7 @@ export default class SwagMigrationErrorResolutionService {
             return false;
         }
 
-        return schema.isToManyAssociation(entityField);
+        return schema.P(entityField);
     }
 
     /**
@@ -495,6 +495,15 @@ export default class SwagMigrationErrorResolutionService {
 
             // only field B has a defined priority
             if (priorityB !== undefined) {
+                return 1;
+            }
+
+            // fallback to alphabetical order
+            if (a < b ) {
+                return -1;
+            }
+
+            if (a > b) {
                 return 1;
             }
 
