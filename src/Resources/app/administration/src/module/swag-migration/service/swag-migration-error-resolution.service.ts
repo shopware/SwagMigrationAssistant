@@ -170,15 +170,6 @@ export const PRIORITY_FIELD_MAP: Map<string, number> = new Map(
 /**
  * @private
  */
-export const createEmptyEntityFields = (): EntityFields => ({
-    scalar: {},
-    associations: {},
-    required: {},
-});
-
-/**
- * @private
- */
 export const CONTENT_TEXT_MAX_LENGTH = 100;
 
 /**
@@ -264,16 +255,21 @@ export default class SwagMigrationErrorResolutionService {
      * grouped by scalar fields, associations, and required fields.
      */
     extractEntityFields(entityName: string | null | undefined): EntityFields {
+        const fields = {
+            scalar: {},
+            associations: {},
+            required: {},
+        } as EntityFields;
+
         if (!entityName) {
-            return createEmptyEntityFields();
+            return fields;
         }
 
         if (!Shopware.EntityDefinition.has(entityName)) {
-            return createEmptyEntityFields();
+            return fields;
         }
 
         const definition = Shopware.EntityDefinition.get(entityName);
-        const fields = createEmptyEntityFields();
 
         definition.forEachField((property: Property, propertyName: string) => {
             if (definition.isScalarField(property)) {
