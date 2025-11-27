@@ -421,7 +421,7 @@ export default class SwagMigrationErrorResolutionService {
             return false;
         }
 
-        return schema.P(entityField);
+        return schema.isToManyAssociation(entityField);
     }
 
     /**
