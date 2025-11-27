@@ -239,8 +239,10 @@ export default class SwagMigrationErrorResolutionService {
             }
         }
 
-        if (entityName.endsWith('_translation')) {
-            const baseEntityName = entityName.slice(0, -12);
+        const translationSuffix = '_translation';
+
+        if (entityName.endsWith(translationSuffix)) {
+            const baseEntityName = entityName.slice(0, -translationSuffix.length);
             const translationModule = Shopware.Module.getModuleByEntityName(baseEntityName);
 
             if (translationModule) {
