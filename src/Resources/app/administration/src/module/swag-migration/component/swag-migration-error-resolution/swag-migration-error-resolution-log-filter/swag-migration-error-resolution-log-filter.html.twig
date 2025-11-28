@@ -7,14 +7,14 @@
             width="large"
             @update:isOpened="onPopoverOpenChange"
         >
-            <template #trigger="{ isOpened, toggleFloatingUi }">
+            <template #trigger="{ toggleFloatingUi }">
                 {% block swag_migration_error_resolution_log_filter_trigger %}
                     <mt-button
                         class="swag-migration-error-resolution-log-filter__button"
                         variant="secondary"
-                        :disabled="disabled"
+                        :disabled="disabled || loading"
                         :is-loading="loading"
-                        @click="() => onTogglePopover(isOpened, toggleFloatingUi)"
+                        @click="toggleFloatingUi"
                     >
                         <template #iconFront>
                             <mt-icon
@@ -39,7 +39,6 @@
                                 :model-value="value.code"
                                 :options="codeOptions"
                                 :disabled="disabled"
-                                :search-function="(value) => onSearch(value, 'code')"
                                 small
                                 @update:model-value="(newValue) => onValueChange({ code: newValue })"
                             />
@@ -62,7 +61,6 @@
                                 :model-value="value.entity"
                                 :options="entityOptions"
                                 :disabled="disabled"
-                                :search-function="(value) => onSearch(value, 'entity')"
                                 small
                                 @update:model-value="(newValue) => onValueChange({ entity: newValue })"
                             />
@@ -74,7 +72,6 @@
                                 :model-value="value.field"
                                 :options="fieldOptions"
                                 :disabled="disabled"
-                                :search-function="(value) => onSearch(value, 'field')"
                                 small
                                 @update:model-value="(newValue) => onValueChange({ field: newValue })"
                             />

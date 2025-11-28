@@ -25,6 +25,7 @@
 
                 &::before {
                     content: "";
+                    /* stylelint-disable-next-line meteor/prefer-sizing-token */
                     height: 3px;
                     width: calc(100% + var(--scale-size-16));
                     background: var(--color-background-tertiary-default);

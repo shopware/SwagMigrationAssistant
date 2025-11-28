@@ -7,17 +7,7 @@ import type { MigrationStore } from '../../../store/migration.store';
 import { MIGRATION_STORE_ID } from '../../../store/migration.store';
 import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 
-const { debounce } = Shopware.Utils;
 const { Criteria } = Shopware.Data;
-
-/**
- * @private
- */
-export const fieldMap = {
-    code: 'code',
-    entity: 'entityName',
-    field: 'fieldName',
-} as const;
 
 type Option = {
     value: string;
@@ -41,7 +31,7 @@ export interface SwagMigrationErrorResolutionLogFilterData {
     loading: boolean;
     value: LogFilterValue;
     migrationStore: MigrationStore;
-    searchResults: {
+    filterOptions: {
         code: Option[];
         entity: Option[];
         field: Option[];
@@ -75,7 +65,8 @@ export default Shopware.Component.wrapComponentConfig({
         },
         runId: {
             type: String,
-            required: true,
+            required: false,
+            default: null,
         },
     },
 
@@ -84,7 +75,7 @@ export default Shopware.Component.wrapComponentConfig({
             loading: false,
             value: this.getInitialFilterValue(),
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
-            searchResults: {
+            filterOptions: {
                 code: [],
                 entity: [],
                 field: [],
@@ -111,19 +102,30 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         codeOptions(): Option[] {
-            return this.searchResults.code;
+            return this.filterOptions.code;
         },
 
         entityOptions(): Option[] {
-            return this.searchResults.entity;
+            return this.filterOptions.entity;
         },
 
         fieldOptions(): Option[] {
-            return this.searchResults.field;
+            return this.filterOptions.field;
         },
 
         filterCount(): number {
             return Object.values(this.value).filter((val) => !!val)?.length;
+        },
+    },
+
+    watch: {
+        runId: {
+            immediate: true,
+            async handler(newRunId: string | null) {
+                if (newRunId) {
+                    await this.fetchFilterOptions();
+                }
+            },
         },
     },
 
@@ -137,102 +139,49 @@ export default Shopware.Component.wrapComponentConfig({
             };
         },
 
-        buildResultsMap(type: keyof LogFilterValue, values: string[]): { value: string; label: string }[] {
-            return values.map((value) => {
-                if (type === fieldMap.code) {
-                    return {
-                        value,
-                        label: this.swagMigrationErrorResolutionService.translateErrorCode(value),
-                    };
-                }
-
-                return {
-                    value,
-                    label: value,
-                };
-            });
-        },
-
-        onSearch({ searchTerm }: { searchTerm: string | null }, type: keyof LogFilterValue): Option[] {
-            this.debouncedFetchSearchResults(searchTerm, type);
-
-            const optionsMap = {
-                code: this.codeOptions,
-                entity: this.entityOptions,
-                field: this.fieldOptions,
-                status: this.statusOptions,
-            };
-
-            return optionsMap[type] ?? [];
-        },
-
-        debouncedFetchSearchResults: debounce(async function fetchSearch(
-            searchTerm: string | null,
-            type: keyof LogFilterValue,
-        ) {
-            if (!searchTerm || searchTerm.length < 3) {
-                await this.fetchSearchResults(null, type);
-
-                return;
-            }
-
-            await this.fetchSearchResults(searchTerm, type);
-        }, 400),
-
-        async fetchSearchResults(searchTerm: string | null, type: keyof LogFilterValue) {
-            const field = fieldMap[type];
-            const aggregationName = `${type}Aggregation`;
-            const limit = searchTerm && searchTerm.length >= 3 ? 25 : 250;
-
-            const criteria = new Criteria(1, 1)
-                .addAggregation(Criteria.terms(aggregationName, field, limit, null, null))
-                .addFilter(Criteria.equals('runId', this.runId))
-                .addFilter(Criteria.equals('userFixable', 1));
-
-            if (searchTerm && searchTerm.length >= 3) {
-                criteria.setTerm(searchTerm);
-            }
-
-            const result = await this.migrationLoggingRepository.search(criteria);
-            const aggregation = result.aggregations?.[aggregationName];
-
-            if (!aggregation || !aggregation.buckets) {
-                this.searchResults = {
-                    ...this.searchResults,
-                    [type]: [],
-                };
-
-                return;
-            }
-
-            const uniqueValues = aggregation.buckets.map((bucket) => bucket.key);
-
-            this.searchResults = {
-                ...this.searchResults,
-                [type]: this.buildResultsMap(type, uniqueValues),
-            };
-        },
-
-        async onTogglePopover(isOpened: boolean, toggleFloatingUi: () => void) {
-            if (isOpened) {
-                toggleFloatingUi();
-
+        async fetchFilterOptions() {
+            if (!this.runId) {
                 return;
             }
 
             this.loading = true;
 
-            try {
-                await Promise.all([
-                    this.fetchSearchResults(null, 'code'),
-                    this.fetchSearchResults(null, 'entity'),
-                    this.fetchSearchResults(null, 'field'),
-                ]);
+            const criteria = new Criteria(1, 1)
+                .addAggregation(Criteria.terms('codeAggregation', 'code'))
+                .addAggregation(Criteria.terms('entityAggregation', 'entityName'))
+                .addAggregation(Criteria.terms('fieldAggregation', 'fieldName'))
+                .addFilter(Criteria.equals('runId', this.runId))
+                .addFilter(Criteria.equals('userFixable', 1));
 
-                toggleFloatingUi();
+            try {
+                const result = await this.migrationLoggingRepository.search(criteria);
+
+                const { aggregations } = result;
+
+                this.filterOptions = {
+                    code: this.buildOptions('code', aggregations?.codeAggregation?.buckets ?? []),
+                    entity: this.buildOptions('entity', aggregations?.entityAggregation?.buckets ?? []),
+                    field: this.buildOptions('field', aggregations?.fieldAggregation?.buckets ?? []),
+                };
             } finally {
                 this.loading = false;
             }
+        },
+
+        buildOptions(type: string, buckets: Array<{ key: string }>): Option[] {
+            return buckets.map((bucket) => {
+                if (type === 'code') {
+                    return {
+                        value: bucket.key,
+                        label: this.swagMigrationErrorResolutionService.translateErrorCode(bucket.key),
+                    };
+                }
+
+                return {
+                    value: bucket.key,
+                    label: bucket.key,
+                };
+            });
         },
 
         onValueChange(newValue: Partial<LogFilterValue>) {
@@ -240,15 +189,6 @@ export default Shopware.Component.wrapComponentConfig({
                 ...this.value,
                 ...newValue,
             };
-
-            // reload initial options for fields that were cleared
-            Object.keys(newValue).forEach((key) => {
-                const filterKey = key as keyof LogFilterValue;
-
-                if (newValue[filterKey] === null && filterKey !== 'status') {
-                    void this.fetchSearchResults(null, filterKey);
-                }
-            });
 
             this.$emit('log-filter-change', this.value);
         },
