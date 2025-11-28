@@ -82,7 +82,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             );
 
             await premappingItems.evaluateAll(async (list) => {
-                for await (const item of list) {
+                for (const item of list) {
                     await item.click();
                     document.querySelector('.mt-select-result')?.click();
                     await new Promise((resolve) => setTimeout(resolve, 150));
@@ -102,7 +102,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
     await test.step('Inspect the migration', async () => {
         const steps = await page.locator('.sw-step-display > .sw-step-item').all();
-        for await (const step of steps) {
+        for (const step of steps) {
             await expect(step).toHaveClass(/sw-step-item--success/, { timeout: 300_000 }); // 5 min. as really long timeout to wait for each step
         }
 

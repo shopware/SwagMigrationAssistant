@@ -185,7 +185,7 @@ export default Shopware.Component.wrapComponentConfig({
                 try {
                     const state = await this.migrationApiService.getState();
                     this.visualizeMigrationState(state);
-                } catch (e) {
+                } catch {
                     this.createNotificationError({
                         title: this.$tc('global.default.error'),
                         message: this.$tc('swag-migration.api-error.getState'),

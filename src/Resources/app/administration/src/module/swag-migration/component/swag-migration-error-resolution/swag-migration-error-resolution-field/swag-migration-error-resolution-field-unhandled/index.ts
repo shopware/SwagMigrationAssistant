@@ -62,7 +62,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.error = null;
 
                 return value;
-            } catch (e) {
+            } catch {
                 this.error = {
                     detail: this.$tc('swag-migration.index.error-resolution.errors.invalidJsonInput'),
                 };

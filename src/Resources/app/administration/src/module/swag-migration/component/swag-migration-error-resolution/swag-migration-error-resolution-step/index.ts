@@ -304,7 +304,7 @@ export default Shopware.Component.wrapComponentConfig({
                     profileName: item.profileName,
                     gatewayName: item.gatewayName,
                 }));
-            } catch (error) {
+            } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
                 });
