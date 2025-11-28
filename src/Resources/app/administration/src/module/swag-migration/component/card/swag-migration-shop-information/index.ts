@@ -107,6 +107,10 @@ export default Shopware.Component.wrapComponentConfig({
             return this.repositoryFactory.create('swag_migration_connection');
         },
 
+        migrationGeneralSettingRepository(): TRepository<'swag_migration_general_setting'> {
+            return this.repositoryFactory.create('swag_migration_general_setting');
+        },
+
         displayEnvironmentInformation() {
             return this.environmentInformation === null ? {} : this.environmentInformation;
         },
@@ -385,7 +389,11 @@ export default Shopware.Component.wrapComponentConfig({
                     this.unregisterPolling(type);
 
                     if (type === 'truncate') {
-                        this.migrationStore.init(true);
+                        await this.migrationStore.init(
+                            this.migrationApiService,
+                            this.migrationGeneralSettingRepository,
+                            true,
+                        );
                     }
                 }
             } catch {
@@ -441,8 +449,8 @@ export default Shopware.Component.wrapComponentConfig({
             });
         },
 
-        onClickRefreshConnection() {
-            return this.migrationStore.init(true);
+        async onClickRefreshConnection() {
+            await this.migrationStore.init(this.migrationApiService, this.migrationGeneralSettingRepository, true);
         },
 
         async onClickRemoveConnectionCredentials() {

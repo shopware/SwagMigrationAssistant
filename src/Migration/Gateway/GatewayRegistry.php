@@ -10,7 +10,6 @@ namespace SwagMigrationAssistant\Migration\Gateway;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 
 #[Package('fundamentals@after-sales')]
 class GatewayRegistry implements GatewayRegistryInterface
@@ -25,8 +24,10 @@ class GatewayRegistry implements GatewayRegistryInterface
     /**
      * @return GatewayInterface[]
      */
-    public function getGateways(ProfileInterface $profile): array
+    public function getGateways(MigrationContextInterface $migrationContext): array
     {
+        $profile = $migrationContext->getProfile();
+
         $gateways = [];
         foreach ($this->gateways as $gateway) {
             if ($gateway->supports($profile)) {

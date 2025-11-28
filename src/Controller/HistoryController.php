@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
+use SwagMigrationAssistant\Migration\History\LogGroupingServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -25,11 +26,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
-    public function __construct(private readonly HistoryServiceInterface $historyService)
-    {
+    public function __construct(
+        private readonly HistoryServiceInterface $historyService,
+        private readonly LogGroupingServiceInterface $logGroupingService,
+    ) {
     }
 
-    #[Route(path: '/api/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['swag_migration.viewer']])]
+    #[Route(path: '/api/_action/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['swag_migration.viewer']])]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->getAlnum('runUuid');
@@ -104,5 +107,103 @@ class HistoryController extends AbstractController
         $result = $this->historyService->isMediaProcessing();
 
         return new JsonResponse($result);
+    }
+
+    #[Route(
+        path: '/api/_action/migration/get-log-groups',
+        name: 'api.admin.migration.get-log-groups',
+        methods: ['GET'],
+        defaults: ['_acl' => ['swag_migration.viewer']]
+    )]
+    public function getLogGroups(Request $request, Context $context): JsonResponse
+    {
+        $runId = $request->query->getAlnum('runId');
+
+        if (empty($runId)) {
+            throw RoutingException::missingRequestParameter('runId');
+        }
+
+        $level = $request->query->getAlpha('level');
+
+        if (empty($level)) {
+            throw RoutingException::missingRequestParameter('level');
+        }
+
+        $page = $request->query->getInt('page', 1);
+        $limit = $request->query->getInt('limit', 25);
+
+        $sortBy = $request->query->getAlpha('sortBy') ?: 'count';
+        $sortDirection = $request->query->getAlpha('sortDirection') ?: 'DESC';
+
+        if (!\in_array(\strtoupper($sortDirection), ['ASC', 'DESC'], true)) {
+            $sortDirection = 'DESC';
+        }
+
+        $filterCode = $request->query->get('filterCode');
+        $filterStatus = $request->query->get('filterStatus');
+        $filterEntity = $request->query->get('filterEntity');
+        $filterField = $request->query->get('filterField');
+
+        $result = $this->logGroupingService->getGroupedLogsByCodeAndEntity(
+            $runId,
+            $level,
+            $page,
+            $limit,
+            $sortBy,
+            \strtoupper($sortDirection),
+            \is_string($filterCode) && !empty($filterCode) ? $filterCode : null,
+            \is_string($filterStatus) && !empty($filterStatus) ? $filterStatus : null,
+            \is_string($filterEntity) && !empty($filterEntity) ? $filterEntity : null,
+            \is_string($filterField) && !empty($filterField) ? $filterField : null,
+        );
+
+        return new JsonResponse($result);
+    }
+
+    #[Route(
+        path: '/api/_action/migration/get-all-log-ids',
+        name: 'api.admin.migration.get-all-log-ids',
+        methods: ['POST'],
+        defaults: ['_acl' => ['swag_migration.viewer']]
+    )]
+    public function getAllLogIds(Request $request): JsonResponse
+    {
+        $runId = $request->request->getAlnum('runId');
+
+        if (empty($runId)) {
+            throw RoutingException::missingRequestParameter('runId');
+        }
+
+        $code = $request->request->get('code');
+
+        if (!\is_string($code) || empty($code)) {
+            throw RoutingException::missingRequestParameter('code');
+        }
+
+        $entityName = $request->request->get('entityName');
+
+        if (!\is_string($entityName) || empty($entityName)) {
+            throw RoutingException::missingRequestParameter('entityName');
+        }
+
+        $fieldName = $request->request->get('fieldName');
+
+        if (!\is_string($fieldName) || empty($fieldName)) {
+            throw RoutingException::missingRequestParameter('fieldName');
+        }
+
+        $connectionId = $request->request->getAlnum('connectionId');
+
+        $logIds = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
+            $runId,
+            $code,
+            $entityName,
+            $fieldName,
+            !empty($connectionId) ? $connectionId : null
+        );
+
+        return new JsonResponse([
+            'ids' => $logIds,
+        ]);
     }
 }

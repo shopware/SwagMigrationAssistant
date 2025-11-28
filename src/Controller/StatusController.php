@@ -14,8 +14,10 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
+use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
+use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileRegistryInterface;
 use SwagMigrationAssistant\Migration\Run\RunServiceInterface;
@@ -88,7 +90,10 @@ class StatusController extends AbstractController
         }
 
         $profile = $this->profileRegistry->getProfile($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($profile);
+        $context = new MigrationContext(new SwagMigrationConnectionEntity());
+        $context->setProfile($profile);
+
+        $gateways = $this->gatewayRegistry->getGateways($context);
 
         $currentGateway = null;
         foreach ($gateways as $gateway) {
@@ -152,7 +157,10 @@ class StatusController extends AbstractController
         }
 
         $profile = $this->profileRegistry->getProfile($profileName);
-        $gateways = $this->gatewayRegistry->getGateways($profile);
+        $context = new MigrationContext(new SwagMigrationConnectionEntity());
+        $context->setProfile($profile);
+
+        $gateways = $this->gatewayRegistry->getGateways($context);
 
         $gatewayNames = [];
         foreach ($gateways as $gateway) {
@@ -318,11 +326,7 @@ class StatusController extends AbstractController
     )]
     public function abortMigration(Context $context): Response
     {
-        try {
-            $this->runService->abortMigration($context);
-        } catch (\Exception $e) {
-            return new Response($e->getMessage(), Response::HTTP_BAD_REQUEST);
-        }
+        $this->runService->abortMigration($context);
 
         return new Response(null, Response::HTTP_NO_CONTENT);
     }
@@ -360,7 +364,7 @@ class StatusController extends AbstractController
     }
 
     #[Route(
-        path: '/api/_action/migration/get-reset-status',
+        path: '/api/_action/migration/is-truncating-migration-data',
         name: 'api.admin.migration.get-reset-status',
         defaults: ['_acl' => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]

@@ -174,6 +174,15 @@
       }
     },
     "index": {
+      "warningModal": {
+        "title": "Dateninkonsistenz erkannt",
+        "cancelButton": "Zurück",
+        "confirmButton": "Trotzdem fortfahren",
+        "message": {
+          "currency": "Eine Migration mit unterschiedlichen Standardwährungen kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen.",
+          "language": "Eine Migration mit unterschiedlichen Standardsprachen kann zu korrupten Datensätzen führen und unvorhersehbare Nebenwirkungen verursachen."
+        }
+      },
       "title": "Übersicht",
       "migrateButton": "Migration starten",
       "savePremapping": {
@@ -377,7 +386,7 @@
         "flowChart": {
           "premapping": "Prüfen",
           "fetchData": "Lesen",
-          "applyFixes": "Fehler beheben",
+          "errorResolution": "Fehlerbehebung",
           "writeData": "Schreiben",
           "processMedia": "Download",
           "cleanup": "Aufräumen",
@@ -389,6 +398,11 @@
             "long": "Die Daten werden von Deinem System gelesen",
             "caption": "Die neuen Zuordnungen werden verarbeitet.",
             "short": "Lesen"
+          },
+          "error-resolution": {
+            "long": "Fehler können behoben werden",
+            "caption": "Die Migration wird pausiert, bis alle Fehler behoben sind.",
+            "short": "Fehlerbehebung"
           },
           "writing": {
             "long": "Die Daten werden in Shopware 6 geschrieben",
@@ -423,10 +437,6 @@
           "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
           "logSummary": "Logbuch",
           "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen. Es kann sein, dass zu einem späteren Zeitpunkt noch mehr Log-Nachrichten hinzukommen, weil der Mediendownload noch im Hintergrund läuft."
-        },
-        "applyFixes": {
-          "title": "Fehler beheben",
-          "resumeButton": "Migration fortsetzen"
         }
       },
       "confirmAbortDialog": {
@@ -588,6 +598,163 @@
         "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
           "title": "Ein Schreibfehler ist aufgetreten",
           "description": "{description}"
+        }
+      },
+      "error-resolution": {
+        "codes": {
+          "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": "Zugehörige Entität nicht gefunden, aber erforderlich",
+          "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": "Kind-Entität konnte nicht konvertiert werden",
+          "SWAG_MIGRATION_CANNOT_CONVERT": "Entität konnte nicht konvertiert werden",
+          "SWAG_MIGRATION_CANNOT_GET_FILE": "Datei konnte nicht heruntergeladen oder kopiert werden",
+          "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": "Entität-Anzahl konnte nicht gelesen werden",
+          "SWAG_MIGRATION__DATASET_NOT_FOUND": "DataSet für Entität wurde nicht gefunden",
+          "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": "Dokumenttyp wird nicht unterstützt",
+          "SWAG_MIGRATION_EMPTY_NECESSARY_FIELD": "Entität hat ein leeres Pflichtfeld",
+          "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": "Entität existiert bereits und konnte nicht geschrieben werden",
+          "SWAG_MIGRATION_RUN_EXCEPTION": "Systemfehler während der Migration aufgetreten",
+          "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": "Entitätsfeld wurde automatisch neu zugeordnet",
+          "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": "Invalide unserialisierte Daten in Entität",
+          "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": "Fehler in der Message-Queue aufgetreten",
+          "SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED": "MIME-Typ der Datei konnte nicht ermittelt werden",
+          "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": "Processor für Entität wurde nicht gefunden",
+          "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": "Migration wurde automatisch abgebrochen aufgrund zu vieler aufeinanderfolgender Fehler",
+          "SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED": "Temporäre Datei konnte nicht erstellt werden",
+          "SWAG_MIGRATION__THEME_COMPILING_ERROR": "Theme konnte nicht kompiliert werden",
+          "SWAG_MIGRATION_ENTITY_UNKNOWN": "Abhängige Entität konnte nicht gefunden werden",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": "Nicht unterstützter Objekttyp",
+          "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": "Ein Schreibfehler ist aufgetreten",
+          "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validierungsfehler aufgetreten",
+          "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Feld hat einen ungültigen Wert",
+          "SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY": "Ungültige Fremdschlüssel-Referenz",
+          "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Erforderliches Feld fehlt",
+          "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unerwartetes Feld in Daten gefunden",
+          "SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE": "Pack-Sprache ist deaktiviert",
+          "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": "Ungültige E-Mail-Adresse",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE": "E-Mail-Template-Typ nicht unterstützt",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": "Nummernkreis-Typ nicht unterstützt",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": "Versandkosten-Berechnungstyp nicht unterstützt",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Faktor-Preisberechnung bei Versandkosten nicht unterstützt",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_DOCUMENT_TYPE": "Dokumenttyp nicht unterstützt",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER": "Medien-Standardordner nicht unterstützt"
+        },
+        "errors": {
+          "downloadLogsFailed": "Fehler beim Herunterladen der Log-Datei.",
+          "continueMigrationFailed": "Fehler beim Fortsetzen der Migration.",
+          "fetchLogsFailed": "Fehler beim Abrufen der Log-Daten.",
+          "fetchRunFailed": "Fehler beim Abrufen der Migrationsdaten.",
+          "submitResolutionFailed": "Fehler beim Senden der Fehlerbehebung.",
+          "invalidFieldValueFormat": "Ungültiges Feldwertformat.",
+          "fieldValueNotSet": "Feldwert nicht festgelegt.",
+          "noLogsSelected": "Bitte wählen Sie mindestens einen Log-Eintrag zur Behebung aus.",
+          "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
+          "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
+          "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
+          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON."
+        },
+        "step": {
+          "continue-modal": {
+            "title": "Fortfahren",
+            "text-unfixable": "Es gibt {count} nicht behebbare Fehler, die noch ungelöst sind. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten.",
+            "text-fixable": "Es gibt {count} Gruppen von behebbaren Fehlern, die noch nicht behoben sind. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten."
+          },
+          "header": {
+            "title": "Fehlerbehebung",
+            "description": "Überprüfen und beheben Sie Migrationsfehler, die während des Imports aufgetreten sind. Beheben Sie Datenprobleme direkt in dieser Ansicht oder laden Sie die Protokolldatei für detaillierte Informationen herunter. Setzen Sie fort, sobald alle lösbaren Fehler behoben sind.",
+            "documentation": "Dokumentation",
+            "download": "Log-Datei herunterladen",
+            "continue": "Fortfahren",
+            "continueTooltip": "Bitte beheben Sie alle behebbaren Fehler, bevor Sie fortfahren.",
+            "banner": {
+              "title": "Einige Fehler können möglicherweise nicht über diese Ansicht behoben werden",
+              "content": "Es gibt {count} Fehler, die nicht über diese Ansicht behoben werden können. Bitte laden Sie die Protokolldatei herunter, um weitere Informationen zu erhalten."
+            }
+          },
+          "card": {
+            "title": "Fehler",
+            "filter": {
+              "title": "Filter | Filter ({count}) | Filter ({count})",
+              "reset": "Filter zurücksetzen",
+              "code": {
+                "label": "Fehlercode",
+                "placeholder": "Fehlercode auswählen"
+              },
+              "status": {
+                "label": "Fehlerstatus",
+                "placeholder": "Fehlerstatus auswählen",
+                "options": {
+                  "resolved": "Behoben",
+                  "unresolved": "Nicht behoben"
+                }
+              },
+              "entity": {
+                "label": "Entität",
+                "placeholder": "Entität auswählen"
+              },
+              "field": {
+                "label": "Feld",
+                "placeholder": "Feld auswählen"
+              }
+            },
+            "tabs": {
+              "errors": "Fehler ({count})",
+              "warnings": "Warnungen ({count})",
+              "infos": "Informationen ({count})"
+            },
+            "table": {
+              "columns": {
+                "count": "Behoben / Gesamt",
+                "name": "Name",
+                "entity": "Entität",
+                "field": "Feld",
+                "code": "Fehlercode",
+                "profileName": "Profil",
+                "gatewayName": "Gateway"
+              },
+              "empty-state": {
+                "headline": "Keine Ergebnisse",
+                "description": "Wir konnten keine Logs finden, die Ihren aktuellen Filtern entsprechen."
+              }
+            },
+            "action": {
+              "edit": "Bearbeiten"
+            }
+          }
+        },
+        "modals": {
+          "error": {
+            "title": "Fehler beheben: {code}, {entityName}, {fieldName}",
+            "table": {
+              "columns": {
+                "status": "Status"
+              }
+            },
+            "left": {
+              "select-all": "Alle auswählen ({count})",
+              "details": "Details anzeigen",
+              "status": {
+                "resolved": "Behoben",
+                "unresolved": "Nicht behoben"
+              }
+            },
+            "right": {
+              "title": "Bearbeiten: {count} Elemente",
+              "banner": {
+                "title": "Keine Option verfügbar",
+                "content": "Bitte erstellen Sie mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich.",
+                "link": "Option hinzufügen"
+              },
+              "unhandledBanner": {
+                "title": "Unbekannter Feldtyp",
+                "content": "Der Feldtyp konnte nicht ermittelt werden. Bitte korrigieren Sie die Rohdaten."
+              },
+              "apply": "Änderungen anwenden"
+            }
+          },
+          "details": {
+            "title": "Details: {entityName}",
+            "convertedDataLabel": "Konvertierte Daten",
+            "sourceDataLabel": "Quelldaten"
+          }
         }
       }
     },
