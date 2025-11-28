@@ -1,5 +1,8 @@
 # 16.0.0
 
+- [BREAKING] [#94](https://github.com/shopware/SwagMigrationAssistant/pull/94) - chore!: check naming consistency across error resolution
+  - [BREAKING] Renamed method `hasValidMappingByEntityUuid()` to ``hasValidMappingByEntityId() in `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and implementation `SwagMigrationAssistant\Migration\Mapping\MappingService`
+
 - [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) - feat!: add migration logging required fields
     - [BREAKING] Truncated database entries of `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754896654TruncateMigrationLogs`
     - [BREAKING] Deleted columns `title`, `description`, `paramenters`,  `title_snippet`, `description_snippet`, `entity` and `source_id` from `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`
@@ -20,7 +23,7 @@
         - extend `SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry` instead of `SwagMigrationAssistant\Migration\Logging\Log\BaseRunLogEntity`
         - implement `SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry` instead of `SwagMigrationAssistant\Migration\Logging\Log\LogEntryInterface`
         - mark class readonly
-    - [BREAKING] Renamed log classes to include `Log` suffix 
+    - [BREAKING] Renamed log classes to include `Log` suffix
         - `SwagMigrationAssistant\Migration\Logging\LogCannotConvertChildEntity`,
         - `SwagMigrationAssistant\Migration\Logging\LogCannotConvertEntity`,
         - `SwagMigrationAssistant\Migration\Logging\LogDocumentTypeNotSupported`,

@@ -1,4 +1,5 @@
 # 16.0.0
+- [BREAKING] [#94](https://github.com/shopware/SwagMigrationAssistant/pull/94): chore!: check naming consistency across error resolution
 - [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) feat!: add migration logging required fields
 - [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) refactor!: add migration logging optional fields
 - [BREAKING] [#43](https://github.com/shopware/SwagMigrationAssistant/pull/43) refactor!: migration connection usage
@@ -57,7 +58,7 @@
 - MIG-1016 - Improves the warnings for different default currency and default language in the data selection.
 - MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`.
 - MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5.
- 
+
 # 13.0.0
 - MIG-945 - [BREAKING] Changed method name `getMedia` to `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
 - MIG-945 - [BREAKING] Removed cli command `migration:migrate` use `migration:start` instead
@@ -158,7 +159,7 @@
 - MIG-943 - [BREAKING] Rename method in class `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` from `getCountryTranslation` to `applyCountryTranslation`
 - MIG-943 - [BREAKING] Rename method in class `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` from `getCountryStateTranslation` to `applyCountryStateTranslation`
 - MIG-943 - [BREAKING] Changed thrown exception from `AssociationEntityRequiredMissingException` to `SwagMigrationAssistant\Exception\MigrationException::associationMissing` in method `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter::convert`
-- MIG-967, MIG-866 - Improving the migration of order documents 
+- MIG-967, MIG-866 - Improving the migration of order documents
 
 # 10.0.1
 - MIG-971 - Fix compatibility with Shopware 6.6.0.x
