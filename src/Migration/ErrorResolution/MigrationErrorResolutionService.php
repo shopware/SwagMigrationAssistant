@@ -23,7 +23,7 @@ class MigrationErrorResolutionService
     /**
      * @param array<int|string, array<int|string, mixed>> $data
      */
-    public function apply(array &$data, string $connectionId, string $runId): void
+    public function applyFixes(array &$data, string $connectionId, string $runId): void
     {
         $itemIds = \array_column($data, 'id');
         $fixes = $this->getFixes($itemIds, $connectionId, $runId);

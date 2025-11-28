@@ -61,7 +61,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
             ['id' => $idThree],
         ];
 
-        $service->apply($data, $connection->getId(), $run->getId());
+        $service->applyFixes($data, $connection->getId(), $run->getId());
 
         $expected = [[
             'id' => $idOne,

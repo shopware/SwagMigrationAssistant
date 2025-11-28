@@ -121,7 +121,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
 
         $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes));
 
-        $migrationFixApplier->apply($data, Uuid::randomHex(), Uuid::randomHex());
+        $migrationFixApplier->applyFixes($data, Uuid::randomHex(), Uuid::randomHex());
 
         static::assertSame($expected, $data[0]['the']['path']['to']['value']);
         static::assertSame($expected, $data[0]['other']['path']['to']['value']);

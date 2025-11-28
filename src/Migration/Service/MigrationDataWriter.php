@@ -106,7 +106,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         $convertedValues = array_values($converted);
-        $this->errorResolutionService->apply($convertedValues, $migrationContext->getConnection()->getId(), $migrationContext->getRunUuid());
+        $this->errorResolutionService->applyFixes($convertedValues, $migrationContext->getConnection()->getId(), $migrationContext->getRunUuid());
 
         try {
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
