@@ -119,6 +119,10 @@ jobs:
           composer run build:js:admin
           cd custom/plugins/${{ github.event.repository.name }}/tests
           mysql -uroot < _fixtures/database/sw55.sql
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
       - name: Install playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
         run: |
