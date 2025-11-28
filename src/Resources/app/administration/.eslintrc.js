@@ -1,4 +1,6 @@
-// eslint-disable-next-line no-undef
+/**
+ * @package fundamentals@after-sales
+ */
 module.exports = {
     root: true,
     env: {

@@ -187,7 +187,8 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         logString = logString.replaceAll(/(\s|")(0[0-9a-fA-F]+)/g, '$1XXX');
 
         // cleanup any media / document file logs, they are inherently non-deterministic,
-        // because media download messages are all put into the message queue and the order they are processed isn't deterministic
+        // because media download messages are all put into the message queue
+        // and the order they are processed isn't deterministic
         logString = logString.replaceAll(/(\[warning] SWAG_MIGRATION_CANNOT_GET_).+\n.+\n.+/g, '$1XXX\nXXX\nXXX');
 
         // Add more replace logic here, if anything new non-deterministic shows up...

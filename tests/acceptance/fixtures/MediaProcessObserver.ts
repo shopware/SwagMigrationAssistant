@@ -9,7 +9,7 @@ export interface MediaProcessObserverStruct {
 export const MediaProcessObserver = base.extend<FixtureTypes>({
     MediaProcessObserver: async ({ AdminApiContext }, use) => {
         const isMediaProcessing = async () => {
-            const response = await AdminApiContext.get(`/api/_action/migration/is-media-processing`, {});
+            const response = await AdminApiContext.get('/api/_action/migration/is-media-processing', {});
             expect(response.ok()).toBeTruthy();
             return await response.json();
         };
