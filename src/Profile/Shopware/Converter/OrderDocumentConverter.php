@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -81,7 +81,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         if (empty($data['hash'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(DocumentDefinition::ENTITY_NAME)
                     ->withFieldSourcePath('hash')
                     ->withSourceData($data)
@@ -94,7 +94,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         if (!isset($data['documenttype'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(DocumentDefinition::ENTITY_NAME)
                     ->withFieldName('documentType')
                     ->withFieldSourcePath('documenttype')
@@ -115,7 +115,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
 
         if ($orderMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(DocumentDefinition::ENTITY_NAME)
                     ->withFieldName('orderId')
                     ->withFieldSourcePath('orderID')
@@ -202,7 +202,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         $this->loggingService->addLogEntry(
-            SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+            MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                 ->withEntityName(DocumentDefinition::ENTITY_NAME)
                 ->withFieldName('documentType')
                 ->withFieldSourcePath('key')

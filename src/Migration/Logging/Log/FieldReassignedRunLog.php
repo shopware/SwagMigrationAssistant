@@ -8,10 +8,10 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class FieldReassignedRunLog extends AbstractSwagMigrationLogEntry
+readonly class FieldReassignedRunLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {

@@ -16,7 +16,7 @@ enum MigrationStep: string
 
     case FETCHING = 'fetching';
 
-    case APPLY_FIXES = 'apply-fixes';
+    case ERROR_RESOLUTION = 'error-resolution';
 
     case WRITING = 'writing';
 
@@ -45,7 +45,7 @@ enum MigrationStep: string
     public function needsProcessor(): bool
     {
         return !\in_array($this, [
-            self::APPLY_FIXES,
+            self::ERROR_RESOLUTION,
             self::WAITING_FOR_APPROVE,
         ], true);
     }

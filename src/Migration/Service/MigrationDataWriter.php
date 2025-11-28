@@ -22,14 +22,14 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\WriterNotFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Writer\MigrationFix\MigrationFixApplier;
 use SwagMigrationAssistant\Migration\Writer\WriterRegistryInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -49,7 +49,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
         private readonly EntityRepository $mappingRepo,
-        private readonly MigrationFixApplier $fixApplier,
+        private readonly MigrationErrorResolutionService $errorResolutionService,
     ) {
         // write / upsert entities only with this single context,
         // otherwise the migration behaves differently when started in the administration
@@ -106,14 +106,14 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         }
 
         $convertedValues = array_values($converted);
-        $this->fixApplier->apply($convertedValues, $migrationContext->getConnection()->getId(), $migrationContext->getRunUuid());
+        $this->errorResolutionService->applyFixes($convertedValues, $migrationContext->getConnection()->getId(), $migrationContext->getRunUuid());
 
         try {
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
             $currentWriter->writeData($convertedValues, $this->writeContext);
         } catch (WriterNotFoundException $writerNotFoundException) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($writerNotFoundException->getMessage())
                     ->withExceptionTrace($writerNotFoundException->getTrace())
                     ->withConvertedData([$converted])
@@ -198,7 +198,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             });
 
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($entityName)
@@ -257,7 +257,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $currentWriter->writeData([$entity], $this->writeContext);
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName($entityName)

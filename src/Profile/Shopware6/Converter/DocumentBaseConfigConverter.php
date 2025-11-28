@@ -11,7 +11,7 @@ use Shopware\Core\Checkout\Document\Aggregate\DocumentBaseConfig\DocumentBaseCon
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
@@ -60,7 +60,7 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
         if ($converted['documentTypeId'] === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(DocumentBaseConfigDefinition::ENTITY_NAME)
                     ->withFieldName('documentTypeId')
                     ->withFieldSourcePath('id')

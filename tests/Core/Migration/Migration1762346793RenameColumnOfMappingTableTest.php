@@ -16,7 +16,7 @@ use SwagMigrationAssistant\Test\TableHelperTrait;
 /**
  * @internal
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class Migration1762346793RenameColumnOfMappingTableTest extends TestCase
 {
     use TableHelperTrait;

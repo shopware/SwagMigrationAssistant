@@ -11,7 +11,7 @@ use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup;
@@ -67,7 +67,7 @@ class MailTemplateConverter extends ShopwareMediaConverter
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
                 if ($typeUuid === null) {
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                             ->withEntityName(MailTemplateDefinition::ENTITY_NAME)
                             ->withFieldName('mailTemplateTypeId')
                             ->withFieldSourcePath('mailTemplateType.technicalName')

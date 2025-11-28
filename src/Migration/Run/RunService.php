@@ -28,7 +28,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -163,7 +163,7 @@ class RunService implements RunServiceInterface
         $runId = $run->getId();
         $runningSteps = [
             MigrationStep::FETCHING->value,
-            MigrationStep::APPLY_FIXES->value,
+            MigrationStep::ERROR_RESOLUTION->value,
             MigrationStep::WRITING->value,
             MigrationStep::MEDIA_PROCESSING->value,
         ];
@@ -262,7 +262,7 @@ class RunService implements RunServiceInterface
                 $this->themeService->assignTheme($defaultThemeId, $salesChannelId, $context);
             } catch (\Throwable $exception) {
                 $this->loggingService->addLogEntry(
-                    (new SwagMigrationLogBuilder(
+                    (new MigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),
                         $connection->getGatewayName(),
@@ -289,8 +289,8 @@ class RunService implements RunServiceInterface
 
         $runId = $run->getId();
 
-        if ($run->getStepValue() !== MigrationStep::APPLY_FIXES->value) {
-            throw MigrationException::migrationNotInStep($runId, MigrationStep::APPLY_FIXES->value);
+        if ($run->getStepValue() !== MigrationStep::ERROR_RESOLUTION->value) {
+            throw MigrationException::migrationNotInStep($runId, MigrationStep::ERROR_RESOLUTION->value);
         }
 
         $this->runTransitionService->transitionToRunStep($runId, MigrationStep::WRITING);

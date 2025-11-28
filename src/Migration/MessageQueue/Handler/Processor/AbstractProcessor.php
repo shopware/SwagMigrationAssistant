@@ -63,7 +63,7 @@ abstract class AbstractProcessor implements MigrationProcessorInterface
 
         if ($nextEntity === null && $run->getStep() === MigrationStep::FETCHING) {
             $nextEntity = \current($dataSets);
-            $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::APPLY_FIXES);
+            $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::ERROR_RESOLUTION);
             $progress->setProgress(0);
             $progress->setTotal($this->getWriteTotal($context));
         } elseif ($nextEntity === null && $run->getStep() === MigrationStep::WRITING) {

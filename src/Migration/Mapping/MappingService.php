@@ -214,7 +214,7 @@ class MappingService implements MappingServiceInterface, ResetInterface
         return $this->migrationMappingRepo->search($criteria, $context);
     }
 
-    public function hasValidMappingByEntityUuid(string $connectionId, string $entityName, string $entityId, Context $context): bool
+    public function hasValidMappingByEntityId(string $connectionId, string $entityName, string $entityId, Context $context): bool
     {
         $criteria = new Criteria();
         $criteria->addFilter(
