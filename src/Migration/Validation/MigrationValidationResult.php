@@ -8,13 +8,13 @@
 namespace SwagMigrationAssistant\Migration\Validation;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-class SwagMigrationValidationResult
+class MigrationValidationResult
 {
     /**
-     * @param SwagMigrationLogEntry[] $logs
+     * @param MigrationLogEntry[] $logs
      */
     public function __construct(
         private readonly string $entityName,
@@ -22,13 +22,13 @@ class SwagMigrationValidationResult
     ) {
     }
 
-    public function addLog(SwagMigrationLogEntry $log): void
+    public function addLog(MigrationLogEntry $log): void
     {
         $this->logs[] = $log;
     }
 
     /**
-     * @return SwagMigrationLogEntry[]
+     * @return MigrationLogEntry[]
      */
     public function getLogs(): array
     {

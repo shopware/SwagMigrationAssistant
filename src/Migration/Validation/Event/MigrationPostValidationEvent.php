@@ -10,17 +10,17 @@ namespace SwagMigrationAssistant\Migration\Validation\Event;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\ShopwareEvent;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationContext;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationContext;
 use Symfony\Contracts\EventDispatcher\Event;
 
 #[Package('fundamentals@after-sales')]
-class SwagMigrationPreValidationEvent extends Event implements ShopwareEvent
+class MigrationPostValidationEvent extends Event implements ShopwareEvent
 {
-    public function __construct(private readonly SwagMigrationValidationContext $validationContext)
+    public function __construct(private readonly MigrationValidationContext $validationContext)
     {
     }
 
-    public function getValidationContext(): SwagMigrationValidationContext
+    public function getValidationContext(): MigrationValidationContext
     {
         return $this->validationContext;
     }

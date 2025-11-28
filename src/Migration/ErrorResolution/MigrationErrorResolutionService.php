@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 
 #[Package('fundamentals@after-sales')]
-class SwagMigrationErrorResolutionService
+class MigrationErrorResolutionService
 {
     public function __construct(
         private readonly Connection $connection,
@@ -46,7 +46,7 @@ class SwagMigrationErrorResolutionService
     /**
      * @param array<int, string> $ids
      *
-     * @return array<string, list<SwagMigrationErrorResolution>>
+     * @return array<string, list<MigrationFix>>
      */
     private function getFixes(array $ids, string $connectionId, string $runId): array
     {
@@ -81,7 +81,7 @@ SQL;
                 $return[$entityId] = [];
             }
 
-            $return[$entityId][] = SwagMigrationErrorResolution::fromDatabaseQuery($row);
+            $return[$entityId][] = MigrationFix::fromDatabaseQuery($row);
         }
 
         return $return;

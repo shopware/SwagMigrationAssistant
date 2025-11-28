@@ -27,7 +27,7 @@ use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedDataLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -68,7 +68,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if (!isset($data['locale'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName('unknown_translation')
                     ->withFieldName('languageId')
                     ->withFieldSourcePath('locale')
@@ -104,7 +104,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         $this->loggingService->addLogEntry(
-            SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+            MigrationLogBuilder::fromMigrationContext($migrationContext)
                 ->withEntityName('unknown_translation')
                 ->withFieldSourcePath('objecttype')
                 ->withSourceData($data)
@@ -139,7 +139,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('productId')
                     ->withFieldSourcePath('objectkey')
@@ -250,7 +250,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('productId')
                     ->withFieldSourcePath('ordernumber')
@@ -326,7 +326,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductManufacturerTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('productManufacturerId')
                     ->withFieldSourcePath('objectkey')
@@ -408,7 +408,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(UnitTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('unitId')
                     ->withFieldSourcePath('objectkey')
@@ -495,7 +495,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CategoryTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('categoryId')
                     ->withFieldSourcePath('objectkey')
@@ -592,7 +592,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupOptionTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupOptionId')
                     ->withFieldSourcePath('objectkey')
@@ -671,7 +671,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupId')
                     ->withFieldSourcePath('objectkey')
@@ -753,7 +753,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupOptionTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupOptionId')
                     ->withFieldSourcePath('objectkey')
@@ -830,7 +830,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupId')
                     ->withFieldSourcePath('objectkey')
@@ -963,7 +963,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if (!\is_array($objectData)) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName($entity)
                     ->withFieldSourcePath('objectdata')
                     ->withSourceData($data)
@@ -998,7 +998,7 @@ abstract class TranslationConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(MediaTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('mediaId')
                     ->withFieldSourcePath('mediaId')

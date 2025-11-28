@@ -24,7 +24,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -98,7 +98,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if ($customerGroupMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                     ->withFieldName('customerGroupId')
                     ->withFieldSourcePath('customer_group_id')
@@ -115,7 +115,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
         if ($languageUuid === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                     ->withFieldName('languageId')
                     ->withFieldSourcePath('locale')
@@ -139,7 +139,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
         if ($currencyUuid === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                     ->withFieldName('currencyId')
                     ->withFieldSourcePath('currency')
@@ -166,7 +166,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
 
         if ($categoryMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                     ->withFieldName('navigationCategoryId')
                     ->withFieldSourcePath('category_id')
@@ -390,7 +390,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
                 }
 
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                         ->withFieldName('languageId')
                         ->build(DeactivatedPackLanguageLog::class)

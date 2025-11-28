@@ -11,25 +11,25 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationResult;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
 
 /**
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(SwagMigrationValidationResult::class)]
-class SwagMigrationValidationResultTest extends TestCase
+#[CoversClass(MigrationValidationResult::class)]
+class MigrationValidationResultTest extends TestCase
 {
     public function testValidationResult(): void
     {
-        $result = new SwagMigrationValidationResult(CustomerDefinition::ENTITY_NAME);
+        $result = new MigrationValidationResult(CustomerDefinition::ENTITY_NAME);
 
         static::assertSame(CustomerDefinition::ENTITY_NAME, $result->getEntityName());
         static::assertFalse($result->hasLogs());
         static::assertEmpty($result->getLogs());
 
-        $log = new ValidationExceptionLog(
+        $log = new MigrationValidationExceptionLog(
             'test1',
             'test2',
             'test3',

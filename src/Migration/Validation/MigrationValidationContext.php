@@ -13,9 +13,9 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
-readonly class SwagMigrationValidationContext
+readonly class MigrationValidationContext
 {
-    protected SwagMigrationValidationResult $validationResult;
+    protected MigrationValidationResult $validationResult;
 
     /**
      * @param array<string, mixed> $convertedData
@@ -28,7 +28,7 @@ readonly class SwagMigrationValidationContext
         protected array $convertedData,
         protected array $sourceData,
     ) {
-        $this->validationResult = new SwagMigrationValidationResult(
+        $this->validationResult = new MigrationValidationResult(
             $this->entityDefinition->getEntityName(),
         );
     }
@@ -64,7 +64,7 @@ readonly class SwagMigrationValidationContext
         return $this->entityDefinition;
     }
 
-    public function getValidationResult(): SwagMigrationValidationResult
+    public function getValidationResult(): MigrationValidationResult
     {
         return $this->validationResult;
     }

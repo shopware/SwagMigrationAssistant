@@ -20,21 +20,21 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteParameterBag;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Validation\Event\SwagMigrationPostValidationEvent;
-use SwagMigrationAssistant\Migration\Validation\Event\SwagMigrationPreValidationEvent;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationUnexpectedFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Event\MigrationPostValidationEvent;
+use SwagMigrationAssistant\Migration\Validation\Event\MigrationPreValidationEvent;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 #[Package('fundamentals@after-sales')]
-readonly class SwagMigrationValidationService
+readonly class MigrationValidationService
 {
     public function __construct(
         private DefinitionInstanceRegistry $definitionRegistry,
@@ -54,14 +54,14 @@ readonly class SwagMigrationValidationService
         ?array $convertedEntity,
         string $entityName,
         array $sourceData,
-    ): ?SwagMigrationValidationResult {
+    ): ?MigrationValidationResult {
         if (empty($convertedEntity)) {
             return null;
         }
 
         $entityDefinition = $this->definitionRegistry->getByEntityName($entityName);
 
-        $validationContext = new SwagMigrationValidationContext(
+        $validationContext = new MigrationValidationContext(
             $shopwareContext,
             $migrationContext,
             $entityDefinition,
@@ -70,7 +70,7 @@ readonly class SwagMigrationValidationService
         );
 
         $this->eventDispatcher->dispatch(
-            new SwagMigrationPreValidationEvent($validationContext),
+            new MigrationPreValidationEvent($validationContext),
         );
 
         try {
@@ -79,19 +79,19 @@ readonly class SwagMigrationValidationService
             $this->validateAssociations($validationContext);
         } catch (\Throwable $exception) {
             $validationContext->getValidationResult()->addLog(
-                SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                     ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                     ->withSourceData($validationContext->getSourceData())
                     ->withConvertedData($validationContext->getConvertedData())
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityId($convertedEntity['id'] ?? null)
-                    ->build(ValidationExceptionLog::class)
+                    ->build(MigrationValidationExceptionLog::class)
             );
         }
 
         $this->eventDispatcher->dispatch(
-            new SwagMigrationPostValidationEvent($validationContext),
+            new MigrationPostValidationEvent($validationContext),
         );
 
         foreach ($validationContext->getValidationResult()->getLogs() as $log) {
@@ -103,7 +103,7 @@ readonly class SwagMigrationValidationService
         return $validationContext->getValidationResult();
     }
 
-    private function validateEntityStructure(SwagMigrationValidationContext $validationContext): void
+    private function validateEntityStructure(MigrationValidationContext $validationContext): void
     {
         $fields = $validationContext->getEntityDefinition()->getFields();
 
@@ -117,12 +117,12 @@ readonly class SwagMigrationValidationService
 
         foreach ($missingRequiredFields as $missingField) {
             $validationContext->getValidationResult()->addLog(
-                SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                     ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                     ->withFieldName($missingField)
                     ->withConvertedData($validationContext->getConvertedData())
                     ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
-                    ->build(ValidationMissingRequiredFieldLog::class)
+                    ->build(MigrationValidationMissingRequiredFieldLog::class)
             );
         }
 
@@ -130,17 +130,17 @@ readonly class SwagMigrationValidationService
 
         foreach ($unexpectedFields as $unexpectedField) {
             $validationContext->getValidationResult()->addLog(
-                SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                     ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                     ->withFieldName($unexpectedField)
                     ->withConvertedData($validationContext->getConvertedData())
                     ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
-                    ->build(ValidationUnexpectedFieldLog::class)
+                    ->build(MigrationValidationUnexpectedFieldLog::class)
             );
         }
     }
 
-    private function validateFields(SwagMigrationValidationContext $validationContext): void
+    private function validateFields(MigrationValidationContext $validationContext): void
     {
         $fields = $validationContext->getEntityDefinition()->getFields();
 
@@ -183,7 +183,7 @@ readonly class SwagMigrationValidationService
                 \iterator_to_array($serializer->encode($field, $entityExistence, $keyValue, $parameters), false);
             } catch (\Throwable $e) {
                 $validationContext->getValidationResult()->addLog(
-                    SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                    MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                         ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                         ->withFieldName($fieldName)
                         ->withConvertedData([$fieldName => $value])
@@ -191,13 +191,13 @@ readonly class SwagMigrationValidationService
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
                         ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
-                        ->build(ValidationInvalidFieldValueLog::class)
+                        ->build(MigrationValidationInvalidFieldValueLog::class)
                 );
             }
         }
     }
 
-    private function validateAssociations(SwagMigrationValidationContext $validationContext): void
+    private function validateAssociations(MigrationValidationContext $validationContext): void
     {
         $fields = $validationContext->getEntityDefinition()->getFields();
 
@@ -238,13 +238,13 @@ readonly class SwagMigrationValidationService
 
             if (!$hasMapping) {
                 $validationContext->getValidationResult()->addLog(
-                    SwagMigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
+                    MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                         ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                         ->withFieldName($fkFieldName)
                         ->withConvertedData([$fkFieldName => $fkValue])
                         ->withSourceData($validationContext->getSourceData())
                         ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
-                        ->build(ValidationInvalidForeignKeyLog::class)
+                        ->build(MigrationValidationInvalidForeignKeyLog::class)
                 );
             }
         }

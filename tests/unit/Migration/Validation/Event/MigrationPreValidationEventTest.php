@@ -14,19 +14,19 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Validation\Event\SwagMigrationPostValidationEvent;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationContext;
+use SwagMigrationAssistant\Migration\Validation\Event\MigrationPreValidationEvent;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationContext;
 
 /**
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(SwagMigrationPostValidationEvent::class)]
-class SwagMigrationPostValidationEventTest extends TestCase
+#[CoversClass(MigrationPreValidationEvent::class)]
+class MigrationPreValidationEventTest extends TestCase
 {
-    public function testPostValidationEvent(): void
+    public function testPreValidationEvent(): void
     {
-        $context = new SwagMigrationValidationContext(
+        $context = new MigrationValidationContext(
             Context::createDefaultContext(),
             new MigrationContext(new SwagMigrationConnectionEntity()),
             new CustomerDefinition(),
@@ -34,7 +34,7 @@ class SwagMigrationPostValidationEventTest extends TestCase
             []
         );
 
-        $event = new SwagMigrationPostValidationEvent($context);
+        $event = new MigrationPreValidationEvent($context);
 
         static::assertSame($context, $event->getValidationContext());
         static::assertSame($context->getContext(), $event->getContext());

@@ -8,23 +8,23 @@
 namespace SwagMigrationAssistant\Migration\Validation\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class ValidationExceptionLog extends AbstractSwagMigrationLogEntry
+readonly class MigrationValidationUnexpectedFieldLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
-        return false;
+        return true;
     }
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_VALIDATION_EXCEPTION';
+        return 'SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD';
     }
 }

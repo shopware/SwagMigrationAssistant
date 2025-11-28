@@ -26,13 +26,13 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationUnexpectedFieldLog;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationResult;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
@@ -40,14 +40,14 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(SwagMigrationValidationService::class)]
-class SwagMigrationValidationServiceTest extends TestCase
+#[CoversClass(MigrationValidationService::class)]
+class MigrationValidationServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
     private const CONNECTION_ID = '01991554142d73348ea58793d98f1989';
 
-    private SwagMigrationValidationService $validationService;
+    private MigrationValidationService $validationService;
 
     /**
      * @var EntityRepository<SwagMigrationLoggingCollection>
@@ -70,7 +70,7 @@ class SwagMigrationValidationServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validationService = $this->getContainer()->get(SwagMigrationValidationService::class);
+        $this->validationService = $this->getContainer()->get(MigrationValidationService::class);
         $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
         $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
         $this->mappingRepo = $this->getContainer()->get(SwagMigrationMappingDefinition::ENTITY_NAME . '.repository');
@@ -155,7 +155,7 @@ class SwagMigrationValidationServiceTest extends TestCase
             []
         );
 
-        static::assertInstanceOf(SwagMigrationValidationResult::class, $result);
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
         static::assertSame(SwagMigrationLoggingDefinition::ENTITY_NAME, $result->getEntityName());
 
         $this->clearCacheData();
@@ -203,7 +203,7 @@ class SwagMigrationValidationServiceTest extends TestCase
             []
         );
 
-        static::assertInstanceOf(SwagMigrationValidationResult::class, $result);
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
 
         $logClasses = array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertEquals($expectedLogs, $logClasses);
@@ -238,8 +238,8 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             ],
             [
-                ValidationMissingRequiredFieldLog::class,
-                ValidationMissingRequiredFieldLog::class,
+                MigrationValidationMissingRequiredFieldLog::class,
+                MigrationValidationMissingRequiredFieldLog::class,
             ],
         ];
 
@@ -250,8 +250,8 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'unexpectedField2' => 'value',
             ],
             [
-                ValidationUnexpectedFieldLog::class,
-                ValidationUnexpectedFieldLog::class,
+                MigrationValidationUnexpectedFieldLog::class,
+                MigrationValidationUnexpectedFieldLog::class,
             ],
         ];
 
@@ -261,7 +261,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'userFixable' => 'not_a_boolean',
             ],
             [
-                ValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
             ],
         ];
 
@@ -271,7 +271,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'code' => str_repeat('sw', 128),
             ],
             [
-                ValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
             ],
         ];
 
@@ -281,7 +281,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'id' => 'not-a-uuid',
             ],
             [
-                ValidationExceptionLog::class,
+                MigrationValidationExceptionLog::class,
             ],
         ];
 
@@ -291,7 +291,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'sourceData' => "\xB1\x31",
             ],
             [
-                ValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
             ],
         ];
 
@@ -306,11 +306,11 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'unexpectedField' => 'value',
             ],
             [
-                ValidationMissingRequiredFieldLog::class,
-                ValidationUnexpectedFieldLog::class,
-                ValidationInvalidFieldValueLog::class,
-                ValidationInvalidFieldValueLog::class,
-                ValidationInvalidFieldValueLog::class,
+                MigrationValidationMissingRequiredFieldLog::class,
+                MigrationValidationUnexpectedFieldLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
             ],
         ];
     }
@@ -354,7 +354,7 @@ class SwagMigrationValidationServiceTest extends TestCase
                 'runId' => Uuid::randomHex(),
             ],
             [$mapping],
-            [ValidationInvalidForeignKeyLog::class],
+            [MigrationValidationInvalidForeignKeyLog::class],
         ];
 
         yield 'fk field not in converted data' => [
@@ -370,7 +370,7 @@ class SwagMigrationValidationServiceTest extends TestCase
             ],
             [],
             [
-                ValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
             ],
         ];
 
@@ -381,7 +381,7 @@ class SwagMigrationValidationServiceTest extends TestCase
             ],
             [],
             [
-                ValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidFieldValueLog::class,
             ],
         ];
     }

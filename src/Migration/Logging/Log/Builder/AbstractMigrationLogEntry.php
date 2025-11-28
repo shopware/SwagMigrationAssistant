@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('fundamentals@after-sales')]
-abstract readonly class AbstractSwagMigrationLogEntry implements SwagMigrationLogEntry
+abstract readonly class AbstractMigrationLogEntry implements MigrationLogEntry
 {
     final public const LOG_LEVEL_INFO = 'info';
     final public const LOG_LEVEL_WARNING = 'warning';

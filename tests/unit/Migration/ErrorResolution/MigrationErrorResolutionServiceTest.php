@@ -12,14 +12,14 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Migration\ErrorResolution\SwagMigrationErrorResolutionService;
+use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 
 /**
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(SwagMigrationErrorResolutionService::class)]
-class SwagMigrationErrorResolutionServiceTest extends TestCase
+#[CoversClass(MigrationErrorResolutionService::class)]
+class MigrationErrorResolutionServiceTest extends TestCase
 {
     public function testApply(): void
     {
@@ -119,7 +119,7 @@ class SwagMigrationErrorResolutionServiceTest extends TestCase
             ],
         ];
 
-        $migrationFixApplier = new SwagMigrationErrorResolutionService($this->createConnection($fixes));
+        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes));
 
         $migrationFixApplier->apply($data, Uuid::randomHex(), Uuid::randomHex());
 

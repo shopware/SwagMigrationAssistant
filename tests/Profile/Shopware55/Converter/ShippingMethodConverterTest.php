@@ -21,7 +21,7 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -163,7 +163,7 @@ class ShippingMethodConverterTest extends TestCase
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
 
-        $error = (new SwagMigrationLogBuilder('', 'Profile name', 'Gateway name'))
+        $error = (new MigrationLogBuilder('', 'Profile name', 'Gateway name'))
             ->build(UnsupportedShippingCalculationTypeLog::class);
 
         static::assertNull($convertResult->getUnmapped());
@@ -180,7 +180,7 @@ class ShippingMethodConverterTest extends TestCase
         $convertResult = $this->shippingMethodConverter->convert($shippingMethodData[0], $this->context, $this->migrationContext);
         $logs = $this->loggingService->getLoggingArray();
 
-        $error = (new SwagMigrationLogBuilder('', 'Profile name', 'Gateway name'))
+        $error = (new MigrationLogBuilder('', 'Profile name', 'Gateway name'))
             ->build(UnsupportedShippingPriceLog::class);
 
         static::assertNull($convertResult->getUnmapped());

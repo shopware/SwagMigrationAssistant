@@ -10,7 +10,7 @@ namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('fundamentals@after-sales')]
-interface SwagMigrationLogEntry
+interface MigrationLogEntry
 {
     public function getRunId(): string;
 

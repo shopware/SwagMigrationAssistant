@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -79,7 +79,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
         if (!isset($data['group']['name'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(PropertyGroupDefinition::ENTITY_NAME)
                     ->withFieldName('id')
                     ->withFieldSourcePath('group.name')
@@ -135,7 +135,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     {
         if (!isset($data['media']['id'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupDefinition::ENTITY_NAME)
                     ->withFieldName('media.id')
                     ->withFieldSourcePath('media.id')

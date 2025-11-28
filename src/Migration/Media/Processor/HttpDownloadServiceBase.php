@@ -24,7 +24,7 @@ use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\TemporaryFileErrorLog;
@@ -79,7 +79,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $exception = new \Exception('Http download client can not be constructed.');
 
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
@@ -125,7 +125,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->withEntityId($uuid)
                             ->build(CannotGetFileRunLog::class)
@@ -146,7 +146,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                 $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withEntityId($uuid)
                         ->build(TemporaryFileErrorLog::class)
@@ -188,7 +188,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $failureUuids[] = $uuid;
                     $work->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withExceptionMessage($e->getMessage())
                             ->withExceptionTrace($e->getTrace())
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
@@ -288,7 +288,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         } catch (\Throwable $exception) {
             // this should never happen because of Promises, but just in case something is wrong with request construction
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
@@ -312,7 +312,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
             $exception = new \Exception('Downloaded file is empty or could not determine mime type.');
 
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
@@ -348,7 +348,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     $this->fileSaver->persistFileToMedia($mediaFile, Uuid::randomHex(), $uuid, $context);
                 } else {
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withExceptionMessage($mediaException->getMessage())
                             ->withExceptionTrace($mediaException->getTrace())
                             ->withEntityName(MediaDefinition::ENTITY_NAME)

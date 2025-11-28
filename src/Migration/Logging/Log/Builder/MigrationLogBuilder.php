@@ -14,13 +14,13 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
  * @example
- * $log = (new SwagMigrationLogBuilder('runId', 'profileName', 'gatewayName'))
+ * $log = (new MigrationLogBuilder('runId', 'profileName', 'gatewayName'))
  *     ->withField('fieldName')
  *     ->withFieldSourcePath('sourcePath')
- *     ->build(SwagMigrationLogEntry::class);
+ *     ->build(MigrationLogEntry::class);
  */
 #[Package('fundamentals@after-sales')]
-class SwagMigrationLogBuilder
+class MigrationLogBuilder
 {
     /**
      * @param array<mixed>|null $sourceData
@@ -117,15 +117,15 @@ class SwagMigrationLogBuilder
     }
 
     /**
-     * @template T of AbstractSwagMigrationLogEntry
+     * @template T of AbstractMigrationLogEntry
      *
      * @param class-string<T> $logClass
      *
      * @return T
      */
-    public function build(string $logClass): AbstractSwagMigrationLogEntry
+    public function build(string $logClass): AbstractMigrationLogEntry
     {
-        if (!class_exists($logClass) || !is_subclass_of($logClass, AbstractSwagMigrationLogEntry::class)) {
+        if (!class_exists($logClass) || !is_subclass_of($logClass, AbstractMigrationLogEntry::class)) {
             throw MigrationException::failedToCreateMigrationLog($logClass);
         }
 

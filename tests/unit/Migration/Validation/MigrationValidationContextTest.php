@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationContext;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationContext;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
@@ -23,8 +23,8 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(SwagMigrationValidationContext::class)]
-class SwagMigrationValidationContextTest extends TestCase
+#[CoversClass(MigrationValidationContext::class)]
+class MigrationValidationContextTest extends TestCase
 {
     public function testValidationContext(): void
     {
@@ -43,7 +43,7 @@ class SwagMigrationValidationContextTest extends TestCase
         $context = Context::createDefaultContext();
         $entityDefinition = new CustomerDefinition();
 
-        $validationContext = new SwagMigrationValidationContext(
+        $validationContext = new MigrationValidationContext(
             $context,
             $migrationContext,
             $entityDefinition,

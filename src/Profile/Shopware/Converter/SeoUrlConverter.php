@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -67,7 +67,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
                     ->withFieldName('salesChannelId')
                     ->withFieldSourcePath('subshopID')
@@ -85,7 +85,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
         if ($converted['languageId'] === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
                     ->withFieldName('languageId')
                     ->withFieldSourcePath('_locale')
@@ -117,7 +117,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
                 if ($mapping === null) {
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
                             ->withFieldName('foreignKey')
                             ->withFieldSourcePath('type')
@@ -143,7 +143,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
 
             if ($mapping === null) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
                         ->withFieldName('foreignKey')
                         ->withFieldSourcePath('type')
@@ -159,7 +159,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
         } else {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
                     ->withFieldName('foreignKey')
                     ->withFieldSourcePath('type')

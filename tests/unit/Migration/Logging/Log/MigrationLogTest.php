@@ -14,9 +14,9 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
@@ -38,11 +38,11 @@ use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectTypeLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationInvalidForeignKeyLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\ValidationUnexpectedFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
@@ -50,11 +50,11 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(SwagMigrationLogEntry::class)]
-class SwagMigrationLogTest extends TestCase
+#[CoversClass(MigrationLogEntry::class)]
+class MigrationLogTest extends TestCase
 {
     /**
-     * @param class-string<AbstractSwagMigrationLogEntry> $logClass
+     * @param class-string<AbstractMigrationLogEntry> $logClass
      */
     #[DataProvider('logProvider')]
     public function testLogEntry(string $logClass, string $code, string $level, bool $userFixable): void
@@ -73,7 +73,7 @@ class SwagMigrationLogTest extends TestCase
 
         $entityId = Uuid::randomHex();
 
-        $logEntry = SwagMigrationLogBuilder::fromMigrationContext($context)
+        $logEntry = MigrationLogBuilder::fromMigrationContext($context)
             ->withEntityName('test1')
             ->withFieldName('test2')
             ->withFieldSourcePath('test3')
@@ -100,185 +100,185 @@ class SwagMigrationLogTest extends TestCase
 
     public static function logProvider(): \Generator
     {
-        yield ValidationExceptionLog::class => [
-            'logClass' => ValidationExceptionLog::class,
+        yield MigrationValidationExceptionLog::class => [
+            'logClass' => MigrationValidationExceptionLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_EXCEPTION',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield ValidationInvalidFieldValueLog::class => [
-            'logClass' => ValidationInvalidFieldValueLog::class,
+        yield MigrationValidationInvalidFieldValueLog::class => [
+            'logClass' => MigrationValidationInvalidFieldValueLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
-        yield ValidationInvalidForeignKeyLog::class => [
-            'logClass' => ValidationInvalidForeignKeyLog::class,
+        yield MigrationValidationInvalidForeignKeyLog::class => [
+            'logClass' => MigrationValidationInvalidForeignKeyLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => true,
         ];
 
-        yield ValidationMissingRequiredFieldLog::class => [
-            'logClass' => ValidationMissingRequiredFieldLog::class,
+        yield MigrationValidationMissingRequiredFieldLog::class => [
+            'logClass' => MigrationValidationMissingRequiredFieldLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
-        yield ValidationUnexpectedFieldLog::class => [
-            'logClass' => ValidationUnexpectedFieldLog::class,
+        yield MigrationValidationUnexpectedFieldLog::class => [
+            'logClass' => MigrationValidationUnexpectedFieldLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => true,
         ];
 
         yield AssociationRequiredMissingLog::class => [
             'logClass' => AssociationRequiredMissingLog::class,
             'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield CannotConvertChildEntityLog::class => [
             'logClass' => CannotConvertChildEntityLog::class,
             'code' => 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield CannotConvertEntityLog::class => [
             'logClass' => CannotConvertEntityLog::class,
             'code' => 'SWAG_MIGRATION_CANNOT_CONVERT',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield CannotGetFileRunLog::class => [
             'logClass' => CannotGetFileRunLog::class,
             'code' => 'SWAG_MIGRATION_CANNOT_GET_FILE',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield CannotReadEntityCountLog::class => [
             'logClass' => CannotReadEntityCountLog::class,
             'code' => 'SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield DataSetNotFoundLog::class => [
             'logClass' => DataSetNotFoundLog::class,
             'code' => 'SWAG_MIGRATION__DATASET_NOT_FOUND',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield DocumentTypeNotSupportedLog::class => [
             'logClass' => DocumentTypeNotSupportedLog::class,
             'code' => 'SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield EmptyNecessaryFieldRunLog::class => [
             'logClass' => EmptyNecessaryFieldRunLog::class,
             'code' => 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield EntityAlreadyExistsRunLog::class => [
             'logClass' => EntityAlreadyExistsRunLog::class,
             'code' => 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_INFO,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield ExceptionRunLog::class => [
             'logClass' => ExceptionRunLog::class,
             'code' => 'SWAG_MIGRATION_RUN_EXCEPTION',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield FieldReassignedRunLog::class => [
             'logClass' => FieldReassignedRunLog::class,
             'code' => 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_INFO,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield InvalidUnserializedDataLog::class => [
             'logClass' => InvalidUnserializedDataLog::class,
             'code' => 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield MessageQueueExceptionLog::class => [
             'logClass' => MessageQueueExceptionLog::class,
             'code' => 'SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_INFO,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield MimeTypeErrorLog::class => [
             'logClass' => MimeTypeErrorLog::class,
             'code' => 'SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield ProcessorNotFoundLog::class => [
             'logClass' => ProcessorNotFoundLog::class,
             'code' => 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield RunAbortedAutomaticallyLog::class => [
             'logClass' => RunAbortedAutomaticallyLog::class,
             'code' => 'SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield TemporaryFileErrorLog::class => [
             'logClass' => TemporaryFileErrorLog::class,
             'code' => 'SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield ThemeCompilingErrorRunLog::class => [
             'logClass' => ThemeCompilingErrorRunLog::class,
             'code' => 'SWAG_MIGRATION__THEME_COMPILING_ERROR',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield UnknownEntityLog::class => [
             'logClass' => UnknownEntityLog::class,
             'code' => 'SWAG_MIGRATION_ENTITY_UNKNOWN',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield UnsupportedObjectTypeLog::class => [
             'logClass' => UnsupportedObjectTypeLog::class,
             'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield WriteExceptionRunLog::class => [
             'logClass' => WriteExceptionRunLog::class,
             'code' => 'SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED',
-            'level' => AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR,
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
     }
