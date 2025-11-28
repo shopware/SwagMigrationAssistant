@@ -10,7 +10,6 @@ import SwagMigrationErrorResolutionService, {
     PRIORITY_FIELDS,
     PRIORITY_FIELD_MAP,
     CONTENT_TEXT_MAX_LENGTH,
-    createEmptyEntityFields,
 } from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
 
 const ENTITY_LINK_TESTS = [
@@ -146,12 +145,20 @@ const EXTRACT_ENTITY_FIELD_TESTS = [
     {
         name: 'undefined entity name',
         entityName: null,
-        expected: createEmptyEntityFields(),
+        expected: {
+            scalar: {},
+            associations: {},
+            required: {},
+        },
     },
     {
         name: 'undefined entity name',
         entityName: 'unknown_entity',
-        expected: createEmptyEntityFields(),
+        expected: {
+            scalar: {},
+            associations: {},
+            required: {},
+        },
     },
     {
         name: 'valid entity',
@@ -445,7 +452,7 @@ const CORRESPONDING_ASSOCIATION_FIELD_TESTS = [
         name: 'field without corresponding association or translation match',
         entityName: 'category',
         fieldName: 'afterCategoryVersionId',
-        expected: null,
+        expected: undefined,
     },
     {
         name: 'infer translation association from field name',
@@ -576,19 +583,19 @@ const SORTED_SCALAR_FIELD_TESTS = [
             'alt',
             'url',
             'path',
-            'userId',
-            'mediaFolderId',
-            'mimeType',
             'fileExtension',
-            'uploadedAt',
+            'fileHash',
             'fileName',
             'fileSize',
-            'mediaTypeRaw',
             'hasFile',
+            'mediaFolderId',
+            'mediaTypeRaw',
+            'mimeType',
             'private',
             'thumbnailsRo',
-            'fileHash',
             'updatedAt',
+            'uploadedAt',
+            'userId',
         ],
     },
     {
@@ -604,18 +611,18 @@ const SORTED_SCALAR_FIELD_TESTS = [
             'title',
             'alt',
             'path',
-            'userId',
-            'mediaFolderId',
-            'mimeType',
             'fileExtension',
-            'uploadedAt',
+            'fileHash',
             'fileName',
-            'mediaTypeRaw',
             'hasFile',
+            'mediaFolderId',
+            'mediaTypeRaw',
+            'mimeType',
             'private',
             'thumbnailsRo',
-            'fileHash',
             'updatedAt',
+            'uploadedAt',
+            'userId',
         ],
     },
 ];
@@ -649,7 +656,7 @@ const HIGHEST_PRIORITY_FIELD_TESTS = [
     {
         name: 'seo_url entity',
         entityName: 'seo_url',
-        expected: 'languageId',
+        expected: 'foreignKey',
     },
 ];
 
@@ -1269,14 +1276,14 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
             const firstMockValue = isTranslation
                 ? undefined
                 : {
-                      routes: new Map(Object.entries(routes ?? [])),
-                  };
+                    routes: new Map(Object.entries(routes ?? [])),
+                };
 
             const secondMockValue = !hasRoutes
                 ? undefined
                 : {
-                      routes: new Map(Object.entries(routes)),
-                  };
+                    routes: new Map(Object.entries(routes)),
+                };
 
             const moduleSpy = jest
                 .spyOn(Shopware.Module, 'getModuleByEntityName')

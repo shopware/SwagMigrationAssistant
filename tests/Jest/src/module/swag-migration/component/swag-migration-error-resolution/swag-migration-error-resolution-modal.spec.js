@@ -58,11 +58,9 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
-    getAllLogIds: jest.fn(() =>
-        Promise.resolve({
-            ids: logMocks.map((log) => log.id),
-        }),
-    ),
+    getAllLogIds: jest.fn(() => Promise.resolve({
+        ids: logMocks.map((log) => log.id),
+    })),
 };
 
 const migrationLoggingRepositoryMock = {
@@ -328,19 +326,19 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 'alt',
                 'url',
                 'path',
-                'userId',
-                'mediaFolderId',
-                'mimeType',
                 'fileExtension',
-                'uploadedAt',
+                'fileHash',
                 'fileName',
                 'fileSize',
-                'mediaTypeRaw',
                 'hasFile',
+                'mediaFolderId',
+                'mediaTypeRaw',
+                'mimeType',
                 'private',
                 'thumbnailsRo',
-                'fileHash',
                 'updatedAt',
+                'uploadedAt',
+                'userId',
                 '', // spacer
             ]);
         });

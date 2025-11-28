@@ -13,13 +13,11 @@ Shopware.Component.register(
 const updateFieldValueMock = jest.fn();
 
 const repositoryMock = {
-    search: jest.fn(() =>
-        Promise.resolve([
-            { id: '1', name: 'result 1' },
-            { id: '2', name: 'result 2' },
-            { id: '3' }, // empty case
-        ]),
-    ),
+    search: jest.fn(() => Promise.resolve([
+        { id: '1', name: 'result 1' },
+        { id: '2', name: 'result 2' },
+        { id: '3' }, // empty case
+    ])),
 };
 
 const defaultProps = {
@@ -151,11 +149,9 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         it('should display error banner & link if no results are found', async () => {
             jest.spyOn(Shopware.Module, 'getModuleByEntityName').mockReturnValueOnce(null);
 
-            repositoryMock.search.mockImplementationOnce(() =>
-                Promise.resolve({
-                    total: 0,
-                }),
-            );
+            repositoryMock.search.mockImplementationOnce(() => Promise.resolve({
+                total: 0,
+            }));
 
             const wrapper = await createWrapper();
             await flushPromises();
@@ -239,11 +235,9 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 ),
             });
 
-            repositoryMock.search.mockImplementationOnce(() =>
-                Promise.resolve({
-                    total: 0,
-                }),
-            );
+            repositoryMock.search.mockImplementationOnce(() => Promise.resolve({
+                total: 0,
+            }));
 
             const wrapper = await createWrapper({
                 ...defaultToManyProps,
