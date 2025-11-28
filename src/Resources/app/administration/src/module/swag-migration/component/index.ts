@@ -4,6 +4,7 @@
  */
 import './card';
 import './loading-screen';
+import './swag-migration-error-resolution';
 
 Shopware.Component.register('swag-migration-dashboard-card', () => import('./swag-migration-dashboard-card'));
 Shopware.Component.extend('swag-migration-grid-extended', 'sw-grid', () => import('./swag-migration-grid-extended'));

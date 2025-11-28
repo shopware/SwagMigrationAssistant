@@ -118,10 +118,20 @@ type MigrationError = {
     level: string;
 };
 
+type MigrationLog = {
+    id: string;
+    entityId?: string;
+    entityName?: string;
+    fieldName?: string;
+    convertedData?: Record<string, unknown>;
+    sourceData?: Record<string, unknown>;
+};
+
 /**
  * @private
  */
 export {
+    MIGRATION_LOG_LEVEL,
     TRepository,
     MigrationStep,
     MigrationState,
@@ -135,4 +145,5 @@ export {
     MigrationPremappingChoice,
     MigrationEnvironmentInformation,
     MigrationCredentials,
+    MigrationLog,
 };

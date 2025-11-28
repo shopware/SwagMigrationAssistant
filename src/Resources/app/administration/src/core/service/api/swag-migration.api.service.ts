@@ -28,7 +28,7 @@ export const MIGRATION_API_SERVICE = 'migrationApiService';
 export const MIGRATION_STEP = {
     IDLE: 'idle',
     FETCHING: 'fetching',
-    APPLY_FIXES: 'apply-fixes',
+    ERROR_RESOLUTION: 'apply-fixes',
     WRITING: 'writing',
     MEDIA_PROCESSING: 'media-processing',
     CLEANUP: 'cleanup',
@@ -36,6 +36,25 @@ export const MIGRATION_STEP = {
     WAITING_FOR_APPROVE: 'waiting-for-approve',
     ABORTING: 'aborting',
 } as const;
+
+/**
+ * @private
+ */
+export type LogGroup = {
+    code: string;
+    entityName: string | null;
+    fieldName: string | null;
+    count: number;
+};
+
+/**
+ * @private
+ */
+export type LogLevelCounts = {
+    error: number;
+    warning: number;
+    info: number;
+};
 
 /**
  * @private
@@ -248,7 +267,7 @@ export default class MigrationApiService extends ApiService {
             });
     }
 
-    async resumeMigrationAfterFixes(): Promise<ApiResponse<unknown>> {
+    async continueAfterErrorResolution(): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
@@ -341,7 +360,7 @@ export default class MigrationApiService extends ApiService {
             // @ts-ignore
             this.httpClient
                 // @ts-ignore
-                .get(`${this.getApiBasePath()}/get-grouped-logs-of-run`, {
+                .get(`_action/${this.getApiBasePath()}/get-grouped-logs-of-run`, {
                     ...this.basicConfig,
                     params: {
                         runUuid,
@@ -403,10 +422,15 @@ export default class MigrationApiService extends ApiService {
         const headers = this.getBasicHeaders(additionalHeaders);
 
         // @ts-ignore
-        return this.httpClient.post(`_action/${this.getApiBasePath()}/cleanup-migration-data`, {
-            ...this.basicConfig,
-            headers,
-        });
+        return this.httpClient.post(
+            // @ts-ignore
+            `_action/${this.getApiBasePath()}/cleanup-migration-data`,
+            {},
+            {
+                ...this.basicConfig,
+                headers,
+            },
+        );
     }
 
     async isMediaProcessing(additionalHeaders: AdditionalHeaders = {}): Promise<boolean> {
@@ -420,31 +444,153 @@ export default class MigrationApiService extends ApiService {
         });
     }
 
+    async downloadLogsOfRun(runUuid: string, additionalHeaders: AdditionalHeaders = {}): Promise<Blob> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/download-logs-of-run`,
+                { runUuid },
+                {
+                    ...this.basicConfig,
+                    headers,
+                    responseType: 'blob',
+                },
+            )
+            .then((response: AxiosResponse<Blob>) => {
+                return response.data;
+            });
+    }
+
+    async getLogGroups(
+        runId: string,
+        level: string,
+        page: number,
+        limit: number,
+        sortBy: string,
+        sortDirection: 'ASC' | 'DESC',
+        filter: {
+            code: string | null;
+            status: 'resolved' | 'unresolved' | null;
+            entity: string | null;
+            field: string | null;
+        },
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<{
+        total: number;
+        items: LogGroup[];
+        levelCounts: LogLevelCounts;
+    }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        const params: Record<string, string | number> = {
+            runId,
+            level,
+            page,
+            limit,
+            sortBy,
+            sortDirection,
+        };
+
+        if (filter.code) {
+            params.filterCode = filter.code;
+        }
+
+        if (filter.status) {
+            params.filterStatus = filter.status;
+        }
+
+        if (filter.entity) {
+            params.filterEntity = filter.entity;
+        }
+
+        if (filter.field) {
+            params.filterField = filter.field;
+        }
+
+        return (
+            // @ts-ignore
+            this.httpClient
+                // @ts-ignore
+                .get(`_action/${this.getApiBasePath()}/get-log-groups`, {
+                    ...this.basicConfig,
+                    params,
+                    headers,
+                })
+                .then((response: AxiosResponse) => {
+                    return ApiService.handleResponse(response);
+                })
+        );
+    }
+
     async isResettingChecksums(): Promise<boolean> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
-        // @ts-ignore
-        return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
-                ...this.basicConfig,
-                headers,
-            })
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
+        return (
+            // @ts-ignore
+            this.httpClient
+                // @ts-ignore
+                .get(`_action/${this.getApiBasePath()}/is-resetting-checksums`, {
+                    ...this.basicConfig,
+                    headers,
+                })
+                .then((response: AxiosResponse) => {
+                    return ApiService.handleResponse(response);
+                })
+        );
     }
 
     async isTruncatingMigrationData(): Promise<boolean> {
         // @ts-ignore
         const headers = this.getBasicHeaders();
 
+        return (
+            // @ts-ignore
+            this.httpClient
+                // @ts-ignore
+                .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
+                    ...this.basicConfig,
+                    headers,
+                })
+                .then((response: AxiosResponse) => {
+                    return ApiService.handleResponse(response);
+                })
+        );
+    }
+
+    async getAllLogIds(
+        runId: string,
+        code: string,
+        entityName: string,
+        fieldName: string,
+        connectionId?: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<{ ids: string[] }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
         // @ts-ignore
         return this.httpClient
-            .get(`_action/${this.getApiBasePath()}/is-truncating-migration-data`, {
-                ...this.basicConfig,
-                headers,
-            })
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/get-all-log-ids`,
+                {
+                    runId,
+                    code,
+                    entityName,
+                    fieldName,
+                    connectionId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
             .then((response: AxiosResponse) => {
                 return ApiService.handleResponse(response);
             });

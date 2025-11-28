@@ -8,12 +8,18 @@ import { MIGRATION_STORE_ID } from '../../store/migration.store';
 const { Store } = Shopware;
 const { mapState } = Shopware.Component.getComponentHelper();
 
-const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
+/**
+ * @private
+ */
+export const MIGRATION_STATE_POLLING_INTERVAL = 1000 as const; // 1 second
 
-const MIGRATION_STEP_DISPLAY_INDEX = {
+/**
+ * @private
+ */
+export const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.IDLE]: 0,
     [MIGRATION_STEP.FETCHING]: 0,
-    [MIGRATION_STEP.APPLY_FIXES]: 1,
+    [MIGRATION_STEP.ERROR_RESOLUTION]: 1,
     [MIGRATION_STEP.WRITING]: 2,
     [MIGRATION_STEP.MEDIA_PROCESSING]: 3,
     [MIGRATION_STEP.ABORTING]: 4,
@@ -22,9 +28,12 @@ const MIGRATION_STEP_DISPLAY_INDEX = {
     [MIGRATION_STEP.WAITING_FOR_APPROVE]: 6,
 } as const;
 
-const UI_COMPONENT_INDEX = {
+/**
+ * @private
+ */
+export const UI_COMPONENT_INDEX = {
     LOADING_SCREEN: 0,
-    APPLY_FIXES: 1,
+    ERROR_RESOLUTION: 1,
     RESULT_SUCCESS: 2,
 } as const;
 
@@ -63,6 +72,12 @@ export default Shopware.Component.wrapComponentConfig({
     ],
 
     metaInfo() {
+        if (this.step === MIGRATION_STEP.ERROR_RESOLUTION) {
+            return {
+                title: this.errorResolutionMetaTitle,
+            };
+        }
+
         return {
             title:
                 this.progressPercentage !== null
@@ -96,6 +111,13 @@ export default Shopware.Component.wrapComponentConfig({
                 'dataSelectionIds',
             ],
         ),
+
+        errorResolutionMetaTitle() {
+            const stepName = this.$tc('swag-migration.index.error-resolution.step.header.title');
+            const adminName = this.$tc('global.sw-admin-menu.textShopwareAdmin');
+
+            return `${stepName} | ${adminName}`;
+        },
 
         abortButtonVisible() {
             return !this.isLoading && !this.componentIndexIsResult;
@@ -144,6 +166,7 @@ export default Shopware.Component.wrapComponentConfig({
             let migrationRunning = false;
             try {
                 const state = await this.migrationApiService.getState();
+
                 if (state?.step !== MIGRATION_STEP.IDLE) {
                     migrationRunning = true;
                     this.visualizeMigrationState(state);
@@ -157,6 +180,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             if (!migrationRunning) {
                 await this.startMigration();
+
                 // update to the new state immediately
                 try {
                     const state = await this.migrationApiService.getState();
@@ -216,8 +240,8 @@ export default Shopware.Component.wrapComponentConfig({
             ) {
                 this.componentIndex = UI_COMPONENT_INDEX.LOADING_SCREEN;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
-            } else if (state.step === MIGRATION_STEP.APPLY_FIXES) {
-                this.componentIndex = UI_COMPONENT_INDEX.APPLY_FIXES;
+            } else if (state.step === MIGRATION_STEP.ERROR_RESOLUTION) {
+                this.componentIndex = UI_COMPONENT_INDEX.ERROR_RESOLUTION;
                 this.flowChartItemIndex = MIGRATION_STEP_DISPLAY_INDEX[state.step];
             } else if (state.step === MIGRATION_STEP.WAITING_FOR_APPROVE || state.step === MIGRATION_STEP.IDLE) {
                 this.componentIndex = UI_COMPONENT_INDEX.RESULT_SUCCESS;
