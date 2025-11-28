@@ -6,16 +6,25 @@
   "scripts": {
     "types": "tsc",
     "test": "npx playwright test --ui",
-    "lint": "eslint . --ext .ts",
-    "lint:fix": "npm run lint -- --fix"
+    "lint": "eslint --ext .js,.ts,.cjs .",
+    "lint:fix": "npm run lint -- --fix",
+    "format": "prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",
+    "format:fix": "prettier --write \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache"
   },
   "devDependencies": {
-    "@types/node": "^20.6.5",
-    "@typescript-eslint/eslint-plugin": "^6.7.2",
-    "@typescript-eslint/parser": "^6.7.2",
-    "eslint": "^8.49.0",
-    "eslint-plugin-playwright": "^1.6.2",
-    "typescript": "^5.2.2"
+    "prettier": "^3.4.2",
+    "prettier-plugin-multiline-arrays": "^3.0.6",
+    "@babel/eslint-parser": "^7.24.5",
+    "@shopware-ag/eslint-config-base": "^2.0.0",
+    "@typescript-eslint/eslint-plugin": "^7.9.0",
+    "@typescript-eslint/parser": "^7.9.0",
+    "eslint": "^8.57.0",
+    "eslint-import-resolver-webpack": "^0.13.8",
+    "eslint-plugin-html": "^8.1.1",
+    "eslint-plugin-jest": "^28.5.0",
+    "eslint-plugin-playwright": "^1.6.1",
+    "eslint-plugin-simple-import-sort": "^12.1.0",
+    "typescript": "^5.4.5"
   },
   "dependencies": {
     "@playwright/test": "^1.49.0",
@@ -23,7 +32,5 @@
     "@shopware-ag/acceptance-test-suite": "^11.9.3",
     "@shopware/api-client": "0.5.0",
     "dotenv": "^16.4.5"
-  },
-  "author": "shopware AG",
-  "license": "ISC"
+  }
 }
