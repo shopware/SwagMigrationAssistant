@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -61,14 +61,14 @@ class LoggingServiceTest extends TestCase
 
     public function testAddLogEntry(): void
     {
-        $log1 = (new SwagMigrationLogBuilder(
+        $log1 = (new MigrationLogBuilder(
             $this->runUuid,
             'Profile name',
             'Gateway name',
             Uuid::randomHex(),
         ))->build(AssociationRequiredMissingLog::class);
 
-        $log2 = (new SwagMigrationLogBuilder(
+        $log2 = (new MigrationLogBuilder(
             $this->runUuid,
             'Profile name',
             'Gateway name',
@@ -99,7 +99,7 @@ class LoggingServiceTest extends TestCase
     public function testAddLogEntryWithEntityId(): void
     {
         $entityId = Uuid::randomHex();
-        $log = (new SwagMigrationLogBuilder(
+        $log = (new MigrationLogBuilder(
             $this->runUuid,
             'Profile name',
             'Gateway name',

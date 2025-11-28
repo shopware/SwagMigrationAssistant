@@ -1,5 +1,5 @@
 /**
- * @sw-package after-sales
+ * @sw-package fundamentals@after-sales
  * @private
  */
 import type Repository from '@administration/src/core/data/repository.data';
@@ -16,7 +16,7 @@ type TRepository<T> = Repository<T>;
 type MigrationStep =
     | 'idle'
     | 'fetching'
-    | 'apply-fixes'
+    | 'error-resolution'
     | 'writing'
     | 'media-processing'
     | 'cleanup'

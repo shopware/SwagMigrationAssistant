@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\MessageQueueExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedAutomaticallyLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -90,7 +90,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
          */
         $progress->raiseExceptionCount();
         $this->loggingService->addLogEntry(
-            (new SwagMigrationLogBuilder(
+            (new MigrationLogBuilder(
                 $run->getId(),
                 $connection?->getProfileName() ?? 'unknown',
                 $connection?->getGatewayName() ?? 'unknown'
@@ -109,7 +109,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             $this->updateRun($run->getId(), $progress, $message->getContext());
 
             $this->loggingService->addLogEntry(
-                (new SwagMigrationLogBuilder(
+                (new MigrationLogBuilder(
                     $run->getId(),
                     $connection?->getProfileName() ?? 'unknown',
                     $connection?->getGatewayName() ?? 'unknown'

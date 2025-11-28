@@ -24,7 +24,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * @internal
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 #[CoversClass(AnyJsonFieldSerializer::class)]
 class AnyJsonFieldSerializerTest extends TestCase
 {

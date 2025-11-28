@@ -8,10 +8,10 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnsupportedNumberRangeTypeLog extends AbstractSwagMigrationLogEntry
+readonly class UnsupportedNumberRangeTypeLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {

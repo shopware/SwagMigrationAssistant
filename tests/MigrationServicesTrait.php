@@ -53,7 +53,7 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Migration\Validation\SwagMigrationValidationService;
+use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
@@ -207,7 +207,7 @@ trait MigrationServicesTrait
             )
         );
 
-        $validationService = new SwagMigrationValidationService(
+        $validationService = new MigrationValidationService(
             $this->getContainer()->get(DefinitionInstanceRegistry::class),
             $this->getContainer()->get('event_dispatcher'),
             $loggingService,

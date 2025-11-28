@@ -13,7 +13,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -66,7 +66,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         if (!empty($fields)) {
             $this->loggingService->addLogForEach(
                 $fields,
-                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                fn (string $key) => MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName($key)
                     ->build(EmptyNecessaryFieldRunLog::class)
@@ -162,7 +162,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
         if ($salutationMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')
                     ->withSourceData(['salutation' => $salutation])
@@ -192,7 +192,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
         if (!isset($salesChannelMapping)) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('salesChannelId')
                     ->withFieldSourcePath('shopId')
@@ -218,7 +218,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
         if ($status === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('status')
                     ->withSourceData(['status' => NewsletterRecipientStatusReader::SOURCE_ID])
