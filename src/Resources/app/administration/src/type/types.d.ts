@@ -2,7 +2,7 @@
  * @sw-package after-sales
  * @private
  */
-import type Repository from '@administration/src/core/data/repository.data';
+import type Repository from 'shopware-administration/src/core/data/repository.data';
 
 /**
  * @private

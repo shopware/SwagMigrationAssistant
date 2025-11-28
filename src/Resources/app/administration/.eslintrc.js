@@ -12,7 +12,6 @@ module.exports = {
         'eslint:recommended',
         'plugin:@typescript-eslint/recommended',
         'plugin:vue/vue3-recommended',
-        'prettier',
     ],
     plugins: [
         '@typescript-eslint',
@@ -26,21 +25,24 @@ module.exports = {
     parser: '@typescript-eslint/parser',
     settings: {
         'import/resolver': {
-            node: {
-                extensions: ['.js', '.ts', '.vue', '.json', '.less', '.twig'],
+            node: {},
+            webpack: {
+                config: {
+                    resolve: {
+                        extensions: ['.js', '.ts', '.vue', '.json', '.less', '.twig'],
+                    },
+                },
             },
         },
     },
     rules: {
+        indent: ['error', 4, { SwitchCase: 1 }],
         quotes: ['error', 'single', { avoidEscape: true }],
         semi: ['error', 'always'],
         'comma-dangle': ['error', 'always-multiline'],
         'max-len': ['error', 125, {
             ignoreRegExpLiterals: true,
             ignoreComments: false,
-            ignoreStrings: true,
-            ignoreTemplateLiterals: true,
-            ignoreUrls: true,
         }],
         'no-console': ['error', { allow: ['warn', 'error'] }],
         'no-debugger': 'error',
@@ -69,6 +71,7 @@ module.exports = {
             files: ['*.ts', '*.vue'],
             rules: {
                 '@typescript-eslint/explicit-module-boundary-types': 'error',
+                indent: 'off',
             },
         },
         {

@@ -1,3 +1,5 @@
+@import "~scss/variables";
+
 .swag-migration-shop-information__updating-info {
     max-width: 60rem;
     margin: 0 auto var(--scale-size-40);
@@ -72,8 +74,7 @@
             margin-top: var(--scale-size-2);
         }
 
-        &-edit,
-        &-context-menu {
+        &-edit, &-context-menu {
             margin-top: var(--scale-size-16);
         }
     }

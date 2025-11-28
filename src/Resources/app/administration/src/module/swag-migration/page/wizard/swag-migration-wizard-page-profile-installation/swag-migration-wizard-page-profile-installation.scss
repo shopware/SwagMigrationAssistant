@@ -1,3 +1,5 @@
+@import "~scss/variables";
+
 .swag-migration-wizard-page-profile-installation {
     .swag-migration-wizard__content {
         margin: var(--scale-size-8) auto 0 auto;
@@ -72,7 +74,7 @@
         margin-top: var(--scale-size-18);
     }
 
-    .swag-migration-wizard-profile-installation__installed_box {
+    .swag-migration-wizard-profile-installation__installed_box {;
         display: flex;
         align-items: center;
         font-size: var(--font-size-xs);

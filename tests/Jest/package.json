@@ -17,7 +17,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "eslint-config-prettier": "^9.1.0",
     "prettier": "^3.4.2",
     "prettier-plugin-multiline-arrays": "^3.0.6",
     "@babel/eslint-parser": "^7.21.3",
@@ -28,7 +27,6 @@
     "@shopware-ag/jest-preset-sw6-admin": "^6.0.0",
     "@typescript-eslint/eslint-plugin": "^6.6.0",
     "@typescript-eslint/parser": "^6.6.0",
-    "typescript": "^5.7.3",
     "@vue/component-compiler-utils": "^3.3.0",
     "@vue/test-utils": "^2.3.2",
     "axios": "^1.6.8",
