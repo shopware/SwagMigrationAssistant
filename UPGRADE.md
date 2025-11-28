@@ -1,7 +1,7 @@
 # 16.0.0
 
 - [BREAKING] [#94](https://github.com/shopware/SwagMigrationAssistant/pull/94) - chore!: check naming consistency across error resolution
-  - [BREAKING] Renamed method `hasValidMappingByEntityUuid()` to ``hasValidMappingByEntityId() in `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and implementation `SwagMigrationAssistant\Migration\Mapping\MappingService`
+  - [BREAKING] Renamed method `hasValidMappingByEntityUuid()` to `hasValidMappingByEntityId()` in `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and implementation `SwagMigrationAssistant\Migration\Mapping\MappingService`
 
 - [BREAKING] [#38](https://github.com/shopware/SwagMigrationAssistant/pull/38) - feat!: add migration logging required fields
     - [BREAKING] Truncated database entries of `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754896654TruncateMigrationLogs`
