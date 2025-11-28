@@ -1276,14 +1276,14 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
             const firstMockValue = isTranslation
                 ? undefined
                 : {
-                    routes: new Map(Object.entries(routes ?? [])),
-                };
+                      routes: new Map(Object.entries(routes ?? [])),
+                  };
 
             const secondMockValue = !hasRoutes
                 ? undefined
                 : {
-                    routes: new Map(Object.entries(routes)),
-                };
+                      routes: new Map(Object.entries(routes)),
+                  };
 
             const moduleSpy = jest
                 .spyOn(Shopware.Module, 'getModuleByEntityName')

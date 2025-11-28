@@ -27,15 +27,19 @@ const migrationApiServiceMock = {
 };
 
 const migrationLoggingRepositoryMock = {
-    search: jest.fn(() => Promise.resolve({
-        total: 5,
-    })),
+    search: jest.fn(() =>
+        Promise.resolve({
+            total: 5,
+        }),
+    ),
 };
 
 const migrationRunRepositoryMock = {
-    search: jest.fn(() => Promise.resolve({
-        first: () => ({ id: 'run-id-1' }),
-    })),
+    search: jest.fn(() =>
+        Promise.resolve({
+            first: () => ({ id: 'run-id-1' }),
+        }),
+    ),
 };
 
 const repositoryFactoryMock = {
@@ -661,7 +665,9 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         });
 
         it('should display error notification on download failure', async () => {
-            migrationApiServiceMock.downloadLogsOfRun.mockImplementationOnce(() => Promise.reject(new Error('Download failed')));
+            migrationApiServiceMock.downloadLogsOfRun.mockImplementationOnce(() =>
+                Promise.reject(new Error('Download failed')),
+            );
 
             const wrapper = await createWrapper();
             await flushPromises();
