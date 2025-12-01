@@ -560,9 +560,10 @@ class StatusControllerTest extends TestCase
             $this->context
         );
 
-        $response = $this->controller->abortMigration($this->context);
+        $this->expectException(MigrationException::class);
+        $this->expectExceptionMessage('No running migration found.');
 
-        static::assertSame(Response::HTTP_BAD_REQUEST, $response->getStatusCode());
+        $this->controller->abortMigration($this->context);
     }
 
     public function testAbortMigration(): void
@@ -638,7 +639,7 @@ class StatusControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'step' => MigrationStep::APPLY_FIXES->value,
+                    'step' => MigrationStep::ERROR_RESOLUTION->value,
                 ],
             ],
             $this->context

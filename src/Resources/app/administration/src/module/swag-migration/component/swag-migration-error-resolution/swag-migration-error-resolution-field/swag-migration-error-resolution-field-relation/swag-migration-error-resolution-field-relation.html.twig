@@ -1,0 +1,69 @@
+{% block swag_migration_error_resolution_field_relation %}
+<div class="swag-migration-error-resolution-field-relation">
+    {% block swag_migration_error_resolution_field_relation_many_to_one %}
+        <sw-entity-single-select
+            v-if="isToOneRelation && entityName"
+            v-model:value="fieldValue"
+            :label="fieldName"
+            class="sw-migration-error-resolution-field__to-one"
+            name="migration-resolution--many-to-one"
+            :placeholder="entityName"
+            :entity="entityName"
+            :disabled="disabled"
+        >
+            <template #result-label-property="{ item }">
+                <span class="swag-migration-error-resolution-field-relation__item-label">
+                    {{ getLabelValue(item) }}
+                </span>
+                <span class="swag-migration-error-resolution-field-relation__item-id">
+                    {{ item.id }}
+                </span>
+            </template>
+        </sw-entity-single-select>
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_relation_one_to_many %}
+        <sw-entity-multi-id-select
+            v-if="isToManyRelation && entityName"
+            v-model:value="fieldValue"
+            :label="fieldName"
+            class="sw-migration-error-resolution-field__to_many"
+            name="migration-resolution--one_to_many"
+            :placeholder="entityName"
+            :repository="entityRepository"
+            :disabled="disabled || noOptionsFound"
+            label-property="id"
+        >
+            <template #result-label-property="{ item }">
+                <span class="swag-migration-error-resolution-field-relation__item-label">
+                    {{ getLabelValue(item) }}
+                </span>
+                <span class="swag-migration-error-resolution-field-relation__item-id">
+                    {{ item.id }}
+                </span>
+            </template>
+        </sw-entity-multi-id-select>
+    {% endblock %}
+
+    {% block swag_migration_error_resolution_field_relation_no_option_found_banner %}
+        <mt-banner
+            v-if="noOptionsFound"
+            class="swag-migration-error-resolution-field-relation__info-banner"
+            :title="$tc('swag-migration.index.error-resolution.modals.error.right.banner.title')"
+            variant="critical"
+        >
+            <p>{{ $tc('swag-migration.index.error-resolution.modals.error.right.banner.content') }}</p>
+
+            <mt-link
+                v-if="entityLink"
+                class="swag-migration-error-resolution-field-relation__info-banner-link"
+                :to="entityLink"
+                variant="primary"
+                type="internal"
+            >
+                {{ $tc('swag-migration.index.error-resolution.modals.error.right.banner.link') }}
+            </mt-link>
+        </mt-banner>
+    {% endblock %}
+</div>
+{% endblock %}

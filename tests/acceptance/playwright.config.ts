@@ -27,7 +27,7 @@ if (missingEnvVars.length > 0) {
     const envPath = path.resolve('.env');
 
     process.stdout.write(`Please provide the following env vars (loaded env: ${envPath}):\n`);
-    process.stdout.write('- ' + missingEnvVars.join('\n- ') + '\n');
+    process.stdout.write(`- ${missingEnvVars.join('\n- ')}\n`);
 
     process.exit(1);
 }
@@ -36,11 +36,11 @@ process.env.SHOPWARE_ADMIN_USERNAME = process.env.SHOPWARE_ADMIN_USERNAME ?? 'ad
 process.env.SHOPWARE_ADMIN_PASSWORD = process.env.SHOPWARE_ADMIN_PASSWORD ?? 'shopware';
 
 // make sure APP_URL ends with a slash
-process.env.APP_URL = process.env.APP_URL.replace(/\/+$/, '') + '/';
+process.env.APP_URL = `${process.env.APP_URL.replace(/\/+$/, '')}/`;
 if (process.env.ADMIN_URL) {
-    process.env.ADMIN_URL = process.env.ADMIN_URL.replace(/\/+$/, '') + '/';
+    process.env.ADMIN_URL = `${process.env.ADMIN_URL.replace(/\/+$/, '')}/`;
 } else {
-    process.env.ADMIN_URL = process.env.APP_URL + 'admin/';
+    process.env.ADMIN_URL = `${process.env.APP_URL}admin/`;
 }
 
 export default defineConfig({

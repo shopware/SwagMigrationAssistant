@@ -4,6 +4,7 @@ import './extension';
 import './mixin/swag-wizard.mixin';
 import './page';
 import './profile';
+import './service';
 import './store/migration.store';
 
 /**

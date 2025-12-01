@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
@@ -285,7 +285,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if ($paymentMethodMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerDefinition::ENTITY_NAME)
                     ->withFieldName('defaultPaymentMethodId')
                     ->withFieldSourcePath('default_payment_method')
@@ -315,7 +315,7 @@ abstract class CustomerConverter extends ShopwareConverter
             if (!empty($fields)) {
                 $this->loggingService->addLogForEach(
                     $fields,
-                    fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    fn (string $key) => MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
                         ->withFieldSourcePath($key)
                         ->withSourceData($address)
@@ -500,7 +500,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if (!isset($oldAddressData['state_id'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
                     ->withFieldSourcePath('state_id')
@@ -537,7 +537,7 @@ abstract class CustomerConverter extends ShopwareConverter
             $oldAddressData['state']['active']
         )) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
                     ->withFieldSourcePath('state.name')
@@ -616,7 +616,7 @@ abstract class CustomerConverter extends ShopwareConverter
                     'defaultBillingAddressId' => 'default_billing_address_id',
                     'defaultShippingAddressId' => 'default_shipping_address_id',
                 ],
-                fn (string $key, string $value) => SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                fn (string $key, string $value) => MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
                     ->withFieldName($key)
                     ->withFieldSourcePath($value)
@@ -637,7 +637,7 @@ abstract class CustomerConverter extends ShopwareConverter
             unset($originalData['default_shipping_address_id']);
 
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
                     ->withFieldName('defaultShippingAddressId')
                     ->withFieldSourcePath('default_shipping_address_id')
@@ -658,7 +658,7 @@ abstract class CustomerConverter extends ShopwareConverter
             unset($originalData['default_billing_address_id']);
 
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerAddressDefinition::ENTITY_NAME)
                     ->withFieldName('defaultBillingAddressId')
                     ->withFieldSourcePath('default_billing_address_id')
@@ -679,7 +679,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CustomerDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')
                     ->withFieldSourcePath('salutation')

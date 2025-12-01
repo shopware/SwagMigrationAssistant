@@ -33,6 +33,8 @@ use SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -374,7 +376,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($mapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
                     ->withFieldSourcePath('cleared')
@@ -437,7 +439,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($paymentMethodMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
                     ->withFieldName('paymentMethodId')
                     ->withFieldSourcePath('payment.id')
@@ -596,7 +598,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if (!isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('countryStateId')
                     ->withFieldSourcePath('stateID')
@@ -633,7 +635,7 @@ abstract class OrderConverter extends ShopwareConverter
             $oldAddressData['state']['active']
         )) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('countryStateId')
                     ->withFieldSourcePath('name')
@@ -716,7 +718,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($deliveryStateMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
                     ->withFieldSourcePath('status')
@@ -801,7 +803,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($shippingMethodMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
                     ->withFieldName('shippingMethodId')
                     ->withFieldSourcePath('dispatchID')
@@ -969,7 +971,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if ($salutationMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')
                     ->withFieldSourcePath('salutation')
@@ -1001,7 +1003,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         if (!\is_array($mediaMapping)) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderLineItemDefinition::ENTITY_NAME)
                     ->withFieldName('coverId')
                     ->withFieldSourcePath('esd.esdID')

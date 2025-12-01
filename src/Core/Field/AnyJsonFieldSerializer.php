@@ -19,7 +19,7 @@ use Shopware\Core\Framework\Util\Json;
 /**
  * @internal
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class AnyJsonFieldSerializer extends AbstractFieldSerializer
 {
     public function encode(Field $field, EntityExistence $existence, KeyValuePair $data, WriteParameterBag $parameters): \Generator

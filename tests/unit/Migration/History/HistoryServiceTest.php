@@ -24,7 +24,7 @@ use Shopware\Core\Test\Stub\Framework\IdsCollection;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\History\HistoryService;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
@@ -88,7 +88,7 @@ class HistoryServiceTest extends TestCase
         $migrationLog = new SwagMigrationLoggingEntity();
         $migrationLog->setId($ids->get('log1'));
         $migrationLog->setAutoIncrement(1);
-        $migrationLog->setLevel(AbstractSwagMigrationLogEntry::LOG_LEVEL_WARNING);
+        $migrationLog->setLevel(AbstractMigrationLogEntry::LOG_LEVEL_WARNING);
         $migrationLog->setCode('TEST_CODE');
         $migrationLog->setProfileName('profile name');
         $migrationLog->setGatewayName('gateway name');
@@ -139,7 +139,7 @@ class HistoryServiceTest extends TestCase
         $migrationLog2 = clone $migrationLog;
         $migrationLog2->setId($ids->get('log2'));
         $migrationLog2->setAutoIncrement(2);
-        $migrationLog2->setLevel(AbstractSwagMigrationLogEntry::LOG_LEVEL_ERROR);
+        $migrationLog2->setLevel(AbstractMigrationLogEntry::LOG_LEVEL_ERROR);
         $migrationLog2->setCode('TEST_CODE_2');
 
         yield 'multiple logs' => [
@@ -161,7 +161,7 @@ class HistoryServiceTest extends TestCase
         $minimalLog = new SwagMigrationLoggingEntity();
         $minimalLog->setId($ids->get('log-minimal'));
         $minimalLog->setAutoIncrement(1);
-        $minimalLog->setLevel(AbstractSwagMigrationLogEntry::LOG_LEVEL_INFO);
+        $minimalLog->setLevel(AbstractMigrationLogEntry::LOG_LEVEL_INFO);
         $minimalLog->setCode('TEST_CODE_MINIMAL');
         $minimalLog->setProfileName('profile name');
         $minimalLog->setGatewayName('gateway name');

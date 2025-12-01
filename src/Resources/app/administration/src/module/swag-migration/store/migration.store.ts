@@ -1,21 +1,13 @@
-import type RepositoryType from '@administration/src/core/data/repository.data';
 import type {
     TEntity,
     MigrationDataSelection,
     MigrationEnvironmentInformation,
     MigrationPremapping,
+    TRepository,
 } from '../../../type/types';
 import type MigrationApiService from '../../../core/service/api/swag-migration.api.service';
-import { MIGRATION_API_SERVICE } from '../../../core/service/api/swag-migration.api.service';
 
 const { Criteria } = Shopware.Data;
-
-const migrationApiService: MigrationApiService = Shopware.Service(MIGRATION_API_SERVICE);
-const repositoryFactory = Shopware.Service('repositoryFactory');
-
-const migrationGeneralSettingRepository = repositoryFactory.create(
-    'swag_migration_general_setting',
-) as RepositoryType<'swag_migration_general_setting'>;
 
 /**
  * @private
@@ -251,7 +243,7 @@ const migrationStore = Shopware.Store.register({
         // merges the existing premapping (in the state) with the newly provided one.
         // resets the state premapping if an empty array is passed as an argument.
         setPremapping(newPremapping: MigrationPremapping[]) {
-            if (newPremapping === undefined || newPremapping === null || newPremapping.length < 1) {
+            if (!newPremapping?.length) {
                 this.premapping = [];
                 return;
             }
@@ -309,15 +301,18 @@ const migrationStore = Shopware.Store.register({
             });
         },
 
-        async init(forceFullStateReload = false) {
+        async init(
+            migrationApiService: MigrationApiService,
+            migrationGeneralSettingRepository: TRepository<'swag_migration_general_setting'>,
+            forceFullStateReload = false,
+        ) {
             this.isLoading = true;
 
-            const connectionIdChanged = await this.fetchConnectionId();
-            // Always fetch latest environment info
-            await this.fetchEnvironmentInformation();
+            const connectionIdChanged = await this.fetchConnectionId(migrationGeneralSettingRepository);
+
+            await this.fetchEnvironmentInformation(migrationApiService, migrationGeneralSettingRepository);
 
             if (forceFullStateReload || connectionIdChanged) {
-                // First, clear old user input
                 this.latestRun = null;
                 this.currentConnection = null;
                 this.warningConfirmed = false;
@@ -326,14 +321,15 @@ const migrationStore = Shopware.Store.register({
                 this.premapping = [];
                 this.dataSelectionTableData = [];
 
-                // Then fetch new data
-                await this.fetchDataSelectionIds();
+                await this.fetchDataSelectionIds(migrationApiService);
             }
 
             this.isLoading = false;
         },
 
-        async fetchConnectionId(): Promise<boolean> {
+        async fetchConnectionId(
+            migrationGeneralSettingRepository: TRepository<'swag_migration_general_setting'>,
+        ): Promise<boolean> {
             try {
                 const criteria = new Criteria(1, 1);
                 const settings = await migrationGeneralSettingRepository.search(criteria, Shopware.Context.api);
@@ -358,7 +354,7 @@ const migrationStore = Shopware.Store.register({
             }
         },
 
-        async fetchEnvironmentInformation() {
+        async fetchEnvironmentInformation(migrationApiService: MigrationApiService) {
             this.environmentInformation = {};
 
             if (this.connectionId === null) {
@@ -373,7 +369,7 @@ const migrationStore = Shopware.Store.register({
             }
         },
 
-        async fetchDataSelectionIds() {
+        async fetchDataSelectionIds(migrationApiService: MigrationApiService) {
             this.dataSelectionTableData = [];
 
             if (this.connectionId === null) {

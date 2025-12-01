@@ -23,7 +23,8 @@ use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -348,7 +349,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
                 }
 
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                         ->withFieldName('languageId')
                         ->build(DeactivatedPackLanguageLog::class)

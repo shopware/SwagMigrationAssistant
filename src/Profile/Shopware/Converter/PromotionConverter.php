@@ -21,7 +21,7 @@ use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -368,7 +368,7 @@ abstract class PromotionConverter extends ShopwareConverter
 
                 if ($productMapping === null) {
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(PromotionDefinition::ENTITY_NAME)
                             ->withFieldName('productId')
                             ->withFieldSourcePath('restrictarticles')
@@ -503,7 +503,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 $oneRuleAdded = true;
             } else {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(PromotionCartRuleDefinition::ENTITY_NAME)
                         ->withFieldName('rule.value.manufacturerId')
                         ->withFieldSourcePath('bindtosupplier')
@@ -558,7 +558,7 @@ abstract class PromotionConverter extends ShopwareConverter
 
             if ($salesChannelMapping === null) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(PromotionDefinition::ENTITY_NAME)
                         ->withFieldName('salesChannelId')
                         ->withFieldSourcePath('subshopID')
@@ -631,7 +631,7 @@ abstract class PromotionConverter extends ShopwareConverter
 
         if ($customerGroupMapping === null) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(PromotionPersonaRuleDefinition::ENTITY_NAME)
                     ->withFieldName('rule.value.customerGroupId')
                     ->withFieldSourcePath('customergroup')

@@ -15,7 +15,8 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
@@ -161,7 +162,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         }
 
         $this->loggingService->addLogEntry(
-            SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+            MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                 ->withEntityName(DocumentDefinition::ENTITY_NAME)
                 ->withFieldName('documentType')
                 ->withFieldSourcePath('key')

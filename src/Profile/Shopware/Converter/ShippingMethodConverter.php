@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
@@ -158,7 +158,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                 || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
             ) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
                         ->withFieldName('prices')
                         ->withFieldSourcePath('calculation')
@@ -610,7 +610,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         foreach ($shippingCosts as $key => $shippingCost) {
             if (empty($shippingCost['id'])) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
                         ->withFieldName('id')
                         ->withFieldSourcePath('id')
@@ -647,7 +647,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
             if (!isset($currencyMapping)) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
                         ->withFieldName('currencyId')
                         ->withFieldSourcePath('currencyShortName')
@@ -666,7 +666,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
 
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
                         ->withFieldSourcePath('factor')
                         ->withSourceData($shippingCost)

@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
