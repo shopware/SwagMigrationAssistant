@@ -34,5 +34,8 @@
     "jest-environment-jsdom": "29.7.0",
     "jest-junit": "15.0.0",
     "babel-jest": "29.7.0"
+  },
+  "overrides": {
+    "@typescript-eslint/eslint-plugin": "8.21.0"
   }
 }
