@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
 class LoggingService implements LoggingServiceInterface
@@ -51,7 +51,7 @@ class LoggingService implements LoggingServiceInterface
         }
     }
 
-    public function addLogEntry(SwagMigrationLogEntry $logEntry): void
+    public function addLogEntry(MigrationLogEntry $logEntry): void
     {
         $this->logging[] = [
             'runId' => $logEntry->getRunId(),
@@ -73,7 +73,7 @@ class LoggingService implements LoggingServiceInterface
 
     /**
      * @param array<array-key, mixed> $keys
-     * @param callable(array-key $key, mixed|null $value): SwagMigrationLogEntry $callback
+     * @param callable(array-key $key, mixed|null $value): MigrationLogEntry $callback
      */
     public function addLogForEach(array $keys, callable $callback): void
     {

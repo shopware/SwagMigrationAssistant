@@ -639,7 +639,7 @@ class StatusControllerTest extends TestCase
             [
                 [
                     'id' => $this->runUuid,
-                    'step' => MigrationStep::APPLY_FIXES->value,
+                    'step' => MigrationStep::ERROR_RESOLUTION->value,
                 ],
             ],
             $this->context
