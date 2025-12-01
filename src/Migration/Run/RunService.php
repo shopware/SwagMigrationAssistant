@@ -23,7 +23,7 @@ use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\ConnectionFingerprintService;
+use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
@@ -75,7 +75,7 @@ class RunService implements RunServiceInterface
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly PremappingServiceInterface $premappingService,
         private readonly RunTransitionServiceInterface $runTransitionService,
-        private readonly ConnectionFingerprintService $connectionFingerprintService,
+        private readonly MigrationFingerprintService $connectionFingerprintService,
     ) {
     }
 
@@ -144,26 +144,22 @@ class RunService implements RunServiceInterface
             throw MigrationException::migrationIsAlreadyRunning();
         }
 
+        /** @var SwagMigrationConnectionEntity $connection */
         $connection = $this->connectionRepo->search(new Criteria([$connectionUuid]), $context)->first();
 
         if ($connection === null) {
             throw MigrationException::noConnectionFound();
         }
 
-        $fingerprint = $this->connectionFingerprintService->generateFingerprint(
+        $fingerprint = $this->connectionFingerprintService->generate(
             $credentialFields,
-            $connection->getGatewayName(),
-            $connection->getProfileName(),
+            $connection,
         );
 
-        if ($fingerprint === null) {
-            throw MigrationException::invalidConnectionCredentials();
-        }
-
-        $hasDuplicates = $this->connectionFingerprintService->hasDuplicateConnection(
+        $hasDuplicates = $this->connectionFingerprintService->check(
             $fingerprint,
             $context,
-            $connectionUuid,
+            $connection->getId(),
         );
 
         if ($hasDuplicates) {

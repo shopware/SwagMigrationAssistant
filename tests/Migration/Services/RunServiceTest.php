@@ -21,7 +21,7 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\ConnectionFingerprintService;
+use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -540,7 +540,7 @@ class RunServiceTest extends TestCase
             $migrationContextFactory ?? $this->migrationContextFactory,
             $premappingService ?? $this->createMock(PremappingService::class),
             $runTransitionService ?? new DummyRunTransitionService(MigrationStep::WAITING_FOR_APPROVE),
-            new ConnectionFingerprintService($connectionRepository),
+            new MigrationFingerprintService($connectionRepository),
         );
     }
 }
