@@ -175,7 +175,18 @@
             <tag name="kernel.reset" method="reset"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Connection\ConnectionFingerprintService">
+        <service id="SwagMigrationAssistant\Migration\Connection\Fingerprint\Provider\Shopware5FingerprintProvider">
+            <tag name="shopware.migration.fingerprint_provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Connection\Fingerprint\Provider\Shopware6FingerprintProvider">
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader"/>
+            <tag name="shopware.migration.fingerprint_provider"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService">
+            <argument type="tagged_iterator" tag="shopware.migration.fingerprint_provider"/>
             <argument type="service" id="swag_migration_connection.repository"/>
         </service>
 
@@ -196,7 +207,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Connection\ConnectionFingerprintService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Run\RunTransitionService">
