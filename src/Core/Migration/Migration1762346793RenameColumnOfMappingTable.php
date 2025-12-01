@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Migration\MigrationStep;
 /**
  * @internal
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 class Migration1762346793RenameColumnOfMappingTable extends MigrationStep
 {
     use ColumnExistsTrait;

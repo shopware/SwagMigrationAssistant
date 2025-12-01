@@ -1,8 +1,8 @@
 /**
- * @sw-package after-sales
+ * @sw-package fundamentals@after-sales
  * @private
  */
-import type Repository from 'shopware-administration/src/core/data/repository.data';
+import type Repository from '@administration/src/core/data/repository.data';
 
 /**
  * @private
@@ -16,7 +16,7 @@ type TRepository<T> = Repository<T>;
 type MigrationStep =
     | 'idle'
     | 'fetching'
-    | 'apply-fixes'
+    | 'error-resolution'
     | 'writing'
     | 'media-processing'
     | 'cleanup'
@@ -118,10 +118,20 @@ type MigrationError = {
     level: string;
 };
 
+type MigrationLog = {
+    id: string;
+    entityId?: string;
+    entityName?: string;
+    fieldName?: string;
+    convertedData?: Record<string, unknown>;
+    sourceData?: Record<string, unknown>;
+};
+
 /**
  * @private
  */
 export {
+    MIGRATION_LOG_LEVEL,
     TRepository,
     MigrationStep,
     MigrationState,
@@ -135,4 +145,5 @@ export {
     MigrationPremappingChoice,
     MigrationEnvironmentInformation,
     MigrationCredentials,
+    MigrationLog,
 };

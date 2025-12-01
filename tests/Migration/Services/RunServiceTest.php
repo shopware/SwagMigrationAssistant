@@ -482,7 +482,7 @@ class RunServiceTest extends TestCase
                 (static function (): SwagMigrationRunEntity {
                     $run = new SwagMigrationRunEntity();
                     $run->setId(Uuid::randomHex());
-                    $run->setStep(MigrationStep::APPLY_FIXES);
+                    $run->setStep(MigrationStep::ERROR_RESOLUTION);
 
                     return $run;
                 })(),

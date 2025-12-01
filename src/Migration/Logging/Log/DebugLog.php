@@ -8,11 +8,11 @@
 namespace SwagMigrationAssistant\Migration\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractSwagMigrationLogEntry;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class DebugLog implements SwagMigrationLogEntry
+readonly class DebugLog implements MigrationLogEntry
 {
     /**
      * @param array<string, mixed> $logData
@@ -53,7 +53,7 @@ readonly class DebugLog implements SwagMigrationLogEntry
 
     public function getLevel(): string
     {
-        return AbstractSwagMigrationLogEntry::LOG_LEVEL_DEBUG;
+        return AbstractMigrationLogEntry::LOG_LEVEL_DEBUG;
     }
 
     public function getCode(): string

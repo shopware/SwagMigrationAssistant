@@ -23,7 +23,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\SwagMigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
 use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -150,7 +150,7 @@ abstract class ProductConverter extends ShopwareConverter
         if (!empty($fields)) {
             $this->loggingService->addLogForEach(
                 $fields,
-                fn (string $key) => SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                fn (string $key) => MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(ProductDefinition::ENTITY_NAME)
                     ->withFieldSourcePath($key)
                     ->withSourceData($data)
@@ -392,7 +392,7 @@ abstract class ProductConverter extends ShopwareConverter
 
         if (empty($converted['price'])) {
             $this->loggingService->addLogEntry(
-                SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductDefinition::ENTITY_NAME)
                     ->withFieldName('price')
                     ->withFieldSourcePath('prices')
@@ -902,7 +902,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             if (empty($esdFile['name'])) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('name')
                         ->withFieldSourcePath('name')
@@ -918,7 +918,7 @@ abstract class ProductConverter extends ShopwareConverter
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
             } catch (\Throwable $e) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('path')
                         ->withFieldSourcePath('path')
@@ -955,7 +955,7 @@ abstract class ProductConverter extends ShopwareConverter
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('mediaFolderId')
                         ->withSourceData([
@@ -994,7 +994,7 @@ abstract class ProductConverter extends ShopwareConverter
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductMediaDefinition::ENTITY_NAME)
                         ->withFieldName('mediaId')
                         ->withFieldSourcePath('media.id')
@@ -1386,7 +1386,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             if (empty($priceArray)) {
                 $this->loggingService->addLogEntry(
-                    SwagMigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductPriceDefinition::ENTITY_NAME)
                         ->withFieldName('price')
                         ->withFieldSourcePath('price')

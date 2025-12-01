@@ -1,7 +1,7 @@
 .swag-migration-process-screen {
     .swag-migration-process-screen__step-display {
         position: absolute;
-        padding-right: var(--scale-size-48);
+        padding-right: var(--scale-size-96);
         top: var(--scale-size-40);
         left: calc(50% - 28rem);
         transform: translate(-100%, 0);
@@ -10,21 +10,37 @@
             position: static;
             transform: none;
             padding: 0 0 var(--scale-size-10) 0;
-            margin: var(--scale-size-14) 0 var(--scale-size-16) 0;
+            margin: var(--scale-size-14) 0 var(--scale-size-32) 0;
             text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: var(--scale-size-16);
 
             .sw-step-item {
                 display: inline-flex;
                 flex-direction: column;
+                align-items: center;
                 margin-top: 0;
                 width: var(--scale-size-80);
 
-                &:before {
-                    width: var(--scale-size-80);
-                    height: var(--scale-size-2);
-                    top: var(--scale-size-14);
-                    transform: translate(-50%, 0);
-                    z-index: -1;
+                &::before {
+                    content: "";
+                    /* stylelint-disable-next-line meteor/prefer-sizing-token */
+                    height: 3px;
+                    width: calc(100% + var(--scale-size-16));
+                    background: var(--color-background-tertiary-default);
+                    position: absolute;
+                    left: calc(50% + var(--scale-size-16));
+                    top: calc(var(--scale-size-16) - 1.5px);
+                    z-index: 0;
+                }
+
+                &:first-child::before {
+                    display: block;
+                }
+
+                &:last-child::before {
+                    display: none;
                 }
 
                 .sw-step-item__description {
@@ -39,8 +55,8 @@
             .sw-step-item {
                 width: var(--scale-size-56);
 
-                &:before {
-                    width: var(--scale-size-56);
+                &::before {
+                    width: calc(100% + var(--scale-size-16));
                 }
 
                 .sw-step-item__description {

@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Migration\AddColumnTrait;
 /**
  * @internal
  */
-#[Package('after-sales')]
+#[Package('fundamentals@after-sales')]
 trait TableHelperTrait
 {
     // Contains functions columnExists and addColumn

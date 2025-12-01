@@ -267,7 +267,13 @@ export default Shopware.Component.wrapComponentConfig({
 
         async initState() {
             const forceFullStateReload = this.$route.query.forceFullStateReload ?? false;
-            await Store.get(MIGRATION_STORE_ID).init(forceFullStateReload);
+
+            await Store.get(MIGRATION_STORE_ID).init(
+                this.migrationApiService,
+                this.migrationGeneralSettingRepository,
+                forceFullStateReload,
+            );
+
             this.storesInitializing = false;
         },
 
