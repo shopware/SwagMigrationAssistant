@@ -12,7 +12,7 @@
   },
   "devDependencies": {
     "@shopware-ag/eslint-config-base": "2.0.0",
-    "@types/node": "20.17.14",
+    "@types/node": "20.14.8",
     "@typescript-eslint/eslint-plugin": "8.21.0",
     "@typescript-eslint/parser": "8.21.0",
     "eslint": "8.57.1",
@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@currents/playwright": "1.9.0",
-    "@playwright/test": "1.49.0",
+    "@playwright/test": "1.49.1",
     "@shopware-ag/acceptance-test-suite": "11.9.3",
     "@shopware/api-client": "0.5.0",
     "dotenv": "16.4.7"
