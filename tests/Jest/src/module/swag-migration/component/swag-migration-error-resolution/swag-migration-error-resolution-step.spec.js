@@ -132,7 +132,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                     limit: 1,
                     filters: [
                         { type: 'equals', field: 'connectionId', value: null },
-                        { type: 'equals', field: 'step', value: 'apply-fixes' },
+                        { type: 'equals', field: 'step', value: 'error-resolution' },
                     ],
                     includes: { swag_migration_run: ['id'] },
                 }),

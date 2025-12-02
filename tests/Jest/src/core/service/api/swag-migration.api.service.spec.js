@@ -36,7 +36,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(MIGRATION_STEP).toEqual({
             IDLE: 'idle',
             FETCHING: 'fetching',
-            ERROR_RESOLUTION: 'apply-fixes',
+            ERROR_RESOLUTION: 'error-resolution',
             WRITING: 'writing',
             MEDIA_PROCESSING: 'media-processing',
             CLEANUP: 'cleanup',

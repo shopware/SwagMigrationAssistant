@@ -88,12 +88,12 @@ describe('src/module/swag-migration/page/swag-migration-process-screen', () => {
                     4,
                 ],
                 [
-                    'apply-fixes',
-                    1,
-                ],
-                [
                     'cleanup',
                     4,
+                ],
+                [
+                    'error-resolution',
+                    1,
                 ],
                 [
                     'fetching',
