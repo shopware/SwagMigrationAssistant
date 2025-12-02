@@ -169,7 +169,7 @@
             "SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG": "Die Datenbankverbindung hat nicht die richtigen Attribute und diese können nicht gesetzt werden.",
             "SWAG_MIGRATION__IS_RUNNING": "Eine Migration ist zurzeit im Gange. Du kannst deshalb die Zugangsdaten nicht bearbeiten, bis die Migration abgeschlossen ist.",
             "SWAG_MIGRATION__SSL_REQUIRED": "Wir haben festgestellt, dass die angegebene Shop-Domain eine SSL-Verbindung erfordert.",
-            "SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION": "Es besteht bereits eine Verbindung mit denselben Zugangsdaten. Bitte verwenden Sie eine andere Verbindung oder bearbeiten Sie die bestehende."
+            "SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION": "Es besteht bereits eine Verbindung zu demselben Quellsystem. Bitte verwende eine andere Verbindung oder bearbeite die bestehende Verbindung."
           }
         }
       }
