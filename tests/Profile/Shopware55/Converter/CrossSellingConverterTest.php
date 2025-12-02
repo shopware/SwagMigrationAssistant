@@ -144,34 +144,6 @@ class CrossSellingConverterTest extends TestCase
         static::assertSame($converted1['assignedProducts'][0]['productId'], $converted2['assignedProducts']['0']['productId']);
     }
 
-    public function testConvertWithoutMapping(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/cross_selling_data.php';
-        $product = $data[0];
-        $product['articleID'] = '99';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->crossSellingConverter->convert($product, $context, $this->migrationContext);
-
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
-
-        $this->loggingService->resetLogging();
-        $data[0]['relatedarticle'] = '80';
-        $convertResult = $this->crossSellingConverter->convert($data[0], $context, $this->migrationContext);
-
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
-    }
-
     public function testConvertCreatesAdditionalMappingForTypeAndArticleId(): void
     {
         $crossSellingData = require __DIR__ . '/../../../_fixtures/cross_selling_data.php';
@@ -256,6 +228,8 @@ class CrossSellingConverterTest extends TestCase
 
         static::assertNull($convertStruct->getUnmapped());
         static::assertNotNull($convertStruct->getMappingUuid());
-        static::assertSame($this->compareProduct, $converted);
+        foreach ($this->compareProduct as $key => $value) {
+            static::assertSame($value, $converted[$key]);
+        }
     }
 }

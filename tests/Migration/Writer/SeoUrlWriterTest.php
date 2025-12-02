@@ -28,6 +28,8 @@ use SwagMigrationAssistant\Migration\Writer\SeoUrlWriter;
 #[Package('fundamentals@after-sales')]
 class SeoUrlWriterTest extends TestCase
 {
+    private const SALES_CHANNEL_ID = 'sales-channel-uuid';
+
     private EntityWriterInterface $entityWriter;
 
     private EntityDefinition $entityDefinition;
@@ -40,7 +42,6 @@ class SeoUrlWriterTest extends TestCase
     private SeoUrlPersister&MockObject $seoUrlPersister;
 
     private SeoUrlWriter $seoUrlWriter;
-    private const SALES_CHANNEL_ID = 'sales-channel-uuid';
 
     protected function setUp(): void
     {
@@ -87,7 +88,7 @@ class SeoUrlWriterTest extends TestCase
         static::assertInstanceOf(EntityWriteResult::class, $result[SeoUrlDefinition::ENTITY_NAME][0]);
     }
 
-    public function testWriteDataSkipIfSalesChannelIsInvalid(): void
+    public function testWriteDataShouldIgnoreIfIsModified(): void
     {
         $context = Context::createDefaultContext();
         $seoUrlData = [

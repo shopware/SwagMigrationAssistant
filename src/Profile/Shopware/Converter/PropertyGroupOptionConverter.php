@@ -15,7 +15,6 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -76,42 +75,29 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
-
-        if (!isset($data['group']['name'])) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(PropertyGroupDefinition::ENTITY_NAME)
-                    ->withFieldName('id')
-                    ->withFieldSourcePath('group.name')
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
+        $converted = [];
+        if (isset($data['group']['name'])) {
+            $mapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::PROPERTY_GROUP_OPTION,
+                Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
+                $context
             );
+            $this->mappingIds[] = $mapping['id'];
 
-            return new ConvertStruct(null, $data);
-        }
+            $propertyGroupMapping = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::PROPERTY_GROUP,
+                Hasher::hash(\mb_strtolower($data['group']['name']), 'md5'),
+                $context
+            );
+            $this->mappingIds[] = $propertyGroupMapping['id'];
 
-        $mapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION,
-            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
-            $context
-        );
-        $this->mappingIds[] = $mapping['id'];
-
-        $propertyGroupMapping = $this->mappingService->getOrCreateMapping(
-            $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP,
-            Hasher::hash(\mb_strtolower($data['group']['name']), 'md5'),
-            $context
-        );
-        $this->mappingIds[] = $propertyGroupMapping['id'];
-
-        $converted = [
-            'id' => $mapping['entityId'],
-            'group' => [
+            $converted['id'] = $mapping['entityId'];
+            $converted['group'] = [
                 'id' => $propertyGroupMapping['entityId'],
-            ],
-        ];
+            ];
+        }
 
         $this->createAndDeleteNecessaryMappings($data, $converted);
 

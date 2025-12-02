@@ -64,17 +64,17 @@ class PropertyGroupOptionConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $this->productConverter = new Shopware55ProductConverter(
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
 
         $this->optionRelationConverter = new Shopware55ProductOptionRelationConverter(

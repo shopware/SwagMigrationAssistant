@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware55\Converter;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Checkout\Customer\CustomerEntity;
 use Shopware\Core\Framework\Context;
@@ -138,6 +139,40 @@ class CustomerConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
+    #[DataProvider('requiredProperties')]
+    public function testConvertWithoutRequiredProperties(string $property, ?string $value): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData[$property] = $value;
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+        static::assertNotNull($convertResult->getConverted());
+    }
+
+    /**
+     * @return array<string, array<int, string|null>>
+     */
+    public static function requiredProperties(): array
+    {
+        return [
+            'email is null' => ['email', null],
+            'email is empty' => ['email', ''],
+            'firstname is null' => ['firstname', null],
+            'firstname is empty' => ['firstname', ''],
+            'lastname is null' => ['lastname', null],
+            'lastname is empty' => ['lastname', ''],
+            'defaultpayment is null' => ['defaultpayment', null],
+            'customerGroupId is empty' => ['customerGroupId', ''],
+            'customerGroupId is null' => ['customerGroupId', null],
+        ];
+    }
+
     public function testConvertGuestAccount(): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
@@ -159,6 +194,177 @@ class CustomerConverterTest extends TestCase
         static::assertSame('Test', $converted['lastName']);
         static::assertTrue($converted['guest']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
+    public function testConvertCustomerWithoutNumber(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['customernumber'] = null;
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame('Mustermann', $converted['lastName']);
+        static::assertSame('number-1', $converted['customerNumber']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
+    public function testConvertCustomerWithoutPaymentAndWithDefaultPayment(): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        unset($customerData['defaultpayment']);
+
+        $context = Context::createDefaultContext();
+        $mapping = $this->mappingService->getOrCreateMapping($this->connectionId, PaymentMethodReader::getMappingName(), PaymentMethodReader::SOURCE_ID, $context, null, [], Uuid::randomHex());
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        $logs = $this->loggingService->getLoggingArray();
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($converted);
+        static::assertCount(0, $logs);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+        static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
+        static::assertSame('Mustermann', $converted['lastName']);
+        static::assertSame($mapping['entityId'], $converted['defaultPaymentMethodId']);
+        static::assertCount(0, $this->loggingService->getLoggingArray());
+    }
+
+    /**
+     * @return array<string, array<int, string|null>>
+     */
+    public static function requiredAddressProperties(): array
+    {
+        return [
+            'firstname is null' => ['firstname', null],
+            'firstname is empty' => ['firstname', ''],
+            'lastname is null' => ['lastname', null],
+            'lastname is empty' => ['lastname', ''],
+            'zipcode is null' => ['zipcode', null],
+            'zipcode is empty' => ['zipcode', ''],
+            'city is null' => ['city', null],
+            'city is empty' => ['city', ''],
+            'street is null' => ['street', null],
+            'street is empty' => ['street', ''],
+        ];
+    }
+
+    #[DataProvider('requiredAddressProperties')]
+    public function testConvertWithoutRequiredAddressPropertiesForBillingDefault(string $property, ?string $value): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][0][$property] = $value;
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+
+        static::assertSame('Mustermannstraße 92', $converted['addresses'][0]['street']);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(2, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
+    }
+
+    #[DataProvider('requiredAddressProperties')]
+    public function testConvertWithoutRequiredAddressPropertiesForShippingDefault(string $property, ?string $value): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][1][$property] = $value;
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+
+        static::assertSame('Musterstr. 55', $converted['addresses'][0]['street']);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(2, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
+    }
+
+    #[DataProvider('requiredAddressProperties')]
+    public function testConvertWithoutRequiredAddressPropertiesForDefaultBillingAndShipping(string $property, ?string $value): void
+    {
+        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
+        $customerData = $customerData[0];
+        $customerData['addresses'][0][$property] = $value;
+        $customerData['addresses'][1][$property] = $value;
+
+        $context = Context::createDefaultContext();
+        $convertResult = $this->customerConverter->convert(
+            $customerData,
+            $context,
+            $this->migrationContext
+        );
+
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+
+        static::assertNull($convertResult->getUnmapped());
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('addresses', $converted);
+
+        static::assertSame('Musterstraße 3', $converted['addresses'][0]['street']);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
+        static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
+
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(4, $logs);
+
+        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
+        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
+        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
     }
 
     public function testGetCustomerWithShopScope(): void
@@ -199,7 +405,7 @@ class CustomerConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
@@ -226,7 +432,7 @@ class CustomerConverterTest extends TestCase
 
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('shortCode', 'DE-NW'));
-        $expectedStateId = $this->getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
+        $expectedStateId = static::getContainer()->get('country_state.repository')->searchIds($criteria, $context)->firstId();
 
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);

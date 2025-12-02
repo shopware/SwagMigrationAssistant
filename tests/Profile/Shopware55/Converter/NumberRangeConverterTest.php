@@ -40,8 +40,8 @@ class NumberRangeConverterTest extends TestCase
             $mappingService,
             $loggingService,
             $numberRangeRepo,
-            $this->getContainer()->get(NumberRangeLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(NumberRangeLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -137,17 +137,5 @@ class NumberRangeConverterTest extends TestCase
         static::assertFalse($converted['global']);
         static::assertSame('SW{n}', $converted['pattern']);
         static::assertSame(50006, $converted['start']);
-    }
-
-    public function testConvertWithUnknownType(): void
-    {
-        $numberRangeData = require __DIR__ . '/../../../_fixtures/number_range_data.php';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($numberRangeData[2], $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
     }
 }

@@ -61,14 +61,14 @@ class LocalGatewayTest extends TestCase
         );
 
         $connectionFactory = new ConnectionFactory();
-        $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
+        $readerRegistry = static::getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
         /** @var EntityRepository<CurrencyCollection> $currencyRepository */
-        $currencyRepository = $this->getContainer()->get('currency.repository');
+        $currencyRepository = static::getContainer()->get('currency.repository');
 
         /** @var EntityRepository<LanguageCollection> $languageRepository */
-        $languageRepository = $this->getContainer()->get('language.repository');
+        $languageRepository = static::getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
             $readerRegistry,
@@ -112,14 +112,14 @@ class LocalGatewayTest extends TestCase
         );
 
         $connectionFactory = new ConnectionFactory();
-        $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
+        $readerRegistry = static::getContainer()->get(ReaderRegistry::class);
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
         /** @var EntityRepository<CurrencyCollection> $currencyRepository */
-        $currencyRepository = $this->getContainer()->get('currency.repository');
+        $currencyRepository = static::getContainer()->get('currency.repository');
 
         /** @var EntityRepository<LanguageCollection> $languageRepository */
-        $languageRepository = $this->getContainer()->get('language.repository');
+        $languageRepository = static::getContainer()->get('language.repository');
 
         $gatewaySource = new ShopwareLocalGateway(
             $readerRegistry,
@@ -160,15 +160,15 @@ class LocalGatewayTest extends TestCase
             $profile,
         );
 
-        $readerRegistry = $this->getContainer()->get(ReaderRegistry::class);
+        $readerRegistry = static::getContainer()->get(ReaderRegistry::class);
         $connectionFactory = new ConnectionFactory();
         $localEnvironmentReader = new EnvironmentReader($connectionFactory);
         $localTableReader = new TableReader($connectionFactory);
         /** @var EntityRepository<CurrencyCollection> $currencyRepository */
-        $currencyRepository = $this->getContainer()->get('currency.repository');
+        $currencyRepository = static::getContainer()->get('currency.repository');
 
         /** @var EntityRepository<LanguageCollection> $languageRepository */
-        $languageRepository = $this->getContainer()->get('language.repository');
+        $languageRepository = static::getContainer()->get('language.repository');
 
         $gateway = new ShopwareLocalGateway(
             $readerRegistry,

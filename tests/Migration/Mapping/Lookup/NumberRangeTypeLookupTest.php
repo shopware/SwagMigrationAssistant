@@ -81,7 +81,7 @@ class NumberRangeTypeLookupTest extends TestCase
 
     private function getNumberRangeTypeLookup(): NumberRangeTypeLookup
     {
-        return $this->getContainer()->get(NumberRangeTypeLookup::class);
+        return static::getContainer()->get(NumberRangeTypeLookup::class);
     }
 
     private function getMockedNumberRangeTypeLookup(): NumberRangeTypeLookup

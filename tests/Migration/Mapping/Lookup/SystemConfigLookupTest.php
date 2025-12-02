@@ -85,7 +85,7 @@ class SystemConfigLookupTest extends TestCase
 
     private function getSystemConfigLookup(): SystemConfigLookup
     {
-        return $this->getContainer()->get(SystemConfigLookup::class);
+        return static::getContainer()->get(SystemConfigLookup::class);
     }
 
     private function getMockedSystemConfigLookup(): SystemConfigLookup

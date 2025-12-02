@@ -36,14 +36,6 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
     protected string $runId;
 
-    /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        '_locale',
-        'shopId',
-    ];
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -61,21 +53,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         $this->runId = $migrationContext->getRunUuid();
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
 
-        if (!empty($fields)) {
-            $this->loggingService->addLogForEach(
-                $fields,
-                fn (string $key) => MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
-                    ->withFieldName($key)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
-
-        $oldData = $data;
         $this->generateChecksum($data);
         $this->context = $context;
         $this->locale = $data['_locale'];
@@ -120,21 +98,19 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
             $status = $this->getStatus($migrationContext);
         }
 
-        if ($status === null) {
-            return new ConvertStruct(null, $oldData);
+        if ($status !== null) {
+            $converted['status'] = $status;
         }
-        $converted['status'] = $status;
 
         $converted['languageId'] = $this->languageLookup->get($this->locale, $context);
 
         $salesChannelUuid = $this->getSalesChannel($data);
-        if ($salesChannelUuid === null) {
-            return new ConvertStruct(null, $oldData);
+        if ($salesChannelUuid !== null) {
+            $converted['salesChannelId'] = $salesChannelUuid;
         }
-        unset($data['shopId']);
-        $converted['salesChannelId'] = $salesChannelUuid;
 
         unset(
+            $data['shopId'],
             $data['id'],
             $data['groupID'],
             $data['lastmailing'],

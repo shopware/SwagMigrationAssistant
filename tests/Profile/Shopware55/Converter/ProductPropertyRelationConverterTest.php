@@ -101,6 +101,7 @@ class ProductPropertyRelationConverterTest extends TestCase
 
         static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($convertResult->getMappingUuid());
+
         static::assertSame($this->productUuid, $converted['id']);
         static::assertSame($this->propertyUuids[0], $converted['properties'][0]['id']);
 
@@ -123,49 +124,5 @@ class ProductPropertyRelationConverterTest extends TestCase
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertSame($this->productUuid, $converted['id']);
         static::assertSame($this->propertyUuids[2], $converted['properties'][0]['id']);
-    }
-
-    public function testConvertWithoutProductMapping(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/product_property_relation.php';
-        $data = $data[0];
-        $data['productId'] = '18';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($data, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $logs = $this->loggingService->getLoggingArray();
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertEmpty($logs);
-    }
-
-    public function testConvertWithoutPropertyMapping(): void
-    {
-        $relations = require __DIR__ . '/../../../_fixtures/product_property_relation.php';
-        $data = $relations[0];
-        $data['name'] = 'Invalid property value';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($data, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $logs = $this->loggingService->getLoggingArray();
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertEmpty($logs);
-
-        $data = $relations[0];
-        $data['group']['name'] = 'Invalid group name';
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->converter->convert($data, $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-        $logs = $this->loggingService->getLoggingArray();
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertEmpty($logs);
     }
 }

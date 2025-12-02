@@ -111,7 +111,7 @@ class DeliveryTimeLookupTest extends TestCase
     private function getDeliveryTimeLookup(): DeliveryTimeLookup
     {
         return new DeliveryTimeLookup(
-            $this->getContainer()->get('delivery_time.repository')
+            static::getContainer()->get('delivery_time.repository')
         );
     }
 

@@ -45,7 +45,7 @@ class NumberRangeConverterTest extends ShopwareConverterTest
         return new NumberRangeConverter(
             $mappingService,
             $loggingService,
-            $this->getContainer()->get('number_range_state.repository'),
+            static::getContainer()->get('number_range_state.repository'),
             $numberRangeLookup,
             $numberRangeTypeLookup
         );

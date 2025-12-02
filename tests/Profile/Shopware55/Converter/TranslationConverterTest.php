@@ -156,10 +156,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -217,10 +217,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -261,10 +261,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -290,10 +290,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConvertResult = $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -335,10 +335,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -365,9 +365,9 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
@@ -411,9 +411,9 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
         $categoryConvertResult = $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
@@ -480,9 +480,9 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             $mediaFileService,
-            $this->getContainer()->get(LowestRootCategoryLookup::class),
-            $this->getContainer()->get(DefaultCmsPageLookup::class),
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LowestRootCategoryLookup::class),
+            static::getContainer()->get(DefaultCmsPageLookup::class),
+            static::getContainer()->get(LanguageLookup::class)
         );
         $categoryConverter->convert($categoryData[1], $context, $this->categoryMigrationContext);
 
@@ -599,20 +599,20 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['productnolocale'], $context, $this->migrationContext);
 
-        static::assertNull($convertResult->getConverted());
-        static::assertCount(1, $this->loggingService->getLoggingArray());
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $logs[0]['code']);
+        $converted = $convertResult->getConverted();
+        static::assertNotNull($converted);
+        static::assertArrayHasKey('id', $converted);
+        static::assertArrayHasKey('entityDefinitionClass', $converted);
     }
 
     public function testConvertVariantAttributeTranslation(): void
@@ -626,10 +626,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 
@@ -762,10 +762,10 @@ class TranslationConverterTest extends TestCase
             $this->mappingService,
             $this->loggingService,
             new DummyMediaFileService(),
-            $this->getContainer()->get(TaxLookup::class),
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(DeliveryTimeLookup::class)
+            static::getContainer()->get(TaxLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(DeliveryTimeLookup::class)
         );
         $productConverter->convert($productData[0], $context, $this->productMigrationContext);
 

@@ -85,7 +85,7 @@ class CurrencyLookupTest extends TestCase
 
     private function getCurrencyLookup(): CurrencyLookup
     {
-        $currencyLookup = $this->getContainer()->get(CurrencyLookup::class);
+        $currencyLookup = static::getContainer()->get(CurrencyLookup::class);
         static::assertInstanceOf(CurrencyLookup::class, $currencyLookup);
 
         return $currencyLookup;

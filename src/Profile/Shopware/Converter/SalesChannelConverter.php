@@ -23,7 +23,6 @@ use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use Shopware\Core\System\SalesChannel\SalesChannelDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
@@ -96,40 +95,21 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context
         );
 
-        if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
-                    ->withFieldName('customerGroupId')
-                    ->withFieldSourcePath('customer_group_id')
-                    ->withSourceData($data)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
+        if ($customerGroupMapping !== null) {
+            $this->mappingIds[] = $customerGroupMapping['id'];
+            $converted['customerGroupId'] = $customerGroupMapping['entityId'];
         }
-        $customerGroupUuid = $customerGroupMapping['entityId'];
-        $this->mappingIds[] = $customerGroupMapping['id'];
-        $converted['customerGroupId'] = $customerGroupUuid;
 
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
-        if ($languageUuid === null) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
-                    ->withFieldName('languageId')
-                    ->withFieldSourcePath('locale')
-                    ->withSourceData($data)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
+        if ($languageUuid !== null) {
+            $converted['languageId'] = $languageUuid;
+            $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
         }
 
-        $converted['languageId'] = $languageUuid;
-        $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
+        if (isset($converted['languages'])) {
+            $this->filterExistingLanguageSalesChannelRelation($converted['id'], $converted['languages']);
+        }
 
-        $this->filterExistingLanguageSalesChannelRelation($converted['id'], $converted['languages']);
         $this->filterDisabledPackLanguages($converted);
 
         if (empty($converted['languages'])) {
@@ -137,25 +117,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
         }
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
-        if ($currencyUuid === null) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
-                    ->withFieldName('currencyId')
-                    ->withFieldSourcePath('currency')
-                    ->withSourceData($data)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
+        if ($currencyUuid !== null) {
+            $converted['currencyId'] = $currencyUuid;
+            $converted['currencies'] = [
+                [
+                    'id' => $currencyUuid,
+                ],
+            ];
         }
-
-        $converted['currencyId'] = $currencyUuid;
-        $converted['currencies'] = [
-            [
-                'id' => $currencyUuid,
-            ],
-        ];
 
         $categoryMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -164,21 +133,10 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context
         );
 
-        if ($categoryMapping === null) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
-                    ->withFieldName('navigationCategoryId')
-                    ->withFieldSourcePath('category_id')
-                    ->withSourceData($data)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
+        if ($categoryMapping !== null) {
+            $this->mappingIds[] = $categoryMapping['id'];
+            $converted['navigationCategoryId'] = $categoryMapping['entityId'];
         }
-        $categoryUuid = $categoryMapping['entityId'];
-        $this->mappingIds[] = $categoryMapping['id'];
-        $converted['navigationCategoryId'] = $categoryUuid;
 
         $countryUuid = $this->getFirstActiveCountryId();
         $converted['countryId'] = $countryUuid;

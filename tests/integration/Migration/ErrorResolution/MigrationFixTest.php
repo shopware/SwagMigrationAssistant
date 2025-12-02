@@ -43,8 +43,8 @@ class MigrationFixTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->migrationFixRepository = $this->getContainer()->get('swag_migration_fix.repository');
-        $this->connectionRepository = $this->getContainer()->get('swag_migration_connection.repository');
+        $this->migrationFixRepository = static::getContainer()->get('swag_migration_fix.repository');
+        $this->connectionRepository = static::getContainer()->get('swag_migration_connection.repository');
     }
 
     #[DataProvider('valueData')]

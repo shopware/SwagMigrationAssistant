@@ -160,7 +160,7 @@ class CmsPageLookupTest extends TestCase
 
     private function getCmsPageLookup(): CmsPageLookup
     {
-        return $this->getContainer()->get(CmsPageLookup::class);
+        return static::getContainer()->get(CmsPageLookup::class);
     }
 
     private function getMockedCmsPageLookup(): CmsPageLookup

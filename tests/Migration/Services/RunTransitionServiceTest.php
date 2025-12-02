@@ -35,10 +35,10 @@ class RunTransitionServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->runRepository = $this->getContainer()->get('swag_migration_run.repository');
+        $this->runRepository = static::getContainer()->get('swag_migration_run.repository');
         $this->context = Context::createDefaultContext();
 
-        $this->runTransitionService = new RunTransitionService($this->getContainer()->get(Connection::class));
+        $this->runTransitionService = new RunTransitionService(static::getContainer()->get(Connection::class));
     }
 
     #[DataProvider('transitionToRunStepProvider')]

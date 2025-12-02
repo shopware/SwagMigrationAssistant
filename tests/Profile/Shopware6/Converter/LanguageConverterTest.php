@@ -34,7 +34,7 @@ class LanguageConverterTest extends ShopwareConverterTest
         return new LanguageConverter(
             $mappingService,
             $loggingService,
-            $this->getContainer()->get(LanguageLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
             $localeLookup
         );
     }

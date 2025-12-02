@@ -42,7 +42,7 @@ abstract class ShopwareConverter extends Converter
         return $data['id'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
     {
         $this->context = $context;
         $this->migrationContext = $migrationContext;
@@ -65,7 +65,7 @@ abstract class ShopwareConverter extends Converter
     /**
      * @param array<string, mixed> $data
      */
-    abstract protected function convertData(array $data): ConvertStruct;
+    abstract protected function convertData(array $data): ?ConvertStruct;
 
     protected function getMappingIdFacade(string $entityName, string $oldIdentifier): ?string
     {
