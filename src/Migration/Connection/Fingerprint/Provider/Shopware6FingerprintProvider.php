@@ -35,7 +35,7 @@ class Shopware6FingerprintProvider implements MigrationFingerprintProviderInterf
      */
     public function provide(?array $credentialFields, SwagMigrationConnectionEntity $connection): ?string
     {
-        if ($credentialFields === null) {
+        if (empty($credentialFields)) {
             return null;
         }
 
