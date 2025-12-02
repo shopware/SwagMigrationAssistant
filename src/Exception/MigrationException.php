@@ -112,8 +112,6 @@ class MigrationException extends HttpException
 
     public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
 
-    public const COULD_NOT_GENERATE_FINGERPRINT = 'SWAG_MIGRATION__COULD_NOT_GENERATE_FINGERPRINT';
-
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new AssociationEntityRequiredMissingException(
@@ -592,15 +590,6 @@ class MigrationException extends HttpException
             Response::HTTP_CONFLICT,
             self::DUPLICATE_SOURCE_CONNECTION,
             'A connection to this source system already exists.',
-        );
-    }
-
-    public static function couldNotGenerateFingerprint(): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::COULD_NOT_GENERATE_FINGERPRINT,
-            'Could not generate fingerprint for the given connection credentials.',
         );
     }
 }

@@ -176,6 +176,9 @@
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Connection\Fingerprint\Provider\Shopware5FingerprintProvider">
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader"/>
+            <argument type="service" id="SwagMigrationAssistant\Profile\Shopware\Gateway\Local\Reader\EnvironmentReader"/>
             <tag name="shopware.migration.fingerprint_provider"/>
         </service>
 

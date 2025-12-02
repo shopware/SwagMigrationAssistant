@@ -14,7 +14,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\Provider\MigrationFingerprintProviderInterface;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -46,7 +45,7 @@ class MigrationFingerprintService implements MigrationFingerprintServiceInterfac
                 try {
                     return $provider->provide($credentialFields, $connection);
                 } catch (\Throwable) {
-                    throw MigrationException::couldNotGenerateFingerprint();
+                    return null;
                 }
             }
         }

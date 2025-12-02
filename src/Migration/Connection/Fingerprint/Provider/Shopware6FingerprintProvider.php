@@ -9,8 +9,8 @@ namespace SwagMigrationAssistant\Migration\Connection\Fingerprint\Provider;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
+use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
 #[Package('fundamentals@after-sales')]
@@ -18,7 +18,7 @@ class Shopware6FingerprintProvider implements MigrationFingerprintProviderInterf
 {
     public function __construct(
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
-        private readonly EnvironmentReaderInterface $environmentReader,
+        private readonly EnvironmentReader $environmentReader,
     ) {
     }
 
