@@ -150,8 +150,7 @@ class RunServiceTest extends TestCase
             new SwagMigrationRunCollection([$run]),
         ], new SwagMigrationRunDefinition());
 
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('Migration is already running.');
+        static::expectExceptionObject(MigrationException::migrationIsAlreadyRunning());
 
         $this->createRunService()->updateConnectionCredentials(
             Context::createDefaultContext(),
@@ -170,8 +169,7 @@ class RunServiceTest extends TestCase
             new SwagMigrationConnectionCollection([]),
         ], new SwagMigrationConnectionDefinition());
 
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('No connection found.');
+        static::expectExceptionObject(MigrationException::noConnectionFound());
 
         $this->createRunService()->updateConnectionCredentials(
             Context::createDefaultContext(),
@@ -210,8 +208,7 @@ class RunServiceTest extends TestCase
         $fingerprintService->expects(static::once())->method('generate')->willReturn('fingerprint');
         $fingerprintService->expects(static::once())->method('check')->willReturn(true);
 
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('A connection to this source system already exists.');
+        static::expectExceptionObject(MigrationException::duplicateSourceConnection());
 
         $this->createRunService(
             connectionRepo: $this->connectionRepo,
