@@ -21,6 +21,9 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
 use SwagMigrationAssistant\Profile\Shopware57\Shopware57Profile;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 class Shopware5FingerprintProvider implements MigrationFingerprintProviderInterface
 {
@@ -50,7 +53,7 @@ class Shopware5FingerprintProvider implements MigrationFingerprintProviderInterf
      */
     public function provide(?array $credentialFields, SwagMigrationConnectionEntity $connection): ?string
     {
-        if ($credentialFields === null) {
+        if (empty($credentialFields)) {
             return null;
         }
 
