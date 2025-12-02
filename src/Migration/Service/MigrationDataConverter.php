@@ -100,7 +100,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
                 if (!$convertStruct instanceof ConvertStruct) {
                     $this->loggingService->addLogEntry(
-                        SwagMigrationLogBuilder::fromMigrationContext($migrationContext)
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withSourceData($item)
                             ->withEntityName($dataSet::getEntity())
                             ->build(NotConvertedLog::class)

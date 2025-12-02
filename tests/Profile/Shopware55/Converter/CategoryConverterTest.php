@@ -134,7 +134,6 @@ class CategoryConverterTest extends TestCase
             new DummyMediaFileService(),
             static::getContainer()->get(LowestRootCategoryLookup::class),
             static::getContainer()->get(DefaultCmsPageLookup::class),
-            //            static::getContainer()->get(LanguageLookup::class),
             $languageLookup
         );
 

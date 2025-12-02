@@ -11,16 +11,16 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('after-sales')]
-readonly class NotConvertedLog extends AbstractMigrationLogEntry
+readonly class MainVariantRelationNotConverted extends AbstractMigrationLogEntry
 {
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_ERROR;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__ENTITY_NOT_CONVERTED';
+        return 'SWAG_MIGRATION__MAIN_VARIANT_RELATION_NOT_CONVERTED';
     }
 
     public function isUserFixable(): bool

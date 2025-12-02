@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\MainVariantRelationNotConverted;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -25,12 +27,24 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         return $data['id'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
     {
         $this->generateChecksum($data);
         $this->context = $context;
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
+
+        if (!isset($data['id'], $data['ordernumber'])) {
+            $this->loggingService->addLogEntry(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->withSourceData($data)
+                ->withExceptionMessage('MainVariantRelation requires ID and order number, to be converted successful')
+                ->withExceptionTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2))
+                ->build(MainVariantRelationNotConverted::class)
+            );
+
+            return null;
+        }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,

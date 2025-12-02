@@ -6,7 +6,7 @@
  */
 
 return [
-    'customerId' => '872e88b6d30048e388b018f7a0be6a1e',
+    'customerId' => null,
     'salesChannelId' => 'a8084cf2687b44db91f3277b57cc3d7a',
     'products' => [
         0 => [

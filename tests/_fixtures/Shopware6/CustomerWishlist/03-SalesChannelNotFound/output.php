@@ -7,7 +7,7 @@
 
 return [
     'customerId' => '872e88b6d30048e388b018f7a0be6a1e',
-    'salesChannelId' => 'a8084cf2687b44db91f3277b57cc3d7a',
+    'salesChannelId' => null,
     'products' => [
         [
             'wishlistId' => 'd40f6c0ffe2a4e8a8dec97374920ad51',

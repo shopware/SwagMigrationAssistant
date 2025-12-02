@@ -40,7 +40,7 @@ abstract class CurrencyConverter extends ShopwareConverter
         return $data['currency'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
     {
         $this->generateChecksum($data);
         $this->context = $context;
@@ -48,6 +48,23 @@ abstract class CurrencyConverter extends ShopwareConverter
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
+
+        $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
+        if ($currencyUuid !== null) {
+            $currencyMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+            if ($currencyMapping === null) {
+                $this->mappingService->createMapping(
+                    $this->connectionId,
+                    DefaultEntities::CURRENCY,
+                    $data['currency'],
+                    $this->checksum,
+                    null,
+                    $currencyUuid
+                );
+            }
+
+            return null;
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
