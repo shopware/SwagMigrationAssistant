@@ -13,6 +13,9 @@ use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 class Shopware6FingerprintProvider implements MigrationFingerprintProviderInterface
 {

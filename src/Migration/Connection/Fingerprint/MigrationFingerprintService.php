@@ -19,15 +19,17 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollectio
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 
 #[Package('fundamentals@after-sales')]
-class MigrationFingerprintService implements MigrationFingerprintServiceInterface
+readonly class MigrationFingerprintService implements MigrationFingerprintServiceInterface
 {
     /**
+     * @internal
+     *
      * @param MigrationFingerprintProviderInterface[] $providers
      * @param EntityRepository<SwagMigrationConnectionCollection> $connectionRepo
      */
     public function __construct(
-        private readonly iterable $providers,
-        private readonly EntityRepository $connectionRepo,
+        private iterable $providers,
+        private EntityRepository $connectionRepo,
     ) {
     }
 
