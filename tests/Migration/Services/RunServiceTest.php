@@ -21,7 +21,7 @@ use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService;
+use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinition;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
@@ -180,36 +180,6 @@ class RunServiceTest extends TestCase
         );
     }
 
-    public function testUpdateConnectionCredentialsWhenFingerprintCannotBeGenerated(): void
-    {
-        $this->runRepo = new StaticEntityRepository([
-            new SwagMigrationRunCollection([]),
-        ], new SwagMigrationRunDefinition());
-
-        $this->connectionRepo = new StaticEntityRepository([
-            new SwagMigrationConnectionCollection([
-                (static function (): SwagMigrationConnectionEntity {
-                    $connection = new SwagMigrationConnectionEntity();
-                    $connection->setId(Uuid::randomHex());
-
-                    return $connection;
-                })(),
-            ]),
-        ], new SwagMigrationConnectionDefinition());
-
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('Invalid or missing connection credentials');
-
-        $this->createRunService(
-            connectionRepo: $this->connectionRepo,
-            runRepo: $this->runRepo,
-        )->updateConnectionCredentials(
-            Context::createDefaultContext(),
-            Uuid::randomHex(),
-            [],
-        );
-    }
-
     public function testUpdateConnectionCredentialsWhenDuplicateFingerprintFound(): void
     {
         $this->runRepo = new StaticEntityRepository([
@@ -235,12 +205,18 @@ class RunServiceTest extends TestCase
             ),
         ], new SwagMigrationConnectionDefinition());
 
+        /** @var MockObject&MigrationFingerprintServiceInterface $fingerprintService */
+        $fingerprintService = $this->createMock(MigrationFingerprintServiceInterface::class);
+        $fingerprintService->expects(static::once())->method('generate')->willReturn('fingerprint');
+        $fingerprintService->expects(static::once())->method('check')->willReturn(true);
+
         static::expectException(MigrationException::class);
         static::expectExceptionMessage('A connection to this source system already exists.');
 
         $this->createRunService(
             connectionRepo: $this->connectionRepo,
             runRepo: $this->runRepo,
+            fingerprintService: $fingerprintService,
         )->updateConnectionCredentials(
             Context::createDefaultContext(),
             Uuid::randomHex(),
@@ -250,7 +226,7 @@ class RunServiceTest extends TestCase
         );
     }
 
-    public function testUpdateConnectionCredentialsSuccessfully(): void
+    public function testUpdateConnectionCredentialsSuccessfullyWithFingerprint(): void
     {
         $this->runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([]),
@@ -273,9 +249,17 @@ class RunServiceTest extends TestCase
             ),
         ], new SwagMigrationConnectionDefinition());
 
+        $fingerprint = Uuid::randomHex();
+
+        /** @var MockObject&MigrationFingerprintServiceInterface $fingerprintService */
+        $fingerprintService = $this->createMock(MigrationFingerprintServiceInterface::class);
+        $fingerprintService->expects(static::once())->method('generate')->willReturn($fingerprint);
+        $fingerprintService->expects(static::once())->method('check')->willReturn(false);
+
         $runService = $this->createRunService(
             connectionRepo: $this->connectionRepo,
             runRepo: $this->runRepo,
+            fingerprintService: $fingerprintService,
         );
 
         $runService->updateConnectionCredentials(
@@ -287,6 +271,53 @@ class RunServiceTest extends TestCase
         );
 
         static::assertCount(1, $this->connectionRepo->updates);
+        static::assertSame($fingerprint, $this->connectionRepo->updates[0][0]['sourceSystemFingerprint']);
+    }
+
+    public function testUpdateConnectionCredentialsSuccessfullyWithoutFingerprint(): void
+    {
+        $this->runRepo = new StaticEntityRepository([
+            new SwagMigrationRunCollection([]),
+        ], new SwagMigrationRunDefinition());
+
+        $connectionEntity = new SwagMigrationConnectionEntity();
+        $connectionEntity->setId(Uuid::randomHex());
+        $connectionEntity->setProfileName(Shopware57Profile::PROFILE_NAME);
+        $connectionEntity->setGatewayName(ShopwareApiGateway::GATEWAY_NAME);
+
+        $this->connectionRepo = new StaticEntityRepository([
+            new SwagMigrationConnectionCollection([
+                $connectionEntity,
+            ]),
+            new IdSearchResult(
+                0,
+                [],
+                new Criteria(),
+                Context::createDefaultContext()
+            ),
+        ], new SwagMigrationConnectionDefinition());
+
+        /** @var MockObject&MigrationFingerprintServiceInterface $fingerprintService */
+        $fingerprintService = $this->createMock(MigrationFingerprintServiceInterface::class);
+        $fingerprintService->expects(static::once())->method('generate')->willReturn(null);
+        $fingerprintService->expects(static::once())->method('check')->willReturn(false);
+
+        $runService = $this->createRunService(
+            connectionRepo: $this->connectionRepo,
+            runRepo: $this->runRepo,
+            fingerprintService: $fingerprintService,
+        );
+
+        $runService->updateConnectionCredentials(
+            Context::createDefaultContext(),
+            $connectionEntity->getId(),
+            [
+                'endpoint' => 'https://shopware-instance.com/api',
+            ],
+        );
+
+        static::assertCount(1, $this->connectionRepo->updates);
+        static::assertNull($this->connectionRepo->updates[0][0]['sourceSystemFingerprint']);
     }
 
     public function testStartMigrationRunSuccessfully(): void
@@ -513,6 +544,7 @@ class RunServiceTest extends TestCase
         ?StaticEntityRepository $generalSettingRepo = null,
         (MockObject&MigrationDataFetcherInterface)|null $dataFetcher = null,
         (MockObject&MigrationContextFactoryInterface)|null $migrationContextFactory = null,
+        (MockObject&MigrationFingerprintServiceInterface)|null $fingerprintService = null,
     ): RunService {
         $connectionRepository = $connectionRepo ?? $this->connectionRepo;
 
@@ -540,7 +572,7 @@ class RunServiceTest extends TestCase
             $migrationContextFactory ?? $this->migrationContextFactory,
             $premappingService ?? $this->createMock(PremappingService::class),
             $runTransitionService ?? new DummyRunTransitionService(MigrationStep::WAITING_FOR_APPROVE),
-            new MigrationFingerprintService($connectionRepository),
+            $fingerprintService ?? $this->createMock(MigrationFingerprintServiceInterface::class),
         );
     }
 }
