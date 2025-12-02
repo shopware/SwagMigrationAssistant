@@ -156,13 +156,13 @@ class RunService implements RunServiceInterface
             $connection,
         );
 
-        $hasDuplicates = $this->connectionFingerprintService->check(
+        $hasDuplicate = $this->connectionFingerprintService->check(
             $fingerprint,
             $context,
             $connection->getId(),
         );
 
-        if ($hasDuplicates) {
+        if ($hasDuplicate) {
             throw MigrationException::duplicateSourceConnection();
         }
 
