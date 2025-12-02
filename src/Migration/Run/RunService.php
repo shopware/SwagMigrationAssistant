@@ -23,7 +23,7 @@ use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService;
+use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
@@ -75,7 +75,7 @@ class RunService implements RunServiceInterface
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly PremappingServiceInterface $premappingService,
         private readonly RunTransitionServiceInterface $runTransitionService,
-        private readonly MigrationFingerprintService $connectionFingerprintService,
+        private readonly MigrationFingerprintServiceInterface $connectionFingerprintService,
     ) {
     }
 
