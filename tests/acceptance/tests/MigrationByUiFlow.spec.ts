@@ -12,7 +12,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     MigrationUser,
     DatabaseCredentials,
     EntityCounter,
-    MediaProcessObserver,
 }) => {
     // TODO: fix & update snapshots
     // eslint-disable-next-line playwright/no-skipped-test
@@ -38,11 +37,8 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Start', exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByPlaceholder('Enter name').fill('sw5local');
-        await page
-            .locator('div')
-            .filter({ hasText: /^Shopware 5\.5 - shopware AG$/ })
-            .click();
-        await page.getByText('Shopware 5.5 - shopware AG').click();
+        await page.locator('div').filter({ hasText: /^Shopware 5\.5 - shopware AG$/ }).click();
+        await page.locator(':text("Shopware 5.5 - shopware AG"):visible').click();
         await page.getByText('Select gateway').click();
         await page.getByPlaceholder('Select gateway').fill('Local');
         await page.getByText('Local database').click();
@@ -143,8 +139,9 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await EntityCounter.checkEntityCount('customer', 3);
 
         await EntityCounter.checkEntityCount('cms_page', 10);
-        await EntityCounter.checkEntityCount('media', 603);
-        await EntityCounter.checkEntityCount('media_folder', 26);
+        await EntityCounter.checkEntityCount('media', 595);
+        await EntityCounter.checkEntityCount('media_folder', 24);
+        await EntityCounter.checkEntityCount('document', 8);
 
         await EntityCounter.checkEntityCount('newsletter_recipient', 0);
         await EntityCounter.checkEntityCount('promotion', 4);

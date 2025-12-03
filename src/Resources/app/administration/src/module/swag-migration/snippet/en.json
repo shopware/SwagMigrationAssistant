@@ -348,6 +348,7 @@
           "custom_field_set": "Custom field sets",
           "snippet": "Snippets",
           "snippet_set": "Snippet sets",
+          "mail_header_footer": "Email headers and footers",
           "mail_template": "Email templates",
           "product_feature_set": "Essential characteristics",
           "product_sorting": "Product sorting",
@@ -446,9 +447,8 @@
         },
         "result": {
           "title": "The Migration Assistant is done",
-          "caption": "The media download continues in the background. Large files can take some time.",
           "logSummary": "Logbook",
-          "historyHint": "You can view this information any time in the migration history. It is possible that more log messages will be added at a later time because the media download is still running in the background."
+          "historyHint": "You can view this information any time in the migration history."
         }
       },
       "error-resolution": {

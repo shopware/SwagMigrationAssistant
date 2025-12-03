@@ -45,11 +45,47 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
         $cacheProperty = new \ReflectionProperty(GlobalDocumentBaseConfigLookup::class, 'cache');
         $cacheProperty->setAccessible(true);
 
+        $configCacheProperty = new \ReflectionProperty(GlobalDocumentBaseConfigLookup::class, 'configCache');
+        $configCacheProperty->setAccessible(true);
+
         static::assertNotEmpty($cacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertNotEmpty($configCacheProperty->getValue($globalDocumentBaseConfigLookup));
 
         $globalDocumentBaseConfigLookup->reset();
 
         static::assertEmpty($cacheProperty->getValue($globalDocumentBaseConfigLookup));
+        static::assertEmpty($configCacheProperty->getValue($globalDocumentBaseConfigLookup));
+    }
+
+    public function testGetBaseConfig(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $data = self::getDatabaseData();
+        $documentTypeID = $data[0]['documentTypeId'];
+        static::assertIsString($documentTypeID);
+
+        $globalDocumentBaseConfigLookup = $this->getGlobalDocumentBaseConfigLookup();
+        $configId = $globalDocumentBaseConfigLookup->get($documentTypeID, $context);
+        static::assertIsString($configId);
+
+        $baseConfig = $globalDocumentBaseConfigLookup->getBaseConfig($configId, $context);
+
+        static::assertIsArray($baseConfig);
+        static::assertArrayHasKey('fileTypes', $baseConfig);
+        static::assertArrayHasKey('referencedDocumentType', $baseConfig);
+        static::assertSame('invoice', $baseConfig['referencedDocumentType']);
+    }
+
+    public function testGetBaseConfigFromCache(): void
+    {
+        $context = Context::createDefaultContext();
+
+        $globalDocumentBaseConfigLookup = $this->getMockedGlobalDocumentBaseConfigLookup();
+        $baseConfigResult = $globalDocumentBaseConfigLookup->getBaseConfig('anyConfigId', $context);
+
+        static::assertIsArray($baseConfigResult);
+        static::assertSame($this->getCachedConfig(), $baseConfigResult);
     }
 
     /**
@@ -107,6 +143,48 @@ class GlobalDocumentBaseConfigLookupTest extends TestCase
 
         $reflectionProperty->setValue($globalDocumentBaseConfigLookup, $cache);
 
+        $configCache = ['anyConfigId' => $this->getCachedConfig()];
+        $reflectionProperty = new \ReflectionProperty(GlobalDocumentBaseConfigLookup::class, 'configCache');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($globalDocumentBaseConfigLookup, $configCache);
+
         return $globalDocumentBaseConfigLookup;
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function getCachedConfig(): array
+    {
+        return [
+            'vatId' => 'anyVatId',
+            'bankBic' => 'anyBankBic',
+            'bankIban' => 'anyBankIban',
+            'bankName' => 'anyBankName',
+            'pageSize' => 'a4',
+            'fileTypes' => [
+                0 => 'html',
+                1 => 'pdf',
+            ],
+            'taxNumber' => 'anyTaxNumber',
+            'taxOffice' => 'anyTaxOffice',
+            'companyName' => 'Example Company',
+            'itemsPerPage' => 10,
+            'displayFooter' => true,
+            'displayHeader' => true,
+            'displayPrices' => true,
+            'companyAddress' => 'anyAddress',
+            'pageOrientation' => 'portrait',
+            'displayLineItems' => true,
+            'displayPageCount' => true,
+            'executiveDirector' => 'anyExecutiveDirector',
+            'placeOfFulfillment' => 'anyPlaceOfFulfillment',
+            'placeOfJurisdiction' => 'anyPlaceOfJurisdiction',
+            'displayReturnAddress' => true,
+            'displayCompanyAddress' => true,
+            'diplayLineItemPosition' => true,
+            'referencedDocumentType' => 'anyReferencedDocumentType',
+            'displayAdditionalNoteDelivery' => false,
+        ];
     }
 }
