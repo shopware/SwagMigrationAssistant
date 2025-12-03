@@ -13,7 +13,6 @@ use PHPUnit\Framework\TestCase;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Customer\CustomerCollection;
 use Shopware\Core\Checkout\Customer\CustomerDefinition;
-use Shopware\Core\Checkout\Order\OrderCollection;
 use Shopware\Core\Checkout\Payment\Cart\PaymentHandler\InvoicePayment;
 use Shopware\Core\Checkout\Payment\PaymentMethodCollection;
 use Shopware\Core\Checkout\Shipping\ShippingMethodCollection;
@@ -122,11 +121,6 @@ class MigrationDataWriterTest extends TestCase
      * @var EntityRepository<CustomerCollection>
      */
     private EntityRepository $customerRepo;
-
-    /**
-     * @var EntityRepository<OrderCollection>
-     */
-    private EntityRepository $orderRepo;
 
     /**
      * @var EntityRepository<CurrencyCollection>
@@ -517,15 +511,12 @@ class MigrationDataWriterTest extends TestCase
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
 
-        $criteria = new Criteria();
-        $customerTotalBefore = $this->customerRepo->search($criteria, $context)->getTotal();
-
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
-            $this->migrationDataWriter->writeData($migrationContext, $context);
+        $total = 0;
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext, &$total): void {
+            $total = $this->migrationDataWriter->writeData($migrationContext, $context);
         });
-        $customerTotalAfter = $this->dbConnection->executeQuery('select count(*) from customer')->fetchOne();
 
-        static::assertSame(3, $customerTotalAfter - $customerTotalBefore);
+        static::assertSame(3, $total);
     }
 
     public function testWriteOrderData(): void
@@ -545,11 +536,12 @@ class MigrationDataWriterTest extends TestCase
         $this->migrationDataConverter->convert($data, $userMigrationContext, $context);
         $this->clearCacheData();
 
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext): void {
-            $this->migrationDataWriter->writeData($userMigrationContext, $context);
+        $total = 0;
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($userMigrationContext, &$total): void {
+            $total = $this->migrationDataWriter->writeData($userMigrationContext, $context);
             $this->clearCacheData();
         });
-
+        static::assertSame(3, $total);
         // Add orders
         $migrationContext = new MigrationContext(
             $this->connection,
@@ -561,22 +553,16 @@ class MigrationDataWriterTest extends TestCase
             250
         );
 
-        $criteria = new Criteria();
-
-        // Get data before writing
         $data = $this->migrationDataFetcher->fetchData($migrationContext, $context);
         $this->migrationDataConverter->convert($data, $migrationContext, $context);
         $this->clearCacheData();
 
-        $orderTotalBefore = $this->orderRepo->search($criteria, $context)->getTotal();
-        // Get data after writing
-        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext): void {
-            $this->migrationDataWriter->writeData($migrationContext, $context);
+        $context->scope(Context::USER_SCOPE, function (Context $context) use ($migrationContext, &$total): void {
+            $total = $this->migrationDataWriter->writeData($migrationContext, $context);
             $this->clearCacheData();
         });
-        $orderTotalAfter = $this->orderRepo->search($criteria, $context)->getTotal();
 
-        static::assertSame(2, $orderTotalAfter - $orderTotalBefore);
+        static::assertSame(2, $total);
     }
 
     public function testWriteMediaData(): void
@@ -686,8 +672,8 @@ class MigrationDataWriterTest extends TestCase
         return new MappingService(
             $this->migrationMappingRepo,
             $this->entityWriter,
-            $this->getContainer()->get(SwagMigrationMappingDefinition::class),
-            $this->getContainer()->get(Connection::class),
+            static::getContainer()->get(SwagMigrationMappingDefinition::class),
+            static::getContainer()->get(Connection::class),
             new NullLogger()
         );
     }
@@ -712,7 +698,6 @@ class MigrationDataWriterTest extends TestCase
         $this->mediaRepo = static::getContainer()->get('media.repository');
         $this->productRepo = static::getContainer()->get('product.repository');
         $this->categoryRepo = static::getContainer()->get('category.repository');
-        $this->orderRepo = static::getContainer()->get('order.repository');
         $this->customerRepo = static::getContainer()->get('customer.repository');
         $this->connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
         $this->migrationDataRepo = static::getContainer()->get('swag_migration_data.repository');

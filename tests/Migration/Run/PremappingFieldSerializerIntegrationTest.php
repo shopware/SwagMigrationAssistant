@@ -29,7 +29,7 @@ class PremappingFieldSerializerIntegrationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer = $this->getContainer()->get(PremappingFieldSerializer::class);
+        $this->serializer = static::getContainer()->get(PremappingFieldSerializer::class);
     }
 
     public static function invalidInputProvider(): \Generator

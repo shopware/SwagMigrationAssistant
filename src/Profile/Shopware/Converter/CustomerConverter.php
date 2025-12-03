@@ -31,7 +31,6 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\SalutationReader;
-use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -165,19 +164,18 @@ abstract class CustomerConverter extends ShopwareConverter
             $converted['customerNumber'] = 'number-' . $this->oldCustomerId;
         }
 
-        $mapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::CUSTOMER_GROUP,
-            $data['customerGroupId'] ?? '',
-            $context
-        );
-
-        if (\is_array($mapping) && \array_key_exists('entityId', $mapping)) {
-            $converted['groupId'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+        if (isset($data['customerGroupId'])) {
+            $mapping = $this->mappingService->getMapping(
+                $this->connectionId,
+                DefaultEntities::CUSTOMER_GROUP,
+                $data['customerGroupId'],
+                $context
+            );
+            if ($mapping !== null) {
+                $converted['groupId'] = $mapping['entityId'];
+                $this->mappingIds[] = $mapping['id'];
+            }
             unset($data['customerGroupId'], $data['customergroup']);
-        } else {
-            $converted['groupId'] = null;
         }
 
         if (isset($data['defaultpayment']['id'])) {
@@ -198,19 +196,15 @@ abstract class CustomerConverter extends ShopwareConverter
                 $this->context
             );
 
-            if (\is_array($mapping) && \array_key_exists('entityId', $mapping)) {
+            if ($mapping !== null) {
                 $converted['defaultPaymentMethodId'] = $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
-            } else {
-                $converted['defaultPaymentMethodId'] = null;
             }
         }
 
         $salutationUuid = $this->getSalutation($data['salutation']);
         if ($salutationUuid !== null) {
             $converted['salutationId'] = $salutationUuid;
-        } else {
-            $converted['salutationId'] = null;
         }
 
         if (isset($data['addresses']) && isset($this->mainMapping['entityId'])) {
@@ -404,13 +398,13 @@ abstract class CustomerConverter extends ShopwareConverter
         $converted['addresses'] = $addresses;
 
         // No valid default billing and shipping address was converted, so use the first valid one as default
-        $this->checkUnsetDefaultShippingAndDefaultBillingAddress($originalData, $converted, $customerUuid, $addresses);
+        $this->checkUnsetDefaultShippingAndDefaultBillingAddress($originalData, $converted, $addresses);
 
         // No valid default shipping address was converted, but the default billing address is valid
-        $this->checkUnsetDefaultShippingAddress($originalData, $converted, $customerUuid);
+        $this->checkUnsetDefaultShippingAddress($originalData, $converted);
 
         // No valid default billing address was converted, but the default shipping address is valid
-        $this->checkUnsetDefaultBillingAddress($originalData, $converted, $customerUuid);
+        $this->checkUnsetDefaultBillingAddress($originalData, $converted);
     }
 
     /**
@@ -610,7 +604,7 @@ abstract class CustomerConverter extends ShopwareConverter
      * @param array<string, mixed> $converted
      * @param array<int, array<string, mixed>> $addresses
      */
-    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid, array $addresses): void
+    protected function checkUnsetDefaultShippingAndDefaultBillingAddress(array &$originalData, array &$converted, array $addresses): void
     {
         if (!isset($converted['defaultBillingAddressId']) && !isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $addresses[0]['id'];
@@ -636,7 +630,7 @@ abstract class CustomerConverter extends ShopwareConverter
      * @param array<string, mixed> $originalData
      * @param array<string, mixed> $converted
      */
-    protected function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    protected function checkUnsetDefaultShippingAddress(array &$originalData, array &$converted): void
     {
         if (!isset($converted['defaultShippingAddressId']) && isset($converted['defaultBillingAddressId'])) {
             $converted['defaultShippingAddressId'] = $converted['defaultBillingAddressId'];
@@ -657,7 +651,7 @@ abstract class CustomerConverter extends ShopwareConverter
      * @param array<string, mixed> $originalData
      * @param array<string, mixed> $converted
      */
-    protected function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted, string $customerUuid): void
+    protected function checkUnsetDefaultBillingAddress(array &$originalData, array &$converted): void
     {
         if (!isset($converted['defaultBillingAddressId']) && isset($converted['defaultShippingAddressId'])) {
             $converted['defaultBillingAddressId'] = $converted['defaultShippingAddressId'];
@@ -698,17 +692,6 @@ abstract class CustomerConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         return $mapping['entityId'];
-    }
-
-    protected function checkEmailValidity(string $email): bool
-    {
-        $constraint = new Email();
-        $errors = $this->validator->validate(
-            $email,
-            $constraint
-        );
-
-        return \count($errors) === 0;
     }
 
     /**

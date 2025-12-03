@@ -82,7 +82,7 @@ class SeoUrlTemplateLookupTest extends TestCase
 
     private function getSeoUrlTemplateLookup(): SeoUrlTemplateLookup
     {
-        $seoUrlTemplateLookup = $this->getContainer()->get(SeoUrlTemplateLookup::class);
+        $seoUrlTemplateLookup = static::getContainer()->get(SeoUrlTemplateLookup::class);
         static::assertInstanceOf(SeoUrlTemplateLookup::class, $seoUrlTemplateLookup);
 
         return $seoUrlTemplateLookup;

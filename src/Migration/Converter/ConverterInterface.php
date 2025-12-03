@@ -38,9 +38,11 @@ interface ConverterInterface
     /**
      * Converts the given data into the internal structure
      *
+     * A converter also could return null in various cases
+     *
      * @param array<string, mixed> $data
      */
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct;
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct;
 
     public function writeMapping(Context $context): void;
 }

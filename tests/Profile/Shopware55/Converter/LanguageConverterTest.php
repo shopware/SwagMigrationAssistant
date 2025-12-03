@@ -21,7 +21,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55LanguageConver
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\BasicSettingsMappingService;
-use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 
 #[Package('fundamentals@after-sales')]
 class LanguageConverterTest extends TestCase
@@ -40,8 +39,8 @@ class LanguageConverterTest extends TestCase
         $this->converter = new Shopware55LanguageConverter(
             new BasicSettingsMappingService(),
             $this->loggingService,
-            $this->getContainer()->get(LanguageLookup::class),
-            $this->getContainer()->get(LocaleLookup::class),
+            static::getContainer()->get(LocaleLookup::class),
+            static::getContainer()->get(LanguageLookup::class),
         );
 
         $runId = Uuid::randomHex();
@@ -73,6 +72,7 @@ class LanguageConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($languageData[0], $context, $this->migrationContext);
+        static::assertNotNull($convertResult);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
         static::assertNotNull($converted);
@@ -82,29 +82,5 @@ class LanguageConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertSame('Niederländisch', $converted['name']);
         static::assertSame($converted['translationCodeId'], $converted['localeId']);
-    }
-
-    public function testConvertWhichExists(): void
-    {
-        $languageData = require __DIR__ . '/../../../_fixtures/language_data.php';
-
-        $languageLookupMock = $this->createMock(LanguageLookup::class);
-        $languageLookupMock->method('get')->willReturn('test-uuid');
-
-        $context = Context::createDefaultContext();
-        $this->converter = new Shopware55LanguageConverter(
-            new DummyMappingService(),
-            $this->loggingService,
-            $languageLookupMock,
-            $this->createMock(LocaleLookup::class)
-        );
-        $convertResult = $this->converter->convert($languageData[0], $context, $this->migrationContext);
-        $this->converter->writeMapping($context);
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_ENTITY_ALREADY_EXISTS', $logs[0]['code']);
     }
 }

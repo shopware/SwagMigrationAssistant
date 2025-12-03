@@ -85,7 +85,7 @@ class MediaDefaultFolderLookupTest extends TestCase
     private function getMediaDefaultFolderLookup(): MediaDefaultFolderLookup
     {
         return new MediaDefaultFolderLookup(
-            $this->getContainer()->get('media_default_folder.repository')
+            static::getContainer()->get('media_default_folder.repository')
         );
     }
 

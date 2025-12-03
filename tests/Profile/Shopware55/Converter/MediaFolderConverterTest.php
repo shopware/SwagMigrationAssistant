@@ -37,8 +37,8 @@ class MediaFolderConverterTest extends TestCase
         $this->converter = new Shopware55MediaFolderConverter(
             new DummyMappingService(),
             $loggingService,
-            $this->getContainer()->get(MediaDefaultFolderLookup::class),
-            $this->getContainer()->get(MediaThumbnailSizeLookup::class),
+            static::getContainer()->get(MediaDefaultFolderLookup::class),
+            static::getContainer()->get(MediaThumbnailSizeLookup::class),
         );
 
         $runId = Uuid::randomHex();

@@ -40,7 +40,7 @@ abstract class CurrencyConverter extends ShopwareConverter
         return $data['currency'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
     {
         $this->generateChecksum($data);
         $this->context = $context;
@@ -63,7 +63,7 @@ abstract class CurrencyConverter extends ShopwareConverter
                 );
             }
 
-            return new ConvertStruct(null, $data);
+            return null;
         }
 
         $converted = [];

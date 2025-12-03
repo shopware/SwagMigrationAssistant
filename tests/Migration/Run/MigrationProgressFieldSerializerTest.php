@@ -33,7 +33,7 @@ class MigrationProgressFieldSerializerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->serializer = $this->getContainer()->get(MigrationProgressFieldSerializer::class);
+        $this->serializer = static::getContainer()->get(MigrationProgressFieldSerializer::class);
     }
 
     public function testEncodeWithArrayInput(): void

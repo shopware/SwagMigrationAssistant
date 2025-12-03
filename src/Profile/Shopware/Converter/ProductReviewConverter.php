@@ -7,14 +7,10 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
-use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
-use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -23,14 +19,6 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 #[Package('fundamentals@after-sales')]
 abstract class ProductReviewConverter extends ShopwareConverter
 {
-    /**
-     * @var list<string>
-     */
-    protected array $requiredDataFieldKeys = [
-        '_locale',
-        'articleID',
-    ];
-
     public function __construct(
         MappingServiceInterface $mappingService,
         LoggingServiceInterface $loggingService,
@@ -41,27 +29,16 @@ abstract class ProductReviewConverter extends ShopwareConverter
 
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
-        $fields = $this->checkForEmptyRequiredDataFields($data, $this->requiredDataFieldKeys);
-
         $connection = $migrationContext->getConnection();
         $connectionId = $connection->getId();
 
-        if (!empty($fields)) {
-            $this->loggingService->addLogForEach(
-                $fields,
-                fn (string $key) => MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
-                    ->withFieldSourcePath($key)
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
         $this->generateChecksum($data);
-        $originalData = $data;
-        $mainLocale = $data['_locale'];
-        unset($data['_locale']);
+
+        $mainLocale = null;
+        if (isset($data['_locale'])) {
+            $mainLocale = $data['_locale'];
+            unset($data['_locale']);
+        }
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -71,13 +48,14 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
+
         $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
         $mapping = $this->mappingService->getMapping(
             $connectionId,
             DefaultEntities::PRODUCT_MAIN,
-            $data['articleID'],
+            $data['articleID'] ?? '',
             $context
         );
 
@@ -85,27 +63,16 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $mapping = $this->mappingService->getMapping(
                 $connectionId,
                 DefaultEntities::PRODUCT_CONTAINER,
-                $data['articleID'],
+                $data['articleID'] ?? '',
                 $context
             );
-
-            if ($mapping === null) {
-                $this->loggingService->addLogEntry(
-                    MigrationLogBuilder::fromMigrationContext($migrationContext)
-                        ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
-                        ->withFieldName('productId')
-                        ->withFieldSourcePath('articleID')
-                        ->withSourceData($data)
-                        ->withConvertedData($converted)
-                        ->build(AssociationRequiredMissingLog::class)
-                );
-
-                return new ConvertStruct(null, $originalData);
-            }
         }
-        $converted['productId'] = $mapping['entityId'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['articleID']);
+
+        if ($mapping !== null) {
+            $converted['productId'] = $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['articleID']);
+        }
 
         if (isset($data['email'])) {
             $mapping = $this->mappingService->getMapping(
@@ -120,6 +87,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
                 $this->mappingIds[] = $mapping['id'];
             }
         }
+
         $this->convertValue($converted, 'externalEmail', $data, 'email');
         $this->convertValue($converted, 'externalUser', $data, 'name');
 
@@ -131,37 +99,13 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $context
         );
 
-        if ($mapping === null) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
-                    ->withFieldName('salesChannelId')
-                    ->withFieldSourcePath('shop_id')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $originalData);
+        if ($mapping !== null) {
+            $converted['salesChannelId'] = $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
+            unset($data['shop_id'], $data['mainShopId']);
         }
-        $converted['salesChannelId'] = $mapping['entityId'];
-        $this->mappingIds[] = $mapping['id'];
-        unset($data['shop_id'], $data['mainShopId']);
 
         $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
-        if ($converted['languageId'] === null) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
-                    ->withFieldName('languageId')
-                    ->withFieldSourcePath('_locale')
-                    ->withSourceData($data)
-                    ->withConvertedData($converted)
-                    ->build(AssociationRequiredMissingLog::class)
-            );
-
-            return new ConvertStruct(null, $originalData);
-        }
 
         $this->convertValue($converted, 'title', $data, 'headline');
         if (empty($converted['title'])) {

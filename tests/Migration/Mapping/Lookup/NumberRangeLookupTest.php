@@ -88,7 +88,7 @@ class NumberRangeLookupTest extends TestCase
 
     private function getNumberRangeLookup(): NumberRangeLookup
     {
-        $numberRangeLookup = $this->getContainer()->get(NumberRangeLookup::class);
+        $numberRangeLookup = static::getContainer()->get(NumberRangeLookup::class);
         static::assertInstanceOf(NumberRangeLookup::class, $numberRangeLookup);
 
         return $numberRangeLookup;
