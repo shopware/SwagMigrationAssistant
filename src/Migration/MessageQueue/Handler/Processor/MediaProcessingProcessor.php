@@ -20,6 +20,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Exception\NoConnectionFoundException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
@@ -100,7 +101,15 @@ class MediaProcessingProcessor extends AbstractProcessor
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                     $migrationContext->setDataSet($currentDataSet);
                 } catch (DataSetNotFoundException $e) {
-                    $this->logDataSetNotFoundException($migrationContext, $mediaFile);
+                    $this->loggingService->addLogEntry(
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withEntityName($mediaFile['entity'])
+                            ->withEntityId($mediaFile['id'])
+                            ->withConvertedData($mediaFile)
+                            ->withExceptionMessage($e->getMessage())
+                            ->withExceptionTrace($e->getTrace())
+                            ->build(DataSetNotFoundLog::class)
+                    );
 
                     continue;
                 }
@@ -130,22 +139,21 @@ class MediaProcessingProcessor extends AbstractProcessor
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
         } catch (NoConnectionFoundException $e) {
-            $this->loggingService->addLogEntry(new ProcessorNotFoundLog(
-                $run->getId(),
-                $currentDataSet::getEntity(),
-                $connection->getProfileName(),
-                $connection->getGatewayName()
-            ));
-
-            $this->loggingService->saveLogging($context);
+            $this->loggingService->addLogEntry(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName($currentDataSet::getEntity())
+                    ->withExceptionMessage($e->getMessage())
+                    ->withExceptionTrace($e->getTrace())
+                    ->build(ProcessorNotFoundLog::class)
+            );
         } catch (\Throwable $e) {
-            $this->loggingService->addLogEntry(new ExceptionRunLog(
-                $run->getId(),
-                $currentDataSet::getEntity(),
-                $e
-            ));
-
-            $this->loggingService->saveLogging($context);
+            $this->loggingService->addLogEntry(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName($currentDataSet::getEntity())
+                    ->withExceptionMessage($e->getMessage())
+                    ->withExceptionTrace($e->getTrace())
+                    ->build(ExceptionRunLog::class)
+            );
         }
 
         $this->loggingService->saveLogging($context);
@@ -233,28 +241,5 @@ class MediaProcessingProcessor extends AbstractProcessor
         $unprocessedCount = $this->migrationMediaFileRepo->search($criteria, $context)->getTotal();
 
         return $unprocessedCount === 0;
-    }
-
-    /**
-     * @param array<string, mixed> $mediaFile
-     */
-    private function logDataSetNotFoundException(
-        MigrationContextInterface $migrationContext,
-        array $mediaFile,
-    ): void {
-        $connection = $migrationContext->getConnection();
-
-        if ($connection === null) {
-            return;
-        }
-
-        $this->loggingService->addLogEntry(
-            new DataSetNotFoundLog(
-                $migrationContext->getRunUuid(),
-                $mediaFile['entity'],
-                $mediaFile['id'],
-                $connection->getProfileName()
-            )
-        );
     }
 }

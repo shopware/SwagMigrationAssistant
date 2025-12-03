@@ -37,7 +37,10 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Start', exact: true }).click();
         await page.getByRole('button', { name: 'Continue' }).click();
         await page.getByPlaceholder('Enter name').fill('sw5local');
-        await page.locator('div').filter({ hasText: /^Shopware 5\.5 - shopware AG$/ }).click();
+        await page
+            .locator('div')
+            .filter({ hasText: /^Shopware 5\.5 - shopware AG$/ })
+            .click();
         await page.locator(':text("Shopware 5.5 - shopware AG"):visible').click();
         await page.getByText('Select gateway').click();
         await page.getByPlaceholder('Select gateway').fill('Local');
@@ -104,25 +107,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
 
         await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: 300_000 });
         await page.getByRole('button', { name: 'Back to overview' }).click();
-    });
-
-    // ToDo MIG-985: Remove this if the underlying issue is fixed
-    await test.step('Wait for media download to finish', async () => {
-        await expect
-            .poll(
-                async () => {
-                    return await MediaProcessObserver.isMediaProcessing();
-                },
-                {
-                    // Probe after 100ms and then every second
-                    intervals: [
-                        100,
-                        1_000,
-                    ],
-                    timeout: 300_000,
-                },
-            )
-            .toBe(false);
     });
 
     await test.step('Expect entities to be there', async () => {

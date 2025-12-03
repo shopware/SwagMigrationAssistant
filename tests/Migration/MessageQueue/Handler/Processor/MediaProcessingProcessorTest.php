@@ -85,7 +85,13 @@ class MediaProcessingProcessorTest extends TestCase
         $this->runEntity->setStep(MigrationStep::FETCHING);
         $this->runEntity->setConnection($connection);
 
-        $this->migrationContext = new MigrationContext(new Shopware55Profile(), $connection, $this->runEntity->getId());
+        $this->migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+            null,
+            null,
+            $this->runEntity->getId()
+        );
 
         $result = $this->createMock(Result::class);
         $result->method('fetchAllAssociative')->willReturnCallback(fn () => $this->mediaFiles);
