@@ -1,3 +1,7 @@
+# 15.0.4
+- `shopIdV2` wurde zur Liste der ignorierten Systemkonfigurationseinträge für Shopware 6-Verbindungen hinzugefügt
+- Die Medienverarbeitung wurde vereinfacht, sodass die Benutzeroberfläche den tatsächlichen Fortschritt anzeigen kann
+
 # 15.0.3
 - Übersetzungen von Fehlergruppen behoben, welche Details wie den Entitätsnamen nicht darstellten
 - Fehler bei Kunden ohne Standardzahlungsmethode in SW6.7 Migrationen behoben
@@ -343,7 +347,7 @@
 - MIG-114 - Migration der Hauptvarianten-Information ermöglichen
 - MIG-118 - Korrigiert die Migration der Kredit-Bestellpositionen
 - MIG-120 - Behebt ein Problem beim Laden des Premappings
-- MIG-162 - Behebt ein Problem bei der Migration von Produkten mit leeren Freitextfeldern 
+- MIG-162 - Behebt ein Problem bei der Migration von Produkten mit leeren Freitextfeldern
 - MIG-167 - Behebt ein Problem bei der Migration von Freitextfeldwerten
 - MIG-168 - Optimiertes Request Handling
 
@@ -454,7 +458,7 @@
 # 1.0.0
 - PT-11113 - Anpassung der Plugin icons
 - PT-11111 - Anpassung des Profilicons für externe Profile
-- NTR - Behebt ein Problem nach dem Installieren von extern Profilen 
+- NTR - Behebt ein Problem nach dem Installieren von extern Profilen
 - NTR - Snippet renaming
 - PT-11252 - Nummernkreise werden jetzt in den Basisdaten migriert
 

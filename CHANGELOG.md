@@ -1,3 +1,7 @@
+# 15.0.4
+- Added `shopIdV2` to the list of ignored system config entries for Shopware 6 connections
+- Media processing has been simplified so that the UI can show the actual progress
+
 # 15.0.3
 - Fixed translations of error groups missing details like the entity
 - Fixed handling of customers without default payment method in SW6.7 migrations
@@ -48,7 +52,7 @@
 - MIG-1016 - Improves the warnings for different default currency and default language in the data selection.
 - MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`.
 - MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5.
- 
+
 # 13.0.0
 - MIG-945 - [BREAKING] Changed method name `getMedia` to `setMedia` in `SwagMigrationAssistant\Profile\Shopware\Converter\PropertyGroupOptionConverter`
 - MIG-945 - [BREAKING] Removed cli command `migration:migrate` use `migration:start` instead
@@ -149,7 +153,7 @@
 - MIG-943 - [BREAKING] Rename method in class `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` from `getCountryTranslation` to `applyCountryTranslation`
 - MIG-943 - [BREAKING] Rename method in class `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` from `getCountryStateTranslation` to `applyCountryStateTranslation`
 - MIG-943 - [BREAKING] Changed thrown exception from `AssociationEntityRequiredMissingException` to `SwagMigrationAssistant\Exception\MigrationException::associationMissing` in method `\SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter::convert`
-- MIG-967, MIG-866 - Improving the migration of order documents 
+- MIG-967, MIG-866 - Improving the migration of order documents
 
 # 10.0.1
 - MIG-971 - Fix compatibility with Shopware 6.6.0.x
