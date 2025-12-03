@@ -1,3 +1,6 @@
+# 14.0.4
+- Media processing has been simplified. It's no longer done in parallel messages. The migration UI reflects the media migration progress more accurately. When the step is marked as complete, all media are migrated. No need to wait for additional messages to finish.
+
 # 14.0.0
 - [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.
 - [BREAKING] MIG-1053 - Refactored both Shopware 5 and Shopware 6 EnvironmentReader classes to provide more information about exceptions.
