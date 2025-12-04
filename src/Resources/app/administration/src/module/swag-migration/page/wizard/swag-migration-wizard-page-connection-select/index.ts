@@ -86,7 +86,7 @@ export default Shopware.Component.wrapComponentConfig({
             });
 
             this.selectedConnectionId = newId;
-            
+
             if (connection) {
                 this.$emit('onChildRouteReadyChanged', true);
                 this.$emit('onConnectionSelected', connection);
