@@ -11,15 +11,18 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 
+/**
+ * @final
+ */
 #[Package('fundamentals@after-sales')]
-class MigrationFix
+readonly class MigrationFix
 {
     private const PATH_SEPARATOR = '.';
 
     public function __construct(
-        public readonly string $id,
-        public readonly string $value,
-        public readonly string $path,
+        public string $id,
+        public string $value,
+        public string $path,
     ) {
     }
 

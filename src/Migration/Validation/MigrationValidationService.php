@@ -33,6 +33,9 @@ use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRe
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
 readonly class MigrationValidationService
 {
