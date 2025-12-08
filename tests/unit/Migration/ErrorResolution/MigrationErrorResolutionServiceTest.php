@@ -10,9 +10,11 @@ namespace SwagMigrationAssistant\Test\unit\Migration\ErrorResolution;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal
@@ -119,9 +121,10 @@ class MigrationErrorResolutionServiceTest extends TestCase
             ],
         ];
 
-        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes));
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes), $eventDispatcher);
 
-        $migrationFixApplier->applyFixes($data, Uuid::randomHex(), Uuid::randomHex());
+        $migrationFixApplier->applyFixes($data, Uuid::randomHex(), Uuid::randomHex(), Context::createDefaultContext());
 
         static::assertSame($expected, $data[0]['the']['path']['to']['value']);
         static::assertSame($expected, $data[0]['other']['path']['to']['value']);

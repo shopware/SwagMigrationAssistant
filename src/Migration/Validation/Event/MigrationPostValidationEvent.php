@@ -13,6 +13,9 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationContext;
 use Symfony\Contracts\EventDispatcher\Event;
 
+/**
+ * @final
+ */
 #[Package('fundamentals@after-sales')]
 class MigrationPostValidationEvent extends Event implements ShopwareEvent
 {
