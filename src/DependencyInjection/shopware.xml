@@ -212,8 +212,8 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\LanguageConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware\Converter\ShopwareConverter" abstract="true">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LocaleLookup"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup"/>
         </service>
 
         <service id="SwagMigrationAssistant\Profile\Shopware\Converter\SalesChannelConverter"

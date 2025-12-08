@@ -39,7 +39,7 @@ class MediaConverterTest extends TestCase
             $mappingService,
             new DummyLoggingService(),
             $mediaFileService,
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $runId = Uuid::randomHex();

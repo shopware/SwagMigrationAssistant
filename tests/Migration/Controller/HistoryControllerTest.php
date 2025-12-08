@@ -56,17 +56,19 @@ class HistoryControllerTest extends TestCase
     {
         $this->context = Context::createDefaultContext();
         $this->runUuid = Uuid::randomHex();
-        $this->historyService = $this->getContainer()->get(HistoryService::class);
-        $this->controller = $this->getContainer()->get(HistoryController::class);
-        $this->controller->setContainer($this->getContainer());
-        $this->loggingRepo = $this->getContainer()->get('swag_migration_logging.repository');
+        $this->historyService = static::getContainer()->get(HistoryService::class);
+        $this->controller = static::getContainer()->get(HistoryController::class);
+        $this->controller->setContainer(static::getContainer());
+        $this->loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
 
         $this->connectionId = Uuid::randomHex();
-        $connectionRepo = $this->getContainer()->get('swag_migration_connection.repository');
+        $connectionRepo = static::getContainer()->get('swag_migration_connection.repository');
+
         $credentialFields = [
             'apiUser' => 'testUser',
             'apiKey' => 'testKey',
         ];
+
         $this->context->scope(MigrationContext::SOURCE_CONTEXT, function () use ($connectionRepo): void {
             $connectionRepo->create(
                 [
@@ -85,7 +87,7 @@ class HistoryControllerTest extends TestCase
                 $this->context
             );
         });
-        $this->runRepo = $this->getContainer()->get('swag_migration_run.repository');
+        $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
         $this->runRepo->create(
             [
                 [

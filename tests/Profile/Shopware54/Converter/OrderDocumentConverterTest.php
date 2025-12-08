@@ -14,6 +14,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
@@ -91,37 +92,6 @@ class OrderDocumentConverterTest extends TestCase
         static::assertTrue($supportsDefinition);
     }
 
-    public function testConvertWithUnknownOrderId(): void
-    {
-        $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
-        $context = Context::createDefaultContext();
-
-        $convertResult = $this->orderDocumentConverter->convert(
-            $orderDocumentData[1],
-            $context,
-            $this->migrationContext
-        );
-        static::assertEmpty($convertResult->getConverted());
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
-    }
-
-    public function testConvertWithoutDocumentType(): void
-    {
-        $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
-        $context = Context::createDefaultContext();
-        unset($orderDocumentData[0]['documenttype']);
-
-        $convertResult = $this->orderDocumentConverter->convert(
-            $orderDocumentData[0],
-            $context,
-            $this->migrationContext
-        );
-        static::assertEmpty($convertResult->getConverted());
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $logs[0]['code']);
-    }
-
     public function testConvert(): void
     {
         $orderDocumentData = require __DIR__ . '/../../../_fixtures/order_document_data.php';
@@ -182,6 +152,7 @@ class OrderDocumentConverterTest extends TestCase
                 $this->migrationContext
             );
 
+            static::assertInstanceOf(ConvertStruct::class, $convertResult);
             $converted = $convertResult->getConverted();
 
             static::assertIsArray($converted);
@@ -218,6 +189,7 @@ class OrderDocumentConverterTest extends TestCase
                 $this->migrationContext
             );
 
+            static::assertInstanceOf(ConvertStruct::class, $convertResult);
             $converted = $convertResult->getConverted();
 
             static::assertIsArray($converted);

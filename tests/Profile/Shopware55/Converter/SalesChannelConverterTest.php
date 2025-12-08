@@ -59,7 +59,7 @@ class SalesChannelConverterTest extends TestCase
             $countryRepo,
             $salesChannelRepo,
             null,
-            $this->getContainer()->get(CurrencyLookup::class),
+            static::getContainer()->get(CurrencyLookup::class),
             $languageLookup,
         );
 

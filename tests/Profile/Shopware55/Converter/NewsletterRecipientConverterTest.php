@@ -42,7 +42,7 @@ class NewsletterRecipientConverterTest extends TestCase
         $this->newsletterReceiverConverter = new Shopware55NewsletterRecipientConverter(
             $mappingService,
             $this->loggingService,
-            $this->getContainer()->get(LanguageLookup::class)
+            static::getContainer()->get(LanguageLookup::class)
         );
 
         $runId = Uuid::randomHex();
@@ -90,30 +90,6 @@ class NewsletterRecipientConverterTest extends TestCase
             [],
             Uuid::randomHex()
         );
-    }
-
-    public function testConvertWithoutDoubleOptinConfirmed(): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/invalid/newsletter_recipient_data.php';
-
-        $context = Context::createDefaultContext();
-        $customerData = $customerData[1];
-        $customerData['address']['double_optin_confirmed'] = null;
-        $customerData['address']['salutation'] = 'mr';
-        $customerData['double_optin_confirmed'] = null;
-
-        $convertResult = $this->newsletterReceiverConverter->convert(
-            $customerData,
-            $context,
-            $this->context
-        );
-
-        static::assertNull($convertResult->getConverted());
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(1, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
     }
 
     public function testConvertWithNotExistingSalutation(): void

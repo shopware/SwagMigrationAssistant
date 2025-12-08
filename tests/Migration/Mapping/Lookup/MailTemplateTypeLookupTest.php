@@ -81,7 +81,7 @@ class MailTemplateTypeLookupTest extends TestCase
 
     private function getMailTemplateTypeLookup(): MailTemplateTypeLookup
     {
-        return $this->getContainer()->get(MailTemplateTypeLookup::class);
+        return static::getContainer()->get(MailTemplateTypeLookup::class);
     }
 
     private function getMockedMailTemplateTypeLookup(): MailTemplateTypeLookup

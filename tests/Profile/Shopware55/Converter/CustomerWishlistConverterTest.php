@@ -112,43 +112,4 @@ class CustomerWishlistConverterTest extends TestCase
         $wishlistProduct = $wishlistProducts[0];
         static::assertArrayHasKey('id', $wishlistProduct);
     }
-
-    public function testConvertWithoutCustomer(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/customer_wishlist.php';
-        $data[0]['userID'] = '99';
-
-        $convertResult = $this->converter->convert($data[0], $this->context, $this->migrationContext);
-        $this->converter->writeMapping($this->context);
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getMappingUuid());
-    }
-
-    public function testConvertWithoutProduct(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/customer_wishlist.php';
-        $data[0]['ordernumber'] = '99';
-
-        $convertResult = $this->converter->convert($data[0], $this->context, $this->migrationContext);
-        $this->converter->writeMapping($this->context);
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getMappingUuid());
-    }
-
-    public function testConvertWithoutSalesChannel(): void
-    {
-        $data = require __DIR__ . '/../../../_fixtures/customer_wishlist.php';
-        $data[0]['subshopID'] = '99';
-
-        $convertResult = $this->converter->convert($data[0], $this->context, $this->migrationContext);
-        $this->converter->writeMapping($this->context);
-
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
-        static::assertNull($convertResult->getMappingUuid());
-    }
 }

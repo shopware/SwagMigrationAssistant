@@ -28,7 +28,6 @@ use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedDataLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -65,19 +64,6 @@ abstract class TranslationConverter extends ShopwareConverter
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
-
-        if (!isset($data['locale'])) {
-            $this->loggingService->addLogEntry(
-                MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withEntityName('unknown_translation')
-                    ->withFieldName('languageId')
-                    ->withFieldSourcePath('locale')
-                    ->withSourceData($data)
-                    ->build(EmptyNecessaryFieldRunLog::class)
-            );
-
-            return new ConvertStruct(null, $data);
-        }
 
         switch ($data['objecttype']) {
             case 'article':
@@ -213,10 +199,12 @@ abstract class TranslationConverter extends ShopwareConverter
         $productTranslation['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
-        $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
-        if ($languageUuid !== null) {
-            $productTranslation['languageId'] = $languageUuid;
-            $product['translations'][$languageUuid] = $productTranslation;
+        if (isset($data['locale'])) {
+            $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
+            if ($languageUuid !== null) {
+                $productTranslation['languageId'] = $languageUuid;
+                $product['translations'][$languageUuid] = $productTranslation;
+            }
         }
 
         unset($data['name'], $data['locale']);

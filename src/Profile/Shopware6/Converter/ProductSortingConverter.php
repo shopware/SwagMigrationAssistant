@@ -34,7 +34,7 @@ class ProductSortingConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === ProductSortingDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ConvertStruct
+    protected function convertData(array $data): ?ConvertStruct
     {
         $converted = $data;
         $productSortingUuid = $this->productSortingLookup->get($data['key'], $this->context);
@@ -50,7 +50,7 @@ class ProductSortingConverter extends ShopwareConverter
         );
 
         if ($this->productSortingLookup->getIsLocked($data['key'], $this->context)) {
-            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+            return null;
         }
 
         $this->updateAssociationIds(

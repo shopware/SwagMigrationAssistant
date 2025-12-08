@@ -140,7 +140,7 @@ class ConverterRegistryTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->converterRegistry = $this->getContainer()->get(ConverterRegistry::class);
+        $this->converterRegistry = static::getContainer()->get(ConverterRegistry::class);
     }
 
     /**

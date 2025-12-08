@@ -23,16 +23,15 @@ class SeoUrlConverterConvertDataTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
-    public function testConvertSkipConvertionIfSeoUrlIsUnmodified(): void
+    public function testConvertIfSeoUrlIsUnmodified(): void
     {
         $data = [
             'isModified' => false,
         ];
 
         $seoUrlConverter = $this->createSeoUrlConverter();
-        $result = $seoUrlConverter->convert($data, Context::createDefaultContext(), $this->createMigrationContext());
-        static::assertNull($result->getConverted());
-        static::assertSame($data, $result->getUnmapped());
+
+        static::assertNull($seoUrlConverter->convert($data, Context::createDefaultContext(), $this->createMigrationContext()));
     }
 
     private function createSeoUrlConverter(): SeoUrlConverter

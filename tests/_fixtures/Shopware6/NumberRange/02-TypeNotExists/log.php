@@ -5,8 +5,4 @@
  * file that was distributed with this source code.
  */
 
-return [
-    [
-        'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE',
-    ],
-];
+return [];
