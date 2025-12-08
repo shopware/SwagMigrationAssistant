@@ -271,7 +271,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             ]);
         });
 
-        it('should not load existing fixes if no logs where found', async () => {
+        it('should not load existing fixes if no logs were found', async () => {
             migrationLoggingRepositoryMock.search.mockReturnValueOnce(
                 Promise.resolve(new EntityCollection(null, 'swag_migration_logging', null, null, [], 0)),
             );

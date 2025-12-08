@@ -247,7 +247,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 expected: 0,
             },
         ])(
-            'should directly continue migration if no errors where logged: $name',
+            'should directly continue migration if no errors were logged: $name',
             async ({ logTotal, unfixableTotal, expected }) => {
                 migrationApiServiceMock.getLogGroups.mockReturnValueOnce(
                     Promise.resolve({
