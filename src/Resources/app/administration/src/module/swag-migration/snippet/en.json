@@ -591,7 +591,7 @@
               "title": "Edit: {count} Items",
               "banner": {
                 "title": "No option available",
-                "content": "Please create atleast one option to select in the corresponding Admnistration area.",
+                "content": "Please create at least one option to select in the corresponding Administration area.",
                 "link": "Add an Option"
               },
               "unhandledBanner": {
