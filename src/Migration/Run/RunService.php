@@ -144,8 +144,7 @@ class RunService implements RunServiceInterface
             throw MigrationException::migrationIsAlreadyRunning();
         }
 
-        /** @var SwagMigrationConnectionEntity $connection */
-        $connection = $this->connectionRepo->search(new Criteria([$connectionUuid]), $context)->first();
+        $connection = $this->connectionRepo->search(new Criteria([$connectionUuid]), $context)->getEntities()->first();
 
         if ($connection === null) {
             throw MigrationException::noConnectionFound();
