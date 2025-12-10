@@ -247,6 +247,12 @@ class StatusController extends AbstractController
             throw MigrationException::noConnectionFound();
         }
 
+        $credentialFields = $request->request->all('credentialFields');
+
+        if (!empty($credentialFields)) {
+            $connection->setCredentialFields($credentialFields);
+        }
+
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 

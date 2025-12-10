@@ -291,35 +291,38 @@ export default Shopware.Component.wrapComponentConfig({
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
-            return this.migrationApiService
-                .updateConnectionCredentials(this.connection.id, this.connection.credentialFields)
-                .then((response) => {
-                    if (response.errors && response.errors.length > 0) {
-                        this.isLoading = false;
-                        this.onResponseError('');
+
+            return this.doConnectionCheck(this.connection.credentialFields)
+                .then(async (isValid) => {
+                    if (!isValid) {
+                        return;
                     }
 
-                    return this.doConnectionCheck();
+                    await this.migrationApiService
+                        .updateConnectionCredentials(this.connection.id, this.connection.credentialFields)
+                        .catch((error) => {
+                            this.onResponseError(error.response.data.errors[0].code);
+                        });
                 })
-                .catch((error) => {
+                .finally(() => {
                     this.isLoading = false;
-                    this.onResponseError(error.response.data.errors[0].code);
                 });
         },
 
-        doConnectionCheck() {
+        doConnectionCheck(credentialFields?: Record<string, string>) {
             this.isLoading = true;
 
             return this.migrationApiService
-                .checkConnection(this.connection.id)
+                .checkConnection(this.connection.id, credentialFields)
                 .then((connectionCheckResponse) => {
                     this.migrationStore.setConnectionId(this.connection.id);
                     this.isLoading = false;
 
                     if (!connectionCheckResponse) {
                         this.onResponseError(-1);
-                        return;
+                        return false;
                     }
+
                     this.migrationStore.setEnvironmentInformation(connectionCheckResponse);
                     this.migrationStore.setDataSelectionIds([]);
                     this.migrationStore.setPremapping([]);
@@ -327,7 +330,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                     if (connectionCheckResponse.requestStatus === undefined) {
                         this.navigateToRoute(this.routes.credentialsSuccess);
-                        return;
+                        return true;
                     }
 
                     if (
@@ -335,7 +338,7 @@ export default Shopware.Component.wrapComponentConfig({
                         connectionCheckResponse.requestStatus.isWarning === false
                     ) {
                         this.onResponseError(connectionCheckResponse.requestStatus.code);
-                        return;
+                        return false;
                     }
 
                     // create warning for success page
@@ -349,6 +352,8 @@ export default Shopware.Component.wrapComponentConfig({
                     }
 
                     this.navigateToRoute(this.routes.credentialsSuccess);
+
+                    return true;
                 })
                 .catch((error) => {
                     this.isLoading = false;
@@ -358,6 +363,8 @@ export default Shopware.Component.wrapComponentConfig({
                     this.migrationStore.setPremapping([]);
                     this.migrationStore.setDataSelectionTableData([]);
                     this.onResponseError(error.response.data.errors[0].code);
+
+                    return false;
                 });
         },
 
