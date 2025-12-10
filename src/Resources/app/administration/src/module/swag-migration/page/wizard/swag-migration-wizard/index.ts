@@ -286,27 +286,26 @@ export default Shopware.Component.wrapComponentConfig({
             });
         },
 
-        onConnect() {
+        async onConnect() {
             this.isLoading = true;
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
 
-            return this.doConnectionCheck(this.connection.credentialFields)
-                .then(async (isValid) => {
-                    if (!isValid) {
-                        return;
-                    }
+            try {
+                const isValid = await this.doConnectionCheck(this.connection.credentialFields);
 
-                    await this.migrationApiService
-                        .updateConnectionCredentials(this.connection.id, this.connection.credentialFields)
-                        .catch((error) => {
-                            this.onResponseError(error.response.data.errors[0].code);
-                        });
-                })
-                .finally(() => {
-                    this.isLoading = false;
-                });
+                if (isValid) {
+                    await this.migrationApiService.updateConnectionCredentials(
+                        this.connection.id,
+                        this.connection.credentialFields,
+                    );
+                }
+            } catch (error) {
+                this.onResponseError(error.response.data.errors[0].code);
+            } finally {
+                this.isLoading = false;
+            }
         },
 
         doConnectionCheck(credentialFields?: Record<string, string>) {
