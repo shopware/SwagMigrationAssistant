@@ -10,9 +10,13 @@ namespace SwagMigrationAssistant\Test\unit\Migration\ErrorResolution;
 use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\ErrorResolution\Event\MigrationPostErrorResolutionEvent;
+use SwagMigrationAssistant\Migration\ErrorResolution\Event\MigrationPreErrorResolutionEvent;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal
@@ -119,9 +123,23 @@ class MigrationErrorResolutionServiceTest extends TestCase
             ],
         ];
 
-        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes));
+        $eventClasses = [];
+        $eventDispatcher = $this->createMock(EventDispatcherInterface::class);
+        $eventDispatcher->expects(static::exactly(2))->method('dispatch')
+            ->willReturnCallback(function ($event) use (&$eventClasses) {
+                $eventClasses[] = $event::class;
 
-        $migrationFixApplier->applyFixes($data, Uuid::randomHex(), Uuid::randomHex());
+                return $event;
+            });
+
+        $migrationFixApplier = new MigrationErrorResolutionService($this->createConnection($fixes), $eventDispatcher);
+
+        $migrationFixApplier->applyFixes($data, Uuid::randomHex(), Uuid::randomHex(), Context::createDefaultContext());
+
+        static::assertSame([
+            MigrationPreErrorResolutionEvent::class,
+            MigrationPostErrorResolutionEvent::class,
+        ], $eventClasses);
 
         static::assertSame($expected, $data[0]['the']['path']['to']['value']);
         static::assertSame($expected, $data[0]['other']['path']['to']['value']);

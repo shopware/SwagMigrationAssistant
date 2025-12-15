@@ -23,6 +23,7 @@ use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use SwagMigrationAssistant\Exception\MigrationException;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -33,9 +34,11 @@ use Symfony\Component\Routing\Attribute\Route;
 
 #[Route(defaults: ['_routeScope' => ['api']])]
 #[Package('fundamentals@after-sales')]
-final class DataProviderController
+class DataProviderController extends AbstractController
 {
     /**
+     * @internal
+     *
      * @param EntityRepository<MediaCollection> $mediaRepository
      */
     public function __construct(
