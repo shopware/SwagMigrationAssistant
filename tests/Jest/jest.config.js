@@ -64,6 +64,7 @@ module.exports = {
         vue$: `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/vue/dist/vue.cjs.js`,
         '@vue/(.*)$': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/@vue/$1`,
         'vue-i18n$': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/vue-i18n/dist/vue-i18n.cjs.js`,
+        '^lodash-es$': 'lodash',
         '^\@shopware-ag\/meteor-admin-sdk\/es\/(.*)': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/@shopware-ag/meteor-admin-sdk/umd/$1`,
         '^\@shopware-ag\/meteor-component-library$': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/@shopware-ag/meteor-component-library/dist/common/index.js`,
         '^@administration(.*)$': `${process.env.ADMIN_PATH}/src$1`,
