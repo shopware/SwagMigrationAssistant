@@ -33,7 +33,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
  * security review straightforward. Do not scatter validation logic across multiple methods.
  */
 #[Package('fundamentals@after-sales')]
-class LogGroupingService implements LogGroupingServiceInterface
+readonly class LogGroupingService
 {
     /**
      * allowlist of columns that can be used for ORDER BY.
@@ -65,7 +65,7 @@ class LogGroupingService implements LogGroupingServiceInterface
     private const ALLOWED_FILTER_STATUSES = ['resolved', 'unresolved'];
 
     public function __construct(
-        private readonly Connection $connection,
+        private Connection $connection,
     ) {
     }
 

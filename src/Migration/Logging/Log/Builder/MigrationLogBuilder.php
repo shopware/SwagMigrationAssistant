@@ -9,10 +9,11 @@ namespace SwagMigrationAssistant\Migration\Logging\Log\Builder;
 
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 /**
+ * @final
+ *
  * @example
  * $log = (new MigrationLogBuilder('runId', 'profileName', 'gatewayName'))
  *     ->withField('fieldName')
@@ -125,9 +126,7 @@ class MigrationLogBuilder
      */
     public function build(string $logClass): AbstractMigrationLogEntry
     {
-        if (!class_exists($logClass) || !is_subclass_of($logClass, AbstractMigrationLogEntry::class)) {
-            throw MigrationException::failedToCreateMigrationLog($logClass);
-        }
+        \assert(\class_exists($logClass) && \is_subclass_of($logClass, AbstractMigrationLogEntry::class));
 
         return new $logClass(
             $this->runId,

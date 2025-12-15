@@ -9,24 +9,47 @@ namespace SwagMigrationAssistant\Migration\ErrorResolution;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Migration\ErrorResolution\Event\MigrationPostErrorResolutionEvent;
+use SwagMigrationAssistant\Migration\ErrorResolution\Event\MigrationPreErrorResolutionEvent;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
-class MigrationErrorResolutionService
+readonly class MigrationErrorResolutionService
 {
     public function __construct(
-        private readonly Connection $connection,
+        private Connection $connection,
+        private EventDispatcherInterface $eventDispatcher,
     ) {
     }
 
     /**
      * @param array<int|string, array<int|string, mixed>> $data
      */
-    public function applyFixes(array &$data, string $connectionId, string $runId): void
+    public function applyFixes(array &$data, string $connectionId, string $runId, Context $context): void
     {
-        $itemIds = \array_column($data, 'id');
-        $fixes = $this->getFixes($itemIds, $connectionId, $runId);
+        $emptyFixes = [];
+        $errorResolutionContext = new MigrationErrorResolutionContext(
+            $data,
+            $emptyFixes,
+            $connectionId,
+            $runId,
+            $context,
+        );
+
+        $this->loadFixes($errorResolutionContext);
+
+        $this->eventDispatcher->dispatch(
+            new MigrationPreErrorResolutionEvent($errorResolutionContext),
+        );
+
+        $fixes = $errorResolutionContext->getFixes();
+        $data = $errorResolutionContext->getData();
 
         foreach ($data as &$item) {
             $id = $item['id'];
@@ -41,15 +64,29 @@ class MigrationErrorResolutionService
         }
 
         unset($item);
+
+        $errorResolutionContext->setData($data);
+
+        $this->eventDispatcher->dispatch(
+            new MigrationPostErrorResolutionEvent($errorResolutionContext),
+        );
+
+        $data = $errorResolutionContext->getData();
     }
 
     /**
-     * @param array<int, string> $ids
-     *
-     * @return array<string, list<MigrationFix>>
+     * Loads fixes from the database and populates them in the context.
      */
-    private function getFixes(array $ids, string $connectionId, string $runId): array
+    private function loadFixes(MigrationErrorResolutionContext $errorResolutionContext): void
     {
+        $itemIds = \array_column($errorResolutionContext->getData(), 'id');
+
+        if (empty($itemIds)) {
+            $errorResolutionContext->setFixes([]);
+
+            return;
+        }
+
         // To ensure, only select fixes for the current run, join swag_migration_logging table and filter by run_id
         $sql = <<<'SQL'
 SELECT fix.entity_id AS entityId, fix.id, fix.value, fix.path
@@ -64,26 +101,26 @@ SQL;
         $result = $this->connection->fetchAllAssociative(
             $sql,
             [
-                'ids' => Uuid::fromHexToBytesList($ids),
-                'connectionId' => Uuid::fromHexToBytes($connectionId),
-                'runId' => Uuid::fromHexToBytes($runId),
+                'ids' => Uuid::fromHexToBytesList($itemIds),
+                'connectionId' => Uuid::fromHexToBytes($errorResolutionContext->getConnectionId()),
+                'runId' => Uuid::fromHexToBytes($errorResolutionContext->getRunId()),
             ],
             [
                 'ids' => ArrayParameterType::STRING,
             ]
         );
 
-        $return = [];
+        $fixes = [];
         foreach ($result as $row) {
             $entityId = Uuid::fromBytesToHex($row['entityId']);
 
-            if (!\array_key_exists($entityId, $return)) {
-                $return[$entityId] = [];
+            if (!\array_key_exists($entityId, $fixes)) {
+                $fixes[$entityId] = [];
             }
 
-            $return[$entityId][] = MigrationFix::fromDatabaseQuery($row);
+            $fixes[$entityId][] = MigrationFix::fromDatabaseQuery($row);
         }
 
-        return $return;
+        $errorResolutionContext->setFixes($fixes);
     }
 }

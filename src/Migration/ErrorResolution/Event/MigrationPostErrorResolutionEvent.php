@@ -5,12 +5,12 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Migration\Validation\Event;
+namespace SwagMigrationAssistant\Migration\ErrorResolution\Event;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Event\ShopwareEvent;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Validation\MigrationValidationContext;
+use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionContext;
 use Symfony\Contracts\EventDispatcher\Event;
 
 /**
@@ -19,22 +19,22 @@ use Symfony\Contracts\EventDispatcher\Event;
  * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]
-class MigrationPreValidationEvent extends Event implements ShopwareEvent
+class MigrationPostErrorResolutionEvent extends Event implements ShopwareEvent
 {
     /**
      * @internal
      */
-    public function __construct(private readonly MigrationValidationContext $validationContext)
+    public function __construct(private readonly MigrationErrorResolutionContext $errorResolutionContext)
     {
     }
 
-    public function getValidationContext(): MigrationValidationContext
+    public function getErrorResolutionContext(): MigrationErrorResolutionContext
     {
-        return $this->validationContext;
+        return $this->errorResolutionContext;
     }
 
     public function getContext(): Context
     {
-        return $this->validationContext->getContext();
+        return $this->errorResolutionContext->getContext();
     }
 }
