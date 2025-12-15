@@ -44,7 +44,7 @@ final class MigrationProcessHandler
         $progress = $run->getProgress();
 
         if ($progress === null) {
-            throw MigrationException::noRunProgressFound($run->getId());
+            throw MigrationException::runNotFound($run->getId());
         }
 
         $migrationContext = $this->migrationContextFactory->create($run, $progress->getCurrentEntityProgress(), $this->batchSize, $progress->getCurrentEntity());
@@ -62,7 +62,7 @@ final class MigrationProcessHandler
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunUuid()]), $context)->getEntities()->first();
 
         if ($run === null) {
-            throw MigrationException::noRunningMigration($message->getRunUuid());
+            throw MigrationException::runNotFound($message->getRunUuid());
         }
 
         return $run;

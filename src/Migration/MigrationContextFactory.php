@@ -99,7 +99,7 @@ readonly class MigrationContextFactory implements MigrationContextFactoryInterfa
         }
 
         if ($settings->getSelectedConnectionId() === null) {
-            throw MigrationException::noConnectionIsSelected();
+            throw MigrationException::noConnectionFound();
         }
 
         $connection = $this->migrationConnectionRepository->search(

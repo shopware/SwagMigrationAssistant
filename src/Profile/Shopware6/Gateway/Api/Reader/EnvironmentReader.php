@@ -77,14 +77,14 @@ class EnvironmentReader implements EnvironmentReaderInterface
             return \json_decode($result->getBody()->getContents(), true);
         } catch (ClientException $e) {
             if ($e->getCode() === 401) {
-                throw MigrationException::invalidConnectionAuthentication('get-data');
+                throw MigrationException::invalidConnectionCredentials('get-data');
             }
 
             throw $e;
         } catch (RequestException $e) {
             if ($e->getRequest()->getUri()->getPath() === '/api/oauth/token') {
                 // something went wrong with authentication.
-                throw MigrationException::invalidConnectionAuthentication('get-data');
+                throw MigrationException::invalidConnectionCredentials('get-data');
             }
 
             $response = $e->getResponse();

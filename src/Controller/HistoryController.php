@@ -93,7 +93,7 @@ class HistoryController extends AbstractController
         }
 
         if ($this->historyService->isMediaProcessing()) {
-            throw MigrationException::migrationIsAlreadyRunning();
+            throw MigrationException::migrationProcessing();
         }
 
         $this->historyService->clearDataOfRun($runUuid, $context);
