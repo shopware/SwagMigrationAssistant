@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
-use SwagMigrationAssistant\Migration\History\LogGroupingServiceInterface;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -26,9 +26,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
+    /**
+     * @internal
+     */
     public function __construct(
         private readonly HistoryServiceInterface $historyService,
-        private readonly LogGroupingServiceInterface $logGroupingService,
+        private readonly LogGroupingService $logGroupingService,
     ) {
     }
 

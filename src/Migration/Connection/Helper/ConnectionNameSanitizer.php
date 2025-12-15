@@ -9,8 +9,11 @@ namespace SwagMigrationAssistant\Migration\Connection\Helper;
 
 use Shopware\Core\Framework\Log\Package;
 
+/**
+ * @internal
+ */
 #[Package('fundamentals@after-sales')]
-class ConnectionNameSanitizer
+readonly class ConnectionNameSanitizer
 {
     /**
      * Sanitizes the connection name by removing any special characters, hyphens and spaces.

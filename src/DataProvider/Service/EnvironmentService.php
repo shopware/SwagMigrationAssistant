@@ -23,6 +23,8 @@ use Shopware\Core\System\Language\LanguageCollection;
 class EnvironmentService implements EnvironmentServiceInterface
 {
     /**
+     * @internal
+     *
      * @param EntityRepository<CurrencyCollection> $currencyRepository
      * @param EntityRepository<LanguageCollection> $languageRepository
      */

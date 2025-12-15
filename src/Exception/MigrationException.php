@@ -84,8 +84,6 @@ class MigrationException extends HttpException
 
     final public const API_CONNECTION_ERROR = 'SWAG_MIGRATION__API_CONNECTION_ERROR';
 
-    final public const FAILED_TO_CREATE_MIGRATION_LOG = 'SWAG_MIGRATION__FAILED_TO_CREATE_MIGRATION_LOG';
-
     final public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
 
     final public const COULD_NOT_CONVERT_FIX = 'SWAG_MIGRATION__COULD_NOT_CONVERT_FIX';
@@ -446,16 +444,6 @@ class MigrationException extends HttpException
             [
                 'sourceType' => $invalidContext->getSource()::class,
             ]
-        );
-    }
-
-    public static function failedToCreateMigrationLog(string $logClass): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::FAILED_TO_CREATE_MIGRATION_LOG,
-            'Failed to create migration log of class "{{ logClass }}".',
-            ['logClass' => $logClass]
         );
     }
 

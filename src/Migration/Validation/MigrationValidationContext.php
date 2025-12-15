@@ -12,12 +12,19 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
+/**
+ * @final
+ *
+ * @codeCoverageIgnore
+ */
 #[Package('fundamentals@after-sales')]
 readonly class MigrationValidationContext
 {
     protected MigrationValidationResult $validationResult;
 
     /**
+     * @internal
+     *
      * @param array<string, mixed> $convertedData
      * @param array<string, mixed> $sourceData
      */
