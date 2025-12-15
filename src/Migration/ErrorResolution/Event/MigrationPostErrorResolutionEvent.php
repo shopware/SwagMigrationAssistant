@@ -15,10 +15,15 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @final
+ *
+ * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]
 class MigrationPostErrorResolutionEvent extends Event implements ShopwareEvent
 {
+    /**
+     * @internal
+     */
     public function __construct(private readonly MigrationErrorResolutionContext $errorResolutionContext)
     {
     }

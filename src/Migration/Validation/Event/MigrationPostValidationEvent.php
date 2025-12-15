@@ -15,10 +15,15 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 /**
  * @final
+ *
+ * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]
 class MigrationPostValidationEvent extends Event implements ShopwareEvent
 {
+    /**
+     * @internal
+     */
     public function __construct(private readonly MigrationValidationContext $validationContext)
     {
     }

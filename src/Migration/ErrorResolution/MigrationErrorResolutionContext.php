@@ -12,11 +12,15 @@ use Shopware\Core\Framework\Log\Package;
 
 /**
  * @final
+ *
+ * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]
 class MigrationErrorResolutionContext
 {
     /**
+     * @internal
+     *
      * @param array<int|string, array<int|string, mixed>> $data
      * @param array<string, list<MigrationFix>> $fixes
      */

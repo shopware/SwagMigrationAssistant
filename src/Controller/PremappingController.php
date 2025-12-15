@@ -22,6 +22,9 @@ use Symfony\Component\Routing\Attribute\Route;
 #[Package('fundamentals@after-sales')]
 class PremappingController extends AbstractController
 {
+    /**
+     * @internal
+     */
     public function __construct(
         private readonly PremappingServiceInterface $premappingService,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,

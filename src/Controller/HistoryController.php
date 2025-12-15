@@ -26,6 +26,9 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 #[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
+    /**
+     * @internal
+     */
     public function __construct(
         private readonly HistoryServiceInterface $historyService,
         private readonly LogGroupingService $logGroupingService,
