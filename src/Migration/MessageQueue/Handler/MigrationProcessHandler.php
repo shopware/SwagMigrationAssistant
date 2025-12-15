@@ -44,7 +44,7 @@ final class MigrationProcessHandler
         $progress = $run->getProgress();
 
         if ($progress === null) {
-            throw MigrationException::runNotFound($run->getId());
+            throw MigrationException::noRunProgressFound($run->getId());
         }
 
         $migrationContext = $this->migrationContextFactory->create($run, $progress->getCurrentEntityProgress(), $this->batchSize, $progress->getCurrentEntity());

@@ -17,6 +17,7 @@ use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
@@ -76,13 +77,24 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
             $connection->executeQuery('SELECT 1');
         } catch (\Throwable $exception) {
+            $response = new RequestStatusStruct(
+                '',
+                $exception->getMessage(),
+                false,
+                $exception
+            );
+
+            if ($exception instanceof MigrationException) {
+                $response->setCode($exception->getErrorCode());
+            }
+
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),
                 $profile->getVersion(),
                 '-',
                 [],
                 [],
-                new RequestStatusStruct($exception->getCode(), $exception->getMessage())
+                $response,
             );
         }
 

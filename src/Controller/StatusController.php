@@ -34,8 +34,6 @@ use Symfony\Component\Routing\Attribute\Route;
 class StatusController extends AbstractController
 {
     /**
-     * @internal
-     *
      * @param EntityRepository<SwagMigrationConnectionCollection> $migrationConnectionRepo
      * @param EntityRepository<GeneralSettingCollection> $generalSettingRepo
      */
