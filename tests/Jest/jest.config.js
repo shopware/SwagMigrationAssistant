@@ -74,7 +74,7 @@ module.exports = {
     },
 
     transformIgnorePatterns: [
-        '/node_modules/(?!(uuidv7|other)/)',
+        '/node_modules/(?!(@shopware-ag/meteor-component-library|@shopware-ag/meteor-icon-kit|uuidv7|other)/)',
     ],
 
     // testEnvironment: 'jsdom',
