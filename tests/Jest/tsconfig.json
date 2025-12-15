@@ -2,6 +2,7 @@
   "compilerOptions": {
     "paths": {
       "src/*": ["../../../../../src/Administration/Resources/app/administration/src/*"],
+      "@/*": ["./src/*"]
     }
   },
   "files": [
