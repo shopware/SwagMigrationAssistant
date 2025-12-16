@@ -82,18 +82,29 @@ final class ProcessMediaHandler
 
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
+        } catch (MigrationException $exception) {
+            $this->loggingService->addLogEntry(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withEntityName(MediaDefinition::ENTITY_NAME)
+                    ->build(ProcessorNotFoundLog::class)
+            );
+
+            $this->loggingService->saveLogging($context);
+
+            return;
+        }
+
+        try {
             $workload = $processor->process($migrationContext, $context, $workload);
             $this->processFailures($context, $migrationContext, $processor, $workload);
-        } catch (MigrationException|\Exception $exception) {
-            $logClass = $exception instanceof MigrationException
-                ? ProcessorNotFoundLog::class : ExceptionRunLog::class;
-
+        } catch (\Exception $exception) {
             $this->loggingService->addLogEntry(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
-                    ->build($logClass)
+                    ->build(ExceptionRunLog::class)
             );
 
             $this->loggingService->saveLogging($context);

@@ -46,9 +46,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                 } catch (MigrationException $exception) {
-                    if ($exception->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
-                        $this->logDataSetNotFoundException($migrationContext, $exception);
-                    }
+                    $this->logDataSetNotFoundException($migrationContext, $exception);
 
                     continue;
                 }
@@ -62,9 +60,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                     $currentCount = 0;
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
                 } catch (MigrationException $exception) {
-                    if ($exception->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
-                        $this->logDataSetNotFoundException($migrationContext, $exception);
-                    }
+                    $this->logDataSetNotFoundException($migrationContext, $exception);
 
                     continue;
                 }
