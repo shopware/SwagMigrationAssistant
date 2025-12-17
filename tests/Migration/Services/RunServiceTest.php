@@ -145,7 +145,7 @@ class RunServiceTest extends TestCase
             new SwagMigrationRunCollection([$run]),
         ], new SwagMigrationRunDefinition());
 
-        static::expectExceptionObject(MigrationException::migrationIsAlreadyRunning());
+        static::expectExceptionObject(MigrationException::migrationProcessing());
 
         $this->createRunService()->updateConnectionCredentials(
             Context::createDefaultContext(),
