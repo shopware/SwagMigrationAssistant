@@ -374,7 +374,7 @@ const migrationStore = Shopware.Store.register({
 
                 const errorMessageSnippet = `swag-migration.wizard.pages.credentials.error.${code}`;
 
-                if (!Shopware.Snippet.tc(errorMessageSnippet)) {
+                if (!Shopware.Snippet.te(errorMessageSnippet)) {
                     await this.createErrorNotification('swag-migration.api-error.checkConnection');
                     return;
                 }

@@ -801,22 +801,9 @@ class StatusControllerTest extends TestCase
             ->method('getEnvironmentInformation')
             ->willReturnCallback(function (MigrationContextInterface $migrationContext, Context $context) use ($baseDataFetcher, $fingerprint): EnvironmentInformation {
                 $environmentInformation = $baseDataFetcher->getEnvironmentInformation($migrationContext, $context);
+                $environmentInformation->setFingerprint($fingerprint);
 
-                return new EnvironmentInformation(
-                    $environmentInformation->getSourceSystemName(),
-                    $environmentInformation->getSourceSystemVersion(),
-                    $environmentInformation->getSourceSystemDomain(),
-                    $environmentInformation->getTotals(),
-                    $environmentInformation->getAdditionalData(),
-                    $environmentInformation->getRequestStatus(),
-                    $environmentInformation->isMigrationDisabled(),
-                    $environmentInformation->getDisplayWarnings(),
-                    $environmentInformation->getTargetSystemCurrency(),
-                    $environmentInformation->getSourceSystemCurrency(),
-                    $environmentInformation->getSourceSystemLocale(),
-                    $environmentInformation->getTargetSystemLocale(),
-                    $fingerprint
-                );
+                return $environmentInformation;
             });
 
         return $mockDataFetcher;

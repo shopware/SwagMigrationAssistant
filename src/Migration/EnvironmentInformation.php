@@ -118,4 +118,9 @@ class EnvironmentInformation extends Struct
     {
         return $this->fingerprint;
     }
+
+    public function setFingerprint(?string $fingerprint): void
+    {
+        $this->fingerprint = $fingerprint;
+    }
 }

@@ -142,19 +142,10 @@ class RunService implements RunServiceInterface
             throw MigrationException::migrationProcessing();
         }
 
-        $connection = $this->connectionRepo->search(
-            new Criteria([$connectionUuid]),
-            $context,
-        )->getEntities()->first();
-
-        if ($connection === null) {
-            throw MigrationException::noConnectionFound();
-        }
-
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connection, $credentialFields): void {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields): void {
             $this->connectionRepo->update([
                 [
-                    'id' => $connection->getId(),
+                    'id' => $connectionUuid,
                     'credentialFields' => $credentialFields,
                 ],
             ], $context);
