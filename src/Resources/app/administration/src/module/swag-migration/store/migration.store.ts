@@ -369,12 +369,14 @@ const migrationStore = Shopware.Store.register({
 
                 if (!code) {
                     await this.createErrorNotification('swag-migration.api-error.checkConnection');
+                    return;
                 }
 
                 const errorMessageSnippet = `swag-migration.wizard.pages.credentials.error.${code}`;
 
                 if (!Shopware.Snippet.tc(errorMessageSnippet)) {
                     await this.createErrorNotification('swag-migration.api-error.checkConnection');
+                    return;
                 }
 
                 await this.createErrorNotification(errorMessageSnippet);

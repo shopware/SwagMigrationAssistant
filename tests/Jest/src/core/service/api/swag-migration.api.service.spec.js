@@ -72,9 +72,14 @@ describe('src/core/service/api/swag-migration.api.service', () => {
 
         const data = {
             connectionId: '1234567890',
+            credentialFields: {
+                local: {
+                    endpoint: 'http://shopware.local',
+                },
+            },
         };
 
-        await migrationApiService.checkConnection(data.connectionId, {
+        await migrationApiService.checkConnection(data.connectionId, data.credentialFields, {
             'test-header': 'test-value',
         });
 
