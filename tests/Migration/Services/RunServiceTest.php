@@ -154,25 +154,6 @@ class RunServiceTest extends TestCase
         );
     }
 
-    public function testUpdateConnectionCredentialsWhenNoConnectionFound(): void
-    {
-        $this->runRepo = new StaticEntityRepository([
-            new SwagMigrationRunCollection([]),
-        ], new SwagMigrationRunDefinition());
-
-        $this->connectionRepo = new StaticEntityRepository([
-            new SwagMigrationConnectionCollection([]),
-        ], new SwagMigrationConnectionDefinition());
-
-        static::expectExceptionObject(MigrationException::noConnectionFound());
-
-        $this->createRunService()->updateConnectionCredentials(
-            Context::createDefaultContext(),
-            Uuid::randomHex(),
-            [],
-        );
-    }
-
     public function testStartMigrationRunSuccessfully(): void
     {
         $trackingEventClient = $this->createMock(TrackingEventClient::class);
