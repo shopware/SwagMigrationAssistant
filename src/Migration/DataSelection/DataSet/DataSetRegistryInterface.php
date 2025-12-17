@@ -8,7 +8,7 @@
 namespace SwagMigrationAssistant\Migration\DataSelection\DataSet;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\DataSetNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -20,7 +20,7 @@ interface DataSetRegistryInterface
     public function getDataSets(MigrationContextInterface $migrationContext): array;
 
     /**
-     * @throws DataSetNotFoundException
+     * @throws MigrationException
      */
     public function getDataSet(MigrationContextInterface $migrationContext, string $dataSetName): DataSet;
 }

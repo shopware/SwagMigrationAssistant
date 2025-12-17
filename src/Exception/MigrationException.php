@@ -24,93 +24,77 @@ class MigrationException extends HttpException
 
     final public const PROVIDER_HAS_NO_TABLE_ACCESS = 'SWAG_MIGRATION__PROVIDER_HAS_NO_TABLE_ACCESS';
 
-    public const MIGRATION_CONTEXT_NOT_CREATED = 'SWAG_MIGRATION__MIGRATION_CONTEXT_NOT_CREATED';
+    final public const MIGRATION_CONTEXT_NOT_CREATED = 'SWAG_MIGRATION__MIGRATION_CONTEXT_NOT_CREATED';
 
-    public const NO_RUNNING_MIGRATION = 'SWAG_MIGRATION__NO_RUNNING_MIGRATION';
+    final public const RUN_NOT_FOUND = 'SWAG_MIGRATION__RUN_NOT_FOUND';
 
-    public const NO_RUN_TO_FINISH = 'SWAG_MIGRATION__NO_RUN_TO_FINISH';
+    final public const NO_RUN_PROGRESS_FOUND = 'SWAG_MIGRATION__NO_RUN_PROGRESS_FOUND';
 
-    public const MIGRATION_IS_ALREADY_RUNNING = 'SWAG_MIGRATION__MIGRATION_IS_ALREADY_RUNNING';
+    final public const MIGRATION_PROCESSING = 'SWAG_MIGRATION__MIGRATION_PROCESSING';
 
-    public const MIGRATION_IS_RESETTING_CHECKSUMS = 'SWAG_MIGRATION__MIGRATION_IS_RESETTING_CHECKSUMS';
+    final public const NO_CONNECTION_FOUND = 'SWAG_MIGRATION__NO_CONNECTION_FOUND';
 
-    public const MIGRATION_IS_TRUNCATING_DATA = 'SWAG_MIGRATION__MIGRATION_IS_TRUNCATING_DATA';
+    final public const RUN_COULD_NOT_BE_CREATED = 'SWAG_MIGRATION__RUN_COULD_NOT_BE_CREATED';
 
-    public const NO_CONNECTION_IS_SELECTED = 'SWAG_MIGRATION__NO_CONNECTION_IS_SELECTED';
+    final public const PREMAPPING_IS_INCOMPLETE = 'SWAG_MIGRATION__PREMAPPING_IS_INCOMPLETE';
 
-    public const NO_CONNECTION_FOUND = 'SWAG_MIGRATION__NO_CONNECTION_FOUND';
+    final public const NO_DATA_TO_MIGRATE = 'SWAG_MIGRATION__NO_DATA_TO_MIGRATE';
 
-    public const RUN_COULD_NOT_BE_CREATED = 'SWAG_MIGRATION__RUN_COULD_NOT_BE_CREATED';
+    final public const UNKNOWN_PROGRESS_STEP = 'SWAG_MIGRATION__UNKNOWN_PROGRESS_STEP';
 
-    public const PREMAPPING_IS_INCOMPLETE = 'SWAG_MIGRATION__PREMAPPING_IS_INCOMPLETE';
+    final public const ENTITY_NOT_EXISTS = 'SWAG_MIGRATION__ENTITY_NOT_EXISTS';
 
-    public const NO_DATA_TO_MIGRATE = 'SWAG_MIGRATION__NO_DATA_TO_MIGRATE';
+    final public const PROCESSOR_NOT_FOUND = 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND';
 
-    public const NO_RUN_PROGRESS_FOUND = 'SWAG_MIGRATION__NO_RUN_PROGRESS_FOUND';
+    final public const INVALID_FIELD_SERIALIZER = 'SWAG_MIGRATION__INVALID_FIELD_SERIALIZER';
 
-    public const UNKNOWN_PROGRESS_STEP = 'SWAG_MIGRATION__UNKNON_PROGRESS_STEP';
+    final public const INVALID_CONNECTION_CREDENTIALS = 'SWAG_MIGRATION__INVALID_CONNECTION_CREDENTIALS';
 
-    public const ENTITY_NOT_EXISTS = 'SWAG_MIGRATION__ENTITY_NOT_EXISTS';
+    final public const SSL_REQUIRED = 'SWAG_MIGRATION__SSL_REQUIRED';
 
-    public const PROCESSOR_NOT_FOUND = 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND';
+    final public const REQUEST_CERTIFICATE_INVALID = 'SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID';
 
-    public const INVALID_FIELD_SERIALIZER = 'SWAG_MIGRATION__INVALID_FIELD_SERIALIZER';
+    final public const CONVERTER_NOT_FOUND = 'SWAG_MIGRATION__CONVERTER_NOT_FOUND';
 
-    public const INVALID_CONNECTION_AUTHENTICATION = 'SWAG_MIGRATION__INVALID_CONNECTION_AUTHENTICATION';
+    final public const MIGRATION_CONTEXT_PROPERTY_MISSING = 'SWAG_MIGRATION__MIGRATION_CONTEXT_PROPERTY_MISSING';
 
-    public const INVALID_CONNECTION_CREDENTIALS = 'SWAG_MIGRATION__INVALID_CONNECTION_CREDENTIALS';
+    final public const READER_NOT_FOUND = 'SWAG_MIGRATION__READER_NOT_FOUND';
 
-    public const SSL_REQUIRED = 'SWAG_MIGRATION__SSL_REQUIRED';
+    final public const DATASET_NOT_FOUND = 'SWAG_MIGRATION__DATASET_NOT_FOUND';
 
-    public const REQUEST_CERTIFICATE_INVALID = 'SWAG_MIGRATION__REQUEST_CERTIFICATE_INVALID';
+    final public const LOCALE_NOT_FOUND = 'SWAG_MIGRATION__LOCALE_NOT_FOUND';
 
-    public const CONVERTER_NOT_FOUND = 'SWAG_MIGRATION__CONVERTER_NOT_FOUND';
+    final public const UNDEFINED_RUN_STATUS = 'SWAG_MIGRATION__UNDEFINED_RUN_STATUS';
 
-    public const MIGRATION_CONTEXT_PROPERTY_MISSING = 'SWAG_MIGRATION__MIGRATION_CONTEXT_PROPERTY_MISSING';
+    final public const PROFILE_NOT_FOUND = 'SWAG_MIGRATION__PROFILE_NOT_FOUND';
 
-    public const READER_NOT_FOUND = 'SWAG_MIGRATION__READER_NOT_FOUND';
+    final public const WRITER_NOT_FOUND = 'SWAG_MIGRATION__WRITER_NOT_FOUND';
 
-    public const DATASET_NOT_FOUND = 'SWAG_MIGRATION__DATASET_NOT_FOUND';
+    final public const COULD_NOT_READ_FILE = 'SWAG_MIGRATION__COULD_NOT_READ_FILE';
 
-    public const LOCALE_NOT_FOUND = 'SWAG_MIGRATION__LOCALE_NOT_FOUND';
+    final public const PROVIDER_NOT_FOUND = 'SWAG_MIGRATION__PROVIDER_NOT_FOUND';
 
-    public const UNDEFINED_RUN_STATUS = 'SWAG_MIGRATION__UNDEFINED_RUN_STATUS';
+    final public const COULD_NOT_GENERATE_DOCUMENT = 'SWAG_MIGRATION__COULD_NOT_GENERATE_DOCUMENT';
 
-    public const NO_FILE_SYSTEM_PERMISSIONS = 'SWAG_MIGRATION__NO_FILE_SYSTEM_PERMISSIONS';
+    final public const ASSOCIATION_ENTITY_REQUIRED_MISSING = 'SWAG_MIGRATION__ASSOCIATION_REQUIRED_MISSING';
 
-    public const PROFILE_NOT_FOUND = 'SWAG_MIGRATION__PROFILE_NOT_FOUND';
+    final public const DATABASE_CONNECTION_ATTRIBUTES_WRONG = 'SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG';
 
-    public const WRITER_NOT_FOUND = 'SWAG_MIGRATION__WRITER_NOT_FOUND';
+    final public const INVALID_WRITE_CONTEXT = 'SWAG_MIGRATION__INVALID_WRITE_CONTEXT';
 
-    public const COULD_NOT_READ_FILE = 'SWAG_MIGRATION__COULD_NOT_READ_FILE';
+    final public const API_CONNECTION_ERROR = 'SWAG_MIGRATION__API_CONNECTION_ERROR';
 
-    public const PROVIDER_NOT_FOUND = 'SWAG_MIGRATION__PROVIDER_NOT_FOUND';
+    final public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
 
-    public const COULD_NOT_GENERATE_DOCUMENT = 'SWAG_MIGRATION__COULD_NOT_GENERATE_DOCUMENT';
+    final public const COULD_NOT_CONVERT_FIX = 'SWAG_MIGRATION__COULD_NOT_CONVERT_FIX';
 
-    public const ASSOCIATION_ENTITY_REQUIRED_MISSING = 'SWAG_MIGRATION__ASSOCIATION_REQUIRED_MISSING';
+    final public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
 
-    public const DATABASE_CONNECTION_ERROR = 'SWAG_MIGRATION__DATABASE_CONNECTION_ERROR';
-
-    public const DATABASE_CONNECTION_ATTRIBUTES_WRONG = 'SWAG_MIGRATION__DATABASE_CONNECTION_ATTRIBUTES_WRONG';
-
-    public const LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND = 'SWAG_MIGRATION__LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND';
-
-    public const INVALID_WRITE_CONTEXT = 'SWAG_MIGRATION__INVALID_WRITE_CONTEXT';
-
-    public const API_CONNECTION_ERROR = 'SWAG_MIGRATION__API_CONNECTION_ERROR';
-
-    public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
-
-    public const MISSING_MIGRATION_FIX_KEY = 'SWAG_MIGRATION__MISSING_MIGRATION_FIX_KEY';
-
-    public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
-
-    public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
+    final public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
-        return new AssociationEntityRequiredMissingException(
+        return new self(
             Response::HTTP_NOT_FOUND,
             self::ASSOCIATION_ENTITY_REQUIRED_MISSING,
             'Mapping of "{{ missingEntity }}" is missing, but it is a required association for "{{ entity }}". Import "{{ missingEntity }}" first.',
@@ -118,15 +102,6 @@ class MigrationException extends HttpException
                 'missingEntity' => $missingEntity,
                 'entity' => $entity,
             ]
-        );
-    }
-
-    public static function databaseConnectionError(): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::DATABASE_CONNECTION_ERROR,
-            'Database connection could not be established.'
         );
     }
 
@@ -150,8 +125,8 @@ class MigrationException extends HttpException
 
     public static function gatewayRead(string $gateway): self
     {
-        return new GatewayReadException(
-            Response::HTTP_NOT_FOUND,
+        return new self(
+            Response::HTTP_BAD_GATEWAY,
             self::GATEWAY_READ,
             'Could not read from gateway: "{{ gateway }}".',
             ['gateway' => $gateway]
@@ -180,7 +155,7 @@ class MigrationException extends HttpException
 
     public static function dataSetNotFound(string $entity): self
     {
-        return new DataSetNotFoundException(
+        return new self(
             Response::HTTP_NOT_FOUND,
             self::DATASET_NOT_FOUND,
             'Data set for "{{ entity }}" entity not found.',
@@ -188,29 +163,28 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function invalidConnectionAuthentication(string $url): self
+    public static function invalidConnectionCredentials(?string $url = null): self
     {
-        return new self(
-            Response::HTTP_BAD_REQUEST,
-            self::INVALID_CONNECTION_AUTHENTICATION,
-            'Invalid connection authentication for the request: "{{ url }}"',
-            ['url' => $url]
-        );
-    }
+        $message = 'The connection credentials are invalid or incomplete.';
 
-    public static function invalidConnectionCredentials(): self
-    {
+        if ($url !== null) {
+            $message = \sprintf(
+                'The connection credentials are invalid or incomplete for "%s".',
+                $url
+            );
+        }
+
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_UNAUTHORIZED,
             self::INVALID_CONNECTION_CREDENTIALS,
-            'Invalid or missing connection credentials',
+            $message,
         );
     }
 
     public static function sslRequired(): self
     {
         return new self(
-            Response::HTTP_MISDIRECTED_REQUEST,
+            Response::HTTP_FORBIDDEN,
             self::SSL_REQUIRED,
             'The request failed, because SSL is required.'
         );
@@ -219,7 +193,7 @@ class MigrationException extends HttpException
     public static function requestCertificateInvalid(string $url): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_BAD_GATEWAY,
             self::REQUEST_CERTIFICATE_INVALID,
             'The following cURL request failed with an SSL certificate problem: "{{ url }}"',
             ['url' => $url]
@@ -259,7 +233,7 @@ class MigrationException extends HttpException
     public static function migrationContextNotCreated(): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::MIGRATION_CONTEXT_NOT_CREATED,
             'Migration context could not be created.',
         );
@@ -275,64 +249,45 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function noRunningMigration(?string $runUuid = null): self
-    {
-        if ($runUuid !== null) {
-            return new NoRunningMigrationException(
-                Response::HTTP_BAD_REQUEST,
-                self::NO_RUNNING_MIGRATION,
-                'No running migration found with id: "{{ runUuid }}".',
-                ['runUuid' => $runUuid]
-            );
-        }
-
-        return new NoRunningMigrationException(
-            Response::HTTP_BAD_REQUEST,
-            self::NO_RUNNING_MIGRATION,
-            'No running migration found.',
-        );
-    }
-
-    public static function migrationIsAlreadyRunning(): self
-    {
-        return new MigrationIsAlreadyRunningException(
-            Response::HTTP_BAD_REQUEST,
-            self::MIGRATION_IS_ALREADY_RUNNING,
-            'Migration is already running.',
-        );
-    }
-
-    public static function checksumResetRunning(): self
-    {
-        return new MigrationIsAlreadyRunningException(
-            Response::HTTP_BAD_REQUEST,
-            self::MIGRATION_IS_RESETTING_CHECKSUMS,
-            'Checksum reset is running.',
-        );
-    }
-
-    public static function truncatingDataRunning(): self
-    {
-        return new MigrationIsAlreadyRunningException(
-            Response::HTTP_BAD_REQUEST,
-            self::MIGRATION_IS_TRUNCATING_DATA,
-            'Data truncation is running.',
-        );
-    }
-
-    public static function noConnectionIsSelected(): self
+    public static function runNotFound(?string $runId = null): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
-            self::NO_CONNECTION_IS_SELECTED,
-            'No connection is selected.',
+            Response::HTTP_NOT_FOUND,
+            self::RUN_NOT_FOUND,
+            'No migration run found for run with id: "{{ runUuid }}".',
+            ['runUuid' => $runId ?? 'unknown']
+        );
+    }
+
+    public static function noRunProgressFound(string $runId): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::NO_RUN_PROGRESS_FOUND,
+            'No progress found for migration run with id: "{{ runUuid }}".',
+            ['runUuid' => $runId]
+        );
+    }
+
+    public static function migrationProcessing(?string $process = null): self
+    {
+        $message = 'Migration is busy processing.';
+
+        if ($process !== null) {
+            $message = \sprintf('Migration is busy processing: "%s".', $process);
+        }
+
+        return new self(
+            Response::HTTP_CONFLICT,
+            self::MIGRATION_PROCESSING,
+            $message,
         );
     }
 
     public static function noConnectionFound(): self
     {
-        return new NoConnectionFoundException(
-            Response::HTTP_BAD_REQUEST,
+        return new self(
+            Response::HTTP_NOT_FOUND,
             self::NO_CONNECTION_FOUND,
             'No connection found.',
         );
@@ -341,24 +296,15 @@ class MigrationException extends HttpException
     public static function runCouldNotBeCreated(): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::RUN_COULD_NOT_BE_CREATED,
             'Could not created migration run.',
         );
     }
 
-    public static function noRunToFinish(): self
-    {
-        return new self(
-            Response::HTTP_BAD_REQUEST,
-            self::NO_RUN_TO_FINISH,
-            'No migration run to finish found.',
-        );
-    }
-
     public static function premappingIsIncomplete(): self
     {
-        return new PremappingIsIncompleteException(
+        return new self(
             Response::HTTP_BAD_REQUEST,
             self::PREMAPPING_IS_INCOMPLETE,
             'Premapping is incomplete.',
@@ -371,16 +317,6 @@ class MigrationException extends HttpException
             Response::HTTP_BAD_REQUEST,
             self::NO_DATA_TO_MIGRATE,
             'No data to migrate.',
-        );
-    }
-
-    public static function noRunProgressFound(string $runUuid): self
-    {
-        return new self(
-            Response::HTTP_BAD_REQUEST,
-            self::NO_RUN_PROGRESS_FOUND,
-            'No run progress found for run with id: "{{ runUuid }}".',
-            ['runUuid' => $runUuid]
         );
     }
 
@@ -397,7 +333,7 @@ class MigrationException extends HttpException
     public static function entityNotExists(string $entityClassName, string $uuid): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_NOT_FOUND,
             self::ENTITY_NOT_EXISTS,
             'No {{ entityClassName }} with UUID {{ uuid }} found. Make sure the entity with the UUID exists.',
             [
@@ -423,7 +359,7 @@ class MigrationException extends HttpException
     public static function invalidSerializerField(string $expectedClass, Field $field): self
     {
         return new self(
-            Response::HTTP_BAD_REQUEST,
+            Response::HTTP_INTERNAL_SERVER_ERROR,
             self::INVALID_FIELD_SERIALIZER,
             'Expected field of type "{{ expectedField }}" got "{{ field }}".',
             ['expectedField' => $expectedClass, 'field' => $field::class]
@@ -442,7 +378,7 @@ class MigrationException extends HttpException
 
     public static function localeNotFound(string $localeCode): self
     {
-        return new LocaleNotFoundException(
+        return new self(
             Response::HTTP_NOT_FOUND,
             self::LOCALE_NOT_FOUND,
             'Locale entity for code "{{ localeCode }}" not found.',
@@ -460,15 +396,6 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function noFileSystemPermissions(): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::NO_FILE_SYSTEM_PERMISSIONS,
-            'No file system permissions to create or write to files or directories.'
-        );
-    }
-
     public static function profileNotFound(string $profileName): self
     {
         return new self(
@@ -481,7 +408,7 @@ class MigrationException extends HttpException
 
     public static function writerNotFound(string $entityName): self
     {
-        return new WriterNotFoundException(
+        return new self(
             Response::HTTP_NOT_FOUND,
             self::WRITER_NOT_FOUND,
             'Writer for "{{ entityName }}" entity not found.',
@@ -505,16 +432,6 @@ class MigrationException extends HttpException
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::COULD_NOT_GENERATE_DOCUMENT,
             'Document could not be generated.'
-        );
-    }
-
-    public static function localeForLanguageLookupNotFound(string $localeCode): self
-    {
-        return new self(
-            Response::HTTP_NOT_FOUND,
-            self::LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND,
-            'Locale with code: "{{ localeCode }}" for language lookup not found.',
-            ['localeCode' => $localeCode]
         );
     }
 
@@ -544,7 +461,7 @@ class MigrationException extends HttpException
     {
         return new self(
             Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::MISSING_MIGRATION_FIX_KEY,
+            self::COULD_NOT_CONVERT_FIX,
             'Missing key "{{ missingKey }}" to construct MigrationFix.',
             ['missingKey' => $missingKey]
         );
@@ -552,8 +469,8 @@ class MigrationException extends HttpException
 
     public static function migrationNotInStep(string $runUuid, string $step): self
     {
-        return new NoRunningMigrationException(
-            Response::HTTP_BAD_REQUEST,
+        return new self(
+            Response::HTTP_CONFLICT,
             self::MIGRATION_NOT_IN_STEP,
             'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
             ['runUuid' => $runUuid, 'step' => $step]

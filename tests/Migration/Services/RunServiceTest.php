@@ -194,7 +194,7 @@ class RunServiceTest extends TestCase
         try {
             $runService->startMigrationRun([ProductDataSelection::IDENTIFIER], $this->context);
         } catch (MigrationException $exception) {
-            static::assertSame(MigrationException::MIGRATION_IS_ALREADY_RUNNING, $exception->getErrorCode());
+            static::assertSame(MigrationException::MIGRATION_PROCESSING, $exception->getErrorCode());
         }
     }
 
@@ -236,7 +236,7 @@ class RunServiceTest extends TestCase
         try {
             $runService->startMigrationRun([ProductDataSelection::IDENTIFIER], $this->context);
         } catch (MigrationException $exception) {
-            static::assertSame(MigrationException::NO_CONNECTION_IS_SELECTED, $exception->getErrorCode());
+            static::assertSame(MigrationException::NO_CONNECTION_FOUND, $exception->getErrorCode());
         }
     }
 

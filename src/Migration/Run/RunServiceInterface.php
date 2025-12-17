@@ -9,7 +9,7 @@ namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Exception\NoRunningMigrationException;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('fundamentals@after-sales')]
 interface RunServiceInterface
@@ -28,9 +28,9 @@ interface RunServiceInterface
 
     /**
      * Abort the running migration.
-     * If no migration run is running or the current migration is not in the FETCHING or WRITING or MEDIA_PROCESSING step, it throws a NoRunningMigrationException.
+     * If no migration run is running or the current migration is not in the FETCHING or WRITING or MEDIA_PROCESSING step, it throws a MigrationException.
      *
-     * @throws NoRunningMigrationException
+     * @throws MigrationException
      */
     public function abortMigration(Context $context): void;
 
