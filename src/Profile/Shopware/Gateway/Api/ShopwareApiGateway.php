@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Currency\CurrencyEntity;
 use Shopware\Core\System\Language\LanguageCollection;
@@ -158,8 +159,27 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
             $targetCurrencyIsoCode,
             $environmentDataArray['defaultCurrency'],
             $environmentDataArray['defaultShopLanguage'],
-            $targetLocaleCode
+            $targetLocaleCode,
+            $this->generateFingerprint($environmentDataArray),
         );
+    }
+
+    /**
+     * @param array<string, mixed> $environmentData
+     */
+    private function generateFingerprint(array $environmentData): ?string
+    {
+        if (!isset($environmentData['config'])) {
+            return null;
+        }
+
+        $config = $environmentData['config'];
+
+        if (!isset($config['esdKey'], $config['installationDate'])) {
+            return null;
+        }
+
+        return Hasher::hash($config['esdKey'] . $config['installationDate']);
     }
 
     public function readTotals(MigrationContextInterface $migrationContext, Context $context): array

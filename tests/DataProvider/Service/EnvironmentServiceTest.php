@@ -25,6 +25,7 @@ use Shopware\Core\System\Language\LanguageCollection;
 use Shopware\Core\System\Language\LanguageDefinition;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentService;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
@@ -35,9 +36,9 @@ class EnvironmentServiceTest extends TestCase
     private EnvironmentServiceInterface $environmentService;
 
     #[DataProvider('provideEnvironments')]
-    public function testGetEnvironmentData(string $shopwareVersion, string $defaultCurrency, string $defaultLocale, bool $updateAvailable): void
+    public function testGetEnvironmentData(string $shopwareVersion, string $defaultCurrency, string $defaultLocale, ?string $shopIdV2, bool $updateAvailable): void
     {
-        $this->createEnvironmentService($shopwareVersion, $defaultCurrency, $defaultLocale, $updateAvailable);
+        $this->createEnvironmentService($shopwareVersion, $defaultCurrency, $defaultLocale, $shopIdV2, $updateAvailable);
         $data = $this->environmentService->getEnvironmentData(Context::createDefaultContext());
 
         static::assertSame($data, [
@@ -48,19 +49,20 @@ class EnvironmentServiceTest extends TestCase
             'revision' => $shopwareVersion,
             'additionalData' => [],
             'updateAvailable' => $updateAvailable,
+            'shopIdV2' => $shopIdV2,
         ]);
     }
 
     public static function provideEnvironments(): array
     {
         return [
-            ['6.5.6.1', 'EUR', 'de-DE', false],
-            ['6.5.6.2', 'USD', 'en-GB', false],
-            ['6.5.0.0', 'USD', 'en-GB', true],
+            ['6.5.6.1', 'EUR', 'de-DE', null, false],
+            ['6.5.6.2', 'USD', 'en-GB', 'shop-id', false],
+            ['6.5.0.0', 'USD', 'en-GB', 'shop-id', true],
         ];
     }
 
-    protected function createEnvironmentService(string $shopwareVersion = '6.5.6.1', string $defaultCurrency = 'EUR', string $defaultLocale = 'de-DE', bool $updateAvailable = false): void
+    protected function createEnvironmentService(string $shopwareVersion = '6.5.6.1', string $defaultCurrency = 'EUR', string $defaultLocale = 'de-DE', ?string $shopIdV2 = 'shop-id', bool $updateAvailable = false): void
     {
         $currencyEntity = new CurrencyEntity();
         $currencyEntity->setId(Defaults::CURRENCY);
@@ -109,6 +111,11 @@ class EnvironmentServiceTest extends TestCase
         );
         $extensionDataProviderStub = static::createStub(AbstractExtensionDataProvider::class);
 
+        $systemConfigService = $this->createMock(SystemConfigService::class);
+        $systemConfigService->method('get')->willReturn($shopIdV2 ? [
+            'id' => $shopIdV2,
+        ] : null);
+
         $this->environmentService = new EnvironmentService(
             $currencyRepo,
             $languageRepo,
@@ -116,6 +123,7 @@ class EnvironmentServiceTest extends TestCase
             $shopwareVersion,
             $storeClientStub,
             $extensionDataProviderStub,
+            $systemConfigService,
         );
     }
 }

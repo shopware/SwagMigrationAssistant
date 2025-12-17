@@ -134,7 +134,7 @@ class RunService implements RunServiceInterface
     }
 
     /**
-     * @param array<int, string>|null $credentialFields
+     * @param array<string, mixed>|null $credentialFields
      */
     public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void
     {

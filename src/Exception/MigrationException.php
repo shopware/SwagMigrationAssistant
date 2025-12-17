@@ -13,6 +13,9 @@ use Shopware\Core\Framework\HttpException;
 use Shopware\Core\Framework\Log\Package;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @codeCoverageIgnore
+ */
 #[Package('fundamentals@after-sales')]
 class MigrationException extends HttpException
 {
@@ -91,6 +94,8 @@ class MigrationException extends HttpException
     final public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
 
     final public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
+
+    public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
 
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
@@ -484,6 +489,15 @@ class MigrationException extends HttpException
             self::INVALID_ID,
             'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
             ['entityId' => $entityId, 'entityName' => $entityName]
+        );
+    }
+
+    public static function duplicateSourceConnection(): self
+    {
+        return new self(
+            Response::HTTP_CONFLICT,
+            self::DUPLICATE_SOURCE_CONNECTION,
+            'A connection to this source system already exists.',
         );
     }
 }
