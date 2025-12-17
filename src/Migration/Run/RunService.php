@@ -23,7 +23,6 @@ use Shopware\Storefront\Theme\ThemeCollection;
 use Shopware\Storefront\Theme\ThemeDefinition;
 use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
@@ -75,7 +74,6 @@ class RunService implements RunServiceInterface
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly PremappingServiceInterface $premappingService,
         private readonly RunTransitionServiceInterface $runTransitionService,
-        private readonly MigrationFingerprintServiceInterface $connectionFingerprintService,
     ) {
     }
 
@@ -144,33 +142,20 @@ class RunService implements RunServiceInterface
             throw MigrationException::migrationIsAlreadyRunning();
         }
 
-        $connection = $this->connectionRepo->search(new Criteria([$connectionUuid]), $context)->getEntities()->first();
+        $connection = $this->connectionRepo->search(
+            new Criteria([$connectionUuid]),
+            $context,
+        )->getEntities()->first();
 
         if ($connection === null) {
             throw MigrationException::noConnectionFound();
         }
 
-        $fingerprint = $this->connectionFingerprintService->generate(
-            $credentialFields,
-            $connection,
-        );
-
-        $hasDuplicate = $this->connectionFingerprintService->check(
-            $fingerprint,
-            $context,
-            $connection->getId(),
-        );
-
-        if ($hasDuplicate) {
-            throw MigrationException::duplicateSourceConnection();
-        }
-
-        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connectionUuid, $credentialFields, $fingerprint): void {
+        $context->scope(MigrationContext::SOURCE_CONTEXT, function (Context $context) use ($connection, $credentialFields): void {
             $this->connectionRepo->update([
                 [
-                    'id' => $connectionUuid,
+                    'id' => $connection->getId(),
                     'credentialFields' => $credentialFields,
-                    'sourceSystemFingerprint' => $fingerprint,
                 ],
             ], $context);
         });

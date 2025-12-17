@@ -145,7 +145,8 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
             $targetSystemCurrency->getIsoCode(),
             $environmentDataArray['defaultCurrency'],
             $environmentDataArray['defaultShopLanguage'],
-            $targetSystemLocale->getCode()
+            $targetSystemLocale->getCode(),
+            $environmentDataArray['shopIdV2']
         );
     }
 

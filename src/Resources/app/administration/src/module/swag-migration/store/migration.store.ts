@@ -364,8 +364,20 @@ const migrationStore = Shopware.Store.register({
             try {
                 this.environmentInformation = await migrationApiService.checkConnection(this.connectionId);
                 this.lastConnectionCheck = new Date();
-            } catch {
-                await this.createErrorNotification('swag-migration.api-error.checkConnection');
+            } catch (error) {
+                const code = error?.response?.data?.errors[0]?.code;
+
+                if (!code) {
+                    await this.createErrorNotification('swag-migration.api-error.checkConnection');
+                }
+
+                const errorMessageSnippet = `swag-migration.wizard.pages.credentials.error.${code}`;
+
+                if (!Shopware.Snippet.tc(errorMessageSnippet)) {
+                    await this.createErrorNotification('swag-migration.api-error.checkConnection');
+                }
+
+                await this.createErrorNotification(errorMessageSnippet);
             }
         },
 
@@ -389,14 +401,10 @@ const migrationStore = Shopware.Store.register({
         },
 
         async createErrorNotification(errorMessageKey: string) {
-            await this.$patch(() => {
-                // Assuming a notification system exists.
-                // Replace this with how notifications are handled in your system.
-                Shopware.State.dispatch('notification/createNotification', {
-                    variant: 'error',
-                    title: Shopware.Snippet.tc('global.default.error'),
-                    message: Shopware.Snippet.tc(errorMessageKey),
-                });
+            Shopware.Store.get('notification').createNotification({
+                variant: 'error',
+                title: Shopware.Snippet.tc('global.default.error'),
+                message: Shopware.Snippet.tc(errorMessageKey),
             });
         },
     },

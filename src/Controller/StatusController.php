@@ -13,6 +13,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
@@ -46,6 +47,7 @@ class StatusController extends AbstractController
         private readonly GatewayRegistryInterface $gatewayRegistry,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly EntityRepository $generalSettingRepo,
+        private readonly MigrationFingerprintServiceInterface $fingerprintService,
     ) {
     }
 
@@ -255,6 +257,27 @@ class StatusController extends AbstractController
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
+
+        if ($information->getFingerprint() === null) {
+            return new JsonResponse($information);
+        }
+
+        $hasDuplicate = $this->fingerprintService->check(
+            $information->getFingerprint(),
+            $context,
+            $connectionId
+        );
+
+        if ($hasDuplicate) {
+            throw MigrationException::duplicateSourceConnection();
+        }
+
+        $this->migrationConnectionRepo->update([
+            [
+                'id' => $connectionId,
+                'sourceSystemFingerprint' => $information->getFingerprint(),
+            ],
+        ], $context);
 
         return new JsonResponse($information);
     }
