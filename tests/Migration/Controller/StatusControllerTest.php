@@ -341,7 +341,7 @@ class StatusControllerTest extends TestCase
         try {
             $this->controller->updateConnectionCredentials($request, $this->context);
         } catch (MigrationException $e) {
-            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
             static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
         }
     }
@@ -361,8 +361,8 @@ class StatusControllerTest extends TestCase
         try {
             $this->controller->updateConnectionCredentials($request, $this->context);
         } catch (MigrationException $e) {
-            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
-            static::assertSame(MigrationException::MIGRATION_IS_ALREADY_RUNNING, $e->getErrorCode());
+            static::assertSame(Response::HTTP_CONFLICT, $e->getStatusCode());
+            static::assertSame(MigrationException::MIGRATION_PROCESSING, $e->getErrorCode());
         }
     }
 
@@ -413,7 +413,7 @@ class StatusControllerTest extends TestCase
         try {
             $this->controller->getDataSelection($request, $this->context);
         } catch (MigrationException $e) {
-            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
             static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
         }
     }
@@ -501,7 +501,7 @@ class StatusControllerTest extends TestCase
         try {
             $this->controller->checkConnection($request, $this->context);
         } catch (MigrationException $e) {
-            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
             static::assertSame(MigrationException::NO_CONNECTION_FOUND, $e->getErrorCode());
         }
     }
@@ -611,7 +611,7 @@ class StatusControllerTest extends TestCase
         );
 
         $this->expectException(MigrationException::class);
-        $this->expectExceptionMessage('No running migration found.');
+        $this->expectExceptionMessage('No migration run found for run with id: "unknown".');
 
         $this->controller->abortMigration($this->context);
     }
@@ -678,7 +678,7 @@ class StatusControllerTest extends TestCase
         try {
             $this->controller->resumeAfterFixes($this->context);
         } catch (MigrationException $e) {
-            static::assertSame(Response::HTTP_BAD_REQUEST, $e->getStatusCode());
+            static::assertSame(Response::HTTP_CONFLICT, $e->getStatusCode());
             static::assertSame(MigrationException::MIGRATION_NOT_IN_STEP, $e->getErrorCode());
         }
     }

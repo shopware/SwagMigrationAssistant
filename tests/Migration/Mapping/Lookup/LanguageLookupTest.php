@@ -34,12 +34,12 @@ class LanguageLookupTest extends TestCase
                 $languageLookup->get($localeCode, Context::createDefaultContext());
             } catch (MigrationException $e) {
                 static::assertSame(
-                    \sprintf('Locale with code: "%s" for language lookup not found.', $localeCode),
+                    \sprintf('Locale entity for code "%s" not found.', $localeCode),
                     $e->getMessage()
                 );
 
                 static::assertSame(
-                    'SWAG_MIGRATION__LOOKUP_LOCALE_FOR_LANGUAGE_LOOKUP_NOT_FOUND',
+                    'SWAG_MIGRATION__LOCALE_NOT_FOUND',
                     $e->getErrorCode()
                 );
             }

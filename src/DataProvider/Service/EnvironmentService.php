@@ -25,6 +25,8 @@ use Shopware\Core\System\SystemConfig\SystemConfigService;
 class EnvironmentService implements EnvironmentServiceInterface
 {
     /**
+     * @internal
+     *
      * @param EntityRepository<CurrencyCollection> $currencyRepository
      * @param EntityRepository<LanguageCollection> $languageRepository
      */

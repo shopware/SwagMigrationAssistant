@@ -90,7 +90,12 @@
         "admin:acceptance": "@npm:acceptance run test",
         "npm:admin": "cd src/Resources/app/administration && npm",
         "npm:jest": "cd tests/Jest && npm",
-        "npm:acceptance": "cd tests/acceptance && npm"
+        "npm:acceptance": "cd tests/acceptance && npm",
+        "npm:init": [
+            "@npm:admin install",
+            "@npm:jest install",
+            "@npm:acceptance install"
+        ]
     },
     "autoload": {
         "psr-4": {

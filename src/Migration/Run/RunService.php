@@ -80,17 +80,17 @@ class RunService implements RunServiceInterface
     public function startMigrationRun(array $dataSelectionIds, Context $context): void
     {
         if ($this->isMigrationRunning($context)) {
-            throw MigrationException::migrationIsAlreadyRunning();
+            throw MigrationException::migrationProcessing();
         }
 
         if ($this->isResettingChecksums()) {
-            throw MigrationException::checksumResetRunning();
+            throw MigrationException::migrationProcessing('checksum reset');
         }
 
         $connection = $this->getCurrentConnection($context);
 
         if ($connection === null) {
-            throw MigrationException::noConnectionIsSelected();
+            throw MigrationException::noConnectionFound();
         }
 
         if (!$this->isPremmappingValid($dataSelectionIds, $connection, $context)) {
@@ -139,7 +139,7 @@ class RunService implements RunServiceInterface
     public function updateConnectionCredentials(Context $context, string $connectionUuid, ?array $credentialFields): void
     {
         if ($this->isMigrationRunning($context)) {
-            throw MigrationException::migrationIsAlreadyRunning();
+            throw MigrationException::migrationProcessing();
         }
 
         $connection = $this->connectionRepo->search(
@@ -166,7 +166,7 @@ class RunService implements RunServiceInterface
         $run = $this->getActiveRun($context);
 
         if ($run === null) {
-            throw MigrationException::noRunningMigration();
+            throw MigrationException::runNotFound();
         }
 
         $runId = $run->getId();
@@ -178,7 +178,7 @@ class RunService implements RunServiceInterface
         ];
 
         if (!\in_array($run->getStepValue(), $runningSteps, true)) {
-            throw MigrationException::noRunningMigration();
+            throw MigrationException::runNotFound();
         }
 
         $this->runTransitionService->transitionToRunStep($runId, MigrationStep::ABORTING);
@@ -202,7 +202,7 @@ class RunService implements RunServiceInterface
         );
 
         if ($affectedRows === 0) {
-            throw MigrationException::checksumResetRunning();
+            throw MigrationException::migrationProcessing('checksum reset');
         }
 
         $this->bus->dispatch(new ResetChecksumMessage(
@@ -216,11 +216,11 @@ class RunService implements RunServiceInterface
         $run = $this->getActiveRun($context);
 
         if ($run === null) {
-            throw MigrationException::noRunningMigration();
+            throw MigrationException::runNotFound();
         }
 
         if ($run->getStep() !== MigrationStep::WAITING_FOR_APPROVE) {
-            throw MigrationException::noRunToFinish();
+            throw MigrationException::runNotFound();
         }
 
         $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::FINISHED);
@@ -231,7 +231,7 @@ class RunService implements RunServiceInterface
     public function startTruncateMigrationData(Context $context): void
     {
         if ($this->isMigrationRunning($context)) {
-            throw MigrationException::migrationIsAlreadyRunning();
+            throw MigrationException::migrationProcessing();
         }
 
         $affectedRows = $this->dbalConnection->executeStatement(
@@ -239,7 +239,7 @@ class RunService implements RunServiceInterface
         );
 
         if ($affectedRows === 0) {
-            throw MigrationException::truncatingDataRunning();
+            throw MigrationException::migrationProcessing('data truncation');
         }
 
         $this->bus->dispatch(new TruncateMigrationMessage());
@@ -293,7 +293,7 @@ class RunService implements RunServiceInterface
         $run = $this->getActiveRun($context);
 
         if ($run === null) {
-            throw MigrationException::noRunningMigration();
+            throw MigrationException::runNotFound();
         }
 
         $runId = $run->getId();

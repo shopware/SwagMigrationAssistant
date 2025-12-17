@@ -40,7 +40,10 @@ class MigrationErrorResolutionServiceTest extends TestCase
         $idTwo = Uuid::randomHex();
         $idThree = Uuid::randomHex();
 
-        $service = new MigrationErrorResolutionService($this->getContainer()->get(Connection::class));
+        $service = new MigrationErrorResolutionService(
+            $this->getContainer()->get(Connection::class),
+            $this->getContainer()->get('event_dispatcher')
+        );
 
         $this->createFixAndLogging($connection->getId(), $idOne, 'val1', 'first.path', $run);
         $this->createFixAndLogging($connection->getId(), $idOne, ['nested' => ['array' => ['value' => 'nested array value']]], 'second.other.path', $run);
@@ -61,7 +64,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
             ['id' => $idThree],
         ];
 
-        $service->applyFixes($data, $connection->getId(), $run->getId());
+        $service->applyFixes($data, $connection->getId(), $run->getId(), Context::createDefaultContext());
 
         $expected = [[
             'id' => $idOne,

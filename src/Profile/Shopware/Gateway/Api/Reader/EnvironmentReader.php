@@ -116,7 +116,7 @@ class EnvironmentReader implements EnvironmentReaderInterface
             return $this->client->get($endpoint);
         } catch (ClientException $e) {
             if ($e->getCode() === SymfonyResponse::HTTP_UNAUTHORIZED) {
-                throw MigrationException::invalidConnectionAuthentication($endpoint);
+                throw MigrationException::invalidConnectionCredentials($endpoint);
             }
 
             throw $e;

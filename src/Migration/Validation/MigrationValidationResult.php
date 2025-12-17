@@ -10,6 +10,9 @@ namespace SwagMigrationAssistant\Migration\Validation;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
+/**
+ * @final
+ */
 #[Package('fundamentals@after-sales')]
 class MigrationValidationResult
 {

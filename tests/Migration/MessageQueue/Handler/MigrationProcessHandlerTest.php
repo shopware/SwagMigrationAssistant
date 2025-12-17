@@ -51,7 +51,7 @@ class MigrationProcessHandlerTest extends TestCase
         try {
             $this->migrationProcessHandler->__invoke($message);
         } catch (MigrationException $exception) {
-            static::assertSame(MigrationException::NO_RUNNING_MIGRATION, $exception->getErrorCode());
+            static::assertSame(MigrationException::RUN_NOT_FOUND, $exception->getErrorCode());
         }
     }
 
