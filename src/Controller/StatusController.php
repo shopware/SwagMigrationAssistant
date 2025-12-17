@@ -262,7 +262,7 @@ class StatusController extends AbstractController
             return new JsonResponse($information);
         }
 
-        $hasDuplicate = $this->fingerprintService->check(
+        $hasDuplicate = $this->fingerprintService->searchDuplicates(
             $information->getFingerprint(),
             $context,
             $connectionId

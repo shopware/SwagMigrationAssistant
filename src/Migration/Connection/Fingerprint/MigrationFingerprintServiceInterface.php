@@ -13,5 +13,5 @@ use Shopware\Core\Framework\Log\Package;
 #[Package('fundamentals@after-sales')]
 interface MigrationFingerprintServiceInterface
 {
-    public function check(?string $fingerprint, Context $context, ?string $excludeConnectionId): bool;
+    public function searchDuplicates(?string $fingerprint, Context $context, ?string $excludeConnectionId): bool;
 }

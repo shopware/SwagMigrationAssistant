@@ -29,10 +29,7 @@ readonly class MigrationFingerprintService implements MigrationFingerprintServic
     ) {
     }
 
-    /**
-     * checks if the same fingerprint already exists in the database. Meant to avoid duplicate connections.
-     */
-    public function check(?string $fingerprint, Context $context, ?string $excludeConnectionId): bool
+    public function searchDuplicates(?string $fingerprint, Context $context, ?string $excludeConnectionId): bool
     {
         if (empty($fingerprint)) {
             return false;

@@ -30,7 +30,7 @@ class MigrationFingerprintServiceTest extends TestCase
     {
         $service = $this->createService();
 
-        $result = $service->check(
+        $result = $service->searchDuplicates(
             null,
             Context::createDefaultContext(),
             null,
@@ -50,7 +50,7 @@ class MigrationFingerprintServiceTest extends TestCase
 
         $service = $this->createService([$idSearchResult]);
 
-        $result = $service->check(
+        $result = $service->searchDuplicates(
             'non-existing-fingerprint',
             Context::createDefaultContext(),
             null,
@@ -70,7 +70,7 @@ class MigrationFingerprintServiceTest extends TestCase
 
         $service = $this->createService([$idSearchResult]);
 
-        $result = $service->check(
+        $result = $service->searchDuplicates(
             'existing-fingerprint',
             Context::createDefaultContext(),
             null,
@@ -101,7 +101,7 @@ class MigrationFingerprintServiceTest extends TestCase
 
         $service = new MigrationFingerprintService($connectionRepo);
 
-        $result = $service->check(
+        $result = $service->searchDuplicates(
             'existing-fingerprint',
             Context::createDefaultContext(),
             $connectionId,
