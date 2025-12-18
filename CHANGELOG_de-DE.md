@@ -5,6 +5,8 @@
 - #11808 - Integration von ACL-Beschränkungen zur Steuerung spezifischer Migrationsaktionen basierend auf Benutzerberechtigungen.
 - #11808 - Erhöhung der Datenzuverlässigkeit durch strengere Validierungsprüfungen für konvertierte Daten.
 - #11808 - Umsetzung allgemeiner UI/UX-Optimierungen für eine durchgängige visuelle Konsistenz.
+- #11808 - CLI-Befehle `migration:abort`, `migration:get-progress` und `migration:start` zugunsten der Message-Queue-basierten Ausführung entfernt.
+- #11808 - Zurücksetzen der Prüfsummen und Bereinigung der Migrationsdaten erfolgen jetzt asynchron über die Message Queue.
 
 # 15.0.3
 

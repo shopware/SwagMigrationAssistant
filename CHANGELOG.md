@@ -5,6 +5,8 @@
 - #11808 - Integrated ACL constraints to restrict specific migration actions based on user permissions.
 - #11808 - Improved data reliability via stronger validation checks for converted data.
 - #11808 - Applied general UI/UX improvements for an overall visual consistency.
+- #11808 - Removed CLI commands `migration:abort`, `migration:get-progress`, and `migration:start` in favor of message queue based execution.
+- #11808 - Checksum reset and migration data cleanup now run asynchronously via message queue.
 
 # 15.0.3
 
