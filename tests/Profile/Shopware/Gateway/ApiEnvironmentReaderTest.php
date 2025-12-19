@@ -123,8 +123,8 @@ class ApiEnvironmentReaderTest extends TestCase
             'responses' => [
                 new Response(SymfonyResponse::HTTP_UNAUTHORIZED),
             ],
-            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_AUTHENTICATION,
-            'expectedMessage' => 'Invalid connection authentication for the request: "SwagMigrationEnvironment"',
+            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_CREDENTIALS,
+            'expectedMessage' => 'The connection credentials are invalid or incomplete for "SwagMigrationEnvironment".',
             'shouldHaveException' => true,
         ];
 

@@ -5,11 +5,13 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Exception;
+namespace SwagMigrationAssistant\Migration\Connection\Fingerprint;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 
 #[Package('fundamentals@after-sales')]
-class NoConnectionFoundException extends MigrationException
+interface MigrationFingerprintServiceInterface
 {
+    public function searchDuplicates(?string $fingerprint, Context $context, ?string $excludeConnectionId): bool;
 }
