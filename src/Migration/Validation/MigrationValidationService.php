@@ -34,12 +34,13 @@ use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFo
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-class MigrationValidationService
+class MigrationValidationService implements ResetInterface
 {
     /**
      * @var array<string, list<string>>
@@ -53,6 +54,11 @@ class MigrationValidationService
         private readonly MappingServiceInterface $mappingService,
         private readonly Connection $connection,
     ) {
+    }
+
+    public function reset(): void
+    {
+        $this->requiredColumnsCache = [];
     }
 
     /**
@@ -204,6 +210,12 @@ class MigrationValidationService
             }
 
             $field = clone $fields->get($fieldName);
+
+            /**
+             * Forces validation to run even for null values.
+             * Without Required, AbstractFieldSerializer::requiresValidation() returns false
+             * for null values on optional fields, skipping type/format validation entirely.
+             */
             $field->setFlags(new Required());
 
             $keyValue = new KeyValuePair(

@@ -108,6 +108,7 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
             ->from('swag_migration_media_file')
             ->where('run_id = :runId')
             ->andWhere('written = 1')
+            ->andWhere('processed = 0')
             ->orderBy('entity, file_size')
             ->setFirstResult($migrationContext->getOffset())
             ->setMaxResults($migrationContext->getLimit())
