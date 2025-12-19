@@ -97,8 +97,6 @@ class MigrationException extends HttpException
 
     final public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
 
-    final public const TABLE_NOT_FOUND = 'SWAG_MIGRATION__TABLE_NOT_FOUND';
-
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -500,16 +498,6 @@ class MigrationException extends HttpException
             Response::HTTP_CONFLICT,
             self::DUPLICATE_SOURCE_CONNECTION,
             'A connection to this source system already exists.',
-        );
-    }
-
-    public static function tableNotFound(string $tableName): self
-    {
-        return new self(
-            Response::HTTP_NOT_FOUND,
-            self::TABLE_NOT_FOUND,
-            'The table "{{ tableName }}" was not found.',
-            ['tableName' => $tableName]
         );
     }
 }

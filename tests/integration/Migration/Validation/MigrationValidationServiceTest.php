@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
@@ -47,6 +48,8 @@ class MigrationValidationServiceTest extends TestCase
 
     private const CONNECTION_ID = '01991554142d73348ea58793d98f1989';
 
+    private MigrationContext $migrationContext;
+
     private MigrationValidationService $validationService;
 
     /**
@@ -76,7 +79,21 @@ class MigrationValidationServiceTest extends TestCase
         $this->mappingRepo = static::getContainer()->get(SwagMigrationMappingDefinition::ENTITY_NAME . '.repository');
         $this->context = Context::createDefaultContext();
 
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setId(self::CONNECTION_ID);
+        $connection->setProfileName(Shopware54Profile::PROFILE_NAME);
+        $connection->setGatewayName(DummyLocalGateway::GATEWAY_NAME);
+
         $this->runId = Uuid::randomHex();
+
+        $this->migrationContext = new MigrationContext(
+            $connection,
+            new Shopware54Profile(),
+            new DummyLocalGateway(),
+            null,
+            $this->runId,
+        );
+
         static::getContainer()->get('swag_migration_connection.repository')->create(
             [
                 [
@@ -134,21 +151,8 @@ class MigrationValidationServiceTest extends TestCase
     #[DataProvider('entityStructureAndFieldProvider')]
     public function testShouldValidateStructureAndFieldsValues(array $convertedData, array $expectedLogs): void
     {
-        $connection = new SwagMigrationConnectionEntity();
-        $connection->setId(self::CONNECTION_ID);
-        $connection->setProfileName(Shopware54Profile::PROFILE_NAME);
-        $connection->setGatewayName(DummyLocalGateway::GATEWAY_NAME);
-
-        $migrationContext = new MigrationContext(
-            $connection,
-            new Shopware54Profile(),
-            new DummyLocalGateway(),
-            null,
-            $this->runId,
-        );
-
         $result = $this->validationService->validate(
-            $migrationContext,
+            $this->migrationContext,
             $this->context,
             $convertedData,
             SwagMigrationLoggingDefinition::ENTITY_NAME,
@@ -170,6 +174,96 @@ class MigrationValidationServiceTest extends TestCase
         static::assertSame($expectedLogs, $logCodes);
     }
 
+    public function testShouldFilterNullableFields(): void
+    {
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            [
+                'id' => Uuid::randomHex(),
+            ],
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $missingFields = \array_map(fn ($log) => $log->getFieldName(), $result->getLogs());
+        static::assertCount(3, $missingFields);
+
+        $expectedMissingFields = [
+            'active', // has no required flag
+            'price', // is nullable, but has required flag
+            'cmsPageVersionId', // has default value, but has required flag
+        ];
+
+        static::assertCount(
+            0,
+            \array_intersect($expectedMissingFields, $missingFields)
+        );
+    }
+
+    public function testShouldLogWhenEntityHasNowId(): void
+    {
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            [
+                'level' => 'error',
+                'code' => 'some_code',
+                'userFixable' => true,
+                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
+            ],
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
+        static::assertCount(1, $logs);
+
+        $exceptionLog = array_values($logs)[0];
+        static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
+
+        static::assertSame(
+            MigrationException::unexpectedNullValue('id')->getMessage(),
+            $exceptionLog->getExceptionMessage()
+        );
+    }
+
+    public function testShouldLogWhenEntityHasInvalidId(): void
+    {
+        $id = 'invalid-uuid';
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            [
+                'id' => $id,
+                'level' => 'error',
+                'code' => 'some_code',
+                'userFixable' => true,
+                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
+            ],
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
+        static::assertCount(1, $logs);
+
+        $exceptionLog = array_values($logs)[0];
+        static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
+
+        static::assertSame(
+            MigrationException::invalidId($id, SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+            $exceptionLog->getExceptionMessage(),
+        );
+    }
+
     /**
      * @param array<string, mixed> $convertedData
      * @param array<int, array<string, mixed>> $mappings
@@ -178,25 +272,12 @@ class MigrationValidationServiceTest extends TestCase
     #[DataProvider('associationProvider')]
     public function testValidateAssociations(array $convertedData, array $mappings, array $expectedLogs): void
     {
-        $connection = new SwagMigrationConnectionEntity();
-        $connection->setId(self::CONNECTION_ID);
-        $connection->setProfileName(Shopware54Profile::PROFILE_NAME);
-        $connection->setGatewayName(DummyLocalGateway::GATEWAY_NAME);
-
-        $migrationContext = new MigrationContext(
-            $connection,
-            new Shopware54Profile(),
-            new DummyLocalGateway(),
-            null,
-            $this->runId,
-        );
-
         if (!empty($mappings)) {
             $this->mappingRepo->create($mappings, $this->context);
         }
 
         $result = $this->validationService->validate(
-            $migrationContext,
+            $this->migrationContext,
             $this->context,
             $convertedData,
             SwagMigrationLoggingDefinition::ENTITY_NAME,

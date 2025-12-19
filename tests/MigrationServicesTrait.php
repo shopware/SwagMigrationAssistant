@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
@@ -212,6 +213,7 @@ trait MigrationServicesTrait
             $this->getContainer()->get('event_dispatcher'),
             $loggingService,
             $mappingService,
+            $this->getContainer()->get(Connection::class),
         );
 
         return new MigrationDataConverter(
@@ -221,7 +223,7 @@ trait MigrationServicesTrait
             $loggingService,
             $dataDefinition,
             new DummyMappingService(),
-            $validationService
+            $validationService,
         );
     }
 

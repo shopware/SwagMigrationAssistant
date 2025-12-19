@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Migration\Validation;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
@@ -40,7 +39,7 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-final class MigrationValidationService
+class MigrationValidationService
 {
     /**
      * @var array<string, list<string>>
@@ -115,6 +114,10 @@ final class MigrationValidationService
         return $validationContext->getValidationResult();
     }
 
+    /**
+     * Validates that all required fields are present and that no unexpected fields exist.
+     * Required fields are determined by checking which database columns are non-nullable without a default value
+     */
     private function validateEntityStructure(MigrationValidationContext $validationContext): void
     {
         $entityDefinition = $validationContext->getEntityDefinition();
@@ -162,6 +165,9 @@ final class MigrationValidationService
         }
     }
 
+    /**
+     * Validates that all field values conform to their field definitions by attempting to serialize them.
+     */
     private function validateFields(MigrationValidationContext $validationContext): void
     {
         $entityDefinition = $validationContext->getEntityDefinition();
@@ -225,6 +231,9 @@ final class MigrationValidationService
         }
     }
 
+    /**
+     * Validates that all foreign key fields reference existing entities by checking the mapping service.
+     */
     private function validateAssociations(MigrationValidationContext $validationContext): void
     {
         $entityDefinition = $validationContext->getEntityDefinition();
@@ -296,6 +305,9 @@ final class MigrationValidationService
     }
 
     /**
+     * Gets the list of required database columns for the given entity and caches the result for future calls.
+     * A required database column is defined as a column that is non-nullable, has no default value, and is not auto-incrementing.
+     *
      * @return list<string>
      */
     private function getRequiredDatabaseColumns(string $entityName): array
@@ -306,11 +318,9 @@ final class MigrationValidationService
 
         $this->requiredColumnsCache[$entityName] = [];
 
-        try {
-            $columns = $this->connection->createSchemaManager()->listTableColumns($entityName);
-        } catch (Exception) {
-            throw MigrationException::tableNotFound($entityName);
-        }
+        $columns = $this->connection
+            ->createSchemaManager()
+            ->listTableColumns($entityName);
 
         foreach ($columns as $column) {
             if ($column->getNotnull() && $column->getDefault() === null && !$column->getAutoincrement()) {
