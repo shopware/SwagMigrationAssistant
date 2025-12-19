@@ -7,11 +7,14 @@
 
 namespace SwagMigrationAssistant\Migration\Validation;
 
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception;
 use Shopware\Core\Framework\Context;
+use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Command\WriteCommandQueue;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\DataStack\KeyValuePair;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
@@ -37,13 +40,19 @@ use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-readonly class MigrationValidationService
+final class MigrationValidationService
 {
+    /**
+     * @var array<string, list<string>>
+     */
+    private array $requiredColumnsCache = [];
+
     public function __construct(
-        private DefinitionInstanceRegistry $definitionRegistry,
-        private EventDispatcherInterface $eventDispatcher,
-        private LoggingServiceInterface $loggingService,
-        private MappingServiceInterface $mappingService,
+        private readonly DefinitionInstanceRegistry $definitionRegistry,
+        private readonly EventDispatcherInterface $eventDispatcher,
+        private readonly LoggingServiceInterface $loggingService,
+        private readonly MappingServiceInterface $mappingService,
+        private readonly Connection $connection,
     ) {
     }
 
@@ -83,7 +92,7 @@ readonly class MigrationValidationService
         } catch (\Throwable $exception) {
             $validationContext->getValidationResult()->addLog(
                 MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                    ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                    ->withEntityName($entityDefinition->getEntityName())
                     ->withSourceData($validationContext->getSourceData())
                     ->withConvertedData($validationContext->getConvertedData())
                     ->withExceptionMessage($exception->getMessage())
@@ -108,23 +117,33 @@ readonly class MigrationValidationService
 
     private function validateEntityStructure(MigrationValidationContext $validationContext): void
     {
-        $fields = $validationContext->getEntityDefinition()->getFields();
+        $entityDefinition = $validationContext->getEntityDefinition();
 
-        $requiredFields = array_values(array_map(
-            static fn (Field $field) => $field->getPropertyName(),
-            $fields->filterByFlag(Required::class)->getElements()
-        ));
+        $fields = $entityDefinition->getFields();
+        $entityName = $entityDefinition->getEntityName();
 
-        $convertedFieldNames = array_keys($validationContext->getConvertedData());
-        $missingRequiredFields = array_diff($requiredFields, $convertedFieldNames);
+        $convertedData = $validationContext->getConvertedData();
+        $validationResult = $validationContext->getValidationResult();
+
+        $requiredDatabaseColumns = $this->getRequiredDatabaseColumns($entityName);
+        $requiredFields = $this->filterRequiredFields(
+            $fields,
+            $requiredDatabaseColumns
+        );
+
+        $convertedFieldNames = array_keys($convertedData);
+        $missingRequiredFields = array_diff(
+            $requiredFields,
+            $convertedFieldNames
+        );
 
         foreach ($missingRequiredFields as $missingField) {
-            $validationContext->getValidationResult()->addLog(
+            $validationResult->addLog(
                 MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                    ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                    ->withEntityName($entityName)
                     ->withFieldName($missingField)
-                    ->withConvertedData($validationContext->getConvertedData())
-                    ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
+                    ->withConvertedData($convertedData)
+                    ->withEntityId($convertedData['id'] ?? null)
                     ->build(MigrationValidationMissingRequiredFieldLog::class)
             );
         }
@@ -132,12 +151,12 @@ readonly class MigrationValidationService
         $unexpectedFields = array_diff($convertedFieldNames, array_keys($fields->getElements()));
 
         foreach ($unexpectedFields as $unexpectedField) {
-            $validationContext->getValidationResult()->addLog(
+            $validationResult->addLog(
                 MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                    ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                    ->withEntityName($entityName)
                     ->withFieldName($unexpectedField)
-                    ->withConvertedData($validationContext->getConvertedData())
-                    ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
+                    ->withConvertedData($convertedData)
+                    ->withEntityId($convertedData['id'] ?? null)
                     ->build(MigrationValidationUnexpectedFieldLog::class)
             );
         }
@@ -145,29 +164,35 @@ readonly class MigrationValidationService
 
     private function validateFields(MigrationValidationContext $validationContext): void
     {
-        $fields = $validationContext->getEntityDefinition()->getFields();
+        $entityDefinition = $validationContext->getEntityDefinition();
+        $fields = $entityDefinition->getFields();
 
-        if (!isset($validationContext->getConvertedData()['id'])) {
+        $convertedData = $validationContext->getConvertedData();
+        $validationResult = $validationContext->getValidationResult();
+
+        $id = $convertedData['id'] ?? null;
+
+        if ($id === null) {
             throw MigrationException::unexpectedNullValue('id');
         }
 
-        if (!Uuid::isValid($validationContext->getConvertedData()['id'])) {
-            throw MigrationException::invalidId($validationContext->getConvertedData()['id'], $validationContext->getEntityDefinition()->getEntityName());
+        if (!Uuid::isValid($id)) {
+            throw MigrationException::invalidId($id, $entityDefinition->getEntityName());
         }
 
         $entityExistence = EntityExistence::createForEntity(
-            $validationContext->getEntityDefinition()->getEntityName(),
-            ['id' => $validationContext->getConvertedData()['id']],
+            $entityDefinition->getEntityName(),
+            ['id' => $id],
         );
 
         $parameters = new WriteParameterBag(
-            $validationContext->getEntityDefinition(),
+            $entityDefinition,
             WriteContext::createFromContext($validationContext->getContext()),
             '',
             new WriteCommandQueue(),
         );
 
-        foreach ($validationContext->getConvertedData() as $fieldName => $value) {
+        foreach ($convertedData as $fieldName => $value) {
             if (!$fields->has($fieldName)) {
                 continue;
             }
@@ -185,15 +210,15 @@ readonly class MigrationValidationService
                 $serializer = $field->getSerializer();
                 \iterator_to_array($serializer->encode($field, $entityExistence, $keyValue, $parameters), false);
             } catch (\Throwable $e) {
-                $validationContext->getValidationResult()->addLog(
+                $validationResult->addLog(
                     MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                        ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                        ->withEntityName($entityDefinition->getEntityName())
                         ->withFieldName($fieldName)
                         ->withConvertedData([$fieldName => $value])
                         ->withSourceData($validationContext->getSourceData())
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
-                        ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
+                        ->withEntityId($id)
                         ->build(MigrationValidationInvalidFieldValueLog::class)
                 );
             }
@@ -202,28 +227,19 @@ readonly class MigrationValidationService
 
     private function validateAssociations(MigrationValidationContext $validationContext): void
     {
-        $fields = $validationContext->getEntityDefinition()->getFields();
+        $entityDefinition = $validationContext->getEntityDefinition();
+        $fkFields = $entityDefinition->getFields()->filterInstance(FkField::class);
 
-        $fkFields = array_values(array_map(
-            static fn (Field $field) => $field->getPropertyName(),
-            $fields->filterInstance(FkField::class)->getElements()
-        ));
+        $convertedData = $validationContext->getConvertedData();
+        $validationResult = $validationContext->getValidationResult();
 
-        foreach ($fkFields as $fkFieldName) {
-            if (!isset($validationContext->getConvertedData()[$fkFieldName])) {
+        /** @var FkField $fkField */
+        foreach ($fkFields as $fkField) {
+            $fkFieldName = $fkField->getPropertyName();
+            $fkValue = $convertedData[$fkFieldName] ?? null;
+
+            if ($fkValue === null || $fkValue === '') {
                 continue;
-            }
-
-            $fkValue = $validationContext->getConvertedData()[$fkFieldName];
-
-            if ($fkValue === '') {
-                continue;
-            }
-
-            $fkField = $fields->get($fkFieldName);
-
-            if (!$fkField instanceof FkField) {
-                throw MigrationException::unexpectedNullValue($fkFieldName);
             }
 
             $referenceEntity = $fkField->getReferenceEntity();
@@ -240,16 +256,68 @@ readonly class MigrationValidationService
             );
 
             if (!$hasMapping) {
-                $validationContext->getValidationResult()->addLog(
+                $validationResult->addLog(
                     MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                        ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                        ->withEntityName($entityDefinition->getEntityName())
                         ->withFieldName($fkFieldName)
                         ->withConvertedData([$fkFieldName => $fkValue])
                         ->withSourceData($validationContext->getSourceData())
-                        ->withEntityId($validationContext->getConvertedData()['id'] ?? null)
+                        ->withEntityId($convertedData['id'] ?? null)
                         ->build(MigrationValidationInvalidForeignKeyLog::class)
                 );
             }
         }
+    }
+
+    /**
+     * @param array<string> $requiredDbColumns
+     *
+     * @return array<string>
+     */
+    private function filterRequiredFields(CompiledFieldCollection $fields, array $requiredDbColumns): array
+    {
+        $requiredFields = [];
+
+        foreach ($fields->filterByFlag(Required::class) as $field) {
+            if (!($field instanceof StorageAware)) {
+                $requiredFields[] = $field->getPropertyName();
+
+                continue;
+            }
+
+            if (!\in_array($field->getStorageName(), $requiredDbColumns, true)) {
+                continue;
+            }
+
+            $requiredFields[] = $field->getPropertyName();
+        }
+
+        return $requiredFields;
+    }
+
+    /**
+     * @return list<string>
+     */
+    private function getRequiredDatabaseColumns(string $entityName): array
+    {
+        if (isset($this->requiredColumnsCache[$entityName])) {
+            return $this->requiredColumnsCache[$entityName];
+        }
+
+        $this->requiredColumnsCache[$entityName] = [];
+
+        try {
+            $columns = $this->connection->createSchemaManager()->listTableColumns($entityName);
+        } catch (Exception) {
+            throw MigrationException::tableNotFound($entityName);
+        }
+
+        foreach ($columns as $column) {
+            if ($column->getNotnull() && $column->getDefault() === null && !$column->getAutoincrement()) {
+                $this->requiredColumnsCache[$entityName][] = $column->getName();
+            }
+        }
+
+        return $this->requiredColumnsCache[$entityName];
     }
 }
