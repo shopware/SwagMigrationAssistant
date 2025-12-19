@@ -29,6 +29,7 @@ export interface SwagMigrationErrorResolutionModalData {
     tableTotal: number;
     tableData: ResolutionModalRow[];
     selectedLogIds: string[];
+    selectAllMode: boolean;
     selectedDetailsLog: ResolutionModalRow;
     loading: boolean;
     submitLoading: boolean;
@@ -71,12 +72,13 @@ export default Shopware.Component.wrapComponentConfig({
             tableLimit: 25,
             tableTotal: 0,
             tableData: [],
-            selectedLogIds: [],
             selectedDetailsLog: null,
             loading: false,
             submitLoading: false,
             fieldValue: null,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
+            selectedLogIds: [],
+            selectAllMode: false,
         };
     },
 
@@ -141,6 +143,15 @@ export default Shopware.Component.wrapComponentConfig({
 
         preSelection(): Record<string, ResolutionModalRow> {
             const selection: Record<string, ResolutionModalRow> = {};
+
+            if (this.selectAllMode) {
+                this.tableData.forEach((row) => {
+                    if (!row.status) {
+                        selection[row.logId] = row;
+                    }
+                });
+                return selection;
+            }
 
             if (this.selectedLogIds.length === 0) {
                 return selection;
@@ -249,6 +260,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         resetSelection() {
             this.selectedLogIds = [];
+            this.selectAllMode = false;
 
             this.$nextTick(() => {
                 const gridRef = this.$refs.errorResolutionGrid as { resetSelection?: () => void } | undefined;
@@ -388,42 +400,42 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSelectAllLogs() {
+            console.log('swag-migration-error-resolution-modal/index.ts::onSelectAllLogs - STARTS');
             if (!this.selectedLog) {
                 return;
             }
 
-            this.loading = true;
+            if (!this.selectAllMode) {
+                const gridRef = this.$refs.errorResolutionGrid as { resetSelection?: () => void } | undefined;
 
-            try {
-                const result = await this.migrationApiService.getAllLogIds(
-                    this.runId,
-                    this.selectedLog.code,
-                    this.selectedLog.entityName,
-                    this.selectedLog.fieldName,
-                    this.migrationStore.connectionId,
-                );
+                this.selectedLogIds = [];
 
-                this.selectedLogIds = result.ids;
+                // force select-all behaviour
+                this.applySelectionToGrid(true);
 
                 await this.$nextTick();
-                this.applySelectionToGrid();
-            } catch {
-                this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
-                });
-            } finally {
-                this.loading = false;
+
+                this.selectAllMode = true;
+            } else {
+                this.resetSelection();
             }
         },
 
-        applySelectionToGrid() {
+        applySelectionToGrid(forceSelectAll = false) {
             const gridRef = this.$refs.errorResolutionGrid;
 
-            this.tableData.forEach((row) => {
-                if (this.selectedLogIds.includes(row.logId) && !row.status) {
-                    gridRef.selectItem(true, row);
-                }
-            });
+            if (forceSelectAll) {
+                this.tableData.forEach((row) => {
+                    if (!row.status) {
+                        gridRef.selectItem(true, row);
+                    }
+                });
+                return;
+            }
+
+            if (this.selectedLogIds.includes(row.logId) && !row.status) {
+                gridRef.selectItem(true, row);
+            }
         },
 
         statusBadgeClass(isResolved: boolean): string {
@@ -439,6 +451,10 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
+            if (this.selectAllMode) {
+                return;
+            }
+
             if (!selection || Object.keys(selection).length === 0) {
                 this.selectedLogIds = [];
 
@@ -458,6 +474,9 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         isRecordSelectable(item: ResolutionModalRow): boolean {
+            if (this.selectAllMode) {
+                return false;
+            }
             return !item.status;
         },
 
@@ -475,10 +494,23 @@ export default Shopware.Component.wrapComponentConfig({
             this.tablePage = page.page;
             this.tableLimit = page.limit;
 
-            await this.fetchLogs();
+            // temporarily disable select all mode to allow select checkboxes
+            const wasSelectAllMode = this.selectAllMode;
+            if (wasSelectAllMode) {
+                this.selectAllMode = false;
+            }
 
+            await this.fetchLogs();
             await this.$nextTick();
-            this.applySelectionToGrid();
+
+            if (wasSelectAllMode) {
+                // force select-all behaviour
+                this.applySelectionToGrid(true);
+                await this.$nextTick();
+                this.selectAllMode = true;
+            } else {
+                this.applySelectionToGrid();
+            }
         },
     },
 });
