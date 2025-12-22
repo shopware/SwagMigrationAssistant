@@ -413,11 +413,7 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        async onResetResolution(item: { fixId: string } | null) {
-            if (!item?.fixId) {
-                return;
-            }
-
+        async onResetResolution(item: { fixId: string }) {
             this.loading = true;
 
             try {
@@ -448,8 +444,8 @@ export default Shopware.Component.wrapComponentConfig({
 
         statusBadgeClass(isResolved: boolean): string {
             return isResolved
-                ? 'swag-migration-error-resolution-modal__left-status--unresolved'
-                : 'swag-migration-error-resolution-modal__left-status--resolved';
+                ? 'swag-migration-error-resolution-modal__left-status--resolved'
+                : 'swag-migration-error-resolution-modal__left-status--unresolved';
         },
 
         statusBadgeText(isResolved: boolean): string {

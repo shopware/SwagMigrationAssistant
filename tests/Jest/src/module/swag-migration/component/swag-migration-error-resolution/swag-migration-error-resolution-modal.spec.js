@@ -76,6 +76,7 @@ const migrationLoggingRepositoryMock = {
 
 const migrationFixRepositoryMock = {
     save: jest.fn(() => Promise.resolve()),
+    delete: jest.fn(() => Promise.resolve()),
     create: jest.fn(() => ({ isNew: () => true })),
     search: jest.fn(() => Promise.resolve(fixMocks)),
     saveAll: jest.fn(() => Promise.resolve()),
@@ -355,7 +356,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(false);
 
             expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
-            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action').trigger('click');
+            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-details').trigger('click');
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(true);
             expect(wrapper.vm.selectedDetailsLog).toStrictEqual(wrapper.vm.tableData.at(0));
@@ -365,6 +366,35 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(false);
             expect(wrapper.vm.selectedDetailsLog).toBeNull();
+        });
+
+        it('should be able to reset resolved log if log has fix', async () => {
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--resolved')).toHaveLength(1);
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(1);
+
+            await wrapper.find('.sw-data-grid__row--1 .sw-data-grid__cell--actions button').trigger('click');
+            await flushPromises();
+
+            expect(wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-reset').exists()).toBe(false);
+
+            await wrapper.find('.sw-data-grid__row--0 .sw-data-grid__cell--actions button').trigger('click');
+            await flushPromises();
+
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
+            expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
+            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-reset').trigger('click');
+
+            await flushPromises();
+
+            expect(migrationFixRepositoryMock.delete).toHaveBeenCalledWith(fixMocks.at(0).id);
+            expect(migrationLoggingRepositoryMock.search).toHaveBeenCalledTimes(2);
+
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--resolved')).toHaveLength(0);
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(2);
         });
 
         it('should not be able to select logs that are already resolved', async () => {
