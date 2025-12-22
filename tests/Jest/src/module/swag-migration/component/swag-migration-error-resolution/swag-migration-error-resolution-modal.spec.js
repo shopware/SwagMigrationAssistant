@@ -2,7 +2,9 @@
  * @sw-package after-sales
  */
 import { mount } from '@vue/test-utils';
-import SwagMigrationErrorResolutionModal from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal';
+import SwagMigrationErrorResolutionModal, {
+    ERROR_CODE_COMPONENT_MAPPING,
+} from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal';
 import SwagMigrationErrorResolutionDetailsModal from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-details-modal';
 import SwagMigrationErrorResolutionField from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field';
 import SwagMigrationErrorResolutionFieldScalar from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar';
@@ -174,6 +176,16 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     afterEach(() => {
         jest.clearAllMocks();
         Shopware.Store.get('notification').$reset();
+    });
+
+    describe('constants', () => {
+        it('should provide error code to component mapping', () => {
+            expect(ERROR_CODE_COMPONENT_MAPPING).toStrictEqual({
+                SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD: 'DEFAULT',
+            });
+        });
     });
 
     describe('initial loading', () => {
@@ -503,6 +515,39 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     });
 
     describe('create resolution fix', () => {
+        it.each(Object.keys(ERROR_CODE_COMPONENT_MAPPING).map((code) => ({ code })))(
+            'should render default resolve component for defined codes: $code',
+            async ({ code }) => {
+                const wrapper = await createWrapper({
+                    ...defaultProps,
+                    selectedLog: {
+                        ...fixtureLogGroups.at(1),
+                        code: code,
+                        entityName: 'media',
+                        fieldName: 'title',
+                    },
+                });
+                await flushPromises();
+
+                expect(wrapper.find('.swag-migration-error-resolution-modal__right-content-default').exists()).toBe(true);
+            },
+        );
+
+        it('should render unresolvable field component for unsupported error codes', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    code: 'SOME_UNSUPPORTED_ERROR_CODE',
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            expect(wrapper.find('.swag-migration-error-resolution-modal__right-content-unresolvable').exists()).toBe(true);
+        });
+
         it('should disable input & create button when no logs are selected', async () => {
             const wrapper = await createWrapper();
             await flushPromises();
@@ -569,7 +614,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             const wrapper = await createWrapper({
                 ...defaultProps,
                 selectedLog: {
-                    ...fixtureLogGroups.at(2),
+                    ...fixtureLogGroups.at(1),
                     entityName: 'product',
                     fieldName: 'taxId',
                 },
