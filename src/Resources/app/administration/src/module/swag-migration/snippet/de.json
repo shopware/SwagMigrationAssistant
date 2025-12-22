@@ -731,6 +731,7 @@
             "left": {
               "select-all": "Alle auswählen ({count})",
               "details": "Details anzeigen",
+              "reset": "Zurücksetzen",
               "status": {
                 "resolved": "Behoben",
                 "unresolved": "Nicht behoben"

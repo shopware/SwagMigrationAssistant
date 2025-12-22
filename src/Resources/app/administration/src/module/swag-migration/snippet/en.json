@@ -582,6 +582,7 @@
             "left": {
               "select-all": "Select all ({count})",
               "details": "Show details",
+              "reset": "Reset",
               "status": {
                 "resolved": "Resolved",
                 "unresolved": "Unresolved"
