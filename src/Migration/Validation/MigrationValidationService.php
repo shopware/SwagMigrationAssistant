@@ -212,9 +212,8 @@ class MigrationValidationService implements ResetInterface
             $field = clone $fields->get($fieldName);
 
             /**
-             * Forces validation to run even for null values.
-             * Without Required, AbstractFieldSerializer::requiresValidation() returns false
-             * for null values on optional fields, skipping type/format validation entirely.
+             * The required flag controls flow in AbstractFieldSerializer::requiresValidation().
+             * Without it, the serializer will skip validation for the field.
              */
             $field->setFlags(new Required());
 

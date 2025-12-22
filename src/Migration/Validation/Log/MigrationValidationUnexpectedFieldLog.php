@@ -15,7 +15,7 @@ readonly class MigrationValidationUnexpectedFieldLog extends AbstractMigrationLo
 {
     public function isUserFixable(): bool
     {
-        return true;
+        return false;
     }
 
     public function getLevel(): string

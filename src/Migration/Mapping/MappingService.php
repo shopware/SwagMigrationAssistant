@@ -216,6 +216,15 @@ class MappingService implements MappingServiceInterface, ResetInterface
 
     public function hasValidMappingByEntityId(string $connectionId, string $entityName, string $entityId, Context $context): bool
     {
+        // check in write array first to avoid unnecessary db calls and find not yet written mappings
+        foreach ($this->writeArray as $writeMapping) {
+            if ($writeMapping['connectionId'] !== $connectionId || $writeMapping['entityId'] !== $entityId) {
+                continue;
+            }
+
+            return $writeMapping['oldIdentifier'] !== null;
+        }
+
         $criteria = new Criteria();
         $criteria->addFilter(
             new EqualsFilter('connectionId', $connectionId),
