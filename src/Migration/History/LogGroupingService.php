@@ -160,18 +160,31 @@ readonly class LogGroupingService
      *
      * @return array<string>
      */
-    public function getAllLogIdsByCodeAndEntity(
+    public function getAllLogEntityIdsByCodeAndEntity(
         string $runId,
         string $code,
         string $entityName,
         string $fieldName,
         ?string $connectionId = null,
+        int $limit = 100,
+        int $offset = 0,
     ): array {
         $params = [
             'runId' => Uuid::fromHexToBytes($runId),
             'code' => $code,
             'entityName' => $entityName,
             'fieldName' => $fieldName,
+            'limit' => $limit,
+            'offset' => $offset,
+        ];
+
+        $types = [
+            'runId' => ParameterType::BINARY,
+            'code' => ParameterType::STRING,
+            'entityName' => ParameterType::STRING,
+            'fieldName' => ParameterType::STRING,
+            'limit' => ParameterType::INTEGER,
+            'offset' => ParameterType::INTEGER,
         ];
 
         // this is safe, it's a static string, not user input
@@ -183,7 +196,7 @@ readonly class LogGroupingService
         }
 
         $sql = "
-            SELECT LOWER(HEX(l.id)) as id
+            SELECT LOWER(HEX(l.entity_id)) as entity_id
             FROM swag_migration_logging l
             LEFT JOIN swag_migration_fix f ON (
                 f.entity_name = l.entity_name
@@ -197,11 +210,14 @@ readonly class LogGroupingService
                 AND l.field_name = :fieldName
                 AND l.user_fixable = 1
                 AND f.id IS NULL
+            ORDER BY l.auto_increment ASC
+            LIMIT :limit
+            OFFSET :offset
         ";
 
-        $result = $this->connection->executeQuery($sql, $params);
+        $result = $this->connection->executeQuery($sql, $params, $types);
 
-        return \array_column($result->fetchAllAssociative(), 'id');
+        return \array_column($result->fetchAllAssociative(), 'entity_id');
     }
 
     /**

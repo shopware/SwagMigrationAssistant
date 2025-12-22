@@ -570,12 +570,14 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async getAllLogIds(
+    async getAllEntityIds(
         runId: string,
         code: string,
         entityName: string,
         fieldName: string,
         connectionId?: string,
+        limit: number = 100,
+        offset: number = 0,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<{ ids: string[] }> {
         // @ts-ignore
@@ -585,13 +587,15 @@ export default class MigrationApiService extends ApiService {
         return this.httpClient
             .post(
                 // @ts-ignore
-                `_action/${this.getApiBasePath()}/get-all-log-ids`,
+                `_action/${this.getApiBasePath()}/get-all-entity-ids`,
                 {
                     runId,
                     code,
                     entityName,
                     fieldName,
                     connectionId,
+                    limit,
+                    offset,
                 },
                 {
                     ...this.basicConfig,

@@ -190,19 +190,12 @@ export default Shopware.Component.wrapComponentConfig({
             this.submitLoading = true;
 
             try {
-                const entityIds = await this.collectEntityIdsForSubmission();
-
-                if (entityIds.length === 0) {
-                    this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
-                    });
-
-                    return;
+                if(this.selectAllMode){
+                    await this.submitResolutionInBatches();
+                } else {
+                    await this.submitResolutionForSelectedIds();
                 }
 
-                const entities = entityIds.map((entityId) => this.createResolutionEntity(entityId));
-
-                await this.migrationFixRepository.saveAll(entities);
                 await this.fetchLogs();
 
                 this.resetSelection();
@@ -214,6 +207,51 @@ export default Shopware.Component.wrapComponentConfig({
                 });
             } finally {
                 this.submitLoading = false;
+            }
+        },
+
+        async submitResolutionForSelectedIds() {
+            const entityIds = await this.collectEntityIdsForSubmission();
+
+            if (entityIds.length === 0) {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
+                });
+
+                return;
+            }
+
+            const entities = entityIds.map((entityId) => this.createResolutionEntity(entityId));
+
+            await this.migrationFixRepository.saveAll(entities);
+        },
+
+        async submitResolutionInBatches() {
+            const limit = 100;
+            let offset = 0;
+
+            while (true) {
+                const batchResult = await this.migrationApiService.getAllEntityIds(
+                    this.runId,
+                    this.selectedLog.code,
+                    this.selectedLog.entityName,
+                    this.selectedLog.fieldName,
+                    this.migrationStore.connectionId,
+                    limit,
+                    offset,
+                );
+
+                if (batchResult.entityIds.length === 0) {
+                    break;
+                }
+
+                offset += limit;
+
+                const entities = batchResult.entityIds.map(
+                    (entityId: string) => this.createResolutionEntity(entityId)
+                );
+
+                await this.migrationFixRepository.saveAll(entities);
             }
         },
 
@@ -400,7 +438,6 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSelectAllLogs() {
-            console.log('swag-migration-error-resolution-modal/index.ts::onSelectAllLogs - STARTS');
             if (!this.selectedLog) {
                 return;
             }
@@ -494,7 +531,7 @@ export default Shopware.Component.wrapComponentConfig({
             this.tablePage = page.page;
             this.tableLimit = page.limit;
 
-            // temporarily disable select all mode to allow select checkboxes
+            // temporarily disable select all mode to allow select checkboxes before disabling them
             const wasSelectAllMode = this.selectAllMode;
             if (wasSelectAllMode) {
                 this.selectAllMode = false;
