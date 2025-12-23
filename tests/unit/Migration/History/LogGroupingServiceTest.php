@@ -255,7 +255,7 @@ class LogGroupingServiceTest extends TestCase
      * @param array<string> $expectedIds
      */
     #[DataProvider('getAllLogIdsDataProvider')]
-    public function testGetAllLogIdsByCodeAndEntity(
+    public function testGetAllLogEntityIdsByCodeAndEntity(
         array $dbResult,
         ?string $connectionId,
         array $expectedIds,
@@ -265,7 +265,7 @@ class LogGroupingServiceTest extends TestCase
 
         $this->connection->method('executeQuery')->willReturn($result);
 
-        $ids = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
+        $ids = $this->logGroupingService->getAllLogEntityIdsByCodeAndEntity(
             Uuid::randomHex(),
             'MISSING_FIELD',
             'product',
@@ -298,29 +298,29 @@ class LogGroupingServiceTest extends TestCase
         ];
 
         yield 'single result without connectionId' => [
-            'dbResult' => [['id' => $id1]],
+            'dbResult' => [['entity_id' => $id1]],
             'connectionId' => null,
             'expectedIds' => [$id1],
         ];
 
         yield 'single result with connectionId' => [
-            'dbResult' => [['id' => $id1]],
+            'dbResult' => [['entity_id' => $id1]],
             'connectionId' => Uuid::randomHex(),
             'expectedIds' => [$id1],
         ];
 
         yield 'multiple results' => [
             'dbResult' => [
-                ['id' => $id1],
-                ['id' => $id2],
-                ['id' => $id3],
+                ['entity_id' => $id1],
+                ['entity_id' => $id2],
+                ['entity_id' => $id3],
             ],
             'connectionId' => Uuid::randomHex(),
             'expectedIds' => [$id1, $id2, $id3],
         ];
 
         yield 'empty connectionId treated as null' => [
-            'dbResult' => [['id' => $id1]],
+            'dbResult' => [['entity_id' => $id1]],
             'connectionId' => '',
             'expectedIds' => [$id1],
         ];

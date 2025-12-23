@@ -367,27 +367,27 @@ class HistoryControllerTest extends TestCase
         static::assertSame('FILTER_TEST_CODE', $json['items'][0]['code']);
     }
 
-    public function testGetAllLogIdsWithoutRunId(): void
+    public function testGetAllEntityIdsWithoutRunId(): void
     {
         $request = new Request([], []);
 
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "runId" is missing.');
 
-        $this->controller->getAllLogIds($request);
+        $this->controller->getAllEntityIds($request);
     }
 
-    public function testGetAllLogIdsWithoutCode(): void
+    public function testGetAllEntityIdsWithoutCode(): void
     {
         $request = new Request([], ['runId' => $this->runUuid]);
 
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "code" is missing.');
 
-        $this->controller->getAllLogIds($request);
+        $this->controller->getAllEntityIds($request);
     }
 
-    public function testGetAllLogIdsWithoutEntityName(): void
+    public function testGetAllEntityIdsWithoutEntityName(): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,
@@ -397,10 +397,10 @@ class HistoryControllerTest extends TestCase
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "entityName" is missing.');
 
-        $this->controller->getAllLogIds($request);
+        $this->controller->getAllEntityIds($request);
     }
 
-    public function testGetAllLogIdsWithoutFieldName(): void
+    public function testGetAllEntityIdsWithoutFieldName(): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,
@@ -411,10 +411,10 @@ class HistoryControllerTest extends TestCase
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "fieldName" is missing.');
 
-        $this->controller->getAllLogIds($request);
+        $this->controller->getAllEntityIds($request);
     }
 
-    public function testGetAllLogIdsReturnsEmptyWhenNoMatches(): void
+    public function testGetAllEntityIdsReturnsEmptyWhenNoMatches(): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,
@@ -423,18 +423,18 @@ class HistoryControllerTest extends TestCase
             'fieldName' => 'name',
         ]);
 
-        $response = $this->controller->getAllLogIds($request);
+        $response = $this->controller->getAllEntityIds($request);
 
         static::assertIsString($response->getContent());
         static::assertJson($response->getContent());
 
         $json = \json_decode($response->getContent(), true);
         static::assertIsArray($json);
-        static::assertArrayHasKey('ids', $json);
-        static::assertSame([], $json['ids']);
+        static::assertArrayHasKey('entityIds', $json);
+        static::assertSame([], $json['entityIds']);
     }
 
-    public function testGetAllLogIdsReturnsMatchingIds(): void
+    public function testGetAllEntityIdsReturnsMatchingIds(): void
     {
         $entityId1 = Uuid::randomHex();
         $entityId2 = Uuid::randomHex();
@@ -482,17 +482,17 @@ class HistoryControllerTest extends TestCase
             'fieldName' => 'description',
         ]);
 
-        $response = $this->controller->getAllLogIds($request);
+        $response = $this->controller->getAllEntityIds($request);
 
         static::assertIsString($response->getContent());
         $json = \json_decode($response->getContent(), true);
 
         static::assertIsArray($json);
-        static::assertArrayHasKey('ids', $json);
-        static::assertCount(2, $json['ids']);
+        static::assertArrayHasKey('entityIds', $json);
+        static::assertCount(2, $json['entityIds']);
     }
 
-    public function testGetAllLogIdsWithConnectionId(): void
+    public function testGetAllEntityIdsWithConnectionId(): void
     {
         $entityId = Uuid::randomHex();
 
@@ -518,14 +518,14 @@ class HistoryControllerTest extends TestCase
             'connectionId' => $this->connectionId,
         ]);
 
-        $response = $this->controller->getAllLogIds($request);
+        $response = $this->controller->getAllEntityIds($request);
 
         static::assertIsString($response->getContent());
         $json = \json_decode($response->getContent(), true);
 
         static::assertIsArray($json);
-        static::assertArrayHasKey('ids', $json);
-        static::assertCount(1, $json['ids']);
+        static::assertArrayHasKey('entityIds', $json);
+        static::assertCount(1, $json['entityIds']);
     }
 
     /**
