@@ -10,6 +10,7 @@ namespace SwagMigrationAssistant\Migration\ErrorResolution;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CalculatedPriceField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CartPriceField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\CashRoundingConfigField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CustomFields;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\DateTimeField;
@@ -24,6 +25,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\ObjectField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\PriceDefinitionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\PriceField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TaxFreeConfigField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VariantListingConfigField;
 use Shopware\Core\Framework\Log\Package;
 
@@ -67,10 +69,6 @@ readonly class MigrationFieldExampleGenerator
             return null;
         }
 
-        if ($field instanceof JsonField && !empty($field->getPropertyMapping())) {
-            return self::buildFromPropertyMapping($field->getPropertyMapping());
-        }
-
         if ($field instanceof ListField) {
             $fieldType = $field->getFieldType();
 
@@ -86,7 +84,11 @@ readonly class MigrationFieldExampleGenerator
         }
 
         if ($field instanceof JsonField) {
-            return [];
+            if (empty($field->getPropertyMapping())) {
+                return [];
+            }
+
+            return self::buildFromPropertyMapping($field->getPropertyMapping());
         }
 
         return self::getScalarDefault($field);
@@ -112,11 +114,12 @@ readonly class MigrationFieldExampleGenerator
     {
         return match (true) {
             $field instanceof IntField => 0,
-            $field instanceof FloatField => 0.0,
+            $field instanceof FloatField => 0.1,
             $field instanceof BoolField => false,
-            $field instanceof StringField => '',
+            $field instanceof StringField => '[string]',
             $field instanceof IdField, $field instanceof FkField => '[uuid]',
-            $field instanceof DateTimeField, $field instanceof DateField => '[date]',
+            $field instanceof DateField => '[date]',
+            $field instanceof DateTimeField => '[datetime]',
             default => null,
         };
     }
@@ -130,8 +133,8 @@ readonly class MigrationFieldExampleGenerator
             $field instanceof PriceField => [
                 [
                     'currencyId' => '[uuid]',
-                    'gross' => 0.0,
-                    'net' => 0.0,
+                    'gross' => 0.1,
+                    'net' => 0.1,
                     'linked' => false,
                 ],
             ],
@@ -142,53 +145,63 @@ readonly class MigrationFieldExampleGenerator
             ],
             $field instanceof PriceDefinitionField => [
                 'type' => 'quantity',
-                'price' => 0.0,
+                'price' => 0.1,
                 'quantity' => 1,
                 'isCalculated' => false,
                 'taxRules' => [
                     [
-                        'taxRate' => 0.0,
-                        'percentage' => 0.0,
+                        'taxRate' => 0.1,
+                        'percentage' => 0.1,
                     ],
                 ],
             ],
             $field instanceof CartPriceField => [
-                'netPrice' => 0.0,
-                'totalPrice' => 0.0,
-                'positionPrice' => 0.0,
-                'rawTotal' => 0.0,
+                'netPrice' => 0.1,
+                'totalPrice' => 0.1,
+                'positionPrice' => 0.1,
+                'rawTotal' => 0.1,
                 'taxStatus' => 'gross',
                 'calculatedTaxes' => [
                     [
-                        'tax' => 0.0,
-                        'taxRate' => 0.0,
-                        'price' => 0.0,
+                        'tax' => 0.1,
+                        'taxRate' => 0.1,
+                        'price' => 0.1,
                     ],
                 ],
                 'taxRules' => [
                     [
-                        'taxRate' => 0.0,
-                        'percentage' => 0.0,
+                        'taxRate' => 0.1,
+                        'percentage' => 0.1,
                     ],
                 ],
             ],
             $field instanceof CalculatedPriceField => [
-                'unitPrice' => 0.0,
-                'totalPrice' => 0.0,
+                'unitPrice' => 0.1,
+                'totalPrice' => 0.1,
                 'quantity' => 1,
                 'calculatedTaxes' => [
                     [
-                        'tax' => 0.0,
-                        'taxRate' => 0.0,
-                        'price' => 0.0,
+                        'tax' => 0.1,
+                        'taxRate' => 0.1,
+                        'price' => 0.1,
                     ],
                 ],
                 'taxRules' => [
                     [
-                        'taxRate' => 0.0,
-                        'percentage' => 0.0,
+                        'taxRate' => 0.1,
+                        'percentage' => 0.1,
                     ],
                 ],
+            ],
+            $field instanceof CashRoundingConfigField => [
+                'decimals' => 2,
+                'interval' => 0.01,
+                'roundForNet' => true,
+            ],
+            $field instanceof TaxFreeConfigField => [
+                'enabled' => false,
+                'currencyId' => '[uuid]',
+                'amount' => 0.1,
             ],
             default => null,
         };
