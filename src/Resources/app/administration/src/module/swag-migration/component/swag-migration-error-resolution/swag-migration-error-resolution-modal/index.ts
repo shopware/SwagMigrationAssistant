@@ -46,6 +46,7 @@ export interface SwagMigrationErrorResolutionModalData {
     loading: boolean;
     submitLoading: boolean;
     fieldValue: string[] | string | boolean | number | null;
+    fieldError: { detail: string } | null;
     migrationStore: MigrationStore;
 }
 
@@ -89,6 +90,7 @@ export default Shopware.Component.wrapComponentConfig({
             loading: false,
             submitLoading: false,
             fieldValue: null,
+            fieldError: null,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
         };
     },
@@ -179,21 +181,13 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSubmitResolution() {
-            const validationError = this.swagMigrationErrorResolutionService.validateFieldValue(
-                this.selectedLog.entityName,
-                this.selectedLog.fieldName,
-                this.fieldValue,
-            );
+            this.submitLoading = true;
+            this.fieldError = null;
 
-            if (validationError) {
-                this.createNotificationError({
-                    message: this.$tc(`swag-migration.index.error-resolution.errors.${validationError}`),
-                });
-
+            if (!(await this.validateResolution())) {
+                this.submitLoading = false;
                 return;
             }
-
-            this.submitLoading = true;
 
             try {
                 const entityIds = await this.collectEntityIdsForSubmission();
@@ -221,6 +215,57 @@ export default Shopware.Component.wrapComponentConfig({
             } finally {
                 this.submitLoading = false;
             }
+        },
+
+        async validateResolution(): Promise<boolean> {
+            const validationError = this.swagMigrationErrorResolutionService.validateFieldValue(
+                this.selectedLog.entityName,
+                this.selectedLog.fieldName,
+                this.fieldValue,
+            );
+
+            if (validationError) {
+                this.createNotificationError({
+                    message: this.$tc(`swag-migration.index.error-resolution.errors.${validationError}`),
+                });
+
+                return false;
+            }
+
+            // skip backend validation for to many associations as they use id arrays
+            // which are not compatible with the dal serializer format
+            if (
+                this.swagMigrationErrorResolutionService.isToManyAssociationField(
+                    this.selectedLog.entityName,
+                    this.selectedLog.fieldName,
+                )
+            ) {
+                return true;
+            }
+
+            const serializationError = await this.migrationApiService
+                .validateResolution(this.selectedLog.entityName, this.selectedLog.fieldName, this.fieldValue)
+                .catch(() => {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.validationFailed'),
+                    });
+
+                    return false;
+                });
+
+            if (serializationError?.valid === true) {
+                return true;
+            }
+
+            if (!serializationError?.violations?.length) {
+                return false;
+            }
+
+            this.fieldError = {
+                detail: serializationError.violations.at(0)?.message,
+            };
+
+            return false;
         },
 
         async collectEntityIdsForSubmission(): Promise<string[]> {

@@ -502,7 +502,9 @@
           "fetchFilterDataFailed": "Failed fetching filter data.",
           "fetchExistingFixesFailed": "Failed fetching existing fixes.",
           "invalidJsonInput": "This input is not valid JSON.",
-          "resetResolutionFailed": "Failed resetting error resolution."
+          "resetResolutionFailed": "Failed resetting error resolution.",
+          "fetchExampleFailed": "Failed fetching example data.",
+          "validationFailed": "Validation failed."
         },
         "step": {
           "continue-modal": {

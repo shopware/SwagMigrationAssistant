@@ -5,6 +5,8 @@
                 v-if="isUnhandledField"
                 :field-name="log?.fieldName"
                 :disabled="disabled"
+                :error="error"
+                :example-value="exampleValue"
             />
         {% endblock %}
 
@@ -12,9 +14,12 @@
             <swag-migration-error-resolution-field-scalar
                 v-else-if="isScalarField"
                 :component-type="fieldType"
+                :entity-name="log?.entityName"
                 :field-name="log?.fieldName"
                 :entity-field="entityField"
+                :error="error"
                 :disabled="disabled"
+                :example-value="exampleValue"
             />
         {% endblock %}
 

@@ -93,6 +93,10 @@ class MigrationException extends HttpException
 
     final public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
 
+    final public const MISSING_REQUEST_PARAMETER = 'SWAG_MIGRATION__MISSING_REQUEST_PARAMETER';
+
+    final public const ENTITY_FIELD_NOT_FOUND = 'SWAG_MIGRATION__ENTITY_FIELD_NOT_FOUND';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -474,6 +478,26 @@ class MigrationException extends HttpException
             Response::HTTP_CONFLICT,
             self::DUPLICATE_SOURCE_CONNECTION,
             'A connection to this source system already exists.',
+        );
+    }
+
+    public static function missingRequestParameter(string $parameterName): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::MISSING_REQUEST_PARAMETER,
+            'Required request parameter "{{ parameterName }}" is missing.',
+            ['parameterName' => $parameterName]
+        );
+    }
+
+    public static function entityFieldNotFound(string $entityName, string $fieldName): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::ENTITY_FIELD_NOT_FOUND,
+            'Field "{{ fieldName }}" not found in entity "{{ entityName }}".',
+            ['fieldName' => $fieldName, 'entityName' => $entityName]
         );
     }
 }

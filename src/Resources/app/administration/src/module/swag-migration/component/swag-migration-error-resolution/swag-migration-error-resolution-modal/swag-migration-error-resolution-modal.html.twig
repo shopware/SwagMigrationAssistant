@@ -99,6 +99,7 @@
                         <div v-if="resolvingComponent === 'DEFAULT'" class="swag-migration-error-resolution-modal__right-content-default">
                             <swag-migration-error-resolution-field
                                 :log="selectedLog"
+                                :error="fieldError"
                                 :disabled="loading || selectedLogIds.length === 0"
                             />
 

@@ -16,7 +16,9 @@ export interface SwagMigrationErrorResolutionFieldScalarData {
 export default Shopware.Component.wrapComponentConfig({
     template,
 
-    inject: ['updateFieldValue'],
+    inject: [
+        'updateFieldValue',
+    ],
 
     props: {
         componentType: {
@@ -30,14 +32,28 @@ export default Shopware.Component.wrapComponentConfig({
             type: Object as PropType<Property>,
             required: true,
         },
+        entityName: {
+            type: String,
+            required: true,
+        },
         fieldName: {
             type: String,
             required: true,
+        },
+        error: {
+            type: Object as PropType<{ detail: string }>,
+            required: false,
+            default: null,
         },
         disabled: {
             type: Boolean,
             required: false,
             default: false,
+        },
+        exampleValue: {
+            type: String as PropType<string | null>,
+            required: false,
+            default: null,
         },
     },
 
@@ -50,8 +66,20 @@ export default Shopware.Component.wrapComponentConfig({
     watch: {
         fieldValue: {
             handler() {
+                if (this.componentType === 'switch' && this.fieldValue === null) {
+                    this.fieldValue = false;
+                }
+
                 if (this.updateFieldValue) {
                     this.updateFieldValue(this.fieldValue);
+                }
+            },
+            immediate: true,
+        },
+        exampleValue: {
+            handler(newValue: string | null) {
+                if (this.componentType === 'editor' && newValue !== null && this.fieldValue === null) {
+                    this.fieldValue = newValue;
                 }
             },
             immediate: true,
