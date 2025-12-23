@@ -190,7 +190,7 @@ export default Shopware.Component.wrapComponentConfig({
             this.submitLoading = true;
 
             try {
-                if(this.selectAllMode){
+                if (this.selectAllMode) {
                     await this.submitResolutionInBatches();
                 } else {
                     await this.submitResolutionForSelectedIds();
@@ -247,9 +247,7 @@ export default Shopware.Component.wrapComponentConfig({
 
                 offset += limit;
 
-                const entities = batchResult.entityIds.map(
-                    (entityId: string) => this.createResolutionEntity(entityId)
-                );
+                const entities = batchResult.entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
 
                 await this.migrationFixRepository.saveAll(entities);
             }
@@ -445,13 +443,12 @@ export default Shopware.Component.wrapComponentConfig({
             if (!this.selectAllMode) {
                 const gridRef = this.$refs.errorResolutionGrid as { resetSelection?: () => void } | undefined;
 
-                this.selectedLogIds = [];
-
                 // force select-all behaviour
                 this.applySelectionToGrid(true);
 
                 await this.$nextTick();
 
+                this.selectedLogIds = [];
                 this.selectAllMode = true;
             } else {
                 this.resetSelection();
@@ -470,9 +467,11 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            if (this.selectedLogIds.includes(row.logId) && !row.status) {
-                gridRef.selectItem(true, row);
-            }
+            this.tableData.forEach((row) => {
+                if (this.selectedLogIds.includes(row.logId) && !row.status) {
+                    gridRef.selectItem(true, row);
+                }
+            });
         },
 
         statusBadgeClass(isResolved: boolean): string {

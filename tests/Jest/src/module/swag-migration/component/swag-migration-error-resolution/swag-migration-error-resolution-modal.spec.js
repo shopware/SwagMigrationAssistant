@@ -58,9 +58,9 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
-    getAllLogIds: jest.fn(() =>
+    getAllEntityIds: jest.fn(() =>
         Promise.resolve({
-            ids: logMocks.map((log) => log.id),
+            ids: logMocks.map((log) => log.entityId),
         }),
     ),
 };
@@ -415,7 +415,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
         it('should preselect other page logs when selecting all logs', async () => {
             const originalSearchMock = migrationLoggingRepositoryMock.search.getMockImplementation();
-            const originalGetAllLogIdsMock = migrationApiServiceMock.getAllLogIds.getMockImplementation();
 
             const largeLogMocks = [
                 ...new Array(30).fill(null).map((_, index) => ({
@@ -441,10 +440,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 return Promise.resolve(result);
             });
 
-            migrationApiServiceMock.getAllLogIds.mockImplementation(() => {
-                return Promise.resolve({ ids: largeLogMocks.map((log) => log.id) });
-            });
-
             const wrapper = await createWrapper();
             await flushPromises();
 
@@ -464,7 +459,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
             await flushPromises();
 
-            expect(wrapper.vm.selectedLogIds).toHaveLength(29); // -1 for resolved log
+            expect(wrapper.vm.selectAllMode).toBe(true);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
 
             expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(24);
             await wrapper.find('.sw-pagination__page-button-next').trigger('click');
@@ -473,32 +469,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(5);
 
             migrationLoggingRepositoryMock.search.mockImplementation(originalSearchMock);
-            migrationApiServiceMock.getAllLogIds.mockImplementation(originalGetAllLogIdsMock);
-        });
-
-        it('should display error notification when fetching all log ids fails', async () => {
-            migrationApiServiceMock.getAllLogIds.mockImplementationOnce(() => {
-                return Promise.reject(new Error('failed to fetch all log ids'));
-            });
-            Shopware.Store.get('notification').$reset();
-
-            const wrapper = await createWrapper();
-            await flushPromises();
-
-            await wrapper.find('.sw-data-grid__header .mt-field--checkbox input').setChecked(true);
-            await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
-            await flushPromises();
-
-            const notifications = Object.values(Shopware.Store.get('notification').notifications);
-
-            expect(notifications).toHaveLength(1);
-            expect(notifications).toStrictEqual(
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        message: 'swag-migration.index.error-resolution.errors.fetchLogsFailed',
-                    }),
-                ]),
-            );
         });
     });
 
@@ -751,53 +721,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                         message: 'swag-migration.index.error-resolution.errors.noEntityIdsFound',
                     }),
                 ]),
-            );
-        });
-
-        it('should fetch missing log ids when creating a fix and not all log ids are present', async () => {
-            migrationApiServiceMock.getAllLogIds.mockImplementationOnce(() => {
-                return Promise.resolve({ ids: logMocks.map((log) => log.id).concat(['log-id-3']) });
-            });
-
-            const wrapper = await createWrapper({
-                ...defaultProps,
-                selectedLog: {
-                    ...fixtureLogGroups.at(1),
-                    entityName: 'media',
-                    fieldName: 'title',
-                },
-            });
-            await flushPromises();
-
-            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
-            expect(inputField.exists()).toBe(true);
-
-            await wrapper.find('.sw-data-grid__header .mt-field--checkbox input').setChecked(true);
-            await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
-            await flushPromises();
-
-            await inputField.setValue('New Title');
-            await flushPromises();
-            expect(wrapper.vm.fieldValue).toBe('New Title');
-
-            expect(
-                wrapper.find('.swag-migration-error-resolution-modal__right-content-button').attributes('disabled'),
-            ).toBeUndefined();
-
-            migrationLoggingRepositoryMock.search.mockClear();
-
-            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
-            await flushPromises();
-
-            expect(migrationApiServiceMock.getAllLogIds).toHaveBeenCalled();
-            expect(migrationFixRepositoryMock.create).toHaveBeenCalled();
-
-            expect(migrationLoggingRepositoryMock.search).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    page: 1,
-                    limit: 1,
-                    ids: ['log-id-3'],
-                }),
             );
         });
     });
