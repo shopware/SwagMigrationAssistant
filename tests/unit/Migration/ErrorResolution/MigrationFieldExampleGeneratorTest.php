@@ -81,12 +81,12 @@ class MigrationFieldExampleGeneratorTest extends TestCase
 
         yield 'DateField' => [
             'field' => new DateField('test', 'test'),
-            'expected' => '"[date]"',
+            'expected' => '"[date (Y-m-d)]"',
         ];
 
         yield 'DateTimeField' => [
             'field' => new DateTimeField('test', 'test'),
-            'expected' => '"[datetime]"',
+            'expected' => '"[datetime (Y-m-d H:i:s.v)]"',
         ];
 
         yield 'CustomFields' => [

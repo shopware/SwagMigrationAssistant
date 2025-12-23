@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Migration\ErrorResolution;
 
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\BoolField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CalculatedPriceField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CartPriceField;
@@ -118,8 +119,8 @@ readonly class MigrationFieldExampleGenerator
             $field instanceof BoolField => false,
             $field instanceof StringField => '[string]',
             $field instanceof IdField, $field instanceof FkField => '[uuid]',
-            $field instanceof DateField => '[date]',
-            $field instanceof DateTimeField => '[datetime]',
+            $field instanceof DateField => \sprintf('[date (%s)]', Defaults::STORAGE_DATE_FORMAT),
+            $field instanceof DateTimeField => \sprintf('[datetime (%s)]', Defaults::STORAGE_DATE_TIME_FORMAT),
             default => null,
         };
     }
