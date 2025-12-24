@@ -27,6 +27,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\PriceDefinitionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\PriceField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TaxFreeConfigField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VariantListingConfigField;
 use Shopware\Core\Framework\Log\Package;
 
@@ -117,7 +118,7 @@ readonly class MigrationFieldExampleGenerator
             $field instanceof IntField => 0,
             $field instanceof FloatField => 0.1,
             $field instanceof BoolField => false,
-            $field instanceof StringField => '[string]',
+            $field instanceof StringField, $field instanceof TranslatedField => '[string]',
             $field instanceof IdField, $field instanceof FkField => '[uuid]',
             $field instanceof DateField => \sprintf('[date (%s)]', Defaults::STORAGE_DATE_FORMAT),
             $field instanceof DateTimeField => \sprintf('[datetime (%s)]', Defaults::STORAGE_DATE_TIME_FORMAT),

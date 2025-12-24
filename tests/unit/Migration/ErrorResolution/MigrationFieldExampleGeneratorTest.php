@@ -28,6 +28,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\PriceDefinitionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\PriceField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TaxFreeConfigField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslatedField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VariantListingConfigField;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationFieldExampleGenerator;
@@ -66,6 +67,11 @@ class MigrationFieldExampleGeneratorTest extends TestCase
 
         yield 'StringField' => [
             'field' => new StringField('test', 'test'),
+            'expected' => '"[string]"',
+        ];
+
+        yield 'TranslatedField' => [
+            'field' => new TranslatedField('test'),
             'expected' => '"[string]"',
         ];
 
