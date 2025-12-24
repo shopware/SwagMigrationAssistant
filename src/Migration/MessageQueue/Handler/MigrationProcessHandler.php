@@ -62,7 +62,7 @@ final class MigrationProcessHandler
         $run = $this->migrationRunRepo->search(new Criteria([$message->getRunUuid()]), $context)->getEntities()->first();
 
         if ($run === null) {
-            throw MigrationException::noRunningMigration($message->getRunUuid());
+            throw MigrationException::runNotFound($message->getRunUuid());
         }
 
         return $run;

@@ -13,7 +13,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Exception\NoConnectionFoundException;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
@@ -83,23 +82,27 @@ final class ProcessMediaHandler
 
         try {
             $processor = $this->mediaFileProcessorRegistry->getProcessor($migrationContext);
-            $workload = $processor->process($migrationContext, $context, $workload);
-            $this->processFailures($context, $migrationContext, $processor, $workload);
-        } catch (NoConnectionFoundException $exception) {
+        } catch (MigrationException $exception) {
             $this->loggingService->addLogEntry(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
-                    ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(ProcessorNotFoundLog::class)
             );
 
             $this->loggingService->saveLogging($context);
-        } catch (\Exception $e) {
+
+            return;
+        }
+
+        try {
+            $workload = $processor->process($migrationContext, $context, $workload);
+            $this->processFailures($context, $migrationContext, $processor, $workload);
+        } catch (\Exception $exception) {
             $this->loggingService->addLogEntry(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                    ->withExceptionMessage($e->getMessage())
-                    ->withExceptionTrace($e->getTrace())
+                    ->withExceptionMessage($exception->getMessage())
+                    ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(ExceptionRunLog::class)
             );

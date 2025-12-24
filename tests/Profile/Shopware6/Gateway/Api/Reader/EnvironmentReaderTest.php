@@ -122,8 +122,8 @@ class EnvironmentReaderTest extends TestCase
             'responses' => [
                 new Response(SymfonyResponse::HTTP_UNAUTHORIZED),
             ],
-            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_AUTHENTICATION,
-            'expectedMessage' => 'Invalid connection authentication for the request: "get-data"',
+            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_CREDENTIALS,
+            'expectedMessage' => 'The connection credentials are invalid or incomplete for "get-data".',
             'shouldHaveException' => true,
         ];
 
@@ -159,8 +159,8 @@ class EnvironmentReaderTest extends TestCase
             'responses' => [
                 new RequestException('Could not connect', new Request('GET', '/api/oauth/token')),
             ],
-            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_AUTHENTICATION,
-            'expectedMessage' => 'Invalid connection authentication for the request: "get-data"',
+            'expectedErrorCode' => MigrationException::INVALID_CONNECTION_CREDENTIALS,
+            'expectedMessage' => 'The connection credentials are invalid or incomplete for "get-data".',
             'shouldHaveException' => true,
         ];
 

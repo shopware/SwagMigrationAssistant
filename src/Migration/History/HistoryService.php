@@ -135,7 +135,7 @@ class HistoryService implements HistoryServiceInterface
         }
 
         if ($run->getStep()->isRunning()) {
-            throw MigrationException::migrationIsAlreadyRunning();
+            throw MigrationException::migrationProcessing();
         }
 
         $this->connection->executeStatement('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);

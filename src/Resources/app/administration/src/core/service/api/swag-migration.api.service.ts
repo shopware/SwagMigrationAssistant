@@ -102,17 +102,24 @@ export default class MigrationApiService extends ApiService {
 
     async checkConnection(
         connectionId: string,
+        credentialFields?: Record<string, string>,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<MigrationEnvironmentInformation> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
+
+        const payload: { connectionId: string; credentialFields?: Record<string, string> } = { connectionId };
+
+        if (credentialFields) {
+            payload.credentialFields = credentialFields;
+        }
 
         // @ts-ignore
         return this.httpClient
             .post(
                 // @ts-ignore
                 `_action/${this.getApiBasePath()}/check-connection`,
-                { connectionId },
+                payload,
                 {
                     ...this.basicConfig,
                     headers,

@@ -31,6 +31,7 @@ class EnvironmentInformation extends Struct
         protected string $sourceSystemCurrency = '',
         protected string $sourceSystemLocale = '',
         protected string $targetSystemLocale = '',
+        protected ?string $fingerprint = null,
     ) {
     }
 
@@ -111,5 +112,15 @@ class EnvironmentInformation extends Struct
     public function setTargetSystemLocale(string $targetSystemLocale): void
     {
         $this->targetSystemLocale = $targetSystemLocale;
+    }
+
+    public function getFingerprint(): ?string
+    {
+        return $this->fingerprint;
+    }
+
+    public function setFingerprint(?string $fingerprint): void
+    {
+        $this->fingerprint = $fingerprint;
     }
 }

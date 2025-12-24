@@ -29,7 +29,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Util\Hasher;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
-use SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -88,7 +87,7 @@ abstract class OrderConverter extends ShopwareConverter
     }
 
     /**
-     * @throws AssociationEntityRequiredMissingException
+     * @throws MigrationException
      */
     public function convert(
         array $data,

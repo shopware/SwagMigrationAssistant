@@ -11,7 +11,7 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\DataSetNotFoundException;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
@@ -41,14 +41,19 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
         $currentDataSet = null;
         $currentCount = 0;
         $messageMediaUuids = [];
+
         foreach ($mediaFiles as $mediaFile) {
             if ($currentDataSet === null) {
                 try {
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException $exception) {
-                    $this->logDataSetNotFoundException($migrationContext, $exception);
+                } catch (MigrationException $exception) {
+                    if ($exception->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
+                        $this->logDataSetNotFoundException($migrationContext, $exception);
 
-                    continue;
+                        continue;
+                    }
+
+                    throw $exception;
                 }
             }
 
@@ -59,10 +64,14 @@ class MediaFileProcessorService implements MediaFileProcessorServiceInterface
                     $messageMediaUuids = [];
                     $currentCount = 0;
                     $currentDataSet = $this->dataSetRegistry->getDataSet($migrationContext, $mediaFile['entity']);
-                } catch (DataSetNotFoundException $exception) {
-                    $this->logDataSetNotFoundException($migrationContext, $exception);
+                } catch (MigrationException $exception) {
+                    if ($exception->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
+                        $this->logDataSetNotFoundException($migrationContext, $exception);
 
-                    continue;
+                        continue;
+                    }
+
+                    throw $exception;
                 }
             }
 

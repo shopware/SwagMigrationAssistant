@@ -15,7 +15,7 @@ readonly class MigrationValidationMissingRequiredFieldLog extends AbstractMigrat
 {
     public function isUserFixable(): bool
     {
-        return true;
+        return false;
     }
 
     public function getLevel(): string

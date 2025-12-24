@@ -9,6 +9,7 @@ namespace SwagMigrationAssistant\DataProvider\Service;
 
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Api\Context\SystemSource;
+use Shopware\Core\Framework\App\ShopId\ShopIdProvider;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -18,6 +19,7 @@ use Shopware\Core\Framework\Store\Services\AbstractExtensionDataProvider;
 use Shopware\Core\Framework\Store\Services\StoreClient;
 use Shopware\Core\System\Currency\CurrencyCollection;
 use Shopware\Core\System\Language\LanguageCollection;
+use Shopware\Core\System\SystemConfig\SystemConfigService;
 
 #[Package('fundamentals@after-sales')]
 class EnvironmentService implements EnvironmentServiceInterface
@@ -35,11 +37,12 @@ class EnvironmentService implements EnvironmentServiceInterface
         private readonly string $shopwareRevision,
         private readonly StoreClient $storeClient,
         private readonly AbstractExtensionDataProvider $extensionDataProvider,
+        private readonly SystemConfigService $systemConfigService,
     ) {
     }
 
     /**
-     * @return array<string, string|bool|array<mixed>>
+     * @return array<string, string|bool|array<string, mixed>|null>
      */
     public function getEnvironmentData(Context $context): array
     {
@@ -74,7 +77,19 @@ class EnvironmentService implements EnvironmentServiceInterface
             'revision' => $this->shopwareRevision,
             'additionalData' => [],
             'updateAvailable' => $updateAvailable,
+            'shopIdV2' => $this->getShopIdV2(),
         ];
+    }
+
+    private function getShopIdV2(): ?string
+    {
+        $response = $this->systemConfigService->get(ShopIdProvider::SHOP_ID_SYSTEM_CONFIG_KEY_V2);
+
+        if (\is_array($response) && isset($response['id'])) {
+            return $response['id'];
+        }
+
+        return null;
     }
 
     private function isPluginUpdateAvailable(Context $context): bool

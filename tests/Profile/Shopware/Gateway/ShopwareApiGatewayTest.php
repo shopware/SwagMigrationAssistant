@@ -14,8 +14,10 @@ use Shopware\Core\Framework\Test\TestCaseBase\KernelTestBehaviour;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\Gateway\Reader\EnvironmentReaderInterface;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\RequestStatusStruct;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\ProductReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
@@ -169,5 +171,136 @@ class ShopwareApiGatewayTest extends TestCase
         static::assertSame('___VERSION___', $response->getSourceSystemVersion());
         static::assertSame('foo', $response->getSourceSystemDomain());
         static::assertSame('en-GB', $response->getSourceSystemLocale());
+    }
+
+    public function testGenerateFingerprintWithConfig(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setCredentialFields(['endpoint' => 'foo']);
+
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new ProductReader($connectionFactory);
+
+        $environmentReader = $this->createMock(EnvironmentReaderInterface::class);
+        $environmentReader->method('read')->willReturn([
+            'environmentInformation' => [
+                'defaultShopLanguage' => 'de-DE',
+                'defaultCurrency' => 'EUR',
+                'shopwareVersion' => '5.7.0',
+                'additionalData' => [],
+                'config' => [
+                    'esdKey' => 'test-esd-key',
+                    'installationDate' => '2023-01-01 00:00:00',
+                ],
+            ],
+            'requestStatus' => new RequestStatusStruct(),
+        ]);
+
+        $tableReader = new TableReader($connectionFactory);
+        $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
+
+        $gateway = new ShopwareApiGateway(
+            new ReaderRegistry([$apiReader]),
+            $environmentReader,
+            $tableReader,
+            $tableCountReader,
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
+        );
+
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertNotNull($response->getFingerprint());
+        static::assertIsString($response->getFingerprint());
+    }
+
+    public function testGenerateFingerprintWithoutConfig(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setCredentialFields(['endpoint' => 'foo']);
+
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new ProductReader($connectionFactory);
+
+        $environmentReader = $this->createMock(EnvironmentReaderInterface::class);
+        $environmentReader->method('read')->willReturn([
+            'environmentInformation' => [
+                'defaultShopLanguage' => 'de-DE',
+                'defaultCurrency' => 'EUR',
+                'shopwareVersion' => '5.7.0',
+                'additionalData' => [],
+            ],
+            'requestStatus' => new RequestStatusStruct(),
+        ]);
+
+        $tableReader = new TableReader($connectionFactory);
+        $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
+
+        $gateway = new ShopwareApiGateway(
+            new ReaderRegistry([$apiReader]),
+            $environmentReader,
+            $tableReader,
+            $tableCountReader,
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
+        );
+
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertNull($response->getFingerprint());
+    }
+
+    public function testGenerateFingerprintWithoutInstallationDate(): void
+    {
+        $connection = new SwagMigrationConnectionEntity();
+        $connection->setCredentialFields(['endpoint' => 'foo']);
+
+        $migrationContext = new MigrationContext(
+            $connection,
+            new Shopware55Profile(),
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $apiReader = new ProductReader($connectionFactory);
+
+        $environmentReader = $this->createMock(EnvironmentReaderInterface::class);
+        $environmentReader->method('read')->willReturn([
+            'environmentInformation' => [
+                'defaultShopLanguage' => 'de-DE',
+                'defaultCurrency' => 'EUR',
+                'shopwareVersion' => '5.7.0',
+                'additionalData' => [],
+                'config' => [
+                    'esdKey' => 'test-esd-key',
+                ],
+            ],
+            'requestStatus' => new RequestStatusStruct(),
+        ]);
+
+        $tableReader = new TableReader($connectionFactory);
+        $tableCountReader = new TableCountDummyReader($connectionFactory, new DummyLoggingService());
+
+        $gateway = new ShopwareApiGateway(
+            new ReaderRegistry([$apiReader]),
+            $environmentReader,
+            $tableReader,
+            $tableCountReader,
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository')
+        );
+
+        $response = $gateway->readEnvironmentInformation($migrationContext, Context::createDefaultContext());
+
+        static::assertNull($response->getFingerprint());
     }
 }

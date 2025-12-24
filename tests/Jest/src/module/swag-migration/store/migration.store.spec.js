@@ -471,8 +471,6 @@ const testCases = {
 
 const aclCanMock = jest.fn(() => true);
 
-const dispatchMock = jest.fn();
-
 const repositoryMock = {
     search: jest.fn(() => null),
 };
@@ -496,10 +494,8 @@ describe('src/module/swag-migration/store/migration.store', () => {
                 };
             },
             Snippet: {
+                te: () => true,
                 tc: (key) => key,
-            },
-            State: {
-                dispatch: dispatchMock,
             },
             Context: {
                 api: {
@@ -520,6 +516,8 @@ describe('src/module/swag-migration/store/migration.store', () => {
 
         store = originalShopware.Store.get('swagMigration');
         store.$reset();
+
+        Shopware.Store.get('notification').$reset();
     });
 
     afterAll(() => {
@@ -769,11 +767,13 @@ describe('src/module/swag-migration/store/migration.store', () => {
 
                 expect(migrationApiServiceMock.checkConnection).toHaveBeenCalledTimes(connectionId ? 1 : 0);
                 expect(store.environmentInformation).toStrictEqual(expected);
-                expect(dispatchMock).not.toHaveBeenCalled();
+
+                const notifications = Object.values(Shopware.Store.get('notification').notifications);
+                expect(notifications).toHaveLength(0);
             },
         );
 
-        it('should create notification if environment fetch fails', async () => {
+        it('should create notification if environment fetch fails without error code defined', async () => {
             store.connectionId = 'test-connection-id';
 
             migrationApiServiceMock.checkConnection.mockRejectedValueOnce(new Error('fetch failed'));
@@ -783,11 +783,40 @@ describe('src/module/swag-migration/store/migration.store', () => {
 
             expect(migrationApiServiceMock.checkConnection).toHaveBeenCalledTimes(1);
             expect(store.environmentInformation).toStrictEqual({});
-            expect(dispatchMock).toHaveBeenNthCalledWith(1, 'notification/createNotification', {
-                message: 'swag-migration.api-error.checkConnection',
-                title: 'global.default.error',
-                variant: 'error',
+
+            const notifications = Object.values(Shopware.Store.get('notification').notifications);
+            expect(notifications).toHaveLength(1);
+
+            expect(notifications.at(0).message).toBe('swag-migration.api-error.checkConnection');
+        });
+
+        it('should create notification if environment fetch fails with error code defined', async () => {
+            store.connectionId = 'test-connection-id';
+
+            migrationApiServiceMock.checkConnection.mockRejectedValueOnce({
+                response: {
+                    data: {
+                        errors: [
+                            {
+                                code: 'CHECK_CONNECTION_FAILED',
+                            },
+                        ],
+                    },
+                },
             });
+            expect(store.environmentInformation).toStrictEqual({});
+
+            await store.fetchEnvironmentInformation(migrationApiServiceMock);
+
+            expect(migrationApiServiceMock.checkConnection).toHaveBeenCalledTimes(1);
+            expect(store.environmentInformation).toStrictEqual({});
+
+            const notifications = Object.values(Shopware.Store.get('notification').notifications);
+            expect(notifications).toHaveLength(1);
+
+            expect(notifications.at(0).message).toBe(
+                'swag-migration.wizard.pages.credentials.error.CHECK_CONNECTION_FAILED',
+            );
         });
 
         it.each(testCases.fetchDataSelectionIds)(
@@ -804,7 +833,9 @@ describe('src/module/swag-migration/store/migration.store', () => {
 
                 expect(migrationApiServiceMock.getDataSelection).toHaveBeenCalledTimes(connectionId ? 1 : 0);
                 expect(store.dataSelectionIds).toStrictEqual(expected);
-                expect(dispatchMock).not.toHaveBeenCalled();
+
+                const notifications = Object.values(Shopware.Store.get('notification').notifications);
+                expect(notifications).toHaveLength(0);
             },
         );
 
@@ -820,11 +851,11 @@ describe('src/module/swag-migration/store/migration.store', () => {
             expect(migrationApiServiceMock.getDataSelection).toHaveBeenCalledTimes(1);
             expect(store.dataSelectionTableData).toStrictEqual([]);
             expect(store.dataSelectionIds).toStrictEqual([]);
-            expect(dispatchMock).toHaveBeenNthCalledWith(1, 'notification/createNotification', {
-                message: 'swag-migration.api-error.getDataSelection',
-                title: 'global.default.error',
-                variant: 'error',
-            });
+
+            const notifications = Object.values(Shopware.Store.get('notification').notifications);
+            expect(notifications).toHaveLength(1);
+
+            expect(notifications.at(0).message).toBe('swag-migration.api-error.getDataSelection');
         });
 
         it('should return false when connectionId has not changed', async () => {
@@ -852,11 +883,11 @@ describe('src/module/swag-migration/store/migration.store', () => {
 
             expect(result).toBe(false);
             expect(store.connectionId).toBeNull();
-            expect(dispatchMock).toHaveBeenNthCalledWith(1, 'notification/createNotification', {
-                message: 'swag-migration.api-error.fetchConnectionId',
-                title: 'global.default.error',
-                variant: 'error',
-            });
+
+            const notifications = Object.values(Shopware.Store.get('notification').notifications);
+            expect(notifications).toHaveLength(1);
+
+            expect(notifications.at(0).message).toBe('swag-migration.api-error.fetchConnectionId');
         });
     });
 });

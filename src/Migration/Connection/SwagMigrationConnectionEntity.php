@@ -36,6 +36,8 @@ class SwagMigrationConnectionEntity extends Entity
 
     protected string $gatewayName = '';
 
+    protected ?string $sourceSystemFingerprint = null;
+
     protected ?SwagMigrationRunCollection $runs = null;
 
     protected ?SwagMigrationMappingCollection $mappings = null;
@@ -102,6 +104,16 @@ class SwagMigrationConnectionEntity extends Entity
     public function setGatewayName(string $gatewayName): void
     {
         $this->gatewayName = $gatewayName;
+    }
+
+    public function getSourceSystemFingerprint(): ?string
+    {
+        return $this->sourceSystemFingerprint;
+    }
+
+    public function setSourceSystemFingerprint(string $sourceSystemFingerprint): void
+    {
+        $this->sourceSystemFingerprint = $sourceSystemFingerprint;
     }
 
     public function getRuns(): ?SwagMigrationRunCollection
