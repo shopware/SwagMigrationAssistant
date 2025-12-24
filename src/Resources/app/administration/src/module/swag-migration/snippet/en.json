@@ -598,6 +598,10 @@
                 "title": "Unknown field type",
                 "content": "The field type could not be determined. Please correct the raw source data. The value has to be in the correct format."
               },
+              "unresolvableBanner": {
+                "title": "This error currently cannot be resolved via the Migration Assistant",
+                "content": "Please check the log file for more information."
+              },
               "apply": "Apply changes"
             }
           },

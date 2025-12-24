@@ -86,20 +86,40 @@
                     </div>
 
                     <div class="swag-migration-error-resolution-modal__right-content">
-                        <swag-migration-error-resolution-field
-                            :log="selectedLog"
-                            :disabled="loading || selectedLogIds.length === 0"
-                        />
+                        <div v-if="resolvingComponent === 'DEFAULT'" class="swag-migration-error-resolution-modal__right-content-default">
+                            <swag-migration-error-resolution-field
+                                :log="selectedLog"
+                                :disabled="loading || selectedLogIds.length === 0"
+                            />
 
-                        <mt-button
-                            class="swag-migration-error-resolution-modal__right-content-button"
-                            variant="primary"
-                            :is-loading="submitLoading"
-                            :disabled="loading || selectedLogIds.length === 0"
-                            @click="onSubmitResolution"
-                        >
-                            {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
-                        </mt-button>
+                            <mt-button
+                                class="swag-migration-error-resolution-modal__right-content-button"
+                                variant="primary"
+                                :is-loading="submitLoading"
+                                :disabled="loading || selectedLogIds.length === 0"
+                                @click="onSubmitResolution"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}
+                            </mt-button>
+                        </div>
+
+                        <div v-else-if="resolvingComponent !== null" class="swag-migration-error-resolution-modal__right-content-resolving">
+                            <component
+                                :is="resolvingComponent"
+                                :selected-log="selectedLog"
+                                :selected-log-ids="selectedLogIds"
+                                @submit-resolution="onSubmitResolution"
+                            />
+                        </div>
+
+                        <div v-else class="swag-migration-error-resolution-modal__right-content-unresolvable">
+                            <mt-banner
+                                :title="$tc('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.title')"
+                                variant="attention"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.right.unresolvableBanner.content') }}
+                            </mt-banner>
+                        </div>
                     </div>
                 </div>
             {% endblock %}
