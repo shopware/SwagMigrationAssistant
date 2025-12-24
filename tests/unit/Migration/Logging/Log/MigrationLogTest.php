@@ -125,7 +125,7 @@ class MigrationLogTest extends TestCase
             'logClass' => MigrationValidationMissingRequiredFieldLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
-            'userFixable' => true,
+            'userFixable' => false,
         ];
 
         yield MigrationValidationUnexpectedFieldLog::class => [

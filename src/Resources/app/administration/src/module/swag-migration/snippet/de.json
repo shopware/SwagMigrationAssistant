@@ -747,6 +747,10 @@
                 "title": "Unbekannter Feldtyp",
                 "content": "Der Feldtyp konnte nicht ermittelt werden. Bitte korrigieren Sie die Rohdaten."
               },
+              "unresolvableBanner": {
+                "title": "Dieser Fehler kann derzeit nicht über den Migration Assistant behoben werden.",
+                "content": "Weitere Informationen finden sich in der Log-Datei."
+              },
               "apply": "Änderungen anwenden"
             }
           },
