@@ -15,6 +15,8 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -24,6 +26,8 @@ use SwagMigrationAssistant\Migration\MessageQueue\Message\ResetChecksumMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\RunTransitionServiceInterface;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -124,9 +128,10 @@ class ResetChecksumHandlerTest extends TestCase
 
         $this->mockTotalCount(1);
         $this->mockResetChecksumsAndClearFlag(1);
+        $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::exactly(2))
+            ->expects(static::once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return isset($data[0]['id'])
@@ -155,9 +160,10 @@ class ResetChecksumHandlerTest extends TestCase
 
         $this->mockTotalCount(500);
         $this->mockResetChecksumsOnly(ResetChecksumHandler::BATCH_SIZE);
+        $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::exactly(2))
+            ->expects(static::once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
@@ -215,6 +221,7 @@ class ResetChecksumHandlerTest extends TestCase
         );
 
         $this->mockResetChecksumsAndClearFlag(0);
+        $this->mockRunSearch($runId);
 
         $this->runTransitionService
             ->expects(static::once())
@@ -223,7 +230,7 @@ class ResetChecksumHandlerTest extends TestCase
 
         $this->migrationRunRepo
             ->expects(static::once())
-            ->method('upsert')
+            ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 $progress = $data[0]['progress'];
 
@@ -260,9 +267,10 @@ class ResetChecksumHandlerTest extends TestCase
 
         $this->mockTotalCount(500);
         $this->mockResetChecksumsOnly(ResetChecksumHandler::BATCH_SIZE);
+        $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::exactly(2))
+            ->expects(static::once())
             ->method('update');
 
         $this->messageBus
@@ -293,9 +301,10 @@ class ResetChecksumHandlerTest extends TestCase
 
         $this->mockTotalCount(100);
         $this->mockResetChecksumsAndClearFlag(2);
+        $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::exactly(2))
+            ->expects(static::once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
@@ -321,6 +330,7 @@ class ResetChecksumHandlerTest extends TestCase
         );
 
         $this->mockResetChecksumsAndClearFlag(2);
+        $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
             ->expects(static::once())
@@ -352,9 +362,10 @@ class ResetChecksumHandlerTest extends TestCase
 
         $this->mockTotalCount(5);
         $this->mockResetChecksumsAndClearFlag(1);
+        $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::exactly(2))
+            ->expects(static::once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
@@ -434,5 +445,26 @@ class ResetChecksumHandlerTest extends TestCase
             ->method('executeStatement')
             ->with(static::stringContains('swag_migration_mapping'))
             ->willReturn($affectedRows);
+    }
+
+    private function mockRunSearch(string $runId): void
+    {
+        $run = new SwagMigrationRunEntity();
+        $run->setId($runId);
+
+        $collection = new SwagMigrationRunCollection([$run]);
+
+        $searchResult = new EntitySearchResult(
+            SwagMigrationRunDefinition::ENTITY_NAME,
+            1,
+            $collection,
+            null,
+            new Criteria(),
+            Context::createDefaultContext(),
+        );
+
+        $this->migrationRunRepo
+            ->method('search')
+            ->willReturn($searchResult);
     }
 }
