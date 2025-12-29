@@ -249,21 +249,24 @@ export default Shopware.Component.wrapComponentConfig({
                     this.createNotificationError({
                         message: this.$tc('swag-migration.index.error-resolution.errors.validationFailed'),
                     });
-
-                    return false;
+                    return null;
                 });
 
-            if (serializationError?.valid === true) {
-                return true;
-            }
-
-            if (!serializationError?.violations?.length) {
+            if (!serializationError) {
                 return false;
             }
 
-            this.fieldError = {
-                detail: serializationError.violations.at(0)?.message,
-            };
+            if (serializationError.valid === true) {
+                return true;
+            }
+
+            const message = serializationError.violations?.at(0)?.message;
+
+            if (!message) {
+                return false;
+            }
+
+            this.fieldError = { detail: message };
 
             return false;
         },

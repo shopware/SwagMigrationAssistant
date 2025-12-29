@@ -23,9 +23,9 @@ async function createWrapper(props = defaultProps) {
             stubs: {
                 'sw-code-editor': await wrapTestComponent('sw-code-editor'),
                 'sw-base-field': await wrapTestComponent('sw-base-field'),
+                'sw-field-error': await wrapTestComponent('sw-field-error'),
                 'sw-inheritance-switch': true,
                 'sw-ai-copilot-badge': true,
-                'sw-field-error': true,
                 'sw-circle-icon': true,
                 'sw-help-text': true,
                 'mt-banner': true,
@@ -71,113 +71,38 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         const wrapper = await createWrapper();
         await flushPromises();
 
-        expect(wrapper.find('.sw-code-editor__editor').attributes('content')).toBe('');
-        expect(updateFieldValueMock).toHaveBeenCalledWith('');
-    });
-
-    it.each([
-        { name: 'string', value: '"test string"', expected: 'test string' },
-        { name: 'number', value: '123', expected: 123 },
-        { name: 'boolean', value: 'true', expected: true },
-        { name: 'null', value: 'null', expected: null },
-        { name: 'object', value: '{"key": "value"}', expected: { key: 'value' } },
-        {
-            name: 'array',
-            value: '[1, 2, 3]',
-            expected: [
-                1,
-                2,
-                3,
-            ],
-        },
-    ])('should parse and publish JSON values: $name', async ({ value, expected }) => {
-        const wrapper = await createWrapper();
-        await flushPromises();
-        jest.clearAllMocks();
-
-        await wrapper.setData({ fieldValue: value });
-        await flushPromises();
-
-        expect(updateFieldValueMock).toHaveBeenCalledWith(expected);
-    });
-
-    it.each([
-        {
-            name: 'trailing comma in object',
-            value: '{"key": "value",}',
-        },
-        {
-            name: 'trailing comma in array',
-            value: '[1, 2, 3,]',
-        },
-        {
-            name: 'nested trailing commas',
-            value: '{"outer": {"inner": "value",},}',
-        },
-    ])('should return null and set error for trailing commas: $name', async ({ value }) => {
-        const wrapper = await createWrapper();
-        await flushPromises();
-        jest.clearAllMocks();
-
-        await wrapper.setData({ fieldValue: value });
-        await flushPromises();
-
+        expect(wrapper.find('.sw-code-editor__editor').attributes('content')).toBeUndefined();
         expect(updateFieldValueMock).toHaveBeenCalledWith(null);
-        expect(wrapper.vm.error).not.toBeNull();
-        expect(wrapper.vm.error.detail).toBeDefined();
     });
 
-    it.each([
-        {
-            name: 'invalid JSON',
-            value: 'not json',
-        },
-        {
-            name: 'incomplete object',
-            value: '{"key": ',
-        },
-        {
-            name: 'single quotes',
-            value: "{'key': 'value'}",
-        },
-    ])('should return null and set error for invalid JSON: $name', async ({ value }) => {
-        const wrapper = await createWrapper();
-        await flushPromises();
-        jest.clearAllMocks();
-
-        await wrapper.setData({ fieldValue: value });
-        await flushPromises();
-
-        expect(updateFieldValueMock).toHaveBeenCalledWith(null);
-        expect(wrapper.vm.error).not.toBeNull();
-        expect(wrapper.vm.error.detail).toBeDefined();
-    });
-
-    it('should trim whitespace from JSON string', async () => {
-        const wrapper = await createWrapper();
-        await flushPromises();
-        jest.clearAllMocks();
-
-        await wrapper.setData({ fieldValue: '  {"key": "value"}  ' });
-        await flushPromises();
-
-        expect(updateFieldValueMock).toHaveBeenCalledWith({ key: 'value' });
-        expect(wrapper.vm.error).toBeNull();
-    });
-
-    it('should clear error when valid JSON is entered after invalid JSON', async () => {
+    it('should display error message when passed', async () => {
         const wrapper = await createWrapper();
         await flushPromises();
 
-        await wrapper.setData({ fieldValue: 'invalid json' });
-        await flushPromises();
-        expect(wrapper.vm.error).not.toBeNull();
+        expect(wrapper.find('.sw-field__error').exists()).toBe(false);
 
-        jest.clearAllMocks();
-        await wrapper.setData({ fieldValue: '{"valid": "json"}' });
+        const message = 'This is an error message';
+        await wrapper.setProps({
+            error: {
+                detail: message,
+            },
+        });
+
+        expect(wrapper.find('.sw-field__error').exists()).toBe(true);
+        expect(wrapper.find('.sw-field__error').text()).toBe(message);
+    });
+
+    it('should init with example value when set', async () => {
+        const wrapper = await createWrapper();
         await flushPromises();
 
-        expect(wrapper.vm.error).toBeNull();
-        expect(updateFieldValueMock).toHaveBeenCalledWith({ valid: 'json' });
+        expect(wrapper.find('.sw-code-editor__editor').attributes('content')).toBeUndefined();
+
+        const exampleValue = 'example content';
+        await wrapper.setProps({
+            exampleValue: exampleValue,
+        });
+
+        expect(wrapper.find('.sw-code-editor__editor').attributes('content')).toBe(exampleValue);
     });
 });

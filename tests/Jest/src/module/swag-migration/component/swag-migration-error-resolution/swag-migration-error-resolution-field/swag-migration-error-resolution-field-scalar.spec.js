@@ -10,6 +10,7 @@ const updateFieldValueMock = jest.fn();
 
 const defaultProps = {
     componentType: 'text',
+    entityNAme: 'customer',
     entityField: {
         entity: 'customer',
         type: 'string',
@@ -174,5 +175,43 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
         ).toBeUndefined();
         await wrapper.setProps({ disabled: true });
         expect(wrapper.find('.sw-migration-error-resolution-field__datepicker input').attributes('disabled')).toBeDefined();
+    });
+
+    it('should init bool field value for switch component', async () => {
+        const props = {
+            ...defaultProps,
+            componentType: 'switch',
+            entityField: {
+                entity: 'customer',
+                type: 'bool',
+            },
+            fieldName: 'active',
+        };
+
+        const wrapper = await createWrapper(props);
+
+        expect(wrapper.vm.fieldValue).toBe(false);
+        expect(wrapper.find('.sw-migration-error-resolution-field__switch input').element.checked).toBe(false);
+    });
+
+    it('should init example value when set', async () => {
+        const props = {
+            ...defaultProps,
+            componentType: 'editor',
+            entityField: {
+                entity: 'product',
+                type: 'string',
+            },
+            fieldName: 'price',
+        };
+
+        const wrapper = await createWrapper(props);
+        expect(wrapper.find('.sw-migration-error-resolution-field__editor').exists()).toBe(true);
+
+        expect(wrapper.vm.fieldValue).toBeNull();
+
+        const example = 'Sample example value';
+        await wrapper.setProps({ exampleValue: example });
+        expect(wrapper.vm.fieldValue).toBe(example);
     });
 });

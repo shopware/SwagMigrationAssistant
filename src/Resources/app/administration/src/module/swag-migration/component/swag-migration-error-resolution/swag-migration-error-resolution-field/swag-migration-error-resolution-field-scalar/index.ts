@@ -32,10 +32,6 @@ export default Shopware.Component.wrapComponentConfig({
             type: Object as PropType<Property>,
             required: true,
         },
-        entityName: {
-            type: String,
-            required: true,
-        },
         fieldName: {
             type: String,
             required: true,
