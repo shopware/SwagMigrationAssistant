@@ -161,8 +161,8 @@
     - [BREAKING] Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
     - [BREAKING] Changed signature of method `getGateways()` in `SwagMigrationAssistant\Migration\Gateway\GatewayRegistry` to require `ProfileInterface` as parameter instead of `MigrationContextInterface`
     - [BREAKING] Changed signature of constructor method of `SwagMigrationAssistant\Migration\MigrationContext` to require `SwagMigrationConnectionEntity` and additional optional parameter of `ProfileInterface` with default value `null`
-    - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContextInterface`
-    - Added methods `setProfile()`, `getGateway()`,  `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContext`
+    - Added methods `setProfile()`, `getGateway()`, `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContextInterface`
+    - Added methods `setProfile()`, `getGateway()`, `setGateway()` and `setConnection()` to `SwagMigrationAssistant\Migration\MigrationContext`
     - Added null checks to methods `getProfile()` and `getGateway()` in `SwagMigrationAssistant\Migration\MigrationContext` to ensure that a profile and gateway is set before usage
 
 - [BREAKING] [#40](https://github.com/shopware/SwagMigrationAssistant/pull/40) - refactor!: add migration logging optional fields
@@ -295,7 +295,7 @@
     - [BREAKING] Removed method `getDocumentTypeUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup::get()` instead.
     - [BREAKING] Removed method `getLowestRootCategoryUuid` from `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors. Use `SwagMigrationAssistant\Migration\Mapping\Lookup\LowestRootCategoryLookup::get()` instead.
     - [BREAKING] Change signature of function `writeMapping` from `public function writeMapping(Context $context): void;` to `public function writeMapping(): void;` in `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` and all implementors.
-    - [BREAKING] Removed constructor parameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`,  `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` from `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
+    - [BREAKING] Removed constructor parameter `EntityRepository $localeRepository`, `EntityRepository $languageRepository`, `EntityRepository $countryRepository`, `EntityRepository $currencyRepository`, `EntityRepository $taxRepo`, `EntityRepository $numberRangeRepo`, `EntityRepository $ruleRepo`, `EntityRepository $thumbnailSizeRepo`, `EntityRepository $mediaDefaultRepo`, `EntityRepository $categoryRepo`, `EntityRepository $cmsPageRepo`, `EntityRepository $deliveryTimeRepo`, `EntityRepository $documentTypeRepo` from `\SwagMigrationAssistant\Profile\Shopware6\Mapping\Shopware6MappingService`
 - MIG-1039 - [BREAKING] Added new method `getCountryStateUuid` to `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface`
 - MIG-1039 - [BREAKING] Added new constructor parameter `EntityRepository $countryStateRepo` to `SwagMigrationAssistant\Migration\Mapping\MappingService`
 - MIG-1049 - Made `connection` property of `SwagMigrationMappingEntity` optional

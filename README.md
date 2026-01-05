@@ -125,4 +125,3 @@ composer install5db
 ## License
 
 `MIT` See [`LICENSE`](LICENSE).
-
