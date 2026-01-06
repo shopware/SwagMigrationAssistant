@@ -174,6 +174,7 @@ class RunService implements RunServiceInterface
 
         $this->runTransitionService->transitionToRunStep($runId, MigrationStep::ABORTING);
 
+        $this->bus->dispatch(new MigrationProcessMessage($context, $runId));
         $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runId, $context);
     }
 

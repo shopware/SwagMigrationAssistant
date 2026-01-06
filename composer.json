@@ -38,8 +38,8 @@
             "@ecs-fix",
             "@phpstan",
             "@phpunit",
-            "@admin:lint",
-            "@admin:format"
+            "@lint:admin",
+            "@format:admin"
         ],
         "ecs": "../../../vendor/bin/php-cs-fixer fix --dry-run",
         "ecs-fix": "../../../vendor/bin/php-cs-fixer fix",
@@ -60,31 +60,33 @@
             "@npm:jest install",
             "@npm:acceptance install"
         ],
-        "admin:lint": [
+        "lint:admin": [
             "@npm:jest run lint",
             "@npm:admin run lint",
             "@npm:acceptance run lint",
             "@npm:admin run lint:scss"
         ],
-        "admin:lint:fix": [
+        "lint:admin:fix": [
             "@npm:jest run lint:fix",
             "@npm:admin run lint:fix",
             "@npm:acceptance run lint:fix",
             "@npm:admin run lint:scss:fix"
         ],
-        "admin:lint:scss": [
+        "lint:admin:scss": [
             "@npm:admin run lint:scss"
         ],
-        "admin:format": [
+        "format:admin": [
             "@npm:jest run format",
             "@npm:admin run format",
             "@npm:acceptance run format"
         ],
-        "admin:format:fix" : [
+        "format:admin:fix": [
             "@npm:jest run format:fix",
             "@npm:admin run format:fix",
             "@npm:acceptance run format:fix"
         ],
+        "format:md": "@npm:admin run format:md",
+        "format:md:fix": "@npm:admin run format:md:fix",
         "admin:unit": "@npm:jest run unit",
         "admin:unit:watch": "@npm:jest run unit-watch",
         "admin:acceptance": "@npm:acceptance run test",

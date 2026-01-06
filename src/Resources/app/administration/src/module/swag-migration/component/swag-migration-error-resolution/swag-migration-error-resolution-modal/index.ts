@@ -11,6 +11,19 @@ const { Criteria } = Shopware.Data;
 
 /**
  * @private
+ *
+ * Determines which component resolves a specific error code.
+ * 'DEFAULT' means the default component renders a matching input field.
+ * null will render an unresolvable message.
+ */
+export const ERROR_CODE_COMPONENT_MAPPING: Record<string, string> = {
+    SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE: 'DEFAULT',
+    SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY: 'DEFAULT',
+    SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD: 'DEFAULT',
+} as const;
+
+/**
+ * @private
  */
 export type ResolutionModalRow = {
     status: boolean;
@@ -153,6 +166,10 @@ export default Shopware.Component.wrapComponentConfig({
             });
 
             return selection;
+        },
+
+        resolvingComponent(): string | null {
+            return ERROR_CODE_COMPONENT_MAPPING[this.selectedLog.code] || null;
         },
     },
 

@@ -33,8 +33,9 @@ jobs:
             }
       - run: |
           composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:format
+          composer -d custom/plugins/${{ github.event.repository.name }} run lint:admin
+          composer -d custom/plugins/${{ github.event.repository.name }} run format:admin
+          composer -d custom/plugins/${{ github.event.repository.name }} run format:md
 
   stylelint:
     name: Stylelint
@@ -56,7 +57,7 @@ jobs:
             }
       - run: |
           composer -d custom/plugins/${{ github.event.repository.name }} run admin:install
-          composer -d custom/plugins/${{ github.event.repository.name }} run admin:lint:scss
+          composer -d custom/plugins/${{ github.event.repository.name }} run lint:admin:scss
 
   jest:
     name: Jest
