@@ -28,8 +28,7 @@ use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
@@ -203,7 +202,7 @@ class MigrationValidationServiceTest extends TestCase
         );
     }
 
-    public function testShouldLogWhenEntityHasNowId(): void
+    public function testShouldLogWhenEntityHasNoId(): void
     {
         $result = $this->validationService->validate(
             $this->migrationContext,
@@ -342,7 +341,7 @@ class MigrationValidationServiceTest extends TestCase
                 'userFixable' => 'not_a_boolean',
             ],
             [
-                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
             ],
         ];
 
@@ -352,7 +351,7 @@ class MigrationValidationServiceTest extends TestCase
                 'code' => str_repeat('sw', 128),
             ],
             [
-                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
             ],
         ];
 
@@ -372,7 +371,7 @@ class MigrationValidationServiceTest extends TestCase
                 'sourceData' => "\xB1\x31",
             ],
             [
-                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
             ],
         ];
 
@@ -389,9 +388,9 @@ class MigrationValidationServiceTest extends TestCase
             [
                 MigrationValidationMissingRequiredFieldLog::class,
                 MigrationValidationUnexpectedFieldLog::class,
-                MigrationValidationInvalidFieldValueLog::class,
-                MigrationValidationInvalidFieldValueLog::class,
-                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
             ],
         ];
     }
@@ -429,15 +428,6 @@ class MigrationValidationServiceTest extends TestCase
             [],
         ];
 
-        yield 'invalid fk' => [
-            [
-                ...$log,
-                'runId' => Uuid::randomHex(),
-            ],
-            [$mapping],
-            [MigrationValidationInvalidForeignKeyLog::class],
-        ];
-
         yield 'fk field not in converted data' => [
             $log,
             [],
@@ -451,7 +441,7 @@ class MigrationValidationServiceTest extends TestCase
             ],
             [],
             [
-                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
             ],
         ];
 
@@ -462,7 +452,7 @@ class MigrationValidationServiceTest extends TestCase
             ],
             [],
             [
-                MigrationValidationInvalidFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
             ],
         ];
     }

@@ -212,7 +212,6 @@ trait MigrationServicesTrait
             $this->getContainer()->get(DefinitionInstanceRegistry::class),
             $this->getContainer()->get('event_dispatcher'),
             $loggingService,
-            $mappingService,
             $this->getContainer()->get(Connection::class),
         );
 

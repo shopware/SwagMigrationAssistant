@@ -39,8 +39,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectTypeLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
@@ -107,17 +106,10 @@ class MigrationLogTest extends TestCase
             'userFixable' => false,
         ];
 
-        yield MigrationValidationInvalidFieldValueLog::class => [
-            'logClass' => MigrationValidationInvalidFieldValueLog::class,
+        yield MigrationValidationInvalidRequiredFieldValueLog::class => [
+            'logClass' => MigrationValidationInvalidRequiredFieldValueLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
-            'userFixable' => true,
-        ];
-
-        yield MigrationValidationInvalidForeignKeyLog::class => [
-            'logClass' => MigrationValidationInvalidForeignKeyLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => true,
         ];
 

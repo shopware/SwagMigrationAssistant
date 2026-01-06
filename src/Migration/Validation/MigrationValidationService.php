@@ -11,9 +11,9 @@ use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\Command\WriteCommandQueue;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\DataStack\KeyValuePair;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
@@ -24,15 +24,14 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
-use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Validation\Event\MigrationPostValidationEvent;
 use SwagMigrationAssistant\Migration\Validation\Event\MigrationPreValidationEvent;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -43,22 +42,30 @@ use Symfony\Contracts\Service\ResetInterface;
 class MigrationValidationService implements ResetInterface
 {
     /**
-     * @var array<string, list<string>>
+     * Maps entity name to an associative array of required field property names.
+     *
+     * Example:
+     * [
+     *    'entity_name' => [
+     *       'required_field_name' => true,
+     *    ],
+     * ]
+     *
+     * @var array<string, array<string, true>>
      */
-    private array $requiredColumnsCache = [];
+    private array $requiredDefinitionFieldsCache = [];
 
     public function __construct(
         private readonly DefinitionInstanceRegistry $definitionRegistry,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LoggingServiceInterface $loggingService,
-        private readonly MappingServiceInterface $mappingService,
         private readonly Connection $connection,
     ) {
     }
 
     public function reset(): void
     {
-        $this->requiredColumnsCache = [];
+        $this->requiredDefinitionFieldsCache = [];
     }
 
     /**
@@ -93,7 +100,6 @@ class MigrationValidationService implements ResetInterface
         try {
             $this->validateEntityStructure($validationContext);
             $this->validateFields($validationContext);
-            $this->validateAssociations($validationContext);
         } catch (\Throwable $exception) {
             $validationContext->getValidationResult()->addLog(
                 MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
@@ -121,7 +127,7 @@ class MigrationValidationService implements ResetInterface
     }
 
     /**
-     * Validates that all required fields are present and that no unexpected fields exist.
+     * Validates that all required fields are present.
      * Required fields are determined by checking which database columns are non-nullable without a default value
      */
     private function validateEntityStructure(MigrationValidationContext $validationContext): void
@@ -134,15 +140,14 @@ class MigrationValidationService implements ResetInterface
         $convertedData = $validationContext->getConvertedData();
         $validationResult = $validationContext->getValidationResult();
 
-        $requiredDatabaseColumns = $this->getRequiredDatabaseColumns($entityName);
-        $requiredFields = $this->filterRequiredFields(
+        $requiredFields = $this->getRequiredFields(
             $fields,
-            $requiredDatabaseColumns
+            $entityName
         );
 
         $convertedFieldNames = array_keys($convertedData);
         $missingRequiredFields = array_diff(
-            $requiredFields,
+            array_keys($requiredFields),
             $convertedFieldNames
         );
 
@@ -156,19 +161,6 @@ class MigrationValidationService implements ResetInterface
                     ->build(MigrationValidationMissingRequiredFieldLog::class)
             );
         }
-
-        $unexpectedFields = array_diff($convertedFieldNames, array_keys($fields->getElements()));
-
-        foreach ($unexpectedFields as $unexpectedField) {
-            $validationResult->addLog(
-                MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                    ->withEntityName($entityName)
-                    ->withFieldName($unexpectedField)
-                    ->withConvertedData($convertedData)
-                    ->withEntityId($convertedData['id'] ?? null)
-                    ->build(MigrationValidationUnexpectedFieldLog::class)
-            );
-        }
     }
 
     /**
@@ -178,6 +170,7 @@ class MigrationValidationService implements ResetInterface
     {
         $entityDefinition = $validationContext->getEntityDefinition();
         $fields = $entityDefinition->getFields();
+        $entityName = $entityDefinition->getEntityName();
 
         $convertedData = $validationContext->getConvertedData();
         $validationResult = $validationContext->getValidationResult();
@@ -204,12 +197,15 @@ class MigrationValidationService implements ResetInterface
             new WriteCommandQueue(),
         );
 
+        $requiredFields = $this->getRequiredFields($fields, $entityName);
+
         foreach ($convertedData as $fieldName => $value) {
             if (!$fields->has($fieldName)) {
                 continue;
             }
 
             $field = clone $fields->get($fieldName);
+            $isRequired = isset($requiredFields[$fieldName]);
 
             /**
              * The required flag controls flow in AbstractFieldSerializer::requiresValidation().
@@ -227,6 +223,14 @@ class MigrationValidationService implements ResetInterface
                 $serializer = $field->getSerializer();
                 \iterator_to_array($serializer->encode($field, $entityExistence, $keyValue, $parameters), false);
             } catch (\Throwable $e) {
+                $logClass = $isRequired
+                    ? MigrationValidationInvalidRequiredFieldValueLog::class
+                    : MigrationValidationInvalidOptionalFieldValueLog::class;
+
+                if ($field instanceof TranslationsAssociationField) {
+                    $logClass = MigrationValidationInvalidRequiredTranslation::class;
+                }
+
                 $validationResult->addLog(
                     MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                         ->withEntityName($entityDefinition->getEntityName())
@@ -236,98 +240,56 @@ class MigrationValidationService implements ResetInterface
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
                         ->withEntityId($id)
-                        ->build(MigrationValidationInvalidFieldValueLog::class)
+                        ->build($logClass)
                 );
             }
         }
     }
 
     /**
-     * Validates that all foreign key fields reference existing entities by checking the mapping service.
-     */
-    private function validateAssociations(MigrationValidationContext $validationContext): void
-    {
-        $entityDefinition = $validationContext->getEntityDefinition();
-        $fkFields = $entityDefinition->getFields()->filterInstance(FkField::class);
-
-        $convertedData = $validationContext->getConvertedData();
-        $validationResult = $validationContext->getValidationResult();
-
-        /** @var FkField $fkField */
-        foreach ($fkFields as $fkField) {
-            $fkFieldName = $fkField->getPropertyName();
-            $fkValue = $convertedData[$fkFieldName] ?? null;
-
-            if ($fkValue === null || $fkValue === '') {
-                continue;
-            }
-
-            $referenceEntity = $fkField->getReferenceEntity();
-
-            if (!$referenceEntity) {
-                throw MigrationException::unexpectedNullValue($fkFieldName);
-            }
-
-            $hasMapping = $this->mappingService->hasValidMappingByEntityId(
-                $validationContext->getMigrationContext()->getConnection()->getId(),
-                $referenceEntity,
-                $fkValue,
-                $validationContext->getContext()
-            );
-
-            if (!$hasMapping) {
-                $validationResult->addLog(
-                    MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                        ->withEntityName($entityDefinition->getEntityName())
-                        ->withFieldName($fkFieldName)
-                        ->withConvertedData([$fkFieldName => $fkValue])
-                        ->withSourceData($validationContext->getSourceData())
-                        ->withEntityId($convertedData['id'] ?? null)
-                        ->build(MigrationValidationInvalidForeignKeyLog::class)
-                );
-            }
-        }
-    }
-
-    /**
-     * @param array<string> $requiredDbColumns
+     * Gets the map of required field property names for the given entity and caches the result for future calls.
      *
-     * @return array<string>
+     * A field is considered required if:
+     * - It has the Required flag in the entity definition, AND
+     * - It's either not StorageAware (no direct database column), OR its database column is non-nullable without a default value
+     *
+     * @return array<string, true>
      */
-    private function filterRequiredFields(CompiledFieldCollection $fields, array $requiredDbColumns): array
+    private function getRequiredFields(CompiledFieldCollection $fields, string $entityName): array
     {
+        if (isset($this->requiredDefinitionFieldsCache[$entityName])) {
+            return $this->requiredDefinitionFieldsCache[$entityName];
+        }
+
+        $requiredDbColumns = $this->getRequiredDatabaseColumns($entityName);
         $requiredFields = [];
 
         foreach ($fields->filterByFlag(Required::class) as $field) {
             if (!($field instanceof StorageAware)) {
-                $requiredFields[] = $field->getPropertyName();
+                $requiredFields[$field->getPropertyName()] = true;
 
                 continue;
             }
 
-            if (!\in_array($field->getStorageName(), $requiredDbColumns, true)) {
-                continue;
+            if (isset($requiredDbColumns[$field->getStorageName()])) {
+                $requiredFields[$field->getPropertyName()] = true;
             }
-
-            $requiredFields[] = $field->getPropertyName();
         }
+
+        $this->requiredDefinitionFieldsCache[$entityName] = $requiredFields;
 
         return $requiredFields;
     }
 
     /**
-     * Gets the list of required database columns for the given entity and caches the result for future calls.
+     * Gets the map of required database columns for the given entity.
      * A required database column is defined as a column that is non-nullable, has no default value, and is not auto-incrementing.
      *
-     * @return list<string>
+     * @return array<string, true>
      */
     private function getRequiredDatabaseColumns(string $entityName): array
     {
-        if (isset($this->requiredColumnsCache[$entityName])) {
-            return $this->requiredColumnsCache[$entityName];
-        }
-
-        $this->requiredColumnsCache[$entityName] = [];
+        $requiredColumns = [];
 
         $columns = $this->connection
             ->createSchemaManager()
@@ -335,10 +297,10 @@ class MigrationValidationService implements ResetInterface
 
         foreach ($columns as $column) {
             if ($column->getNotnull() && $column->getDefault() === null && !$column->getAutoincrement()) {
-                $this->requiredColumnsCache[$entityName][] = $column->getName();
+                $requiredColumns[$column->getName()] = true;
             }
         }
 
-        return $this->requiredColumnsCache[$entityName];
+        return $requiredColumns;
     }
 }
