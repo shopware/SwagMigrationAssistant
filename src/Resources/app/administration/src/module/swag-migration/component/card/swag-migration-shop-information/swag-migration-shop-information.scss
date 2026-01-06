@@ -38,7 +38,7 @@
         align-items: center;
         font-size: var(--font-size-xs);
         white-space: nowrap;
-        gap: var(--scale-size-4);
+        gap: var(--scale-size-2);
     }
 
     .swag-migration-shop-information__profile-avatar {
@@ -46,11 +46,14 @@
     }
 
     .swag-migration-shop-information__shop-domain-prefix {
+        display: flex;
+        align-items: center;
+        gap: var(--scale-size-2);
         color: var(--color-icon-attention-default);
     }
 
     .swag-migration-shop-information__shop-domain-prefix--is-ssl {
-        color: var(--color-icon-attention-default);
+        color: var(--color-icon-positive-default);
     }
 
     .swag-migration-shop-information__connection-info {

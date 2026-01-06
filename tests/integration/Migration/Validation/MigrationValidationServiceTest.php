@@ -18,7 +18,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition;
@@ -28,7 +27,9 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
+use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidAssociationLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
@@ -37,8 +38,6 @@ use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
-use function array_map;
-use function var_dump;
 
 /**
  * @internal
@@ -173,7 +172,7 @@ class MigrationValidationServiceTest extends TestCase
         static::assertCount(\count($expectedLogs), $logs);
         static::assertCount(\count($expectedLogs), $result->getLogs());
 
-        $logCodes = array_map(fn($log) => $log::class, $result->getLogs());
+        $logCodes = \array_map(fn ($log) => $log::class, $result->getLogs());
         static::assertSame($expectedLogs, $logCodes);
     }
 
@@ -191,7 +190,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $missingFields = \array_map(fn($log) => $log->getFieldName(), $result->getLogs());
+        $missingFields = \array_map(fn ($log) => $log->getFieldName(), $result->getLogs());
         static::assertCount(3, $missingFields);
 
         $expectedMissingFields = [
@@ -223,14 +222,14 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logs = \array_filter($result->getLogs(), fn($log) => $log instanceof MigrationValidationExceptionLog);
+        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
         static::assertCount(1, $logs);
 
         $exceptionLog = array_values($logs)[0];
         static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
 
         static::assertSame(
-            MigrationException::unexpectedNullValue('id')->getMessage(),
+            MigrationValidationException::unexpectedNullValue('id')->getMessage(),
             $exceptionLog->getExceptionMessage()
         );
     }
@@ -255,14 +254,14 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logs = \array_filter($result->getLogs(), fn($log) => $log instanceof MigrationValidationExceptionLog);
+        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
         static::assertCount(1, $logs);
 
         $exceptionLog = array_values($logs)[0];
         static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
 
         static::assertSame(
-            MigrationException::invalidId($id, SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+            MigrationValidationException::invalidId($id, SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
             $exceptionLog->getExceptionMessage(),
         );
     }
@@ -289,7 +288,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logClasses = array_map(static fn($log) => $log::class, $result->getLogs());
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertEquals($expectedLogs, $logClasses);
     }
 
@@ -299,7 +298,7 @@ class MigrationValidationServiceTest extends TestCase
             'id' => Uuid::randomHex(),
             'versionId' => Uuid::randomHex(),
             'stock' => 10,
-            'translations' => ['lel']
+            'translations' => ['lel'],
         ];
 
         $result = $this->validationService->validate(
@@ -312,7 +311,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logClasses = array_map(static fn($log) => $log::class, $result->getLogs());
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertCount(1, $logClasses);
         static::assertEquals([MigrationValidationInvalidRequiredTranslation::class], $logClasses);
     }
@@ -327,7 +326,7 @@ class MigrationValidationServiceTest extends TestCase
                 Defaults::LANGUAGE_SYSTEM => [
                     'name' => 'Valid name',
                 ],
-            ]
+            ],
         ];
 
         $result = $this->validationService->validate(
@@ -340,7 +339,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logClasses = array_map(static fn($log) => $log::class, $result->getLogs());
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertCount(0, $logClasses);
     }
 
@@ -496,5 +495,186 @@ class MigrationValidationServiceTest extends TestCase
                 MigrationValidationInvalidOptionalFieldValueLog::class,
             ],
         ];
+    }
+
+    /**
+     * Tests for ManyToMany and OneToMany association validation.
+     *
+     * @return \Generator<string, array{array<string, mixed>, array<class-string>}>
+     */
+    public static function toManyAssociationProvider(): \Generator
+    {
+        $baseProduct = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+        ];
+
+        yield 'valid categories association (empty array)' => [
+            [
+                ...$baseProduct,
+                'categories' => [],
+            ],
+            [],
+        ];
+
+        yield 'valid categories association (with valid entries)' => [
+            [
+                ...$baseProduct,
+                'categories' => [
+                    ['id' => Uuid::randomHex()],
+                    ['id' => Uuid::randomHex()],
+                ],
+            ],
+            [],
+        ];
+
+        yield 'invalid categories association (non-array value)' => [
+            [
+                ...$baseProduct,
+                'categories' => 'not-an-array',
+            ],
+            [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
+
+        yield 'invalid categories association (entry is not array)' => [
+            [
+                ...$baseProduct,
+                'categories' => [
+                    'not-an-array-entry',
+                ],
+            ],
+            [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
+
+        yield 'invalid categories association (invalid UUID in entry)' => [
+            [
+                ...$baseProduct,
+                'categories' => [
+                    ['id' => 'invalid-uuid'],
+                ],
+            ],
+            [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
+
+        yield 'invalid categories association (multiple errors)' => [
+            [
+                ...$baseProduct,
+                'categories' => [
+                    ['id' => Uuid::randomHex()], // valid
+                    'invalid-entry',              // not array
+                    ['id' => 'invalid-uuid'],     // invalid uuid
+                ],
+            ],
+            [
+                MigrationValidationInvalidAssociationLog::class, // entry not array
+                MigrationValidationInvalidAssociationLog::class, // invalid uuid
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $convertedData
+     * @param array<class-string> $expectedLogs
+     */
+    #[DataProvider('toManyAssociationProvider')]
+    public function testValidateToManyAssociations(array $convertedData, array $expectedLogs): void
+    {
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
+        static::assertEquals($expectedLogs, $logClasses);
+    }
+
+    /**
+     * Tests for ManyToOne and OneToOne association validation.
+     *
+     * @return \Generator<string, array{array<string, mixed>, array<class-string>}>
+     */
+    public static function toOneAssociationProvider(): \Generator
+    {
+        $baseProduct = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+        ];
+
+        yield 'valid manufacturer association (null value)' => [
+            $baseProduct,
+            [],
+        ];
+
+        yield 'valid manufacturer association (with valid id)' => [
+            [
+                ...$baseProduct,
+                'manufacturer' => ['id' => Uuid::randomHex(), 'name' => 'Test Manufacturer'],
+            ],
+            [],
+        ];
+
+        yield 'invalid manufacturer association (non-array value)' => [
+            [
+                ...$baseProduct,
+                'manufacturer' => 'not-an-array',
+            ],
+            [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
+
+        yield 'invalid manufacturer association (invalid UUID)' => [
+            [
+                ...$baseProduct,
+                'manufacturer' => ['id' => 'invalid-uuid'],
+            ],
+            [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
+    }
+
+    /**
+     * @param array<string, mixed> $convertedData
+     * @param array<class-string> $expectedLogs
+     */
+    #[DataProvider('toOneAssociationProvider')]
+    public function testValidateToOneAssociations(array $convertedData, array $expectedLogs): void
+    {
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
+        static::assertEquals($expectedLogs, $logClasses);
     }
 }
