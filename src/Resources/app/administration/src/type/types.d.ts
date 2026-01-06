@@ -127,6 +127,12 @@ type MigrationLog = {
     sourceData?: Record<string, unknown>;
 };
 
+type MigrationFix = {
+    id: string;
+    entityId: string;
+    value: unknown;
+};
+
 /**
  * @private
  */
@@ -146,4 +152,5 @@ export {
     MigrationEnvironmentInformation,
     MigrationCredentials,
     MigrationLog,
+    MigrationFix,
 };
