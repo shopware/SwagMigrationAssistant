@@ -34,6 +34,7 @@ use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRe
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\ResetInterface;
+use function var_dump;
 
 /**
  * @internal

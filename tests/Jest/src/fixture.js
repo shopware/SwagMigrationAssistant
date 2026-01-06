@@ -112,7 +112,7 @@ export const fixtureLogGroups = Object.freeze([
     },
     {
         // relation
-        code: 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
+        code: 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE',
         count: 161,
         entityName: 'product',
         fieldName: 'options',

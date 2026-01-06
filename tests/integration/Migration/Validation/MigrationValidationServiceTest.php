@@ -11,6 +11,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Content\Product\ProductDefinition;
+use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
@@ -28,13 +29,16 @@ use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
+use function array_map;
+use function var_dump;
 
 /**
  * @internal
@@ -169,7 +173,7 @@ class MigrationValidationServiceTest extends TestCase
         static::assertCount(\count($expectedLogs), $logs);
         static::assertCount(\count($expectedLogs), $result->getLogs());
 
-        $logCodes = array_map(fn ($log) => $log::class, $result->getLogs());
+        $logCodes = array_map(fn($log) => $log::class, $result->getLogs());
         static::assertSame($expectedLogs, $logCodes);
     }
 
@@ -187,7 +191,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $missingFields = \array_map(fn ($log) => $log->getFieldName(), $result->getLogs());
+        $missingFields = \array_map(fn($log) => $log->getFieldName(), $result->getLogs());
         static::assertCount(3, $missingFields);
 
         $expectedMissingFields = [
@@ -219,7 +223,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
+        $logs = \array_filter($result->getLogs(), fn($log) => $log instanceof MigrationValidationExceptionLog);
         static::assertCount(1, $logs);
 
         $exceptionLog = array_values($logs)[0];
@@ -251,7 +255,7 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
+        $logs = \array_filter($result->getLogs(), fn($log) => $log instanceof MigrationValidationExceptionLog);
         static::assertCount(1, $logs);
 
         $exceptionLog = array_values($logs)[0];
@@ -285,8 +289,59 @@ class MigrationValidationServiceTest extends TestCase
 
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        $logClasses = array_map(static fn ($log) => $log::class, $result->getLogs());
+        $logClasses = array_map(static fn($log) => $log::class, $result->getLogs());
         static::assertEquals($expectedLogs, $logClasses);
+    }
+
+    public function testMissingTranslationAssociation(): void
+    {
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => ['lel']
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logClasses = array_map(static fn($log) => $log::class, $result->getLogs());
+        static::assertCount(1, $logClasses);
+        static::assertEquals([MigrationValidationInvalidRequiredTranslation::class], $logClasses);
+    }
+
+    public function testValidTranslationAssociation(): void
+    {
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Valid name',
+                ],
+            ]
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logClasses = array_map(static fn($log) => $log::class, $result->getLogs());
+        static::assertCount(0, $logClasses);
     }
 
     public static function entityStructureAndFieldProvider(): \Generator
@@ -323,25 +378,13 @@ class MigrationValidationServiceTest extends TestCase
             ],
         ];
 
-        yield 'structure - unexpected fields' => [
-            [
-                ...$log,
-                'unexpectedField1' => 'value',
-                'unexpectedField2' => 'value',
-            ],
-            [
-                MigrationValidationUnexpectedFieldLog::class,
-                MigrationValidationUnexpectedFieldLog::class,
-            ],
-        ];
-
         yield 'fields - invalid type' => [
             [
                 ...$log,
                 'userFixable' => 'not_a_boolean',
             ],
             [
-                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidOptionalFieldValueLog::class,
             ],
         ];
 
@@ -371,7 +414,7 @@ class MigrationValidationServiceTest extends TestCase
                 'sourceData' => "\xB1\x31",
             ],
             [
-                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidOptionalFieldValueLog::class,
             ],
         ];
 
@@ -383,11 +426,9 @@ class MigrationValidationServiceTest extends TestCase
                 'code' => ['sw'],
                 'userFixable' => true,
                 'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-                'unexpectedField' => 'value',
             ],
             [
                 MigrationValidationMissingRequiredFieldLog::class,
-                MigrationValidationUnexpectedFieldLog::class,
                 MigrationValidationInvalidRequiredFieldValueLog::class,
                 MigrationValidationInvalidRequiredFieldValueLog::class,
                 MigrationValidationInvalidRequiredFieldValueLog::class,
@@ -441,7 +482,7 @@ class MigrationValidationServiceTest extends TestCase
             ],
             [],
             [
-                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidOptionalFieldValueLog::class,
             ],
         ];
 
@@ -452,7 +493,7 @@ class MigrationValidationServiceTest extends TestCase
             ],
             [],
             [
-                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidOptionalFieldValueLog::class,
             ],
         ];
     }

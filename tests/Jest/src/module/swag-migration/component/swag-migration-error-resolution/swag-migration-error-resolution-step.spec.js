@@ -161,7 +161,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                         resolved: true,
                     }),
                     expect.objectContaining({
-                        name: 'swag-migration.index.error-resolution.codes.SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
+                        name: 'swag-migration.index.error-resolution.codes.SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE',
                         resolved: false,
                     }),
                 ]),

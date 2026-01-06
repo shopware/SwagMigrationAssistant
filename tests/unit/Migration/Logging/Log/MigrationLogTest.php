@@ -41,7 +41,6 @@ use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
@@ -118,13 +117,6 @@ class MigrationLogTest extends TestCase
             'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
-        ];
-
-        yield MigrationValidationUnexpectedFieldLog::class => [
-            'logClass' => MigrationValidationUnexpectedFieldLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
-            'userFixable' => true,
         ];
 
         yield AssociationRequiredMissingLog::class => [
