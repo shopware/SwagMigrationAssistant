@@ -500,7 +500,8 @@
           "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
           "fetchFilterDataFailed": "Failed fetching filter data.",
           "fetchExistingFixesFailed": "Failed fetching existing fixes.",
-          "invalidJsonInput": "This input is not valid JSON."
+          "invalidJsonInput": "This input is not valid JSON.",
+          "resetResolutionFailed": "Failed resetting error resolution."
         },
         "step": {
           "continue-modal": {

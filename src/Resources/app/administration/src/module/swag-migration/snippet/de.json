@@ -649,7 +649,8 @@
           "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
           "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
           "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
-          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON."
+          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON.",
+          "resetResolutionFailed": "Fehler beim Zurücksetzen der Fehlerbehebung."
         },
         "step": {
           "continue-modal": {
