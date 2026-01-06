@@ -141,6 +141,7 @@ class CurrencyConverterTest extends TestCase
 
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 
+        static::assertNotNull($convertResult);
         static::assertNull($convertResult->getConverted());
     }
 }
