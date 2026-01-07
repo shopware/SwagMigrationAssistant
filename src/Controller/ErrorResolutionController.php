@@ -10,7 +10,9 @@ namespace SwagMigrationAssistant\Controller;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Validation\WriteConstraintViolationException;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationFieldExampleGenerator;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
@@ -19,7 +21,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Attribute\Route;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 #[Package('fundamentals@after-sales')]
 class ErrorResolutionController extends AbstractController
 {
@@ -35,7 +37,7 @@ class ErrorResolutionController extends AbstractController
     #[Route(
         path: '/api/_action/migration/error-resolution/validate',
         name: 'api.admin.migration.error-resolution.validate',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_POST]
     )]
     public function validateResolution(Request $request, Context $context): JsonResponse
@@ -85,7 +87,7 @@ class ErrorResolutionController extends AbstractController
     #[Route(
         path: '/api/_action/migration/error-resolution/example-field-structure',
         name: 'api.admin.migration.error-resolution.example-field-structure',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_POST]
     )]
     public function getExampleFieldStructure(Request $request): JsonResponse

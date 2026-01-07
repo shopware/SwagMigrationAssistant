@@ -9,7 +9,9 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\History\LogGroupingService;
@@ -22,7 +24,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 #[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
@@ -35,7 +37,12 @@ class HistoryController extends AbstractController
     ) {
     }
 
-    #[Route(path: '/api/_action/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['swag_migration.viewer']])]
+    #[Route(
+        path: '/api/_action/migration/get-grouped-logs-of-run',
+        name: 'api.admin.migration.get-grouped-logs-of-run',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        methods: [Request::METHOD_GET],
+    )]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->getAlnum('runUuid');
@@ -60,7 +67,12 @@ class HistoryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/migration/download-logs-of-run', name: 'api.admin.migration.download-logs-of-run', methods: ['POST'], defaults: ['auth_required' => false, '_acl' => ['swag_migration.viewer']])]
+    #[Route(
+        path: '/api/_action/migration/download-logs-of-run',
+        name: 'api.admin.migration.download-logs-of-run',
+        defaults: ['auth_required' => false, PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        methods: [Request::METHOD_POST],
+    )]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -86,7 +98,12 @@ class HistoryController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/api/_action/migration/clear-data-of-run', name: 'api.admin.migration.clear-data-of-run', methods: ['POST'], defaults: ['_acl' => ['swag_migration.deleter']])]
+    #[Route(
+        path: '/api/_action/migration/clear-data-of-run',
+        name: 'api.admin.migration.clear-data-of-run',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']],
+        methods: [Request::METHOD_POST],
+    )]
     public function clearDataOfRun(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -104,7 +121,12 @@ class HistoryController extends AbstractController
         return new Response();
     }
 
-    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.is-media-processing', methods: ['GET'], defaults: ['_acl' => ['swag_migration_history:read']])]
+    #[Route(
+        path: '/api/_action/migration/is-media-processing',
+        name: 'api.admin.migration.is-media-processing',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration_history:read']],
+        methods: [Request::METHOD_GET],
+    )]
     public function isMediaProcessing(): JsonResponse
     {
         $result = $this->historyService->isMediaProcessing();
@@ -115,8 +137,8 @@ class HistoryController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-log-groups',
         name: 'api.admin.migration.get-log-groups',
-        methods: ['GET'],
-        defaults: ['_acl' => ['swag_migration.viewer']]
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        methods: [Request::METHOD_GET],
     )]
     public function getLogGroups(Request $request, Context $context): JsonResponse
     {
@@ -166,8 +188,8 @@ class HistoryController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-all-log-ids',
         name: 'api.admin.migration.get-all-log-ids',
-        methods: ['POST'],
-        defaults: ['_acl' => ['swag_migration.viewer']]
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        methods: [Request::METHOD_POST],
     )]
     public function getAllLogIds(Request $request): JsonResponse
     {
