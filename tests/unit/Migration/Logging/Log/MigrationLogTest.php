@@ -39,7 +39,10 @@ use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectTypeLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidAssociationLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
@@ -105,9 +108,23 @@ class MigrationLogTest extends TestCase
             'userFixable' => false,
         ];
 
+        yield MigrationValidationInvalidAssociationLog::class => [
+            'logClass' => MigrationValidationInvalidAssociationLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_ASSOCIATION',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'userFixable' => true,
+        ];
+
+        yield MigrationValidationInvalidOptionalFieldValueLog::class => [
+            'logClass' => MigrationValidationInvalidOptionalFieldValueLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'userFixable' => true,
+        ];
+
         yield MigrationValidationInvalidRequiredFieldValueLog::class => [
             'logClass' => MigrationValidationInvalidRequiredFieldValueLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
+            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
@@ -115,6 +132,13 @@ class MigrationLogTest extends TestCase
         yield MigrationValidationMissingRequiredFieldLog::class => [
             'logClass' => MigrationValidationMissingRequiredFieldLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'userFixable' => true,
+        ];
+
+        yield MigrationValidationInvalidRequiredTranslation::class => [
+            'logClass' => MigrationValidationInvalidRequiredTranslation::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
