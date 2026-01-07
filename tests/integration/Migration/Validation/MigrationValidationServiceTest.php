@@ -191,79 +191,68 @@ class MigrationValidationServiceTest extends TestCase
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
         $missingFields = \array_map(fn ($log) => $log->getFieldName(), $result->getLogs());
-        static::assertCount(3, $missingFields);
 
-        $expectedMissingFields = [
-            'active', // has no required flag
-            'price', // is nullable, but has required flag
-            'cmsPageVersionId', // has default value, but has required flag
+        // Only 'stock' should be required as its not nullable in db and has no default
+        static::assertCount(1, $missingFields);
+        static::assertContains('stock', $missingFields);
+    }
+
+    /**
+     * @param array<string, mixed> $convertedData
+     */
+    #[DataProvider('invalidIdProvider')]
+    public function testShouldLogWhenEntityHasInvalidOrMissingId(array $convertedData, string $expectedExceptionMessage): void
+    {
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
+        static::assertCount(1, $logs);
+
+        $exceptionLog = array_values($logs)[0];
+        static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
+
+        static::assertSame($expectedExceptionMessage, $exceptionLog->getExceptionMessage());
+    }
+
+    /**
+     * @return \Generator<string, array{array<string, mixed>, string}>
+     */
+    public static function invalidIdProvider(): \Generator
+    {
+        $baseData = [
+            'level' => 'error',
+            'code' => 'some_code',
+            'userFixable' => true,
+            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
         ];
 
-        static::assertCount(
-            0,
-            \array_intersect($expectedMissingFields, $missingFields)
-        );
-    }
-
-    public function testShouldLogWhenEntityHasNoId(): void
-    {
-        $result = $this->validationService->validate(
-            $this->migrationContext,
-            $this->context,
-            [
-                'level' => 'error',
-                'code' => 'some_code',
-                'userFixable' => true,
-                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-            ],
-            SwagMigrationLoggingDefinition::ENTITY_NAME,
-            []
-        );
-
-        static::assertInstanceOf(MigrationValidationResult::class, $result);
-
-        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
-        static::assertCount(1, $logs);
-
-        $exceptionLog = array_values($logs)[0];
-        static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
-
-        static::assertSame(
+        yield 'missing id (null)' => [
+            $baseData,
             MigrationValidationException::unexpectedNullValue('id')->getMessage(),
-            $exceptionLog->getExceptionMessage()
-        );
-    }
+        ];
 
-    public function testShouldLogWhenEntityHasInvalidId(): void
-    {
-        $id = 'invalid-uuid';
+        yield 'invalid uuid string' => [
+            [...$baseData, 'id' => 'invalid-uuid'],
+            MigrationValidationException::invalidId('invalid-uuid', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+        ];
 
-        $result = $this->validationService->validate(
-            $this->migrationContext,
-            $this->context,
-            [
-                'id' => $id,
-                'level' => 'error',
-                'code' => 'some_code',
-                'userFixable' => true,
-                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-            ],
-            SwagMigrationLoggingDefinition::ENTITY_NAME,
-            []
-        );
+        yield 'integer id instead of uuid string' => [
+            [...$baseData, 'id' => 12345],
+            MigrationValidationException::invalidId('12345', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+        ];
 
-        static::assertInstanceOf(MigrationValidationResult::class, $result);
-
-        $logs = \array_filter($result->getLogs(), fn ($log) => $log instanceof MigrationValidationExceptionLog);
-        static::assertCount(1, $logs);
-
-        $exceptionLog = array_values($logs)[0];
-        static::assertInstanceOf(MigrationValidationExceptionLog::class, $exceptionLog);
-
-        static::assertSame(
-            MigrationValidationException::invalidId($id, SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
-            $exceptionLog->getExceptionMessage(),
-        );
+        yield 'empty string id' => [
+            [...$baseData, 'id' => ''],
+            MigrationValidationException::invalidId('', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+        ];
     }
 
     /**
@@ -572,14 +561,14 @@ class MigrationValidationServiceTest extends TestCase
             [
                 ...$baseProduct,
                 'categories' => [
-                    ['id' => Uuid::randomHex()], // valid
-                    'invalid-entry',              // not array
-                    ['id' => 'invalid-uuid'],     // invalid uuid
+                    ['id' => Uuid::randomHex()],
+                    'invalid-entry',
+                    ['id' => 'invalid-uuid'],
                 ],
             ],
             [
-                MigrationValidationInvalidAssociationLog::class, // entry not array
-                MigrationValidationInvalidAssociationLog::class, // invalid uuid
+                // Only first error is logged since validation throws on first failure
+                MigrationValidationInvalidAssociationLog::class,
             ],
         ];
     }
@@ -676,5 +665,115 @@ class MigrationValidationServiceTest extends TestCase
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertEquals($expectedLogs, $logClasses);
+    }
+
+    public function testShouldReturnNullWhenEntityDefinitionDoesNotExist(): void
+    {
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            ['id' => Uuid::randomHex()],
+            'non_existent_entity_definition',
+            []
+        );
+
+        static::assertNull($result);
+    }
+
+    public function testResetShouldClearRequiredFieldsCache(): void
+    {
+        $result1 = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            [
+                'id' => Uuid::randomHex(),
+                'profileName' => 'profile',
+                'gatewayName' => 'gateway',
+                'level' => 'error',
+                'code' => 'some_code',
+                'userFixable' => true,
+            ],
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result1);
+
+        $this->validationService->reset();
+
+        $result2 = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            [
+                'id' => Uuid::randomHex(),
+                'profileName' => 'profile',
+                'gatewayName' => 'gateway',
+                'level' => 'error',
+                'code' => 'some_code',
+                'userFixable' => true,
+            ],
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result2);
+
+        $this->clearCacheData();
+
+        static::assertCount(\count($result1->getLogs()), $result2->getLogs());
+    }
+
+    public function testValidNestedAssociationWithValidUuids(): void
+    {
+        $categoryId1 = Uuid::randomHex();
+        $categoryId2 = Uuid::randomHex();
+
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+            'categories' => [
+                ['id' => $categoryId1],
+                ['id' => $categoryId2],
+            ],
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+        static::assertCount(0, $result->getLogs());
+    }
+
+    public function testValidationLogsAreSavedToDatabase(): void
+    {
+        $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            [
+                'id' => Uuid::randomHex(),
+                'level' => 'error',
+                'code' => 'some_code',
+                'userFixable' => true,
+            ],
+            SwagMigrationLoggingDefinition::ENTITY_NAME,
+            []
+        );
+
+        $this->clearCacheData();
+
+        $logs = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities();
+        static::assertInstanceOf(SwagMigrationLoggingCollection::class, $logs);
+        static::assertGreaterThan(0, $logs->count());
     }
 }
