@@ -29,6 +29,8 @@ class MigrationValidationException extends MigrationException
 
     final public const VALIDATION_INVALID_ASSOCIATION = 'SWAG_MIGRATION_VALIDATION__INVALID_ASSOCIATION';
 
+    final public const VALIDATION_ENTITY_FIELD_NOT_FOUND = 'SWAG_MIGRATION_VALIDATION__ENTITY_FIELD_NOT_FOUND';
+
     public static function unexpectedNullValue(string $fieldName): self
     {
         return new self(
@@ -49,33 +51,36 @@ class MigrationValidationException extends MigrationException
         );
     }
 
-    public static function invalidRequiredFieldValue(string $entityName, string $fieldName, string $message): self
+    public static function invalidRequiredFieldValue(string $entityName, string $fieldName, ?\Throwable $previous = null): self
     {
         return new self(
             Response::HTTP_BAD_REQUEST,
             self::VALIDATION_INVALID_REQUIRED_FIELD_VALUE,
             'Invalid value for required field "{{ fieldName }}" in entity "{{ entityName }}": {{ message }}',
-            ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $message]
+            ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $previous?->getMessage() ?? ''],
+            $previous
         );
     }
 
-    public static function invalidOptionalFieldValue(string $entityName, string $fieldName, string $message): self
+    public static function invalidOptionalFieldValue(string $entityName, string $fieldName, ?\Throwable $previous = null): self
     {
         return new self(
             Response::HTTP_BAD_REQUEST,
             self::VALIDATION_INVALID_OPTIONAL_FIELD_VALUE,
             'Invalid value for optional field "{{ fieldName }}" in entity "{{ entityName }}": {{ message }}',
-            ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $message]
+            ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $previous?->getMessage() ?? ''],
+            $previous
         );
     }
 
-    public static function invalidTranslation(string $entityName, string $fieldName, string $message): self
+    public static function invalidTranslation(string $entityName, string $fieldName, ?\Throwable $previous = null): self
     {
         return new self(
             Response::HTTP_BAD_REQUEST,
             self::VALIDATION_INVALID_TRANSLATION,
             'Invalid translation for field "{{ fieldName }}" in entity "{{ entityName }}": {{ message }}',
-            ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $message]
+            ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $previous?->getMessage() ?? ''],
+            $previous
         );
     }
 
@@ -86,6 +91,16 @@ class MigrationValidationException extends MigrationException
             self::VALIDATION_INVALID_ASSOCIATION,
             'Invalid association "{{ fieldName }}" in entity "{{ entityName }}": {{ message }}',
             ['fieldName' => $fieldName, 'entityName' => $entityName, 'message' => $message]
+        );
+    }
+
+    public static function entityFieldNotFound(string $entityName, string $fieldName): self
+    {
+        return new self(
+            Response::HTTP_NOT_FOUND,
+            self::VALIDATION_ENTITY_FIELD_NOT_FOUND,
+            'Field "{{ fieldName }}" not found in entity "{{ entityName }}".',
+            ['fieldName' => $fieldName, 'entityName' => $entityName]
         );
     }
 }

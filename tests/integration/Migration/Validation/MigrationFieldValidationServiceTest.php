@@ -11,11 +11,10 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\DataAbstractionLayerException;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use Shopware\Core\Framework\Validation\WriteConstraintViolationException;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 
 /**
@@ -36,9 +35,9 @@ class MigrationFieldValidationServiceTest extends TestCase
 
     public function testNotExistingEntityDefinition(): void
     {
-        static::expectExceptionObject(DataAbstractionLayerException::definitionNotFound('test'));
+        static::expectExceptionObject(MigrationException::entityNotExists('test', 'field'));
 
-        $this->migrationFieldValidationService->validateFieldValue(
+        $this->migrationFieldValidationService->validateField(
             'test',
             'field',
             'value',
@@ -48,9 +47,9 @@ class MigrationFieldValidationServiceTest extends TestCase
 
     public function testNotExistingField(): void
     {
-        static::expectExceptionObject(MigrationException::entityFieldNotFound('product', 'nonExistingField'));
+        static::expectExceptionObject(MigrationValidationException::entityFieldNotFound('product', 'nonExistingField'));
 
-        $this->migrationFieldValidationService->validateFieldValue(
+        $this->migrationFieldValidationService->validateField(
             'product',
             'nonExistingField',
             'value',
@@ -62,7 +61,7 @@ class MigrationFieldValidationServiceTest extends TestCase
     {
         static::expectNotToPerformAssertions();
 
-        $this->migrationFieldValidationService->validateFieldValue(
+        $this->migrationFieldValidationService->validateField(
             'product',
             'price',
             [
@@ -79,9 +78,9 @@ class MigrationFieldValidationServiceTest extends TestCase
 
     public function testInvalidPriceFieldGrossType(): void
     {
-        static::expectException(WriteConstraintViolationException::class);
+        static::expectException(MigrationValidationException::class);
 
-        $this->migrationFieldValidationService->validateFieldValue(
+        $this->migrationFieldValidationService->validateField(
             'product',
             'price',
             [
@@ -98,9 +97,9 @@ class MigrationFieldValidationServiceTest extends TestCase
 
     public function testInvalidPriceFieldMissingNet(): void
     {
-        static::expectException(WriteConstraintViolationException::class);
+        static::expectException(MigrationValidationException::class);
 
-        $this->migrationFieldValidationService->validateFieldValue(
+        $this->migrationFieldValidationService->validateField(
             'product',
             'price',
             [
@@ -117,9 +116,9 @@ class MigrationFieldValidationServiceTest extends TestCase
 
     public function testInvalidPriceFieldCurrencyId(): void
     {
-        static::expectException(WriteConstraintViolationException::class);
+        static::expectException(MigrationValidationException::class);
 
-        $this->migrationFieldValidationService->validateFieldValue(
+        $this->migrationFieldValidationService->validateField(
             'product',
             'price',
             [

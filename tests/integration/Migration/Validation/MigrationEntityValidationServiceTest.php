@@ -34,8 +34,8 @@ use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOp
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
-use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
@@ -43,8 +43,8 @@ use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-#[CoversClass(MigrationValidationService::class)]
-class MigrationValidationServiceTest extends TestCase
+#[CoversClass(MigrationEntityValidationService::class)]
+class MigrationEntityValidationServiceTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
@@ -52,7 +52,7 @@ class MigrationValidationServiceTest extends TestCase
 
     private MigrationContext $migrationContext;
 
-    private MigrationValidationService $validationService;
+    private MigrationEntityValidationService $validationService;
 
     /**
      * @var EntityRepository<SwagMigrationLoggingCollection>
@@ -75,7 +75,7 @@ class MigrationValidationServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->validationService = static::getContainer()->get(MigrationValidationService::class);
+        $this->validationService = static::getContainer()->get(MigrationEntityValidationService::class);
         $this->loggingRepo = static::getContainer()->get('swag_migration_logging.repository');
         $this->runRepo = static::getContainer()->get('swag_migration_run.repository');
         $this->mappingRepo = static::getContainer()->get(SwagMigrationMappingDefinition::ENTITY_NAME . '.repository');

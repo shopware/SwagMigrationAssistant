@@ -12,24 +12,14 @@ use Doctrine\DBAL\Exception;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\AssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
-use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\VersionField;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\Command\WriteCommandQueue;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\DataStack\KeyValuePair;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityExistence;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteContext;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteParameterBag;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
@@ -51,7 +41,7 @@ use Symfony\Contracts\Service\ResetInterface;
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-class MigrationValidationService implements ResetInterface
+class MigrationEntityValidationService implements ResetInterface
 {
     /**
      * @var list<class-string<Field>>
@@ -82,6 +72,7 @@ class MigrationValidationService implements ResetInterface
         private readonly DefinitionInstanceRegistry $definitionRegistry,
         private readonly EventDispatcherInterface $eventDispatcher,
         private readonly LoggingServiceInterface $loggingService,
+        private readonly MigrationFieldValidationService $fieldValidationService,
         private readonly Connection $connection,
     ) {
     }
@@ -95,7 +86,7 @@ class MigrationValidationService implements ResetInterface
      * @param array<string, mixed>|null $convertedEntity
      * @param array<string, mixed> $sourceData
      *
-     * @throws \Exception|Exception
+     * @throws \Exception
      */
     public function validate(
         MigrationContextInterface $migrationContext,
@@ -126,8 +117,12 @@ class MigrationValidationService implements ResetInterface
             new MigrationPreValidationEvent($validationContext),
         );
 
-        $this->validateEntityStructure($validationContext);
-        $this->validateFieldValues($validationContext);
+        try {
+            $this->validateEntityStructure($validationContext);
+            $this->validateFieldValues($validationContext);
+        } catch (\Throwable $exception) {
+            $this->addExceptionLog($validationContext, $exception);
+        }
 
         $this->eventDispatcher->dispatch(
             new MigrationPostValidationEvent($validationContext),
@@ -178,29 +173,24 @@ class MigrationValidationService implements ResetInterface
 
         $entityDefinition = $validationContext->getEntityDefinition();
         $entityName = $entityDefinition->getEntityName();
+
         $fields = $entityDefinition->getFields();
-
-        $entityExistence = EntityExistence::createForEntity($entityName, ['id' => $id]);
-        $parameters = new WriteParameterBag(
-            $entityDefinition,
-            WriteContext::createFromContext($validationContext->getContext()),
-            '',
-            new WriteCommandQueue(),
-        );
-
         $requiredFields = $this->getRequiredFields($fields, $entityName);
 
         foreach ($convertedData as $fieldName => $value) {
-            $this->validateField(
-                $validationContext,
-                $fields,
-                $fieldName,
-                $value,
-                $id,
-                $entityExistence,
-                $parameters,
-                isset($requiredFields[$fieldName])
-            );
+            try {
+                $this->fieldValidationService->validateField(
+                    $entityName,
+                    $fieldName,
+                    $value,
+                    $validationContext->getContext(),
+                    isset($requiredFields[$fieldName])
+                );
+            } catch (MigrationValidationException $exception) {
+                $this->addValidationExceptionLog($validationContext, $exception, $fieldName, $value, (string) $id);
+            } catch (\Throwable $exception) {
+                $this->addExceptionLog($validationContext, $exception);
+            }
         }
     }
 
@@ -225,166 +215,6 @@ class MigrationValidationService implements ResetInterface
         }
 
         return true;
-    }
-
-    private function validateField(
-        MigrationValidationContext $validationContext,
-        CompiledFieldCollection $fields,
-        string $fieldName,
-        mixed $value,
-        string $id,
-        EntityExistence $existence,
-        WriteParameterBag $parameters,
-        bool $isRequired,
-    ): void {
-        if (!$fields->has($fieldName)) {
-            return;
-        }
-
-        $field = clone $fields->get($fieldName);
-
-        try {
-            if ($field instanceof TranslationsAssociationField) {
-                $this->validateFieldByFieldSerializer($field, $value, $existence, $parameters, $isRequired);
-
-                return;
-            }
-
-            if ($field instanceof ManyToManyAssociationField || $field instanceof OneToManyAssociationField) {
-                $this->validateToManyAssociationStructure($validationContext, $fieldName, $value);
-
-                return;
-            }
-
-            if ($field instanceof ManyToOneAssociationField || $field instanceof OneToOneAssociationField) {
-                $this->validateToOneAssociationStructure($validationContext, $fieldName, $value);
-
-                return;
-            }
-
-            if ($field instanceof AssociationField) {
-                return;
-            }
-
-            $this->validateFieldByFieldSerializer($field, $value, $existence, $parameters, $isRequired);
-        } catch (MigrationValidationException $exception) {
-            $this->addValidationExceptionLog($validationContext, $exception, $fieldName, $value, $id);
-        } catch (\Throwable $exception) {
-            $this->addExceptionLog($validationContext, $exception);
-        }
-    }
-
-    /**
-     * @throws MigrationValidationException|\Exception
-     */
-    private function validateFieldByFieldSerializer(
-        Field $field,
-        mixed $value,
-        EntityExistence $entityExistence,
-        WriteParameterBag $parameters,
-        bool $isRequired,
-    ): void {
-        /**
-         * Replace all flags with Required to force the serializer to validate this field.
-         * AbstractFieldSerializer::requiresValidation() skips validation for fields without Required flag.
-         * The field is cloned before this method is called to avoid mutating the original definition.
-         */
-        $field->setFlags(new Required());
-
-        $keyValue = new KeyValuePair(
-            $field->getPropertyName(),
-            $value,
-            true
-        );
-
-        try {
-            $serializer = $field->getSerializer();
-
-            // Consume the generator to trigger validation. Keys are not needed
-            \iterator_to_array($serializer->encode(
-                $field,
-                $entityExistence,
-                $keyValue,
-                $parameters
-            ), false);
-        } catch (\Throwable $e) {
-            $entityName = $parameters->getDefinition()->getEntityName();
-            $propertyName = $field->getPropertyName();
-
-            if ($field instanceof TranslationsAssociationField) {
-                throw MigrationValidationException::invalidTranslation($entityName, $propertyName, $e->getMessage());
-            }
-
-            if ($isRequired) {
-                throw MigrationValidationException::invalidRequiredFieldValue($entityName, $propertyName, $e->getMessage());
-            }
-
-            throw MigrationValidationException::invalidOptionalFieldValue($entityName, $propertyName, $e->getMessage());
-        }
-    }
-
-    /**
-     * @throws MigrationValidationException
-     */
-    private function validateToManyAssociationStructure(
-        MigrationValidationContext $validationContext,
-        string $fieldName,
-        mixed $value,
-    ): void {
-        $entityName = $validationContext->getEntityDefinition()->getEntityName();
-
-        if (!\is_array($value)) {
-            throw MigrationValidationException::invalidAssociation(
-                $entityName,
-                $fieldName,
-                \sprintf('must be an array, got %s', \get_debug_type($value))
-            );
-        }
-
-        foreach ($value as $index => $entry) {
-            if (!\is_array($entry)) {
-                throw MigrationValidationException::invalidAssociation(
-                    $entityName,
-                    $fieldName . '/' . $index,
-                    \sprintf('entry at index %s must be an array, got %s', $index, \get_debug_type($entry))
-                );
-            }
-
-            if (isset($entry['id']) && !Uuid::isValid($entry['id'])) {
-                throw MigrationValidationException::invalidAssociation(
-                    $entityName,
-                    $fieldName . '/' . $index . '/id',
-                    \sprintf('invalid UUID "%s" at index %s', $entry['id'], $index)
-                );
-            }
-        }
-    }
-
-    /**
-     * @throws MigrationValidationException
-     */
-    private function validateToOneAssociationStructure(
-        MigrationValidationContext $validationContext,
-        string $fieldName,
-        mixed $value,
-    ): void {
-        $entityName = $validationContext->getEntityDefinition()->getEntityName();
-
-        if (!\is_array($value)) {
-            throw MigrationValidationException::invalidAssociation(
-                $entityName,
-                $fieldName,
-                \sprintf('must be an array, got %s', \get_debug_type($value))
-            );
-        }
-
-        if (isset($value['id']) && !Uuid::isValid($value['id'])) {
-            throw MigrationValidationException::invalidAssociation(
-                $entityName,
-                $fieldName . '/id',
-                \sprintf('invalid UUID "%s"', $value['id'])
-            );
-        }
     }
 
     /**

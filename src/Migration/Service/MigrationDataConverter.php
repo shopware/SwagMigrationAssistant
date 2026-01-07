@@ -25,7 +25,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
+use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 
 #[Package('fundamentals@after-sales')]
 class MigrationDataConverter implements MigrationDataConverterInterface
@@ -37,7 +37,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
         private readonly LoggingServiceInterface $loggingService,
         private readonly EntityDefinition $dataDefinition,
         private readonly MappingServiceInterface $mappingService,
-        private readonly MigrationValidationService $validationService,
+        private readonly MigrationEntityValidationService $validationService,
     ) {
     }
 

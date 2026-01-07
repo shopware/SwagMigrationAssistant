@@ -16,6 +16,7 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use SwagMigrationAssistant\Controller\ErrorResolutionController;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -62,7 +63,7 @@ class ErrorResolutionControllerTest extends TestCase
 
     public function testGetFieldStructureUnknownField(): void
     {
-        static::expectExceptionObject(MigrationException::entityFieldNotFound('product', 'unknownField'));
+        static::expectExceptionObject(MigrationValidationException::entityFieldNotFound('product', 'unknownField'));
 
         $request = new Request([], [
             'entityName' => 'product',

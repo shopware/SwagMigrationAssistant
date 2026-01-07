@@ -15,6 +15,7 @@ use Shopware\Core\Framework\Validation\WriteConstraintViolationException;
 use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationFieldExampleGenerator;
+use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -60,21 +61,30 @@ class ErrorResolutionController extends AbstractController
         }
 
         try {
-            $this->fieldValidationService->validateFieldValue(
+            $this->fieldValidationService->validateField(
                 $entityName,
                 $fieldName,
                 $fieldValue,
                 $context,
             );
-        } catch (WriteConstraintViolationException $e) {
+        } catch (MigrationValidationException $exception) {
+            $previous = $exception->getPrevious();
+
+            if ($previous instanceof WriteConstraintViolationException) {
+                return new JsonResponse([
+                    'valid' => false,
+                    'violations' => $previous->toArray(),
+                ]);
+            }
+
             return new JsonResponse([
                 'valid' => false,
-                'violations' => $e->toArray(),
+                'violations' => [['message' => $exception->getMessage()]],
             ]);
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return new JsonResponse([
                 'valid' => false,
-                'violations' => [['message' => $e->getMessage()]],
+                'violations' => [['message' => $exception->getMessage()]],
             ]);
         }
 
@@ -107,7 +117,7 @@ class ErrorResolutionController extends AbstractController
         $fields = $entityDefinition->getFields();
 
         if (!$fields->has($fieldName)) {
-            throw MigrationException::entityFieldNotFound($entityName, $fieldName);
+            throw MigrationValidationException::entityFieldNotFound($entityName, $fieldName);
         }
 
         $field = $fields->get($fieldName);
