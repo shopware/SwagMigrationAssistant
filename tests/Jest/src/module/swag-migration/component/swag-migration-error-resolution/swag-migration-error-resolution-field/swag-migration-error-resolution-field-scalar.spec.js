@@ -10,7 +10,7 @@ const updateFieldValueMock = jest.fn();
 
 const defaultProps = {
     componentType: 'text',
-    entityNAme: 'customer',
+    entityName: 'customer',
     entityField: {
         entity: 'customer',
         type: 'string',
