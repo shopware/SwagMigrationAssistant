@@ -1,7 +1,7 @@
 import template from './swag-migration-error-resolution-modal.html.twig';
 import './swag-migration-error-resolution-modal.scss';
 import type { ErrorResolutionTableData } from '../swag-migration-error-resolution-step';
-import type { MigrationLog, TRepository } from '../../../../../type/types';
+import type { MigrationFix, MigrationLog, TRepository } from '../../../../../type/types';
 import type { TableColumn } from '../../../service/swag-migration-error-resolution.service';
 import { MIGRATION_ERROR_RESOLUTION_SERVICE } from '../../../service/swag-migration-error-resolution.service';
 import { MIGRATION_API_SERVICE } from '../../../../../core/service/api/swag-migration.api.service';
@@ -323,29 +323,30 @@ export default Shopware.Component.wrapComponentConfig({
                 .filter((id: string | null | undefined): id is string => id !== null && id !== undefined);
         },
 
-        async buildFixesMap(entityIds: string[]): Promise<Map<string, unknown>> {
+        async buildFixesMap(entityIds: string[]): Promise<Map<string, MigrationFix>> {
             const existingFixes = await this.fetchExistingFixesForEntityIds(entityIds);
 
             return new Map(
                 existingFixes.map((fix) => [
                     fix.entityId,
-                    fix.value,
+                    fix,
                 ]),
             );
         },
 
         mapLogToTableRow(
             log: MigrationLog,
-            fixesMap: Map<string, unknown>,
+            fixesMap: Map<string, MigrationFix>,
             entityFieldProperties: string[],
         ): ResolutionModalRow {
             const convertedData = log?.convertedData || {};
 
-            const fixValue = log.entityId ? fixesMap.get(log.entityId) : undefined;
-            const hasFixApplied = fixValue !== undefined;
+            const fix = log.entityId ? fixesMap.get(log.entityId) : undefined;
+            const hasFixApplied = fix?.value !== undefined;
 
             const row: ResolutionModalRow = {
                 logId: log.id,
+                fixId: fix?.id,
                 entityId: log.entityId,
                 status: hasFixApplied,
                 convertedData,
@@ -359,7 +360,7 @@ export default Shopware.Component.wrapComponentConfig({
             };
 
             if (hasFixApplied) {
-                row[this.selectedLog.fieldName] = fixValue;
+                row[this.selectedLog.fieldName] = fix.value;
             }
 
             return row;
@@ -371,7 +372,7 @@ export default Shopware.Component.wrapComponentConfig({
             return logIds.filter((logId) => unresolvedRows.has(logId));
         },
 
-        async fetchExistingFixesForEntityIds(entityIds: string[]): Promise<Array<{ entityId: string; value: unknown }>> {
+        async fetchExistingFixesForEntityIds(entityIds: string[]): Promise<MigrationFix[]> {
             if (!this.selectedLog || entityIds.length === 0) {
                 return [];
             }
@@ -384,17 +385,13 @@ export default Shopware.Component.wrapComponentConfig({
                     .addFilter(Criteria.equalsAny('entityId', entityIds))
                     .addIncludes({
                         swag_migration_fix: [
+                            'id',
                             'entityId',
                             'value',
                         ],
                     });
 
-                const result = await this.migrationFixRepository.search(criteria);
-
-                return result.map((fix) => ({
-                    entityId: fix.entityId,
-                    value: fix.value,
-                }));
+                return [...(await this.migrationFixRepository.search(criteria))];
             } catch {
                 this.createNotificationError({
                     message: this.$tc('swag-migration.index.error-resolution.errors.fetchExistingFixesFailed'),
@@ -433,6 +430,25 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
+        async onResetResolution(item: { fixId: string }) {
+            this.loading = true;
+
+            try {
+                await this.migrationFixRepository.delete(item.fixId);
+
+                await this.fetchLogs();
+                this.resetSelection();
+
+                this.$emit('fixes-reset');
+            } catch {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.resetResolutionFailed'),
+                });
+            } finally {
+                this.loading = false;
+            }
+        },
+
         applySelectionToGrid() {
             const gridRef = this.$refs.errorResolutionGrid;
 
@@ -445,8 +461,8 @@ export default Shopware.Component.wrapComponentConfig({
 
         statusBadgeClass(isResolved: boolean): string {
             return isResolved
-                ? 'swag-migration-error-resolution-modal__left-status--unresolved'
-                : 'swag-migration-error-resolution-modal__left-status--resolved';
+                ? 'swag-migration-error-resolution-modal__left-status--resolved'
+                : 'swag-migration-error-resolution-modal__left-status--unresolved';
         },
 
         statusBadgeText(isResolved: boolean): string {

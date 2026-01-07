@@ -56,11 +56,21 @@
 
                         <template #actions="{ item }">
                             <sw-context-menu-item
-                                class="swag-migration-error-resolution-modal__left-modal-action"
+                                class="swag-migration-error-resolution-modal__left-modal-action-details"
                                 :disabled="loading"
                                 @click="onOpenDetailsModal(item)"
                             >
                                 {{ $tc('swag-migration.index.error-resolution.modals.error.left.details') }}
+                            </sw-context-menu-item>
+
+                            <sw-context-menu-item
+                                v-if="item.status"
+                                class="swag-migration-error-resolution-modal__left-modal-action-reset"
+                                :disabled="loading"
+                                variant="danger"
+                                @click="onResetResolution(item)"
+                            >
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.reset') }}
                             </sw-context-menu-item>
                         </template>
 
