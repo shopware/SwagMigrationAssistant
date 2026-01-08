@@ -11,6 +11,10 @@
         align-items: center;
     }
 
+    &__more-information {
+        border-radius: var(--border-radius-card);
+    }
+
     .swag-migration-shop-information__header-right {
         display: flex;
         align-items: center;
