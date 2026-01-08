@@ -63,7 +63,7 @@ abstract class CurrencyConverter extends ShopwareConverter
                 );
             }
 
-            return null;
+            return new ConvertStruct(null, $data);
         }
 
         $converted = [];

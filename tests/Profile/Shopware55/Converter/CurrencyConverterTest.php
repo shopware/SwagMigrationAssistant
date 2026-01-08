@@ -141,27 +141,7 @@ class CurrencyConverterTest extends TestCase
 
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 
-        $expected = [
-            'isDefault' => false,
-            'shortName' => 'COC',
-            'isoCode' => 'COC',
-            'name' => 'Kekse',
-            'factor' => 100.0,
-            'position' => 0,
-            'symbol' => 'COOKIES',
-            'placedInFront' => false,
-            'itemRounding' => [
-                'decimals' => 2,
-                'interval' => 0.01,
-                'roundForNet' => true,
-            ],
-            'totalRounding' => [
-                'decimals' => 2,
-                'interval' => 0.01,
-                'roundForNet' => true,
-            ],
-        ];
-
-        static::assertNull($convertResult);
+        static::assertNotNull($convertResult);
+        static::assertNull($convertResult->getConverted());
     }
 }
