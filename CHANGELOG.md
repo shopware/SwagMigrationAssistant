@@ -1,6 +1,5 @@
 # 16.0.0
 
-- [BREAKING] Removed parameter `taxRules` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 - #11808 - Introduced Error Resolution to manage data inconsistencies and apply migration fixes directly in the SW6 administration, instead of fixing issues in the source system as it was needed previously.
 - #11808 - Enriched migration logs with detailed data descriptions to improve error traceability.
 - #11808 - Integrated ACL constraints to restrict specific migration actions based on user permissions.

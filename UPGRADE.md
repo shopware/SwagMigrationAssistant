@@ -1,5 +1,8 @@
 # 16.0.0
 
+- [BREAKING] [#114](https://github.com/shopware/SwagMigrationAssistant/pull/114) - fix: use item-specific tax in order conversion
+    - [BREAKING] Removed parameter `taxRules` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
+
 - [BREAKING] [#102](https://github.com/shopware/SwagMigrationAssistant/pull/102) - refactor!: use domain exception
     - [BREAKING] Removed standalone exception classes in `SwagMigrationAssistant\Exception\**\*`:
         - `SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException`
