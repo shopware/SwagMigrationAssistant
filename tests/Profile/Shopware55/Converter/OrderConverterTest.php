@@ -213,6 +213,14 @@ class OrderConverterTest extends TestCase
         static::assertInstanceOf(AbsolutePriceDefinition::class, $creditPriceDefinition);
         static::assertSame(-2.0, $creditPriceDefinition->getPrice());
 
+        $lineItem0TaxRules = $converted['lineItems'][0]['price']->getTaxRules();
+        static::assertCount(1, $lineItem0TaxRules);
+        static::assertSame(19.0, $lineItem0TaxRules->first()->getTaxRate());
+
+        $lineItem3TaxRules = $converted['lineItems'][3]['price']->getTaxRules();
+        static::assertCount(1, $lineItem3TaxRules);
+        static::assertSame(7.0, $lineItem3TaxRules->first()->getTaxRate());
+
         static::assertTrue(isset($converted['lineItems'][0]['downloads'][0]['mediaId']));
         static::assertFalse($converted['lineItems'][0]['downloads'][0]['accessGranted']);
 

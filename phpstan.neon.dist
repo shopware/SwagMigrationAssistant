@@ -25,6 +25,16 @@ parameters:
           paths:
               - tests/**/*Test.php
 
+        -
+            message: '#Method "getLineItems" of class "SwagMigrationAssistant\\Profile\\Shopware\\Converter\\OrderConverter" is marked as deprecated, but does not call "Feature::triggerDeprecationOrThrow"#'
+            count: 1
+            path: src/Profile/Shopware/Converter/OrderConverter.php
+
+        -
+            message: '#Call to deprecated method getLineItems\(\) of class SwagMigrationAssistant\\Profile\\Shopware\\Converter\\OrderConverter#'
+            count: 1
+            path: src/Profile/Shopware/Converter/OrderConverter.php
+
         - # Ignore hash functions rule for the following files because we use it in another context
             message: '#Do not use .* function, use class Shopware\\Core\\Framework\\Util\\Hasher instead#'
             paths:
