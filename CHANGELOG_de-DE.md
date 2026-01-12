@@ -1,5 +1,6 @@
 # 16.0.0
 
+- [BREAKING] Parameter `taxRules` der Methode `getLineItems` von `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter` entfernt
 - #11808 - Einführung einer Benutzeroberfläche zur Fehlerbehebung, um Dateninkonsistenzen zu beheben und Migrationskorrekturen direkt in der SW6 Administration vorzunehmen, anstatt wie zuvor im Quellsystem.
 - #11808 - Anreicherung der Migrations-Logs mit detaillierten Datenbeschreibungen zur besseren Nachvollziehbarkeit von Fehlern.
 - #11808 - Integration von ACL-Beschränkungen zur Steuerung spezifischer Migrationsaktionen basierend auf Benutzerberechtigungen.
