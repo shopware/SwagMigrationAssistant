@@ -71,7 +71,6 @@
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\ProductProvider">
             <argument type="service" id="product.repository"/>
             <argument type="service" id="router"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.dataProvider.provider"/>
         </service>
 

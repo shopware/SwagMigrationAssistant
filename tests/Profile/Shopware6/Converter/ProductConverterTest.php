@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\Profile\Shopware6\Converter;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
@@ -26,9 +25,7 @@ class ProductConverterTest extends ShopwareConverterTest
         MediaFileServiceInterface $mediaFileService,
         ?array $mappingArray = [],
     ): ConverterInterface {
-        $connection = static::getContainer()->get(Connection::class);
-
-        return new ProductConverter($mappingService, $loggingService, $mediaFileService, $connection);
+        return new ProductConverter($mappingService, $loggingService, $mediaFileService);
     }
 
     protected function createDataSet(): DataSet

@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\DataProvider\Provider\Data;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Content\Product\ProductCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -25,15 +24,12 @@ class ProductProvider extends AbstractProvider
 {
     private const BUNDLE_PRODUCT_TYPE = 'grouped_bundle';
 
-    private ?bool $hasTypeColumn = null;
-
     /**
      * @param EntityRepository<ProductCollection> $productRepo
      */
     public function __construct(
         private readonly EntityRepository $productRepo,
         private readonly RouterInterface $router,
-        private readonly Connection $connection,
     ) {
     }
 
@@ -143,13 +139,6 @@ class ProductProvider extends AbstractProvider
 
     private function hasTypeColumn(): bool
     {
-        if ($this->hasTypeColumn !== null) {
-            return $this->hasTypeColumn;
-        }
-
-        $columns = $this->connection->createSchemaManager()->listTableColumns('product');
-        $this->hasTypeColumn = isset($columns['type']);
-
-        return $this->hasTypeColumn;
+        return $this->productRepo->getDefinition()->getField('type') !== null;
     }
 }

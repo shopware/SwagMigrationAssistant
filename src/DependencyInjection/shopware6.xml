@@ -115,7 +115,6 @@
 
         <service id="SwagMigrationAssistant\Profile\Shopware6\Converter\ProductConverter"
                  parent="SwagMigrationAssistant\Profile\Shopware6\Converter\ShopwareMediaConverter">
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
             <tag name="shopware.migration.converter"/>
         </service>
 
