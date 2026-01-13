@@ -909,6 +909,7 @@
                  parent="SwagMigrationAssistant\Migration\Writer\AbstractWriter">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
             <argument type="service" id="Shopware\Core\System\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition"/>
+            <argument type="service" id="custom_field_set.repository"/>
             <tag name="shopware.migration.writer"/>
         </service>
 
