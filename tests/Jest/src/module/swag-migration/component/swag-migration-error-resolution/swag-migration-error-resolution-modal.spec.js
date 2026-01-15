@@ -2,7 +2,9 @@
  * @sw-package after-sales
  */
 import { mount } from '@vue/test-utils';
-import SwagMigrationErrorResolutionModal from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal';
+import SwagMigrationErrorResolutionModal, {
+    ERROR_CODE_COMPONENT_MAPPING,
+} from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-modal';
 import SwagMigrationErrorResolutionDetailsModal from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-details-modal';
 import SwagMigrationErrorResolutionField from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field';
 import SwagMigrationErrorResolutionFieldScalar from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar';
@@ -76,6 +78,7 @@ const migrationLoggingRepositoryMock = {
 
 const migrationFixRepositoryMock = {
     save: jest.fn(() => Promise.resolve()),
+    delete: jest.fn(() => Promise.resolve()),
     create: jest.fn(() => ({ isNew: () => true })),
     search: jest.fn(() => Promise.resolve(fixMocks)),
     saveAll: jest.fn(() => Promise.resolve()),
@@ -174,6 +177,16 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     afterEach(() => {
         jest.clearAllMocks();
         Shopware.Store.get('notification').$reset();
+    });
+
+    describe('constants', () => {
+        it('should provide error code to component mapping', () => {
+            expect(ERROR_CODE_COMPONENT_MAPPING).toStrictEqual({
+                SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD: 'DEFAULT',
+            });
+        });
     });
 
     describe('initial loading', () => {
@@ -355,7 +368,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(false);
 
             expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
-            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action').trigger('click');
+            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-details').trigger('click');
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(true);
             expect(wrapper.vm.selectedDetailsLog).toStrictEqual(wrapper.vm.tableData.at(0));
@@ -365,6 +378,35 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(wrapper.find('.swag-migration-error-resolution-details-modal').exists()).toBe(false);
             expect(wrapper.vm.selectedDetailsLog).toBeNull();
+        });
+
+        it('should be able to reset resolved log if log has fix', async () => {
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--resolved')).toHaveLength(1);
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(1);
+
+            await wrapper.find('.sw-data-grid__row--1 .sw-data-grid__cell--actions button').trigger('click');
+            await flushPromises();
+
+            expect(wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-reset').exists()).toBe(false);
+
+            await wrapper.find('.sw-data-grid__row--0 .sw-data-grid__cell--actions button').trigger('click');
+            await flushPromises();
+
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
+            expect(wrapper.find('.sw-context-button__menu-popover').exists()).toBe(true);
+            await wrapper.find('.swag-migration-error-resolution-modal__left-modal-action-reset').trigger('click');
+
+            await flushPromises();
+
+            expect(migrationFixRepositoryMock.delete).toHaveBeenCalledWith(fixMocks.at(0).id);
+            expect(migrationLoggingRepositoryMock.search).toHaveBeenCalledTimes(2);
+
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--resolved')).toHaveLength(0);
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(2);
         });
 
         it('should not be able to select logs that are already resolved', async () => {
@@ -473,6 +515,39 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     });
 
     describe('create resolution fix', () => {
+        it.each(Object.keys(ERROR_CODE_COMPONENT_MAPPING).map((code) => ({ code })))(
+            'should render default resolve component for defined codes: $code',
+            async ({ code }) => {
+                const wrapper = await createWrapper({
+                    ...defaultProps,
+                    selectedLog: {
+                        ...fixtureLogGroups.at(1),
+                        code: code,
+                        entityName: 'media',
+                        fieldName: 'title',
+                    },
+                });
+                await flushPromises();
+
+                expect(wrapper.find('.swag-migration-error-resolution-modal__right-content-default').exists()).toBe(true);
+            },
+        );
+
+        it('should render unresolvable field component for unsupported error codes', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    code: 'SOME_UNSUPPORTED_ERROR_CODE',
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            expect(wrapper.find('.swag-migration-error-resolution-modal__right-content-unresolvable').exists()).toBe(true);
+        });
+
         it('should disable input & create button when no logs are selected', async () => {
             const wrapper = await createWrapper();
             await flushPromises();
@@ -539,7 +614,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             const wrapper = await createWrapper({
                 ...defaultProps,
                 selectedLog: {
-                    ...fixtureLogGroups.at(2),
+                    ...fixtureLogGroups.at(1),
                     entityName: 'product',
                     fieldName: 'taxId',
                 },

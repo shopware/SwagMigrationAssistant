@@ -500,7 +500,8 @@
           "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
           "fetchFilterDataFailed": "Failed fetching filter data.",
           "fetchExistingFixesFailed": "Failed fetching existing fixes.",
-          "invalidJsonInput": "This input is not valid JSON."
+          "invalidJsonInput": "This input is not valid JSON.",
+          "resetResolutionFailed": "Failed resetting error resolution."
         },
         "step": {
           "continue-modal": {
@@ -582,6 +583,7 @@
             "left": {
               "select-all": "Select all ({count})",
               "details": "Show details",
+              "reset": "Reset",
               "status": {
                 "resolved": "Resolved",
                 "unresolved": "Unresolved"
@@ -597,6 +599,10 @@
               "unhandledBanner": {
                 "title": "Unknown field type",
                 "content": "The field type could not be determined. Please correct the raw source data. The value has to be in the correct format."
+              },
+              "unresolvableBanner": {
+                "title": "This error currently cannot be resolved via the Migration Assistant",
+                "content": "Please check the log file for more information."
               },
               "apply": "Apply changes"
             }

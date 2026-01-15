@@ -9,7 +9,9 @@
     "lint:scss": "stylelint ./**/*.scss",
     "lint:scss:fix": "npm run lint:scss -- --fix",
     "format": "prettier --check \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
-    "format:fix": "prettier --write \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache"
+    "format:fix": "prettier --write \"src/**/*.{js,ts}\" --config ../../../../.prettierrc.json --cache",
+    "format:md": "prettier --check \"../../../../*.md\" --config ../../../../.prettierrc.json --cache",
+    "format:md:fix": "prettier --write \"../../../../*.md\" --config ../../../../.prettierrc.json --cache"
   },
   "devDependencies": {
     "@shopware-ag/eslint-config-base": "2.0.0",

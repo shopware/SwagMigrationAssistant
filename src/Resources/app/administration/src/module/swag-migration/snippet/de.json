@@ -649,7 +649,8 @@
           "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
           "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
           "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
-          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON."
+          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON.",
+          "resetResolutionFailed": "Fehler beim Zurücksetzen der Fehlerbehebung."
         },
         "step": {
           "continue-modal": {
@@ -731,6 +732,7 @@
             "left": {
               "select-all": "Alle auswählen ({count})",
               "details": "Details anzeigen",
+              "reset": "Zurücksetzen",
               "status": {
                 "resolved": "Behoben",
                 "unresolved": "Nicht behoben"
@@ -746,6 +748,10 @@
               "unhandledBanner": {
                 "title": "Unbekannter Feldtyp",
                 "content": "Der Feldtyp konnte nicht ermittelt werden. Bitte korrigieren Sie die Rohdaten."
+              },
+              "unresolvableBanner": {
+                "title": "Dieser Fehler kann derzeit nicht über den Migration Assistant behoben werden.",
+                "content": "Weitere Informationen finden sich in der Log-Datei."
               },
               "apply": "Änderungen anwenden"
             }

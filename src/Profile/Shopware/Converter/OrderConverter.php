@@ -228,7 +228,7 @@ abstract class OrderConverter extends ShopwareConverter
             $taxStatus = $this->getTaxStatus($data);
             $taxRules = $this->getTaxRules($data, $taxStatus);
 
-            $converted['lineItems'] = $this->getLineItems($data['details'], $taxRules, $taxStatus);
+            $converted['lineItems'] = $this->getLineItems($data['details'], $taxStatus);
 
             $converted['price'] = new CartPrice(
                 (float) $data['invoice_amount_net'],
@@ -820,7 +820,7 @@ abstract class OrderConverter extends ShopwareConverter
      *
      * @return array<int, array<string, mixed>>
      */
-    protected function getLineItems(array $originalData, TaxRuleCollection $taxRules, string $taxStatus): array
+    protected function getLineItems(array $originalData, string $taxStatus): array
     {
         $lineItems = [];
 
@@ -870,14 +870,16 @@ abstract class OrderConverter extends ShopwareConverter
             $this->convertValue($lineItem, 'quantity', $originalLineItem, 'quantity', self::TYPE_INTEGER);
             $this->convertValue($lineItem, 'label', $originalLineItem, 'name');
 
+            $lineItemTaxRules = new TaxRuleCollection([new TaxRule((float) $originalLineItem['tax_rate'])]);
+
             $calculatedTax = null;
             $totalPrice = $lineItem['quantity'] * $originalLineItem['price'];
             if ($taxStatus === CartPrice::TAX_STATE_NET) {
-                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $lineItemTaxRules);
             }
 
             if ($taxStatus === CartPrice::TAX_STATE_GROSS) {
-                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $taxRules);
+                $calculatedTax = $this->taxCalculator->calculateGrossTaxes($totalPrice, $lineItemTaxRules);
             }
 
             if ($taxStatus === CartPrice::TAX_STATE_FREE) {
@@ -891,13 +893,13 @@ abstract class OrderConverter extends ShopwareConverter
                     (float) $originalLineItem['price'],
                     (float) $totalPrice,
                     $calculatedTax,
-                    $taxRules,
+                    $lineItemTaxRules,
                     (int) $lineItem['quantity']
                 );
 
                 $lineItem['priceDefinition'] = new QuantityPriceDefinition(
                     (float) $originalLineItem['price'],
-                    $taxRules,
+                    $lineItemTaxRules,
                     $lineItem['quantity'] ?? 1
                 );
 
