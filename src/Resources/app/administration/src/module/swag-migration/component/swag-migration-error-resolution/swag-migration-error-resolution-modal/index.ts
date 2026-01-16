@@ -246,8 +246,9 @@ export default Shopware.Component.wrapComponentConfig({
         async submitResolutionInBatches() {
             const limit = 100;
             let offset = 0;
+            let hasMoreResults = true;
 
-            while (true) {
+            while (hasMoreResults) {
                 const batchResult = await this.migrationApiService.getAllEntityIds(
                     this.runId,
                     this.selectedLog.code,
@@ -258,11 +259,8 @@ export default Shopware.Component.wrapComponentConfig({
                     offset,
                 );
 
-                if (batchResult.entityIds.length === 0) {
-                    break;
-                }
-
                 offset += limit;
+                hasMoreResults = batchResult.entityIds.length === limit;
 
                 const entities = batchResult.entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
 
@@ -464,8 +462,6 @@ export default Shopware.Component.wrapComponentConfig({
 
                 this.selectedLogIds = [];
                 this.selectAllMode = true;
-            } else {
-                this.resetSelection();
             }
         },
 
@@ -520,11 +516,10 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
-            if (this.selectAllMode) {
-                return;
-            }
-
             if (!selection || Object.keys(selection).length === 0) {
+                if(this.selectAllMode){
+                    this.selectAllMode = false;
+                }
                 this.selectedLogIds = [];
 
                 return;
