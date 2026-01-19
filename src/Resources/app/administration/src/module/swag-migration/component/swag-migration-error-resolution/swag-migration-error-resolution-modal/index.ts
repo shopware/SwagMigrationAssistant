@@ -245,7 +245,6 @@ export default Shopware.Component.wrapComponentConfig({
 
         async submitResolutionInBatches() {
             const limit = 100;
-            let offset = 0;
             let hasMoreResults = true;
 
             while (hasMoreResults) {
@@ -256,10 +255,9 @@ export default Shopware.Component.wrapComponentConfig({
                     this.selectedLog.fieldName,
                     this.migrationStore.connectionId,
                     limit,
-                    offset,
                 );
 
-                offset += limit;
+                console.log('submitResolutionInBatches batchResult', batchResult);
                 hasMoreResults = batchResult.entityIds.length === limit;
 
                 const entities = batchResult.entityIds.map((entityId: string) => this.createResolutionEntity(entityId));

@@ -577,7 +577,6 @@ export default class MigrationApiService extends ApiService {
         fieldName: string,
         connectionId?: string,
         limit: number = 100,
-        offset: number = 0,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<{ entityIds: string[] }> {
         // @ts-ignore
@@ -595,7 +594,6 @@ export default class MigrationApiService extends ApiService {
                     fieldName,
                     connectionId,
                     limit,
-                    offset,
                 },
                 {
                     ...this.basicConfig,

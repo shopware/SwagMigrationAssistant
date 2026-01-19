@@ -167,7 +167,6 @@ readonly class LogGroupingService
         string $fieldName,
         ?string $connectionId = null,
         int $limit = 100,
-        int $offset = 0,
     ): array {
         $params = [
             'runId' => Uuid::fromHexToBytes($runId),
@@ -175,7 +174,6 @@ readonly class LogGroupingService
             'entityName' => $entityName,
             'fieldName' => $fieldName,
             'limit' => $limit,
-            'offset' => $offset,
         ];
 
         $types = [
@@ -184,7 +182,6 @@ readonly class LogGroupingService
             'entityName' => ParameterType::STRING,
             'fieldName' => ParameterType::STRING,
             'limit' => ParameterType::INTEGER,
-            'offset' => ParameterType::INTEGER,
         ];
 
         // this is safe, it's a static string, not user input
@@ -212,7 +209,6 @@ readonly class LogGroupingService
                 AND f.id IS NULL
             ORDER BY l.auto_increment ASC
             LIMIT :limit
-            OFFSET :offset
         ";
 
         $result = $this->connection->executeQuery($sql, $params, $types);

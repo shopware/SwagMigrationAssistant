@@ -196,8 +196,6 @@ class HistoryController extends AbstractController
         }
 
         $connectionId = $request->request->getAlnum('connectionId');
-
-        $offset = $request->request->getInt('offset', 0);
         $limit = $request->request->getInt('limit', 100);
 
         $logEntityIds = $this->logGroupingService->getAllLogEntityIdsByCodeAndEntity(
@@ -207,7 +205,6 @@ class HistoryController extends AbstractController
             $fieldName,
             !empty($connectionId) ? $connectionId : null,
             $limit,
-            $offset,
         );
 
         return new JsonResponse([

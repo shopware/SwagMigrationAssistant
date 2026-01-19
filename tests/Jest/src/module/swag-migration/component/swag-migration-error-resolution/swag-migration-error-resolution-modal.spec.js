@@ -512,6 +512,52 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             migrationLoggingRepositoryMock.search.mockImplementation(originalSearchMock);
         });
+
+        it('should select and disable all checkboxes when clicking "Select All"', async () => {
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(false);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
+            expect(wrapper.findAll('.sw-data-grid__body .sw-data-grid__row')).toHaveLength(logMocks.length);
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(logMocks.length);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(0);
+
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            expect(rowCheckboxes).toHaveLength(logMocks.length);
+
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(false);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(1);
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            expect(selectAllButton.exists()).toBe(true);
+
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(true);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
+
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(logMocks.length);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[disabled]')).toHaveLength(logMocks.length);
+
+            const deselectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link .bulk-deselect-all');
+            expect(deselectAllButton.exists()).toBe(true);
+
+            await deselectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(false);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(0);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[disabled]')).toHaveLength(0);
+        });
+
     });
 
     describe('create resolution fix', () => {
