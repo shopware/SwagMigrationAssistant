@@ -1,5 +1,6 @@
 # 16.0.0
 
+- #14400 - Die Aktion „Migrationsdaten löschen" wurde aus dem Kontextmenü der Migrationshistorie entfernt
 - #13898 - Migration von Bestellungen mit unterschiedlichen Steuersätzen auf Positionen aus SW5 behoben
 - #11808 - Einführung einer Benutzeroberfläche zur Fehlerbehebung, um Dateninkonsistenzen zu beheben und Migrationskorrekturen direkt in der SW6 Administration vorzunehmen, anstatt wie zuvor im Quellsystem.
 - #11808 - Anreicherung der Migrations-Logs mit detaillierten Datenbeschreibungen zur besseren Nachvollziehbarkeit von Fehlern.

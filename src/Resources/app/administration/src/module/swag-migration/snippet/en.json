@@ -787,13 +787,7 @@
       "selectedData": "Data",
       "contextMenu": {
         "details": "Show details",
-        "downloadLogs": "Download log",
-        "clearLogs": "Delete migration data"
-      },
-      "clearRunDialog": {
-        "title": "Delete migration data",
-        "content": "Deleting migration data will remove log entries, media file entries, temporary migration data records and the migration run, which then will no longer be available in the migration history.",
-        "contentHint": "Do you really want to delete the data?"
+        "downloadLogs": "Download log"
       },
       "detailPage": {
         "title": "Migration details",

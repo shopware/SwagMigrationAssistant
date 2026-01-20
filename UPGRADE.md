@@ -1,5 +1,9 @@
 # 16.0.0
 
+- [BREAKING] [#115](https://github.com/shopware/SwagMigrationAssistant/pull/115) - refactor!: remove "Delete migration data" history action
+    - [BREAKING] Removed route `/api/_action/migration/clear-data-of-run` from `SwagMigrationAssistant\Controller\HistoryController`
+    - [BREAKING] Removed method `clearDataOfRun()` from `SwagMigrationAssistant\Migration\History\HistoryServiceInterface`
+
 - [BREAKING] [#114](https://github.com/shopware/SwagMigrationAssistant/pull/114) - fix: use item-specific tax in order conversion
     - [BREAKING] Removed parameter `taxRules` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 
@@ -49,7 +53,6 @@
     - Added acl privilege mapping to `src/Resources/app/administration/src/module/swag-migration/acl/index.ts`
     - [BREAKING] Added acl constraint for route `/migration/get-grouped-logs-of-run` from `SwagMigrationAssistant\Controller\HistoryController::getGroupedLogsOfRun()` requiring privilege `swag_migration.viewer`
     - [BREAKING] Added acl constraint for route `/migration/download-logs-of-run` from `SwagMigrationAssistant\Controller\HistoryController::downloadLogsOfRun()` requiring privilege `swag_migration.viewer`
-    - [BREAKING] Added acl constraint for route `/migration/clear-data-of-run` from `SwagMigrationAssistant\Controller\HistoryController::clearDataOfRun()` requiring privilege `swag_migration.deleter`
     - [BREAKING] Added acl constraint for route `/migration/is-media-processing` from `SwagMigrationAssistant\Controller\HistoryController::isMediaProcessing()` requiring privilege `swag_migration.viewer`
     - [BREAKING] Added acl constraint for route `/migration/generate-premapping` from `SwagMigrationAssistant\Controller\PremappingController::generatePremapping()` requiring privilege `swag_migration.editor`
     - [BREAKING] Added acl constraint for route `/migration/write-premapping` from `SwagMigrationAssistant\Controller\PremappingController::writePremapping()` requiring privilege `swag_migration.editor`

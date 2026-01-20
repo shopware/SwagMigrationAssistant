@@ -1,4 +1,3 @@
-import type { AxiosResponse } from 'axios';
 import template from './swag-migration-history.html.twig';
 import './swag-migration-history.scss';
 import type { TEntityCollection, TRepository } from '../../../../type/types';
@@ -25,8 +24,6 @@ export interface SwagMigrationHistoryData {
     isLoading: boolean;
     migrationRuns: TEntityCollection<'swag_migration_run'>;
     sortDirection: string;
-    runIdForRunClear: string | null;
-    isMediaProcessing: boolean;
     logDownloadEndpoint: string | null;
     runIdForLogDownload: string | null;
     oldParams: Record<
@@ -39,8 +36,6 @@ export interface SwagMigrationHistoryData {
             naturalSorting?: boolean;
         }
     > | null;
-    showRunClearConfirmModal: boolean;
-    runClearConfirmModalIsLoading: boolean;
     migrationDateOptions: {
         hour: string;
         minute: string;
@@ -58,7 +53,6 @@ export default Shopware.Component.wrapComponentConfig({
     inject: [
         MIGRATION_API_SERVICE,
         'repositoryFactory',
-        'acl',
     ],
 
     mixins: [
@@ -81,10 +75,6 @@ export default Shopware.Component.wrapComponentConfig({
             context: Shopware.Context.api,
             logDownloadEndpoint: '',
             runIdForLogDownload: '',
-            runIdForRunClear: '',
-            showRunClearConfirmModal: false,
-            runClearConfirmModalIsLoading: false,
-            isMediaProcessing: true,
         };
     },
 
@@ -109,10 +99,6 @@ export default Shopware.Component.wrapComponentConfig({
     },
 
     created() {
-        this.migrationApiService.isMediaProcessing().then((response: AxiosResponse<boolean>) => {
-            this.isMediaProcessing = response.data;
-        });
-
         this.logDownloadEndpoint = `/api/_action/${this.migrationApiService.getApiBasePath()}/download-logs-of-run`;
     },
 
@@ -220,35 +206,6 @@ export default Shopware.Component.wrapComponentConfig({
             this.$nextTick(() => {
                 this.$refs.downloadLogsOfRunForm.submit();
             });
-        },
-
-        clearDataOfRun(runId: string) {
-            this.runClearConfirmModalIsLoading = true;
-
-            return this.migrationApiService
-                .clearDataOfRun(runId)
-                .then(() => {
-                    this.showRunClearConfirmModal = false;
-                    this.runClearConfirmModalIsLoading = false;
-                    window.location.reload();
-                })
-                .catch(() => {
-                    this.createNotificationError({
-                        message: this.$t(
-                            'swag-migration.index.shopInfoCard.resetMigrationConfirmDialog.errorNotification.message',
-                        ),
-                        growl: true,
-                    });
-                });
-        },
-
-        onContextClearRunClicked(runId: string) {
-            this.runIdForRunClear = runId;
-            this.showRunClearConfirmModal = true;
-        },
-
-        onClearRunConfirmed() {
-            this.clearDataOfRun(this.runIdForRunClear);
         },
     },
 });

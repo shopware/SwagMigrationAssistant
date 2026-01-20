@@ -24,7 +24,5 @@ interface HistoryServiceInterface
      */
     public function downloadLogsOfRun(string $runUuid, Context $context): \Closure;
 
-    public function clearDataOfRun(string $runUuid, Context $context): void;
-
     public function isMediaProcessing(): bool;
 }

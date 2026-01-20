@@ -232,19 +232,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.get[0].params).toEqual(data);
     });
 
-    it('should clear data of run', async () => {
-        const { migrationApiService, clientMock } = createMigrationApiService();
-
-        const data = {
-            runUuid: '123e4567-e89b-12d3-a456-426614174000',
-        };
-
-        await migrationApiService.clearDataOfRun(data.runUuid);
-
-        expect(clientMock.history.post[0].url).toBe('_action/migration/clear-data-of-run');
-        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
-    });
-
     it('should reset checksums', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 
