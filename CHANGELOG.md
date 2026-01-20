@@ -9,6 +9,10 @@
 - #11808 - Removed CLI commands `migration:abort`, `migration:get-progress`, and `migration:start`. You have to start the migration via the Administration UI, it still runs in the background message queue
 - #11808 - Checksum reset and migration data cleanup now run asynchronously via message queue.
 
+# 15.0.4
+- Added `shopIdV2` to the list of ignored system config entries for Shopware 6 connections
+- Media processing has been simplified so that the UI can show the actual progress
+
 # 15.0.3
 
 - Fixed translations of error groups missing details like the entity
@@ -63,10 +67,10 @@
 
 # 13.1.0
 
-- MIG-981 - Media migration now uses the system's temporary directory to download files
-- MIG-1016 - Improves the warnings for different default currency and default language in the data selection
-- MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`
-- MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5
+- MIG-981 - Media migration now uses the system's temporary directory to download files.
+- MIG-1016 - Improves the warnings for different default currency and default language in the data selection.
+- MIG-1016 - Added new block `{% block swag_migration_confirm_warning_alert %}` in `swag-migration/component/card/swag-migration-confirm-warning/swag-migration-confirm-warning.html.twig`.
+- MIG-1037 - Fixes a rare issue that in certain situations not all entities are migrated (some were skipped). Was detected during translations of SW5.
 
 # 13.0.0
 

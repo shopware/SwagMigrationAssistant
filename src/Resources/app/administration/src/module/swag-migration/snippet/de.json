@@ -330,6 +330,7 @@
           "custom_field_set": "Zusatzfelder",
           "snippet": "Textbausteine",
           "snippet_set": "Textbaustein-Sets",
+          "mail_header_footer": "E-Mail-Kopf- und Fußzeilen",
           "mail_template": "E-Mail-Template",
           "product_feature_set": "Wesentliche Merkmale",
           "product_sorting": "Produkt-Sortierungen",
@@ -434,9 +435,8 @@
         },
         "result": {
           "title": "Der Migrations-Assistent ist fertig",
-          "caption": "Die Medien werden weiter im Hintergrund heruntergeladen. Große Dateien können etwas Zeit in Anspruch nehmen.",
           "logSummary": "Logbuch",
-          "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen. Es kann sein, dass zu einem späteren Zeitpunkt noch mehr Log-Nachrichten hinzukommen, weil der Mediendownload noch im Hintergrund läuft."
+          "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen."
         }
       },
       "confirmAbortDialog": {

@@ -1,7 +1,7 @@
 parameters:
 	ignoreErrors:
 		-
-			message: '#^swag_migration_data\.run association has a configured autoload\=\=\=true, this is forbidden for platform integrations$#'
+			message: "#^swag_migration_data\\.run association has a configured autoload\\=\\=\\=true, this is forbidden for platform integrations$#"
 			identifier: shopware.associationAutoload
 			count: 1
 			path: src/Migration/Data/SwagMigrationDataDefinition.php
@@ -955,7 +955,7 @@ parameters:
 			path: src/Profile/Shopware6/Converter/NumberRangeConverter.php
 
 		-
-			message: '#^Method SwagMigrationAssistant\\Profile\\Shopware6\\Converter\\PropertyGroupConverter\:\:convertOption\(\) has parameter \$option with no value type specified in iterable type array\.$#'
+			message: "#^Method SwagMigrationAssistant\\\\Profile\\\\Shopware6\\\\Converter\\\\PropertyGroupConverter\\:\\:convertOption\\(\\) has parameter \\$option with no value type specified in iterable type array\\.$#"
 			identifier: missingType.iterableValue
 			count: 1
 			path: src/Profile/Shopware6/Converter/PropertyGroupConverter.php

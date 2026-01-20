@@ -39,4 +39,6 @@ interface MigrationContextInterface
     public function getLimit(): int;
 
     public function setLimit(int $limit): void;
+
+    public function setDataSet(DataSet $dataSet): void;
 }

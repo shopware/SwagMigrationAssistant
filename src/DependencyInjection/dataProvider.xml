@@ -154,6 +154,11 @@
             <tag name="shopware.dataProvider.provider"/>
         </service>
 
+        <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MailHeaderFooterProvider">
+            <argument type="service" id="mail_header_footer.repository"/>
+            <tag name="shopware.dataProvider.provider"/>
+        </service>
+
         <service id="SwagMigrationAssistant\DataProvider\Provider\Data\MailTemplateProvider">
             <argument type="service" id="mail_template.repository"/>
             <tag name="shopware.dataProvider.provider"/>
