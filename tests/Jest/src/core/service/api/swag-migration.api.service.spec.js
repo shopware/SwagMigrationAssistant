@@ -367,7 +367,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             fieldName: 'name',
             connectionId: '123456789',
             limit: 10,
-            offset: 0,
         };
 
         await migrationApiService.getAllEntityIds(
@@ -377,7 +376,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             data.fieldName,
             data.connectionId,
             data.limit,
-            data.offset,
             { 'test-header': 'test-value' },
         );
 
