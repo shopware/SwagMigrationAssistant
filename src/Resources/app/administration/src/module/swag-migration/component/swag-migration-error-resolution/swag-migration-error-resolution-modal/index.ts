@@ -248,6 +248,8 @@ export default Shopware.Component.wrapComponentConfig({
             let hasMoreResults = true;
 
             while (hasMoreResults) {
+                // each batch must be completed before fetching the next
+                // eslint-disable-next-line no-await-in-loop
                 const batchResult = await this.migrationApiService.getAllEntityIds(
                     this.runId,
                     this.selectedLog.code,
@@ -261,6 +263,8 @@ export default Shopware.Component.wrapComponentConfig({
 
                 const entities = batchResult.entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
 
+                // each batch must be completed before fetching the next
+                // eslint-disable-next-line no-await-in-loop
                 await this.migrationFixRepository.saveAll(entities);
             }
         },
@@ -450,8 +454,6 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             if (!this.selectAllMode) {
-                const gridRef = this.$refs.errorResolutionGrid as { resetSelection?: () => void } | undefined;
-
                 // force select-all behaviour
                 this.applySelectionToGrid(true);
 
