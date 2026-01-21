@@ -210,6 +210,8 @@ class MigrationEntityValidationService implements ResetInterface
      * Recursively validates nested entities within association fields.
      *
      * @param array<string, mixed>|mixed $value
+     *
+     * @throws Exception
      */
     private function validateNestedAssociations(
         MigrationValidationContext $validationContext,
@@ -257,6 +259,8 @@ class MigrationEntityValidationService implements ResetInterface
      * Validates a single nested entity's fields and recurses into deeper associations.
      *
      * @param array<string, mixed>|mixed $nestedEntityData
+     *
+     * @throws Exception|\Exception
      */
     private function validateNestedEntityData(
         MigrationValidationContext $validationContext,

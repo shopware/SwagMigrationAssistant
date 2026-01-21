@@ -296,11 +296,7 @@
         </service>
 
         <service id="SwagMigrationAssistant\Controller\ErrorResolutionController" public="true">
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService"/>
-            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter"/>
-            <argument type="service" id="Shopware\Core\System\NumberRange\NumberRangeDefinition"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

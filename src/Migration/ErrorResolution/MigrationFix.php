@@ -50,38 +50,50 @@ readonly class MigrationFix
      */
     public function apply(array &$item): void
     {
-        /*
-         * Explode the path to an array
-         * Path example: 'category.language.name'
-         * Results in an array like: ['category', 'language', 'name']
-         */
         $pathArray = explode(self::PATH_SEPARATOR, $this->path);
+        $decodedValue = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
 
-        /*
-         * Set current item as pointer
-         * Item structure for example has no valid value for name and looks like:
-         *  [
-         *       'someOtherKeys',
-         *       ...
-         *       category => [
-         *           ...
-         *           'language' => [
-         *               ...
-         *               'name' => null,
-         *           ]
-         *       ]
-         *  ]
-         */
-        $nestedPointer = &$item;
+        $this->applyToPath($item, $pathArray, $decodedValue);
+    }
 
-        // Iterating over the path to follow them and set the nested pointer to the last key in pathArray
-        // In this example the result pointer is: $item['category']['language']['name']
-        foreach ($pathArray as $key) {
-            $nestedPointer = &$nestedPointer[$key];
+    /**
+     * Recursively applies the fix value to the specified path.
+     * When encountering a list (numerically-indexed array), applies the fix to all items.
+     *
+     * @param array<string|int, mixed> $data
+     * @param array<int, string> $remainingPath
+     */
+    private function applyToPath(array &$data, array $remainingPath, mixed $value): void
+    {
+        if (empty($remainingPath)) {
+            return;
         }
 
-        // Now set the value to the pointer like: $item['category']['language']['name'] = 'new Value'
-        $nestedPointer = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
-        unset($nestedPointer);
+        $key = \array_shift($remainingPath);
+
+        // last segment of the path, normal set operation
+        if (empty($remainingPath)) {
+            $data[$key] = $value;
+
+            return;
+        }
+
+        // key points to a list, apply to all items in the list
+        if (isset($data[$key]) && \is_array($data[$key]) && \array_is_list($data[$key])) {
+            foreach ($data[$key] as &$arrayItem) {
+                if (\is_array($arrayItem)) {
+                    $this->applyToPath($arrayItem, $remainingPath, $value);
+                }
+            }
+
+            return;
+        }
+
+        // stop traversal if the next key is not an array
+        if (!isset($data[$key]) || !\is_array($data[$key])) {
+            return;
+        }
+
+        $this->applyToPath($data[$key], $remainingPath, $value);
     }
 }

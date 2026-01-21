@@ -78,6 +78,190 @@ class MigrationFixTest extends TestCase
         static::assertSame('untouchedValue', $item['path']['to']['the']['value']['which']['needs']['to']['be']['doNotTouch']);
     }
 
+    public function testApplyFixToArrayAssociation(): void
+    {
+        $expectedValue = 'fixedTypeId';
+
+        $fix = new MigrationFix(
+            'anyId',
+            \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
+            'numberRangeSalesChannels.numberRangeTypeId',
+        );
+
+        $item = [
+            'id' => 'anyId',
+            'name' => 'Order Number',
+            'numberRangeSalesChannels' => [
+                [
+                    'id' => 'channel1',
+                    'numberRangeTypeId' => null,
+                    'salesChannelId' => 'sc1',
+                ],
+                [
+                    'id' => 'channel2',
+                    'numberRangeTypeId' => null,
+                    'salesChannelId' => 'sc2',
+                ],
+                [
+                    'id' => 'channel3',
+                    'numberRangeTypeId' => 'existingValue',
+                    'salesChannelId' => 'sc3',
+                ],
+            ],
+        ];
+
+        $fix->apply($item);
+
+        // All array items should have the fix applied
+        static::assertSame($expectedValue, $item['numberRangeSalesChannels'][0]['numberRangeTypeId']);
+        static::assertSame($expectedValue, $item['numberRangeSalesChannels'][1]['numberRangeTypeId']);
+        static::assertSame($expectedValue, $item['numberRangeSalesChannels'][2]['numberRangeTypeId']);
+
+        // Other fields should remain untouched
+        static::assertSame('Order Number', $item['name']);
+        static::assertSame('channel1', $item['numberRangeSalesChannels'][0]['id']);
+        static::assertSame('sc1', $item['numberRangeSalesChannels'][0]['salesChannelId']);
+        static::assertSame('channel2', $item['numberRangeSalesChannels'][1]['id']);
+        static::assertSame('sc2', $item['numberRangeSalesChannels'][1]['salesChannelId']);
+    }
+
+    public function testApplyFixToEmptyArray(): void
+    {
+        $fix = new MigrationFix(
+            'anyId',
+            \json_encode('fixedValue', \JSON_THROW_ON_ERROR),
+            'items.fieldName',
+        );
+
+        $item = [
+            'id' => 'anyId',
+            'items' => [],
+        ];
+
+        // Should not crash when array is empty
+        $fix->apply($item);
+
+        static::assertSame([], $item['items']);
+    }
+
+    public function testApplyFixToDeeplyNestedArrays(): void
+    {
+        $expectedValue = 'deepFixedValue';
+
+        $fix = new MigrationFix(
+            'anyId',
+            \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
+            'categories.children.name',
+        );
+
+        $item = [
+            'id' => 'anyId',
+            'categories' => [
+                [
+                    'id' => 'cat1',
+                    'children' => [
+                        ['id' => 'child1', 'name' => null],
+                        ['id' => 'child2', 'name' => null],
+                    ],
+                ],
+                [
+                    'id' => 'cat2',
+                    'children' => [
+                        ['id' => 'child3', 'name' => 'existingName'],
+                    ],
+                ],
+            ],
+        ];
+
+        $fix->apply($item);
+
+        // All nested array items should have the fix applied
+        static::assertSame($expectedValue, $item['categories'][0]['children'][0]['name']);
+        static::assertSame($expectedValue, $item['categories'][0]['children'][1]['name']);
+        static::assertSame($expectedValue, $item['categories'][1]['children'][0]['name']);
+
+        // Other fields should remain untouched
+        static::assertSame('cat1', $item['categories'][0]['id']);
+        static::assertSame('cat2', $item['categories'][1]['id']);
+        static::assertSame('child1', $item['categories'][0]['children'][0]['id']);
+    }
+
+    public function testApplyFixToMixedAssociativeAndArrayPaths(): void
+    {
+        $expectedValue = 'mixedPathValue';
+
+        $fix = new MigrationFix(
+            'anyId',
+            \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
+            'product.prices.currencyId',
+        );
+
+        $item = [
+            'id' => 'anyId',
+            'product' => [
+                'id' => 'prod1',
+                'name' => 'Test Product',
+                'prices' => [
+                    ['id' => 'price1', 'currencyId' => null, 'gross' => 100],
+                    ['id' => 'price2', 'currencyId' => null, 'gross' => 200],
+                ],
+            ],
+        ];
+
+        $fix->apply($item);
+
+        // Fix should be applied to all price items
+        static::assertSame($expectedValue, $item['product']['prices'][0]['currencyId']);
+        static::assertSame($expectedValue, $item['product']['prices'][1]['currencyId']);
+
+        // Other fields should remain untouched
+        static::assertSame('prod1', $item['product']['id']);
+        static::assertSame('Test Product', $item['product']['name']);
+        static::assertSame(100, $item['product']['prices'][0]['gross']);
+        static::assertSame(200, $item['product']['prices'][1]['gross']);
+    }
+
+    public function testApplyFixCreatesPathIfNotExists(): void
+    {
+        $expectedValue = 'newValue';
+
+        $fix = new MigrationFix(
+            'anyId',
+            \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
+            'new.path.field',
+        );
+
+        $item = [
+            'id' => 'anyId',
+            'existingField' => 'existingValue',
+        ];
+
+        $fix->apply($item);
+
+        static::assertSame($expectedValue, $item['new']['path']['field']);
+        static::assertSame('existingValue', $item['existingField']);
+    }
+
+    public function testApplyFixWithArrayValue(): void
+    {
+        $expectedValue = ['id1', 'id2', 'id3'];
+
+        $fix = new MigrationFix(
+            'anyId',
+            \json_encode($expectedValue, \JSON_THROW_ON_ERROR),
+            'tags',
+        );
+
+        $item = [
+            'id' => 'anyId',
+            'tags' => [],
+        ];
+
+        $fix->apply($item);
+
+        static::assertSame($expectedValue, $item['tags']);
+    }
+
     public function testCreateFromDatabaseQuery(): void
     {
         $data = [

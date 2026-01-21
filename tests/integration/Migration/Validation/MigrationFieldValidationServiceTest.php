@@ -13,7 +13,6 @@ use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 
@@ -33,12 +32,13 @@ class MigrationFieldValidationServiceTest extends TestCase
         $this->migrationFieldValidationService = static::getContainer()->get(MigrationFieldValidationService::class);
     }
 
-    public function testNotExistingEntityDefinition(): void
+    public function testNotExistingEntityDefinitionSkipsValidation(): void
     {
-        static::expectExceptionObject(MigrationException::entityNotExists('test', 'field'));
+        // Unknown entities are silently skipped - no exception should be thrown
+        static::expectNotToPerformAssertions();
 
         $this->migrationFieldValidationService->validateField(
-            'test',
+            'unknown_entity',
             'field',
             'value',
             Context::createDefaultContext(),
@@ -129,6 +129,81 @@ class MigrationFieldValidationServiceTest extends TestCase
                     'linked' => true,
                 ],
             ],
+            Context::createDefaultContext(),
+        );
+    }
+
+    public function testResolveFieldPathSimpleField(): void
+    {
+        $result = $this->migrationFieldValidationService->resolveFieldPath('product', 'name');
+
+        static::assertNotNull($result);
+        static::assertCount(2, $result);
+        static::assertSame('product', $result[0]->getEntityName());
+        static::assertSame('name', $result[1]->getPropertyName());
+    }
+
+    public function testResolveFieldPathNestedField(): void
+    {
+        $result = $this->migrationFieldValidationService->resolveFieldPath('shipping_method', 'prices.shippingMethodId');
+
+        static::assertNotNull($result);
+        static::assertCount(2, $result);
+        static::assertSame('shipping_method_price', $result[0]->getEntityName());
+        static::assertSame('shippingMethodId', $result[1]->getPropertyName());
+    }
+
+    public function testResolveFieldPathDeeplyNested(): void
+    {
+        $result = $this->migrationFieldValidationService->resolveFieldPath('product', 'categories.media.alt');
+
+        static::assertNotNull($result);
+        static::assertCount(2, $result);
+        static::assertSame('media', $result[0]->getEntityName());
+        static::assertSame('alt', $result[1]->getPropertyName());
+    }
+
+    public function testResolveFieldPathUnknownEntity(): void
+    {
+        $result = $this->migrationFieldValidationService->resolveFieldPath('unknown_entity', 'field');
+
+        static::assertNull($result);
+    }
+
+    public function testResolveFieldPathUnknownField(): void
+    {
+        $result = $this->migrationFieldValidationService->resolveFieldPath('product', 'unknownField');
+
+        static::assertNull($result);
+    }
+
+    public function testResolveFieldPathUnknownNestedField(): void
+    {
+        $result = $this->migrationFieldValidationService->resolveFieldPath('shipping_method', 'prices.unknownField');
+
+        static::assertNull($result);
+    }
+
+    public function testValidateNestedField(): void
+    {
+        static::expectNotToPerformAssertions();
+
+        $this->migrationFieldValidationService->validateField(
+            'shipping_method',
+            'prices.shippingMethodId',
+            'a5d7a3b4c5d6e7f8a9b0c1d2e3f4a5b6',
+            Context::createDefaultContext(),
+        );
+    }
+
+    public function testValidateNestedFieldInvalid(): void
+    {
+        static::expectException(MigrationValidationException::class);
+
+        $this->migrationFieldValidationService->validateField(
+            'shipping_method',
+            'prices.shippingMethodId',
+            'not-a-valid-uuid',
             Context::createDefaultContext(),
         );
     }

@@ -8,9 +8,6 @@
 namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
-use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
-use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
-use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Validation\WriteConstraintViolationException;
@@ -18,7 +15,6 @@ use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationFieldExampleGenerator;
 use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
-use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -33,11 +29,7 @@ class ErrorResolutionController extends AbstractController
      * @internal
      */
     public function __construct(
-        private readonly DefinitionInstanceRegistry $definitionRegistry,
         private readonly MigrationFieldValidationService $fieldValidationService,
-        private readonly MigrationEntityValidationService $entityValidationService,
-        private readonly EntityWriterInterface $entityWriter,
-        private readonly EntityDefinition $definition,
     ) {
     }
 
@@ -119,14 +111,13 @@ class ErrorResolutionController extends AbstractController
             throw MigrationException::missingRequestParameter('fieldName');
         }
 
-        $entityDefinition = $this->definitionRegistry->getByEntityName($entityName);
-        $fields = $entityDefinition->getFields();
+        $resolved = $this->fieldValidationService->resolveFieldPath($entityName, $fieldName);
 
-        if (!$fields->has($fieldName)) {
+        if ($resolved === null) {
             throw MigrationValidationException::entityFieldNotFound($entityName, $fieldName);
         }
 
-        $field = $fields->get($fieldName);
+        [, $field] = $resolved;
 
         $response = [
             'fieldType' => MigrationFieldExampleGenerator::getFieldType($field),

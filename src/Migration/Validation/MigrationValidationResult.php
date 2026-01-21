@@ -13,6 +13,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 /**
  * @final
+ * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]
 class MigrationValidationResult
@@ -49,11 +50,6 @@ class MigrationValidationResult
             $log->getEntityId() ?? '',
             $log->getFieldName() ?? '',
         ]));
-    }
-
-    public function hasLogs(): bool
-    {
-        return \count($this->logs) !== 0;
     }
 
     public function getEntityName(): string

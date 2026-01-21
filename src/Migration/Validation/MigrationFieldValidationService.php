@@ -40,9 +40,10 @@ readonly class MigrationFieldValidationService
 
     /**
      * Validates a single field value against its entity definition.
-     * Silently skips validation for unknown entities or fields.
+     * Supports nested field paths like "prices.shippingMethodId".
+     * Silently skips validation for unknown entities.
      *
-     * @throws MigrationValidationException
+     * @throws MigrationValidationException|\Exception
      */
     public function validateField(
         string $entityName,
@@ -55,22 +56,70 @@ readonly class MigrationFieldValidationService
             return;
         }
 
-        $entityDefinition = $this->definitionRegistry->getByEntityName($entityName);
-        $fields = $entityDefinition->getFields();
+        $resolved = $this->resolveFieldPath($entityName, $fieldName);
 
-        if (!$fields->has($fieldName)) {
-            throw MigrationValidationException::entityFieldNotFound($entityName, $fieldName);
+        if ($resolved === null) {
+            return;
         }
 
-        $field = clone $fields->get($fieldName);
+        [$entityDefinition, $field] = $resolved;
+        $field = clone $field;
 
         if ($field instanceof AssociationField) {
-            $this->validateAssociationStructure($field, $value, $entityName);
+            $this->validateAssociationStructure($field, $value, $entityDefinition->getEntityName());
 
             return;
         }
 
         $this->validateScalarField($field, $value, $isRequired, $entityDefinition, $context);
+    }
+
+    /**
+     * Resolves a potentially nested field path (e.g., "prices.shippingMethodId") to its target.
+     * Traverses through association fields to find the final entity definition and field.
+     *
+     * @throws \Exception
+     *
+     * @return array{EntityDefinition, Field}|null Returns [EntityDefinition, Field] or null if not found
+     */
+    public function resolveFieldPath(string $entityName, string $fieldPath): ?array
+    {
+        if (!$this->definitionRegistry->has($entityName)) {
+            return null;
+        }
+
+        $currentDefinition = $this->definitionRegistry->getByEntityName($entityName);
+        $paths = \explode('.', $fieldPath);
+
+        foreach ($paths as $index => $path) {
+            $fields = $currentDefinition->getFields();
+
+            if (!$fields->has($path)) {
+                return null;
+            }
+
+            $field = $fields->get($path);
+
+            if ($index === \count($paths) - 1) {
+                return [$currentDefinition, $field];
+            }
+
+            if (!$field instanceof AssociationField) {
+                return null;
+            }
+
+            $referenceEntity = $field instanceof ManyToManyAssociationField
+                ? $field->getToManyReferenceDefinition()->getEntityName()
+                : $field->getReferenceDefinition()->getEntityName();
+
+            if (!$this->definitionRegistry->has($referenceEntity)) {
+                return null;
+            }
+
+            $currentDefinition = $this->definitionRegistry->getByEntityName($referenceEntity);
+        }
+
+        return null;
     }
 
     /**
