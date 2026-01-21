@@ -257,7 +257,6 @@ export default Shopware.Component.wrapComponentConfig({
                     limit,
                 );
 
-                console.log('submitResolutionInBatches batchResult', batchResult);
                 hasMoreResults = batchResult.entityIds.length === limit;
 
                 const entities = batchResult.entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
@@ -515,7 +514,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
             if (!selection || Object.keys(selection).length === 0) {
-                if(this.selectAllMode){
+                if (this.selectAllMode) {
                     this.selectAllMode = false;
                 }
                 this.selectedLogIds = [];

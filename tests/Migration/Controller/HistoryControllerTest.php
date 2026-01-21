@@ -528,6 +528,79 @@ class HistoryControllerTest extends TestCase
         static::assertCount(1, $json['entityIds']);
     }
 
+    public function testGetAllEntityIdsUsesDefaultLimit(): void
+    {
+        $entityIds = [];
+        for ($i = 0; $i < 110; ++$i) {
+            $entityIds[] = [
+                'runId' => $this->runUuid,
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+                'code' => 'LIMIT_TEST_CODE',
+                'entityName' => 'customer',
+                'fieldName' => 'email',
+                'entityId' => Uuid::randomHex(),
+                'userFixable' => true,
+            ];
+        }
+
+        $this->loggingRepo->create($entityIds, $this->context);
+
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'LIMIT_TEST_CODE',
+            'entityName' => 'customer',
+            'fieldName' => 'email',
+        ]);
+
+        $response = $this->controller->getAllEntityIds($request);
+
+        static::assertIsString($response->getContent());
+        $json = \json_decode($response->getContent(), true);
+
+        static::assertIsArray($json);
+        static::assertArrayHasKey('entityIds', $json);
+        static::assertCount(100, $json['entityIds']);
+    }
+
+    public function testGetAllEntityIdsWithCustomLimit(): void
+    {
+        $entityIds = [];
+        for ($i = 0; $i < 5; ++$i) {
+            $entityIds[] = [
+                'runId' => $this->runUuid,
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+                'code' => 'CUSTOM_LIMIT_TEST_CODE',
+                'entityName' => 'order',
+                'fieldName' => 'status',
+                'entityId' => Uuid::randomHex(),
+                'userFixable' => true,
+            ];
+        }
+
+        $this->loggingRepo->create($entityIds, $this->context);
+
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'CUSTOM_LIMIT_TEST_CODE',
+            'entityName' => 'order',
+            'fieldName' => 'status',
+            'limit' => '2',
+        ]);
+
+        $response = $this->controller->getAllEntityIds($request);
+
+        static::assertIsString($response->getContent());
+        $json = \json_decode($response->getContent(), true);
+
+        static::assertIsArray($json);
+        static::assertArrayHasKey('entityIds', $json);
+        static::assertCount(2, $json['entityIds']);
+    }
+
     /**
      * @param array<Context|string|int|Entity|null> $parameters
      *
