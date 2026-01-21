@@ -282,7 +282,6 @@ class MigrationEntityValidationService implements ResetInterface
 
         $rootEntityName = $validationContext->getEntityDefinition()->getEntityName();
         $rootEntityId = $validationContext->getConvertedData()['id'] ?? null;
-        $rootEntityId = $rootEntityId !== null ? (string) $rootEntityId : null;
 
         foreach ($nestedEntityData as $fieldName => $value) {
             // skip id field validation

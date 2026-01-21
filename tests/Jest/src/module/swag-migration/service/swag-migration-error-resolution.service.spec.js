@@ -1144,63 +1144,6 @@ const NORMALIZE_FIELD_VALUE_FOR_SAVE_TESTS = [
     },
 ];
 
-const GET_NESTED_VALUE_TESTS = [
-    {
-        name: 'simple top-level property',
-        data: { id: 'prod-1', name: 'Product 1' },
-        path: 'name',
-        expected: 'Product 1',
-    },
-    {
-        name: 'nested property via dot notation',
-        data: { id: 'prod-1', prices: { shippingMethodId: 'ship-1' } },
-        path: 'prices.shippingMethodId',
-        expected: 'ship-1',
-    },
-    {
-        name: 'nested property in array (first item)',
-        data: { id: 'prod-1', prices: [{ shippingMethodId: 'ship-1' }, { shippingMethodId: 'ship-2' }] },
-        path: 'prices.shippingMethodId',
-        expected: 'ship-1',
-    },
-    {
-        name: 'deeply nested property',
-        data: { level1: { level2: { level3: { value: 'deep' } } } },
-        path: 'level1.level2.level3.value',
-        expected: 'deep',
-    },
-    {
-        name: 'non-existent property',
-        data: { id: 'prod-1' },
-        path: 'nonExistent',
-        expected: undefined,
-    },
-    {
-        name: 'non-existent nested property',
-        data: { id: 'prod-1', prices: {} },
-        path: 'prices.shippingMethodId',
-        expected: undefined,
-    },
-    {
-        name: 'null intermediate value',
-        data: { id: 'prod-1', prices: null },
-        path: 'prices.shippingMethodId',
-        expected: undefined,
-    },
-    {
-        name: 'empty array',
-        data: { id: 'prod-1', prices: [] },
-        path: 'prices.shippingMethodId',
-        expected: undefined,
-    },
-    {
-        name: 'nested object within array',
-        data: { items: [{ details: { sku: 'SKU-001' } }] },
-        path: 'items.details.sku',
-        expected: 'SKU-001',
-    },
-];
-
 const testCases = {
     getEntityLink: ENTITY_LINK_TESTS,
     getEntitySchema: ENTITY_SCHEMA_TESTS,
@@ -1218,7 +1161,6 @@ const testCases = {
     generateTableColumns: GENERATE_TABLE_COLUMNS_TESTS,
     formatAssociationFieldValue: FORMAT_ASSOCIATION_FIELD_VALUE_TESTS,
     mapEntityFieldProperties: MAP_ENTITY_FIELD_PROPERTIES_TESTS,
-    getNestedValue: GET_NESTED_VALUE_TESTS,
     validateFieldValue: VALIDATE_FIELD_VALUE_TESTS,
     isEntityCollection: IS_ENTITY_COLLECTION_TESTS,
     normalizeFieldValueForSave: NORMALIZE_FIELD_VALUE_FOR_SAVE_TESTS,
@@ -1473,16 +1415,7 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
         it.each(testCases.mapEntityFieldProperties)(
             'should map entity field properties: $name',
             ({ entityName, fieldProperties, convertedData, expected }) => {
-                expect(
-                    service.mapEntityFieldProperties(entityName, fieldProperties, convertedData),
-                ).toStrictEqual(expected);
-            },
-        );
-
-        it.each(testCases.getNestedValue)(
-            'should get nested value from object: $name',
-            ({ data, path, expected }) => {
-                expect(service.getNestedValue(data, path)).toStrictEqual(expected);
+                expect(service.mapEntityFieldProperties(entityName, fieldProperties, convertedData)).toStrictEqual(expected);
             },
         );
     });

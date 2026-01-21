@@ -264,46 +264,24 @@ export default class SwagMigrationErrorResolutionService {
      * grouped by scalar fields, associations, and required fields.
      */
     extractEntityFields(entityName: string | null | undefined): EntityFields {
-        const fields = {
-            scalar: {},
-            associations: {},
-            required: {},
-        } as EntityFields;
-
-        if (!entityName) {
-            return fields;
-        }
-
-        if (!Shopware.EntityDefinition.has(entityName)) {
-            return fields;
+        if (!entityName || !Shopware.EntityDefinition.has(entityName)) {
+            return { scalar: {}, associations: {}, required: {} };
         }
 
         const definition = Shopware.EntityDefinition.get(entityName);
 
-        definition.forEachField((property: Property, propertyName: string) => {
-            if (definition.isScalarField(property)) {
-                fields.scalar[propertyName] = property;
-            }
-
-            if (property.type === 'association' && definition.isToOneAssociation(property)) {
-                fields.associations[propertyName] = property;
-            }
-
-            if (property.flags?.required) {
-                fields.required[propertyName] = property;
-            }
-        });
-
-        return fields;
+        return {
+            scalar: definition.filterProperties((property) => definition.isScalarField(property)),
+            associations: definition.getToOneAssociations(),
+            required: definition.getRequiredFields(),
+        };
     }
 
     /**
      * gets the entity schema for a given entity name.
      */
     getEntitySchema(entityName: string | null | undefined): EntityDefinition<never> | null {
-        return entityName && Shopware.EntityDefinition.has(entityName)
-            ? Shopware.EntityDefinition.get(entityName)
-            : null;
+        return entityName && Shopware.EntityDefinition.has(entityName) ? Shopware.EntityDefinition.get(entityName) : null;
     }
 
     /**
@@ -323,32 +301,34 @@ export default class SwagMigrationErrorResolutionService {
 
         const paths = fieldPath.split('.');
 
-        return paths.reduce<{ schema: EntityDefinition<never>; result: ResolvedFieldPath | null } | null>(
-            (acc, path, index) => {
-                if (!acc || acc.result) {
-                    return acc;
-                }
+        return (
+            paths.reduce<{ schema: EntityDefinition<never>; result: ResolvedFieldPath | null } | null>(
+                (acc, path, index) => {
+                    if (!acc || acc.result) {
+                        return acc;
+                    }
 
-                const property = acc.schema.getField(path);
+                    const property = acc.schema.getField(path);
 
-                if (!property) {
-                    return null;
-                }
+                    if (!property) {
+                        return null;
+                    }
 
-                if (index === paths.length - 1) {
-                    return { ...acc, result: { schema: acc.schema, property, fieldName: path } };
-                }
+                    if (index === paths.length - 1) {
+                        return { ...acc, result: { schema: acc.schema, property, fieldName: path } };
+                    }
 
-                if (property.type !== DATA_TYPES.ASSOCIATION || !property.entity) {
-                    return null;
-                }
+                    if (property.type !== DATA_TYPES.ASSOCIATION || !property.entity) {
+                        return null;
+                    }
 
-                const nextSchema = this.getEntitySchema(property.entity);
+                    const nextSchema = this.getEntitySchema(property.entity);
 
-                return nextSchema ? { schema: nextSchema, result: null } : null;
-            },
-            { schema: initialSchema, result: null },
-        )?.result ?? null;
+                    return nextSchema ? { schema: nextSchema, result: null } : null;
+                },
+                { schema: initialSchema, result: null },
+            )?.result ?? null
+        );
     }
 
     /**
@@ -385,7 +365,8 @@ export default class SwagMigrationErrorResolutionService {
         }
 
         const byLocalField = Object.values(schema.properties).find(
-            (prop) => prop.type === DATA_TYPES.ASSOCIATION &&
+            (prop) =>
+                prop.type === DATA_TYPES.ASSOCIATION &&
                 (prop as Property & { localField?: string }).localField === actualFieldName,
         );
 
@@ -453,8 +434,7 @@ export default class SwagMigrationErrorResolutionService {
      * for id fields with associations, returns the association field instead.
      */
     getEffectiveEntityField(entityName: string | null | undefined, fieldName: string | null | undefined): Property | null {
-        return this.findCorrespondingAssociationField(entityName, fieldName)
-            ?? this.getEntityField(entityName, fieldName);
+        return this.findCorrespondingAssociationField(entityName, fieldName) ?? this.getEntityField(entityName, fieldName);
     }
 
     /**
@@ -587,33 +567,6 @@ export default class SwagMigrationErrorResolutionService {
     }
 
     /**
-     * gets a value from an object using a dot-notation path.
-     * for nested paths like "prices.shippingMethodId", traverses into nested objects/arrays.
-     */
-    getNestedValue(data: Record<string, unknown>, path: string): unknown {
-        const paths = path.split('.');
-
-        return paths.reduce<unknown>((current, key) => {
-            if (current === null || current === undefined) {
-                return undefined;
-            }
-
-            if (Array.isArray(current)) {
-                // for arrays, get the value from the first item
-                const firstItem = current[0];
-
-                return firstItem && typeof firstItem === 'object' ? (firstItem as Record<string, unknown>)[key] : undefined;
-            }
-
-            if (typeof current === 'object') {
-                return (current as Record<string, unknown>)[key];
-            }
-
-            return undefined;
-        }, data);
-    }
-
-    /**
      * formats association field values to display only ids in a comma-separated list.
      */
     formatAssociationFieldValue(
@@ -655,7 +608,7 @@ export default class SwagMigrationErrorResolutionService {
         convertedData: Record<string, unknown>,
     ): Record<string, unknown> {
         return fieldProperties.reduce<Record<string, unknown>>((acc, property) => {
-            const value = this.getNestedValue(convertedData, property);
+            const value = Shopware.Utils.object.get(convertedData, property) as unknown;
 
             if (value === undefined) {
                 return acc;
