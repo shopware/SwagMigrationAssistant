@@ -12,9 +12,14 @@ use Doctrine\DBAL\Exception;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
+use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ReferenceVersionField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StorageAware;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\TranslationsAssociationField;
@@ -178,6 +183,13 @@ class MigrationEntityValidationService implements ResetInterface
         $requiredFields = $this->getRequiredFields($fields, $entityName);
 
         foreach ($convertedData as $fieldName => $value) {
+            $field = $fields->get($fieldName);
+
+            // Recursively validate nested association entities
+            if ($field !== null && $value !== null) {
+                $this->validateNestedAssociations($validationContext, $field, $fieldName, $value);
+            }
+
             try {
                 $this->fieldValidationService->validateField(
                     $entityName,
@@ -187,7 +199,111 @@ class MigrationEntityValidationService implements ResetInterface
                     isset($requiredFields[$fieldName])
                 );
             } catch (MigrationValidationException $exception) {
-                $this->addValidationExceptionLog($validationContext, $exception, $fieldName, $value, (string) $id);
+                $this->addValidationExceptionLog($validationContext, $exception, $entityName, $fieldName, $value, (string) $id);
+            } catch (\Throwable $exception) {
+                $this->addExceptionLog($validationContext, $exception);
+            }
+        }
+    }
+
+    /**
+     * Recursively validates nested entities within association fields.
+     *
+     * @param array<string, mixed>|mixed $value
+     */
+    private function validateNestedAssociations(
+        MigrationValidationContext $validationContext,
+        Field $field,
+        string $fieldPath,
+        mixed $value,
+    ): void {
+        if (!\is_array($value)) {
+            return;
+        }
+
+        // Skip translations, they have special structure and are system-managed
+        if ($field instanceof TranslationsAssociationField) {
+            return;
+        }
+
+        if ($field instanceof OneToManyAssociationField || $field instanceof ManyToManyAssociationField) {
+            $referenceDefinition = $field instanceof ManyToManyAssociationField
+                ? $field->getToManyReferenceDefinition()
+                : $field->getReferenceDefinition();
+
+            foreach ($value as $nestedEntityData) {
+                $this->validateNestedEntityData(
+                    $validationContext,
+                    $referenceDefinition,
+                    $nestedEntityData,
+                    $fieldPath
+                );
+            }
+
+            return;
+        }
+
+        if ($field instanceof ManyToOneAssociationField || $field instanceof OneToOneAssociationField) {
+            $this->validateNestedEntityData(
+                $validationContext,
+                $field->getReferenceDefinition(),
+                $value,
+                $fieldPath
+            );
+        }
+    }
+
+    /**
+     * Validates a single nested entity's fields and recurses into deeper associations.
+     *
+     * @param array<string, mixed>|mixed $nestedEntityData
+     */
+    private function validateNestedEntityData(
+        MigrationValidationContext $validationContext,
+        EntityDefinition $referenceDefinition,
+        mixed $nestedEntityData,
+        string $fieldPath,
+    ): void {
+        if (!\is_array($nestedEntityData)) {
+            return;
+        }
+
+        // Skip ID-only references (linking existing entities, not creating new ones)
+        if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
+            return;
+        }
+
+        $nestedEntityName = $referenceDefinition->getEntityName();
+        $fields = $referenceDefinition->getFields();
+        $requiredFields = $this->getRequiredFields($fields, $nestedEntityName);
+
+        $rootEntityName = $validationContext->getEntityDefinition()->getEntityName();
+        $rootEntityId = $validationContext->getConvertedData()['id'] ?? null;
+        $rootEntityId = $rootEntityId !== null ? (string) $rootEntityId : null;
+
+        foreach ($nestedEntityData as $fieldName => $value) {
+            // Skip 'id' field, already validated by association structure check
+            if ($fieldName === 'id') {
+                continue;
+            }
+
+            $field = $fields->get($fieldName);
+            $nestedFieldPath = $fieldPath . '.' . $fieldName;
+
+            if ($field !== null && $value !== null) {
+                $this->validateNestedAssociations($validationContext, $field, $nestedFieldPath, $value);
+            }
+
+            try {
+                $this->fieldValidationService->validateField(
+                    $nestedEntityName,
+                    $fieldName,
+                    $value,
+                    $validationContext->getContext(),
+                    isset($requiredFields[$fieldName])
+                );
+            } catch (MigrationValidationException $exception) {
+                $this->addValidationExceptionLog($validationContext, $exception, $rootEntityName, $nestedFieldPath, $value, $rootEntityId);
             } catch (\Throwable $exception) {
                 $this->addExceptionLog($validationContext, $exception);
             }
@@ -290,9 +406,10 @@ class MigrationEntityValidationService implements ResetInterface
     private function addValidationExceptionLog(
         MigrationValidationContext $validationContext,
         MigrationValidationException $exception,
+        string $entityName,
         string $fieldName,
         mixed $value,
-        string $entityId,
+        ?string $entityId,
     ): void {
         $logClass = match ($exception->getErrorCode()) {
             MigrationValidationException::VALIDATION_INVALID_ASSOCIATION => MigrationValidationInvalidAssociationLog::class,
@@ -304,7 +421,7 @@ class MigrationEntityValidationService implements ResetInterface
 
         $validationContext->getValidationResult()->addLog(
             MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
-                ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
+                ->withEntityName($entityName)
                 ->withFieldName($fieldName)
                 ->withConvertedData([$fieldName => $value])
                 ->withSourceData($validationContext->getSourceData())

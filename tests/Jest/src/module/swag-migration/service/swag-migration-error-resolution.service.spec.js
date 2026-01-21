@@ -4,6 +4,7 @@
 import SwagMigrationErrorResolutionService, {
     DATA_TYPES,
     UNHANDLED_FIELD_TYPES,
+    UNHANDLED_FIELD_NAMES,
     HANDLED_RELATION_TYPES,
     FIELD_COMPONENT_TYPES,
     FIELD_TYPE_COMPONENT_MAPPING,
@@ -110,7 +111,7 @@ const ENTITY_FIELD_TESTS = [
     {
         name: 'forbidden field name',
         entityName: 'product',
-        fieldName: UNHANDLED_FIELD_TYPES.at(0),
+        fieldName: UNHANDLED_FIELD_NAMES.at(0),
         expected: null,
     },
     {
@@ -452,7 +453,7 @@ const CORRESPONDING_ASSOCIATION_FIELD_TESTS = [
         name: 'field without corresponding association or translation match',
         entityName: 'category',
         fieldName: 'afterCategoryVersionId',
-        expected: undefined,
+        expected: null,
     },
     {
         name: 'infer translation association from field name',
@@ -812,7 +813,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
         entityName: 'product',
         fieldProperties: [],
         convertedData: { id: 'prod-1', name: 'Product 1' },
-        fieldName: null,
         expected: {},
     },
     {
@@ -824,7 +824,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             'productNumber',
         ],
         convertedData: { id: 'prod-1', name: 'Product 1', productNumber: 'P-001' },
-        fieldName: null,
         expected: { id: 'prod-1', name: 'Product 1', productNumber: 'P-001' },
     },
     {
@@ -836,7 +835,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             'description',
         ],
         convertedData: { id: 'prod-1', name: 'Product 1' },
-        fieldName: null,
         expected: { id: 'prod-1', name: 'Product 1' },
     },
     {
@@ -850,7 +848,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             id: 'prod-1',
             manufacturer: { id: 'manu-1', name: 'Manufacturer 1' },
         },
-        fieldName: null,
         expected: {
             id: 'prod-1',
             manufacturer: 'manu-1',
@@ -870,7 +867,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
                 { id: 'cat-2' },
             ],
         },
-        fieldName: null,
         expected: {
             id: 'prod-1',
             categories: 'cat-1, cat-2',
@@ -890,9 +886,8 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
                 'cat-2': { id: 'cat-2', name: 'Category 2' },
             },
         },
-        fieldName: 'categories',
         expected: {
-            id: 'cat-1',
+            id: 'prod-1',
             categories: 'cat-1, cat-2',
         },
     },
@@ -907,8 +902,8 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             id: 'prod-1',
             categories: null,
         },
-        fieldName: 'categories',
         expected: {
+            id: 'prod-1',
             categories: '',
         },
     },
@@ -921,7 +916,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
         convertedData: {
             customerComment: 'A'.repeat(CONTENT_TEXT_MAX_LENGTH + 1),
         },
-        fieldName: 'customerComment',
         expected: {
             customerComment: `${'A'.repeat(CONTENT_TEXT_MAX_LENGTH)}...`,
         },
@@ -1150,6 +1144,63 @@ const NORMALIZE_FIELD_VALUE_FOR_SAVE_TESTS = [
     },
 ];
 
+const GET_NESTED_VALUE_TESTS = [
+    {
+        name: 'simple top-level property',
+        data: { id: 'prod-1', name: 'Product 1' },
+        path: 'name',
+        expected: 'Product 1',
+    },
+    {
+        name: 'nested property via dot notation',
+        data: { id: 'prod-1', prices: { shippingMethodId: 'ship-1' } },
+        path: 'prices.shippingMethodId',
+        expected: 'ship-1',
+    },
+    {
+        name: 'nested property in array (first item)',
+        data: { id: 'prod-1', prices: [{ shippingMethodId: 'ship-1' }, { shippingMethodId: 'ship-2' }] },
+        path: 'prices.shippingMethodId',
+        expected: 'ship-1',
+    },
+    {
+        name: 'deeply nested property',
+        data: { level1: { level2: { level3: { value: 'deep' } } } },
+        path: 'level1.level2.level3.value',
+        expected: 'deep',
+    },
+    {
+        name: 'non-existent property',
+        data: { id: 'prod-1' },
+        path: 'nonExistent',
+        expected: undefined,
+    },
+    {
+        name: 'non-existent nested property',
+        data: { id: 'prod-1', prices: {} },
+        path: 'prices.shippingMethodId',
+        expected: undefined,
+    },
+    {
+        name: 'null intermediate value',
+        data: { id: 'prod-1', prices: null },
+        path: 'prices.shippingMethodId',
+        expected: undefined,
+    },
+    {
+        name: 'empty array',
+        data: { id: 'prod-1', prices: [] },
+        path: 'prices.shippingMethodId',
+        expected: undefined,
+    },
+    {
+        name: 'nested object within array',
+        data: { items: [{ details: { sku: 'SKU-001' } }] },
+        path: 'items.details.sku',
+        expected: 'SKU-001',
+    },
+];
+
 const testCases = {
     getEntityLink: ENTITY_LINK_TESTS,
     getEntitySchema: ENTITY_SCHEMA_TESTS,
@@ -1167,6 +1218,7 @@ const testCases = {
     generateTableColumns: GENERATE_TABLE_COLUMNS_TESTS,
     formatAssociationFieldValue: FORMAT_ASSOCIATION_FIELD_VALUE_TESTS,
     mapEntityFieldProperties: MAP_ENTITY_FIELD_PROPERTIES_TESTS,
+    getNestedValue: GET_NESTED_VALUE_TESTS,
     validateFieldValue: VALIDATE_FIELD_VALUE_TESTS,
     isEntityCollection: IS_ENTITY_COLLECTION_TESTS,
     normalizeFieldValueForSave: NORMALIZE_FIELD_VALUE_FOR_SAVE_TESTS,
@@ -1420,10 +1472,17 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
 
         it.each(testCases.mapEntityFieldProperties)(
             'should map entity field properties: $name',
-            ({ entityName, fieldProperties, convertedData, fieldName, expected }) => {
+            ({ entityName, fieldProperties, convertedData, expected }) => {
                 expect(
-                    service.mapEntityFieldProperties(entityName, fieldProperties, convertedData, fieldName),
+                    service.mapEntityFieldProperties(entityName, fieldProperties, convertedData),
                 ).toStrictEqual(expected);
+            },
+        );
+
+        it.each(testCases.getNestedValue)(
+            'should get nested value from object: $name',
+            ({ data, path, expected }) => {
+                expect(service.getNestedValue(data, path)).toStrictEqual(expected);
             },
         );
     });
