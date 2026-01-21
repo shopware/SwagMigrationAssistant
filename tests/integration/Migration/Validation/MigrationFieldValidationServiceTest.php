@@ -34,7 +34,7 @@ class MigrationFieldValidationServiceTest extends TestCase
 
     public function testNotExistingEntityDefinitionSkipsValidation(): void
     {
-        // Unknown entities are silently skipped - no exception should be thrown
+        // Unknown entities are silently skipped
         static::expectNotToPerformAssertions();
 
         $this->migrationFieldValidationService->validateField(

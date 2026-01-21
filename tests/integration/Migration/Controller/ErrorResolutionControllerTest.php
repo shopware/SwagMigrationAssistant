@@ -305,6 +305,18 @@ class ErrorResolutionControllerTest extends TestCase
                 'violations' => [],
             ],
         ];
+
+        yield 'nested invalid number range field' => [
+            'entityName' => 'number_range',
+            'fieldName' => 'numberRangeSalesChannels.numberRangeId',
+            'fieldValue' => 'not-a-uuid',
+            'expected' => [
+                'valid' => false,
+                'violations' => [
+                    'The string "not-a-uuid" is not a valid uuid.',
+                ],
+            ],
+        ];
     }
 
     /**

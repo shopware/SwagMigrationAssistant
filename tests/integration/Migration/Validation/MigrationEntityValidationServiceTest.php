@@ -486,9 +486,7 @@ class MigrationEntityValidationServiceTest extends TestCase
         ];
     }
 
-    /**
-     * Tests for ManyToMany and OneToMany association validation.
-     *
+    /***
      * @return \Generator<string, array{array<string, mixed>, array<class-string>}>
      */
     public static function toManyAssociationProvider(): \Generator
@@ -595,8 +593,6 @@ class MigrationEntityValidationServiceTest extends TestCase
     }
 
     /**
-     * Tests for ManyToOne and OneToOne association validation.
-     *
      * @return \Generator<string, array{array<string, mixed>, array<class-string>}>
      */
     public static function toOneAssociationProvider(): \Generator
@@ -775,5 +771,120 @@ class MigrationEntityValidationServiceTest extends TestCase
         $logs = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities();
         static::assertInstanceOf(SwagMigrationLoggingCollection::class, $logs);
         static::assertGreaterThan(0, $logs->count());
+    }
+
+    public function testDeepNestedValidationTwoLevels(): void
+    {
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+            'manufacturer' => [
+                'id' => Uuid::randomHex(),
+                'translations' => [
+                    Defaults::LANGUAGE_SYSTEM => [
+                        'name' => 'Test Manufacturer',
+                    ],
+                ],
+                'media' => [
+                    'id' => Uuid::randomHex(),
+                    'mimeType' => 12345, // invalid: should be string
+                ],
+            ],
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
+        static::assertContains(MigrationValidationInvalidOptionalFieldValueLog::class, $logClasses);
+    }
+
+    public function testInvalidFieldValueInNestedEntity(): void
+    {
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+            'manufacturer' => [
+                'id' => Uuid::randomHex(),
+                'translations' => [
+                    Defaults::LANGUAGE_SYSTEM => [
+                        'name' => 'Test Manufacturer',
+                    ],
+                ],
+                'mediaId' => 'not-a-valid-uuid', // invalid FK value
+            ],
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
+        static::assertContains(MigrationValidationInvalidOptionalFieldValueLog::class, $logClasses);
+    }
+
+    public function testNestedFieldPathCorrectness(): void
+    {
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+            'manufacturer' => [
+                'id' => Uuid::randomHex(),
+                'translations' => [
+                    Defaults::LANGUAGE_SYSTEM => [
+                        'name' => 'Test Manufacturer',
+                    ],
+                ],
+                'media' => [
+                    'id' => Uuid::randomHex(),
+                    'mimeType' => ['invalid' => 'array'], // invalid: should be string
+                ],
+            ],
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+        static::assertNotEmpty($result->getLogs());
+
+        $fieldPaths = \array_map(static fn ($log) => $log->getFieldName(), $result->getLogs());
+        static::assertContains('manufacturer.media.mimeType', $fieldPaths);
     }
 }

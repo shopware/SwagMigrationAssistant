@@ -138,7 +138,6 @@
 
 - [BREAKING] [#51](https://github.com/shopware/SwagMigrationAssistant/pull/51) - feat!: add migration validation of converted data
     - [BREAKING] Added validation check of converted data to `convertData(...)` method in `SwagMigrationAssistant\Migration\Service\MigrationDataConverter`
-    - Added `hasValidMappingByEntityId(...)` to `SwagMigrationAssistant\Migration\Mapping\MappingService` and `SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface` to check if a mapping exists and is valid for a given entity and source id
     - Added new service `SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService` to validate converted data against Shopware's data definitions
     - Added new events `SwagMigrationAssistant\Migration\Validation\Event\MigrationPreValidationEvent` and `SwagMigrationAssistant\Migration\Validation\Event\MigrationPostValidationEvent` to allow extensions to hook into the validation process
     - Added new log classes `ValidationInvalidFieldValueLog`, `ValidationInvalidForeignKeyLog`, `ValidationMissingRequiredFieldLog` and `ValidationUnexpectedFieldLog` to log validation errors

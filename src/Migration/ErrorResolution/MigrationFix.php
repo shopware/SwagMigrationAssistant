@@ -71,7 +71,7 @@ readonly class MigrationFix
 
         $key = \array_shift($remainingPath);
 
-        // last segment of the path, normal set operation
+        // last segment of the path, "normal" set operation
         if (empty($remainingPath)) {
             $data[$key] = $value;
 
@@ -89,9 +89,8 @@ readonly class MigrationFix
             return;
         }
 
-        // stop traversal if the next key is not an array
         if (!isset($data[$key]) || !\is_array($data[$key])) {
-            return;
+            $data[$key] = [];
         }
 
         $this->applyToPath($data[$key], $remainingPath, $value);

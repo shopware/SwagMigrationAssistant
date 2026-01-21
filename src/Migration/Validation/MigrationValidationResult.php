@@ -13,6 +13,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 /**
  * @final
+ *
  * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]

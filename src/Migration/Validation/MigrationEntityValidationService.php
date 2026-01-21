@@ -223,7 +223,6 @@ class MigrationEntityValidationService implements ResetInterface
             return;
         }
 
-        // Skip translations, they have special structure and are system-managed
         if ($field instanceof TranslationsAssociationField) {
             return;
         }
@@ -272,7 +271,7 @@ class MigrationEntityValidationService implements ResetInterface
             return;
         }
 
-        // Skip ID-only references (linking existing entities, not creating new ones)
+        // Skip id only references
         if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
             return;
         }
@@ -286,7 +285,7 @@ class MigrationEntityValidationService implements ResetInterface
         $rootEntityId = $rootEntityId !== null ? (string) $rootEntityId : null;
 
         foreach ($nestedEntityData as $fieldName => $value) {
-            // Skip 'id' field, already validated by association structure check
+            // skip id field validation
             if ($fieldName === 'id') {
                 continue;
             }
