@@ -12,7 +12,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     MigrationUser,
     DatabaseCredentials,
     EntityCounter,
-    MediaProcessObserver,
 }) => {
     // TODO: fix & update snapshots
     // eslint-disable-next-line playwright/no-skipped-test
@@ -42,7 +41,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             .locator('div')
             .filter({ hasText: /^Shopware 5\.5 - shopware AG$/ })
             .click();
-        await page.getByText('Shopware 5.5 - shopware AG').click();
+        await page.locator(':text("Shopware 5.5 - shopware AG"):visible').click();
         await page.getByText('Select gateway').click();
         await page.getByPlaceholder('Select gateway').fill('Local');
         await page.getByText('Local database').click();
@@ -110,25 +109,6 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await page.getByRole('button', { name: 'Back to overview' }).click();
     });
 
-    // ToDo MIG-985: Remove this if the underlying issue is fixed
-    await test.step('Wait for media download to finish', async () => {
-        await expect
-            .poll(
-                async () => {
-                    return await MediaProcessObserver.isMediaProcessing();
-                },
-                {
-                    // Probe after 100ms and then every second
-                    intervals: [
-                        100,
-                        1_000,
-                    ],
-                    timeout: 300_000,
-                },
-            )
-            .toBe(false);
-    });
-
     await test.step('Expect entities to be there', async () => {
         await EntityCounter.checkEntityCount('swag_migration_logging', 699);
 
@@ -143,8 +123,9 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await EntityCounter.checkEntityCount('customer', 3);
 
         await EntityCounter.checkEntityCount('cms_page', 10);
-        await EntityCounter.checkEntityCount('media', 603);
-        await EntityCounter.checkEntityCount('media_folder', 26);
+        await EntityCounter.checkEntityCount('media', 595);
+        await EntityCounter.checkEntityCount('media_folder', 24);
+        await EntityCounter.checkEntityCount('document', 8);
 
         await EntityCounter.checkEntityCount('newsletter_recipient', 0);
         await EntityCounter.checkEntityCount('promotion', 4);

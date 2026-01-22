@@ -437,4 +437,6 @@ return [
     'id' => 'efaf7e8752b242baa67ed795d18f785d',
     'createdById' => '019270bb17fe70158f37ac83eaa7f761',
     'updatedById' => '019270bb17fe70158f37ac83eaa7f762',
+    'primaryOrderDeliveryId' => '8c6259d6e4ef44ed93ed244b349305a2',
+    'primaryOrderTransactionId' => 'e6e10333864f49248ecab59e481fe32e',
 ];
