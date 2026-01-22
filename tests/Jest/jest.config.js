@@ -69,10 +69,12 @@ module.exports = {
         '^\@shopware-ag\/meteor-component-library$': `${resolve(join(process.env.ADMIN_PATH, '/node_modules'))}/@shopware-ag/meteor-component-library/dist/common/index.js`,
         '^@administration(.*)$': `${process.env.ADMIN_PATH}/src$1`,
         '^SwagMigrationAssistant/(.*)$': '<rootDir>/src/Resources/app/administration/src/$1',
+        '^lodash-es$': 'lodash',
+        '^lodash-es/(.*)$': 'lodash/$1',
     },
 
     transformIgnorePatterns: [
-        '/node_modules/(?!(uuidv7|other)/)',
+        '/node_modules/(?!(@shopware-ag/meteor-component-library|@shopware-ag/meteor-icon-kit|uuidv7|other)/)',
     ],
 
     // testEnvironment: 'jsdom',
