@@ -32,6 +32,8 @@ interface MigrationContextInterface
 
     public function getDataSet(): ?DataSet;
 
+    public function setDataSet(DataSet $dataSet): void;
+
     public function getOffset(): int;
 
     public function setOffset(int $offset): void;

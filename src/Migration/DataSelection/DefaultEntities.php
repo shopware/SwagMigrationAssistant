@@ -70,6 +70,8 @@ final class DefaultEntities
 
     final public const LOCALE = 'locale';
 
+    final public const MAIL_HEADER_FOOTER = 'mail_header_footer';
+
     final public const MAIL_TEMPLATE = 'mail_template';
 
     final public const MAIL_TEMPLATE_TYPE = 'mail_template_type';

@@ -63,7 +63,7 @@ abstract class ShopwareConverter extends Converter
     }
 
     /**
-     * @param array<string, mixed> $data
+     * @param array<array-key, mixed> $data
      */
     abstract protected function convertData(array $data): ?ConvertStruct;
 
@@ -127,7 +127,7 @@ abstract class ShopwareConverter extends Converter
     /**
      * Replaces every id (associationIdKey) in the specified array of entities with the right mapping dependent one.
      *
-     * @param array<string, mixed> $associationArray
+     * @param array<array-key, mixed> $associationArray
      */
     protected function updateAssociationIds(array &$associationArray, string $entity, string $associationIdKey, string $sourceEntity, bool $logMissing = true, bool $unsetMissing = false): void
     {

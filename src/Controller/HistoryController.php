@@ -54,7 +54,7 @@ class HistoryController extends AbstractController
             'items' => $cleanResult,
             'downloadUrl' => $this->generateUrl(
                 'api.admin.migration.download-logs-of-run',
-                ['version' => $request->get('version')],
+                [],
                 UrlGeneratorInterface::ABSOLUTE_URL
             ),
         ]);
