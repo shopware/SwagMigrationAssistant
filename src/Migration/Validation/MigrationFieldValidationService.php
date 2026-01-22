@@ -41,7 +41,7 @@ readonly class MigrationFieldValidationService
     /**
      * Validates a single field value against its entity definition.
      * Supports nested field paths like "prices.shippingMethodId".
-     * Silently skips validation for unknown entities.
+     * Silently skips validation for unknown entities & fields.
      *
      * @throws MigrationValidationException|\Exception
      */
@@ -63,6 +63,8 @@ readonly class MigrationFieldValidationService
         }
 
         [$entityDefinition, $field] = $resolved;
+
+        // needed to avoid side effects when modifying flags later
         $field = clone $field;
 
         if ($field instanceof AssociationField) {
@@ -80,7 +82,7 @@ readonly class MigrationFieldValidationService
      *
      * @throws \Exception
      *
-     * @return array{EntityDefinition, Field}|null Returns [EntityDefinition, Field] or null if not found
+     * @return array{EntityDefinition, Field}|null
      */
     public function resolveFieldPath(string $entityName, string $fieldPath): ?array
     {
@@ -192,7 +194,7 @@ readonly class MigrationFieldValidationService
         $serializer = $field->getSerializer();
 
         try {
-            // Consume the generator to trigger validation. Keys are not needed
+            // consume the generator to trigger validation. Keys are not needed
             \iterator_to_array($serializer->encode(
                 $field,
                 $existence,

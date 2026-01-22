@@ -176,6 +176,98 @@ class MigrationEntityValidationServiceTest extends TestCase
         static::assertSame($expectedLogs, $logCodes);
     }
 
+    public static function entityStructureAndFieldProvider(): \Generator
+    {
+        $log = [
+            'id' => Uuid::randomHex(),
+            'profileName' => 'profile',
+            'gatewayName' => 'gateway',
+            'level' => 'error',
+            'code' => 'some_code',
+            'userFixable' => true,
+            'sourceData' => [
+                'some' => 'data',
+            ],
+            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
+        ];
+
+        yield 'valid' => [
+            'convertedData' => $log,
+            'expectedLogs' => [],
+        ];
+
+        yield 'structure - missing required fields' => [
+            'convertedData' => [
+                'id' => Uuid::randomHex(),
+                'level' => 'error',
+                'code' => 'some_code',
+                'userFixable' => true,
+                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
+            ],
+            'expectedLogs' => [
+                MigrationValidationMissingRequiredFieldLog::class,
+                MigrationValidationMissingRequiredFieldLog::class,
+            ],
+        ];
+
+        yield 'fields - invalid type' => [
+            'convertedData' => [
+                ...$log,
+                'userFixable' => 'not_a_boolean',
+            ],
+            'expectedLogs' => [
+                MigrationValidationInvalidOptionalFieldValueLog::class,
+            ],
+        ];
+
+        yield 'fields - too long' => [
+            'convertedData' => [
+                ...$log,
+                'code' => str_repeat('sw', 128),
+            ],
+            'expectedLogs' => [
+                MigrationValidationInvalidRequiredFieldValueLog::class,
+            ],
+        ];
+
+        yield 'fields - invalid uuid' => [
+            'convertedData' => [
+                ...$log,
+                'id' => 'not-a-uuid',
+            ],
+            'expectedLogs' => [
+                MigrationValidationExceptionLog::class,
+            ],
+        ];
+
+        yield 'fields - invalid json' => [
+            'convertedData' => [
+                ...$log,
+                'sourceData' => "\xB1\x31",
+            ],
+            'expectedLogs' => [
+                MigrationValidationInvalidOptionalFieldValueLog::class,
+            ],
+        ];
+
+        yield 'structure/field - multiple errors' => [
+            'convertedData' => [
+                'id' => Uuid::randomHex(),
+                'gatewayName' => true,
+                'level' => 1,
+                'code' => ['sw'],
+                'userFixable' => true,
+                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
+            ],
+            'expectedLogs' => [
+                MigrationValidationMissingRequiredFieldLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationInvalidRequiredFieldValueLog::class,
+            ],
+        ];
+    }
+
     public function testShouldFilterNullableFields(): void
     {
         $result = $this->validationService->validate(
@@ -223,7 +315,7 @@ class MigrationEntityValidationServiceTest extends TestCase
     }
 
     /**
-     * @return \Generator<string, array{array<string, mixed>, string}>
+     * @return \Generator<string, array{convertedData: array<string, mixed>, expectedExceptionMessage: string}>
      */
     public static function invalidIdProvider(): \Generator
     {
@@ -235,23 +327,23 @@ class MigrationEntityValidationServiceTest extends TestCase
         ];
 
         yield 'missing id (null)' => [
-            $baseData,
-            MigrationValidationException::unexpectedNullValue('id')->getMessage(),
+            'convertedData' => $baseData,
+            'expectedExceptionMessage' => MigrationValidationException::unexpectedNullValue('id')->getMessage(),
         ];
 
         yield 'invalid uuid string' => [
-            [...$baseData, 'id' => 'invalid-uuid'],
-            MigrationValidationException::invalidId('invalid-uuid', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+            'convertedData' => [...$baseData, 'id' => 'invalid-uuid'],
+            'expectedExceptionMessage' => MigrationValidationException::invalidId('invalid-uuid', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
         ];
 
         yield 'integer id instead of uuid string' => [
-            [...$baseData, 'id' => 12345],
-            MigrationValidationException::invalidId('12345', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+            'convertedData' => [...$baseData, 'id' => 12345],
+            'expectedExceptionMessage' => MigrationValidationException::invalidId('12345', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
         ];
 
         yield 'empty string id' => [
-            [...$baseData, 'id' => ''],
-            MigrationValidationException::invalidId('', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
+            'convertedData' => [...$baseData, 'id' => ''],
+            'expectedExceptionMessage' => MigrationValidationException::invalidId('', SwagMigrationLoggingDefinition::ENTITY_NAME)->getMessage(),
         ];
     }
 
@@ -279,6 +371,71 @@ class MigrationEntityValidationServiceTest extends TestCase
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertEquals($expectedLogs, $logClasses);
+    }
+
+    /**
+     * @return \Generator<string, array{convertedData: array<string, mixed>, mappings: array<int, array<string, mixed>>, expectedLogs: array<class-string>}>
+     */
+    public static function associationProvider(): \Generator
+    {
+        $log = [
+            'id' => Uuid::randomHex(),
+            'profileName' => 'profile',
+            'gatewayName' => 'gateway',
+            'level' => 'error',
+            'code' => 'some_code',
+            'userFixable' => true,
+            'sourceData' => [
+                'some' => 'data',
+            ],
+            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
+        ];
+
+        $runId = Uuid::randomHex();
+        $mapping = [
+            'id' => Uuid::randomHex(),
+            'connectionId' => self::CONNECTION_ID,
+            'entity' => SwagMigrationRunDefinition::ENTITY_NAME,
+            'oldIdentifier' => $runId,
+            'entityId' => $runId,
+        ];
+
+        yield 'valid fk' => [
+            'convertedData' => [
+                ...$log,
+                'runId' => $runId,
+            ],
+            'mappings' => [$mapping],
+            'expectedLogs' => [],
+        ];
+
+        yield 'fk field not in converted data' => [
+            'convertedData' => $log,
+            'mappings' => [],
+            'expectedLogs' => [],
+        ];
+
+        yield 'fk value is null' => [
+            'convertedData' => [
+                ...$log,
+                'runId' => null,
+            ],
+            'mappings' => [],
+            'expectedLogs' => [
+                MigrationValidationInvalidOptionalFieldValueLog::class,
+            ],
+        ];
+
+        yield 'fk value is empty string' => [
+            'convertedData' => [
+                ...$log,
+                'runId' => '',
+            ],
+            'mappings' => [],
+            'expectedLogs' => [
+                MigrationValidationInvalidOptionalFieldValueLog::class,
+            ],
+        ];
     }
 
     public function testMissingTranslationAssociation(): void
@@ -332,158 +489,27 @@ class MigrationEntityValidationServiceTest extends TestCase
         static::assertCount(0, $logClasses);
     }
 
-    public static function entityStructureAndFieldProvider(): \Generator
+    /**
+     * @param array<string, mixed> $convertedData
+     * @param array<class-string> $expectedLogs
+     */
+    #[DataProvider('toManyAssociationProvider')]
+    public function testValidateToManyAssociations(array $convertedData, array $expectedLogs): void
     {
-        $log = [
-            'id' => Uuid::randomHex(),
-            'profileName' => 'profile',
-            'gatewayName' => 'gateway',
-            'level' => 'error',
-            'code' => 'some_code',
-            'userFixable' => true,
-            'sourceData' => [
-                'some' => 'data',
-            ],
-            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-        ];
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
 
-        yield 'valid' => [
-            $log,
-            [],
-        ];
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
 
-        yield 'structure - missing required fields' => [
-            [
-                'id' => Uuid::randomHex(),
-                'level' => 'error',
-                'code' => 'some_code',
-                'userFixable' => true,
-                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-            ],
-            [
-                MigrationValidationMissingRequiredFieldLog::class,
-                MigrationValidationMissingRequiredFieldLog::class,
-            ],
-        ];
+        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
+        \var_dump($logClasses);
 
-        yield 'fields - invalid type' => [
-            [
-                ...$log,
-                'userFixable' => 'not_a_boolean',
-            ],
-            [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
-            ],
-        ];
-
-        yield 'fields - too long' => [
-            [
-                ...$log,
-                'code' => str_repeat('sw', 128),
-            ],
-            [
-                MigrationValidationInvalidRequiredFieldValueLog::class,
-            ],
-        ];
-
-        yield 'fields - invalid uuid' => [
-            [
-                ...$log,
-                'id' => 'not-a-uuid',
-            ],
-            [
-                MigrationValidationExceptionLog::class,
-            ],
-        ];
-
-        yield 'fields - invalid json' => [
-            [
-                ...$log,
-                'sourceData' => "\xB1\x31",
-            ],
-            [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
-            ],
-        ];
-
-        yield 'structure/field - multiple errors' => [
-            [
-                'id' => Uuid::randomHex(),
-                'gatewayName' => true,
-                'level' => 1,
-                'code' => ['sw'],
-                'userFixable' => true,
-                'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-            ],
-            [
-                MigrationValidationMissingRequiredFieldLog::class,
-                MigrationValidationInvalidRequiredFieldValueLog::class,
-                MigrationValidationInvalidRequiredFieldValueLog::class,
-                MigrationValidationInvalidRequiredFieldValueLog::class,
-            ],
-        ];
-    }
-
-    public static function associationProvider(): \Generator
-    {
-        $log = [
-            'id' => Uuid::randomHex(),
-            'profileName' => 'profile',
-            'gatewayName' => 'gateway',
-            'level' => 'error',
-            'code' => 'some_code',
-            'userFixable' => true,
-            'sourceData' => [
-                'some' => 'data',
-            ],
-            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
-        ];
-
-        $runId = Uuid::randomHex();
-        $mapping = [
-            'id' => Uuid::randomHex(),
-            'connectionId' => self::CONNECTION_ID,
-            'entity' => SwagMigrationRunDefinition::ENTITY_NAME,
-            'oldIdentifier' => $runId,
-            'entityId' => $runId,
-        ];
-
-        yield 'valid fk' => [
-            [
-                ...$log,
-                'runId' => $runId,
-            ],
-            [$mapping],
-            [],
-        ];
-
-        yield 'fk field not in converted data' => [
-            $log,
-            [],
-            [],
-        ];
-
-        yield 'fk value is null' => [
-            [
-                ...$log,
-                'runId' => null,
-            ],
-            [],
-            [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
-            ],
-        ];
-
-        yield 'fk value is empty string' => [
-            [
-                ...$log,
-                'runId' => '',
-            ],
-            [],
-            [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
-            ],
-        ];
+        static::assertEquals($expectedLogs, $logClasses);
     }
 
     /***
@@ -503,60 +529,60 @@ class MigrationEntityValidationServiceTest extends TestCase
         ];
 
         yield 'valid categories association (empty array)' => [
-            [
+            'convertedData' => [
                 ...$baseProduct,
                 'categories' => [],
             ],
-            [],
+            'expectedLogs' => [],
         ];
 
         yield 'valid categories association (with valid entries)' => [
-            [
+            'convertedData' => [
                 ...$baseProduct,
                 'categories' => [
                     ['id' => Uuid::randomHex()],
                     ['id' => Uuid::randomHex()],
                 ],
             ],
-            [],
+            'expectedLogs' => [],
         ];
 
         yield 'invalid categories association (non-array value)' => [
-            [
+            'convertedData' => [
                 ...$baseProduct,
                 'categories' => 'not-an-array',
             ],
-            [
+            'expectedLogs' => [
                 MigrationValidationInvalidAssociationLog::class,
             ],
         ];
 
         yield 'invalid categories association (entry is not array)' => [
-            [
+            'convertedData' => [
                 ...$baseProduct,
                 'categories' => [
                     'not-an-array-entry',
                 ],
             ],
-            [
+            'expectedLogs' => [
                 MigrationValidationInvalidAssociationLog::class,
             ],
         ];
 
         yield 'invalid categories association (invalid UUID in entry)' => [
-            [
+            'convertedData' => [
                 ...$baseProduct,
                 'categories' => [
                     ['id' => 'invalid-uuid'],
                 ],
             ],
-            [
+            'expectedLogs' => [
                 MigrationValidationInvalidAssociationLog::class,
             ],
         ];
 
         yield 'invalid categories association (multiple errors)' => [
-            [
+            'convertedData' => [
                 ...$baseProduct,
                 'categories' => [
                     ['id' => Uuid::randomHex()],
@@ -564,79 +590,8 @@ class MigrationEntityValidationServiceTest extends TestCase
                     ['id' => 'invalid-uuid'],
                 ],
             ],
-            [
+            'expectedLogs' => [
                 // Only first error is logged since validation throws on first failure
-                MigrationValidationInvalidAssociationLog::class,
-            ],
-        ];
-    }
-
-    /**
-     * @param array<string, mixed> $convertedData
-     * @param array<class-string> $expectedLogs
-     */
-    #[DataProvider('toManyAssociationProvider')]
-    public function testValidateToManyAssociations(array $convertedData, array $expectedLogs): void
-    {
-        $result = $this->validationService->validate(
-            $this->migrationContext,
-            $this->context,
-            $convertedData,
-            ProductDefinition::ENTITY_NAME,
-            []
-        );
-
-        static::assertInstanceOf(MigrationValidationResult::class, $result);
-
-        $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
-        static::assertEquals($expectedLogs, $logClasses);
-    }
-
-    /**
-     * @return \Generator<string, array{array<string, mixed>, array<class-string>}>
-     */
-    public static function toOneAssociationProvider(): \Generator
-    {
-        $baseProduct = [
-            'id' => Uuid::randomHex(),
-            'versionId' => Uuid::randomHex(),
-            'stock' => 10,
-            'translations' => [
-                Defaults::LANGUAGE_SYSTEM => [
-                    'name' => 'Test Product',
-                ],
-            ],
-        ];
-
-        yield 'valid manufacturer association (null value)' => [
-            $baseProduct,
-            [],
-        ];
-
-        yield 'valid manufacturer association (with valid id)' => [
-            [
-                ...$baseProduct,
-                'manufacturer' => ['id' => Uuid::randomHex(), 'name' => 'Test Manufacturer'],
-            ],
-            [],
-        ];
-
-        yield 'invalid manufacturer association (non-array value)' => [
-            [
-                ...$baseProduct,
-                'manufacturer' => 'not-an-array',
-            ],
-            [
-                MigrationValidationInvalidAssociationLog::class,
-            ],
-        ];
-
-        yield 'invalid manufacturer association (invalid UUID)' => [
-            [
-                ...$baseProduct,
-                'manufacturer' => ['id' => 'invalid-uuid'],
-            ],
-            [
                 MigrationValidationInvalidAssociationLog::class,
             ],
         ];
@@ -661,6 +616,56 @@ class MigrationEntityValidationServiceTest extends TestCase
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertEquals($expectedLogs, $logClasses);
+    }
+
+    /**
+     * @return \Generator<string, array{convertedData: array<string, mixed>, expectedLogs: array<class-string>}>
+     */
+    public static function toOneAssociationProvider(): \Generator
+    {
+        $baseProduct = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+        ];
+
+        yield 'valid manufacturer association (null value)' => [
+            'convertedData' => $baseProduct,
+            'expectedLogs' => [],
+        ];
+
+        yield 'valid manufacturer association (with valid id)' => [
+            'convertedData' => [
+                ...$baseProduct,
+                'manufacturer' => ['id' => Uuid::randomHex(), 'name' => 'Test Manufacturer'],
+            ],
+            'expectedLogs' => [],
+        ];
+
+        yield 'invalid manufacturer association (non-array value)' => [
+            'convertedData' => [
+                ...$baseProduct,
+                'manufacturer' => 'not-an-array',
+            ],
+            'expectedLogs' => [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
+
+        yield 'invalid manufacturer association (invalid UUID)' => [
+            'convertedData' => [
+                ...$baseProduct,
+                'manufacturer' => ['id' => 'invalid-uuid'],
+            ],
+            'expectedLogs' => [
+                MigrationValidationInvalidAssociationLog::class,
+            ],
+        ];
     }
 
     public function testShouldReturnNullWhenEntityDefinitionDoesNotExist(): void

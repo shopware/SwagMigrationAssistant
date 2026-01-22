@@ -32,6 +32,7 @@ readonly class MigrationFix
     public static function fromDatabaseQuery(array $data): self
     {
         $expectedArrayKeys = ['id', 'value', 'path'];
+
         foreach ($expectedArrayKeys as $expectedKey) {
             if (!\array_key_exists($expectedKey, $data)) {
                 throw MigrationException::couldNotConvertFix($expectedKey);

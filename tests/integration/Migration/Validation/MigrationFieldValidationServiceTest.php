@@ -45,9 +45,10 @@ class MigrationFieldValidationServiceTest extends TestCase
         );
     }
 
-    public function testNotExistingField(): void
+    public function testNotExistingFieldSkipsValidation(): void
     {
-        static::expectExceptionObject(MigrationValidationException::entityFieldNotFound('product', 'nonExistingField'));
+        // Unknown entities are silently skipped
+        static::expectNotToPerformAssertions();
 
         $this->migrationFieldValidationService->validateField(
             'product',

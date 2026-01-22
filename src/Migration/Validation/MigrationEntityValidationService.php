@@ -49,6 +49,8 @@ use Symfony\Contracts\Service\ResetInterface;
 class MigrationEntityValidationService implements ResetInterface
 {
     /**
+     * System managed that managed by Shopware and should not be validated as required fields
+     *
      * @var list<class-string<Field>>
      */
     private const SYSTEM_MANAGED_FIELDS = [
@@ -62,7 +64,7 @@ class MigrationEntityValidationService implements ResetInterface
     /**
      * Maps entity name to an associative array of required field property names.
      *
-     * Example:
+     * example:
      * [
      *    'entity_name' => [
      *       'required_field_name' => true,
@@ -143,6 +145,8 @@ class MigrationEntityValidationService implements ResetInterface
     }
 
     /**
+     * Validates that all required fields are present in the converted data.
+     *
      * @throws \Exception|Exception
      */
     private function validateEntityStructure(MigrationValidationContext $validationContext): void
@@ -165,6 +169,8 @@ class MigrationEntityValidationService implements ResetInterface
     }
 
     /**
+     * Validates the values of each field in the converted data and its nested associations.
+     *
      * @throws \Exception|Exception
      */
     private function validateFieldValues(MigrationValidationContext $validationContext): void
@@ -172,12 +178,12 @@ class MigrationEntityValidationService implements ResetInterface
         $convertedData = $validationContext->getConvertedData();
         $id = $convertedData['id'] ?? null;
 
-        if (!$this->validateId($validationContext, $id)) {
-            return;
-        }
-
         $entityDefinition = $validationContext->getEntityDefinition();
         $entityName = $entityDefinition->getEntityName();
+
+        if (!$this->validateId($validationContext, $entityName, $id)) {
+            return;
+        }
 
         $fields = $entityDefinition->getFields();
         $requiredFields = $this->getRequiredFields($fields, $entityName);
@@ -185,7 +191,7 @@ class MigrationEntityValidationService implements ResetInterface
         foreach ($convertedData as $fieldName => $value) {
             $field = $fields->get($fieldName);
 
-            // Recursively validate nested association entities
+            // recursively validate nested association entities
             if ($field !== null && $value !== null) {
                 $this->validateNestedAssociations($validationContext, $field, $fieldName, $value);
             }
@@ -223,6 +229,7 @@ class MigrationEntityValidationService implements ResetInterface
             return;
         }
 
+        // skip translations associations, they are validated by field validation
         if ($field instanceof TranslationsAssociationField) {
             return;
         }
@@ -271,11 +278,6 @@ class MigrationEntityValidationService implements ResetInterface
             return;
         }
 
-        // Skip id only references
-        if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
-            return;
-        }
-
         $nestedEntityName = $referenceDefinition->getEntityName();
         $fields = $referenceDefinition->getFields();
         $requiredFields = $this->getRequiredFields($fields, $nestedEntityName);
@@ -283,8 +285,11 @@ class MigrationEntityValidationService implements ResetInterface
         $rootEntityName = $validationContext->getEntityDefinition()->getEntityName();
         $rootEntityId = $validationContext->getConvertedData()['id'] ?? null;
 
+        if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
+            return;
+        }
+
         foreach ($nestedEntityData as $fieldName => $value) {
-            // skip id field validation
             if ($fieldName === 'id') {
                 continue;
             }
@@ -312,7 +317,7 @@ class MigrationEntityValidationService implements ResetInterface
         }
     }
 
-    private function validateId(MigrationValidationContext $validationContext, mixed $id): bool
+    private function validateId(MigrationValidationContext $validationContext, string $entityName, mixed $id): bool
     {
         if ($id === null) {
             $this->addExceptionLog(
@@ -326,7 +331,7 @@ class MigrationEntityValidationService implements ResetInterface
         if (!\is_string($id) || !Uuid::isValid($id)) {
             $this->addExceptionLog(
                 $validationContext,
-                MigrationValidationException::invalidId((string) $id, $validationContext->getEntityDefinition()->getEntityName())
+                MigrationValidationException::invalidId((string) $id, $entityName)
             );
 
             return false;
@@ -336,6 +341,14 @@ class MigrationEntityValidationService implements ResetInterface
     }
 
     /**
+     * Loads and caches the required fields for the given entity definition.
+     * It considers both the definition flags and the database schema.
+     *
+     * A field is considered required if:
+     * - It has the Required flag
+     * - It is not a system managed field
+     * - Its corresponding database column is non-nullable without a default value
+     *
      * @throws Exception
      *
      * @return array<string, true>
