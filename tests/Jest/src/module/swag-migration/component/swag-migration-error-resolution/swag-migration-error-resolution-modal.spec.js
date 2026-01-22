@@ -22,6 +22,8 @@ Shopware.Component.register('swag-migration-error-resolution-field', SwagMigrati
 Shopware.Component.register('swag-migration-error-resolution-field-scalar', SwagMigrationErrorResolutionFieldScalar);
 Shopware.Component.register('swag-migration-error-resolution-field-relation', SwagMigrationErrorResolutionFieldRelation);
 
+const testApiLimit = 500;
+
 const logMocks = [
     {
         ...fixtureLogs.at(0),
@@ -764,10 +766,10 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             // third batch should never be called
             migrationApiServiceMock.getLogEntityIdsWithoutFix
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: 100 }, (_, i) => `entity-ids-batch-1-${i + 1}`),
+                    entityIds: Array.from({ length: testApiLimit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
                 })
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: 100 }, (_, i) => `entity-ids-batch-2-${i + 1}`),
+                    entityIds: Array.from({ length: testApiLimit }, (_, i) => `entity-ids-batch-2-${i + 1}`),
                 })
                 .mockResolvedValueOnce({
                     entityIds: Array.from({ length: 10 }, (_, i) => `entity-ids-batch-3-${i + 1}`),
@@ -1002,7 +1004,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             migrationApiServiceMock.getLogEntityIdsWithoutFix
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: 100 }, (_, i) => `entity-ids-batch-1-${i + 1}`),
+                    entityIds: Array.from({ length: testApiLimit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
                 })
                 .mockResolvedValueOnce({
                     entityIds: Array.from({ length: 10 }, (_, i) => `entity-ids-batch-2-${i + 1}`),
@@ -1037,7 +1039,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 wrapper.vm.selectedLog.entityName,
                 wrapper.vm.selectedLog.fieldName,
                 null,
-                100,
             );
             expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalledTimes(2);
         });

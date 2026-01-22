@@ -33,6 +33,7 @@ class HistoryController extends AbstractController
     public function __construct(
         private readonly HistoryServiceInterface $historyService,
         private readonly LogGroupingService $logGroupingService,
+        private readonly int $maxLimit,
     ) {
     }
 
@@ -216,15 +217,14 @@ class HistoryController extends AbstractController
         }
 
         $connectionId = $request->request->getAlnum('connectionId');
-        $limit = $request->request->getInt('limit', 100);
 
         $logEntityIds = $this->logGroupingService->getLogEntityIdsWithoutFixByCodeAndEntity(
             $runId,
             $code,
             $entityName,
             $fieldName,
+            $request->request->getInt('limit', $this->maxLimit),
             !empty($connectionId) ? $connectionId : null,
-            $limit,
         );
 
         return new JsonResponse([

@@ -165,8 +165,8 @@ readonly class LogGroupingService
         string $code,
         string $entityName,
         string $fieldName,
+        int $limit,
         ?string $connectionId = null,
-        int $limit = 100,
     ): array {
         $params = [
             'runId' => Uuid::fromHexToBytes($runId),

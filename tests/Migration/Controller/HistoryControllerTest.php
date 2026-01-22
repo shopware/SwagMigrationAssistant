@@ -32,6 +32,8 @@ class HistoryControllerTest extends TestCase
 {
     use IntegrationTestBehaviour;
 
+    private const DEFAULT_MAX_LIMIT = 500;
+
     private HistoryController $controller;
 
     private string $runUuid;
@@ -531,7 +533,7 @@ class HistoryControllerTest extends TestCase
     public function testGetLogEntityIdsWithoutFixUsesDefaultLimit(): void
     {
         $entityIds = [];
-        for ($i = 0; $i < 110; ++$i) {
+        for ($i = 0; $i < 505; ++$i) {
             $entityIds[] = [
                 'runId' => $this->runUuid,
                 'profileName' => Shopware55Profile::PROFILE_NAME,
@@ -561,7 +563,7 @@ class HistoryControllerTest extends TestCase
 
         static::assertIsArray($json);
         static::assertArrayHasKey('entityIds', $json);
-        static::assertCount(100, $json['entityIds']);
+        static::assertCount(self::DEFAULT_MAX_LIMIT, $json['entityIds']);
     }
 
     public function testGetLogEntityIdsWithoutFixWithCustomLimit(): void

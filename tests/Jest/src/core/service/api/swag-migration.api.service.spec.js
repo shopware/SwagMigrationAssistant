@@ -366,7 +366,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             entityName: 'product',
             fieldName: 'name',
             connectionId: '123456789',
-            limit: 10,
         };
 
         await migrationApiService.getLogEntityIdsWithoutFix(
@@ -375,7 +374,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             data.entityName,
             data.fieldName,
             data.connectionId,
-            data.limit,
             { 'test-header': 'test-value' },
         );
 

@@ -289,6 +289,7 @@
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\History\LogGroupingService"/>
+            <argument>%shopware.api.max_limit%</argument>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

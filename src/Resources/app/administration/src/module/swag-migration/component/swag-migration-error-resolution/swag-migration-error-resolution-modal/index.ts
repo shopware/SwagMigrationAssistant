@@ -248,7 +248,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async submitResolutionInBatches() {
-            const limit = 100;
+            const limit = 500; // Shopware default; will be removed when entity counter is implemented
             let hasMoreResults = true;
 
             while (hasMoreResults) {
@@ -260,7 +260,6 @@ export default Shopware.Component.wrapComponentConfig({
                     this.selectedLog.entityName,
                     this.selectedLog.fieldName,
                     this.migrationStore.connectionId,
-                    limit,
                 );
 
                 hasMoreResults = batchResult.entityIds.length === limit;
