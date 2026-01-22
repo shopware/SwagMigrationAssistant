@@ -539,10 +539,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         isRecordSelectable(item: ResolutionModalRow): boolean {
-            if (this.selectAllMode) {
-                return false;
-            }
-            return !item.status;
+            return !this.selectAllMode && !item.status;
         },
 
         onOpenDetailsModal(row: ResolutionModalRow) {
