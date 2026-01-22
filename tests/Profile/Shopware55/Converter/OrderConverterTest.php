@@ -196,6 +196,13 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
+        static::assertArrayHasKey('transactions', $converted);
+        static::assertNotEmpty($converted['deliveries']);
+        static::assertNotEmpty($converted['transactions']);
+        static::assertArrayHasKey('primaryOrderDeliveryId', $converted);
+        static::assertArrayHasKey('primaryOrderTransactionId', $converted);
+        static::assertSame($converted['deliveries'][0]['id'], $converted['primaryOrderDeliveryId']);
+        static::assertSame($converted['transactions'][0]['id'], $converted['primaryOrderTransactionId']);
         static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
@@ -214,6 +221,16 @@ class OrderConverterTest extends TestCase
         $creditPriceDefinition = $converted['lineItems'][1]['priceDefinition'];
         static::assertInstanceOf(AbsolutePriceDefinition::class, $creditPriceDefinition);
         static::assertSame(-2.0, $creditPriceDefinition->getPrice());
+
+        $lineItem0Price = $converted['lineItems'][0]['price'];
+        static::assertInstanceOf(CalculatedPrice::class, $lineItem0Price);
+        static::assertCount(1, $lineItem0Price->getTaxRules());
+        static::assertSame(19.0, $lineItem0Price->getTaxRules()->first()?->getTaxRate());
+
+        $lineItem3Price = $converted['lineItems'][3]['price'];
+        static::assertInstanceOf(CalculatedPrice::class, $lineItem3Price);
+        static::assertCount(1, $lineItem3Price->getTaxRules());
+        static::assertSame(7.0, $lineItem3Price->getTaxRules()->first()?->getTaxRate());
 
         static::assertTrue(isset($converted['lineItems'][0]['downloads'][0]['mediaId']));
         static::assertFalse($converted['lineItems'][0]['downloads'][0]['accessGranted']);

@@ -1,5 +1,6 @@
 # 16.0.0
 
+- #13898 - Fixed migration of orders with different tax rates on line items from SW5
 - #11808 - Introduced Error Resolution to manage data inconsistencies and apply migration fixes directly in the SW6 administration, instead of fixing issues in the source system as it was needed previously.
 - #11808 - Enriched migration logs with detailed data descriptions to improve error traceability.
 - #11808 - Integrated ACL constraints to restrict specific migration actions based on user permissions.
@@ -7,6 +8,11 @@
 - #11808 - Applied general UI/UX improvements for visual consistency.
 - #11808 - Removed CLI commands `migration:abort`, `migration:get-progress`, and `migration:start`. You have to start the migration via the Administration UI, it still runs in the background message queue
 - #11808 - Checksum reset and migration data cleanup now run asynchronously via message queue.
+
+# 15.0.4
+
+- Added `shopIdV2` to the list of ignored system config entries for Shopware 6 connections
+- Media processing has been simplified so that the UI can show the actual progress
 
 # 15.0.3
 

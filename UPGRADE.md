@@ -1,5 +1,8 @@
 # 16.0.0
 
+- [BREAKING] [#114](https://github.com/shopware/SwagMigrationAssistant/pull/114) - fix: use item-specific tax in order conversion
+    - [BREAKING] Removed parameter `taxRules` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
+
 - [BREAKING] [#102](https://github.com/shopware/SwagMigrationAssistant/pull/102) - refactor!: use domain exception
     - [BREAKING] Removed standalone exception classes in `SwagMigrationAssistant\Exception\**\*`:
         - `SwagMigrationAssistant\Exception\AssociationEntityRequiredMissingException`
@@ -230,6 +233,10 @@
     - Added columns `profile_name`, `gateway_name` and `user_fixable` to `swag_migration_logging` with `SwagMigrationAssistant\Core\Migration\Migration1754897550AddRequiredFieldsToMigrationLogs`
     - Added fields `profile_name`, `gateway_name` and `user_fixable` to log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`
     - Added properties `profileName`, `gatewayName` and `userFixable` to log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`
+
+# 15.0.4
+
+- Media processing has been simplified. It's no longer done in parallel messages. The migration UI reflects the media migration progress more accurately. When the step is marked as complete, all media are migrated. No need to wait for additional messages to finish.
 
 # 14.0.0
 

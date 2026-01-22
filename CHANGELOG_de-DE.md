@@ -1,5 +1,6 @@
 # 16.0.0
 
+- #13898 - Migration von Bestellungen mit unterschiedlichen Steuersätzen auf Positionen aus SW5 behoben
 - #11808 - Einführung einer Benutzeroberfläche zur Fehlerbehebung, um Dateninkonsistenzen zu beheben und Migrationskorrekturen direkt in der SW6 Administration vorzunehmen, anstatt wie zuvor im Quellsystem.
 - #11808 - Anreicherung der Migrations-Logs mit detaillierten Datenbeschreibungen zur besseren Nachvollziehbarkeit von Fehlern.
 - #11808 - Integration von ACL-Beschränkungen zur Steuerung spezifischer Migrationsaktionen basierend auf Benutzerberechtigungen.
@@ -7,6 +8,11 @@
 - #11808 - Umsetzung allgemeiner UI/UX-Optimierungen für visuelle Konsistenz.
 - #11808 - CLI-Befehle `migration:abort`, `migration:get-progress` und `migration:start` entfernt. Die Migration kann über die Administrations-UI gestartet werden und wird weiterhin in der Message-Queue ausgeführt.
 - #11808 - Zurücksetzen der Prüfsummen und Bereinigung der Migrationsdaten erfolgen jetzt asynchron über die Message Queue.
+
+# 15.0.4
+
+- `shopIdV2` wurde zur Liste der ignorierten Systemkonfigurationseinträge für Shopware 6-Verbindungen hinzugefügt
+- Die Medienverarbeitung wurde vereinfacht, sodass die Benutzeroberfläche den tatsächlichen Fortschritt anzeigen kann
 
 # 15.0.3
 

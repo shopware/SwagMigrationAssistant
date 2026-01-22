@@ -239,13 +239,6 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService" public="true">
-            <argument type="service" id="messenger.default_bus"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="service" id="Doctrine\DBAL\Connection"/>
-        </service>
-
         <service id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry">
             <argument type="tagged_iterator" tag="shopware.migration.media_file_processor"/>
         </service>
@@ -320,14 +313,6 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
             <argument type="service" id="swag_migration_mapping.repository"/>
             <argument type="service" id="swag_migration_connection.repository"/>
-        </service>
-
-        <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\ProcessMediaHandler">
-            <argument type="service" id="swag_migration_run.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
-            <tag name="messenger.message_handler"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\TruncateMigrationHandler">
@@ -417,8 +402,11 @@
 
         <service id="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\MediaProcessingProcessor"
                  parent="SwagMigrationAssistant\Migration\MessageQueue\Handler\Processor\AbstractProcessor">
-            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MediaFileProcessorService"/>
             <argument type="service" id="messenger.default_bus"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistry"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry"/>
 
             <tag name="shopware.migration.processor"/>
         </service>

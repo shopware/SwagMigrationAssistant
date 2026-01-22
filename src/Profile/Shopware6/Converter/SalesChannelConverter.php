@@ -109,6 +109,9 @@ class SalesChannelConverter extends ShopwareConverter
         if (isset($data['serviceCategoryId'])) {
             $converted['serviceCategoryId'] = $this->getMappingIdFacade(DefaultEntities::CATEGORY, $data['serviceCategoryId']);
         }
+        if (isset($data['mailHeaderFooterId'])) {
+            $converted['mailHeaderFooterId'] = $this->getMappingIdFacade(DefaultEntities::MAIL_HEADER_FOOTER, $data['mailHeaderFooterId']);
+        }
 
         $converted['languageId'] = $this->getMappingIdFacade(DefaultEntities::LANGUAGE, $data['languageId']);
         $converted['currencyId'] = $this->getMappingIdFacade(DefaultEntities::CURRENCY, $data['currencyId']);
@@ -130,10 +133,6 @@ class SalesChannelConverter extends ShopwareConverter
                 DefaultEntities::SALES_CHANNEL
             );
         }
-
-        unset(
-            $converted['mailHeaderFooterId']
-        );
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
