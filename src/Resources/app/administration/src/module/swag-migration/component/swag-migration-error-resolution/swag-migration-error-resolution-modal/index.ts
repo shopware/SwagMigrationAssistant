@@ -552,26 +552,22 @@ export default Shopware.Component.wrapComponentConfig({
             this.selectedDetailsLog = null;
         },
 
-        async onPageChange(page: { page: number; limit: number }) {
-            this.tablePage = page.page;
-            this.tableLimit = page.limit;
+        async onPageChange({ page, limit }: { page: number; limit: number }) {
+            this.tablePage = page;
+            this.tableLimit = limit;
 
             // temporarily disable select all mode to allow select checkboxes before disabling them
             const wasSelectAllMode = this.selectAllMode;
-            if (wasSelectAllMode) {
-                this.selectAllMode = false;
-            }
+            this.selectAllMode = false;
 
             await this.fetchLogs();
             await this.$nextTick();
 
+            this.applySelectionToGrid(wasSelectAllMode);
+
             if (wasSelectAllMode) {
-                // force select-all behaviour
-                this.applySelectionToGrid(true);
                 await this.$nextTick();
                 this.selectAllMode = true;
-            } else {
-                this.applySelectionToGrid();
             }
         },
     },
