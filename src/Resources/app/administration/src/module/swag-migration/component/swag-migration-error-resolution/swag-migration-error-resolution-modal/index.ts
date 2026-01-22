@@ -232,17 +232,6 @@ export default Shopware.Component.wrapComponentConfig({
                 return false;
             }
 
-            // skip backend validation for to many associations as they use id arrays
-            // which are not compatible with the dal serializer format
-            if (
-                this.swagMigrationErrorResolutionService.isToManyAssociationField(
-                    this.selectedLog.entityName,
-                    this.selectedLog.fieldName,
-                )
-            ) {
-                return true;
-            }
-
             const serializationError = await this.migrationApiService
                 .validateResolution(this.selectedLog.entityName, this.selectedLog.fieldName, this.fieldValue)
                 .catch(() => {

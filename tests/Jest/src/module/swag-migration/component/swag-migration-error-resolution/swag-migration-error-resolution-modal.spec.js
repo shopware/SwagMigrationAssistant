@@ -546,35 +546,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     });
 
     describe('create resolution fix', () => {
-        it('should not call backend validation when resolving to-many association fields', async () => {
-            const wrapper = await createWrapper({
-                ...defaultProps,
-                selectedLog: {
-                    ...fixtureLogGroups.at(1),
-                    entityName: 'product',
-                    fieldName: 'categories',
-                },
-            });
-            await flushPromises();
-
-            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
-            await flushPromises();
-
-            const relationField = wrapper.findComponent({ name: 'swag-migration-error-resolution-field-relation' });
-            await relationField.setData({
-                fieldValue: [
-                    'category-id-1',
-                    'category-id-2',
-                ],
-            });
-            await flushPromises();
-
-            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
-            await flushPromises();
-
-            expect(migrationApiServiceMock.validateResolution).not.toHaveBeenCalled();
-        });
-
         it('should save fix when backend validation passes', async () => {
             migrationApiServiceMock.validateResolution.mockResolvedValueOnce({ valid: true, violations: [] });
 
