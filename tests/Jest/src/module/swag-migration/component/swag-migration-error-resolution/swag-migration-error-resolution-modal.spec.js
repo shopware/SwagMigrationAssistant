@@ -739,6 +739,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
+            expect(wrapper.vm.submitLoading).toBe(false);
+
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
             expect(notifications).toHaveLength(1);
@@ -751,7 +753,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             );
         });
 
-        it('should display error notification when saving fixes in batches fails', async () => {
+        it.only('should display error notification when saving fixes in batches fails', async () => {
             const wrapper = await createWrapper({
                 ...defaultProps,
                 selectedLog: {
@@ -761,7 +763,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 },
             });
 
-            // simulate larger data set with 210 logs
+            // simulate larger data set with 1010 logs
             // second batch save will fail
             // third batch should never be called
             migrationApiServiceMock.getLogEntityIdsWithoutFix
@@ -804,7 +806,16 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.vm.fieldValue).toBe('New Title');
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
-            await flushPromises();
+
+            // wait until all promisses in the loop are resolved
+            // 3 batches with 2 promises each = max 6 iterations + some more to be safe
+            let iterations = 10;
+            while(wrapper.vm.submitLoading && iterations > 0) {
+                await flushPromises();
+                iterations -= 1;
+            }
+
+            expect(wrapper.vm.submitLoading).toBe(false);
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
@@ -850,6 +861,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
+
+            expect(wrapper.vm.submitLoading).toBe(false);
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
@@ -906,6 +919,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
+
+            expect(wrapper.vm.submitLoading).toBe(false);
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
@@ -1073,6 +1088,16 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
+
+            // wait until all promisses in the loop are resolved
+            // 1 batch, first async call is failing = max 1 iterations + some more to be safe
+            let iterations = 5;
+            while(wrapper.vm.submitLoading && iterations > 0) {
+                await flushPromises();
+                iterations -= 1;
+            }
+
+            expect(wrapper.vm.submitLoading).toBe(false);
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
