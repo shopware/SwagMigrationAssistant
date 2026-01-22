@@ -570,7 +570,7 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async getAllEntityIds(
+    async getLogEntityIdsWithoutFix(
         runId: string,
         code: string,
         entityName: string,
@@ -586,7 +586,7 @@ export default class MigrationApiService extends ApiService {
         return this.httpClient
             .post(
                 // @ts-ignore
-                `_action/${this.getApiBasePath()}/get-all-entity-ids`,
+                `_action/${this.getApiBasePath()}/get-log-entity-ids-without-fix`,
                 {
                     runId,
                     code,

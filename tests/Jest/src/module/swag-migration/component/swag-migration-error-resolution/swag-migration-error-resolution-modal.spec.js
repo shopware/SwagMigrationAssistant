@@ -60,7 +60,7 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
-    getAllEntityIds: jest.fn(() =>
+    getLogEntityIdsWithoutFix: jest.fn(() =>
         Promise.resolve({
             ids: logMocks.map((log) => log.entityId),
         }),
@@ -762,7 +762,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             // simulate larger data set with 210 logs
             // second batch save will fail
             // third batch should never be called
-            migrationApiServiceMock.getAllEntityIds
+            migrationApiServiceMock.getLogEntityIdsWithoutFix
                 .mockResolvedValueOnce({
                     entityIds: Array.from({ length: 100 }, (_, i) => `entity-ids-batch-1-${i + 1}`),
                 })
@@ -806,7 +806,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
-            expect(migrationApiServiceMock.getAllEntityIds).toHaveBeenCalledTimes(2);
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(2);
             expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalledTimes(2);
 
             expect(notifications).toHaveLength(1);
@@ -946,7 +946,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(submitResolutionInBatchesSpy).not.toHaveBeenCalled();
             expect(submitResolutionForSelectedIdsSpy).toHaveBeenCalledTimes(1);
-            expect(migrationApiServiceMock.getAllEntityIds).not.toHaveBeenCalled();
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).not.toHaveBeenCalled();
         });
 
         it('should call submitResolutionInBatches when selectAllMode is active', async () => {
@@ -986,7 +986,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(submitResolutionForSelectedIdsSpy).not.toHaveBeenCalled();
             expect(submitResolutionInBatchesSpy).toHaveBeenCalledTimes(1);
-            expect(migrationApiServiceMock.getAllEntityIds).toHaveBeenCalledTimes(1);
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(1);
         });
 
         it('should fetch entityIds from swag_migration_logging in batches', async () => {
@@ -1000,7 +1000,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             });
             await flushPromises();
 
-            migrationApiServiceMock.getAllEntityIds
+            migrationApiServiceMock.getLogEntityIdsWithoutFix
                 .mockResolvedValueOnce({
                     entityIds: Array.from({ length: 100 }, (_, i) => `entity-ids-batch-1-${i + 1}`),
                 })
@@ -1029,9 +1029,9 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
-            expect(migrationApiServiceMock.getAllEntityIds).toHaveBeenCalledTimes(2);
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(2);
             // just checking the last call because parameters are the same for all calls
-            expect(migrationApiServiceMock.getAllEntityIds).toHaveBeenLastCalledWith(
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenLastCalledWith(
                 defaultProps.runId,
                 wrapper.vm.selectedLog.code,
                 wrapper.vm.selectedLog.entityName,
@@ -1043,7 +1043,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
         });
 
         it('should display error notification when fetching entityIds fails', async () => {
-            migrationApiServiceMock.getAllEntityIds.mockImplementationOnce(() => {
+            migrationApiServiceMock.getLogEntityIdsWithoutFix.mockImplementationOnce(() => {
                 return Promise.reject(new Error('failed to fetch entity ids from swag_migration_logging'));
             });
             Shopware.Store.get('notification').$reset();

@@ -367,27 +367,27 @@ class HistoryControllerTest extends TestCase
         static::assertSame('FILTER_TEST_CODE', $json['items'][0]['code']);
     }
 
-    public function testGetAllEntityIdsWithoutRunId(): void
+    public function testGetLogEntityIdsWithoutFixWithoutRunId(): void
     {
         $request = new Request([], []);
 
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "runId" is missing.');
 
-        $this->controller->getAllEntityIds($request);
+        $this->controller->getLogEntityIdsWithoutFix($request);
     }
 
-    public function testGetAllEntityIdsWithoutCode(): void
+    public function testGetLogEntityIdsWithoutFixWithoutCode(): void
     {
         $request = new Request([], ['runId' => $this->runUuid]);
 
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "code" is missing.');
 
-        $this->controller->getAllEntityIds($request);
+        $this->controller->getLogEntityIdsWithoutFix($request);
     }
 
-    public function testGetAllEntityIdsWithoutEntityName(): void
+    public function testGetLogEntityIdsWithoutFixWithoutEntityName(): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,
@@ -397,10 +397,10 @@ class HistoryControllerTest extends TestCase
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "entityName" is missing.');
 
-        $this->controller->getAllEntityIds($request);
+        $this->controller->getLogEntityIdsWithoutFix($request);
     }
 
-    public function testGetAllEntityIdsWithoutFieldName(): void
+    public function testGetLogEntityIdsWithoutFixWithoutFieldName(): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,
@@ -411,10 +411,10 @@ class HistoryControllerTest extends TestCase
         $this->expectException(RoutingException::class);
         $this->expectExceptionMessage('Parameter "fieldName" is missing.');
 
-        $this->controller->getAllEntityIds($request);
+        $this->controller->getLogEntityIdsWithoutFix($request);
     }
 
-    public function testGetAllEntityIdsReturnsEmptyWhenNoMatches(): void
+    public function testGetLogEntityIdsWithoutFixReturnsEmptyWhenNoMatches(): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,
@@ -423,7 +423,7 @@ class HistoryControllerTest extends TestCase
             'fieldName' => 'name',
         ]);
 
-        $response = $this->controller->getAllEntityIds($request);
+        $response = $this->controller->getLogEntityIdsWithoutFix($request);
 
         static::assertIsString($response->getContent());
         static::assertJson($response->getContent());
@@ -434,7 +434,7 @@ class HistoryControllerTest extends TestCase
         static::assertSame([], $json['entityIds']);
     }
 
-    public function testGetAllEntityIdsReturnsMatchingIds(): void
+    public function testGetLogEntityIdsWithoutFixReturnsMatchingIds(): void
     {
         $entityId1 = Uuid::randomHex();
         $entityId2 = Uuid::randomHex();
@@ -482,7 +482,7 @@ class HistoryControllerTest extends TestCase
             'fieldName' => 'description',
         ]);
 
-        $response = $this->controller->getAllEntityIds($request);
+        $response = $this->controller->getLogEntityIdsWithoutFix($request);
 
         static::assertIsString($response->getContent());
         $json = \json_decode($response->getContent(), true);
@@ -492,7 +492,7 @@ class HistoryControllerTest extends TestCase
         static::assertCount(2, $json['entityIds']);
     }
 
-    public function testGetAllEntityIdsWithConnectionId(): void
+    public function testGetLogEntityIdsWithoutFixWithConnectionId(): void
     {
         $entityId = Uuid::randomHex();
 
@@ -518,7 +518,7 @@ class HistoryControllerTest extends TestCase
             'connectionId' => $this->connectionId,
         ]);
 
-        $response = $this->controller->getAllEntityIds($request);
+        $response = $this->controller->getLogEntityIdsWithoutFix($request);
 
         static::assertIsString($response->getContent());
         $json = \json_decode($response->getContent(), true);
@@ -528,7 +528,7 @@ class HistoryControllerTest extends TestCase
         static::assertCount(1, $json['entityIds']);
     }
 
-    public function testGetAllEntityIdsUsesDefaultLimit(): void
+    public function testGetLogEntityIdsWithoutFixUsesDefaultLimit(): void
     {
         $entityIds = [];
         for ($i = 0; $i < 110; ++$i) {
@@ -554,7 +554,7 @@ class HistoryControllerTest extends TestCase
             'fieldName' => 'email',
         ]);
 
-        $response = $this->controller->getAllEntityIds($request);
+        $response = $this->controller->getLogEntityIdsWithoutFix($request);
 
         static::assertIsString($response->getContent());
         $json = \json_decode($response->getContent(), true);
@@ -564,7 +564,7 @@ class HistoryControllerTest extends TestCase
         static::assertCount(100, $json['entityIds']);
     }
 
-    public function testGetAllEntityIdsWithCustomLimit(): void
+    public function testGetLogEntityIdsWithoutFixWithCustomLimit(): void
     {
         $entityIds = [];
         for ($i = 0; $i < 5; ++$i) {
@@ -591,7 +591,7 @@ class HistoryControllerTest extends TestCase
             'limit' => '2',
         ]);
 
-        $response = $this->controller->getAllEntityIds($request);
+        $response = $this->controller->getLogEntityIdsWithoutFix($request);
 
         static::assertIsString($response->getContent());
         $json = \json_decode($response->getContent(), true);

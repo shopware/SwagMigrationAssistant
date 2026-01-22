@@ -357,7 +357,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.get[0].url).toBe('_action/migration/is-truncating-migration-data');
     });
 
-    it('should get all entity ids', async () => {
+    it('should get entity ids from swag_migration_logging', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 
         const data = {
@@ -369,7 +369,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             limit: 10,
         };
 
-        await migrationApiService.getAllEntityIds(
+        await migrationApiService.getLogEntityIdsWithoutFix(
             data.runId,
             data.code,
             data.entityName,
@@ -379,7 +379,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             { 'test-header': 'test-value' },
         );
 
-        expect(clientMock.history.post[0].url).toBe('_action/migration/get-all-entity-ids');
+        expect(clientMock.history.post[0].url).toBe('_action/migration/get-log-entity-ids-without-fix');
         expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });

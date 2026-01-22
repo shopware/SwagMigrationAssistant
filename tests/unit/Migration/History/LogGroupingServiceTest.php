@@ -255,7 +255,7 @@ class LogGroupingServiceTest extends TestCase
      * @param array<string> $expectedEntityIds
      */
     #[DataProvider('getAllLogIdsDataProvider')]
-    public function testGetAllLogEntityIdsByCodeAndEntity(
+    public function testGetLogEntityIdsWithoutFixByCodeAndEntity(
         array $dbResult,
         ?string $connectionId,
         array $expectedEntityIds,
@@ -265,7 +265,7 @@ class LogGroupingServiceTest extends TestCase
 
         $this->connection->method('executeQuery')->willReturn($result);
 
-        $ids = $this->logGroupingService->getAllLogEntityIdsByCodeAndEntity(
+        $ids = $this->logGroupingService->getLogEntityIdsWithoutFixByCodeAndEntity(
             Uuid::randomHex(),
             'MISSING_FIELD',
             'product',

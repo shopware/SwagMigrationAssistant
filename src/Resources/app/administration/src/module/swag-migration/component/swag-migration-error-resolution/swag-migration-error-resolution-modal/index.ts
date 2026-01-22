@@ -250,7 +250,7 @@ export default Shopware.Component.wrapComponentConfig({
             while (hasMoreResults) {
                 // each batch must be completed before fetching the next
                 // eslint-disable-next-line no-await-in-loop
-                const batchResult = await this.migrationApiService.getAllEntityIds(
+                const batchResult = await this.migrationApiService.getLogEntityIdsWithoutFix(
                     this.runId,
                     this.selectedLog.code,
                     this.selectedLog.entityName,

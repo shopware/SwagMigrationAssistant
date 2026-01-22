@@ -160,7 +160,7 @@ readonly class LogGroupingService
      *
      * @return array<string>
      */
-    public function getAllLogEntityIdsByCodeAndEntity(
+    public function getLogEntityIdsWithoutFixByCodeAndEntity(
         string $runId,
         string $code,
         string $entityName,

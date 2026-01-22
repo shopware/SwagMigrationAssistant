@@ -164,12 +164,12 @@ class HistoryController extends AbstractController
     }
 
     #[Route(
-        path: '/api/_action/migration/get-all-entity-ids',
-        name: 'api.admin.migration.get-all-entity-ids',
+        path: '/api/_action/migration/get-log-entity-ids-without-fix',
+        name: 'api.admin.migration.get-log-entity-ids-without-fix',
         methods: ['POST'],
         defaults: ['_acl' => ['swag_migration.viewer']]
     )]
-    public function getAllEntityIds(Request $request): JsonResponse
+    public function getLogEntityIdsWithoutFix(Request $request): JsonResponse
     {
         $runId = $request->request->getAlnum('runId');
 
@@ -198,7 +198,7 @@ class HistoryController extends AbstractController
         $connectionId = $request->request->getAlnum('connectionId');
         $limit = $request->request->getInt('limit', 100);
 
-        $logEntityIds = $this->logGroupingService->getAllLogEntityIdsByCodeAndEntity(
+        $logEntityIds = $this->logGroupingService->getLogEntityIdsWithoutFixByCodeAndEntity(
             $runId,
             $code,
             $entityName,
