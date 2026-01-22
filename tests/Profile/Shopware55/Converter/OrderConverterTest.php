@@ -194,6 +194,13 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('orderCustomer', $converted);
         static::assertArrayHasKey('deliveries', $converted);
+        static::assertArrayHasKey('transactions', $converted);
+        static::assertNotEmpty($converted['deliveries']);
+        static::assertNotEmpty($converted['transactions']);
+        static::assertArrayHasKey('primaryOrderDeliveryId', $converted);
+        static::assertArrayHasKey('primaryOrderTransactionId', $converted);
+        static::assertSame($converted['deliveries'][0]['id'], $converted['primaryOrderDeliveryId']);
+        static::assertSame($converted['transactions'][0]['id'], $converted['primaryOrderTransactionId']);
         static::assertSame(TestDefaults::SALES_CHANNEL, $converted['salesChannelId']);
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
         static::assertCount(0, $this->loggingService->getLoggingArray());
