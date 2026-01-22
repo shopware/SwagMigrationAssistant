@@ -60,7 +60,7 @@ class AbortMigrationCommandTest extends TestCase
         $kernel = self::getKernel();
         $application = new Application($kernel);
 
-        $application->add(new AbortMigrationCommand(
+        $application->addCommand(new AbortMigrationCommand(
             $runService,
             'migration:abort'
         ));

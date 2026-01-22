@@ -99,7 +99,7 @@ class GetMigrationProgressCommandTest extends TestCase
         $kernel = self::getKernel();
         $application = new Application($kernel);
 
-        $application->add(new GetMigrationProgressCommand(
+        $application->addCommand(new GetMigrationProgressCommand(
             $runService,
             self::COMMAND_NAME
         ));

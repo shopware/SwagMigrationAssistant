@@ -92,7 +92,7 @@ class StartMigrationCommandTest extends TestCase
         $kernel = self::getKernel();
         $application = new Application($kernel);
 
-        $application->add(new StartMigrationCommand(
+        $application->addCommand(new StartMigrationCommand(
             $runService,
             'migration:start'
         ));
