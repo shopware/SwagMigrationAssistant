@@ -182,6 +182,10 @@ export default Shopware.Component.wrapComponentConfig({
         resolvingComponent(): string | null {
             return ERROR_CODE_COMPONENT_MAPPING[this.selectedLog.code] || null;
         },
+
+        isResolutionDisabled(): boolean {
+            return this.loading || (this.selectedLogIds.length === 0 && !this.selectAllMode);
+        },
     },
 
     methods: {
