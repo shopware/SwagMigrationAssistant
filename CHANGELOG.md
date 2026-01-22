@@ -10,6 +10,11 @@
 - #11808 - Removed CLI commands `migration:abort`, `migration:get-progress`, and `migration:start`. You have to start the migration via the Administration UI, it still runs in the background message queue
 - #11808 - Checksum reset and migration data cleanup now run asynchronously via message queue.
 
+# 15.0.4
+
+- Added `shopIdV2` to the list of ignored system config entries for Shopware 6 connections
+- Media processing has been simplified so that the UI can show the actual progress
+
 # 15.0.3
 
 - Fixed translations of error groups missing details like the entity

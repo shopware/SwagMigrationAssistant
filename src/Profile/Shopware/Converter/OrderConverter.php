@@ -268,6 +268,13 @@ abstract class OrderConverter extends ShopwareConverter
         $this->applyTransactions($data, $converted);
         unset($data['cleared'], $data['paymentstatus']);
 
+        if (!empty($converted['deliveries'])) {
+            $converted['primaryOrderDeliveryId'] = $converted['deliveries'][0]['id'];
+        }
+        if (!empty($converted['transactions'])) {
+            $converted['primaryOrderTransactionId'] = $converted['transactions'][0]['id'];
+        }
+
         $billingAddress = null;
         if (isset($data['billingaddress']) && \is_array($data['billingaddress'])) {
             $billingAddress = $this->getAddress($data['billingaddress']);

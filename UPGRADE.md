@@ -238,6 +238,10 @@
     - Added fields `profile_name`, `gateway_name` and `user_fixable` to log definition `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingDefinition`
     - Added properties `profileName`, `gatewayName` and `userFixable` to log entity `SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity`
 
+# 15.0.4
+
+- Media processing has been simplified. It's no longer done in parallel messages. The migration UI reflects the media migration progress more accurately. When the step is marked as complete, all media are migrated. No need to wait for additional messages to finish.
+
 # 14.0.0
 
 - [BREAKING] MIG-1053 - Removed ability to set the `verify` flag for the guzzle API client. This is now always true by default.

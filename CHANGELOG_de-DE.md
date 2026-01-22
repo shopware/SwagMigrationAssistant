@@ -10,6 +10,11 @@
 - #11808 - CLI-Befehle `migration:abort`, `migration:get-progress` und `migration:start` entfernt. Die Migration kann über die Administrations-UI gestartet werden und wird weiterhin in der Message-Queue ausgeführt.
 - #11808 - Zurücksetzen der Prüfsummen und Bereinigung der Migrationsdaten erfolgen jetzt asynchron über die Message Queue.
 
+# 15.0.4
+
+- `shopIdV2` wurde zur Liste der ignorierten Systemkonfigurationseinträge für Shopware 6-Verbindungen hinzugefügt
+- Die Medienverarbeitung wurde vereinfacht, sodass die Benutzeroberfläche den tatsächlichen Fortschritt anzeigen kann
+
 # 15.0.3
 
 - Übersetzungen von Fehlergruppen behoben, welche Details wie den Entitätsnamen nicht darstellten
