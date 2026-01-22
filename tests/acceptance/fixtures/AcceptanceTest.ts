@@ -15,9 +15,4 @@ export interface MigrationFixtureTypes {
 
 export type FixtureTypes = MigrationFixtureTypes & BaseTypes;
 
-export const test = mergeTests(
-    ShopwareTestSuite,
-    MigrationUser,
-    DatabaseCredentials,
-    EntityCounter,
-);
+export const test = mergeTests(ShopwareTestSuite, MigrationUser, DatabaseCredentials, EntityCounter);
