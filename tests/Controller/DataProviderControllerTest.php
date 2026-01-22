@@ -17,6 +17,7 @@ use Shopware\Core\Framework\Test\TestCaseBase\SalesChannelApiTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\DataProvider\Provider\Data\SystemConfigProvider;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use Symfony\Component\HttpFoundation\Response;
 
 #[Package('fundamentals@after-sales')]
 class DataProviderControllerTest extends TestCase
@@ -57,6 +58,8 @@ class DataProviderControllerTest extends TestCase
                 'identifier' => DefaultEntities::SYSTEM_CONFIG,
             ]
         );
+
+        static::assertSame(Response::HTTP_OK, $browser->getResponse()->getStatusCode());
 
         $response = $browser->getResponse()->getContent();
 

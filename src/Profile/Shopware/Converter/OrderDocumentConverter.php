@@ -110,13 +110,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             $converted['sent'] = true;
         }
 
+        $converted['config'] = [];
         if (isset($data['docID'])) {
-            $converted['config']['documentNumber'] = $data['docID'];
-
             if (isset($data['documenttype'])) {
                 $converted['documentType'] = $this->getDocumentType($data['documenttype']);
                 $converted['config'] = $this->getBaseDocumentTypeConfig($converted['documentType']['id'], $context);
             }
+
+            $converted['config']['documentNumber'] = $data['docID'];
 
             if (isset($data['documenttype']['key']) && $data['documenttype']['key'] === 'invoice') {
                 $converted['config']['custom']['invoiceNumber'] = $data['docID'];
