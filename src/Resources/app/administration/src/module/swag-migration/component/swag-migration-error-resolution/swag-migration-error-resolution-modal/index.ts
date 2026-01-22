@@ -453,7 +453,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSelectAllLogs() {
-            if (!this.selectedLog) {
+            if (!this.selectedLog || this.selectAllMode) {
                 return;
             }
 
@@ -520,9 +520,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
             if (!selection || Object.keys(selection).length === 0) {
-                if (this.selectAllMode) {
-                    this.selectAllMode = false;
-                }
+                this.selectAllMode = false;
                 this.selectedLogIds = [];
 
                 return;
