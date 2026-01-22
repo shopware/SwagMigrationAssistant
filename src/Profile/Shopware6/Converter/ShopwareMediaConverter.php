@@ -41,15 +41,19 @@ abstract class ShopwareMediaConverter extends ShopwareConverter
                 'entity' => $entity ?? DefaultEntities::MEDIA,
                 'uri' => $mediaArray['url'],
                 'fileName' => $mediaArray['fileName'],
-                'fileSize' => (int) $mediaArray['fileSize'],
+                'fileSize' => isset($mediaArray['fileSize']) ? (int) $mediaArray['fileSize'] : 0,
                 'mediaId' => $mediaArray['id'],
             ]
         );
 
         $mediaArray['hasFile'] = false;
+
+        if (isset($mediaArray['fileSize'])) {
+            unset($mediaArray['fileSize']);
+        }
+
         unset(
             $mediaArray['url'],
-            $mediaArray['fileSize'],
             $mediaArray['fileExtension']
         );
     }

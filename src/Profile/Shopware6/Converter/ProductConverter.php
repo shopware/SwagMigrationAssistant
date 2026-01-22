@@ -205,6 +205,10 @@ class ProductConverter extends ShopwareMediaConverter
             );
         }
 
+        unset($converted['visibilities']);
+        unset($converted['propertyIds']);
+        unset($converted['properties']);
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 

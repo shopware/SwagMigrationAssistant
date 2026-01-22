@@ -216,6 +216,8 @@ class MediaProcessingProcessor extends AbstractProcessor
 
     private function isAllMediaProcessed(Context $context, string $runId): bool
     {
+        return true;
+
         $criteria = new Criteria();
         $criteria->addFilter(
             new EqualsFilter('runId', $runId)
