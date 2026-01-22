@@ -12,6 +12,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
@@ -56,7 +57,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-profile-information',
         name: 'api.admin.migration.get-profile-information',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getProfileInformation(Request $request): Response
@@ -126,7 +127,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-profiles',
         name: 'api.admin.migration.get-profiles',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getProfiles(): JsonResponse
@@ -149,7 +150,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-gateways',
         name: 'api.admin.migration.get-gateways',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getGateways(Request $request): JsonResponse
@@ -180,7 +181,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/update-connection-credentials',
         name: 'api.admin.migration.update-connection-credentials',
-        defaults: ['_acl' => ['swag_migration.editor']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function updateConnectionCredentials(Request $request, Context $context): Response
@@ -207,7 +208,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/data-selection',
         name: 'api.admin.migration.data-selection',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getDataSelection(Request $request, Context $context): JsonResponse
@@ -234,7 +235,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/check-connection',
         name: 'api.admin.migration.check-connection',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_POST]
     )]
     public function checkConnection(Request $request, Context $context): JsonResponse
@@ -287,7 +288,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/start-migration',
         name: 'api.admin.migration.start-migration',
-        defaults: ['_acl' => ['swag_migration.creator']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.creator']],
         methods: [Request::METHOD_POST]
     )]
     public function startMigration(Request $request, Context $context): Response
@@ -320,7 +321,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-state',
         name: 'api.admin.migration.get-state',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function getState(Context $context): JsonResponse
@@ -331,7 +332,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/approve-finished',
         name: 'api.admin.migration.approveFinished',
-        defaults: ['_acl' => ['swag_migration.editor']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function approveFinishedMigration(Context $context): Response
@@ -352,7 +353,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/abort-migration',
         name: 'api.admin.migration.abort-migration',
-        defaults: ['_acl' => ['swag_migration.editor']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST]
     )]
     public function abortMigration(Context $context): Response
@@ -365,7 +366,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/reset-checksums',
         name: 'api.admin.migration.reset-checksums',
-        defaults: ['_acl' => ['swag_migration.deleter']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']],
         methods: [Request::METHOD_POST]
     )]
     public function resetChecksums(Request $request, Context $context): Response
@@ -384,7 +385,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/cleanup-migration-data',
         name: 'api.admin.migration.cleanup-migration-data',
-        defaults: ['_acl' => ['swag_migration.deleter']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']],
         methods: [Request::METHOD_POST]
     )]
     public function cleanupMigrationData(Context $context): Response
@@ -397,7 +398,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/is-truncating-migration-data',
         name: 'api.admin.migration.get-reset-status',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function isTruncatingMigrationData(Context $context): JsonResponse
@@ -414,7 +415,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/is-resetting-checksums',
         name: 'api.admin.migration.is-resetting-checksums',
-        defaults: ['_acl' => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
         methods: [Request::METHOD_GET]
     )]
     public function isResettingChecksums(Context $context): JsonResponse
@@ -436,7 +437,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/resume-after-fixes',
         name: 'api.admin.migration.resume-after-fixes',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_POST]
     )]
     public function resumeAfterFixes(Context $context): Response
