@@ -254,7 +254,7 @@ class LogGroupingServiceTest extends TestCase
      * @param array<int, array<string, string>> $dbResult
      * @param array<string> $expectedEntityIds
      */
-    #[DataProvider('getAllLogIdsDataProvider')]
+    #[DataProvider('getLogEntityIdsWithoutFixDataProvider')]
     public function testGetLogEntityIdsWithoutFixByCodeAndEntity(
         array $dbResult,
         ?string $connectionId,
@@ -270,6 +270,7 @@ class LogGroupingServiceTest extends TestCase
             'MISSING_FIELD',
             'product',
             'name',
+            5,
             $connectionId
         );
 
@@ -279,7 +280,7 @@ class LogGroupingServiceTest extends TestCase
     /**
      * @return iterable<string, array{dbResult: array<int, array<string, string>>, connectionId: string|null, expectedEntityIds: array<string>}>
      */
-    public static function getAllLogIdsDataProvider(): iterable
+    public static function getLogEntityIdsWithoutFixDataProvider(): iterable
     {
         $id1 = Uuid::randomHex();
         $id2 = Uuid::randomHex();

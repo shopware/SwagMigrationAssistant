@@ -102,7 +102,8 @@ class HistoryController extends AbstractController
         path: '/api/_action/migration/clear-data-of-run',
         name: 'api.admin.migration.clear-data-of-run',
         methods: [Request::METHOD_POST],
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']])]
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']]
+    )]
     public function clearDataOfRun(Request $request, Context $context): Response
     {
         $runUuid = $request->request->getAlnum('runUuid');
