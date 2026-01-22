@@ -418,17 +418,6 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async isMediaProcessing(additionalHeaders: AdditionalHeaders = {}): Promise<boolean> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        // @ts-ignore
-        return this.httpClient.get(`_action/${this.getApiBasePath()}/is-media-processing`, {
-            ...this.basicConfig,
-            headers,
-        });
-    }
-
     async downloadLogsOfRun(runUuid: string, additionalHeaders: AdditionalHeaders = {}): Promise<Blob> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);

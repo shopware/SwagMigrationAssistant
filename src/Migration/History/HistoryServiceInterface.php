@@ -23,6 +23,4 @@ interface HistoryServiceInterface
      *                  Use print / echo inside the Closure to write strings into the log file.
      */
     public function downloadLogsOfRun(string $runUuid, Context $context): \Closure;
-
-    public function isMediaProcessing(): bool;
 }

@@ -84,14 +84,6 @@ class HistoryController extends AbstractController
         return $response;
     }
 
-    #[Route(path: '/api/_action/migration/is-media-processing', name: 'api.admin.migration.is-media-processing', methods: ['GET'], defaults: ['_acl' => ['swag_migration_history:read']])]
-    public function isMediaProcessing(): JsonResponse
-    {
-        $result = $this->historyService->isMediaProcessing();
-
-        return new JsonResponse($result);
-    }
-
     #[Route(
         path: '/api/_action/migration/get-log-groups',
         name: 'api.admin.migration.get-log-groups',

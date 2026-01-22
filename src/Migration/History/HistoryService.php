@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Migration\History;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -40,7 +39,6 @@ class HistoryService implements HistoryServiceInterface
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly EntityRepository $runRepo,
-        private readonly Connection $connection,
     ) {
     }
 
@@ -123,15 +121,6 @@ class HistoryService implements HistoryServiceInterface
                 $offset += self::LOG_FETCH_LIMIT;
             }
         };
-    }
-
-    public function isMediaProcessing(): bool
-    {
-        $unprocessedCount = $this->connection->executeQuery(
-            'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
-        )->fetchOne();
-
-        return (int) $unprocessedCount !== 0;
     }
 
     private function printLogEntry(SwagMigrationLoggingEntity $logEntry): void

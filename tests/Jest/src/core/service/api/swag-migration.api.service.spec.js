@@ -259,17 +259,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });
 
-    it('should check if media is processing', async () => {
-        const { migrationApiService, clientMock } = createMigrationApiService();
-
-        await migrationApiService.isMediaProcessing({
-            'test-header': 'test-value',
-        });
-
-        expect(clientMock.history.get[0].url).toBe('_action/migration/is-media-processing');
-        expect(clientMock.history.get[0].headers['test-header']).toBe('test-value');
-    });
-
     it('should download logs of run', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 
