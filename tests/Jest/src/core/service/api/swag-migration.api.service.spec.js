@@ -381,4 +381,30 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });
+
+
+    it('should get unresolved logs information', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+
+        const data = {
+            runId: '987654321',
+            code: 'MIGRATION_001',
+            entityName: 'product',
+            fieldName: 'name',
+            connectionId: '123456789',
+        };
+
+        await migrationApiService.getUnresolvedLogsBatchInformation(
+            data.runId,
+            data.code,
+            data.entityName,
+            data.fieldName,
+            data.connectionId,
+            { 'test-header': 'test-value' },
+        );
+
+        expect(clientMock.history.post[0].url).toBe('_action/migration/get-unresolved-logs-batch-information');
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
+        expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
 });

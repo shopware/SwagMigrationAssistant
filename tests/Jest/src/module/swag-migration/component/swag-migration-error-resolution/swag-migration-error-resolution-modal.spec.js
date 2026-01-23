@@ -22,8 +22,6 @@ Shopware.Component.register('swag-migration-error-resolution-field', SwagMigrati
 Shopware.Component.register('swag-migration-error-resolution-field-scalar', SwagMigrationErrorResolutionFieldScalar);
 Shopware.Component.register('swag-migration-error-resolution-field-relation', SwagMigrationErrorResolutionFieldRelation);
 
-const testApiLimit = 500;
-
 const logMocks = [
     {
         ...fixtureLogs.at(0),
@@ -62,9 +60,15 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
+    getUnresolvedLogsBatchInformation: jest.fn(() =>
+        Promise.resolve({
+            count: logMocks.length,
+            limit: 10,
+        }),
+    ),
     getLogEntityIdsWithoutFix: jest.fn(() =>
         Promise.resolve({
-            ids: logMocks.map((log) => log.entityId),
+            entityIds: logMocks.map((log) => log.entityId),
         }),
     ),
 };
@@ -763,18 +767,24 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 },
             });
 
-            // simulate larger data set with 1010 logs
+            const unresolvedLogsCount = 12;
+            const limit = 5;
+            migrationApiServiceMock.getUnresolvedLogsBatchInformation.mockResolvedValueOnce({
+                count: unresolvedLogsCount,
+                limit: limit,
+            });
+
             // second batch save will fail
             // third batch should never be called
             migrationApiServiceMock.getLogEntityIdsWithoutFix
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: testApiLimit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
+                    entityIds: Array.from({ length: limit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
                 })
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: testApiLimit }, (_, i) => `entity-ids-batch-2-${i + 1}`),
+                    entityIds: Array.from({ length: limit }, (_, i) => `entity-ids-batch-2-${i + 1}`),
                 })
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: 10 }, (_, i) => `entity-ids-batch-3-${i + 1}`),
+                    entityIds: Array.from({ length: 2 }, (_, i) => `entity-ids-batch-3-${i + 1}`),
                 });
 
             migrationFixRepositoryMock.saveAll
@@ -821,6 +831,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
+            expect(migrationApiServiceMock.getUnresolvedLogsBatchInformation).toHaveBeenCalledTimes(1);
             expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(2);
             expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalledTimes(2);
 
@@ -1019,12 +1030,19 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             });
             await flushPromises();
 
+            const unresolvedLogsCount = 7;
+            const limit = 5;
+            migrationApiServiceMock.getUnresolvedLogsBatchInformation.mockResolvedValueOnce({
+                count: unresolvedLogsCount,
+                limit: limit,
+            });
+
             migrationApiServiceMock.getLogEntityIdsWithoutFix
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: testApiLimit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
+                    entityIds: Array.from({ length: limit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
                 })
                 .mockResolvedValueOnce({
-                    entityIds: Array.from({ length: 10 }, (_, i) => `entity-ids-batch-2-${i + 1}`),
+                    entityIds: Array.from({ length: 2 }, (_, i) => `entity-ids-batch-2-${i + 1}`),
                 });
 
             await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
@@ -1048,6 +1066,14 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
+            expect(migrationApiServiceMock.getUnresolvedLogsBatchInformation).toHaveBeenCalledTimes(1);
+            expect(migrationApiServiceMock.getUnresolvedLogsBatchInformation).toHaveBeenLastCalledWith(
+                defaultProps.runId,
+                wrapper.vm.selectedLog.code,
+                wrapper.vm.selectedLog.entityName,
+                wrapper.vm.selectedLog.fieldName,
+                null,
+            );
             expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(2);
             // just checking the last call because parameters are the same for all calls
             expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenLastCalledWith(

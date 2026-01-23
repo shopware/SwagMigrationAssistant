@@ -258,7 +258,7 @@ export default Shopware.Component.wrapComponentConfig({
 
             const iterations = Math.ceil(count / limit);
 
-            for (let i = 0; i < iterations; i++) {
+            for (let i = 0; i < iterations; i += 1) {
                 // each batch must be completed before fetching the next
                 // eslint-disable-next-line no-await-in-loop
                 const {entityIds} = await this.migrationApiService.getLogEntityIdsWithoutFix(
