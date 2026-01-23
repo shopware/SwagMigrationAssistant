@@ -248,13 +248,20 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async submitResolutionInBatches() {
-            const limit = 500; // Shopware default; will be removed when entity counter is implemented
-            let hasMoreResults = true;
+            const {count, limit} = await this.migrationApiService.getUnresolvedLogsBatchInformation(
+                this.runId,
+                this.selectedLog.code,
+                this.selectedLog.entityName,
+                this.selectedLog.fieldName,
+                this.migrationStore.connectionId,
+            );
 
-            while (hasMoreResults) {
+            const iterations = Math.ceil(count / limit);
+
+            for (let i = 0; i < iterations; i++) {
                 // each batch must be completed before fetching the next
                 // eslint-disable-next-line no-await-in-loop
-                const batchResult = await this.migrationApiService.getLogEntityIdsWithoutFix(
+                const {entityIds} = await this.migrationApiService.getLogEntityIdsWithoutFix(
                     this.runId,
                     this.selectedLog.code,
                     this.selectedLog.entityName,
@@ -262,9 +269,7 @@ export default Shopware.Component.wrapComponentConfig({
                     this.migrationStore.connectionId,
                 );
 
-                hasMoreResults = batchResult.entityIds.length === limit;
-
-                const entities = batchResult.entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
+                const entities = entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
 
                 // each batch must be completed before fetching the next
                 // eslint-disable-next-line no-await-in-loop

@@ -186,6 +186,54 @@ class HistoryController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/migration/get-unresolved-logs-batch-information',
+        name: 'api.admin.migration.get-unresolved-logs-batch-information',
+        methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
+    )]
+    public function getUnresolvedLogsBatchInformation(Request $request): JsonResponse
+    {
+        $runId = $request->request->getAlnum('runId');
+
+        if (empty($runId)) {
+            throw RoutingException::missingRequestParameter('runId');
+        }
+
+        $code = $request->request->get('code');
+
+        if (!\is_string($code) || empty($code)) {
+            throw RoutingException::missingRequestParameter('code');
+        }
+
+        $entityName = $request->request->get('entityName');
+
+        if (!\is_string($entityName) || empty($entityName)) {
+            throw RoutingException::missingRequestParameter('entityName');
+        }
+
+        $fieldName = $request->request->get('fieldName');
+
+        if (!\is_string($fieldName) || empty($fieldName)) {
+            throw RoutingException::missingRequestParameter('fieldName');
+        }
+
+        $connectionId = $request->request->getAlnum('connectionId');
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            $runId,
+            $code,
+            $entityName,
+            $fieldName,
+            !empty($connectionId) ? $connectionId : null,
+        );
+
+        return new JsonResponse([
+            'count' => $count,
+            'limit' => $this->maxLimit,
+        ]);
+    }
+
+    #[Route(
         path: '/api/_action/migration/get-log-entity-ids-without-fix',
         name: 'api.admin.migration.get-log-entity-ids-without-fix',
         methods: [Request::METHOD_POST],

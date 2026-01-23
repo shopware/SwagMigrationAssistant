@@ -570,6 +570,39 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
+    async getUnresolvedLogsBatchInformation(
+        runId: string,
+        code: string,
+        entityName: string,
+        fieldName: string,
+        connectionId?: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<{ count: int }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/get-unresolved-logs-batch-information`,
+                {
+                    runId,
+                    code,
+                    entityName,
+                    fieldName,
+                    connectionId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
     async getLogEntityIdsWithoutFix(
         runId: string,
         code: string,

@@ -157,6 +157,53 @@ readonly class LogGroupingService
 
     /**
      * @throws Exception
+     */
+    public function getUnresolvedLogsCountByCodeAndEntity(
+        string $runId,
+        string $code,
+        string $entityName,
+        string $fieldName,
+        ?string $connectionId = null,
+    ): int {
+        $params = [
+            'runId' => Uuid::fromHexToBytes($runId),
+            'code' => $code,
+            'entityName' => $entityName,
+            'fieldName' => $fieldName,
+        ];
+
+        // this is safe, it's a static string, not user input
+        $connectionJoinCondition = '';
+
+        if ($connectionId !== null && $connectionId !== '') {
+            $connectionJoinCondition = ' AND f.connection_id = :connectionId';
+            $params['connectionId'] = Uuid::fromHexToBytes($connectionId);
+        }
+
+        $sql = "
+            SELECT COUNT(*) as count
+            FROM swag_migration_logging l
+            LEFT JOIN swag_migration_fix f ON (
+                f.entity_name = l.entity_name
+                AND f.path = l.field_name
+                AND f.entity_id = l.entity_id
+                {$connectionJoinCondition}
+            )
+            WHERE l.run_id = :runId
+                AND l.code = :code
+                AND l.entity_name = :entityName
+                AND l.field_name = :fieldName
+                AND l.user_fixable = 1
+                AND f.id IS NULL
+        ";
+
+        $result = $this->connection->executeQuery($sql, $params);
+
+        return (int) $result->fetchOne();
+    }
+
+    /**
+     * @throws Exception
      *
      * @return array<string>
      */
