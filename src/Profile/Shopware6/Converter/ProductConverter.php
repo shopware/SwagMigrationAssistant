@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Content\Product\ProductDefinition;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
@@ -205,6 +206,8 @@ class ProductConverter extends ShopwareMediaConverter
             );
         }
 
+        $this->convertStatesToType($converted);
+
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);
     }
 
@@ -234,5 +237,25 @@ class ProductConverter extends ShopwareMediaConverter
             $defaultPrice['currencyId'] = Defaults::CURRENCY;
             $source[$key][] = $defaultPrice;
         }
+    }
+
+    /**
+     * @param array<string, mixed> $converted
+     */
+    private function convertStatesToType(array &$converted): void
+    {
+        if (isset($converted['type'])) {
+            return;
+        }
+
+        if (isset($converted['states']) && \is_array($converted['states'])) {
+            $converted['type'] = \in_array('is-download', $converted['states'], true)
+                ? ProductDefinition::TYPE_DIGITAL
+                : ProductDefinition::TYPE_PHYSICAL;
+
+            return;
+        }
+
+        $converted['type'] = ProductDefinition::TYPE_PHYSICAL;
     }
 }

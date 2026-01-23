@@ -140,4 +140,5 @@ return [
     'coverId' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
     'deliveryTimeId' => 'bdeb106f47ab4255b2bd5f35d84cae7c',
     'id' => 'fb2dbbee297c472c9e916b26952615ff',
+    'type' => 'physical',
 ];

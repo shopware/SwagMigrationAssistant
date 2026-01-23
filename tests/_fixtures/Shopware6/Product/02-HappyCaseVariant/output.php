@@ -22,4 +22,5 @@ return [
             'id' => 'bfaf0c7366e6454fb7516ab47435b01a',
         ],
     ],
+    'type' => 'physical',
 ];
