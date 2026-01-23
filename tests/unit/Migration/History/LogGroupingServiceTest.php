@@ -729,7 +729,7 @@ class LogGroupingServiceTest extends TestCase
         ];
     }
 
-    public function testGetUnresolvedLogsCountByCodeAndEntity()
+    public function testGetUnresolvedLogsCountByCodeAndEntity(): void
     {
         $result = $this->createMock(Result::class);
         $result->method('fetchOne')->willReturn('1');
@@ -747,7 +747,7 @@ class LogGroupingServiceTest extends TestCase
         static::assertSame(1, $count);
     }
 
-    public function testGetUnresolvedLogsCountByCodeAndEntityIncludesConnectionIdInSqlWhenItsPassed()
+    public function testGetUnresolvedLogsCountByCodeAndEntityIncludesConnectionIdInSqlWhenItsPassed(): void
     {
         $connectionId = Uuid::randomHex();
 
@@ -774,13 +774,13 @@ class LogGroupingServiceTest extends TestCase
         static::assertSame(1, $count);
     }
 
-    public function testGetUnresolvedLogsCountByCodeAndEntityNotIncludesConnectionIdInSqlWhenNullIsPassed()
+    public function testGetUnresolvedLogsCountByCodeAndEntityNotIncludesConnectionIdInSqlWhenNullIsPassed(): void
     {
         $result = $this->createMock(Result::class);
         $result->method('fetchOne')->willReturn('1');
 
         $this->connection->method('executeQuery')
-            ->willReturnCallback(function (string $sql, array $params) use ($result, $connectionId) {
+            ->willReturnCallback(function (string $sql, array $params) use ($result) {
                 static::assertStringNotContainsString(' AND f.connection_id = :connectionId', $sql);
                 static::assertArrayNotHasKey('connectionId', $params);
 
