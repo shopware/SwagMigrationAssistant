@@ -603,6 +603,135 @@ class HistoryControllerTest extends TestCase
         static::assertCount(2, $json['entityIds']);
     }
 
+    public function testGetUnresolvedLogsBatchInformation(): void
+    {
+        $this->loggingRepo->create(
+            [
+                [
+                    'runId' => $this->runUuid,
+                    'profileName' => Shopware55Profile::PROFILE_NAME,
+                    'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                    'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+                    'code' => 'GET_IDS_TEST_CODE',
+                    'entityName' => 'product',
+                    'fieldName' => 'description',
+                    'entityId' => Uuid::randomHex(),
+                    'userFixable' => true,
+                ],
+                [
+                    'runId' => $this->runUuid,
+                    'profileName' => Shopware55Profile::PROFILE_NAME,
+                    'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                    'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+                    'code' => 'GET_IDS_TEST_CODE',
+                    'entityName' => 'product',
+                    'fieldName' => 'description',
+                    'entityId' => Uuid::randomHex(),
+                    'userFixable' => true,
+                ],
+                [
+                    'runId' => $this->runUuid,
+                    'profileName' => Shopware55Profile::PROFILE_NAME,
+                    'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                    'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+                    'code' => 'GET_IDS_TEST_CODE',
+                    'entityName' => 'customer',
+                    'fieldName' => 'description',
+                    'entityId' => Uuid::randomHex(),
+                    'userFixable' => true,
+                ],
+            ],
+            $this->context
+        );
+
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'GET_IDS_TEST_CODE',
+            'entityName' => 'product',
+            'fieldName' => 'description',
+        ]);
+
+        $response = $this->controller->getUnresolvedLogsBatchInformation($request);
+
+        static::assertIsString($response->getContent());
+        $json = \json_decode($response->getContent(), true);
+
+        static::assertIsArray($json);
+        static::assertArrayHasKey('count', $json);
+        static::assertArrayHasKey('limit', $json);
+        static::assertSame(2, $json['count']);
+        static::assertSame(500, $json['limit']);
+    }
+
+    public function testGetUnresolvedLogsBatchInformationShouldReturnNullWhenNoMatches(): void
+    {
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'NON_EXISTENT_CODE',
+            'entityName' => 'product',
+            'fieldName' => 'name',
+        ]);
+
+        $response = $this->controller->getUnresolvedLogsBatchInformation($request);
+
+        static::assertIsString($response->getContent());
+        static::assertJson($response->getContent());
+
+        $json = \json_decode($response->getContent(), true);
+        static::assertIsArray($json);
+        static::assertArrayHasKey('count', $json);
+        static::assertArrayHasKey('limit', $json);
+        static::assertSame(0, $json['count']);
+        static::assertSame(500, $json['limit']);
+    }
+
+    public function testGetUnresolvedLogsBatchInformationShouldThrowErrorWithoutRunId(): void
+    {
+        $request = new Request([], []);
+
+        $this->expectException(RoutingException::class);
+        $this->expectExceptionMessage('Parameter "runId" is missing.');
+
+        $this->controller->getUnresolvedLogsBatchInformation($request);
+    }
+
+    public function testGetUnresolvedLogsBatchInformationShouldThrowErrorWithoutCode(): void
+    {
+        $request = new Request([], ['runId' => $this->runUuid]);
+
+        $this->expectException(RoutingException::class);
+        $this->expectExceptionMessage('Parameter "code" is missing.');
+
+        $this->controller->getUnresolvedLogsBatchInformation($request);
+    }
+
+    public function testGetUnresolvedLogsBatchInformationShouldThrowErrorWithoutEntityName(): void
+    {
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'TEST_CODE',
+        ]);
+
+        $this->expectException(RoutingException::class);
+        $this->expectExceptionMessage('Parameter "entityName" is missing.');
+
+        $this->controller->getUnresolvedLogsBatchInformation($request);
+    }
+
+    public function testGetUnresolvedLogsBatchInformationShouldThrowErrorWithoutFieldName(): void
+    {
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'TEST_CODE',
+            'entityName' => 'product',
+        ]);
+
+        $this->expectException(RoutingException::class);
+        $this->expectExceptionMessage('Parameter "fieldName" is missing.');
+
+        $this->controller->getUnresolvedLogsBatchInformation($request);
+    }
+
     /**
      * @param array<Context|string|int|Entity|null> $parameters
      *

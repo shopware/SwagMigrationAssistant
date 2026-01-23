@@ -728,4 +728,73 @@ class LogGroupingServiceTest extends TestCase
             'expectFieldCondition' => false,
         ];
     }
+
+    public function testGetUnresolvedLogsCountByCodeAndEntity()
+    {
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn('1');
+
+        $this->connection->method('executeQuery')->willReturn($result);
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            Uuid::randomHex(),
+            'MISSING_FIELD',
+            'product',
+            'name',
+            Uuid::randomHex(),
+        );
+
+        static::assertSame(1, $count);
+    }
+
+    public function testGetUnresolvedLogsCountByCodeAndEntityIncludesConnectionIdInSqlWhenItsPassed()
+    {
+        $connectionId = Uuid::randomHex();
+
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn('1');
+
+        $this->connection->method('executeQuery')
+            ->willReturnCallback(function (string $sql, array $params) use ($result, $connectionId) {
+                static::assertStringContainsString(' AND f.connection_id = :connectionId', $sql);
+                static::assertArrayHasKey('connectionId', $params);
+                static::assertSame($connectionId, Uuid::fromBytesToHex($params['connectionId']));
+
+                return $result;
+            });
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            Uuid::randomHex(),
+            'MISSING_FIELD',
+            'product',
+            'name',
+            $connectionId,
+        );
+
+        static::assertSame(1, $count);
+    }
+
+    public function testGetUnresolvedLogsCountByCodeAndEntityNotIncludesConnectionIdInSqlWhenNullIsPassed()
+    {
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn('1');
+
+        $this->connection->method('executeQuery')
+            ->willReturnCallback(function (string $sql, array $params) use ($result, $connectionId) {
+                static::assertStringNotContainsString(' AND f.connection_id = :connectionId', $sql);
+                static::assertArrayNotHasKey('connectionId', $params);
+
+                return $result;
+            });
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            Uuid::randomHex(),
+            'MISSING_FIELD',
+            'product',
+            'name',
+            null
+        );
+
+        static::assertSame(1, $count);
+    }
 }
