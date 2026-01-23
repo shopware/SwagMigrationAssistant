@@ -820,7 +820,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             // wait until all promisses in the loop are resolved
             // 3 batches with 2 promises each = max 6 iterations + some more to be safe
             let iterations = 10;
-            while(wrapper.vm.submitLoading && iterations > 0) {
+            while (wrapper.vm.submitLoading && iterations > 0) {
                 // async calls created in a loop; we need to wait for them to be resolved
                 // eslint-disable-next-line no-await-in-loop
                 await flushPromises();
@@ -1120,7 +1120,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             // wait until all promisses in the loop are resolved
             // 1 batch, first async call is failing = max 1 iteration + some more to be safe
             let iterations = 5;
-            while(wrapper.vm.submitLoading && iterations > 0) {
+            while (wrapper.vm.submitLoading && iterations > 0) {
                 // async calls created in a loop; we need to wait for them to be resolved
                 // eslint-disable-next-line no-await-in-loop
                 await flushPromises();

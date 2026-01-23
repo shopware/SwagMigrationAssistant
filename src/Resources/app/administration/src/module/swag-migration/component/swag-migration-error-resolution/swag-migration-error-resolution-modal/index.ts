@@ -248,7 +248,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async submitResolutionInBatches() {
-            const {count, limit} = await this.migrationApiService.getUnresolvedLogsBatchInformation(
+            const { count, limit } = await this.migrationApiService.getUnresolvedLogsBatchInformation(
                 this.runId,
                 this.selectedLog.code,
                 this.selectedLog.entityName,
@@ -261,7 +261,7 @@ export default Shopware.Component.wrapComponentConfig({
             for (let i = 0; i < iterations; i += 1) {
                 // each batch must be completed before fetching the next
                 // eslint-disable-next-line no-await-in-loop
-                const {entityIds} = await this.migrationApiService.getLogEntityIdsWithoutFix(
+                const { entityIds } = await this.migrationApiService.getLogEntityIdsWithoutFix(
                     this.runId,
                     this.selectedLog.code,
                     this.selectedLog.entityName,

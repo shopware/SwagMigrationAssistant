@@ -577,7 +577,7 @@ export default class MigrationApiService extends ApiService {
         fieldName: string,
         connectionId?: string,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{ count: int, limit: int }> {
+    ): Promise<{ count: int; limit: int }> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 

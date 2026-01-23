@@ -382,7 +382,6 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });
 
-
     it('should get unresolved logs information', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 
