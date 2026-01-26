@@ -86,13 +86,13 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         if ($client === null) {
             $exception = new \Exception('Connection to the source system could not be established');
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->build(ExceptionRunLog::class)
             );
-            $this->loggingService->saveLogging($context);
+            $this->loggingService->flush($context);
 
             return $workload;
         }
@@ -146,7 +146,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         }
 
         $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
-        $this->loggingService->saveLogging($context);
+        $this->loggingService->flush($context);
 
         return \array_values($mappedWorkload);
     }
@@ -288,7 +288,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
                     ->withExceptionTrace($clientException?->getTrace() ?? [])

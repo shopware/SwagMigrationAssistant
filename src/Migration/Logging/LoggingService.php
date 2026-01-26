@@ -45,7 +45,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
             return;
         }
 
-        $this->saveLogging($this->context);
+        $this->flush($this->context);
     }
 
     public function reset(): void
@@ -53,7 +53,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
         $this->buffer = [];
     }
 
-    public function saveLogging(Context $context): void
+    public function flush(Context $context): void
     {
         if (empty($this->buffer)) {
             return;
@@ -70,7 +70,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
         }
     }
 
-    public function addLogEntry(MigrationLogEntry $logEntry): void
+    public function log(MigrationLogEntry $logEntry): void
     {
         $key = $this->generateKey($logEntry);
 
@@ -106,9 +106,9 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
     {
         foreach ($keys as $key => $value) {
             if (\array_is_list($keys)) {
-                $this->addLogEntry($callback($value, null));
+                $this->log($callback($value, null));
             } else {
-                $this->addLogEntry($callback($key, $value));
+                $this->log($callback($key, $value));
             }
         }
     }

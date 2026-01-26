@@ -137,7 +137,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')
@@ -167,7 +167,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         if (!isset($salesChannelMapping)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('salesChannelId')
@@ -193,7 +193,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($status === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('status')

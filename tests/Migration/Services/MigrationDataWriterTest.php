@@ -375,7 +375,7 @@ class MigrationDataWriterTest extends TestCase
         $loggingServiceProperty->setAccessible(true);
         $loggingService = $loggingServiceProperty->getValue($this->migrationDataWriter);
         static::assertInstanceOf(LoggingServiceInterface::class, $loggingService);
-        $loggingService->saveLogging($this->context);
+        $loggingService->flush($this->context);
 
         $log = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities()->first();
         static::assertNotNull($log);

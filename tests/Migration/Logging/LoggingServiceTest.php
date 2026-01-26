@@ -75,13 +75,13 @@ class LoggingServiceTest extends TestCase
             Uuid::randomHex(),
         ))->build(CannotConvertChildEntityLog::class);
 
-        $this->loggingService->addLogEntry($log1);
-        $this->loggingService->addLogEntry($log2);
+        $this->loggingService->log($log1);
+        $this->loggingService->log($log2);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
 
-        $this->loggingService->saveLogging($this->context);
+        $this->loggingService->flush($this->context);
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
@@ -108,8 +108,8 @@ class LoggingServiceTest extends TestCase
             ->withEntityId($entityId)
             ->build(AssociationRequiredMissingLog::class);
 
-        $this->loggingService->addLogEntry($log);
-        $this->loggingService->saveLogging($this->context);
+        $this->loggingService->log($log);
+        $this->loggingService->flush($this->context);
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);

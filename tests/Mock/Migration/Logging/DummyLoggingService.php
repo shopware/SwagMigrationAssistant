@@ -23,7 +23,7 @@ class DummyLoggingService extends LoggingService
         return $this->buffer;
     }
 
-    public function saveLogging(Context $context): void
+    public function flush(Context $context): void
     {
     }
 

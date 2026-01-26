@@ -100,7 +100,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                     $migrationContext->setDataSet($currentDataSet);
                 } catch (MigrationException $e) {
                     if ($e->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
-                        $this->loggingService->addLogEntry(
+                        $this->loggingService->log(
                             MigrationLogBuilder::fromMigrationContext($migrationContext)
                                 ->withEntityName($mediaFile['entity'])
                                 ->withEntityId($mediaFile['id'])
@@ -138,7 +138,7 @@ class MediaProcessingProcessor extends AbstractProcessor
             $this->processFailures($context, $migrationContext, $processor, $workload);
         } catch (MigrationException $e) {
             if ($e->getErrorCode() === MigrationException::NO_CONNECTION_FOUND) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
@@ -146,12 +146,12 @@ class MediaProcessingProcessor extends AbstractProcessor
                         ->build(ProcessorNotFoundLog::class)
                 );
 
-                $this->loggingService->saveLogging($context);
+                $this->loggingService->flush($context);
             } else {
                 throw $e;
             }
         } catch (\Throwable $e) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($e->getMessage())
                     ->withExceptionTrace($e->getTrace())
@@ -159,10 +159,10 @@ class MediaProcessingProcessor extends AbstractProcessor
                     ->build(ExceptionRunLog::class)
             );
 
-            $this->loggingService->saveLogging($context);
+            $this->loggingService->flush($context);
         }
 
-        $this->loggingService->saveLogging($context);
+        $this->loggingService->flush($context);
 
         $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($workload));
         $progress->setProgress($progress->getProgress() + \count($workload));

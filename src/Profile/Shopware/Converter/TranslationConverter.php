@@ -89,7 +89,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 return $this->createProductMediaTranslation($data);
         }
 
-        $this->loggingService->addLogEntry(
+        $this->loggingService->log(
             MigrationLogBuilder::fromMigrationContext($migrationContext)
                 ->withEntityName('unknown_translation')
                 ->withFieldSourcePath('objecttype')
@@ -124,7 +124,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('productId')
@@ -237,7 +237,7 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['ordernumber']);
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('productId')
@@ -313,7 +313,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductManufacturerTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('productManufacturerId')
@@ -395,7 +395,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(UnitTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('unitId')
@@ -482,7 +482,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(CategoryTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('categoryId')
@@ -579,7 +579,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupOptionTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupOptionId')
@@ -658,7 +658,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupId')
@@ -740,7 +740,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupOptionTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupOptionId')
@@ -817,7 +817,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('propertyGroupId')
@@ -950,7 +950,7 @@ abstract class TranslationConverter extends ShopwareConverter
         }
 
         if (!\is_array($objectData)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName($entity)
                     ->withFieldSourcePath('objectdata')
@@ -985,7 +985,7 @@ abstract class TranslationConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(MediaTranslationDefinition::ENTITY_NAME)
                     ->withFieldName('mediaId')
