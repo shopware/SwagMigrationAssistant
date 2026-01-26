@@ -101,8 +101,6 @@ readonly class MigrationValidationService
             $this->loggingService->log($log);
         }
 
-        $this->loggingService->flush($validationContext->getContext());
-
         return $validationContext->getValidationResult();
     }
 

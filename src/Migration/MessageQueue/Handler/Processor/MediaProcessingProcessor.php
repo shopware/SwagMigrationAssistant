@@ -146,7 +146,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                         ->build(ProcessorNotFoundLog::class)
                 );
 
-                $this->loggingService->flush($context);
+                $this->loggingService->flush();
             } else {
                 throw $e;
             }
@@ -159,10 +159,10 @@ class MediaProcessingProcessor extends AbstractProcessor
                     ->build(ExceptionRunLog::class)
             );
 
-            $this->loggingService->flush($context);
+            $this->loggingService->flush();
         }
 
-        $this->loggingService->flush($context);
+        $this->loggingService->flush();
 
         $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($workload));
         $progress->setProgress($progress->getProgress() + \count($workload));

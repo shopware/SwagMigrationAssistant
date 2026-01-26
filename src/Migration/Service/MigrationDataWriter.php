@@ -125,7 +125,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
             );
-            $this->loggingService->flush($context);
+            $this->loggingService->flush();
 
             foreach ($updateWrittenData as &$data) {
                 $data['written'] = false;
@@ -155,7 +155,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 WriteContext::createFromContext($context)
             );
             $this->removeChecksumsOfUnwrittenData($updateWrittenData, $mappingIds, $context);
-            $this->loggingService->flush($context);
+            $this->loggingService->flush();
         }
 
         // Update written-Flag of the media file in the media file table

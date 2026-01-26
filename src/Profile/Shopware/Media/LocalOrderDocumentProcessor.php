@@ -143,7 +143,6 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         }
 
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
-        $this->loggingService->flush($context);
 
         return \array_values($mappedWorkload);
     }

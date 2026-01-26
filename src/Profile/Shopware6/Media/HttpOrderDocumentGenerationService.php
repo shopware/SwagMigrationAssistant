@@ -92,7 +92,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                     ->withExceptionTrace($exception->getTrace())
                     ->build(ExceptionRunLog::class)
             );
-            $this->loggingService->flush($context);
+            $this->loggingService->flush();
 
             return $workload;
         }
@@ -146,7 +146,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         }
 
         $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
-        $this->loggingService->flush($context);
 
         return \array_values($mappedWorkload);
     }

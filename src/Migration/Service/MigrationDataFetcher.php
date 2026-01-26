@@ -42,7 +42,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
             );
-            $this->loggingService->flush($context);
+            $this->loggingService->flush();
         }
 
         return [];

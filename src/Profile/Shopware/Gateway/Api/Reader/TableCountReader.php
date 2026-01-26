@@ -47,7 +47,7 @@ class TableCountReader implements TableCountReaderInterface
         }
 
         if (\count($arrayResult['data']['exceptions']) > 0) {
-            $this->logExceptions($arrayResult['data']['exceptions'], $migrationContext, $context);
+            $this->logExceptions($arrayResult['data']['exceptions'], $migrationContext);
         }
 
         return $this->prepareTotals($arrayResult['data']['totals']);
@@ -66,7 +66,7 @@ class TableCountReader implements TableCountReaderInterface
         return $totals;
     }
 
-    private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
+    private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext): void
     {
         foreach ($exceptionArray as $exception) {
             $this->loggingService->log(
@@ -75,7 +75,5 @@ class TableCountReader implements TableCountReaderInterface
                     ->build(CannotReadEntityCountLog::class)
             );
         }
-
-        $this->loggingService->flush($context);
     }
 }

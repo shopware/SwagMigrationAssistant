@@ -223,7 +223,6 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         }
 
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
-        $this->loggingService->flush($context);
 
         return \array_values($mappedWorkload);
     }

@@ -81,7 +81,7 @@ class LoggingServiceTest extends TestCase
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
 
-        $this->loggingService->flush($this->context);
+        $this->loggingService->flush();
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
@@ -109,7 +109,7 @@ class LoggingServiceTest extends TestCase
             ->build(AssociationRequiredMissingLog::class);
 
         $this->loggingService->log($log);
-        $this->loggingService->flush($this->context);
+        $this->loggingService->flush();
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
