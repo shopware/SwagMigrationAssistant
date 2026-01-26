@@ -124,8 +124,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     ->withConvertedData([$converted])
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
-            );
-            $this->loggingService->flush();
+            )->flush();
 
             foreach ($updateWrittenData as &$data) {
                 $data['written'] = false;

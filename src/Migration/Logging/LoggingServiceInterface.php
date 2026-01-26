@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 #[Package('fundamentals@after-sales')]
 interface LoggingServiceInterface
 {
-    public function log(MigrationLogEntry $logEntry): void;
+    public function log(MigrationLogEntry $logEntry): self;
 
     public function flush(): void;
 

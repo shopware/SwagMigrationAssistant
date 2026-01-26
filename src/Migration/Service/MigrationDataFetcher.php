@@ -41,8 +41,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
-            );
-            $this->loggingService->flush();
+            )->flush();
         }
 
         return [];

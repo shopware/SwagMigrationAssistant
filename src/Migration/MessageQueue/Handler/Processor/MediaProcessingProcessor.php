@@ -144,9 +144,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                         ->withExceptionTrace($e->getTrace())
                         ->withEntityName($currentDataSet::getEntity())
                         ->build(ProcessorNotFoundLog::class)
-                );
-
-                $this->loggingService->flush();
+                )->flush();
             } else {
                 throw $e;
             }
@@ -157,9 +155,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                     ->withExceptionTrace($e->getTrace())
                     ->withEntityName($currentDataSet::getEntity())
                     ->build(ExceptionRunLog::class)
-            );
-
-            $this->loggingService->flush();
+            )->flush();
         }
 
         $this->loggingService->flush();

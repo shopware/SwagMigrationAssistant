@@ -91,8 +91,7 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->build(ExceptionRunLog::class)
-            );
-            $this->loggingService->flush();
+            )->flush();
 
             return $workload;
         }

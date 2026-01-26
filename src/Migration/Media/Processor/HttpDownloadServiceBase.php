@@ -84,8 +84,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(ExceptionRunLog::class)
-            );
-            $this->loggingService->flush();
+            )->flush();
 
             return $workload;
         }

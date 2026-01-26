@@ -21,11 +21,13 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
     final public const BUFFER_SIZE = 50;
 
     /**
-     * @var array <array-key, array<string, mixed>>
+     * @var array<array-key, array<string, mixed>>
      */
     protected array $buffer = [];
 
     /**
+     * @internal
+     *
      * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
      */
     public function __construct(
@@ -42,7 +44,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
         try {
             $this->flush();
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->logger->error(
                 'SwagMigrationAssistant: Could not flush log buffer in destructor.',
                 ['exception' => $e]
@@ -75,7 +77,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
         }
     }
 
-    public function log(MigrationLogEntry $logEntry): void
+    public function log(MigrationLogEntry $logEntry): self
     {
         $key = $this->generateKey($logEntry);
 
@@ -99,6 +101,8 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
         if (\count($this->buffer) >= self::BUFFER_SIZE) {
             $this->flush();
         }
+
+        return $this;
     }
 
     /**
@@ -134,12 +138,12 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
     {
         return Hasher::hash(implode('.', [
             $entry->getRunId(),
-            $entry->getProfileName(),
-            $entry->getGatewayName(),
             $entry->getCode(),
             $entry->getEntityName(),
             $entry->getFieldName(),
             $entry->getEntityId(),
+            $entry->getSourceData(),
+            $entry->getExceptionMessage(),
         ]));
     }
 }

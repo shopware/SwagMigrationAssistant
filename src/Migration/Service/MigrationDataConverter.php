@@ -79,9 +79,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
-            );
-
-            $this->loggingService->flush();
+            )->flush();
         }
     }
 

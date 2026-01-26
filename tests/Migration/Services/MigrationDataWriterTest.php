@@ -421,7 +421,7 @@ class MigrationDataWriterTest extends TestCase
 
         static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
-        $this->loggingService->resetLogging();
+        $this->loggingService->reset();
 
         $failureConvertCriteria = new Criteria([$data->getId()]);
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
