@@ -277,7 +277,7 @@ class RunService implements RunServiceInterface
             }
         }
 
-        $this->loggingService->flush($context);
+        $this->loggingService->flush();
     }
 
     public function resumeAfterFixes(Context $context): void

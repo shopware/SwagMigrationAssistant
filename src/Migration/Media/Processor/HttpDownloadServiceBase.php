@@ -85,7 +85,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->build(ExceptionRunLog::class)
             );
-            $this->loggingService->flush($context);
+            $this->loggingService->flush();
 
             return $workload;
         }
@@ -207,7 +207,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
         }
 
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $finishedUuids, $failureUuids);
-        $this->loggingService->flush($context);
+        $this->loggingService->flush();
 
         return \array_values($mappedWorkload);
     }
