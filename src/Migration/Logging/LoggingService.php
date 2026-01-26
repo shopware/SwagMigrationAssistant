@@ -11,12 +11,24 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
+use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use Symfony\Contracts\Service\ResetInterface;
 
 #[Package('fundamentals@after-sales')]
-class LoggingService implements LoggingServiceInterface
+class LoggingService implements LoggingServiceInterface, ResetInterface
 {
-    protected array $logging = [];
+    final public const BATCH_SIZE = 100;
+
+    /**
+     * @var array <array-key, array<string, mixed>>
+     */
+    protected array $buffer = [];
+
+    protected ?MigrationContextInterface $migrationContext = null;
+
+    protected ?Context $context = null;
 
     /**
      * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
@@ -27,33 +39,42 @@ class LoggingService implements LoggingServiceInterface
     ) {
     }
 
-    public function reset(): void
+    public function __destruct()
     {
-        if (!empty($this->logging)) {
-            $this->logger->error('SwagMigrationAssistant: Migration logging was not empty on calling reset.');
+        if (empty($this->buffer) || $this->context === null) {
+            return;
         }
 
-        $this->logging = [];
+        $this->saveLogging($this->context);
+    }
+
+    public function reset(): void
+    {
+        $this->buffer = [];
     }
 
     public function saveLogging(Context $context): void
     {
-        if (empty($this->logging)) {
+        if (empty($this->buffer)) {
             return;
         }
 
+        $data = array_values($this->buffer);
+
         try {
-            $this->loggingRepo->create($this->logging, $context);
+            $this->loggingRepo->create($data, $context);
         } catch (\Exception) {
             $this->writePerEntry($context);
         } finally {
-            $this->logging = [];
+            $this->reset();
         }
     }
 
     public function addLogEntry(MigrationLogEntry $logEntry): void
     {
-        $this->logging[] = [
+        $key = $this->generateKey($logEntry);
+
+        $this->buffer[$key] = [
             'runId' => $logEntry->getRunId(),
             'profileName' => $logEntry->getProfileName(),
             'gatewayName' => $logEntry->getGatewayName(),
@@ -69,6 +90,12 @@ class LoggingService implements LoggingServiceInterface
             'exceptionMessage' => $logEntry->getExceptionMessage(),
             'exceptionTrace' => $logEntry->getExceptionTrace(),
         ];
+    }
+
+    public function setContext(?MigrationContextInterface $migrationContext = null, ?Context $context = null): void
+    {
+        $this->migrationContext = $migrationContext;
+        $this->context = $context;
     }
 
     /**
@@ -88,12 +115,22 @@ class LoggingService implements LoggingServiceInterface
 
     private function writePerEntry(Context $context): void
     {
-        foreach ($this->logging as $log) {
+        foreach ($this->buffer as $key => $log) {
             try {
                 $this->loggingRepo->create([$log], $context);
             } catch (\Exception) {
-                $this->logger->error('SwagMigrationAssistant: Could not write log entry: ', $log);
+                $this->logger->error('SwagMigrationAssistant: Could not write log entry: ', [$key => $log]);
             }
         }
+    }
+
+    private function generateKey(MigrationLogEntry $entry): string
+    {
+        return Hasher::hash(implode('.', [
+            $entry->getCode(),
+            $entry->getEntityName(),
+            $entry->getFieldName(),
+            $entry->getEntityId(),
+        ]));
     }
 }

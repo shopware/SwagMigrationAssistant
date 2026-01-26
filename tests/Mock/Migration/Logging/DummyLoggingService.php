@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Migration\Logging;
 
+use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 
@@ -19,15 +20,15 @@ class DummyLoggingService extends LoggingService
 
     public function getLoggingArray(): array
     {
-        return $this->logging;
+        return $this->buffer;
     }
 
-    public function saveLogging(\Shopware\Core\Framework\Context $context): void
+    public function saveLogging(Context $context): void
     {
     }
 
     public function resetLogging(): void
     {
-        $this->logging = [];
+        $this->buffer = [];
     }
 }
