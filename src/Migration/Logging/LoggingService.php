@@ -139,11 +139,11 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
         return Hasher::hash(implode('.', [
             $entry->getRunId(),
             $entry->getCode(),
-            $entry->getEntityName(),
-            $entry->getFieldName(),
-            $entry->getEntityId(),
-            $entry->getSourceData(),
-            $entry->getExceptionMessage(),
+            $entry->getEntityName() ?? '',
+            $entry->getFieldName() ?? '',
+            $entry->getEntityId() ?? '',
+            $entry->getSourceData() ? json_encode($entry->getSourceData()) : '',
+            $entry->getExceptionMessage() ?? '',
         ]));
     }
 }
