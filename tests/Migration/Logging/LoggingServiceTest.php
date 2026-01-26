@@ -143,7 +143,7 @@ class LoggingServiceTest extends TestCase
         static::assertSame(1, $result->getTotal());
     }
 
-    public function testResetClearsBuffer(): void
+    public function testResetFlushesBuffer(): void
     {
         $log = (new MigrationLogBuilder(
             $this->runUuid,
@@ -154,10 +154,9 @@ class LoggingServiceTest extends TestCase
 
         $this->loggingService->log($log);
         $this->loggingService->reset();
-        $this->loggingService->flush();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
-        static::assertSame(0, $result->getTotal());
+        static::assertSame(1, $result->getTotal());
     }
 
     public function testDuplicateLogEntriesAreBufferedOnlyOnce(): void

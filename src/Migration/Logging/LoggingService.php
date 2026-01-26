@@ -54,7 +54,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
     public function reset(): void
     {
-        $this->buffer = [];
+        $this->flush();
     }
 
     public function flush(): void
@@ -73,7 +73,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
         } catch (\Exception) {
             $this->writePerEntry();
         } finally {
-            $this->reset();
+            $this->buffer = [];
         }
     }
 
