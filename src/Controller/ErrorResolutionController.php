@@ -79,7 +79,7 @@ class ErrorResolutionController extends AbstractController
                 'valid' => false,
                 'violations' => [['message' => $exception->getMessage()]],
             ]);
-        } catch (\Exception $exception) {
+        } catch (\Throwable $exception) {
             return new JsonResponse([
                 'valid' => false,
                 'violations' => [['message' => $exception->getMessage()]],

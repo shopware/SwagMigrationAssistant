@@ -28,6 +28,8 @@ readonly class MigrationFix
 
     /**
      * @param array<string, string> $data
+     *
+     * @throws MigrationException
      */
     public static function fromDatabaseQuery(array $data): self
     {
@@ -51,6 +53,11 @@ readonly class MigrationFix
      */
     public function apply(array &$item): void
     {
+        /**
+         * Explode the path to an array
+         * Path example: 'category.language.name'
+         * Results in an array like: ['category', 'language', 'name']
+         */
         $pathArray = explode(self::PATH_SEPARATOR, $this->path);
         $decodedValue = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
 
@@ -62,38 +69,41 @@ readonly class MigrationFix
      * When encountering a list (numerically-indexed array), applies the fix to all items.
      *
      * @param array<string|int, mixed> $data
-     * @param array<int, string> $remainingPath
+     * @param array<int, string> $path
      */
-    private function applyToPath(array &$data, array $remainingPath, mixed $value): void
+    private function applyToPath(array &$data, array $path, mixed $value): void
     {
-        if (empty($remainingPath)) {
+        if (empty($path)) {
             return;
         }
 
-        $key = \array_shift($remainingPath);
+        $nextSegment = \array_shift($path);
 
         // last segment of the path, "normal" set operation
-        if (empty($remainingPath)) {
-            $data[$key] = $value;
+        if (empty($path)) {
+            $data[$nextSegment] = $value;
 
             return;
         }
 
-        // key points to a list, apply to all items in the list
-        if (isset($data[$key]) && \is_array($data[$key]) && \array_is_list($data[$key])) {
-            foreach ($data[$key] as &$arrayItem) {
+        $nextSegmentIsList = isset($data[$nextSegment])
+            && \is_array($data[$nextSegment])
+            && \array_is_list($data[$nextSegment]);
+
+        if ($nextSegmentIsList) {
+            foreach ($data[$nextSegment] as &$arrayItem) {
                 if (\is_array($arrayItem)) {
-                    $this->applyToPath($arrayItem, $remainingPath, $value);
+                    $this->applyToPath($arrayItem, $path, $value);
                 }
             }
 
             return;
         }
 
-        if (!isset($data[$key]) || !\is_array($data[$key])) {
-            $data[$key] = [];
+        if (!isset($data[$nextSegment]) || !\is_array($data[$nextSegment])) {
+            $data[$nextSegment] = [];
         }
 
-        $this->applyToPath($data[$key], $remainingPath, $value);
+        $this->applyToPath($data[$nextSegment], $path, $value);
     }
 }

@@ -9,7 +9,6 @@ namespace SwagMigrationAssistant\Migration\ErrorResolution;
 
 use Doctrine\DBAL\ArrayParameterType;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -31,8 +30,6 @@ readonly class MigrationErrorResolutionService
 
     /**
      * @param array<int|string, array<int|string, mixed>> $data
-     *
-     * @throws Exception
      */
     public function applyFixes(array &$data, string $connectionId, string $runId, Context $context): void
     {
@@ -83,8 +80,6 @@ readonly class MigrationErrorResolutionService
 
     /**
      * Loads fixes from the database and populates them in the context.
-     *
-     * @throws Exception
      */
     private function loadFixes(MigrationErrorResolutionContext $errorResolutionContext): void
     {

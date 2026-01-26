@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Migration\Validation;
 
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Exception;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
@@ -49,7 +48,7 @@ use Symfony\Contracts\Service\ResetInterface;
 class MigrationEntityValidationService implements ResetInterface
 {
     /**
-     * System managed that managed by Shopware and should not be validated as required fields
+     * System managed fields that are managed by Shopware and should not be validated as required fields
      *
      * @var list<class-string<Field>>
      */
@@ -92,8 +91,6 @@ class MigrationEntityValidationService implements ResetInterface
     /**
      * @param array<string, mixed>|null $convertedEntity
      * @param array<string, mixed> $sourceData
-     *
-     * @throws \Exception
      */
     public function validate(
         MigrationContextInterface $migrationContext,
@@ -126,7 +123,7 @@ class MigrationEntityValidationService implements ResetInterface
 
         try {
             $this->validateEntityStructure($validationContext);
-            $this->validateFieldValues($validationContext);
+            $this->validateRootEntityFields($validationContext);
         } catch (\Throwable $exception) {
             $this->addExceptionLog($validationContext, $exception);
         }
@@ -146,8 +143,6 @@ class MigrationEntityValidationService implements ResetInterface
 
     /**
      * Validates that all required fields are present in the converted data.
-     *
-     * @throws \Exception|Exception
      */
     private function validateEntityStructure(MigrationValidationContext $validationContext): void
     {
@@ -169,11 +164,9 @@ class MigrationEntityValidationService implements ResetInterface
     }
 
     /**
-     * Validates the values of each field in the converted data and its nested associations.
-     *
-     * @throws \Exception|Exception
+     * Validates all fields of the root entity, including nested associations.
      */
-    private function validateFieldValues(MigrationValidationContext $validationContext): void
+    private function validateRootEntityFields(MigrationValidationContext $validationContext): void
     {
         $convertedData = $validationContext->getConvertedData();
         $id = $convertedData['id'] ?? null;
@@ -216,8 +209,6 @@ class MigrationEntityValidationService implements ResetInterface
      * Recursively validates nested entities within association fields.
      *
      * @param array<string, mixed>|mixed $value
-     *
-     * @throws Exception
      */
     private function validateNestedAssociations(
         MigrationValidationContext $validationContext,
@@ -240,7 +231,7 @@ class MigrationEntityValidationService implements ResetInterface
                 : $field->getReferenceDefinition();
 
             foreach ($value as $nestedEntityData) {
-                $this->validateNestedEntityData(
+                $this->validateNestedEntityFields(
                     $validationContext,
                     $referenceDefinition,
                     $nestedEntityData,
@@ -252,7 +243,7 @@ class MigrationEntityValidationService implements ResetInterface
         }
 
         if ($field instanceof ManyToOneAssociationField || $field instanceof OneToOneAssociationField) {
-            $this->validateNestedEntityData(
+            $this->validateNestedEntityFields(
                 $validationContext,
                 $field->getReferenceDefinition(),
                 $value,
@@ -265,10 +256,8 @@ class MigrationEntityValidationService implements ResetInterface
      * Validates a single nested entity's fields and recurses into deeper associations.
      *
      * @param array<string, mixed>|mixed $nestedEntityData
-     *
-     * @throws Exception|\Exception
      */
-    private function validateNestedEntityData(
+    private function validateNestedEntityFields(
         MigrationValidationContext $validationContext,
         EntityDefinition $referenceDefinition,
         mixed $nestedEntityData,
@@ -349,8 +338,6 @@ class MigrationEntityValidationService implements ResetInterface
      * - It is not a system managed field
      * - Its corresponding database column is non-nullable without a default value
      *
-     * @throws Exception
-     *
      * @return array<string, true>
      */
     private function getRequiredFields(CompiledFieldCollection $fields, string $entityName): array
@@ -382,8 +369,6 @@ class MigrationEntityValidationService implements ResetInterface
     }
 
     /**
-     * @throws Exception
-     *
      * @return array<string, true>
      */
     private function getRequiredDatabaseColumns(string $entityName): array

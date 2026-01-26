@@ -628,7 +628,6 @@
           "SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE": "Optionales Feld hat einen ungültigen Wert",
           "SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION": "Erforderliche Übersetzung ist ungültig",
           "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Erforderliches Feld fehlt",
-          "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unerwartetes Feld in Daten gefunden",
           "SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE": "Pack-Sprache ist deaktiviert",
           "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": "Ungültige E-Mail-Adresse",
           "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE": "E-Mail-Template-Typ nicht unterstützt",
@@ -652,7 +651,6 @@
           "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
           "fetchExampleFailed": "Beispieldaten konnten nicht abgerufen werden.",
           "validationFailed": "Validierung fehlgeschlagen.",
-          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON.",
           "resetResolutionFailed": "Fehler beim Zurücksetzen der Fehlerbehebung."
         },
         "step": {

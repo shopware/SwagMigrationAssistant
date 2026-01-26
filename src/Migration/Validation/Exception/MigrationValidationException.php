@@ -46,7 +46,7 @@ class MigrationValidationException extends MigrationException
         return new self(
             Response::HTTP_INTERNAL_SERVER_ERROR,
             self::VALIDATION_INVALID_ID,
-            'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
+            'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid UUID',
             ['entityId' => $entityId, 'entityName' => $entityName]
         );
     }

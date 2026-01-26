@@ -43,7 +43,7 @@ readonly class MigrationFieldValidationService
      * Supports nested field paths like "prices.shippingMethodId".
      * Silently skips validation for unknown entities & fields.
      *
-     * @throws MigrationValidationException|\Exception
+     * @throws MigrationValidationException
      */
     public function validateField(
         string $entityName,
@@ -79,8 +79,6 @@ readonly class MigrationFieldValidationService
     /**
      * Resolves a potentially nested field path (e.g., "prices.shippingMethodId") to its target.
      * Traverses through association fields to find the final entity definition and field.
-     *
-     * @throws \Exception
      *
      * @return array{EntityDefinition, Field}|null
      */
@@ -171,6 +169,9 @@ readonly class MigrationFieldValidationService
         $this->validateFieldByFieldSerializer($field, $value, $isRequired, $existence, $parameters);
     }
 
+    /**
+     * @throws MigrationValidationException
+     */
     private function validateFieldByFieldSerializer(
         Field $field,
         mixed $value,
@@ -229,6 +230,9 @@ readonly class MigrationFieldValidationService
         }
     }
 
+    /**
+     * @throws MigrationValidationException
+     */
     private function validateToManyAssociationStructure(Field $field, mixed $value, string $entityName): void
     {
         if (!\is_array($value)) {
@@ -258,6 +262,9 @@ readonly class MigrationFieldValidationService
         }
     }
 
+    /**
+     * @throws MigrationValidationException
+     */
     private function validateToOneAssociationStructure(Field $field, mixed $value, string $entityName): void
     {
         if (!\is_array($value)) {
@@ -277,6 +284,9 @@ readonly class MigrationFieldValidationService
         }
     }
 
+    /**
+     * @throws MigrationValidationException
+     */
     private function validateTranslationAssociationStructure(TranslationsAssociationField $field, mixed $value, string $entityName): void
     {
         if (!\is_array($value)) {

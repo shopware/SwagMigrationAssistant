@@ -8,11 +8,13 @@
 namespace SwagMigrationAssistant\Test\integration\Migration\Validation;
 
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Defaults;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
+use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
 use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 
@@ -32,40 +34,57 @@ class MigrationFieldValidationServiceTest extends TestCase
         $this->migrationFieldValidationService = static::getContainer()->get(MigrationFieldValidationService::class);
     }
 
-    public function testNotExistingEntityDefinitionSkipsValidation(): void
-    {
-        // Unknown entities are silently skipped
-        static::expectNotToPerformAssertions();
+    /**
+     * @param class-string<\Throwable>|null $exception
+     */
+    #[DataProvider('validateFieldProvider')]
+    public function testValidateField(
+        string $entityName,
+        string $fieldName,
+        mixed $value,
+        ?string $exception,
+    ): void {
+        if ($exception) {
+            static::expectException($exception);
+        } else {
+            static::expectNotToPerformAssertions();
+        }
 
         $this->migrationFieldValidationService->validateField(
-            'unknown_entity',
-            'field',
-            'value',
+            $entityName,
+            $fieldName,
+            $value,
             Context::createDefaultContext(),
         );
     }
 
-    public function testNotExistingFieldSkipsValidation(): void
+    public static function validateFieldProvider(): \Generator
     {
-        // Unknown entities are silently skipped
-        static::expectNotToPerformAssertions();
+        yield 'not existing entity' => [
+            'entityName' => 'unknown_entity',
+            'fieldName' => 'name',
+            'value' => 'value',
+            'exception' => null,
+        ];
 
-        $this->migrationFieldValidationService->validateField(
-            'product',
-            'nonExistingField',
-            'value',
-            Context::createDefaultContext(),
-        );
-    }
+        yield 'not existing field' => [
+            'entityName' => 'product',
+            'fieldName' => 'nonExistingField',
+            'value' => 'value',
+            'exception' => null,
+        ];
 
-    public function testValidPriceField(): void
-    {
-        static::expectNotToPerformAssertions();
+        yield 'valid string field' => [
+            'entityName' => 'product',
+            'fieldName' => 'name',
+            'value' => 'Valid Product Name',
+            'exception' => null,
+        ];
 
-        $this->migrationFieldValidationService->validateField(
-            'product',
-            'price',
-            [
+        yield 'valid price field' => [
+            'entityName' => 'product',
+            'fieldName' => 'price',
+            'value' => [
                 [
                     'currencyId' => Defaults::CURRENCY,
                     'gross' => 100.0,
@@ -73,18 +92,13 @@ class MigrationFieldValidationServiceTest extends TestCase
                     'linked' => true,
                 ],
             ],
-            Context::createDefaultContext(),
-        );
-    }
+            'exception' => null,
+        ];
 
-    public function testInvalidPriceFieldGrossType(): void
-    {
-        static::expectException(MigrationValidationException::class);
-
-        $this->migrationFieldValidationService->validateField(
-            'product',
-            'price',
-            [
+        yield 'invalid price field (gross type)' => [
+            'entityName' => 'product',
+            'fieldName' => 'price',
+            'value' => [
                 [
                     'currencyId' => Defaults::CURRENCY,
                     'gross' => 'invalid', // should be numeric
@@ -92,18 +106,13 @@ class MigrationFieldValidationServiceTest extends TestCase
                     'linked' => true,
                 ],
             ],
-            Context::createDefaultContext(),
-        );
-    }
+            'exception' => MigrationValidationException::class,
+        ];
 
-    public function testInvalidPriceFieldMissingNet(): void
-    {
-        static::expectException(MigrationValidationException::class);
-
-        $this->migrationFieldValidationService->validateField(
-            'product',
-            'price',
-            [
+        yield 'invalid price field (missing net)' => [
+            'entityName' => 'product',
+            'fieldName' => 'price',
+            'value' => [
                 [
                     'currencyId' => Defaults::CURRENCY,
                     'gross' => 100.0,
@@ -111,18 +120,13 @@ class MigrationFieldValidationServiceTest extends TestCase
                     'linked' => true,
                 ],
             ],
-            Context::createDefaultContext(),
-        );
-    }
+            'exception' => MigrationValidationException::class,
+        ];
 
-    public function testInvalidPriceFieldCurrencyId(): void
-    {
-        static::expectException(MigrationValidationException::class);
-
-        $this->migrationFieldValidationService->validateField(
-            'product',
-            'price',
-            [
+        yield 'invalid price field (invalid currencyId)' => [
+            'entityName' => 'product',
+            'fieldName' => 'price',
+            'value' => [
                 [
                     'currencyId' => 'not-a-valid-uuid',
                     'gross' => 100.0,
@@ -130,82 +134,187 @@ class MigrationFieldValidationServiceTest extends TestCase
                     'linked' => true,
                 ],
             ],
-            Context::createDefaultContext(),
-        );
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'valid UUID field' => [
+            'entityName' => 'product',
+            'fieldName' => 'id',
+            'value' => Uuid::randomHex(),
+            'exception' => null,
+        ];
+
+        yield 'invalid UUID field' => [
+            'entityName' => 'product',
+            'fieldName' => 'id',
+            'value' => 'invalid-uuid',
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'valid nested field' => [
+            'entityName' => 'shipping_method',
+            'fieldName' => 'prices.shippingMethodId',
+            'value' => Uuid::randomHex(),
+            'exception' => null,
+        ];
+
+        yield 'invalid nested field' => [
+            'entityName' => 'shipping_method',
+            'fieldName' => 'prices.shippingMethodId',
+            'value' => 'invalid-uuid',
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'valid translation field' => [
+            'entityName' => 'product',
+            'fieldName' => 'translations',
+            'value' => ['en-GB' => [], 'de-DE' => []],
+            'exception' => null,
+        ];
+
+        yield 'invalid translation field (non array)' => [
+            'entityName' => 'product',
+            'fieldName' => 'translations',
+            'value' => 'not-an-array',
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'invalid translation field (non translations)' => [
+            'entityName' => 'product',
+            'fieldName' => 'translations',
+            'value' => ['en-GB' => null, 'de-DE' => []],
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'valid to many field' => [
+            'entityName' => 'product',
+            'fieldName' => 'tags',
+            'value' => [
+                ['id' => Uuid::randomHex()],
+                ['id' => Uuid::randomHex()],
+            ],
+            'exception' => null,
+        ];
+
+        yield 'invalid to many field (non array)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tags',
+            'value' => 'not-an-array',
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'invalid to many field (non array child)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tags',
+            'value' => [
+                ['id' => Uuid::randomHex()],
+                'not-an-array',
+            ],
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'invalid to many field (invalid uuid)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tags',
+            'value' => [
+                ['id' => Uuid::randomHex()],
+                ['id' => 'invalid-uuid'],
+            ],
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'valid to one field' => [
+            'entityName' => 'product',
+            'fieldName' => 'tax',
+            'value' => [
+                'id' => Uuid::randomHex(),
+            ],
+            'exception' => null,
+        ];
+
+        yield 'invalid to one field (non array)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tax',
+            'value' => 'not-an-array',
+            'exception' => MigrationValidationException::class,
+        ];
+
+        yield 'invalid to one field (invalid id)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tax',
+            'value' => [
+                'id' => 'invalid-uuid',
+            ],
+            'exception' => MigrationValidationException::class,
+        ];
     }
 
-    public function testResolveFieldPathSimpleField(): void
-    {
-        $result = $this->migrationFieldValidationService->resolveFieldPath('product', 'name');
+    /**
+     * @param array{entityName: string, propertyName: string}|null $expectedResult
+     */
+    #[DataProvider('resolveFieldPathProvider')]
+    public function testResolveFieldPath(
+        string $entityName,
+        string $fieldName,
+        ?array $expectedResult,
+    ): void {
+        $result = $this->migrationFieldValidationService->resolveFieldPath($entityName, $fieldName);
 
-        static::assertNotNull($result);
-        static::assertCount(2, $result);
-        static::assertSame('product', $result[0]->getEntityName());
-        static::assertSame('name', $result[1]->getPropertyName());
+        if ($expectedResult !== null) {
+            static::assertNotNull($result);
+            static::assertCount(2, $result);
+            static::assertSame($expectedResult['entityName'], $result[0]->getEntityName());
+            static::assertSame($expectedResult['propertyName'], $result[1]->getPropertyName());
+        } else {
+            static::assertNull($result);
+        }
     }
 
-    public function testResolveFieldPathNestedField(): void
+    public static function resolveFieldPathProvider(): \Generator
     {
-        $result = $this->migrationFieldValidationService->resolveFieldPath('shipping_method', 'prices.shippingMethodId');
+        yield 'simple field' => [
+            'entityName' => 'product',
+            'fieldName' => 'name',
+            'expectedResult' => [
+                'entityName' => 'product',
+                'propertyName' => 'name',
+            ],
+        ];
 
-        static::assertNotNull($result);
-        static::assertCount(2, $result);
-        static::assertSame('shipping_method_price', $result[0]->getEntityName());
-        static::assertSame('shippingMethodId', $result[1]->getPropertyName());
-    }
+        yield 'nested field' => [
+            'entityName' => 'shipping_method',
+            'fieldName' => 'prices.shippingMethodId',
+            'expectedResult' => [
+                'entityName' => 'shipping_method_price',
+                'propertyName' => 'shippingMethodId',
+            ],
+        ];
 
-    public function testResolveFieldPathDeeplyNested(): void
-    {
-        $result = $this->migrationFieldValidationService->resolveFieldPath('product', 'categories.media.alt');
+        yield 'deeply nested field' => [
+            'entityName' => 'product',
+            'fieldName' => 'categories.media.alt',
+            'expectedResult' => [
+                'entityName' => 'media',
+                'propertyName' => 'alt',
+            ],
+        ];
 
-        static::assertNotNull($result);
-        static::assertCount(2, $result);
-        static::assertSame('media', $result[0]->getEntityName());
-        static::assertSame('alt', $result[1]->getPropertyName());
-    }
+        yield 'unknown entity' => [
+            'entityName' => 'unknown_entity',
+            'fieldName' => 'field',
+            'expectedResult' => null,
+        ];
 
-    public function testResolveFieldPathUnknownEntity(): void
-    {
-        $result = $this->migrationFieldValidationService->resolveFieldPath('unknown_entity', 'field');
+        yield 'unknown field' => [
+            'entityName' => 'product',
+            'fieldName' => 'unknownField',
+            'expectedResult' => null,
+        ];
 
-        static::assertNull($result);
-    }
-
-    public function testResolveFieldPathUnknownField(): void
-    {
-        $result = $this->migrationFieldValidationService->resolveFieldPath('product', 'unknownField');
-
-        static::assertNull($result);
-    }
-
-    public function testResolveFieldPathUnknownNestedField(): void
-    {
-        $result = $this->migrationFieldValidationService->resolveFieldPath('shipping_method', 'prices.unknownField');
-
-        static::assertNull($result);
-    }
-
-    public function testValidateNestedField(): void
-    {
-        static::expectNotToPerformAssertions();
-
-        $this->migrationFieldValidationService->validateField(
-            'shipping_method',
-            'prices.shippingMethodId',
-            'a5d7a3b4c5d6e7f8a9b0c1d2e3f4a5b6',
-            Context::createDefaultContext(),
-        );
-    }
-
-    public function testValidateNestedFieldInvalid(): void
-    {
-        static::expectException(MigrationValidationException::class);
-
-        $this->migrationFieldValidationService->validateField(
-            'shipping_method',
-            'prices.shippingMethodId',
-            'not-a-valid-uuid',
-            Context::createDefaultContext(),
-        );
+        yield 'unknown nested field' => [
+            'entityName' => 'shipping_method',
+            'fieldName' => 'prices.unknownField',
+            'expectedResult' => null,
+        ];
     }
 }

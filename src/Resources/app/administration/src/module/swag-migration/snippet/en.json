@@ -479,7 +479,6 @@
           "SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE": "Optional field has an invalid value",
           "SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION": "Required translation is invalid",
           "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Required field is missing",
-          "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unexpected field found in data",
           "SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE": "Pack language is deactivated",
           "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": "Invalid email address",
           "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE": "Unsupported mail template type",
@@ -501,7 +500,6 @@
           "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
           "fetchFilterDataFailed": "Failed fetching filter data.",
           "fetchExistingFixesFailed": "Failed fetching existing fixes.",
-          "invalidJsonInput": "This input is not valid JSON.",
           "resetResolutionFailed": "Failed resetting error resolution.",
           "fetchExampleFailed": "Failed fetching example data.",
           "validationFailed": "Validation failed."
