@@ -12,6 +12,16 @@ use Shopware\Core\Framework\Log\Package;
 #[Package('fundamentals@after-sales')]
 enum MigrationStep: string
 {
+    final public const MANUAL_STEPS = [
+        self::ERROR_RESOLUTION,
+        self::WAITING_FOR_APPROVE,
+    ];
+
+    final public const FINAL_STEPS = [
+        self::FINISHED,
+        self::ABORTED,
+    ];
+
     case IDLE = 'idle';
 
     case FETCHING = 'fetching';
@@ -36,17 +46,19 @@ enum MigrationStep: string
 
     public function isRunning(): bool
     {
-        return !\in_array($this, [
-            self::FINISHED,
-            self::ABORTED,
-        ], true);
+        return !\in_array(
+            $this,
+            self::FINAL_STEPS,
+            true
+        );
     }
 
     public function needsProcessor(): bool
     {
-        return !\in_array($this, [
-            self::ERROR_RESOLUTION,
-            self::WAITING_FOR_APPROVE,
-        ], true);
+        return !\in_array(
+            $this,
+            self::MANUAL_STEPS,
+            true
+        );
     }
 }
