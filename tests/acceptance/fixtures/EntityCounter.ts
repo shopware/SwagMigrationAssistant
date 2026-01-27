@@ -29,7 +29,7 @@ export const EntityCounter = base.extend<FixtureTypes>({
                     },
                 });
 
-                expect(response.ok()).toBeTruthy();
+                expect(response.ok()).toBe(true);
                 const json = await response.json();
 
                 // eslint-disable-next-line playwright/no-conditional-in-test

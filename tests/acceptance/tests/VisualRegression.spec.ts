@@ -15,8 +15,8 @@ function getMask(page: Page) {
     return dynamicElementSelectors.map((selector) => page.locator(selector));
 }
 
-async function waitForLoaders(page: Page) {
-    await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: LOADING_TIMEOUT });
+async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT) {
+    await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout });
 }
 
 test.describe('Visual Regression Tests @visual', () => {
@@ -43,6 +43,21 @@ test.describe('Visual Regression Tests @visual', () => {
 
         await expect(page).toHaveScreenshot('main-page-data-selection-empty.png', {
             mask: getMask(page),
+        });
+    });
+
+    test('Main page (with connection)', async ({ ShopAdmin, MigrationConnection: _ }) => {
+        const page = ShopAdmin.page;
+        const mask = getMask(page);
+
+        await page.goto('/admin');
+        await waitForLoaders(page);
+
+        await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
+        await waitForLoaders(page);
+
+        await expect(page).toHaveScreenshot('main-page-general-with-connection.png', {
+            mask,
         });
     });
 
@@ -102,23 +117,15 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Connect' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('connection-wizard-success.png', {
-            mask,
-        });
-
         await page.getByRole('button', { name: 'Done' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('main-page-general-with-connection.png', {
-            mask,
-        });
+        await page.getByTestId('mt-icon__solid-ellipsis-h-s').click();
+        await page.getByRole('button', { name: 'Truncate migration' }).click();
+        await page.getByRole('button', { name: 'Archive' }).click();
 
-        await page.getByTitle('Data selection').click();
-        await waitForLoaders(page);
-
-        await expect(page).toHaveScreenshot('main-page-data-selection.png', {
-            mask: getMask(page),
-        });
+        await waitForLoaders(page, 120_000);
+        await expect(page.getByRole('button', { name: 'Create initial connection' })).toBeVisible();
     });
 });
 

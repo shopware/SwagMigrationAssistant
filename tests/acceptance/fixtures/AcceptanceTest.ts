@@ -3,14 +3,16 @@ import type { FixtureTypes as BaseTypes } from '@shopware-ag/acceptance-test-sui
 
 import { DatabaseCredentials, type DatabaseCredentialsStruct } from './DatabaseCredentials';
 import { EntityCounter, type EntityCounterStruct } from './EntityCounter';
+import { MigrationConnection, type MigrationConnectionStruct } from './MigrationConnection';
 
 export * from '@shopware-ag/acceptance-test-suite';
 
 export interface MigrationFixtureTypes {
     DatabaseCredentials: DatabaseCredentialsStruct;
     EntityCounter: EntityCounterStruct;
+    MigrationConnection: MigrationConnectionStruct;
 }
 
 export type FixtureTypes = MigrationFixtureTypes & BaseTypes;
 
-export const test = mergeTests(ShopwareTestSuite, DatabaseCredentials, EntityCounter);
+export const test = mergeTests(ShopwareTestSuite, DatabaseCredentials, EntityCounter, MigrationConnection);
