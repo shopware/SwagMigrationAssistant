@@ -11,7 +11,6 @@ use Psr\Log\LoggerInterface;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -63,11 +62,9 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
             return;
         }
 
-        $data = array_values($this->buffer);
-
         try {
             $this->loggingRepo->create(
-                $data,
+                $this->buffer,
                 Context::createDefaultContext(),
             );
         } catch (\Exception) {
@@ -79,9 +76,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
     public function log(MigrationLogEntry $logEntry): self
     {
-        $key = $this->generateKey($logEntry);
-
-        $this->buffer[$key] = [
+        $this->buffer[] = [
             'runId' => $logEntry->getRunId(),
             'profileName' => $logEntry->getProfileName(),
             'gatewayName' => $logEntry->getGatewayName(),
@@ -122,28 +117,15 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
     private function writePerEntry(): void
     {
-        foreach ($this->buffer as $key => $log) {
+        foreach ($this->buffer as $log) {
             try {
                 $this->loggingRepo->create(
                     [$log],
                     Context::createDefaultContext(),
                 );
             } catch (\Exception) {
-                $this->logger->error('SwagMigrationAssistant: Could not write log entry: ', [$key => $log]);
+                $this->logger->error('SwagMigrationAssistant: Could not write log entry: ', $log);
             }
         }
-    }
-
-    private function generateKey(MigrationLogEntry $entry): string
-    {
-        return Hasher::hash(implode('.', [
-            $entry->getRunId(),
-            $entry->getCode(),
-            $entry->getEntityName() ?? '',
-            $entry->getFieldName() ?? '',
-            $entry->getEntityId() ?? '',
-            $entry->getSourceData() ? json_encode($entry->getSourceData()) : '',
-            $entry->getExceptionMessage() ?? '',
-        ]));
     }
 }

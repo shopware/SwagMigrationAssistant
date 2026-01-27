@@ -159,24 +159,6 @@ class LoggingServiceTest extends TestCase
         static::assertSame(1, $result->getTotal());
     }
 
-    public function testDuplicateLogEntriesAreBufferedOnlyOnce(): void
-    {
-        $log = (new MigrationLogBuilder(
-            $this->runUuid,
-            'Profile name',
-            'Gateway name',
-            Uuid::randomHex(),
-        ))->build(AssociationRequiredMissingLog::class);
-
-        $this->loggingService->log($log);
-        $this->loggingService->log($log);
-        $this->loggingService->flush();
-        $this->clearCacheData();
-
-        $result = $this->loggingRepo->search(new Criteria(), $this->context);
-        static::assertSame(1, $result->getTotal());
-    }
-
     public function testBufferOverflowFlushesBuffer(): void
     {
         for ($i = 0; $i < LoggingService::BUFFER_SIZE + 10; ++$i) {
