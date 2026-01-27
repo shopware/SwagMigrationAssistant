@@ -117,7 +117,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
                     ->withExceptionMessage($event->getThrowable()->getMessage())
                     ->withExceptionTrace($event->getThrowable()->getTrace())
                     ->build(RunAbortedAutomaticallyLog::class)
-            )->flush();
+            );
 
             return;
         }

@@ -69,7 +69,6 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     WriteContext::createFromContext($context)
                 );
                 $converter->writeMapping($context);
-                $this->loggingService->flush();
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
@@ -79,7 +78,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
                     ->build(ExceptionRunLog::class)
-            )->flush();
+            );
         }
     }
 
