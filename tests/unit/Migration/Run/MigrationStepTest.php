@@ -79,12 +79,12 @@ class MigrationStepTest extends TestCase
         ];
 
         if ($shouldPass) {
-            $step->assertOneOf(...$abortableSteps);
-            static::assertTrue(true);
+            static::expectNotToPerformAssertions();
         } else {
             $this->expectException(MigrationException::class);
-            $step->assertOneOf(...$abortableSteps);
         }
+
+        $step->assertOneOf(...$abortableSteps);
     }
 
     /**
