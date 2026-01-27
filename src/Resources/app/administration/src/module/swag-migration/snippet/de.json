@@ -775,13 +775,7 @@
       "selectedData": "Daten",
       "contextMenu": {
         "details": "Details anzeigen",
-        "downloadLogs": "Protokoll herunterladen",
-        "clearLogs": "Migrationsdaten löschen"
-      },
-      "clearRunDialog": {
-        "title": "Migrationsdaten löschen",
-        "content": "Beim Löschen der Migrationsdaten werden Log-Einträge, Mediendateien-Einträge, temporäre Migrationsdatensätze und der Migrationslauf selbst entfernt. Nach dem Löschen ist die Migration in der Historie nicht mehr einsehbar.",
-        "contentHint": "Willst Du die Daten wirklich löschen?"
+        "downloadLogs": "Protokoll herunterladen"
       },
       "detailPage": {
         "title": "Details zur Migration",
