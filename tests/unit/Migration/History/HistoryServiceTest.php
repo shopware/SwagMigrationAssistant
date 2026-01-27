@@ -7,7 +7,6 @@
 
 namespace unit\Migration\History;
 
-use Doctrine\DBAL\Connection;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -314,7 +313,6 @@ class HistoryServiceTest extends TestCase
         return new HistoryService(
             $loggingRepo,
             $runRepo,
-            $this->createMock(Connection::class),
         );
     }
 
