@@ -93,6 +93,7 @@ export default defineConfig({
             name: 'SwagMigrationAssistant',
             use: {
                 ...devices['Desktop Chrome'],
+                viewport: { width: 1440, height: 1080 },
             },
         },
     ],
