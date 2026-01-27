@@ -61,6 +61,17 @@ export default defineConfig({
         screenshot: 'on',
     },
 
+    expect: {
+        toHaveScreenshot: {
+            maxDiffPixelRatio: 0.01,
+            threshold: 0.2,
+            animations: 'disabled',
+        },
+    },
+
+    snapshotDir: './snapshots',
+    snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{arg}{ext}',
+
     // We abuse this to wait for the external webserver
     webServer: {
         command: 'sleep 1d',
