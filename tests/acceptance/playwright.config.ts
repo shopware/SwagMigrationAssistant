@@ -2,18 +2,28 @@ import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 import dotenv from 'dotenv';
 
-// Read from "SwagMigrationAssistant/tests/acceptance/.env" file
+// read 'SwagMigrationAssistant/tests/acceptance/.env'
 dotenv.config();
 
-// Read from "platform/.env" file and only set DATABASE_URL + APP_URL if not otherwise set from it
+// read 'platform/.env'
 const platformDir = path.resolve(process.cwd(), '../../../../..');
-const platformEnv = {};
-dotenv.config({ path: path.resolve(platformDir, '.env'), processEnv: platformEnv });
-if (!process.env.DATABASE_URL && platformEnv.DATABASE_URL) {
-    process.env.DATABASE_URL = platformEnv.DATABASE_URL;
+
+const platformEnv = {} as {
+    DATABASE_URL?: string;
+    APP_URL?: string;
+};
+
+dotenv.config({
+    path: path.resolve(platformDir, '.env'),
+    processEnv: platformEnv,
+});
+
+if (!process.env.DATABASE_URL && platformEnv?.DATABASE_URL) {
+    process.env.DATABASE_URL = platformEnv?.DATABASE_URL;
 }
-if (!process.env.APP_URL && platformEnv.APP_URL) {
-    process.env.APP_URL = platformEnv.APP_URL;
+
+if (!process.env.APP_URL && platformEnv?.APP_URL) {
+    process.env.APP_URL = platformEnv?.APP_URL;
 }
 
 const missingEnvVars = [
@@ -36,7 +46,8 @@ process.env.SHOPWARE_ADMIN_USERNAME = process.env.SHOPWARE_ADMIN_USERNAME ?? 'ad
 process.env.SHOPWARE_ADMIN_PASSWORD = process.env.SHOPWARE_ADMIN_PASSWORD ?? 'shopware';
 
 // make sure APP_URL ends with a slash
-process.env.APP_URL = `${process.env.APP_URL.replace(/\/+$/, '')}/`;
+process.env.APP_URL = `${process.env.APP_URL?.replace(/\/+$/, '')}/`;
+
 if (process.env.ADMIN_URL) {
     process.env.ADMIN_URL = `${process.env.ADMIN_URL.replace(/\/+$/, '')}/`;
 } else {
@@ -50,11 +61,10 @@ export default defineConfig({
     retries: process.env.CI ? 2 : 0,
     workers: process.env.CI ? 1 : 1,
     reporter: 'html',
-    timeout: 300_000, // 5 min. test timeout
-    globalTimeout: 600_000, // kill test suite after 10 min. running
+    timeout: 300_000, // 5 min
+    globalTimeout: 600_000, // 10 min
 
     use: {
-        /* Base URL to use in actions like `await page.goto('/')`. */
         baseURL: process.env.APP_URL,
         trace: 'on',
         video: 'on',
@@ -72,7 +82,6 @@ export default defineConfig({
     snapshotDir: './snapshots',
     snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{arg}{ext}',
 
-    // We abuse this to wait for the external webserver
     webServer: {
         command: 'sleep 1d',
         url: process.env.APP_URL,

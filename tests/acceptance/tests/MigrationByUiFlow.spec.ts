@@ -83,6 +83,8 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             await premappingItems.evaluateAll(async (list) => {
                 for (const item of list) {
                     await item.click();
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     document.querySelector('.mt-select-result')?.click();
                     await new Promise((resolve) => setTimeout(resolve, 150));
                 }
