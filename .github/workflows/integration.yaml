@@ -132,7 +132,7 @@ jobs:
           npx playwright install --with-deps
       - name: Run Playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
-        run: npx playwright test --trace=on ${{ inputs.update_snapshots && '--update-snapshots' || '' }}
+        run: npx playwright test --trace=on --update-snapshots
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -142,7 +142,6 @@ jobs:
             custom/plugins/${{ github.event.repository.name }}/tests/acceptance/playwright-report/
           retention-days: 3
       - name: Upload updated snapshots
-        if: ${{ inputs.update_snapshots }}
         uses: actions/upload-artifact@v4
         with:
           name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}
