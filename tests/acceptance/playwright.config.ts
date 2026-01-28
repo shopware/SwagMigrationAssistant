@@ -45,6 +45,10 @@ if (missingEnvVars.length > 0) {
 process.env.SHOPWARE_ADMIN_USERNAME = process.env.SHOPWARE_ADMIN_USERNAME ?? 'admin';
 process.env.SHOPWARE_ADMIN_PASSWORD = process.env.SHOPWARE_ADMIN_PASSWORD ?? 'shopware';
 
+const ignoreHTTPSErrors =
+    process.env.SHOPWARE_PLAYWRIGHT_IGNORE_HTTPS_ERRORS === 'true' ||
+    process.env.SHOPWARE_PLAYWRIGHT_IGNORE_HTTPS_ERRORS === '1';
+
 // make sure APP_URL ends with a slash
 process.env.APP_URL = `${process.env.APP_URL?.replace(/\/+$/, '')}/`;
 
@@ -69,6 +73,7 @@ export default defineConfig({
         trace: 'retain-on-failure',
         video: 'retain-on-failure',
         screenshot: 'only-on-failure',
+        ignoreHTTPSErrors,
     },
 
     expect: {
@@ -86,6 +91,7 @@ export default defineConfig({
         command: 'sleep 1d',
         url: process.env.APP_URL,
         reuseExistingServer: true,
+        ignoreHTTPSErrors,
     },
 
     projects: [
