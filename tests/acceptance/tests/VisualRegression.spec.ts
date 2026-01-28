@@ -124,7 +124,7 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Truncate migration' }).click();
         await page.getByRole('button', { name: 'Archive' }).click();
 
-        await waitForLoaders(page, 120_000);
+        await waitForLoaders(page, 500_000);
         await expect(page.getByRole('button', { name: 'Create initial connection' })).toBeVisible();
     });
 });

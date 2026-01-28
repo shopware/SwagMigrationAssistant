@@ -113,9 +113,9 @@ More details (including Playwright install steps) can be found in the [acceptanc
 
 Visual regression tests compare screenshots against baseline images. When UI changes are intentional, update the snapshots via CI to ensure consistency across environments:
 
-1. Go to **Actions** > **Integration** workflow
+1. Go to **Actions** > **Acceptance** workflow
 2. Click **Run workflow**
-3. Check **Update visual regression snapshots**
+3. Check **Update snapshots**
 4. Run the workflow and wait for completion
 5. Download the `visual-snapshots-trunk` artifact
 6. Extract and replace `tests/acceptance/snapshots/` with the downloaded files
