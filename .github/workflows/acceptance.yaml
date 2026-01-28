@@ -1,6 +1,8 @@
 name: Acceptance
 
 on:
+  schedule:
+    - cron: '0 3 * * *'  # nightly at 3 am utc
   workflow_dispatch:
     inputs:
       update_snapshots:
