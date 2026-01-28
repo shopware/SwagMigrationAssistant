@@ -16,7 +16,7 @@ function getMask(page: Page) {
 }
 
 async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT) {
-    await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout });
+    await expect(page.locator('.sw-loader-element').or(page.locator('.mt-loader-element'))).toHaveCount(0, { timeout });
 }
 
 test.describe('Visual Regression Tests @visual', () => {
@@ -124,8 +124,10 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Truncate migration' }).click();
         await page.getByRole('button', { name: 'Archive' }).click();
 
-        await waitForLoaders(page, 500_000);
-        await expect(page.getByRole('button', { name: 'Create initial connection' })).toBeVisible();
+        await waitForLoaders(page, 300_000); // wait for truncation
+        await expect(page.getByRole('button', { name: 'Create initial connection' })).toBeVisible(
+            { timeout: 60_000 },
+        );
     });
 });
 

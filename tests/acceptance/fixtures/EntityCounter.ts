@@ -32,10 +32,7 @@ export const EntityCounter = base.extend<FixtureTypes>({
                 expect(response.ok()).toBe(true);
                 const json = await response.json();
 
-                // eslint-disable-next-line playwright/no-conditional-in-test
                 const count = json.aggregations?.entityCount?.count || 0;
-
-                // soft assertion will not stop the test run, but still mark the test as failed
                 expect.soft(count, stepTitle).toBe(expectedCount);
             });
         };
