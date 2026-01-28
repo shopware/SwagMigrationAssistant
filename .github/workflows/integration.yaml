@@ -2,6 +2,12 @@ name: Integration
 
 on:
   workflow_dispatch:
+    inputs:
+      update_snapshots:
+        description: 'Update visual regression snapshots'
+        required: false
+        type: boolean
+        default: false
   push:
     branches:
       - trunk
@@ -124,13 +130,9 @@ jobs:
         run: |
           npm ci
           npx playwright install --with-deps
-#      - name: Run Playwright with reporting
-#        working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
-#        run: |
-#          npx pwc --project-id ${{ secrets.CURRENTS_PROJECT_ID }} --key ${{ secrets.CURRENTS_RECORD_KEY }} --ci-build-id ${{ github.repository }}-${{ github.run_id }}-${{ matrix.PLATFORM_BRANCH }}-${{ github.run_attempt }}  -- --trace=on
       - name: Run Playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
-        run: npx playwright test --trace=on
+        run: npx playwright test --trace=on ${{ inputs.update_snapshots && '--update-snapshots' || '' }}
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -139,3 +141,10 @@ jobs:
             custom/plugins/${{ github.event.repository.name }}/tests/acceptance/test-results/
             custom/plugins/${{ github.event.repository.name }}/tests/acceptance/playwright-report/
           retention-days: 3
+      - name: Upload updated snapshots
+        if: ${{ inputs.update_snapshots }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}
+          path: custom/plugins/${{ github.event.repository.name }}/tests/acceptance/snapshots/
+          retention-days: 30

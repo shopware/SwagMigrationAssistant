@@ -80,7 +80,7 @@ export default defineConfig({
     },
 
     snapshotDir: './snapshots',
-    snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{arg}{ext}',
+    snapshotPathTemplate: '{snapshotDir}/{testFilePath}/{platform}/{arg}{ext}',
 
     webServer: {
         command: 'sleep 1d',
