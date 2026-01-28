@@ -7,6 +7,8 @@ const dynamicElementSelectors = [
     '.sw-version__info',
     '.sw-avatar',
     '.sw-admin-menu__user-name',
+    '.sw-loader-element',
+    '.mt-loader-element',
     '[class*="timestamp"]',
     '[class*="date"]',
 ];
@@ -63,6 +65,13 @@ test.describe('Visual Regression Tests @visual', () => {
 
         await expect(page).toHaveScreenshot('main-page-general-with-connection.png', {
             mask,
+        });
+
+        await page.getByTitle('Data selection').click();
+        await waitForLoaders(page);
+
+        await expect(page).toHaveScreenshot('main-page-data-selection.png', {
+            mask: getMask(page),
         });
     });
 
@@ -128,6 +137,10 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByTestId('mt-icon__solid-ellipsis-h-s').click();
         await page.getByRole('button', { name: 'Truncate migration' }).click();
         await page.getByRole('button', { name: 'Archive' }).click();
+
+        await expect(page).toHaveScreenshot('connection-wizard-truncation.png', {
+            mask,
+        });
 
         await waitForLoaders(page, 300_000); // wait for truncation
 

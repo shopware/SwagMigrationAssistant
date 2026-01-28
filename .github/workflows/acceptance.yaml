@@ -49,6 +49,7 @@ jobs:
                 "symlink": true
               }
             }
+
       - name: Setup Migration Assistant
         run: |
           composer run build:js:admin
