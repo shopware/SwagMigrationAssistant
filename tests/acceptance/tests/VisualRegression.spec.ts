@@ -20,8 +20,11 @@ function getMask(page: Page) {
 async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT) {
     const loader = page.locator('.sw-loader-element, .mt-loader-element');
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    await loader.first().waitFor({ state: 'visible', timeout: 1000 }).catch(() => {});
+    await loader
+        .first()
+        .waitFor({ state: 'visible', timeout: 1000 })
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        .catch(() => {});
 
     await expect(loader).toHaveCount(0, { timeout });
 }

@@ -66,9 +66,9 @@ export default defineConfig({
 
     use: {
         baseURL: process.env.APP_URL,
-        trace: 'on',
-        video: 'on',
-        screenshot: 'on',
+        trace: 'retain-on-failure',
+        video: 'retain-on-failure',
+        screenshot: 'only-on-failure',
     },
 
     expect: {

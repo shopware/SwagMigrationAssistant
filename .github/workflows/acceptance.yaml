@@ -38,7 +38,7 @@ jobs:
           shopwareVersion: ${{ matrix.PLATFORM_BRANCH }}
           install: true
           install-admin: true
-          install-storefront: true
+          install-storefront: false
           mysqlVersion: skip
           env: prod
           extraRepositories: |
@@ -56,6 +56,12 @@ jobs:
           cd custom/plugins/${{ github.event.repository.name }}/tests
           mysql -uroot < _fixtures/database/sw55.sql
 
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('custom/plugins/**/tests/acceptance/package-lock.json') }}
+
       - name: Install playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
         run: |
@@ -64,7 +70,7 @@ jobs:
 
       - name: Run Playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
-        run: npx playwright test --trace=on --update-snapshots
+        run: npx playwright test ${{ inputs.update_snapshots && '--update-snapshots' || '' }}
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -77,6 +83,7 @@ jobs:
 
       - name: Upload updated snapshots
         uses: actions/upload-artifact@v4
+        if: ${{ inputs.update_snapshots }}
         with:
           name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}
           path: custom/plugins/${{ github.event.repository.name }}/tests/acceptance/snapshots/
