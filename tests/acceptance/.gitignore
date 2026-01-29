@@ -1,3 +1,7 @@
 playwright-report/
 test-results/
-snapshots/darwin/
+
+snapshots/**
+!snapshots/*/
+!snapshots/*/linux/
+!snapshots/*/linux/**

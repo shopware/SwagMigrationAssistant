@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 import dotenv from 'dotenv';
+import { VIEWPORT } from './fixtures/TestHelpers';
 
 const IS_CI = !!process.env.CI;
 
@@ -71,7 +72,7 @@ export default defineConfig({
             name: 'SwagMigrationAssistant',
             use: {
                 ...devices['Desktop Chrome'],
-                viewport: { width: 1440, height: 1080 },
+                viewport: VIEWPORT.DEFAULT,
             },
         },
     ],
