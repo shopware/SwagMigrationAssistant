@@ -58,7 +58,7 @@ readonly class DebugLog implements MigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__DEBUG';
+        return 'SWAG_MIGRATION_DEBUG';
     }
 
     public function getEntityName(): ?string

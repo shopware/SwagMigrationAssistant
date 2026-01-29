@@ -16,7 +16,7 @@ use Shopware\Core\Framework\Util\Random;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertDocumentTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\GlobalDocumentBaseConfigLookup;
@@ -176,7 +176,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
                 ->withFieldSourcePath('key')
                 ->withSourceData($data)
                 ->withConvertedData($documentType)
-                ->build(DocumentTypeNotSupportedLog::class)
+                ->build(ConvertDocumentTypeUnsupportedLog::class)
         );
 
         $mapping = $this->mappingService->getOrCreateMapping(

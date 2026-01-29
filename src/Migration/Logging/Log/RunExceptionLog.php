@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class ThemeCompilingErrorRunLog extends AbstractMigrationLogEntry
+readonly class RunExceptionLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class ThemeCompilingErrorRunLog extends AbstractMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__THEME_COMPILING_ERROR';
+        return 'SWAG_MIGRATION_RUN_EXCEPTION';
     }
 }

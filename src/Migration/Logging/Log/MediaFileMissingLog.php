@@ -10,21 +10,21 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
-#[Package('after-sales')]
-readonly class NotConvertedLog extends AbstractMigrationLogEntry
+#[Package('fundamentals@after-sales')]
+readonly class MediaFileMissingLog extends AbstractMigrationLogEntry
 {
+    public function isUserFixable(): bool
+    {
+        return false;
+    }
+
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__ENTITY_NOT_CONVERTED';
-    }
-
-    public function isUserFixable(): bool
-    {
-        return false;
+        return 'SWAG_MIGRATION_MEDIA_FILE_MISSING';
     }
 }

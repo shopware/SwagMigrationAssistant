@@ -29,7 +29,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteThemeCompilingFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
@@ -272,7 +272,7 @@ class RunService implements RunServiceInterface
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName(ThemeDefinition::ENTITY_NAME)
                         ->withEntityId($defaultThemeId)
-                        ->build(ThemeCompilingErrorRunLog::class)
+                        ->build(WriteThemeCompilingFailedLog::class)
                 );
             }
         }

@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class FieldReassignedRunLog extends AbstractMigrationLogEntry
+readonly class FetchDataSetMissingLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class FieldReassignedRunLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED';
+        return 'SWAG_MIGRATION_FETCH_DATASET_MISSING';
     }
 }

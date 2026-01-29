@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class AssociationRequiredMissingLog extends AbstractMigrationLogEntry
+readonly class ConvertEntityAlreadyExistsLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class AssociationRequiredMissingLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_INFO;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING';
+        return 'SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS';
     }
 }

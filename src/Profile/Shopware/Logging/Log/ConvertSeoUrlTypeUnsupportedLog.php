@@ -8,10 +8,10 @@
 namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
-use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectTypeLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnsupportedTranslationTypeLog extends UnsupportedObjectTypeLog
+readonly class ConvertSeoUrlTypeUnsupportedLog extends ConvertObjectTypeUnsupportedLog
 {
     public function getLevel(): string
     {

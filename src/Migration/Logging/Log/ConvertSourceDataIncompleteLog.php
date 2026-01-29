@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class CannotConvertChildEntityLog extends AbstractMigrationLogEntry
+readonly class ConvertSourceDataIncompleteLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class CannotConvertChildEntityLog extends AbstractMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY';
+        return 'SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE';
     }
 }

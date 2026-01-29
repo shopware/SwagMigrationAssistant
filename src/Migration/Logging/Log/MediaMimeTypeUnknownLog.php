@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class MimeTypeErrorLog extends AbstractMigrationLogEntry
+readonly class MediaMimeTypeUnknownLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class MimeTypeErrorLog extends AbstractMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED';
+        return 'SWAG_MIGRATION_MEDIA_MIME_TYPE_UNKNOWN';
     }
 }

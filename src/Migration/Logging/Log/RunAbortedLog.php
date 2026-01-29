@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class ProcessorNotFoundLog extends AbstractMigrationLogEntry
+readonly class RunAbortedLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class ProcessorNotFoundLog extends AbstractMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND';
+        return 'SWAG_MIGRATION_RUN_ABORTED';
     }
 }

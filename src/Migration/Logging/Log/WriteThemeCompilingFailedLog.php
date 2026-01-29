@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class MessageQueueExceptionLog extends AbstractMigrationLogEntry
+readonly class WriteThemeCompilingFailedLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class MessageQueueExceptionLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_ERROR;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION';
+        return 'SWAG_MIGRATION_WRITE_THEME_COMPILING_FAILED';
     }
 }

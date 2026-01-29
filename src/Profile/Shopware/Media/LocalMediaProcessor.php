@@ -17,10 +17,10 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\MimeTypeErrorLog;
-use SwagMigrationAssistant\Migration\Logging\Log\TemporaryFileErrorLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaMimeTypeUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaTemporaryFileFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -139,7 +139,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                                 'media' => $mediaFile,
                             ])
                             ->withEntityId($mediaId)
-                            ->build(CannotGetFileRunLog::class)
+                            ->build(MediaFileMissingLog::class)
                     );
                     $processedMedia[] = $mediaId;
                     $failedMedia[] = $mediaId;
@@ -163,7 +163,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                             'media' => $mediaFile,
                         ])
                         ->withEntityId($mediaId)
-                        ->build(TemporaryFileErrorLog::class)
+                        ->build(MediaTemporaryFileFailedLog::class)
                 );
 
                 continue;
@@ -201,7 +201,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                             ->withExceptionMessage($e->getMessage())
                             ->withExceptionTrace($e->getTrace())
                             ->withEntityId($mediaId)
-                            ->build(ExceptionRunLog::class)
+                            ->build(RunExceptionLog::class)
                     );
                 }
                 \unlink($filePath);
@@ -216,7 +216,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                             'media' => $mediaFile,
                         ])
                         ->withEntityId($mediaId)
-                        ->build(CannotGetFileRunLog::class)
+                        ->build(MediaFileMissingLog::class)
                 );
                 $failedMedia[] = $mediaId;
             }
@@ -259,7 +259,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                         'media' => $media,
                     ])
                     ->withEntityId($mediaId)
-                    ->build(MimeTypeErrorLog::class)
+                    ->build(MediaMimeTypeUnknownLog::class)
             );
 
             return;

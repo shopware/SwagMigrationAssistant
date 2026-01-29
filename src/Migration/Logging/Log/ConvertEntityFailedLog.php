@@ -10,8 +10,8 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
-#[Package('fundamentals@after-sales')]
-readonly class CannotReadEntityCountLog extends AbstractMigrationLogEntry
+#[Package('after-sales')]
+readonly class ConvertEntityFailedLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class CannotReadEntityCountLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_INFO;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT';
+        return 'SWAG_MIGRATION_CONVERT_ENTITY_FAILED';
     }
 }

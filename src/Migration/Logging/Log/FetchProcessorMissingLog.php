@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class InvalidUnserializedDataLog extends AbstractMigrationLogEntry
+readonly class FetchProcessorMissingLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class InvalidUnserializedDataLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_ERROR;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA';
+        return 'SWAG_MIGRATION_FETCH_PROCESSOR_MISSING';
     }
 }

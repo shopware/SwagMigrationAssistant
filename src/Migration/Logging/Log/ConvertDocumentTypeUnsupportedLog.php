@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnknownEntityLog extends AbstractMigrationLogEntry
+readonly class ConvertDocumentTypeUnsupportedLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class UnknownEntityLog extends AbstractMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_ENTITY_UNKNOWN';
+        return 'SWAG_MIGRATION_CONVERT_DOCUMENT_TYPE_UNSUPPORTED';
     }
 }

@@ -11,20 +11,20 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class EmptyNecessaryFieldRunLog extends AbstractMigrationLogEntry
+readonly class ConvertEntityUnknownLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
         return false;
     }
 
-    public function getCode(): string
-    {
-        return 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD';
-    }
-
     public function getLevel(): string
     {
         return self::LOG_LEVEL_WARNING;
+    }
+
+    public function getCode(): string
+    {
+        return 'SWAG_MIGRATION_CONVERT_ENTITY_UNKNOWN';
     }
 }

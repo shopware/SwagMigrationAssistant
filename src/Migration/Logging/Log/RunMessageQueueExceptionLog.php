@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class EntityAlreadyExistsRunLog extends AbstractMigrationLogEntry
+readonly class RunMessageQueueExceptionLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class EntityAlreadyExistsRunLog extends AbstractMigrationLogEntry
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS';
+        return 'SWAG_MIGRATION_RUN_MESSAGE_QUEUE_EXCEPTION';
     }
 }

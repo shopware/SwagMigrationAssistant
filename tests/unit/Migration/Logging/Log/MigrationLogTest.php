@@ -13,30 +13,29 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertEntityLog;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotReadEntityCountLog;
-use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\DocumentTypeNotSupportedLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EntityAlreadyExistsRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\FieldReassignedRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedDataLog;
-use SwagMigrationAssistant\Migration\Logging\Log\MessageQueueExceptionLog;
-use SwagMigrationAssistant\Migration\Logging\Log\MimeTypeErrorLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedAutomaticallyLog;
-use SwagMigrationAssistant\Migration\Logging\Log\TemporaryFileErrorLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
-use SwagMigrationAssistant\Migration\Logging\Log\UnsupportedObjectTypeLog;
-use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertDocumentTypeUnsupportedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityAlreadyExistsLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertFieldReassignedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchEntityCountFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaMimeTypeUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaTemporaryFileFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunMessageQueueExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteThemeCompilingFailedLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
@@ -135,148 +134,141 @@ class MigrationLogTest extends TestCase
             'userFixable' => true,
         ];
 
-        yield AssociationRequiredMissingLog::class => [
-            'logClass' => AssociationRequiredMissingLog::class,
+        yield ConvertAssociationMissingLog::class => [
+            'logClass' => ConvertAssociationMissingLog::class,
             'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield CannotConvertChildEntityLog::class => [
-            'logClass' => CannotConvertChildEntityLog::class,
+        yield ConvertChildEntityFailedLog::class => [
+            'logClass' => ConvertChildEntityFailedLog::class,
             'code' => 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield CannotConvertEntityLog::class => [
-            'logClass' => CannotConvertEntityLog::class,
-            'code' => 'SWAG_MIGRATION_CANNOT_CONVERT',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
-            'userFixable' => false,
-        ];
-
-        yield CannotGetFileRunLog::class => [
-            'logClass' => CannotGetFileRunLog::class,
+        yield MediaFileMissingLog::class => [
+            'logClass' => MediaFileMissingLog::class,
             'code' => 'SWAG_MIGRATION_CANNOT_GET_FILE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield CannotReadEntityCountLog::class => [
-            'logClass' => CannotReadEntityCountLog::class,
+        yield FetchEntityCountFailedLog::class => [
+            'logClass' => FetchEntityCountFailedLog::class,
             'code' => 'SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield DataSetNotFoundLog::class => [
-            'logClass' => DataSetNotFoundLog::class,
+        yield FetchDataSetMissingLog::class => [
+            'logClass' => FetchDataSetMissingLog::class,
             'code' => 'SWAG_MIGRATION__DATASET_NOT_FOUND',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield DocumentTypeNotSupportedLog::class => [
-            'logClass' => DocumentTypeNotSupportedLog::class,
+        yield ConvertDocumentTypeUnsupportedLog::class => [
+            'logClass' => ConvertDocumentTypeUnsupportedLog::class,
             'code' => 'SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield EmptyNecessaryFieldRunLog::class => [
-            'logClass' => EmptyNecessaryFieldRunLog::class,
+        yield ConvertSourceDataIncompleteLog::class => [
+            'logClass' => ConvertSourceDataIncompleteLog::class,
             'code' => 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield EntityAlreadyExistsRunLog::class => [
-            'logClass' => EntityAlreadyExistsRunLog::class,
+        yield ConvertEntityAlreadyExistsLog::class => [
+            'logClass' => ConvertEntityAlreadyExistsLog::class,
             'code' => 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
-        yield ExceptionRunLog::class => [
-            'logClass' => ExceptionRunLog::class,
+        yield RunExceptionLog::class => [
+            'logClass' => RunExceptionLog::class,
             'code' => 'SWAG_MIGRATION_RUN_EXCEPTION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield FieldReassignedRunLog::class => [
-            'logClass' => FieldReassignedRunLog::class,
+        yield ConvertFieldReassignedLog::class => [
+            'logClass' => ConvertFieldReassignedLog::class,
             'code' => 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
-        yield InvalidUnserializedDataLog::class => [
-            'logClass' => InvalidUnserializedDataLog::class,
+        yield ConvertUnserializedDataInvalidLog::class => [
+            'logClass' => ConvertUnserializedDataInvalidLog::class,
             'code' => 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield MessageQueueExceptionLog::class => [
-            'logClass' => MessageQueueExceptionLog::class,
+        yield RunMessageQueueExceptionLog::class => [
+            'logClass' => RunMessageQueueExceptionLog::class,
             'code' => 'SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
-        yield MimeTypeErrorLog::class => [
-            'logClass' => MimeTypeErrorLog::class,
+        yield MediaMimeTypeUnknownLog::class => [
+            'logClass' => MediaMimeTypeUnknownLog::class,
             'code' => 'SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield ProcessorNotFoundLog::class => [
-            'logClass' => ProcessorNotFoundLog::class,
+        yield FetchProcessorMissingLog::class => [
+            'logClass' => FetchProcessorMissingLog::class,
             'code' => 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield RunAbortedAutomaticallyLog::class => [
-            'logClass' => RunAbortedAutomaticallyLog::class,
+        yield RunAbortedLog::class => [
+            'logClass' => RunAbortedLog::class,
             'code' => 'SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield TemporaryFileErrorLog::class => [
-            'logClass' => TemporaryFileErrorLog::class,
+        yield MediaTemporaryFileFailedLog::class => [
+            'logClass' => MediaTemporaryFileFailedLog::class,
             'code' => 'SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield ThemeCompilingErrorRunLog::class => [
-            'logClass' => ThemeCompilingErrorRunLog::class,
+        yield WriteThemeCompilingFailedLog::class => [
+            'logClass' => WriteThemeCompilingFailedLog::class,
             'code' => 'SWAG_MIGRATION__THEME_COMPILING_ERROR',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
-        yield UnknownEntityLog::class => [
-            'logClass' => UnknownEntityLog::class,
+        yield ConvertEntityUnknownLog::class => [
+            'logClass' => ConvertEntityUnknownLog::class,
             'code' => 'SWAG_MIGRATION_ENTITY_UNKNOWN',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield UnsupportedObjectTypeLog::class => [
-            'logClass' => UnsupportedObjectTypeLog::class,
+        yield ConvertObjectTypeUnsupportedLog::class => [
+            'logClass' => ConvertObjectTypeUnsupportedLog::class,
             'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
-        yield WriteExceptionRunLog::class => [
-            'logClass' => WriteExceptionRunLog::class,
+        yield WriteExceptionLog::class => [
+            'logClass' => WriteExceptionLog::class,
             'code' => 'SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,

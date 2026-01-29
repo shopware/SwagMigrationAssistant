@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class CannotGetFileRunLog extends AbstractMigrationLogEntry
+readonly class ConvertFieldReassignedLog extends AbstractMigrationLogEntry
 {
     public function isUserFixable(): bool
     {
@@ -20,11 +20,11 @@ readonly class CannotGetFileRunLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_INFO;
     }
 
     public function getCode(): string
     {
-        return 'SWAG_MIGRATION_CANNOT_GET_FILE';
+        return 'SWAG_MIGRATION_CONVERT_FIELD_REASSIGNED';
     }
 }
