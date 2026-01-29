@@ -1518,7 +1518,7 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->context
             )['entityId'];
 
-            if (!$categoryId || !$salesChannelId) {
+            if (!$id || !$categoryId || !$salesChannelId) {
                 continue;
             }
 
