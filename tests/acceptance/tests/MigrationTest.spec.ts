@@ -1,7 +1,7 @@
 import { test, expect } from '../fixtures/AcceptanceTest';
 import { getMask, waitForLoaders, withLargerViewport } from '../fixtures/TestHelpers';
 
-test.describe('Migration Tests @migration', () => {
+test.describe('Migration Tests @migration @visual', () => {
     test.describe.configure({
         retries: 0,
         timeout: 300_000,

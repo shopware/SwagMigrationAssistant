@@ -72,10 +72,11 @@ jobs:
 
       - name: Run Playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
+        env:
+          DATABASE_URL: mysql://root:root@127.0.0.1:3306/sw55
         run: npx playwright test --update-snapshots
 
       - uses: actions/upload-artifact@v4
-        if: always()
         with:
           name: e2e-${{ github.event.repository.name }}-${{ github.sha }}-${{ matrix.PLATFORM_BRANCH }}
           path: |
@@ -88,4 +89,4 @@ jobs:
         with:
           name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}
           path: custom/plugins/${{ github.event.repository.name }}/tests/acceptance/snapshots/
-          retention-days: 30
+          retention-days: 3
