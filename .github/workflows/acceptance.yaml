@@ -9,7 +9,7 @@ on:
         description: 'Update snapshots'
         required: false
         type: boolean
-        default: false
+        default: true
   push:
     branches:
       - trunk
