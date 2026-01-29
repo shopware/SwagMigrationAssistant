@@ -1,33 +1,5 @@
-import type { Page } from 'playwright-core';
 import { test, expect } from '../fixtures/AcceptanceTest';
-
-const LOADING_TIMEOUT = 30_000;
-
-const dynamicElementSelectors = [
-    '.sw-version__info',
-    '.sw-avatar',
-    '.sw-admin-menu__user-name',
-    '.sw-loader-element',
-    '.mt-loader-element',
-    '[class*="timestamp"]',
-    '[class*="date"]',
-];
-
-function getMask(page: Page) {
-    return dynamicElementSelectors.map((selector) => page.locator(selector));
-}
-
-async function waitForLoaders(page: Page, timeout = LOADING_TIMEOUT) {
-    const loader = page.locator('.sw-loader-element, .mt-loader-element');
-
-    await loader
-        .first()
-        .waitFor({ state: 'visible', timeout: 1000 })
-        // eslint-disable-next-line @typescript-eslint/no-empty-function
-        .catch(() => {});
-
-    await expect(loader).toHaveCount(0, { timeout });
-}
+import { getMask, waitForLoaders } from '../fixtures/TestHelpers';
 
 test.describe('Visual Regression Tests @visual', () => {
     test.describe.configure({
