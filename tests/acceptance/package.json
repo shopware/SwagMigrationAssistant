@@ -4,7 +4,8 @@
   "version": "1.0.0",
   "scripts": {
     "types": "tsc",
-    "test": "npx playwright test --ui",
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui --headed --ui-port=3000",
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./",
     "format": "prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",

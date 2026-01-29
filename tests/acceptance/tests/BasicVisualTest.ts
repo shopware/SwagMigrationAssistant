@@ -3,7 +3,6 @@ import { getMask, waitForLoaders } from '../fixtures/TestHelpers';
 
 test.describe('Visual Regression Tests @visual', () => {
     test.describe.configure({
-        retries: 0,
         timeout: 120_000,
     });
 
@@ -128,7 +127,6 @@ test.describe('Visual Regression Tests @visual', () => {
 
 test.describe('Component Visual Tests @visual @components', () => {
     test.describe.configure({
-        retries: 0,
         timeout: 60_000,
     });
 
