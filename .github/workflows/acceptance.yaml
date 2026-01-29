@@ -9,7 +9,7 @@ on:
         description: 'Update snapshots'
         required: false
         type: boolean
-        default: true
+        default: false
   push:
     branches:
       - trunk
@@ -72,7 +72,7 @@ jobs:
 
       - name: Run Playwright
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
-        run: npx playwright test ${{ inputs.update_snapshots && '--update-snapshots' || '' }}
+        run: npx playwright test --update-snapshots
 
       - uses: actions/upload-artifact@v4
         if: always()
@@ -85,7 +85,6 @@ jobs:
 
       - name: Upload updated snapshots
         uses: actions/upload-artifact@v4
-        if: ${{ inputs.update_snapshots }}
         with:
           name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}
           path: custom/plugins/${{ github.event.repository.name }}/tests/acceptance/snapshots/
