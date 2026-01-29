@@ -13,17 +13,17 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEnt
 #[Package('fundamentals@after-sales')]
 readonly class ConvertObjectTypeUnsupportedLog extends AbstractMigrationLogEntry
 {
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
         return self::LOG_LEVEL_INFO;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
         return 'SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED';
     }

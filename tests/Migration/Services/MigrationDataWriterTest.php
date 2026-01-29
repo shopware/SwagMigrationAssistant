@@ -53,6 +53,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -379,7 +380,7 @@ class MigrationDataWriterTest extends TestCase
 
         $log = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities()->first();
         static::assertNotNull($log);
-        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $log->getCode());
+        static::assertSame(RunExceptionLog::getCode(), $log->getCode());
     }
 
     #[DataProvider('requiredProperties')]
@@ -661,7 +662,7 @@ class MigrationDataWriterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
+        static::assertSame(RunExceptionLog::getCode(), $logs[0]['code']);
         static::assertCount(1, $logs);
     }
 

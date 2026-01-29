@@ -11,20 +11,20 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnsupportedMailTemplateTypeLog extends AbstractMigrationLogEntry
+readonly class ConvertShippingPriceUnsupportedLog extends AbstractMigrationLogEntry
 {
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
         return self::LOG_LEVEL_INFO;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE';
+        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE';
     }
 }

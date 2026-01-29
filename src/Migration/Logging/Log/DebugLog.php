@@ -36,7 +36,7 @@ readonly class DebugLog implements MigrationLogEntry
         return $this->runId;
     }
 
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
     }
@@ -51,12 +51,12 @@ readonly class DebugLog implements MigrationLogEntry
         return 'Debug Gateway';
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
         return AbstractMigrationLogEntry::LOG_LEVEL_DEBUG;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
         return 'SWAG_MIGRATION_DEBUG';
     }

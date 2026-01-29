@@ -23,8 +23,8 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationTypeLog;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingCalculationTypeUnsupportedLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingPriceUnsupportedLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
@@ -164,7 +164,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                         ->withFieldSourcePath('calculation')
                         ->withSourceData($data)
                         ->withConvertedData($converted)
-                        ->build(UnsupportedShippingCalculationTypeLog::class)
+                        ->build(ConvertShippingCalculationTypeUnsupportedLog::class)
                 );
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
@@ -672,7 +672,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
                         ->withFieldSourcePath('factor')
                         ->withSourceData($shippingCost)
                         ->withConvertedData($cost)
-                        ->build(UnsupportedShippingPriceLog::class)
+                        ->build(ConvertShippingPriceUnsupportedLog::class)
                 );
 
                 continue;

@@ -20,8 +20,10 @@ use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertDocumentTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityAlreadyExistsLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityFailedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertFieldReassignedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertMainVariantRelationFailedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
@@ -42,7 +44,11 @@ use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFi
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertLanguagePackDeactivatedLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingCalculationTypeUnsupportedLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingPriceUnsupportedLog;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
+use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\ConvertMediaDefaultFolderUnsupportedLog;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
 
 /**
@@ -136,141 +142,183 @@ class MigrationLogTest extends TestCase
 
         yield ConvertAssociationMissingLog::class => [
             'logClass' => ConvertAssociationMissingLog::class,
-            'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
+            'code' => 'SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield ConvertChildEntityFailedLog::class => [
             'logClass' => ConvertChildEntityFailedLog::class,
-            'code' => 'SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY',
+            'code' => 'SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield MediaFileMissingLog::class => [
             'logClass' => MediaFileMissingLog::class,
-            'code' => 'SWAG_MIGRATION_CANNOT_GET_FILE',
+            'code' => 'SWAG_MIGRATION_MEDIA_FILE_MISSING',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield FetchEntityCountFailedLog::class => [
             'logClass' => FetchEntityCountFailedLog::class,
-            'code' => 'SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT',
+            'code' => 'SWAG_MIGRATION_FETCH_ENTITY_COUNT_FAILED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield FetchDataSetMissingLog::class => [
             'logClass' => FetchDataSetMissingLog::class,
-            'code' => 'SWAG_MIGRATION__DATASET_NOT_FOUND',
+            'code' => 'SWAG_MIGRATION_FETCH_DATASET_MISSING',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield ConvertDocumentTypeUnsupportedLog::class => [
             'logClass' => ConvertDocumentTypeUnsupportedLog::class,
-            'code' => 'SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'code' => 'SWAG_MIGRATION_CONVERT_DOCUMENT_TYPE_UNSUPPORTED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield ConvertSourceDataIncompleteLog::class => [
             'logClass' => ConvertSourceDataIncompleteLog::class,
-            'code' => 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD',
+            'code' => 'SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield ConvertEntityAlreadyExistsLog::class => [
             'logClass' => ConvertEntityAlreadyExistsLog::class,
-            'code' => 'SWAG_MIGRATION_ENTITY_ALREADY_EXISTS',
+            'code' => 'SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield RunExceptionLog::class => [
             'logClass' => RunExceptionLog::class,
-            'code' => 'SWAG_MIGRATION_RUN_EXCEPTION',
+            'code' => RunExceptionLog::getCode(),
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield ConvertFieldReassignedLog::class => [
             'logClass' => ConvertFieldReassignedLog::class,
-            'code' => 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED',
+            'code' => 'SWAG_MIGRATION_CONVERT_FIELD_REASSIGNED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield ConvertUnserializedDataInvalidLog::class => [
             'logClass' => ConvertUnserializedDataInvalidLog::class,
-            'code' => 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA',
+            'code' => 'SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield RunMessageQueueExceptionLog::class => [
             'logClass' => RunMessageQueueExceptionLog::class,
-            'code' => 'SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
+            'code' => 'SWAG_MIGRATION_RUN_MESSAGE_QUEUE_EXCEPTION',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield MediaMimeTypeUnknownLog::class => [
             'logClass' => MediaMimeTypeUnknownLog::class,
-            'code' => 'SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'code' => 'SWAG_MIGRATION_MEDIA_MIME_TYPE_UNKNOWN',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield FetchProcessorMissingLog::class => [
             'logClass' => FetchProcessorMissingLog::class,
-            'code' => 'SWAG_MIGRATION__PROCESSOR_NOT_FOUND',
+            'code' => 'SWAG_MIGRATION_FETCH_PROCESSOR_MISSING',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield RunAbortedLog::class => [
             'logClass' => RunAbortedLog::class,
-            'code' => 'SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION',
+            'code' => 'SWAG_MIGRATION_RUN_ABORTED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield MediaTemporaryFileFailedLog::class => [
             'logClass' => MediaTemporaryFileFailedLog::class,
-            'code' => 'SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED',
+            'code' => 'SWAG_MIGRATION_MEDIA_TEMPORARY_FILE_FAILED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
 
         yield WriteThemeCompilingFailedLog::class => [
             'logClass' => WriteThemeCompilingFailedLog::class,
-            'code' => 'SWAG_MIGRATION__THEME_COMPILING_ERROR',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'code' => 'SWAG_MIGRATION_WRITE_THEME_COMPILING_FAILED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield ConvertEntityUnknownLog::class => [
             'logClass' => ConvertEntityUnknownLog::class,
-            'code' => 'SWAG_MIGRATION_ENTITY_UNKNOWN',
+            'code' => 'SWAG_MIGRATION_CONVERT_ENTITY_UNKNOWN',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => false,
         ];
 
         yield ConvertObjectTypeUnsupportedLog::class => [
             'logClass' => ConvertObjectTypeUnsupportedLog::class,
-            'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'code' => 'SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
 
         yield WriteExceptionLog::class => [
             'logClass' => WriteExceptionLog::class,
-            'code' => 'SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED',
+            'code' => 'SWAG_MIGRATION_WRITE_EXCEPTION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'userFixable' => false,
+        ];
+
+        yield ConvertEntityFailedLog::class => [
+            'logClass' => ConvertEntityFailedLog::class,
+            'code' => 'SWAG_MIGRATION_CONVERT_ENTITY_FAILED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'userFixable' => false,
+        ];
+
+        yield ConvertMainVariantRelationFailedLog::class => [
+            'logClass' => ConvertMainVariantRelationFailedLog::class,
+            'code' => 'SWAG_MIGRATION_CONVERT_MAIN_VARIANT_RELATION_FAILED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'userFixable' => false,
+        ];
+
+        yield ConvertShippingCalculationTypeUnsupportedLog::class => [
+            'logClass' => ConvertShippingCalculationTypeUnsupportedLog::class,
+            'code' => 'SWAG_MIGRATION_CONVERT_SHIPPING_CALCULATION_TYPE_UNSUPPORTED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'userFixable' => false,
+        ];
+
+        yield ConvertShippingPriceUnsupportedLog::class => [
+            'logClass' => ConvertShippingPriceUnsupportedLog::class,
+            'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
+            'userFixable' => false,
+        ];
+
+        yield ConvertLanguagePackDeactivatedLog::class => [
+            'logClass' => ConvertLanguagePackDeactivatedLog::class,
+            'code' => 'SWAG_MIGRATION_CONVERT_LANGUAGE_PACK_DEACTIVATED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
+            'userFixable' => false,
+        ];
+
+        yield ConvertMediaDefaultFolderUnsupportedLog::class => [
+            'logClass' => ConvertMediaDefaultFolderUnsupportedLog::class,
+            'code' => 'SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];
     }

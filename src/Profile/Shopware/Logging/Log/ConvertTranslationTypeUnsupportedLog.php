@@ -13,7 +13,7 @@ use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog
 #[Package('fundamentals@after-sales')]
 readonly class ConvertTranslationTypeUnsupportedLog extends ConvertObjectTypeUnsupportedLog
 {
-    public function getLevel(): string
+    public static function getLevel(): string
     {
         return self::LOG_LEVEL_INFO;
     }

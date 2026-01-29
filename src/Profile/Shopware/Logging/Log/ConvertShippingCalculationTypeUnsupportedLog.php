@@ -5,26 +5,26 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Profile\Shopware6\Logging\Log;
+namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class UnsupportedMediaDefaultFolderLog extends AbstractMigrationLogEntry
+readonly class ConvertShippingCalculationTypeUnsupportedLog extends AbstractMigrationLogEntry
 {
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_WARNING;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER';
+        return 'SWAG_MIGRATION_CONVERT_SHIPPING_CALCULATION_TYPE_UNSUPPORTED';
     }
 }
