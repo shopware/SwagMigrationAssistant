@@ -20,7 +20,7 @@ readonly class ConvertDocumentTypeUnsupportedLog extends AbstractMigrationLogEnt
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_INFO;
     }
 
     public function getCode(): string

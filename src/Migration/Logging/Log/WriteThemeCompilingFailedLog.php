@@ -20,7 +20,7 @@ readonly class WriteThemeCompilingFailedLog extends AbstractMigrationLogEntry
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string

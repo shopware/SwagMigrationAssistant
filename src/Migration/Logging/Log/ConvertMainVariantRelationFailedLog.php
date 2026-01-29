@@ -20,7 +20,7 @@ readonly class ConvertMainVariantRelationFailedLog extends AbstractMigrationLogE
 
     public function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_WARNING;
     }
 
     public function getCode(): string
