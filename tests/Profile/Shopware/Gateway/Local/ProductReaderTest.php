@@ -136,15 +136,19 @@ class ProductReaderTest extends LocalConnectionTestCase
 
         $productOne = $this->getProductById(9, $data);
         static::assertCount(2, $productOne['mainCategories']);
+        static::assertSame('6', $productOne['mainCategories'][0]['id']);
         static::assertSame('1', $productOne['mainCategories'][0]['shopId']);
         static::assertSame('14', $productOne['mainCategories'][0]['categoryId']);
+        static::assertSame('8', $productOne['mainCategories'][1]['id']);
         static::assertSame('3', $productOne['mainCategories'][1]['shopId']);
         static::assertSame('34', $productOne['mainCategories'][1]['categoryId']);
 
         $productTwo = $this->getProductById(272, $data);
         static::assertCount(2, $productTwo['mainCategories']);
+        static::assertSame('3', $productTwo['mainCategories'][0]['id']);
         static::assertSame('1', $productTwo['mainCategories'][0]['shopId']);
         static::assertSame('15', $productTwo['mainCategories'][0]['categoryId']);
+        static::assertSame('5', $productTwo['mainCategories'][1]['id']);
         static::assertSame('3', $productTwo['mainCategories'][1]['shopId']);
         static::assertSame('16', $productTwo['mainCategories'][1]['categoryId']);
     }

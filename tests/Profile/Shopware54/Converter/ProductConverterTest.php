@@ -82,9 +82,11 @@ class ProductConverterTest extends TestCase
         $result = $convertedResult['mainCategories'];
 
         foreach ($result as $mainSeoCategory) {
+            static::assertArrayHasKey('id', $mainSeoCategory);
             static::assertArrayHasKey('categoryId', $mainSeoCategory);
             static::assertArrayHasKey('salesChannelId', $mainSeoCategory);
 
+            static::assertTrue(Uuid::isValid($mainSeoCategory['id']));
             static::assertTrue(Uuid::isValid($mainSeoCategory['categoryId']));
             static::assertTrue(Uuid::isValid($mainSeoCategory['salesChannelId']));
         }

@@ -1497,6 +1497,13 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $mainCategories = [];
         foreach ($categories as $category) {
+            $id = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::PRODUCT_MAIN_CATEGORY,
+                $category['id'],
+                $this->context
+            )['entityId'];
+
             $categoryId = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::CATEGORY,
@@ -1516,6 +1523,7 @@ abstract class ProductConverter extends ShopwareConverter
             }
 
             $mainCategories[] = [
+                'id' => $id,
                 'categoryId' => $categoryId,
                 'salesChannelId' => $salesChannelId,
             ];
