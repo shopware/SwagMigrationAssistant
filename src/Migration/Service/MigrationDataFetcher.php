@@ -52,8 +52,8 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return $this->gatewayRegistry->getGateway($migrationContext)->readEnvironmentInformation($migrationContext, $context);
     }
 
-    public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function fetchTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext, $context);
+        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext);
     }
 }

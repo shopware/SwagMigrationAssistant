@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Gateway;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\TotalStruct;
@@ -18,5 +17,5 @@ interface TotalReaderInterface
     /**
      * @return array<string, TotalStruct>
      */
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array;
+    public function readTotals(MigrationContextInterface $migrationContext): array;
 }

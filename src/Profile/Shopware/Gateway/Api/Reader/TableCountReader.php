@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
@@ -28,7 +27,7 @@ class TableCountReader implements TableCountReaderInterface
     ) {
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
