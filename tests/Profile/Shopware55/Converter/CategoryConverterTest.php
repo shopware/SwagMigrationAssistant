@@ -114,6 +114,7 @@ class CategoryConverterTest extends TestCase
         static::assertNotNull($convertResult->getMappingUuid());
         static::assertSame($categoryData[0]['asset']['name'], $converted['media']['title']);
         static::assertSame($categoryData[0]['asset']['description'], $converted['media']['alt']);
+        static::assertSame(CategoryDefinition::TYPE_PAGE, $converted['type']);
     }
 
     public function testConvertWithParent(): void
