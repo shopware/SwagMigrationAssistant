@@ -88,21 +88,64 @@ class MigrationStepTest extends TestCase
     }
 
     /**
-     * @return iterable<string, array{MigrationStep, bool}>
+     * @return iterable<string, array{step: MigrationStep, shouldPass: bool}>
      */
     public static function provideAbortableSteps(): iterable
     {
-        yield 'FETCHING is abortable' => [MigrationStep::FETCHING, true];
-        yield 'ERROR_RESOLUTION is abortable' => [MigrationStep::ERROR_RESOLUTION, true];
-        yield 'WRITING is abortable' => [MigrationStep::WRITING, true];
-        yield 'MEDIA_PROCESSING is abortable' => [MigrationStep::MEDIA_PROCESSING, true];
-        yield 'IDLE is not abortable' => [MigrationStep::IDLE, false];
-        yield 'CLEANUP is not abortable' => [MigrationStep::CLEANUP, false];
-        yield 'INDEXING is not abortable' => [MigrationStep::INDEXING, false];
-        yield 'WAITING_FOR_APPROVE is not abortable' => [MigrationStep::WAITING_FOR_APPROVE, false];
-        yield 'ABORTING is not abortable' => [MigrationStep::ABORTING, false];
-        yield 'FINISHED is not abortable' => [MigrationStep::FINISHED, false];
-        yield 'ABORTED is not abortable' => [MigrationStep::ABORTED, false];
+        yield 'FETCHING is abortable' => [
+            'step' => MigrationStep::FETCHING,
+            'shouldPass' => true,
+        ];
+
+        yield 'ERROR_RESOLUTION is abortable' => [
+            'step' => MigrationStep::ERROR_RESOLUTION,
+            'shouldPass' => true,
+        ];
+
+        yield 'WRITING is abortable' => [
+            'step' => MigrationStep::WRITING,
+            'shouldPass' => true,
+        ];
+
+        yield 'MEDIA_PROCESSING is abortable' => [
+            'step' => MigrationStep::MEDIA_PROCESSING,
+            'shouldPass' => true,
+        ];
+
+        yield 'IDLE is not abortable' => [
+            'step' => MigrationStep::IDLE,
+            'shouldPass' => false,
+        ];
+
+        yield 'CLEANUP is not abortable' => [
+            'step' => MigrationStep::CLEANUP,
+            'shouldPass' => false,
+        ];
+
+        yield 'INDEXING is not abortable' => [
+            'step' => MigrationStep::INDEXING,
+            'shouldPass' => false,
+        ];
+
+        yield 'WAITING_FOR_APPROVE is not abortable' => [
+            'step' => MigrationStep::WAITING_FOR_APPROVE,
+            'shouldPass' => false,
+        ];
+
+        yield 'ABORTING is not abortable' => [
+            'step' => MigrationStep::ABORTING,
+            'shouldPass' => false,
+        ];
+
+        yield 'FINISHED is not abortable' => [
+            'step' => MigrationStep::FINISHED,
+            'shouldPass' => false,
+        ];
+
+        yield 'ABORTED is not abortable' => [
+            'step' => MigrationStep::ABORTED,
+            'shouldPass' => false,
+        ];
     }
 
     public function testNeedsProcessorUsesIsOneOf(): void
