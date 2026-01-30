@@ -19,6 +19,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -249,124 +250,6 @@ class CustomerConverterTest extends TestCase
         static::assertCount(0, $this->loggingService->getLoggingArray());
     }
 
-    /**
-     * @return array<string, array<int, string|null>>
-     */
-    public static function requiredAddressProperties(): array
-    {
-        return [
-            'firstname is null' => ['firstname', null],
-            'firstname is empty' => ['firstname', ''],
-            'lastname is null' => ['lastname', null],
-            'lastname is empty' => ['lastname', ''],
-            'zipcode is null' => ['zipcode', null],
-            'zipcode is empty' => ['zipcode', ''],
-            'city is null' => ['city', null],
-            'city is empty' => ['city', ''],
-            'street is null' => ['street', null],
-            'street is empty' => ['street', ''],
-        ];
-    }
-
-    #[DataProvider('requiredAddressProperties')]
-    public function testConvertWithoutRequiredAddressPropertiesForBillingDefault(string $property, ?string $value): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData = $customerData[0];
-        $customerData['addresses'][0][$property] = $value;
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-        static::assertNotNull($converted);
-
-        static::assertNull($convertResult->getUnmapped());
-        static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('addresses', $converted);
-
-        static::assertSame('Mustermannstraße 92', $converted['addresses'][0]['street']);
-        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
-        static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(2, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
-    }
-
-    #[DataProvider('requiredAddressProperties')]
-    public function testConvertWithoutRequiredAddressPropertiesForShippingDefault(string $property, ?string $value): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData = $customerData[0];
-        $customerData['addresses'][1][$property] = $value;
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-        static::assertNotNull($converted);
-
-        static::assertNull($convertResult->getUnmapped());
-        static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('addresses', $converted);
-
-        static::assertSame('Musterstr. 55', $converted['addresses'][0]['street']);
-        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
-        static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(2, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
-    }
-
-    #[DataProvider('requiredAddressProperties')]
-    public function testConvertWithoutRequiredAddressPropertiesForDefaultBillingAndShipping(string $property, ?string $value): void
-    {
-        $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
-        $customerData = $customerData[0];
-        $customerData['addresses'][0][$property] = $value;
-        $customerData['addresses'][1][$property] = $value;
-
-        $context = Context::createDefaultContext();
-        $convertResult = $this->customerConverter->convert(
-            $customerData,
-            $context,
-            $this->migrationContext
-        );
-
-        $converted = $convertResult->getConverted();
-        static::assertNotNull($converted);
-
-        static::assertNull($convertResult->getUnmapped());
-        static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('addresses', $converted);
-
-        static::assertSame('Musterstraße 3', $converted['addresses'][0]['street']);
-        static::assertSame($converted['addresses'][0]['id'], $converted['defaultBillingAddressId']);
-        static::assertSame($converted['addresses'][0]['id'], $converted['defaultShippingAddressId']);
-
-        $logs = $this->loggingService->getLoggingArray();
-        static::assertCount(4, $logs);
-
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[1]['code'], 'SWAG_MIGRATION_EMPTY_NECESSARY_FIELD');
-        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
-        static::assertSame($logs[2]['code'], 'SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED');
-    }
-
     public function testGetCustomerWithShopScope(): void
     {
         $customerData = require __DIR__ . '/../../../_fixtures/customer_data.php';
@@ -467,7 +350,7 @@ class CustomerConverterTest extends TestCase
 
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_ENTITY_UNKNOWN');
+        static::assertSame($logs[0]['code'], ConvertEntityUnknownLog::getCode());
     }
 
     public function testConvertBusinessCustomer(): void

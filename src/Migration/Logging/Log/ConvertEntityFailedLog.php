@@ -10,21 +10,21 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
-#[Package('fundamentals@after-sales')]
-readonly class ExceptionRunLog extends AbstractMigrationLogEntry
+#[Package('after-sales')]
+readonly class ConvertEntityFailedLog extends AbstractMigrationLogEntry
 {
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
-        return self::LOG_LEVEL_ERROR;
+        return self::LOG_LEVEL_WARNING;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
-        return 'SWAG_MIGRATION_RUN_EXCEPTION';
+        return 'SWAG_MIGRATION_CONVERT_ENTITY_FAILED';
     }
 }

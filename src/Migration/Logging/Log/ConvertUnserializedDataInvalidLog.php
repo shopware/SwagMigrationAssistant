@@ -11,20 +11,20 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class DocumentTypeNotSupportedLog extends AbstractMigrationLogEntry
+readonly class ConvertUnserializedDataInvalidLog extends AbstractMigrationLogEntry
 {
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
         return self::LOG_LEVEL_WARNING;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
-        return 'SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED';
+        return 'SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID';
     }
 }

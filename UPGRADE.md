@@ -1,5 +1,48 @@
 # 16.0.0
 
+- [BREAKING] [#124](https://github.com/shopware/SwagMigrationAssistant/pull/124) - refactor!: refactored log classes naming pattern
+    - [BREAKING] Renamed log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`, `SwagMigrationAssistant\Profile\Shopware\Logging\Log\*` and `SwagMigrationAssistant\Profile\Shopware6\Logging\Log\*`:
+        - `CannotReadEntityCountLog` -> `ConvertAssociationMissingLog`
+        - `CannotConvertChildEntityLog` -> `ConvertChildEntityFailedLog`
+        - `UnsupportedObjectTypeLog` -> `ConvertDocumentTypeUnsupportedLog`
+        - `FieldReassignedRunLog` -> `ConvertEntityAlreadyExistsLog`
+        - `NotConvertedLog` -> `ConvertEntityFailedLog`
+        - `UnknownEntityLog` -> `ConvertEntityUnknownLog`
+        - `EntityAlreadyExistsRunLog` -> `ConvertFieldReassignedLog`
+        - `MainVariantRelationNotConverted` -> `ConvertMainVariantRelationFailedLog`
+        - `CannotConvertEntityLog` -> `FetchDataSetMissingLog`
+        - `EmptyNecessaryFieldRunLog` -> `FetchEntityCountFailedLog`
+        - `ThemeCompilingErrorRunLog` -> `FetchProcessorMissingLog`
+        - `CannotGetFileRunLog` -> `MediaFileMissingLog`
+        - `MimeTypeErrorLog` -> `MediaTemporaryFileFailedLog`
+        - `ProcessorNotFoundLog` -> `RunAbortedLog`
+        - `ExceptionRunLog` -> `RunExceptionLog`
+        - `MessageQueueExceptionLog` -> `RunMessageQueueExceptionLog`
+        - `WriteExceptionRunLog` -> `WriteExceptionLog`
+        - `UnsupportedSeoUrlTypeLog` -> `ConvertSeoUrlTypeUnsupportedLog`
+        - `UnsupportedTranslationTypeLog` -> `ConvertTranslationTypeUnsupportedLog`
+        - `UnsupportedShippingCalculationTypeLog` -> `ConvertShippingCalculationTypeUnsupportedLog`
+        - `DeactivatedPackLanguageLog` -> `ConvertLanguagePackDeactivatedLog`
+        - `UnsupportedShippingPriceLog` -> `ConvertShippingPriceUnsupportedLog`
+        - `UnsupportedMediaDefaultFolderLog` -> `ConvertMediaDefaultFolderUnsupportedLog`
+    - [BREAKING] Removed log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`, `SwagMigrationAssistant\Profile\Shopware\Logging\Log\*` and `SwagMigrationAssistant\Profile\Shopware6\Logging\Log\*`:
+        - `AssociationRequiredMissingLog`
+        - `DataSetNotFoundLog`
+        - `DocumentTypeNotSupportedLog`
+        - `InvalidUnserializedDataLog`
+        - `RunAbortedAutomaticallyLog`
+        - `TemporaryFileErrorLog`
+        - `InvalidEmailAddressLog`
+        - `UnsupportedMailTemplateTypeLog`
+        - `UnsupportedNumberRangeTypeLog`
+        - `UnsupportedDocumentTypeLog`
+    - Added new log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`:
+        - `ConvertObjectTypeUnsupportedLog`
+        - `ConvertSourceDataIncompleteLog`
+        - `ConvertUnserializedDataInvalidLog`
+        - `MediaMimeTypeUnknownLog`
+        - `WriteThemeCompilingFailedLog`
+
 - [BREAKING] [#115](https://github.com/shopware/SwagMigrationAssistant/pull/115) - refactor!: remove "Delete migration data" history action
     - [BREAKING] Removed route `/api/_action/migration/clear-data-of-run` from `SwagMigrationAssistant\Controller\HistoryController`
     - [BREAKING] Removed method `clearDataOfRun()` from `SwagMigrationAssistant\Migration\History\HistoryServiceInterface`
