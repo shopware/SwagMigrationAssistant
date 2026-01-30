@@ -7,7 +7,7 @@ test.describe('Migration Tests @migration @visual', () => {
         timeout: 300_000,
     });
 
-    test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin }) => {
+    test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin, MigrationConnection: _ }) => {
         const page = ShopAdmin.page;
         const mask = getMask(page);
 
@@ -36,9 +36,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await waitForLoaders(page);
 
             const restoreViewport = await withLargerViewport(page);
-            await expect(page).toHaveScreenshot('data-selection-assigment-with-errors.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('data-selection-assigment-with-errors.png', { mask });
             await restoreViewport();
 
             const tabs = page.locator('.swag-migration-tab-card__title');
@@ -52,15 +50,15 @@ test.describe('Migration Tests @migration @visual', () => {
 
                 while (await errorInput.isVisible()) {
                     await errorInput.click();
+
                     await page.locator('.mt-select-result').first().click();
                     await waitForLoaders(page);
+
                     errorInput = page.locator(errorInputSelector).first();
                 }
             }
 
-            await expect(page).toHaveScreenshot('data-selection-assigment-without-errors.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('data-selection-assigment-without-errors.png', { mask });
         });
 
         await test.step('Start migration', async () => {
@@ -70,9 +68,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.getByRole('button', { name: 'Continue anyway' }).click();
             await waitForLoaders(page);
 
-            await expect(page).toHaveScreenshot('migration-process-started.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('migration-process-started.png', { mask });
 
             const step = page.locator('.sw-step-display > .sw-step-item').first();
             await expect(step).toHaveClass(/sw-step-item--success/, { timeout: 300_000 });
@@ -83,9 +79,7 @@ test.describe('Migration Tests @migration @visual', () => {
 
         await test.step('Error resolution', async () => {
             let restoreViewport = await withLargerViewport(page);
-            await expect(page).toHaveScreenshot('error-resolution-log-groups-unfixed.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('error-resolution-log-groups-unfixed.png', { mask });
             await restoreViewport();
 
             await waitForLoaders(page);
@@ -113,9 +107,7 @@ test.describe('Migration Tests @migration @visual', () => {
                 // eslint-disable-next-line playwright/no-conditional-in-test
                 if (i === 0) {
                     // eslint-disable-next-line playwright/no-conditional-expect
-                    await expect(page).toHaveScreenshot('error-resolution-log-detail-unfixed.png', {
-                        mask,
-                    });
+                    await expect(page).toHaveScreenshot('error-resolution-log-detail-unfixed.png', { mask });
                 }
 
                 await page.getByRole('button', { name: 'Apply changes' }).click();
@@ -124,9 +116,7 @@ test.describe('Migration Tests @migration @visual', () => {
                 // eslint-disable-next-line playwright/no-conditional-in-test
                 if (i === 0) {
                     // eslint-disable-next-line playwright/no-conditional-expect
-                    await expect(page).toHaveScreenshot('error-resolution-log-detail-fixed.png', {
-                        mask,
-                    });
+                    await expect(page).toHaveScreenshot('error-resolution-log-detail-fixed.png', { mask });
                 }
 
                 await page.locator('.sw-modal__close').click();
@@ -136,9 +126,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await waitForLoaders(page);
 
             restoreViewport = await withLargerViewport(page);
-            await expect(page).toHaveScreenshot('error-resolution-log-groups-fixed.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('error-resolution-log-groups-fixed.png', { mask });
             await restoreViewport();
 
             await expect(page.locator('.swag-migration-error-resolution-step__card-table-count-icon')).toHaveCount(logCount);
@@ -156,9 +144,7 @@ test.describe('Migration Tests @migration @visual', () => {
             await waitForLoaders(page);
             await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: 300_000 });
 
-            await expect(page).toHaveScreenshot('migration-process-summary.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('migration-process-summary.png', { mask });
 
             await page.getByRole('button', { name: 'Back to overview' }).click();
             await waitForLoaders(page);
@@ -168,17 +154,51 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.getByTitle('History').click();
             await waitForLoaders(page);
 
-            await expect(page).toHaveScreenshot('migration-history-list.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('migration-history-list.png', { mask });
 
             await page.locator('.sw-data-grid__body .sw-data-grid__actions-menu').getByRole('button').click();
             await page.getByRole('button', { name: 'Show details' }).click();
             await waitForLoaders(page);
 
-            await expect(page).toHaveScreenshot('migration-history-details-modal.png', {
-                mask,
-            });
+            await expect(page).toHaveScreenshot('migration-history-details-modal.png', { mask });
+        });
+
+        await test.step('Verify migration logs', async () => {
+            await page.locator('.sw-modal__close').click();
+            await waitForLoaders(page);
+
+            await page.locator('.sw-data-grid__body .sw-data-grid__actions-menu').getByRole('button').click();
+            await page.getByRole('button', { name: 'Download log' }).click();
+            await waitForLoaders(page);
+
+            const downloadPromise = page.waitForEvent('download', { timeout: 300_000 });
+            const download = await downloadPromise;
+
+            await download.saveAs('snapshots/MigrationTest.spec.ts/migration-log.text');
+
+            const logStream = await download.createReadStream();
+            const buffers = [];
+
+            for await (const data of logStream) {
+                buffers.push(data);
+            }
+
+            const finalBuffer = Buffer.concat(buffers);
+            let logString = finalBuffer.toString();
+
+            // replace timestamps
+            logString = logString.replaceAll(
+                /[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4}\s[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\sUTC/g,
+                'TimestampXXX',
+            );
+
+            // replace ids
+            logString = logString.replaceAll(/(\s|")(0[0-9a-fA-F]+)/g, '$1XXX');
+
+            // clean up media logs
+            logString = logString.replaceAll(/(\[warning] SWAG_MIGRATION_CANNOT_GET_).+\n.+\n.+/g, '$1XXX\nXXX\nXXX');
+
+            expect.soft(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
     });
 });

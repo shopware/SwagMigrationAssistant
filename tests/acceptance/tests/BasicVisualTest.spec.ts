@@ -8,6 +8,7 @@ test.describe('Visual Regression Tests @visual', () => {
 
     test('Main page (no connection)', async ({ ShopAdmin }) => {
         const page = ShopAdmin.page;
+        const mask = getMask(page);
 
         await page.goto('/admin');
         await waitForLoaders(page);
@@ -15,16 +16,12 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('main-page-general-no-connection.png', {
-            mask: getMask(page),
-        });
+        await expect(page).toHaveScreenshot('main-page-general-no-connection.png', { mask });
 
         await page.getByTitle('Data selection').click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('main-page-data-selection-empty.png', {
-            mask: getMask(page),
-        });
+        await expect(page).toHaveScreenshot('main-page-data-selection-empty.png', { mask });
     });
 
     test('Main page (with connection)', async ({ ShopAdmin, MigrationConnection: _ }) => {
@@ -37,16 +34,12 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Open Migration Assistant' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('main-page-general-with-connection.png', {
-            mask,
-        });
+        await expect(page).toHaveScreenshot('main-page-general-with-connection.png', { mask });
 
         await page.getByTitle('Data selection').click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('main-page-data-selection.png', {
-            mask: getMask(page),
-        });
+        await expect(page).toHaveScreenshot('main-page-data-selection.png', { mask });
     });
 
     test('Connection wizard (local, happy path)', async ({ ShopAdmin, DatabaseCredentials }) => {
@@ -62,23 +55,17 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Create initial connection' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('connection-wizard-introduction.png', {
-            mask,
-        });
+        await expect(page).toHaveScreenshot('connection-wizard-introduction.png', { mask });
 
         await page.getByRole('button', { name: 'Start' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('connection-wizard-profiles.png', {
-            mask,
-        });
+        await expect(page).toHaveScreenshot('connection-wizard-profiles.png', { mask });
 
         await page.getByRole('button', { name: 'Continue' }).click();
         await waitForLoaders(page);
 
-        await expect(page).toHaveScreenshot('connection-wizard-create.png', {
-            mask,
-        });
+        await expect(page).toHaveScreenshot('connection-wizard-create.png', { mask });
 
         await page.getByPlaceholder('Enter name').fill('shopware55local');
 
@@ -91,9 +78,7 @@ test.describe('Visual Regression Tests @visual', () => {
         // lose focus of host input
         await page.getByText('Migration').click();
 
-        await expect(page).toHaveScreenshot('connection-wizard-establish-local.png', {
-            mask,
-        });
+        await expect(page).toHaveScreenshot('connection-wizard-establish-local.png', { mask });
 
         await page.getByPlaceholder('Enter host').fill(DatabaseCredentials.host);
         await page.getByLabel('Port').fill(DatabaseCredentials.port);
@@ -112,9 +97,7 @@ test.describe('Visual Regression Tests @visual', () => {
         await page.getByRole('button', { name: 'Truncate migration' }).click();
         await page.getByRole('button', { name: 'Archive' }).click();
 
-        await expect(page).toHaveScreenshot('connection-wizard-truncation.png', {
-            mask,
-        });
+        await expect(page).toHaveScreenshot('connection-wizard-truncation.png', { mask });
 
         await waitForLoaders(page, 300_000); // wait for truncation
 
