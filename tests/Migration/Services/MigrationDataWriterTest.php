@@ -53,6 +53,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
@@ -313,6 +314,7 @@ class MigrationDataWriterTest extends TestCase
             $migrationContextFactoryMock,
             $premappingService,
             static::getContainer()->get(RunTransitionService::class),
+            static::getContainer()->get(LogGroupingService::class),
         );
     }
 
