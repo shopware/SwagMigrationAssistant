@@ -101,6 +101,18 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
         await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
     });
 
+    await test.step('Error resolution', async () => {
+        await expect(page.getByText('Error resolution')).toHaveCount(2, { timeout: MIGRATION_LOADING_TIMEOUT });
+        await expect(page.getByText('Fixed / Total')).toBeVisible({ timeout: MIGRATION_LOADING_TIMEOUT });
+
+        const fixButtons = await page.locator('.swag-migration-error-resolution-step__card-table-error-link').all();
+
+        for (const fixButton of fixButtons) {
+            await fixButton.click();
+            await page.locator('.sw-data-grid__select-all').click();
+        }
+    });
+
     await test.step('Inspect the migration', async () => {
         const steps = await page.locator('.sw-step-display > .sw-step-item').all();
         for (const step of steps) {
