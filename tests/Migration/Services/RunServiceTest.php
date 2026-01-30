@@ -24,6 +24,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionDefinitio
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
@@ -52,7 +53,6 @@ use SwagMigrationAssistant\Migration\TotalStruct;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
-use SwagMigrationAssistant\Test\Mock\Migration\Run\DummyRunTransitionService;
 use Symfony\Component\Messenger\Envelope;
 use Symfony\Component\Messenger\MessageBusInterface;
 
@@ -341,6 +341,16 @@ class RunServiceTest extends TestCase
             ->expects(static::once())
             ->method('transitionToRunStep');
 
+        $logGroupingService = $this->createMock(LogGroupingService::class);
+        $logGroupingService
+            ->expects(static::once())
+            ->method('getGroupedLogsByCodeAndEntity')
+            ->willReturn([
+                'total' => 0,
+                'items' => [],
+                'levelCounts' => ['error' => 0, 'warning' => 0, 'info' => 0],
+            ]);
+
         /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
         $runRepo = new StaticEntityRepository([
             new SwagMigrationRunCollection([
@@ -357,10 +367,121 @@ class RunServiceTest extends TestCase
         $runService = $this->createRunService(
             messageBus: $messageBus,
             runTransitionService: $runTransitionService,
-            runRepo: $runRepo
+            runRepo: $runRepo,
+            logGroupingService: $logGroupingService
         );
 
         $runService->resumeAfterFixes($this->context);
+    }
+
+    public function testResumeMigrationWithUnresolvedErrors(): void
+    {
+        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus
+            ->expects(static::never())
+            ->method('dispatch');
+
+        $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
+        $runTransitionService
+            ->expects(static::never())
+            ->method('transitionToRunStep');
+
+        $logGroupingService = $this->createMock(LogGroupingService::class);
+        $logGroupingService
+            ->expects(static::once())
+            ->method('getGroupedLogsByCodeAndEntity')
+            ->willReturn([
+                'total' => 5,
+                'items' => [],
+                'levelCounts' => ['error' => 5, 'warning' => 0, 'info' => 0],
+            ]);
+
+        /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
+        $runRepo = new StaticEntityRepository([
+            new SwagMigrationRunCollection([
+                (static function (): SwagMigrationRunEntity {
+                    $run = new SwagMigrationRunEntity();
+                    $run->setId(Uuid::randomHex());
+                    $run->setStep(MigrationStep::ERROR_RESOLUTION);
+
+                    return $run;
+                })(),
+            ]),
+        ], new SwagMigrationRunDefinition());
+
+        $runService = $this->createRunService(
+            messageBus: $messageBus,
+            runTransitionService: $runTransitionService,
+            runRepo: $runRepo,
+            logGroupingService: $logGroupingService
+        );
+
+        static::expectExceptionObject(MigrationException::unresolvedErrorsRemaining(5));
+        $runService->resumeAfterFixes($this->context);
+    }
+
+    public function testStartMigrationRunWithTruncationInProgress(): void
+    {
+        $dbalConnection = $this->createMock(Connection::class);
+        $dbalConnection
+            ->expects(static::exactly(2))
+            ->method('fetchOne')
+            ->willReturnOnConsecutiveCalls(false, true);
+
+        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus
+            ->expects(static::never())
+            ->method('dispatch');
+
+        $runService = $this->createRunService(
+            messageBus: $messageBus,
+            dbalConnection: $dbalConnection
+        );
+
+        static::expectExceptionObject(MigrationException::migrationProcessing('data truncation'));
+        $runService->startMigrationRun([ProductDataSelection::IDENTIFIER], $this->context);
+    }
+
+    public function testStartMigrationRunWithMigrationDisabled(): void
+    {
+        $dataFetcher = $this->createMock(MigrationDataFetcher::class);
+        $dataFetcher->method('getEnvironmentInformation')->willReturn(new EnvironmentInformation(
+            'Source System',
+            '1.0.0',
+            'Shopware',
+            ['product' => new TotalStruct('product', 10)],
+            [],
+            null,
+            true,
+        ));
+
+        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus
+            ->expects(static::never())
+            ->method('dispatch');
+
+        $runService = $this->createRunService(
+            messageBus: $messageBus,
+            dataFetcher: $dataFetcher
+        );
+
+        static::expectExceptionObject(MigrationException::migrationDisabledBySource());
+        $runService->startMigrationRun([ProductDataSelection::IDENTIFIER], $this->context);
+    }
+
+    public function testStartMigrationRunWithEmptyDataSelection(): void
+    {
+        $messageBus = $this->createMock(MessageBusInterface::class);
+        $messageBus
+            ->expects(static::never())
+            ->method('dispatch');
+
+        $runService = $this->createRunService(
+            messageBus: $messageBus
+        );
+
+        static::expectExceptionObject(MigrationException::noDataToMigrate());
+        $runService->startMigrationRun([], $this->context);
     }
 
     /**
@@ -378,6 +499,8 @@ class RunServiceTest extends TestCase
         ?StaticEntityRepository $generalSettingRepo = null,
         (MockObject&MigrationDataFetcherInterface)|null $dataFetcher = null,
         (MockObject&MigrationContextFactoryInterface)|null $migrationContextFactory = null,
+        (MockObject&Connection)|null $dbalConnection = null,
+        (MockObject&LogGroupingService)|null $logGroupingService = null,
     ): RunService {
         $connectionRepository = $connectionRepo ?? $this->connectionRepo;
 
@@ -398,13 +521,14 @@ class RunServiceTest extends TestCase
             $generalSettingRepo ?? $this->generalSettingRepo,
             $this->createMock(ThemeService::class),
             $this->createMock(MappingService::class),
-            $this->createMock(Connection::class),
+            $dbalConnection ?? $this->createMock(Connection::class),
             $this->createMock(LoggingService::class),
             $trackingEventClient ?? $this->createMock(TrackingEventClient::class),
             $messageBus ?? $this->createMock(MessageBusInterface::class),
             $migrationContextFactory ?? $this->migrationContextFactory,
             $premappingService ?? $this->createMock(PremappingService::class),
-            $runTransitionService ?? new DummyRunTransitionService(MigrationStep::WAITING_FOR_APPROVE),
+            $runTransitionService ?? $this->createMock(RunTransitionServiceInterface::class),
+            $logGroupingService ?? $this->createMock(LogGroupingService::class),
         );
     }
 }

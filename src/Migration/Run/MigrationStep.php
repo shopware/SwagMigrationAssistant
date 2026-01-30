@@ -8,10 +8,21 @@
 namespace SwagMigrationAssistant\Migration\Run;
 
 use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
 
 #[Package('fundamentals@after-sales')]
 enum MigrationStep: string
 {
+    final public const MANUAL_STEPS = [
+        self::ERROR_RESOLUTION,
+        self::WAITING_FOR_APPROVE,
+    ];
+
+    final public const FINAL_STEPS = [
+        self::FINISHED,
+        self::ABORTED,
+    ];
+
     case IDLE = 'idle';
 
     case FETCHING = 'fetching';
@@ -36,17 +47,33 @@ enum MigrationStep: string
 
     public function isRunning(): bool
     {
-        return !\in_array($this, [
-            self::FINISHED,
-            self::ABORTED,
-        ], true);
+        return !$this->isOneOf(...self::FINAL_STEPS);
     }
 
     public function needsProcessor(): bool
     {
-        return !\in_array($this, [
-            self::ERROR_RESOLUTION,
-            self::WAITING_FOR_APPROVE,
-        ], true);
+        return !$this->isOneOf(...self::MANUAL_STEPS);
+    }
+
+    public function isOneOf(MigrationStep ...$allowedSteps): bool
+    {
+        return \in_array($this, $allowedSteps, true);
+    }
+
+    /**
+     * @throws MigrationException
+     */
+    public function assertOneOf(MigrationStep ...$allowedSteps): void
+    {
+        if ($this->isOneOf(...$allowedSteps)) {
+            return;
+        }
+
+        throw MigrationException::migrationNotInStep(
+            \implode(', ', \array_map(
+                static fn (MigrationStep $step): string => $step->value,
+                $allowedSteps
+            ))
+        );
     }
 }
