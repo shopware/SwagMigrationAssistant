@@ -7,7 +7,7 @@ test.describe('Migration Tests @migration @visual', () => {
         timeout: 300_000,
     });
 
-    test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin, MigrationConnection: _ }) => {
+    test('Perform migration from Shopware 5 to Shopware 6', async ({ ShopAdmin }) => {
         const page = ShopAdmin.page;
         const mask = getMask(page);
 
@@ -82,30 +82,103 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Error resolution', async () => {
-            const restoreViewport = await withLargerViewport(page);
-            await expect(page).toHaveScreenshot('error-resolution-log-groups.png', {
+            let restoreViewport = await withLargerViewport(page);
+            await expect(page).toHaveScreenshot('error-resolution-log-groups-unfixed.png', {
                 mask,
             });
             await restoreViewport();
 
-            await page.locator('.sw-data-grid__cell--actions').nth(2).getByRole('button').click();
-            await page.getByRole('button', { name: 'Edit' }).click();
+            await waitForLoaders(page);
+            const logs = page.locator('.sw-data-grid__body .sw-data-grid__cell--actions');
+
+            const processLogEntry = async (index: number) => {
+                await logs.nth(index).getByRole('button', { name: 'Open actions menu' }).click();
+                await page.getByRole('button', { name: 'Edit' }).click();
+                await waitForLoaders(page);
+
+                await page.locator('.mt-field--checkbox').first().click();
+                await page.getByRole('button', { name: /Select all \(\d+\)/ }).click();
+                await waitForLoaders(page);
+
+                await page.locator('.swag-migration-error-resolution-field-relation .sw-select__selection').click();
+                await page.locator('.sw-select-result').first().click();
+                await page.locator('.sw-modal__title').first().click();
+            };
+
+            const logCount = await logs.count();
+
+            for (let i = 0; i < logCount; i++) {
+                await processLogEntry(i);
+
+                // eslint-disable-next-line playwright/no-conditional-in-test
+                if (i === 0) {
+                    // eslint-disable-next-line playwright/no-conditional-expect
+                    await expect(page).toHaveScreenshot('error-resolution-log-detail-unfixed.png', {
+                        mask,
+                    });
+                }
+
+                await page.getByRole('button', { name: 'Apply changes' }).click();
+                await waitForLoaders(page);
+
+                // eslint-disable-next-line playwright/no-conditional-in-test
+                if (i === 0) {
+                    // eslint-disable-next-line playwright/no-conditional-expect
+                    await expect(page).toHaveScreenshot('error-resolution-log-detail-fixed.png', {
+                        mask,
+                    });
+                }
+
+                await page.locator('.sw-modal__close').click();
+                await waitForLoaders(page);
+            }
+
             await waitForLoaders(page);
 
-            await page.locator('.mt-field--checkbox').first().click();
-            await page.locator('.swag-migration-error-resolution-field-relation .sw-select__selection').click();
-            await page.locator('.sw-select-result').first().click();
-            await page.locator('.sw-modal__title').first().click();
+            restoreViewport = await withLargerViewport(page);
+            await expect(page).toHaveScreenshot('error-resolution-log-groups-fixed.png', {
+                mask,
+            });
+            await restoreViewport();
 
-            await expect(page).toHaveScreenshot('error-resolution-log-detail.png', {
+            await expect(page.locator('.swag-migration-error-resolution-step__card-table-count-icon')).toHaveCount(logCount);
+
+            await page.getByRole('button', { name: 'Continue' }).click();
+        });
+
+        await test.step('Finish migration', async () => {
+            const steps = await page.locator('.sw-step-display > .sw-step-item').all();
+
+            for (const step of steps) {
+                await expect(step).toHaveClass(/sw-step-item--success/, { timeout: 300_000 });
+            }
+
+            await waitForLoaders(page);
+            await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: 300_000 });
+
+            await expect(page).toHaveScreenshot('migration-process-summary.png', {
                 mask,
             });
 
-            await page.getByRole('button', { name: 'Apply changes' }).click();
+            await page.getByRole('button', { name: 'Back to overview' }).click();
+            await waitForLoaders(page);
+        });
+
+        await test.step('Inspect migration history', async () => {
+            await page.getByTitle('History').click();
             await waitForLoaders(page);
 
-            await page.locator('.sw-modal__close').click();
+            await expect(page).toHaveScreenshot('migration-history-list.png', {
+                mask,
+            });
+
+            await page.locator('.sw-data-grid__body .sw-data-grid__actions-menu').getByRole('button').click();
+            await page.getByRole('button', { name: 'Show details' }).click();
             await waitForLoaders(page);
+
+            await expect(page).toHaveScreenshot('migration-history-details-modal.png', {
+                mask,
+            });
         });
     });
 });

@@ -11,6 +11,8 @@ export const VIEWPORT = {
 export const loaderSelectors = [
     '.sw-loader-element',
     '.mt-loader-element',
+    '.mt-skeleton-bar',
+    '.sw-skeleton',
 ] as const;
 
 export const dynamicElementSelectors = [
