@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterInterface;
 use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -50,7 +51,7 @@ class MigrationDataConverterTest extends TestCase
         $result = $dummyLogger->getLoggingArray();
 
         static::assertCount(1, $result);
-        static::assertSame('SWAG_MIGRATION__ENTITY_NOT_CONVERTED', $result[0]['code']);
+        static::assertSame(ConvertEntityFailedLog::getCode(), $result[0]['code']);
     }
 
     private function createMigrationDataConverter(

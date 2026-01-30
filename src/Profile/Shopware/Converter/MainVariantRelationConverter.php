@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\MainVariantRelationNotConverted;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertMainVariantRelationFailedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
@@ -40,7 +40,7 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
                 ->withSourceData($data)
                 ->withExceptionMessage('MainVariantRelation requires ID and order number, to be converted successful')
                 ->withExceptionTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2))
-                ->build(MainVariantRelationNotConverted::class)
+                ->build(ConvertMainVariantRelationFailedLog::class)
             );
 
             return null;

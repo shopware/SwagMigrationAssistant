@@ -21,6 +21,9 @@ use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -144,7 +147,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE');
+        static::assertSame($logs[0]['code'], ConvertObjectTypeUnsupportedLog::getCode());
     }
 
     public function testConvertProductTranslation(): void
@@ -278,7 +281,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
+        static::assertSame($logs[0]['code'], ConvertUnserializedDataInvalidLog::getCode());
     }
 
     public function testConvertUnitTranslation(): void
@@ -323,7 +326,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
+        static::assertSame($logs[0]['code'], ConvertAssociationMissingLog::getCode());
     }
 
     public function testConvertUnitTranslationWithInvalidTranslationObject(): void
@@ -352,7 +355,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
+        static::assertSame($logs[0]['code'], ConvertUnserializedDataInvalidLog::getCode());
     }
 
     public function testConvertCategoryTranslation(): void
@@ -467,7 +470,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING');
+        static::assertSame($logs[0]['code'], ConvertAssociationMissingLog::getCode());
     }
 
     public function testConvertCategoryTranslationWithInvalidTranslationObject(): void
@@ -495,7 +498,7 @@ class TranslationConverterTest extends TestCase
         $logs = $this->loggingService->getLoggingArray();
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA');
+        static::assertSame($logs[0]['code'], ConvertUnserializedDataInvalidLog::getCode());
     }
 
     public function testCreateConfiguratorOptionTranslation(): void
@@ -750,7 +753,7 @@ class TranslationConverterTest extends TestCase
         static::assertNull($converted);
         static::assertCount(1, $logs);
 
-        static::assertSame('SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING', $logs[0]['code']);
+        static::assertSame(ConvertAssociationMissingLog::getCode(), $logs[0]['code']);
     }
 
     public function testConvertProductTranslationsWithSeoData(): void

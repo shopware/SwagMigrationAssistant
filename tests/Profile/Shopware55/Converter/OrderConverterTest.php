@@ -29,6 +29,8 @@ use Shopware\Core\Test\TestDefaults;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
@@ -621,7 +623,7 @@ class OrderConverterTest extends TestCase
         static::assertSame('test@example.com', $converted['orderCustomer']['email']);
 
         foreach ($this->loggingService->getLoggingArray() as $log) {
-            static::assertSame('SWAG_MIGRATION_EMPTY_NECESSARY_FIELD', $log['code']);
+            static::assertSame(ConvertSourceDataIncompleteLog::getCode(), $log['code']);
         }
     }
 
@@ -835,7 +837,7 @@ class OrderConverterTest extends TestCase
 
         static::assertCount(1, $logs);
 
-        static::assertSame($logs[0]['code'], 'SWAG_MIGRATION_ENTITY_UNKNOWN');
+        static::assertSame($logs[0]['code'], ConvertEntityUnknownLog::getCode());
     }
 
     public function testConvertWithShippingTaxRateNotSet(): void
