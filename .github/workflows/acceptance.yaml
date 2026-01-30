@@ -56,7 +56,6 @@ jobs:
         run: |
           composer run build:js:admin
           cd custom/plugins/${{ github.event.repository.name }}/tests
-          mysql -uroot < _fixtures/database/shopware55.sql
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
