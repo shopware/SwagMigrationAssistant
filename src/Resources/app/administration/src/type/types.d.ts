@@ -113,7 +113,6 @@ type MigrationConnection = {
 type MigrationError = {
     code: string;
     count: number;
-    titleSnippet: string;
     entity: string;
     level: string;
 };
