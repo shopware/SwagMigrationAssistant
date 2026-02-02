@@ -125,7 +125,7 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         }
         $environmentDataArray['defaultShopLanguage'] = \str_replace('_', '-', $environmentDataArray['defaultShopLanguage']);
 
-        $totals = $this->readTotals($migrationContext, $context);
+        $totals = $this->readTotals($migrationContext);
         $credentials = $migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
@@ -182,9 +182,9 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         return Hasher::hash($config['esdKey'] . $config['installationDate']);
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->tableCountReader->readTotals($migrationContext, $context);
+        return $this->tableCountReader->readTotals($migrationContext);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array

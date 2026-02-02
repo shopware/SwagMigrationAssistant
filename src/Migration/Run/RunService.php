@@ -281,7 +281,7 @@ class RunService implements RunServiceInterface
             try {
                 $this->themeService->assignTheme($defaultThemeId, $salesChannelId, $context);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     (new MigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),
@@ -295,8 +295,6 @@ class RunService implements RunServiceInterface
                 );
             }
         }
-
-        $this->loggingService->saveLogging($context);
     }
 
     public function resumeAfterFixes(Context $context): void

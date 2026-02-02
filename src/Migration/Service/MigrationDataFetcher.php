@@ -35,14 +35,13 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         try {
             return $this->gatewayRegistry->getGateway($migrationContext)->read($migrationContext);
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
                     ->build(RunExceptionLog::class)
             );
-            $this->loggingService->saveLogging($context);
         }
 
         return [];
@@ -53,8 +52,8 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
         return $this->gatewayRegistry->getGateway($migrationContext)->readEnvironmentInformation($migrationContext, $context);
     }
 
-    public function fetchTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function fetchTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext, $context);
+        return $this->gatewayRegistry->getGateway($migrationContext)->readTotals($migrationContext);
     }
 }

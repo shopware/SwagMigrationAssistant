@@ -75,13 +75,20 @@ class LoggingServiceTest extends TestCase
             Uuid::randomHex(),
         ))->build(ConvertChildEntityFailedLog::class);
 
-        $this->loggingService->addLogEntry($log1);
-        $this->loggingService->addLogEntry($log2);
+        $this->loggingService->log($log1);
+        $this->loggingService->log($log2);
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(0, $result->getTotal());
 
-        $this->loggingService->saveLogging($this->context);
+        $this->loggingService->flush();
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(2, $result->getTotal());
+
+        // flush should clear buffer
+        $this->loggingService->flush();
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
@@ -108,8 +115,8 @@ class LoggingServiceTest extends TestCase
             ->withEntityId($entityId)
             ->build(ConvertAssociationMissingLog::class);
 
-        $this->loggingService->addLogEntry($log);
-        $this->loggingService->saveLogging($this->context);
+        $this->loggingService->log($log);
+        $this->loggingService->flush();
         $this->clearCacheData();
 
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
@@ -117,5 +124,61 @@ class LoggingServiceTest extends TestCase
         $resultLog = $result->getEntities()->first();
         static::assertInstanceOf(SwagMigrationLoggingEntity::class, $resultLog);
         static::assertSame($entityId, $resultLog->getEntityId());
+    }
+
+    public function testDeconstructLoggingServiceFlushesBuffer(): void
+    {
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(ConvertAssociationMissingLog::class);
+
+        $loggingService = new LoggingService($this->loggingRepo, new NullLogger());
+        $loggingService->log($log);
+        unset($loggingService);
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+    }
+
+    public function testResetFlushesBuffer(): void
+    {
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))->build(ConvertAssociationMissingLog::class);
+
+        $this->loggingService->log($log);
+        $this->loggingService->reset();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+    }
+
+    public function testBufferOverflowFlushesBuffer(): void
+    {
+        for ($i = 0; $i < LoggingService::BUFFER_SIZE + 10; ++$i) {
+            $log = (new MigrationLogBuilder(
+                $this->runUuid,
+                'Profile name',
+                'Gateway name',
+                Uuid::randomHex(),
+            ))->build(ConvertAssociationMissingLog::class);
+
+            $this->loggingService->log($log);
+        }
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(LoggingService::BUFFER_SIZE, $result->getTotal());
+
+        $this->loggingService->flush();
+        $this->clearCacheData();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(LoggingService::BUFFER_SIZE + 10, $result->getTotal());
     }
 }

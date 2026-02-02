@@ -112,7 +112,7 @@ class DummyLocalGateway implements GatewayInterface
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
         return [];
     }

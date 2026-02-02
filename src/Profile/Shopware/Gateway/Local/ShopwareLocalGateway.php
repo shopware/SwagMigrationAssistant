@@ -130,7 +130,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         }
         $environmentData['defaultShopLanguage'] = \str_replace('_', '-', $environmentData['defaultShopLanguage']);
 
-        $totals = $this->readTotals($migrationContext, $context);
+        $totals = $this->readTotals($migrationContext);
 
         return new EnvironmentInformation(
             $profile->getSourceSystemName(),
@@ -167,7 +167,7 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         return Hasher::hash($config['esdKey'] . $config['installationDate']);
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
         $readers = $this->readerRegistry->getReaderForTotal($migrationContext);
 

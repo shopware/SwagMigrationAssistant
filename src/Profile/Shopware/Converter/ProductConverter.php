@@ -370,7 +370,7 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
         if (empty($converted['price'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductDefinition::ENTITY_NAME)
                     ->withFieldName('price')
@@ -880,7 +880,7 @@ abstract class ProductConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
 
             if (empty($esdFile['name'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('name')
@@ -896,7 +896,7 @@ abstract class ProductConverter extends ShopwareConverter
             try {
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
             } catch (\Throwable $e) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('path')
@@ -933,7 +933,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('mediaFolderId')
@@ -972,7 +972,7 @@ abstract class ProductConverter extends ShopwareConverter
         $mediaObjects = [];
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductMediaDefinition::ENTITY_NAME)
                         ->withFieldName('mediaId')
@@ -1364,7 +1364,7 @@ abstract class ProductConverter extends ShopwareConverter
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
             if (empty($priceArray)) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductPriceDefinition::ENTITY_NAME)
                         ->withFieldName('price')
