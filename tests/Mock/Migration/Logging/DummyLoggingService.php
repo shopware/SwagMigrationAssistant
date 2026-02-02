@@ -19,15 +19,15 @@ class DummyLoggingService extends LoggingService
 
     public function getLoggingArray(): array
     {
-        return $this->logging;
+        return $this->buffer;
     }
 
-    public function saveLogging(\Shopware\Core\Framework\Context $context): void
+    public function flush(): void
     {
     }
 
-    public function resetLogging(): void
+    public function reset(): void
     {
-        $this->logging = [];
+        $this->buffer = [];
     }
 }

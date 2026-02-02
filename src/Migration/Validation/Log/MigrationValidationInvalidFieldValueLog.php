@@ -13,17 +13,17 @@ use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEnt
 #[Package('fundamentals@after-sales')]
 readonly class MigrationValidationInvalidFieldValueLog extends AbstractMigrationLogEntry
 {
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return true;
     }
 
-    public function getLevel(): string
+    public static function getLevel(): string
     {
         return self::LOG_LEVEL_ERROR;
     }
 
-    public function getCode(): string
+    public static function getCode(): string
     {
         return 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE';
     }

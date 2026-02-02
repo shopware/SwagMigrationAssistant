@@ -38,5 +38,5 @@ interface GatewayInterface
     /**
      * @return array<string, TotalStruct>
      */
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array;
+    public function readTotals(MigrationContextInterface $migrationContext): array;
 }

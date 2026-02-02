@@ -24,8 +24,8 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -34,6 +34,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 
@@ -369,14 +370,14 @@ abstract class ProductConverter extends ShopwareConverter
         $converted['price'] = $this->getPrice($data['prices'][0], $converted['tax']['taxRate']);
 
         if (empty($converted['price'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(ProductDefinition::ENTITY_NAME)
                     ->withFieldName('price')
                     ->withFieldSourcePath('prices')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(EmptyNecessaryFieldRunLog::class)
+                    ->build(MigrationValidationMissingRequiredFieldLog::class)
             );
         }
 
@@ -416,7 +417,7 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['attributes']);
         }
 
-        $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', self::TYPE_STRING);
+        $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber');
 
         if ($this->productType === self::MAIN_PRODUCT_TYPE) {
             $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
@@ -879,14 +880,14 @@ abstract class ProductConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
 
             if (empty($esdFile['name'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('name')
                         ->withFieldSourcePath('name')
                         ->withSourceData($esdFile)
                         ->withConvertedData($newMedia)
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -895,7 +896,7 @@ abstract class ProductConverter extends ShopwareConverter
             try {
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
             } catch (\Throwable $e) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('path')
@@ -903,7 +904,7 @@ abstract class ProductConverter extends ShopwareConverter
                         ->withSourceData($esdFile)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -932,7 +933,7 @@ abstract class ProductConverter extends ShopwareConverter
 
             $albumId = $this->mediaFolderLookup->get(ProductDownloadDefinition::ENTITY_NAME, $this->context);
             if ($albumId === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withFieldName('mediaFolderId')
@@ -941,7 +942,7 @@ abstract class ProductConverter extends ShopwareConverter
                             'source_data' => $sourceData,
                             'media_folder' => ProductDownloadDefinition::ENTITY_NAME,
                         ])
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -971,13 +972,13 @@ abstract class ProductConverter extends ShopwareConverter
         $mediaObjects = [];
         foreach ($media as $mediaData) {
             if (!isset($mediaData['media']['id'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductMediaDefinition::ENTITY_NAME)
                         ->withFieldName('mediaId')
                         ->withFieldSourcePath('media.id')
                         ->withSourceData($mediaData)
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -1363,14 +1364,14 @@ abstract class ProductConverter extends ShopwareConverter
             $priceArray = $this->getPrice($price, $converted['tax']['taxRate']);
 
             if (empty($priceArray)) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(ProductPriceDefinition::ENTITY_NAME)
                         ->withFieldName('price')
                         ->withFieldSourcePath('price')
                         ->withSourceData($price)
                         ->withConvertedData($converted)
-                        ->build(EmptyNecessaryFieldRunLog::class)
+                        ->build(ConvertSourceDataIncompleteLog::class)
                 );
 
                 continue;
@@ -1497,6 +1498,13 @@ abstract class ProductConverter extends ShopwareConverter
     {
         $mainCategories = [];
         foreach ($categories as $category) {
+            $id = $this->mappingService->getOrCreateMapping(
+                $this->connectionId,
+                DefaultEntities::PRODUCT_MAIN_CATEGORY,
+                $category['id'],
+                $this->context
+            )['entityId'];
+
             $categoryId = $this->mappingService->getOrCreateMapping(
                 $this->connectionId,
                 DefaultEntities::CATEGORY,
@@ -1511,11 +1519,12 @@ abstract class ProductConverter extends ShopwareConverter
                 $this->context
             )['entityId'];
 
-            if (!$categoryId || !$salesChannelId) {
+            if (!$id || !$categoryId || !$salesChannelId) {
                 continue;
             }
 
             $mainCategories[] = [
+                'id' => $id,
                 'categoryId' => $categoryId,
                 'salesChannelId' => $salesChannelId,
             ];

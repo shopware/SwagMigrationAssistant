@@ -30,7 +30,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterfac
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteThemeCompilingFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
@@ -281,7 +281,7 @@ class RunService implements RunServiceInterface
             try {
                 $this->themeService->assignTheme($defaultThemeId, $salesChannelId, $context);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     (new MigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),
@@ -291,12 +291,10 @@ class RunService implements RunServiceInterface
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName(ThemeDefinition::ENTITY_NAME)
                         ->withEntityId($defaultThemeId)
-                        ->build(ThemeCompilingErrorRunLog::class)
+                        ->build(WriteThemeCompilingFailedLog::class)
                 );
             }
         }
-
-        $this->loggingService->saveLogging($context);
     }
 
     public function resumeAfterFixes(Context $context): void

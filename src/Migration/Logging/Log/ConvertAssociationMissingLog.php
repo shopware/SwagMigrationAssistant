@@ -10,21 +10,21 @@ namespace SwagMigrationAssistant\Migration\Logging\Log;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
-#[Package('after-sales')]
-readonly class NotConvertedLog extends AbstractMigrationLogEntry
+#[Package('fundamentals@after-sales')]
+readonly class ConvertAssociationMissingLog extends AbstractMigrationLogEntry
 {
-    public function getLevel(): string
-    {
-        return self::LOG_LEVEL_INFO;
-    }
-
-    public function getCode(): string
-    {
-        return 'SWAG_MIGRATION__ENTITY_NOT_CONVERTED';
-    }
-
-    public function isUserFixable(): bool
+    public static function isUserFixable(): bool
     {
         return false;
+    }
+
+    public static function getLevel(): string
+    {
+        return self::LOG_LEVEL_WARNING;
+    }
+
+    public static function getCode(): string
+    {
+        return 'SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING';
     }
 }

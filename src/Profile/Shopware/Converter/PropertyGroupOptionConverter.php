@@ -14,7 +14,7 @@ use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -120,13 +120,13 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     protected function setMedia(array &$converted, array $data): void
     {
         if (!isset($data['media']['id'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(PropertyGroupDefinition::ENTITY_NAME)
                     ->withFieldName('media.id')
                     ->withFieldSourcePath('media.id')
                     ->withSourceData($data)
-                    ->build(CannotConvertChildEntityLog::class)
+                    ->build(ConvertChildEntityFailedLog::class)
             );
 
             return;

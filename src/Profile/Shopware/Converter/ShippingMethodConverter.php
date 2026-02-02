@@ -17,14 +17,14 @@ use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingCalculationTypeLog;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedShippingPriceLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingCalculationTypeUnsupportedLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingPriceUnsupportedLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DefaultShippingAvailabilityRuleReader;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\DeliveryTimeReader;
 
@@ -157,14 +157,14 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             if (!isset($data['calculation'])
                 || !\array_key_exists($data['calculation'], self::CALCULATION_TYPE_MAPPING)
             ) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
                         ->withFieldName('prices')
                         ->withFieldSourcePath('calculation')
                         ->withSourceData($data)
                         ->withConvertedData($converted)
-                        ->build(UnsupportedShippingCalculationTypeLog::class)
+                        ->build(ConvertShippingCalculationTypeUnsupportedLog::class)
                 );
             } else {
                 $calculationType = self::CALCULATION_TYPE_MAPPING[$data['calculation']];
@@ -602,6 +602,7 @@ abstract class ShippingMethodConverter extends ShopwareConverter
     {
         $shippingCosts = $data['shippingCosts'];
         $taxRate = 0.0;
+
         if (isset($data['tax']['tax'])) {
             $taxRate = (float) $data['tax']['tax'];
         }
@@ -609,13 +610,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $convertedCosts = [];
         foreach ($shippingCosts as $key => $shippingCost) {
             if (empty($shippingCost['id'])) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
                         ->withFieldName('id')
                         ->withFieldSourcePath('id')
                         ->withSourceData($data)
-                        ->build(EmptyNecessaryFieldRunLog::class)
+                        ->build(ConvertSourceDataIncompleteLog::class)
                 );
 
                 continue;
@@ -646,13 +647,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (!isset($currencyMapping)) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
                         ->withFieldName('currencyId')
                         ->withFieldSourcePath('currencyShortName')
                         ->withSourceData($data)
-                        ->build(EmptyNecessaryFieldRunLog::class)
+                        ->build(ConvertSourceDataIncompleteLog::class)
                 );
 
                 continue;
@@ -665,13 +666,13 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             }
 
             if (isset($shippingCost['factor']) && $shippingCost['factor'] > 0) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(ShippingMethodPriceDefinition::ENTITY_NAME)
                         ->withFieldSourcePath('factor')
                         ->withSourceData($shippingCost)
                         ->withConvertedData($cost)
-                        ->build(UnsupportedShippingPriceLog::class)
+                        ->build(ConvertShippingPriceUnsupportedLog::class)
                 );
 
                 continue;

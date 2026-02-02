@@ -131,7 +131,7 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         $targetSystemLocale = $targetSystemLanguage->getLocale();
         \assert($targetSystemLocale !== null);
 
-        $totals = $this->readTotals($migrationContext, $context);
+        $totals = $this->readTotals($migrationContext);
 
         return new EnvironmentInformation(
             $profile->getSourceSystemName(),
@@ -150,9 +150,9 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
         );
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
-        return $this->totalReader->readTotals($migrationContext, $context);
+        return $this->totalReader->readTotals($migrationContext);
     }
 
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
