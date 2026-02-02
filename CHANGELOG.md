@@ -1,5 +1,6 @@
 # 16.0.0
 
+- #14517 - Fixed duplicate key error when re-migrating products with SEO main categories after checksum reset
 - #14400 - Removed the "Delete migration data" action from the migration history context menu
 - #13898 - Fixed migration of orders with different tax rates on line items from SW5
 - #11808 - Introduced Error Resolution to manage data inconsistencies and apply migration fixes directly in the SW6 administration, instead of fixing issues in the source system as it was needed previously.
