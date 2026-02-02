@@ -19,9 +19,9 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
@@ -104,7 +104,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                             MigrationLogBuilder::fromMigrationContext($migrationContext)
                                 ->withEntityName($mediaFile['entity'])
                                 ->withEntityId($mediaFile['id'])
-                                ->build(DataSetNotFoundLog::class)
+                                ->build(FetchDataSetMissingLog::class)
                         );
                         continue;
                     }
@@ -143,7 +143,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
                         ->withEntityName($currentDataSet::getEntity())
-                        ->build(ProcessorNotFoundLog::class)
+                        ->build(FetchProcessorMissingLog::class)
                 );
 
                 $this->loggingService->saveLogging($context);
@@ -156,7 +156,7 @@ class MediaProcessingProcessor extends AbstractProcessor
                     ->withExceptionMessage($e->getMessage())
                     ->withExceptionTrace($e->getTrace())
                     ->withEntityName($currentDataSet::getEntity())
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
 
             $this->loggingService->saveLogging($context);

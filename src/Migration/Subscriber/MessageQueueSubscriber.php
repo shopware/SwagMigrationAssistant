@@ -12,8 +12,8 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\MessageQueueExceptionLog;
-use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedAutomaticallyLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunAbortedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunMessageQueueExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
 use SwagMigrationAssistant\Migration\Run\MigrationProgress;
@@ -97,7 +97,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             ))
                 ->withExceptionMessage($event->getThrowable()->getMessage())
                 ->withExceptionTrace($event->getThrowable()->getTrace())
-                ->build(MessageQueueExceptionLog::class)
+                ->build(RunMessageQueueExceptionLog::class)
         );
 
         /*
@@ -116,7 +116,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
                 ))
                     ->withExceptionMessage($event->getThrowable()->getMessage())
                     ->withExceptionTrace($event->getThrowable()->getTrace())
-                    ->build(RunAbortedAutomaticallyLog::class)
+                    ->build(RunAbortedLog::class)
             );
             $this->loggingService->saveLogging($message->getContext());
 

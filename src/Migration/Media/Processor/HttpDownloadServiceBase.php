@@ -25,9 +25,9 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\TemporaryFileErrorLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaTemporaryFileFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -83,7 +83,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
             $this->loggingService->saveLogging($context);
 
@@ -128,7 +128,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->withEntityId($uuid)
-                            ->build(CannotGetFileRunLog::class)
+                            ->build(MediaFileMissingLog::class)
                     );
                 }
 
@@ -149,7 +149,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withEntityId($uuid)
-                        ->build(TemporaryFileErrorLog::class)
+                        ->build(MediaTemporaryFileFailedLog::class)
                 );
 
                 continue;
@@ -193,7 +193,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                             ->withExceptionTrace($e->getTrace())
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->withEntityId($uuid)
-                            ->build(ExceptionRunLog::class)
+                            ->build(RunExceptionLog::class)
                     );
                 } finally {
                     // clear up temp data
@@ -292,7 +292,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
 
             $promise = null;
@@ -316,7 +316,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
 
             return;
@@ -352,7 +352,7 @@ abstract class HttpDownloadServiceBase extends BaseMediaService implements Media
                             ->withExceptionMessage($mediaException->getMessage())
                             ->withExceptionTrace($mediaException->getTrace())
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
-                            ->build(ExceptionRunLog::class)
+                            ->build(RunExceptionLog::class)
                     );
                 }
             }

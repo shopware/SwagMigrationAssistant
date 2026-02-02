@@ -74,24 +74,6 @@ abstract class ShopwareConverter extends Converter
         unset($sourceData[$sourceKey]);
     }
 
-    /**
-     * @param array<string, mixed> $rawData
-     * @param list<string> $requiredDataFieldKeys
-     *
-     * @return list<string>
-     */
-    protected function checkForEmptyRequiredDataFields(array $rawData, array $requiredDataFieldKeys): array
-    {
-        $emptyFields = [];
-        foreach ($requiredDataFieldKeys as $requiredDataFieldKey) {
-            if (!isset($rawData[$requiredDataFieldKey]) || $rawData[$requiredDataFieldKey] === '') {
-                $emptyFields[] = $requiredDataFieldKey;
-            }
-        }
-
-        return $emptyFields;
-    }
-
     protected function validDate(string $value): bool
     {
         try {

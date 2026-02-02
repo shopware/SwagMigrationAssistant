@@ -13,6 +13,7 @@ use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 /**
  * @internal
@@ -481,9 +482,9 @@ readonly class LogGroupingService
     private function mapLevelCountsFromRows(array $rows): array
     {
         $counts = [
-            'error' => 0,
-            'warning' => 0,
-            'info' => 0,
+            AbstractMigrationLogEntry::LOG_LEVEL_ERROR => 0,
+            AbstractMigrationLogEntry::LOG_LEVEL_WARNING => 0,
+            AbstractMigrationLogEntry::LOG_LEVEL_INFO => 0,
         ];
 
         foreach ($rows as $row) {

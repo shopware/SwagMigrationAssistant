@@ -97,6 +97,10 @@ class MigrationException extends HttpException
 
     public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
 
+    public const MIGRATION_DISABLED_BY_SOURCE = 'SWAG_MIGRATION__MIGRATION_DISABLED_BY_SOURCE';
+
+    public const UNRESOLVED_ERRORS_REMAINING = 'SWAG_MIGRATION__UNRESOLVED_ERRORS_REMAINING';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -472,13 +476,13 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function migrationNotInStep(string $runUuid, string $step): self
+    public static function migrationNotInStep(string $step): self
     {
         return new self(
             Response::HTTP_CONFLICT,
             self::MIGRATION_NOT_IN_STEP,
-            'Migration with id: "{{ runUuid }}" is not in step "{{ step }}".',
-            ['runUuid' => $runUuid, 'step' => $step]
+            'Migration is not in step "{{ step }}".',
+            ['step' => $step]
         );
     }
 
@@ -498,6 +502,25 @@ class MigrationException extends HttpException
             Response::HTTP_CONFLICT,
             self::DUPLICATE_SOURCE_CONNECTION,
             'A connection to this source system already exists.',
+        );
+    }
+
+    public static function migrationDisabledBySource(): self
+    {
+        return new self(
+            Response::HTTP_CONFLICT,
+            self::MIGRATION_DISABLED_BY_SOURCE,
+            'Migration is disabled by the source system.',
+        );
+    }
+
+    public static function unresolvedErrorsRemaining(int $count): self
+    {
+        return new self(
+            Response::HTTP_CONFLICT,
+            self::UNRESOLVED_ERRORS_REMAINING,
+            'Cannot continue migration: {{ count }} unresolved fixable errors remaining.',
+            ['count' => $count]
         );
     }
 }
