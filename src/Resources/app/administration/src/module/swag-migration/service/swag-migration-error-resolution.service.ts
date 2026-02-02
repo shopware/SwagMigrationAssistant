@@ -558,10 +558,13 @@ export default class SwagMigrationErrorResolutionService {
      */
     getHighestPriorityFieldName(entityName: string | null | undefined): string | null {
         const entityFields = this.extractEntityFields(entityName);
-        const excludeFields = ['id', 'createdAt', 'global'];
+        const excludeFields = [
+            'id',
+            'createdAt',
+            'global',
+        ];
 
-        const scalarFields = Object.keys(entityFields.scalar)
-            .filter((field) => !excludeFields.includes(field));
+        const scalarFields = Object.keys(entityFields.scalar).filter((field) => !excludeFields.includes(field));
 
         if (scalarFields.length === 0) {
             return null;

@@ -657,7 +657,7 @@ const HIGHEST_PRIORITY_FIELD_TESTS = [
     {
         name: 'seo_url entity',
         entityName: 'seo_url',
-        expected: 'foreignKey',
+        expected: 'url',
     },
 ];
 
