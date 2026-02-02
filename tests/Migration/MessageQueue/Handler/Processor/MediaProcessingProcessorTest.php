@@ -189,7 +189,7 @@ class MediaProcessingProcessorTest extends TestCase
         );
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('addLogEntry')->with(
+        $logging->expects(static::once())->method('log')->with(
             static::isInstanceOf(FetchDataSetMissingLog::class)
         );
 
@@ -226,7 +226,7 @@ class MediaProcessingProcessorTest extends TestCase
         $registry->method('getProcessor')->willReturn($processorMock);
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('addLogEntry')->with(
+        $logging->expects(static::once())->method('log')->with(
             static::isInstanceOf(FetchProcessorMissingLog::class)
         );
 

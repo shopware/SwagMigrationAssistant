@@ -133,7 +133,7 @@ class LoggingServiceTest extends TestCase
             'Profile name',
             'Gateway name',
             Uuid::randomHex(),
-        ))->build(AssociationRequiredMissingLog::class);
+        ))->build(ConvertAssociationMissingLog::class);
 
         $loggingService = new LoggingService($this->loggingRepo, new NullLogger());
         $loggingService->log($log);
@@ -150,7 +150,7 @@ class LoggingServiceTest extends TestCase
             'Profile name',
             'Gateway name',
             Uuid::randomHex(),
-        ))->build(AssociationRequiredMissingLog::class);
+        ))->build(ConvertAssociationMissingLog::class);
 
         $this->loggingService->log($log);
         $this->loggingService->reset();
@@ -167,7 +167,7 @@ class LoggingServiceTest extends TestCase
                 'Profile name',
                 'Gateway name',
                 Uuid::randomHex(),
-            ))->build(AssociationRequiredMissingLog::class);
+            ))->build(ConvertAssociationMissingLog::class);
 
             $this->loggingService->log($log);
         }
