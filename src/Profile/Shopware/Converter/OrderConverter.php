@@ -33,7 +33,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
@@ -390,7 +390,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldSourcePath('cleared')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return;
@@ -452,7 +452,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('paymentMethodId')
                     ->withFieldSourcePath('payment.id')
                     ->withSourceData($originalData)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;
@@ -611,7 +611,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('countryStateId')
                     ->withFieldSourcePath('stateID')
                     ->withSourceData($oldAddressData)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -648,7 +648,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('countryStateId')
                     ->withFieldSourcePath('name')
                     ->withSourceData($oldAddressData['state'])
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -732,7 +732,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldSourcePath('status')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -816,7 +816,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('shippingMethodId')
                     ->withFieldSourcePath('dispatchID')
                     ->withSourceData(['dispatchID' => $shippingMethodId])
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;
@@ -986,7 +986,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('salutationId')
                     ->withFieldSourcePath('salutation')
                     ->withSourceData(['salutation' => $salutation])
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;
@@ -1018,7 +1018,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('coverId')
                     ->withFieldSourcePath('esd.esdID')
                     ->withSourceData($originalEsdItem)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;

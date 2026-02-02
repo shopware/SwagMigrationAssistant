@@ -20,8 +20,8 @@ use Shopware\Core\Framework\Rule\Container\OrRule;
 use Shopware\Core\System\SalesChannel\SalesChannelCollection;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
@@ -373,7 +373,7 @@ abstract class PromotionConverter extends ShopwareConverter
                             ->withFieldName('productId')
                             ->withFieldSourcePath('restrictarticles')
                             ->withSourceData($data)
-                            ->build(AssociationRequiredMissingLog::class)
+                            ->build(ConvertAssociationMissingLog::class)
                     );
 
                     continue;
@@ -508,7 +508,7 @@ abstract class PromotionConverter extends ShopwareConverter
                         ->withFieldName('rule.value.manufacturerId')
                         ->withFieldSourcePath('bindtosupplier')
                         ->withSourceData($data)
-                        ->build(AssociationRequiredMissingLog::class)
+                        ->build(ConvertAssociationMissingLog::class)
                 );
             }
         }
@@ -564,7 +564,7 @@ abstract class PromotionConverter extends ShopwareConverter
                         ->withFieldSourcePath('subshopID')
                         ->withSourceData($data)
                         ->withConvertedData($converted)
-                        ->build(AssociationRequiredMissingLog::class)
+                        ->build(ConvertAssociationMissingLog::class)
                 );
 
                 return;
@@ -637,7 +637,7 @@ abstract class PromotionConverter extends ShopwareConverter
                     ->withFieldSourcePath('customergroup')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return;

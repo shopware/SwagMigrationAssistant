@@ -1,5 +1,54 @@
 # 16.0.0
 
+- [BREAKING] [#124](https://github.com/shopware/SwagMigrationAssistant/pull/124) - refactor!: refactored log classes naming pattern
+    - [BREAKING] Renamed log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`, `SwagMigrationAssistant\Profile\Shopware\Logging\Log\*` and `SwagMigrationAssistant\Profile\Shopware6\Logging\Log\*`:
+        - `CannotReadEntityCountLog` -> `ConvertAssociationMissingLog`
+        - `CannotConvertChildEntityLog` -> `ConvertChildEntityFailedLog`
+        - `UnsupportedObjectTypeLog` -> `ConvertDocumentTypeUnsupportedLog`
+        - `FieldReassignedRunLog` -> `ConvertEntityAlreadyExistsLog`
+        - `NotConvertedLog` -> `ConvertEntityFailedLog`
+        - `UnknownEntityLog` -> `ConvertEntityUnknownLog`
+        - `EntityAlreadyExistsRunLog` -> `ConvertFieldReassignedLog`
+        - `MainVariantRelationNotConverted` -> `ConvertMainVariantRelationFailedLog`
+        - `CannotConvertEntityLog` -> `FetchDataSetMissingLog`
+        - `EmptyNecessaryFieldRunLog` -> `FetchEntityCountFailedLog`
+        - `ThemeCompilingErrorRunLog` -> `FetchProcessorMissingLog`
+        - `CannotGetFileRunLog` -> `MediaFileMissingLog`
+        - `MimeTypeErrorLog` -> `MediaTemporaryFileFailedLog`
+        - `ProcessorNotFoundLog` -> `RunAbortedLog`
+        - `ExceptionRunLog` -> `RunExceptionLog`
+        - `MessageQueueExceptionLog` -> `RunMessageQueueExceptionLog`
+        - `WriteExceptionRunLog` -> `WriteExceptionLog`
+        - `UnsupportedSeoUrlTypeLog` -> `ConvertSeoUrlTypeUnsupportedLog`
+        - `UnsupportedTranslationTypeLog` -> `ConvertTranslationTypeUnsupportedLog`
+        - `UnsupportedShippingCalculationTypeLog` -> `ConvertShippingCalculationTypeUnsupportedLog`
+        - `DeactivatedPackLanguageLog` -> `ConvertLanguagePackDeactivatedLog`
+        - `UnsupportedShippingPriceLog` -> `ConvertShippingPriceUnsupportedLog`
+        - `UnsupportedMediaDefaultFolderLog` -> `ConvertMediaDefaultFolderUnsupportedLog`
+    - [BREAKING] Removed log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`, `SwagMigrationAssistant\Profile\Shopware\Logging\Log\*` and `SwagMigrationAssistant\Profile\Shopware6\Logging\Log\*`:
+        - `AssociationRequiredMissingLog`
+        - `DataSetNotFoundLog`
+        - `DocumentTypeNotSupportedLog`
+        - `InvalidUnserializedDataLog`
+        - `RunAbortedAutomaticallyLog`
+        - `TemporaryFileErrorLog`
+        - `InvalidEmailAddressLog`
+        - `UnsupportedMailTemplateTypeLog`
+        - `UnsupportedNumberRangeTypeLog`
+        - `UnsupportedDocumentTypeLog`
+    - Added new log classes in `SwagMigrationAssistant\Migration\Logging\Log\*`:
+        - `ConvertObjectTypeUnsupportedLog`
+        - `ConvertSourceDataIncompleteLog`
+        - `ConvertUnserializedDataInvalidLog`
+        - `MediaMimeTypeUnknownLog`
+        - `WriteThemeCompilingFailedLog`
+
+- [BREAKING] [#115](https://github.com/shopware/SwagMigrationAssistant/pull/115) - refactor!: remove "Delete migration data" history action
+    - [BREAKING] Removed route `/api/_action/migration/clear-data-of-run` from `SwagMigrationAssistant\Controller\HistoryController`
+    - [BREAKING] Removed method `clearDataOfRun()` from `SwagMigrationAssistant\Migration\History\HistoryServiceInterface`
+    - [BREAKING] Removed route `/api/_action/migration/is-media-processing` from `SwagMigrationAssistant\Controller\HistoryController`
+    - [BREAKING] Removed method `isMediaProcessing()` from `SwagMigrationAssistant\Migration\History\HistoryServiceInterface`
+
 - [BREAKING] [#114](https://github.com/shopware/SwagMigrationAssistant/pull/114) - fix: use item-specific tax in order conversion
     - [BREAKING] Removed parameter `taxRules` from method `getLineItems` of `SwagMigrationAssistant\Profile\Shopware\Converter\OrderConverter`
 
@@ -49,8 +98,6 @@
     - Added acl privilege mapping to `src/Resources/app/administration/src/module/swag-migration/acl/index.ts`
     - [BREAKING] Added acl constraint for route `/migration/get-grouped-logs-of-run` from `SwagMigrationAssistant\Controller\HistoryController::getGroupedLogsOfRun()` requiring privilege `swag_migration.viewer`
     - [BREAKING] Added acl constraint for route `/migration/download-logs-of-run` from `SwagMigrationAssistant\Controller\HistoryController::downloadLogsOfRun()` requiring privilege `swag_migration.viewer`
-    - [BREAKING] Added acl constraint for route `/migration/clear-data-of-run` from `SwagMigrationAssistant\Controller\HistoryController::clearDataOfRun()` requiring privilege `swag_migration.deleter`
-    - [BREAKING] Added acl constraint for route `/migration/is-media-processing` from `SwagMigrationAssistant\Controller\HistoryController::isMediaProcessing()` requiring privilege `swag_migration.viewer`
     - [BREAKING] Added acl constraint for route `/migration/generate-premapping` from `SwagMigrationAssistant\Controller\PremappingController::generatePremapping()` requiring privilege `swag_migration.editor`
     - [BREAKING] Added acl constraint for route `/migration/write-premapping` from `SwagMigrationAssistant\Controller\PremappingController::writePremapping()` requiring privilege `swag_migration.editor`
     - [BREAKING] Added acl constraint for route `/migration/get-profile-information` from `SwagMigrationAssistant\Controller\StatusController::getProfileInformation()` requiring privilege `swag_migration.viewer`

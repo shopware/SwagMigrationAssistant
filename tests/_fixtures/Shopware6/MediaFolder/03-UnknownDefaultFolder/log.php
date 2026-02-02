@@ -5,8 +5,10 @@
  * file that was distributed with this source code.
  */
 
+use SwagMigrationAssistant\Profile\Shopware6\Logging\Log\ConvertMediaDefaultFolderUnsupportedLog;
+
 return [
     [
-        'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER',
+        'code' => ConvertMediaDefaultFolderUnsupportedLog::getCode(),
     ],
 ];

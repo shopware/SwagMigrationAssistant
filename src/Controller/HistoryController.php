@@ -19,7 +19,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\HeaderUtils;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
@@ -96,42 +95,6 @@ class HistoryController extends AbstractController
         ));
 
         return $response;
-    }
-
-    #[Route(
-        path: '/api/_action/migration/clear-data-of-run',
-        name: 'api.admin.migration.clear-data-of-run',
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.deleter']],
-        methods: [Request::METHOD_POST],
-    )]
-    public function clearDataOfRun(Request $request, Context $context): Response
-    {
-        $runUuid = $request->request->getAlnum('runUuid');
-
-        if ($runUuid === '') {
-            throw RoutingException::missingRequestParameter('runUuid');
-        }
-
-        if ($this->historyService->isMediaProcessing()) {
-            throw MigrationException::migrationProcessing();
-        }
-
-        $this->historyService->clearDataOfRun($runUuid, $context);
-
-        return new Response();
-    }
-
-    #[Route(
-        path: '/api/_action/migration/is-media-processing',
-        name: 'api.admin.migration.is-media-processing',
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration_history:read']],
-        methods: [Request::METHOD_GET],
-    )]
-    public function isMediaProcessing(): JsonResponse
-    {
-        $result = $this->historyService->isMediaProcessing();
-
-        return new JsonResponse($result);
     }
 
     #[Route(

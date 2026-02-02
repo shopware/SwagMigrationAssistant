@@ -24,8 +24,8 @@ use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataEntity;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\SwagMigrationMappingCollection;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
@@ -124,7 +124,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     ->withExceptionTrace($writerNotFoundException->getTrace())
                     ->withConvertedData([$converted])
                     ->withEntityName($dataSet::getEntity())
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
             $this->loggingService->saveLogging($context);
 
@@ -211,7 +211,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     ->withConvertedData($entity)
                     ->withEntityId($entity['id'] ?? null)
                     ->withSourceData($currentData?->getRaw() ?? [])
-                    ->build(WriteExceptionRunLog::class)
+                    ->build(WriteExceptionLog::class)
             );
 
             ++$index;
@@ -269,7 +269,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                         ->withEntityName($entityName)
                         ->withConvertedData([$entity])
                         ->withEntityId($entity['id'] ?? null)
-                        ->build(ExceptionRunLog::class)
+                        ->build(RunExceptionLog::class)
                 );
 
                 $updateWrittenData[$dataId]['written'] = false;

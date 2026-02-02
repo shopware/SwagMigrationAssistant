@@ -24,8 +24,8 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotConvertChildEntityLog;
-use SwagMigrationAssistant\Migration\Logging\Log\EmptyNecessaryFieldRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertChildEntityFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -34,6 +34,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 
@@ -376,7 +377,7 @@ abstract class ProductConverter extends ShopwareConverter
                     ->withFieldSourcePath('prices')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(EmptyNecessaryFieldRunLog::class)
+                    ->build(MigrationValidationMissingRequiredFieldLog::class)
             );
         }
 
@@ -416,7 +417,7 @@ abstract class ProductConverter extends ShopwareConverter
             unset($data['attributes']);
         }
 
-        $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber', self::TYPE_STRING);
+        $this->convertValue($converted, 'productNumber', $data['detail'], 'ordernumber');
 
         if ($this->productType === self::MAIN_PRODUCT_TYPE) {
             $this->convertValue($converted, 'active', $data, 'active', self::TYPE_BOOLEAN);
@@ -886,7 +887,7 @@ abstract class ProductConverter extends ShopwareConverter
                         ->withFieldSourcePath('name')
                         ->withSourceData($esdFile)
                         ->withConvertedData($newMedia)
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -903,7 +904,7 @@ abstract class ProductConverter extends ShopwareConverter
                         ->withSourceData($esdFile)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -941,7 +942,7 @@ abstract class ProductConverter extends ShopwareConverter
                             'source_data' => $sourceData,
                             'media_folder' => ProductDownloadDefinition::ENTITY_NAME,
                         ])
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -977,7 +978,7 @@ abstract class ProductConverter extends ShopwareConverter
                         ->withFieldName('mediaId')
                         ->withFieldSourcePath('media.id')
                         ->withSourceData($mediaData)
-                        ->build(CannotConvertChildEntityLog::class)
+                        ->build(ConvertChildEntityFailedLog::class)
                 );
 
                 continue;
@@ -1370,7 +1371,7 @@ abstract class ProductConverter extends ShopwareConverter
                         ->withFieldSourcePath('price')
                         ->withSourceData($price)
                         ->withConvertedData($converted)
-                        ->build(EmptyNecessaryFieldRunLog::class)
+                        ->build(ConvertSourceDataIncompleteLog::class)
                 );
 
                 continue;

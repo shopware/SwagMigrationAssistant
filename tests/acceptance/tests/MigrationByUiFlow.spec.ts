@@ -9,7 +9,7 @@ test.describe.configure({
 });
 
 test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via local database connection @SwagMigrationAssistant', async ({
-    MigrationUser,
+    ShopAdmin,
     DatabaseCredentials,
     EntityCounter,
 }) => {
@@ -17,7 +17,7 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
     // eslint-disable-next-line playwright/no-skipped-test
     test.skip();
 
-    const page = MigrationUser.page;
+    const page = ShopAdmin.page;
     await page.goto('/admin');
     await expect(page.locator('.sw-loader-element')).toHaveCount(0, { timeout: MIGRATION_LOADING_TIMEOUT });
 
@@ -83,6 +83,8 @@ test('As a shop owner I want to migrate my data from my old SW5 shop to SW6 via 
             await premappingItems.evaluateAll(async (list) => {
                 for (const item of list) {
                     await item.click();
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     document.querySelector('.mt-select-result')?.click();
                     await new Promise((resolve) => setTimeout(resolve, 150));
                 }

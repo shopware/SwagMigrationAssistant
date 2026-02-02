@@ -147,13 +147,13 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         getErrorTitleSnippet(item: MigrationError) {
-            const snippetKey = item.titleSnippet;
+            const snippetKey = `swag-migration.index.error-resolution.codes.${item.code}`;
 
             if (this.$te(snippetKey)) {
                 return snippetKey;
             }
 
-            return 'swag-migration.index.error.unknownError';
+            return 'swag-migration.index.error-resolution.codes.unknown';
         },
 
         submitDownload() {

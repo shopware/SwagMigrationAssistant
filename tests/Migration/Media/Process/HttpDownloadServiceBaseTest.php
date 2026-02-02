@@ -25,6 +25,7 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\Test\Stub\DataAbstractionLayer\StaticEntityRepository;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileCollection;
 use SwagMigrationAssistant\Migration\Media\SwagMigrationMediaFileDefinition;
@@ -201,7 +202,7 @@ class HttpDownloadServiceBaseTest extends TestCase
             [
                 'runId' => $this->migrationContext->getRunUuid(),
                 'level' => 'warning',
-                'code' => 'SWAG_MIGRATION_CANNOT_GET_FILE',
+                'code' => MediaFileMissingLog::getCode(),
                 'profileName' => '',
                 'gatewayName' => '',
                 'userFixable' => false,
