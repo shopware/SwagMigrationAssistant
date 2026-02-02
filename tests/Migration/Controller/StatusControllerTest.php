@@ -30,6 +30,7 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Mapping\MappingService;
 use SwagMigrationAssistant\Migration\MigrationContext;
@@ -771,6 +772,7 @@ class StatusControllerTest extends TestCase
                 $migrationContextFactory,
                 static::getContainer()->get(PremappingService::class),
                 static::getContainer()->get(RunTransitionService::class),
+                static::getContainer()->get(LogGroupingService::class),
             ),
             new DataSelectionRegistry([
                 new ProductDataSelection(),

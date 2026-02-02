@@ -380,28 +380,6 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async clearDataOfRun(runUuid: string): Promise<ApiResponse<unknown>> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders();
-
-        // @ts-ignore
-        return this.httpClient
-            .post(
-                // @ts-ignore
-                `_action/${this.getApiBasePath()}/clear-data-of-run`,
-                {
-                    runUuid,
-                },
-                {
-                    ...this.basicConfig,
-                    headers,
-                },
-            )
-            .then((response: AxiosResponse) => {
-                return ApiService.handleResponse(response);
-            });
-    }
-
     async resetChecksums(connectionId: string, additionalHeaders: AdditionalHeaders = {}): Promise<ApiResponse<unknown>> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
@@ -438,17 +416,6 @@ export default class MigrationApiService extends ApiService {
                 headers,
             },
         );
-    }
-
-    async isMediaProcessing(additionalHeaders: AdditionalHeaders = {}): Promise<boolean> {
-        // @ts-ignore
-        const headers = this.getBasicHeaders(additionalHeaders);
-
-        // @ts-ignore
-        return this.httpClient.get(`_action/${this.getApiBasePath()}/is-media-processing`, {
-            ...this.basicConfig,
-            headers,
-        });
     }
 
     async downloadLogsOfRun(runUuid: string, additionalHeaders: AdditionalHeaders = {}): Promise<Blob> {

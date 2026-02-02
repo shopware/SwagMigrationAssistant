@@ -18,11 +18,11 @@ interface MigrationLogEntry
 
     public function getGatewayName(): string;
 
-    public function getLevel(): string;
+    public static function getLevel(): string;
 
-    public function getCode(): string;
+    public static function getCode(): string;
 
-    public function isUserFixable(): bool;
+    public static function isUserFixable(): bool;
 
     public function getEntityId(): ?string;
 

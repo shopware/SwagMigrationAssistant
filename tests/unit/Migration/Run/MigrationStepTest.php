@@ -1,0 +1,162 @@
+<?php declare(strict_types=1);
+/*
+ * (c) shopware AG <info@shopware.com>
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ */
+
+namespace SwagMigrationAssistant\Test\Unit\Migration\Run;
+
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
+use Shopware\Core\Framework\Log\Package;
+use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Run\MigrationStep;
+
+#[Package('fundamentals@after-sales')]
+#[CoversClass(MigrationStep::class)]
+class MigrationStepTest extends TestCase
+{
+    public function testIsOneOfReturnsTrue(): void
+    {
+        static::assertTrue(MigrationStep::FETCHING->isOneOf(
+            MigrationStep::FETCHING,
+            MigrationStep::WRITING,
+        ));
+    }
+
+    public function testIsOneOfReturnsFalse(): void
+    {
+        static::assertFalse(MigrationStep::FETCHING->isOneOf(
+            MigrationStep::WRITING,
+            MigrationStep::MEDIA_PROCESSING
+        ));
+    }
+
+    public function testIsOneOfWithSingleStep(): void
+    {
+        static::assertTrue(MigrationStep::ERROR_RESOLUTION->isOneOf(
+            MigrationStep::ERROR_RESOLUTION
+        ));
+    }
+
+    public function testAssertOneOfDoesNotThrowWhenStepMatches(): void
+    {
+        static::expectNotToPerformAssertions();
+
+        MigrationStep::FETCHING->assertOneOf(
+            MigrationStep::FETCHING,
+            MigrationStep::WRITING
+        );
+    }
+
+    public function testAssertOneOfThrowsWhenStepDoesNotMatch(): void
+    {
+        static::expectExceptionObject(MigrationException::migrationNotInStep('fetching, writing'));
+
+        MigrationStep::IDLE->assertOneOf(
+            MigrationStep::FETCHING,
+            MigrationStep::WRITING
+        );
+    }
+
+    public function testAssertOneOfWithSingleAllowedStep(): void
+    {
+        static::expectNotToPerformAssertions();
+
+        MigrationStep::WAITING_FOR_APPROVE->assertOneOf(MigrationStep::WAITING_FOR_APPROVE);
+    }
+
+    #[DataProvider('provideAbortableSteps')]
+    public function testAbortableStepsValidation(MigrationStep $step, bool $shouldPass): void
+    {
+        $abortableSteps = [
+            MigrationStep::FETCHING,
+            MigrationStep::ERROR_RESOLUTION,
+            MigrationStep::WRITING,
+            MigrationStep::MEDIA_PROCESSING,
+        ];
+
+        if ($shouldPass) {
+            static::expectNotToPerformAssertions();
+        } else {
+            $this->expectException(MigrationException::class);
+        }
+
+        $step->assertOneOf(...$abortableSteps);
+    }
+
+    /**
+     * @return iterable<string, array{step: MigrationStep, shouldPass: bool}>
+     */
+    public static function provideAbortableSteps(): iterable
+    {
+        yield 'FETCHING is abortable' => [
+            'step' => MigrationStep::FETCHING,
+            'shouldPass' => true,
+        ];
+
+        yield 'ERROR_RESOLUTION is abortable' => [
+            'step' => MigrationStep::ERROR_RESOLUTION,
+            'shouldPass' => true,
+        ];
+
+        yield 'WRITING is abortable' => [
+            'step' => MigrationStep::WRITING,
+            'shouldPass' => true,
+        ];
+
+        yield 'MEDIA_PROCESSING is abortable' => [
+            'step' => MigrationStep::MEDIA_PROCESSING,
+            'shouldPass' => true,
+        ];
+
+        yield 'IDLE is not abortable' => [
+            'step' => MigrationStep::IDLE,
+            'shouldPass' => false,
+        ];
+
+        yield 'CLEANUP is not abortable' => [
+            'step' => MigrationStep::CLEANUP,
+            'shouldPass' => false,
+        ];
+
+        yield 'INDEXING is not abortable' => [
+            'step' => MigrationStep::INDEXING,
+            'shouldPass' => false,
+        ];
+
+        yield 'WAITING_FOR_APPROVE is not abortable' => [
+            'step' => MigrationStep::WAITING_FOR_APPROVE,
+            'shouldPass' => false,
+        ];
+
+        yield 'ABORTING is not abortable' => [
+            'step' => MigrationStep::ABORTING,
+            'shouldPass' => false,
+        ];
+
+        yield 'FINISHED is not abortable' => [
+            'step' => MigrationStep::FINISHED,
+            'shouldPass' => false,
+        ];
+
+        yield 'ABORTED is not abortable' => [
+            'step' => MigrationStep::ABORTED,
+            'shouldPass' => false,
+        ];
+    }
+
+    public function testNeedsProcessorUsesIsOneOf(): void
+    {
+        // MANUAL_STEPS
+        static::assertFalse(MigrationStep::ERROR_RESOLUTION->needsProcessor());
+        static::assertFalse(MigrationStep::WAITING_FOR_APPROVE->needsProcessor());
+
+        // non MANUAL_STEPS
+        static::assertTrue(MigrationStep::FETCHING->needsProcessor());
+        static::assertTrue(MigrationStep::WRITING->needsProcessor());
+        static::assertTrue(MigrationStep::MEDIA_PROCESSING->needsProcessor());
+    }
+}

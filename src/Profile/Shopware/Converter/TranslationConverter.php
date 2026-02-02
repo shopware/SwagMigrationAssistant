@@ -26,14 +26,14 @@ use Shopware\Core\System\Unit\UnitDefinition;
 use SwagMigrationAssistant\Migration\Connection\Helper\ConnectionNameSanitizer;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
-use SwagMigrationAssistant\Migration\Logging\Log\AssociationRequiredMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\InvalidUnserializedDataLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\UnsupportedTranslationTypeLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertTranslationTypeUnsupportedLog;
 
 #[Package('fundamentals@after-sales')]
 abstract class TranslationConverter extends ShopwareConverter
@@ -94,7 +94,7 @@ abstract class TranslationConverter extends ShopwareConverter
                 ->withEntityName('unknown_translation')
                 ->withFieldSourcePath('objecttype')
                 ->withSourceData($data)
-                ->build(UnsupportedTranslationTypeLog::class)
+                ->build(ConvertTranslationTypeUnsupportedLog::class)
         );
 
         return new ConvertStruct(null, $data);
@@ -130,7 +130,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('productId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -243,7 +243,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('productId')
                     ->withFieldSourcePath('ordernumber')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -319,7 +319,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('productManufacturerId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -401,7 +401,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('unitId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -488,7 +488,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('categoryId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -585,7 +585,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('propertyGroupOptionId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -664,7 +664,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('propertyGroupId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -746,7 +746,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('propertyGroupOptionId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -823,7 +823,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('propertyGroupId')
                     ->withFieldSourcePath('objectkey')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);
@@ -957,7 +957,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withSourceData($data)
                     ->withExceptionMessage($exception?->getMessage() ?? 'Unserialization failed')
                     ->withExceptionTrace($exception?->getTrace() ?? [])
-                    ->build(InvalidUnserializedDataLog::class)
+                    ->build(ConvertUnserializedDataInvalidLog::class)
             );
 
             return null;
@@ -991,7 +991,7 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->withFieldName('mediaId')
                     ->withFieldSourcePath('mediaId')
                     ->withSourceData($sourceData)
-                    ->build(AssociationRequiredMissingLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return new ConvertStruct(null, $sourceData);

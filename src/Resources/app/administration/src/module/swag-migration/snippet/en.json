@@ -453,40 +453,38 @@
       },
       "error-resolution": {
         "codes": {
-          "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": "Associated entity not found but is required for migration",
-          "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": "Child entity could not be converted",
-          "SWAG_MIGRATION_CANNOT_CONVERT": "Entity could not be converted",
-          "SWAG_MIGRATION_CANNOT_GET_FILE": "File cannot be downloaded or copied",
-          "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": "Could not read entity count from source system",
-          "SWAG_MIGRATION__DATASET_NOT_FOUND": "DataSet for entity not found",
-          "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": "Document type is not supported",
-          "SWAG_MIGRATION_EMPTY_NECESSARY_FIELD": "Entity has an empty necessary field",
-          "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": "Entity already exists and cannot be written",
-          "SWAG_MIGRATION_RUN_EXCEPTION": "An exception occurred during migration",
-          "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": "Entity field was automatically reassigned",
-          "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": "Invalid unserialized data in entity",
-          "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": "Exception occurred while processing message queue",
-          "SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED": "MIME type of file could not be determined",
-          "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": "Processor for entity not found",
-          "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": "Migration aborted automatically due to too many consecutive exceptions",
-          "SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED": "Temporary file could not be created",
-          "SWAG_MIGRATION__THEME_COMPILING_ERROR": "Theme could not be compiled",
-          "SWAG_MIGRATION_ENTITY_UNKNOWN": "Cannot find dependent entity",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": "Unsupported object type",
-          "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": "A write exception has occurred",
+          "SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING": "Associated entity missing",
+          "SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED": "Child entity conversion failed",
+          "SWAG_MIGRATION_CONVERT_DOCUMENT_TYPE_UNSUPPORTED": "Document type conversion unsupported",
+          "SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS": "Entity already exists",
+          "SWAG_MIGRATION_CONVERT_ENTITY_FAILED": "Entity conversion failed",
+          "SWAG_MIGRATION_CONVERT_ENTITY_UNKNOWN": "Dependent entity unknown",
+          "SWAG_MIGRATION_CONVERT_FIELD_REASSIGNED": "Entity field automatically reassigned",
+          "SWAG_MIGRATION_CONVERT_MAIN_VARIANT_RELATION_FAILED": "Main variant relation conversion failed",
+          "SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED": "Object type unsupported",
+          "SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE": "Source data incomplete",
+          "SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID": "Unserialized data invalid",
+          "SWAG_MIGRATION_FETCH_DATASET_MISSING": "DataSet for entity missing",
+          "SWAG_MIGRATION_FETCH_ENTITY_COUNT_FAILED": "Failed to read entity count from source system",
+          "SWAG_MIGRATION_FETCH_PROCESSOR_MISSING": "Processor for entity missing",
+          "SWAG_MIGRATION_MEDIA_FILE_MISSING": "Media file missing",
+          "SWAG_MIGRATION_MEDIA_MIME_TYPE_UNKNOWN": "Media MIME type unknown",
+          "SWAG_MIGRATION_MEDIA_TEMPORARY_FILE_FAILED": "Media temporary file creation failed",
+          "SWAG_MIGRATION_RUN_ABORTED": "Migration aborted automatically",
+          "SWAG_MIGRATION_RUN_EXCEPTION": "Migration exception occurred",
+          "SWAG_MIGRATION_RUN_MESSAGE_QUEUE_EXCEPTION": "Message queue exception occurred",
+          "SWAG_MIGRATION_WRITE_EXCEPTION": "Write exception occurred",
+          "SWAG_MIGRATION_WRITE_THEME_COMPILING_FAILED": "Theme compiling failed",
+          "SWAG_MIGRATION_CONVERT_LANGUAGE_PACK_DEACTIVATED": "Language pack deactivated",
+          "SWAG_MIGRATION_CONVERT_SHIPPING_CALCULATION_TYPE_UNSUPPORTED": "Shipping calculation type unsupported",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Shipping price type unsupported",
+          "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Media default folder unsupported",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validation exception occurred",
           "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Field has an invalid value",
           "SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY": "Invalid foreign key reference",
           "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Required field is missing",
           "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unexpected field found in data",
-          "SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE": "Pack language is deactivated",
-          "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": "Invalid email address",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE": "Unsupported mail template type",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": "Unsupported number range type",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": "Unsupported shipping calculation type",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Unsupported shipping factor price calculation",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_DOCUMENT_TYPE": "Unsupported document type",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER": "Unsupported media default folder"
+          "unknown": "Unknown error"
         },
         "errors": {
           "downloadLogsFailed": "Failed downloading log file.",
@@ -625,155 +623,6 @@
         "error": "Error",
         "warning": "Warning",
         "info": "Information"
-      },
-      "error": {
-        "authorizationError": {
-          "information": "Authorization error. Your access data is not correct. Please check it and try again."
-        },
-        "canNotConnectToServer": "No connection to server. Please check the connection for issues.",
-        "customerExists": {
-          "information": "Customer with email \"{mail}\" already exists. You cannot add this user with that email to your database."
-        },
-        "gatewayNotFound": {
-          "information": "Gateway \"{notFoundGateway}\" not found."
-        },
-        "gatewayRead": {
-          "information": "Could not read gateway \"{unreadableGateway}\"."
-        },
-        "localeNotFound": {
-          "information": "Locale entry code \"{notFoundCode}\" not found."
-        },
-        "migrationContextPropertyMissing": {
-          "information": "Required property \"{notFoundProperty}\" for migration context not found."
-        },
-        "migrationsWorkloadPropertyMissing": {
-          "information": "Required property \"{notFoundProperty}\" for migration workload not found."
-        },
-        "noFileSystemPermissions": {
-          "information": "No file system permissions to create or write files or directories. Please check your permissions."
-        },
-        "profileNotFound": {
-          "information": "Migration profile \"{notFoundProfile}\" not found."
-        },
-        "undefinedIndex" : {
-          "title": "Unidentified index",
-          "detail": "Unidentified index could not be found.",
-          "information": "Index \"{unidentifiedIndex}\" could not be found. Please check your data."
-        },
-        "unknownError": "Unknown error. You can check the logging table of your database for more information.",
-        "mediaProcessConnectionError": "A connection error occurred while copying the media data. Please check the connection.",
-        "SWAG_MIGRATION__WRITER_NOT_FOUND": {
-          "title": "File writer not found",
-          "description": "File writer for \"{entity}\" entity not found."
-        },
-        "SWAG_MIGRATION__SHOPWARE_CANNOT_DOWNLOAD_DATA": {
-          "title": "Cannot download media",
-          "description": "Cannot download media. Affected file: {uri}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND": {
-          "title": "Parent entity not found",
-          "description": "Parent entity for \"{entity}\" child not found."
-        },
-        "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
-          "title": "Associated {entity} not found",
-          "description": "The {missingEntity} with the source id \"{sourceId}\" can not be found but is required for {requiredFor}."
-        },
-        "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {
-          "title": "The {entity} entity has an empty necessary field",
-          "description": "The {entity} entity with the source id \"{sourceId}\" has not the necessary data for the field \"{emptyField}\""
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": {
-          "title": "Unsupported object type",
-          "description": "{entity} of object type “{objectType}“ with source id “{sourceId}“ could not be converted."
-        },
-        "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": {
-          "title": "Invalid unserialized data",
-          "description": "The {entity} entity with source id \"{sourceId}\" could not be converted because of invalid unserialized object data for the \"{unserializedEntity}\" entity and the raw data is: {serializedData}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": {
-          "title": "Source file not found",
-          "description": "The source file could not be copied. File: {path}"
-        },
-        "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": {
-          "title": "The {entity} child entity could not be converted",
-          "description": "The {entity} child entity from the {parentEntity} parent entity with the id \"{parentSourceId}\" could not be converted."
-        },
-        "SWAG_MIGRATION_CANNOT_CONVERT_ENTITY": {
-          "title": "The {entity} entity could not be converted",
-          "description": "The {entity} entity with the source id \"{sourceId}\" could not be converted."
-        },
-        "SWAG_MIGRATION_CANNOT_GET_FILE": {
-          "title": "The {entity} file cannot be downloaded / copied",
-          "description": "The {entity} file with the uri \"{uri}\" and media id \"{sourceId}\" cannot be downloaded / copied."
-        },
-        "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": {
-          "title": "Could not read entity count",
-          "description": "Total count for entity {entity} could not be read. Make sure the table \"{table}\" exists in your source system and the optional condition \"{condition}\" is valid. Exception message: {exceptionMessage}"
-        },
-        "SWAG_MIGRATION__DATASET_NOT_FOUND": {
-          "title": "DataSet not found",
-          "description": "DataSet for profile \"{profileName}\" and entity \"{entity}\" not found. Entity with id \"{sourceId}\" could not be processed."
-        },
-        "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": {
-          "title": "The {entity} entity already exists",
-          "description": "The {entity} entity with source id \"{sourceId}\" already exists and cannot be written."
-        },
-        "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
-          "title": "The {entity} entity has a field that was reassigned",
-          "description": "The {entity} entity with the source id \"{sourceId}\" got the field \"{emptyField}\" replaced with \"{replacementField}\"."
-        },
-        "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
-          "title": "Processor not found",
-          "description": "Processor for profile \"{profileName}\", gateway \"{gatewayName}\" and entity \"{entity}\" not found."
-        },
-        "SWAG_MIGRATION_ENTITY_UNKNOWN": {
-          "title": "Cannot find {entity}",
-          "description": "The {requiredForEntity} entity with the source id \"{requiredForSourceId}\" cannot find the depended {entity} entity with the source id \"{sourceId}\"."
-        },
-        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
-          "title": "Invalid Email address",
-          "description": "The email address of the entity {entity}  with source id \"{sourceId}\" is invalid: {email}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
-          "title": "Unsupported number range type",
-          "description": "NumberRange-Entity with source id \"{sourceId}\" could not be converted because of unsupported type: {type}."
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": {
-          "title": "Unsupported shipping factor price calculation",
-          "description": "The shipping price entity with source id \"{sourceId}\" of shipping method \"{shippingMethodId}\" could not be converted because of unsupported factor price calculation."
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": {
-          "title": "Unsupported shipping calculation type",
-          "description": "The shipping method entity with source id \"{sourceId}\" could not be converted because of unsupported calculation type: {type}."
-        },
-        "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": {
-          "title": "Migration aborted automatically",
-          "description": "The migration was aborted automatically, because too many consecutive exceptions occurred."
-        },
-        "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": {
-          "title": "Message queue exception",
-          "description": "An exception occurred while processing the message queue."
-        },
-        "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
-          "title": "Theme compiling error",
-          "description": "The theme with id \"{sourceId}\" could not be compiled."
-        },
-        "SWAG_MIGRATION_RUN_EXCEPTION": {
-          "title": "An exception occurred",
-          "description": "{description}"
-        },
-        "SWAG_MIGRATION__DEBUG": {
-          "title": "Debug-Output",
-          "description": "{logData}"
-        },
-        "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
-          "title": "Document type is not supported",
-          "description": "The document with the source id \"{sourceId}\" could not be converted because the document type \"{type}\" is not supported."
-        },
-        "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
-          "title": "A write exception has occurred",
-          "description": "{description}"
-        }
       }
     },
     "history": {
@@ -787,13 +636,7 @@
       "selectedData": "Data",
       "contextMenu": {
         "details": "Show details",
-        "downloadLogs": "Download log",
-        "clearLogs": "Delete migration data"
-      },
-      "clearRunDialog": {
-        "title": "Delete migration data",
-        "content": "Deleting migration data will remove log entries, media file entries, temporary migration data records and the migration run, which then will no longer be available in the migration history.",
-        "contentHint": "Do you really want to delete the data?"
+        "downloadLogs": "Download log"
       },
       "detailPage": {
         "title": "Migration details",

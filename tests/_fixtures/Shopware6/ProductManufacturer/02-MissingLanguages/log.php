@@ -5,11 +5,13 @@
  * file that was distributed with this source code.
  */
 
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
+
 return [
     [
-        'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
+        'code' => ConvertAssociationMissingLog::getCode(),
     ],
     [
-        'code' => 'SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING',
+        'code' => ConvertAssociationMissingLog::getCode(),
     ],
 ];

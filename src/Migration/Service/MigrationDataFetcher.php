@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistryInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
@@ -40,7 +40,7 @@ class MigrationDataFetcher implements MigrationDataFetcherInterface
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
         }
 

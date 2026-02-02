@@ -451,191 +451,40 @@
         "warning": "Warnung",
         "info": "Information"
       },
-      "error": {
-        "authorizationError": {
-          "information": "Authorisierungsfehler. Die Zugangsdaten sind nicht korrekt. Bitte überprüfe sie und versuche es erneut."
-        },
-        "canNotConnectToServer": "Keine Verbindung zum Server. Bitte überprüfe die Verbindung.",
-        "customerExists": {
-          "information": "Ein Kunde mit der E-Mail „{mail}“ existiert bereits. Du kannst den Kunden auf diese Weise nicht der Datenbank hinzufügen."
-        },
-        "gatewayNotFound": {
-          "information": "Gateway „{notFoundGateway}“ konnte nicht gefunden werden."
-        },
-        "gatewayRead": {
-          "information": "Gateway „{unreadableGateway}“ konnte nicht gelesen werden."
-        },
-        "localeNotFound": {
-          "information": "Eintrag des Locale-Codes „{notFoundCode}“ konnte nicht gefunden werden."
-        },
-        "migrationContextPropertyMissing": {
-          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Migrationskontext nicht gefunden werden."
-        },
-        "migrationsWorkloadPropertyMissing": {
-          "information": "Erforderliche Eigenschaft „{notFoundProperty}“ konnte für den Migrations-Workload nicht gefunden werden."
-        },
-        "noFileSystemPermissions": {
-          "information": "Du besitzt keine Rechte um Dateien oder Ordner zu erstellen oder zu schreiben. Bitte überprüfe Deine Berechtigungen."
-        },
-        "profileNotFound": {
-          "information": "Migrationsprofil „{notFoundProfile}“ konnte nicht gefunden werden."
-        },
-        "undefinedIndex" : {
-          "title": "Unidentifizierter Index",
-          "detail": "Unidentifizierter Index konnte nicht migriert werden.",
-          "information": "Index „{unidentifiedIndex}“ konnte nicht identifiziert werden. Bitte prüfe Deine Daten."
-        },
-        "unknownError": "Unbekannter Fehler. Für weitere Informationen kannst Du in die Logging-Tabelle Deiner Datenbank schauen.",
-        "mediaProcessConnectionError": "Beim Kopieren der Mediadaten ist ein Verbindungsfehler aufgetreten. Bitte überprüfen Sie die Verbindung.",
-        "SWAG_MIGRATION__WRITER_NOT_FOUND": {
-          "title": "Filewriter nicht gefunden",
-          "description": "Filewriter für die „{entity}“-Entität konnte nicht gefunden werden."
-        },
-        "SWAG_MIGRATION__SHOPWARE_CANNOT_DOWNLOAD_DATA": {
-          "title": "Konnte Medien nicht herunterladen",
-          "description": "Konnte Medien nicht herunterladen. Betroffene Datei: {uri}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_PARENT_ENTITY_NOT_FOUND": {
-          "title": "Eltern-Entität nicht gefunden",
-          "description": "Eltern-Entität für das „{entity}“-Kind konnte nicht gefunden werden."
-        },
-        "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": {
-          "title": "Zugehörige {entity} Entität nicht gefunden",
-          "description": "Die {missingEntity} Entität mit der Quell-ID „{sourceId}“ kann nicht gefunden werden, ist aber für {requiredFor} erforderlich."
-        },
-        "SWAG_MIGRATION__SHOPWARE_EMPTY_NECESSARY_DATA_FIELDS": {
-          "title": "Der {entity} Entität fehlt ein Pflichtfeld",
-          "description": "Der {entity} Entität mit der Quell-ID „{sourceId}“ fehlen die Daten für das Pflichtfeld „{emptyField}“."
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": {
-          "title": "Nicht unterstützter Objekttyp",
-          "description": "Die {entity} des Objekttyps „{objectType}“ mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden."
-        },
-        "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": {
-          "title": "Invalide unserialisierte Daten",
-          "description": "Die {entity} Entität mit der Quell-ID „{sourceId}“ konnte aufgrund ungültiger deserialisierter Objektdaten für die Entität „{unserializedEntity}“ und folgenden Rohdaten nicht konvertiert werden: {serializedData}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_CANNOT_COPY_DATA": {
-          "title": "Quelldatei nicht gefunden",
-          "description": "Die Quelldatei konnte nicht kopiert werden. Betroffene Datei: {path}"
-        },
-        "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": {
-          "title": "Die Kind-Entität {entity} konnte nicht konvertiert werden",
-          "description": "Die Kind {entity} Entität aus der Eltern {parentEntity} Entität mit der ID \"{parentSourceId}\" konnte nicht konvertiert werden."
-        },
-        "SWAG_MIGRATION_CANNOT_CONVERT_ENTITY": {
-          "title": "Die Entität {entity} konnte nicht konvertiert werden.",
-          "description": "Die {entity} Entität mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden."
-        },
-        "SWAG_MIGRATION_CANNOT_GET_FILE": {
-          "title": "Die {entity} Datei konnte nicht heruntergeladen / kopiert werden",
-          "description": "Die {entity} Datei mit der URI „{uri}“ und der Media-Id „{sourceId}“ konnte nicht heruntergeladen / kopiert werden."
-        },
-        "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": {
-          "title": "Die Entität-Anzahl konnte nicht gelesen werden",
-          "description": "Gesamtanzahl für die {entity} Entität konnte nicht gelesen werden. Überprüfe ob die Tabelle „{table}“ in dem Quellsystem existiert und die optionale Bedingung „{condition}“ valide ist. Fehlermeldung: {exceptionMessage}"
-        },
-        "SWAG_MIGRATION__DATASET_NOT_FOUND": {
-          "title": "DataSet nicht gefunden",
-          "description": "DataSet für Profile „{profileName}“ und Entität „{entity}“ wurde nicht gefunden. Entität mit der ID „{sourceId}“ konnte nicht verarbeitet werden."
-        },
-        "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": {
-          "title": "Die {entity} Entität existiert bereits",
-          "description": "Die {entity} Entität mit der Quell-Id „{sourceId}“ existiert bereits und konnte nicht geschrieben werden."
-        },
-        "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": {
-          "title": "Ein Feld der {entity} Entität wurde neu zugeordnet",
-          "description": "Das Feld „{emptyField}“ der {entity} Entität mit der Quell-ID „{sourceId}“ wurde mit dem „{replacementField}“ Feld ersetzt."
-        },
-        "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": {
-          "title": "Processor nicht gefunden",
-          "description": "Processor für Profil „{profileName}“, Gateway „{gatewayName}“ und Entität „{entity}“ wurde nicht gefunden."
-        },
-        "SWAG_MIGRATION_ENTITY_UNKNOWN": {
-          "title": "Konnte {entity} nicht finden",
-          "description": "Die {requiredForEntity} Entität mit der Quell-ID „{requiredForSourceId}“ konnte nicht die abhängige {entity} Entität mit der Quell-Id „{sourceId}“ finden."
-        },
-        "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": {
-          "title": "E-Mail-Adresse ungültig",
-          "description": "Die E-Mail-Adresse der Entität {entity} mit der Quell-ID „{sourceId}“ ist ungültig: {email}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": {
-          "title": "Nummernkreis-Typ nicht unterstützt",
-          "description": "Die Nummernkreis Entität mit der Quell-ID „{sourceId}“ konnte wegen folgendem nicht unterstützten Typs nicht konvertiert werden: {type}"
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": {
-          "title": "Faktor-Preisberechnung bei Versandkosten nicht unterstützt",
-          "description": "Die Versandkosten Entität mit der Quell-ID „{sourceId}“ der Versandmethode „{shippingMethodId}“ konnte aufgrund von nicht unterstützter Faktor-Preisberechnung, nicht konvertiert werden."
-        },
-        "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": {
-          "title": "Versandkosten-Berechnungstyp nicht unterstützt",
-          "description": "Die Versandmethoden Entität mit der Quell-ID „{sourceId}“ konnte aufgrund eines nicht unterstützten Versandkosten-Berechnungstyp „{type}“, nicht konvertiert werden."
-        },
-        "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": {
-          "title": "Migration wurde automatisch abgebrochen",
-          "description": "Die Migration wurde automatisch abgebrochen, da zu viele aufeinander folgende Fehler aufgetreten sind."
-        },
-        "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": {
-          "title": "Message-Queue-Fehler",
-          "description": "Ein Fehler ist in der Message-Queue aufgetreten."
-        },
-        "SWAG_MIGRATION__THEME_COMPILING_ERROR": {
-          "title": "Theme Kompilierungsfehler",
-          "description": "Das Theme mit der ID „{sourceId}“ konnte nicht kompiliert werden."
-        },
-        "SWAG_MIGRATION_RUN_EXCEPTION": {
-          "title": "Systemfehler aufgetreten",
-          "description": "{description}"
-        },
-        "SWAG_MIGRATION__DEBUG": {
-          "title": "Debug-Ausgabe",
-          "description": "{logData}"
-        },
-        "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": {
-          "title": "Dokumenttyp wird nicht unterstützt",
-          "description": "Das Dokument mit der Quell-ID „{sourceId}“ konnte nicht konvertiert werden, da der Dokumenttyp „{type}“ nicht unterstützt wird."
-        },
-        "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": {
-          "title": "Ein Schreibfehler ist aufgetreten",
-          "description": "{description}"
-        }
-      },
       "error-resolution": {
         "codes": {
-          "SWAG_MIGRATION__SHOPWARE_ASSOCIATION_REQUIRED_MISSING": "Zugehörige Entität nicht gefunden, aber erforderlich",
-          "SWAG_MIGRATION_CANNOT_CONVERT_CHILD_ENTITY": "Kind-Entität konnte nicht konvertiert werden",
-          "SWAG_MIGRATION_CANNOT_CONVERT": "Entität konnte nicht konvertiert werden",
-          "SWAG_MIGRATION_CANNOT_GET_FILE": "Datei konnte nicht heruntergeladen oder kopiert werden",
-          "SWAG_MIGRATION__COULD_NOT_READ_ENTITY_COUNT": "Entität-Anzahl konnte nicht gelesen werden",
-          "SWAG_MIGRATION__DATASET_NOT_FOUND": "DataSet für Entität wurde nicht gefunden",
-          "SWAG_MIGRATION__DOCUMENT_TYPE_NOT_SUPPORTED": "Dokumenttyp wird nicht unterstützt",
-          "SWAG_MIGRATION_EMPTY_NECESSARY_FIELD": "Entität hat ein leeres Pflichtfeld",
-          "SWAG_MIGRATION_ENTITY_ALREADY_EXISTS": "Entität existiert bereits und konnte nicht geschrieben werden",
-          "SWAG_MIGRATION_RUN_EXCEPTION": "Systemfehler während der Migration aufgetreten",
-          "SWAG_MIGRATION_ENTITY_FIELD_REASSIGNED": "Entitätsfeld wurde automatisch neu zugeordnet",
-          "SWAG_MIGRATION__SHOPWARE_INVALID_UNSERIALIZED_DATA": "Invalide unserialisierte Daten in Entität",
-          "SWAG_MIGRATION_MESSAGE_QUEUE_EXCEPTION": "Fehler in der Message-Queue aufgetreten",
-          "SWAG_MIGRATION__MIME_TYPE_COULD_NOT_BE_DETERMINED": "MIME-Typ der Datei konnte nicht ermittelt werden",
-          "SWAG_MIGRATION__PROCESSOR_NOT_FOUND": "Processor für Entität wurde nicht gefunden",
-          "SWAG_MIGRATION_RUN_ABORTED_AUTOMATICALLY_EXCEPTION": "Migration wurde automatisch abgebrochen aufgrund zu vieler aufeinanderfolgender Fehler",
-          "SWAG_MIGRATION__TEMPORARY_FILE_COULD_NOT_BE_CREATED": "Temporäre Datei konnte nicht erstellt werden",
-          "SWAG_MIGRATION__THEME_COMPILING_ERROR": "Theme konnte nicht kompiliert werden",
-          "SWAG_MIGRATION_ENTITY_UNKNOWN": "Abhängige Entität konnte nicht gefunden werden",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_OBJECT_TYPE": "Nicht unterstützter Objekttyp",
-          "SWAG_MIGRATION__WRITE_EXCEPTION_OCCURRED": "Ein Schreibfehler ist aufgetreten",
+          "SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING": "Zugeordnete Entität fehlt",
+          "SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED": "Konvertierung einer untergeordneten Entität fehlgeschlagen",
+          "SWAG_MIGRATION_CONVERT_DOCUMENT_TYPE_UNSUPPORTED": "Konvertierung des Dokumenttyps wird nicht unterstützt",
+          "SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS": "Entität existiert bereits",
+          "SWAG_MIGRATION_CONVERT_ENTITY_FAILED": "Entitätskonvertierung fehlgeschlagen",
+          "SWAG_MIGRATION_CONVERT_ENTITY_UNKNOWN": "Abhängige Entität unbekannt",
+          "SWAG_MIGRATION_CONVERT_FIELD_REASSIGNED": "Entitätsfeld wurde automatisch neu zugewiesen",
+          "SWAG_MIGRATION_CONVERT_MAIN_VARIANT_RELATION_FAILED": "Konvertierung der Hauptvariantenbeziehung fehlgeschlagen",
+          "SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED": "Objekttyp wird nicht unterstützt",
+          "SWAG_MIGRATION_CONVERT_SOURCE_DATA_INCOMPLETE": "Quelldaten unvollständig",
+          "SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID": "Deserialisierte Daten ungültig",
+          "SWAG_MIGRATION_FETCH_DATASET_MISSING": "Datensatz für Entität fehlt",
+          "SWAG_MIGRATION_FETCH_ENTITY_COUNT_FAILED": "Entitätsanzahl konnte nicht aus dem Quellsystem gelesen werden",
+          "SWAG_MIGRATION_FETCH_PROCESSOR_MISSING": "Processor für Entität fehlt",
+          "SWAG_MIGRATION_MEDIA_FILE_MISSING": "Mediendatei fehlt",
+          "SWAG_MIGRATION_MEDIA_MIME_TYPE_UNKNOWN": "MIME-Typ der Mediendatei unbekannt",
+          "SWAG_MIGRATION_MEDIA_TEMPORARY_FILE_FAILED": "Erstellung der temporären Mediendatei fehlgeschlagen",
+          "SWAG_MIGRATION_RUN_ABORTED": "Migration wurde automatisch abgebrochen",
+          "SWAG_MIGRATION_RUN_EXCEPTION": "Während der Migration ist eine Ausnahme aufgetreten",
+          "SWAG_MIGRATION_RUN_MESSAGE_QUEUE_EXCEPTION": "Ausnahme in der Nachrichtenwarteschlange aufgetreten",
+          "SWAG_MIGRATION_WRITE_EXCEPTION": "Schreibausnahme aufgetreten",
+          "SWAG_MIGRATION_WRITE_THEME_COMPILING_FAILED": "Theme-Kompilierung fehlgeschlagen",
+          "SWAG_MIGRATION_CONVERT_LANGUAGE_PACK_DEACTIVATED": "Sprachpaket deaktiviert",
+          "SWAG_MIGRATION_CONVERT_SHIPPING_CALCULATION_TYPE_UNSUPPORTED": "Versandberechnungstyp wird nicht unterstützt",
+          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Versandpreistyp wird nicht unterstützt",
+          "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Standard-Medienordner wird nicht unterstützt",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validierungsfehler aufgetreten",
           "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Feld hat einen ungültigen Wert",
           "SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY": "Ungültige Fremdschlüssel-Referenz",
           "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Erforderliches Feld fehlt",
           "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unerwartetes Feld in Daten gefunden",
-          "SWAG_MIGRATION__DEACTIVATED_PACK_LANGUAGE": "Pack-Sprache ist deaktiviert",
-          "SWAG_MIGRATION__INVALID_EMAIL_ADDRESS": "Ungültige E-Mail-Adresse",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MAIL_TEMPLATE_TYPE": "E-Mail-Template-Typ nicht unterstützt",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_NUMBER_RANGE_TYPE": "Nummernkreis-Typ nicht unterstützt",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_CALCULATION_TYPE": "Versandkosten-Berechnungstyp nicht unterstützt",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Faktor-Preisberechnung bei Versandkosten nicht unterstützt",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_DOCUMENT_TYPE": "Dokumenttyp nicht unterstützt",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_MEDIA_DEFAULT_FOLDER": "Medien-Standardordner nicht unterstützt"
+          "unknown": "Unbekannter Fehler"
         },
         "errors": {
           "downloadLogsFailed": "Fehler beim Herunterladen der Log-Datei.",
@@ -775,13 +624,7 @@
       "selectedData": "Daten",
       "contextMenu": {
         "details": "Details anzeigen",
-        "downloadLogs": "Protokoll herunterladen",
-        "clearLogs": "Migrationsdaten löschen"
-      },
-      "clearRunDialog": {
-        "title": "Migrationsdaten löschen",
-        "content": "Beim Löschen der Migrationsdaten werden Log-Einträge, Mediendateien-Einträge, temporäre Migrationsdatensätze und der Migrationslauf selbst entfernt. Nach dem Löschen ist die Migration in der Historie nicht mehr einsehbar.",
-        "contentHint": "Willst Du die Daten wirklich löschen?"
+        "downloadLogs": "Protokoll herunterladen"
       },
       "detailPage": {
         "title": "Details zur Migration",

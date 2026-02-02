@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Migration\History;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
@@ -20,7 +19,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
-use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
@@ -41,7 +39,6 @@ class HistoryService implements HistoryServiceInterface
     public function __construct(
         private readonly EntityRepository $loggingRepo,
         private readonly EntityRepository $runRepo,
-        private readonly Connection $connection,
     ) {
     }
 
@@ -124,33 +121,6 @@ class HistoryService implements HistoryServiceInterface
                 $offset += self::LOG_FETCH_LIMIT;
             }
         };
-    }
-
-    public function clearDataOfRun(string $runUuid, Context $context): void
-    {
-        $run = $this->runRepo->search(new Criteria([$runUuid]), $context)->getEntities()->first();
-
-        if ($run === null) {
-            throw MigrationException::entityNotExists(SwagMigrationRunEntity::class, $runUuid);
-        }
-
-        if ($run->getStep()->isRunning()) {
-            throw MigrationException::migrationProcessing();
-        }
-
-        $this->connection->executeStatement('DELETE FROM swag_migration_logging WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-        $this->connection->executeStatement('DELETE FROM swag_migration_data WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-        $this->connection->executeStatement('DELETE FROM swag_migration_media_file WHERE run_id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-        $this->connection->executeStatement('DELETE FROM swag_migration_run WHERE id = :runId', ['runId' => Uuid::fromHexToBytes($runUuid)]);
-    }
-
-    public function isMediaProcessing(): bool
-    {
-        $unprocessedCount = $this->connection->executeQuery(
-            'SELECT COUNT(id) FROM swag_migration_media_file WHERE processed = 0 and process_failure != 1'
-        )->fetchOne();
-
-        return (int) $unprocessedCount !== 0;
     }
 
     private function printLogEntry(SwagMigrationLoggingEntity $logEntry): void
