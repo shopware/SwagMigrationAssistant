@@ -149,6 +149,8 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             }
         }
 
+        $this->loggingService->flush();
+
         return $createData;
     }
 
