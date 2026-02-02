@@ -8228,7 +8228,7 @@ CREATE TABLE `sales_channel_domain` (
 
 INSERT INTO `sales_channel_domain` (`id`, `sales_channel_id`, `language_id`, `url`, `currency_id`, `snippet_set_id`, `hreflang_use_only_locale`, `custom_fields`, `created_at`, `updated_at`, `measurement_units`) VALUES
 (UNHEX('019BBB6A67B271498DA859CD7A6C27E7'),	UNHEX('98432DEF39FC4624B33213A56B8C944D'),	UNHEX('019BBB6ADAF07027AAE9AFD1663F88B7'),	'default.headless0',	UNHEX('B7D2554B0CE847CD82F3AC9BD1C0DFCA'),	UNHEX('019BBB6A099E73669F97F2D9E9515B2B'),	0,	NULL,	'2026-01-14 07:31:11.410',	NULL,	NULL),
-(UNHEX('019BBB6AE2E8714D90380D80BFF7247A'),	UNHEX('019BBB6AE2E1716C9D251FDFF543915F'),	UNHEX('2FBB5FE2E29A4D70AA5854CE7CE3E20B'),	'https://shopwaremajor-lkemper.eu-core-1.shopdev.de',	UNHEX('B7D2554B0CE847CD82F3AC9BD1C0DFCA'),	UNHEX('019BBB6A099E73669F97F2D9E8DAA155'),	0,	NULL,	'2026-01-14 07:31:42.965',	NULL,	NULL);
+(UNHEX('019BBB6AE2E8714D90380D80BFF7247A'),	UNHEX('019BBB6AE2E1716C9D251FDFF543915F'),	UNHEX('2FBB5FE2E29A4D70AA5854CE7CE3E20B'),	'https://shopwaremajor.de',	UNHEX('B7D2554B0CE847CD82F3AC9BD1C0DFCA'),	UNHEX('019BBB6A099E73669F97F2D9E8DAA155'),	0,	NULL,	'2026-01-14 07:31:42.965',	NULL,	NULL);
 
 DROP TABLE IF EXISTS `sales_channel_language`;
 CREATE TABLE `sales_channel_language` (
@@ -9190,7 +9190,7 @@ INSERT INTO `system_config` (`id`, `configuration_key`, `configuration_value`, `
 (UNHEX('019BBB6AC0AD7084BA26654E29D95BCD'),	'core.listing.showVariantOptionInSearchSuggestionResult',	'{\"_value\": false}',	NULL,	'2026-01-14 07:31:34.189',	NULL),
 (UNHEX('019BBB6AC57071C2B1C9EBBB4154036F'),	'core.cart.showTosCheckbox',	'{\"_value\": false}',	NULL,	'2026-01-14 07:31:35.408',	NULL),
 (UNHEX('019BBB6AEA31719CAD75EF07035AD194'),	'storefront.themeSeed',	'{\"_value\": \"019bbb6ae9f9714b9b41734e8e9b6ca4\"}',	UNHEX('019BBB6AE2E1716C9D251FDFF543915F'),	'2026-01-14 07:31:44.817',	NULL),
-(UNHEX('019BBB6B3B7372579A1659AE3DBEC553'),	'core.app.shopIdV2',	'{\"_value\": {\"id\": \"JKPChDhAk8NeKJD8\", \"version\": 2, \"fingerprints\": {\"app_url\": \"https://shopwaremajor-lkemper.eu-core-1.shopdev.de\", \"installation_path\": \"/home/lkemper/files/shopwaremajor\", \"sales_channel_domain_urls\": \"e16866b6015cbac024c2ee4ac0fb4c04\"}}}',	NULL,	'2026-01-14 07:32:05.619',	NULL),
+(UNHEX('019BBB6B3B7372579A1659AE3DBEC553'),	'core.app.shopIdV2',	'{\"_value\": {\"id\": \"JKPChDhAk8NeKJD8\", \"version\": 2, \"fingerprints\": {\"app_url\": \"https://shopwaremajor.de\", \"installation_path\": \"/home/user/files/shopwaremajor\", \"sales_channel_domain_urls\": \"e16866b6015cbac024c2ee4ac0fb4c04\"}}}',	NULL,	'2026-01-14 07:32:05.619',	NULL),
 (UNHEX('019BBB6B3B9173578ADF791DA8EAE7E6'),	'core.usageData.consentState',	'{\"_value\": \"requested\"}',	NULL,	'2026-01-14 07:32:05.649',	NULL),
 (UNHEX('019BBB6B5C50727CA2AD9F5935A273CA'),	'core.defaultSalesChannel.active',	'{\"_value\": true}',	NULL,	'2026-01-14 07:32:14.032',	NULL),
 (UNHEX('019BBB6B5C50727CA2AD9F5936513515'),	'core.defaultSalesChannel.salesChannel',	'{\"_value\": [\"019bbb6ae2e1716c9d251fdff543915f\"]}',	NULL,	'2026-01-14 07:32:14.032',	NULL),

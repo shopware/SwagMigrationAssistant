@@ -1,3 +1,5 @@
+/* eslint-disable playwright/no-conditional-in-test */
+/* eslint-disable playwright/no-conditional-expect */
 import { test, expect } from '../fixtures/AcceptanceTest';
 import { getMask, waitForLoaders, withLargerViewport } from '../fixtures/TestHelpers';
 
@@ -85,6 +87,51 @@ test.describe('Migration Tests @migration @visual', () => {
             await waitForLoaders(page);
             const logs = page.locator('.sw-data-grid__body .sw-data-grid__cell--actions');
 
+            const identifyFieldType = async () => {
+                if ((await page.locator('.swag-migration-error-resolution-field-relation').count()) > 0) {
+                    return 'relation';
+                }
+
+                if ((await page.locator('.swag-migration-error-resolution-field-unhandled__banner').count()) > 0) {
+                    return 'textarea';
+                }
+
+                if ((await page.locator('.sw-migration-error-resolution-field__text').count()) > 0) {
+                    return 'text';
+                }
+
+                if ((await page.locator('.sw-migration-error-resolution-field__number').count()) > 0) {
+                    return 'number';
+                }
+
+                return null;
+            };
+
+            const processRelationField = async () => {
+                await page.locator('.swag-migration-error-resolution-field-relation .sw-select__selection').click();
+                await page.locator('.sw-select-result').first().click();
+                await page.locator('.sw-modal__title').first().click();
+            };
+
+            const processTextField = async () => {
+                const input = page.locator('.sw-migration-error-resolution-field__text input');
+                await input.first().waitFor();
+                await input.fill('Fixed via migration assistant');
+            };
+
+            const processNumberField = async () => {
+                const input = page.locator('.sw-migration-error-resolution-field__number input');
+                await input.first().waitFor();
+                await input.fill('42');
+            };
+
+            const processTextareaField = async () => {
+                const input = page.locator('.sw-code-editor textarea');
+                await input.first().waitFor();
+                await input.clear();
+                await input.fill('019c1db803ad709ebdb37d5f67487a44');
+            };
+
             const processLogEntry = async (index: number) => {
                 await logs.nth(index).getByRole('button', { name: 'Open actions menu' }).click();
                 await page.getByRole('button', { name: 'Edit' }).click();
@@ -94,9 +141,27 @@ test.describe('Migration Tests @migration @visual', () => {
                 await page.getByRole('button', { name: /Select all \(\d+\)/ }).click();
                 await waitForLoaders(page);
 
-                await page.locator('.swag-migration-error-resolution-field-relation .sw-select__selection').click();
-                await page.locator('.sw-select-result').first().click();
-                await page.locator('.sw-modal__title').first().click();
+                const type = await identifyFieldType();
+                expect(type).not.toBeNull();
+
+                if (type === 'relation') {
+                    await processRelationField();
+                    return;
+                }
+
+                if (type === 'textarea') {
+                    await processTextareaField();
+                    return;
+                }
+
+                if (type === 'text') {
+                    await processTextField();
+                    return;
+                }
+
+                if (type === 'number') {
+                    await processNumberField();
+                }
             };
 
             const logCount = await logs.count();
@@ -104,18 +169,14 @@ test.describe('Migration Tests @migration @visual', () => {
             for (let i = 0; i < logCount; i++) {
                 await processLogEntry(i);
 
-                // eslint-disable-next-line playwright/no-conditional-in-test
                 if (i === 0) {
-                    // eslint-disable-next-line playwright/no-conditional-expect
                     await expect(page).toHaveScreenshot('error-resolution-log-detail-unfixed.png', { mask });
                 }
 
                 await page.getByRole('button', { name: 'Apply changes' }).click();
                 await waitForLoaders(page);
 
-                // eslint-disable-next-line playwright/no-conditional-in-test
                 if (i === 0) {
-                    // eslint-disable-next-line playwright/no-conditional-expect
                     await expect(page).toHaveScreenshot('error-resolution-log-detail-fixed.png', { mask });
                 }
 
@@ -131,7 +192,11 @@ test.describe('Migration Tests @migration @visual', () => {
 
             await expect(page.locator('.swag-migration-error-resolution-step__card-table-count-icon')).toHaveCount(logCount);
 
-            await page.getByRole('button', { name: 'Continue' }).click();
+            await page.locator('.swag-migration-error-resolution-step__header-buttons-continue').click();
+            await waitForLoaders(page);
+
+            await page.locator('.swag-migration-error-resolution-step__continue-modal-confirm').click();
+            await waitForLoaders(page);
         });
 
         await test.step('Finish migration', async () => {
@@ -156,8 +221,10 @@ test.describe('Migration Tests @migration @visual', () => {
 
             await expect(page).toHaveScreenshot('migration-history-list.png', { mask });
 
-            await page.locator('.sw-data-grid__body .sw-data-grid__actions-menu').getByRole('button').click();
-            await page.getByRole('button', { name: 'Show details' }).click();
+            await page.locator('.sw-data-grid__body .sw-data-grid__cell--actions').getByRole('button').click();
+            await waitForLoaders(page);
+
+            await page.locator('.sw-context-menu__content .sw-context-menu-item').first().click();
             await waitForLoaders(page);
 
             await expect(page).toHaveScreenshot('migration-history-details-modal.png', { mask });
@@ -167,14 +234,14 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.locator('.sw-modal__close').click();
             await waitForLoaders(page);
 
-            await page.locator('.sw-data-grid__body .sw-data-grid__actions-menu').getByRole('button').click();
-            await page.getByRole('button', { name: 'Download log' }).click();
+            await page.locator('.sw-data-grid__body .sw-data-grid__cell--actions').getByRole('button').click();
             await waitForLoaders(page);
 
             const downloadPromise = page.waitForEvent('download', { timeout: 300_000 });
-            const download = await downloadPromise;
 
-            await download.saveAs('snapshots/MigrationTest.spec.ts/migration-log.text');
+            await page.locator('.sw-context-menu__content .sw-context-menu-item').last().click();
+            const download = await downloadPromise;
+            await waitForLoaders(page);
 
             const logStream = await download.createReadStream();
             const buffers = [];
@@ -186,19 +253,22 @@ test.describe('Migration Tests @migration @visual', () => {
             const finalBuffer = Buffer.concat(buffers);
             let logString = finalBuffer.toString();
 
-            // replace timestamps
+            // remove media warning logs
             logString = logString.replaceAll(
-                /[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{2,4}\s[0-9]{1,2}:[0-9]{1,2}:[0-9]{1,2}\sUTC/g,
-                'TimestampXXX',
+                /----- Log Entry #[0-9]+ -----\nID: [0-9a-f]{32}\nLevel: warning\nCode: SWAG_MIGRATION_MEDIA_FILE_MISSING(.|\n)+?\n\n/g,
+                '',
             );
 
+            // replace timestamps
+            logString = logString.replaceAll(/[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC/g, '[timestamp]');
+
+            // replace domain
+            logString = logString.replaceAll(/"sourceSystemDomain":\s".*"/g, '"sourceSystemDomain": "[domain]"');
+
             // replace ids
-            logString = logString.replaceAll(/(\s|")(0[0-9a-fA-F]+)/g, '$1XXX');
+            logString = logString.replaceAll(/[0-9a-f]{32}/g, '[uuid]');
 
-            // clean up media logs
-            logString = logString.replaceAll(/(\[warning] SWAG_MIGRATION_CANNOT_GET_).+\n.+\n.+/g, '$1XXX\nXXX\nXXX');
-
-            expect.soft(logString).toMatchSnapshot('migration-log-sw5.txt');
+            expect(logString).toMatchSnapshot('migration-log-sw5.txt');
         });
     });
 });
