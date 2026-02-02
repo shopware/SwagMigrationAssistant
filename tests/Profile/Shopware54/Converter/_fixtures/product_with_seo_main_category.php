@@ -199,10 +199,12 @@ return [
         ],
         'mainCategories' => [
             [
+                'id' => '1',
                 'shopId' => '1',
                 'categoryId' => '15',
             ],
             [
+                'id' => '2',
                 'shopId' => '3',
                 'categoryId' => '51',
             ],
