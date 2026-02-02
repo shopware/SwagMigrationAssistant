@@ -141,7 +141,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')

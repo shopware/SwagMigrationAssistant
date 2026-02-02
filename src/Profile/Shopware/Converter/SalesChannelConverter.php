@@ -347,7 +347,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
                     $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
                 }
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                         ->withFieldName('languageId')

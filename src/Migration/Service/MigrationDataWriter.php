@@ -118,7 +118,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $currentWriter = $this->writerRegistry->getWriter($dataSet::getEntity());
             $currentWriter->writeData($convertedValues, $this->writeContext);
         } catch (MigrationException $writerNotFoundException) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($writerNotFoundException->getMessage())
                     ->withExceptionTrace($writerNotFoundException->getTrace())
@@ -126,7 +126,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                     ->withEntityName($dataSet::getEntity())
                     ->build(RunExceptionLog::class)
             );
-            $this->loggingService->saveLogging($context);
 
             foreach ($updateWrittenData as &$data) {
                 $data['written'] = false;
@@ -156,7 +155,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 WriteContext::createFromContext($context)
             );
             $this->removeChecksumsOfUnwrittenData($updateWrittenData, $mappingIds, $context);
-            $this->loggingService->saveLogging($context);
         }
 
         // Update written-Flag of the media file in the media file table
@@ -203,7 +201,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 return $item->getId() === $dataId;
             });
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
@@ -262,7 +260,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
                 $currentWriter = $this->writerRegistry->getWriter($entityName);
                 $currentWriter->writeData([$entity], $this->writeContext);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())

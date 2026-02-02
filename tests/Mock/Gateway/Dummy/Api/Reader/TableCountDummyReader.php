@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Api\Reader;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
@@ -15,7 +14,7 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 #[Package('fundamentals@after-sales')]
 class TableCountDummyReader extends TableCountReader
 {
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
         return [];
     }

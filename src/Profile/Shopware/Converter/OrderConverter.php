@@ -383,7 +383,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
@@ -446,7 +446,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if ($paymentMethodMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
                     ->withFieldName('paymentMethodId')
@@ -605,7 +605,7 @@ abstract class OrderConverter extends ShopwareConverter
         $state = ['countryId' => $newCountryId];
 
         if (!isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('countryStateId')
@@ -642,7 +642,7 @@ abstract class OrderConverter extends ShopwareConverter
             $oldAddressData['state']['position'],
             $oldAddressData['state']['active']
         )) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('countryStateId')
@@ -725,7 +725,7 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if ($deliveryStateMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
@@ -810,7 +810,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($shippingMethodMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
                     ->withFieldName('shippingMethodId')
@@ -980,7 +980,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')
@@ -1012,7 +1012,7 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (!\is_array($mediaMapping)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderLineItemDefinition::ENTITY_NAME)
                     ->withFieldName('coverId')
