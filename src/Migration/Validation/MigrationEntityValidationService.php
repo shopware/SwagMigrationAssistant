@@ -14,6 +14,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
@@ -147,20 +148,72 @@ class MigrationEntityValidationService implements ResetInterface
     private function validateEntityStructure(MigrationValidationContext $validationContext): void
     {
         $entityDefinition = $validationContext->getEntityDefinition();
+        $entityFields = $entityDefinition->getFields();
 
         $requiredFields = $this->getRequiredFields(
-            $entityDefinition->getFields(),
+            $entityFields,
             $entityDefinition->getEntityName()
         );
 
+        $convertedData = $validationContext->getConvertedData();
+
         $missingRequiredFields = array_diff(
             array_keys($requiredFields),
-            array_keys($validationContext->getConvertedData())
+            array_keys($convertedData)
+        );
+
+        $missingRequiredFields = $this->filterSatisfiedFkFields(
+            $missingRequiredFields,
+            $entityFields,
+            $convertedData
         );
 
         foreach ($missingRequiredFields as $missingField) {
             $this->addMissingRequiredFieldLog($validationContext, $missingField);
         }
+    }
+
+    /**
+     * Filters out FK fields that are satisfied by their corresponding association containing an id.
+     *
+     * When a ManyToOne association (e.g. "group") is provided with an "id" in the converted data,
+     * the DAL will automatically resolve this to the FK field (e.g. "groupId").
+     * Therefore, we should not report the FK field as missing.
+     *
+     * @param array<string> $missingFields
+     * @param array<string, mixed> $convertedData
+     *
+     * @return list<string>
+     */
+    private function filterSatisfiedFkFields(array $missingFields, CompiledFieldCollection $fields, array $convertedData): array
+    {
+        $storageToAssociation = [];
+
+        foreach ($fields as $field) {
+            if ($field instanceof ManyToOneAssociationField || $field instanceof OneToOneAssociationField) {
+                $storageToAssociation[$field->getStorageName()] = $field->getPropertyName();
+            }
+        }
+
+        return array_values(array_filter($missingFields, function (string $fieldName) use ($fields, $convertedData, $storageToAssociation): bool {
+            $field = $fields->get($fieldName);
+
+            if (!$field instanceof FkField) {
+                return true;
+            }
+
+            if (!isset($storageToAssociation[$field->getStorageName()])) {
+                return true;
+            }
+
+            $associationName = $storageToAssociation[$field->getStorageName()];
+
+            if (isset($convertedData[$associationName]['id'])) {
+                return false;
+            }
+
+            return true;
+        }));
     }
 
     /**

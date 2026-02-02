@@ -105,11 +105,11 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
  */
 export const PRIORITY_FIELDS = [
     'name',
+    'technicalName',
     'number',
     'productNumber',
     'orderNumber',
     'customerNumber',
-    'technicalName',
     'code',
     'active',
     'visible',
@@ -558,12 +558,18 @@ export default class SwagMigrationErrorResolutionService {
      */
     getHighestPriorityFieldName(entityName: string | null | undefined): string | null {
         const entityFields = this.extractEntityFields(entityName);
-        const allFields = this.getSortedScalarFields(entityFields, [
-            'id',
-            'createdAt',
-        ]);
+        const excludeFields = ['id', 'createdAt', 'global'];
 
-        return allFields[0] || null;
+        const scalarFields = Object.keys(entityFields.scalar)
+            .filter((field) => !excludeFields.includes(field));
+
+        if (scalarFields.length === 0) {
+            return null;
+        }
+
+        const sortedByPriority = this.sortFieldsByPriority(scalarFields);
+
+        return sortedByPriority[0] || null;
     }
 
     /**
