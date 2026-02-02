@@ -130,7 +130,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
 
                 if ($resolver === null) {
                     $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->withSourceData([
@@ -154,7 +154,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 $failedMedia[] = $mediaId;
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withSourceData([
@@ -190,7 +190,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                     $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
                     $failedMedia[] = $mediaId;
 
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(MediaDefinition::ENTITY_NAME)
                             ->withSourceData([
@@ -207,7 +207,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
                 \unlink($filePath);
             } else {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withSourceData([
@@ -223,7 +223,6 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
         }
 
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
-        $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
     }
@@ -250,7 +249,7 @@ class LocalMediaProcessor extends BaseMediaService implements MediaFileProcessor
             $failedMedia[] = $mediaId;
             $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(MediaDefinition::ENTITY_NAME)
                     ->withSourceData([

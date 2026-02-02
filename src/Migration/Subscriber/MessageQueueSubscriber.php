@@ -89,7 +89,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
          * Raise exception counter and log the exception
          */
         $progress->raiseExceptionCount();
-        $this->loggingService->addLogEntry(
+        $this->loggingService->log(
             (new MigrationLogBuilder(
                 $run->getId(),
                 $connection?->getProfileName() ?? 'unknown',
@@ -108,7 +108,7 @@ class MessageQueueSubscriber implements EventSubscriberInterface
             $progress->setIsAborted(true);
             $this->updateRun($run->getId(), $progress, $message->getContext());
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 (new MigrationLogBuilder(
                     $run->getId(),
                     $connection?->getProfileName() ?? 'unknown',
@@ -118,7 +118,6 @@ class MessageQueueSubscriber implements EventSubscriberInterface
                     ->withExceptionTrace($event->getThrowable()->getTrace())
                     ->build(RunAbortedLog::class)
             );
-            $this->loggingService->saveLogging($message->getContext());
 
             return;
         }

@@ -145,7 +145,7 @@ abstract class ShopwareConverter extends Converter
 
             if (empty($newAssociationId)) {
                 if ($logMissing) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                             ->withEntityName($entity)
                             ->withConvertedData($association)

@@ -7,7 +7,6 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
@@ -28,7 +27,7 @@ class TableCountReader implements TableCountReaderInterface
     ) {
     }
 
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array
+    public function readTotals(MigrationContextInterface $migrationContext): array
     {
         $client = $this->connectionFactory->createApiClient($migrationContext);
 
@@ -47,7 +46,7 @@ class TableCountReader implements TableCountReaderInterface
         }
 
         if (\count($arrayResult['data']['exceptions']) > 0) {
-            $this->logExceptions($arrayResult['data']['exceptions'], $migrationContext, $context);
+            $this->logExceptions($arrayResult['data']['exceptions'], $migrationContext);
         }
 
         return $this->prepareTotals($arrayResult['data']['totals']);
@@ -66,16 +65,14 @@ class TableCountReader implements TableCountReaderInterface
         return $totals;
     }
 
-    private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext, Context $context): void
+    private function logExceptions(array $exceptionArray, MigrationContextInterface $migrationContext): void
     {
         foreach ($exceptionArray as $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception['message'])
                     ->build(FetchEntityCountFailedLog::class)
             );
         }
-
-        $this->loggingService->saveLogging($context);
     }
 }
