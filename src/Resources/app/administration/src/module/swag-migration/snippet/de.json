@@ -477,7 +477,7 @@
           "SWAG_MIGRATION_WRITE_THEME_COMPILING_FAILED": "Theme-Kompilierung fehlgeschlagen",
           "SWAG_MIGRATION_CONVERT_LANGUAGE_PACK_DEACTIVATED": "Sprachpaket deaktiviert",
           "SWAG_MIGRATION_CONVERT_SHIPPING_CALCULATION_TYPE_UNSUPPORTED": "Versandberechnungstyp wird nicht unterstützt",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Versandpreistyp wird nicht unterstützt",
+          "SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED": "Versandpreistyp wird nicht unterstützt",
           "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Standard-Medienordner wird nicht unterstützt",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validierungsfehler aufgetreten",
           "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Feld hat einen ungültigen Wert",

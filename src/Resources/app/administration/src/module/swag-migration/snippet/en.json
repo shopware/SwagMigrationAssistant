@@ -477,7 +477,7 @@
           "SWAG_MIGRATION_WRITE_THEME_COMPILING_FAILED": "Theme compiling failed",
           "SWAG_MIGRATION_CONVERT_LANGUAGE_PACK_DEACTIVATED": "Language pack deactivated",
           "SWAG_MIGRATION_CONVERT_SHIPPING_CALCULATION_TYPE_UNSUPPORTED": "Shipping calculation type unsupported",
-          "SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE": "Shipping price type unsupported",
+          "SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED": "Shipping price type unsupported",
           "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Media default folder unsupported",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validation exception occurred",
           "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Field has an invalid value",
