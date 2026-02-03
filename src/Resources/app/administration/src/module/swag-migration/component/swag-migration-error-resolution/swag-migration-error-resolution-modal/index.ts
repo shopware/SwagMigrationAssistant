@@ -42,6 +42,7 @@ export interface SwagMigrationErrorResolutionModalData {
     tableTotal: number;
     tableData: ResolutionModalRow[];
     selectedLogIds: string[];
+    selectAllMode: boolean;
     selectedDetailsLog: ResolutionModalRow;
     loading: boolean;
     submitLoading: boolean;
@@ -85,13 +86,14 @@ export default Shopware.Component.wrapComponentConfig({
             tableLimit: 25,
             tableTotal: 0,
             tableData: [],
-            selectedLogIds: [],
             selectedDetailsLog: null,
             loading: false,
             submitLoading: false,
             fieldValue: null,
             fieldError: null,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
+            selectedLogIds: [],
+            selectAllMode: false,
         };
     },
 
@@ -157,6 +159,16 @@ export default Shopware.Component.wrapComponentConfig({
         preSelection(): Record<string, ResolutionModalRow> {
             const selection: Record<string, ResolutionModalRow> = {};
 
+            if (this.selectAllMode) {
+                this.tableData.forEach((row) => {
+                    if (!row.status) {
+                        selection[row.logId] = row;
+                    }
+                });
+
+                return selection;
+            }
+
             if (this.selectedLogIds.length === 0) {
                 return selection;
             }
@@ -172,6 +184,10 @@ export default Shopware.Component.wrapComponentConfig({
 
         resolvingComponent(): string | null {
             return ERROR_CODE_COMPONENT_MAPPING[this.selectedLog.code] || null;
+        },
+
+        isResolutionDisabled(): boolean {
+            return this.loading || (this.selectedLogIds.length === 0 && !this.selectAllMode);
         },
     },
 
@@ -190,19 +206,12 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             try {
-                const entityIds = await this.collectEntityIdsForSubmission();
-
-                if (entityIds.length === 0) {
-                    this.createNotificationError({
-                        message: this.$tc('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
-                    });
-
-                    return;
+                if (this.selectAllMode) {
+                    await this.submitResolutionInBatches();
+                } else {
+                    await this.submitResolutionForSelectedIds();
                 }
 
-                const entities = entityIds.map((entityId) => this.createResolutionEntity(entityId));
-
-                await this.migrationFixRepository.saveAll(entities);
                 await this.fetchLogs();
 
                 this.resetSelection();
@@ -260,6 +269,53 @@ export default Shopware.Component.wrapComponentConfig({
             return false;
         },
 
+        async submitResolutionForSelectedIds() {
+            const entityIds = await this.collectEntityIdsForSubmission();
+
+            if (entityIds.length === 0) {
+                this.createNotificationError({
+                    message: this.$tc('swag-migration.index.error-resolution.errors.noEntityIdsFound'),
+                });
+
+                return;
+            }
+
+            const entities = entityIds.map((entityId) => this.createResolutionEntity(entityId));
+
+            await this.migrationFixRepository.saveAll(entities);
+        },
+
+        async submitResolutionInBatches() {
+            const { count, limit } = await this.migrationApiService.getUnresolvedLogsBatchInformation(
+                this.runId,
+                this.selectedLog.code,
+                this.selectedLog.entityName,
+                this.selectedLog.fieldName,
+                this.migrationStore.connectionId,
+            );
+
+            const iterations = Math.ceil(count / limit);
+
+            for (let i = 0; i < iterations; i += 1) {
+                // each batch must be completed before fetching the next
+                // eslint-disable-next-line no-await-in-loop
+                const { entityIds } = await this.migrationApiService.getLogEntityIdsWithoutFix(
+                    this.runId,
+                    this.selectedLog.code,
+                    this.selectedLog.entityName,
+                    this.selectedLog.fieldName,
+                    limit,
+                    this.migrationStore.connectionId,
+                );
+
+                const entities = entityIds.map((entityId: string) => this.createResolutionEntity(entityId));
+
+                // each batch must be completed before fetching the next
+                // eslint-disable-next-line no-await-in-loop
+                await this.migrationFixRepository.saveAll(entities);
+            }
+        },
+
         async collectEntityIdsForSubmission(): Promise<string[]> {
             const entityIdsFromTableData = this.extractEntityIdsFromTableData();
             const missingLogIds = this.getMissingLogIds();
@@ -303,6 +359,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         resetSelection() {
             this.selectedLogIds = [];
+            this.selectAllMode = false;
 
             this.$nextTick(() => {
                 const gridRef = this.$refs.errorResolutionGrid as { resetSelection?: () => void } | undefined;
@@ -439,31 +496,18 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSelectAllLogs() {
-            if (!this.selectedLog) {
+            if (!this.selectedLog || this.selectAllMode) {
                 return;
             }
 
-            this.loading = true;
-
-            try {
-                const result = await this.migrationApiService.getAllLogIds(
-                    this.runId,
-                    this.selectedLog.code,
-                    this.selectedLog.entityName,
-                    this.selectedLog.fieldName,
-                    this.migrationStore.connectionId,
-                );
-
-                this.selectedLogIds = result.ids;
+            if (!this.selectAllMode) {
+                // force select-all behaviour
+                this.applySelectionToGrid(true);
 
                 await this.$nextTick();
-                this.applySelectionToGrid();
-            } catch {
-                this.createNotificationError({
-                    message: this.$tc('swag-migration.index.error-resolution.errors.fetchLogsFailed'),
-                });
-            } finally {
-                this.loading = false;
+
+                this.selectedLogIds = [];
+                this.selectAllMode = true;
             }
         },
 
@@ -486,8 +530,18 @@ export default Shopware.Component.wrapComponentConfig({
             }
         },
 
-        applySelectionToGrid() {
+        applySelectionToGrid(forceSelectAll = false) {
             const gridRef = this.$refs.errorResolutionGrid;
+
+            if (forceSelectAll) {
+                this.tableData.forEach((row) => {
+                    if (!row.status) {
+                        gridRef.selectItem(true, row);
+                    }
+                });
+
+                return;
+            }
 
             this.tableData.forEach((row) => {
                 if (this.selectedLogIds.includes(row.logId) && !row.status) {
@@ -510,6 +564,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         onSelectionChanged(selection: Record<string, ResolutionModalRow>) {
             if (!selection || Object.keys(selection).length === 0) {
+                this.selectAllMode = false;
                 this.selectedLogIds = [];
 
                 return;
@@ -528,7 +583,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         isRecordSelectable(item: ResolutionModalRow): boolean {
-            return !item.status;
+            return !this.selectAllMode && !item.status;
         },
 
         onOpenDetailsModal(row: ResolutionModalRow) {
@@ -541,14 +596,23 @@ export default Shopware.Component.wrapComponentConfig({
             this.selectedDetailsLog = null;
         },
 
-        async onPageChange(page: { page: number; limit: number }) {
-            this.tablePage = page.page;
-            this.tableLimit = page.limit;
+        async onPageChange({ page, limit }: { page: number; limit: number }) {
+            this.tablePage = page;
+            this.tableLimit = limit;
+
+            // temporarily disable select all mode to allow select checkboxes before disabling them
+            const wasSelectAllMode = this.selectAllMode;
+            this.selectAllMode = false;
 
             await this.fetchLogs();
-
             await this.$nextTick();
-            this.applySelectionToGrid();
+
+            this.applySelectionToGrid(wasSelectAllMode);
+
+            if (wasSelectAllMode) {
+                await this.$nextTick();
+                this.selectAllMode = true;
+            }
         },
     },
 });

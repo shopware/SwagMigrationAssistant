@@ -99,6 +99,8 @@ class MigrationException extends HttpException
 
     public const UNRESOLVED_ERRORS_REMAINING = 'SWAG_MIGRATION__UNRESOLVED_ERRORS_REMAINING';
 
+    public const INVALID_VALUE_FOR_LIMIT_PARAMETER = 'SWAG_MIGRATION__INVALID_LIMIT_PARAMETER';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -509,6 +511,16 @@ class MigrationException extends HttpException
             self::UNRESOLVED_ERRORS_REMAINING,
             'Cannot continue migration: {{ count }} unresolved fixable errors remaining.',
             ['count' => $count]
+        );
+    }
+
+    public static function invalidValueForLimitParameter(int $maxLimit): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::INVALID_VALUE_FOR_LIMIT_PARAMETER,
+            'Limit has to be a positive integer greater than 0 and not greater than {{ maxLimit }}.',
+            ['maxLimit' => $maxLimit]
         );
     }
 }

@@ -99,15 +99,15 @@
                         <div v-if="resolvingComponent === 'DEFAULT'" class="swag-migration-error-resolution-modal__right-content-default">
                             <swag-migration-error-resolution-field
                                 :log="selectedLog"
+                                :disabled="isResolutionDisabled"
                                 :error="fieldError"
-                                :disabled="loading || selectedLogIds.length === 0"
                             />
 
                             <mt-button
                                 class="swag-migration-error-resolution-modal__right-content-button"
                                 variant="primary"
                                 :is-loading="submitLoading"
-                                :disabled="loading || selectedLogIds.length === 0"
+                                :disabled="isResolutionDisabled"
                                 @click="onSubmitResolution"
                             >
                                 {{ $tc('swag-migration.index.error-resolution.modals.error.right.apply') }}

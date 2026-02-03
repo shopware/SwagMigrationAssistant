@@ -311,7 +311,7 @@ class MigrationLogTest extends TestCase
 
         yield ConvertShippingPriceUnsupportedLog::class => [
             'logClass' => ConvertShippingPriceUnsupportedLog::class,
-            'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE',
+            'code' => 'SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];

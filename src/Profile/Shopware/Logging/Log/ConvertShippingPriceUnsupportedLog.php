@@ -25,6 +25,6 @@ readonly class ConvertShippingPriceUnsupportedLog extends AbstractMigrationLogEn
 
     public static function getCode(): string
     {
-        return 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE';
+        return 'SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED';
     }
 }

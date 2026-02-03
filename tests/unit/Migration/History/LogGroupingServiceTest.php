@@ -252,34 +252,35 @@ class LogGroupingServiceTest extends TestCase
 
     /**
      * @param array<int, array<string, string>> $dbResult
-     * @param array<string> $expectedIds
+     * @param array<string> $expectedEntityIds
      */
-    #[DataProvider('getAllLogIdsDataProvider')]
-    public function testGetAllLogIdsByCodeAndEntity(
+    #[DataProvider('getLogEntityIdsWithoutFixDataProvider')]
+    public function testGetLogEntityIdsWithoutFixByCodeAndEntity(
         array $dbResult,
         ?string $connectionId,
-        array $expectedIds,
+        array $expectedEntityIds,
     ): void {
         $result = $this->createMock(Result::class);
         $result->method('fetchAllAssociative')->willReturn($dbResult);
 
         $this->connection->method('executeQuery')->willReturn($result);
 
-        $ids = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
+        $ids = $this->logGroupingService->getLogEntityIdsWithoutFixByCodeAndEntity(
             Uuid::randomHex(),
             'MISSING_FIELD',
             'product',
             'name',
+            5,
             $connectionId
         );
 
-        static::assertSame($expectedIds, $ids);
+        static::assertSame($expectedEntityIds, $ids);
     }
 
     /**
-     * @return iterable<string, array{dbResult: array<int, array<string, string>>, connectionId: string|null, expectedIds: array<string>}>
+     * @return iterable<string, array{dbResult: array<int, array<string, string>>, connectionId: string|null, expectedEntityIds: array<string>}>
      */
-    public static function getAllLogIdsDataProvider(): iterable
+    public static function getLogEntityIdsWithoutFixDataProvider(): iterable
     {
         $id1 = Uuid::randomHex();
         $id2 = Uuid::randomHex();
@@ -288,41 +289,41 @@ class LogGroupingServiceTest extends TestCase
         yield 'empty results without connectionId' => [
             'dbResult' => [],
             'connectionId' => null,
-            'expectedIds' => [],
+            'expectedEntityIds' => [],
         ];
 
         yield 'empty results with connectionId' => [
             'dbResult' => [],
             'connectionId' => Uuid::randomHex(),
-            'expectedIds' => [],
+            'expectedEntityIds' => [],
         ];
 
         yield 'single result without connectionId' => [
-            'dbResult' => [['id' => $id1]],
+            'dbResult' => [['entity_id' => $id1]],
             'connectionId' => null,
-            'expectedIds' => [$id1],
+            'expectedEntityIds' => [$id1],
         ];
 
         yield 'single result with connectionId' => [
-            'dbResult' => [['id' => $id1]],
+            'dbResult' => [['entity_id' => $id1]],
             'connectionId' => Uuid::randomHex(),
-            'expectedIds' => [$id1],
+            'expectedEntityIds' => [$id1],
         ];
 
         yield 'multiple results' => [
             'dbResult' => [
-                ['id' => $id1],
-                ['id' => $id2],
-                ['id' => $id3],
+                ['entity_id' => $id1],
+                ['entity_id' => $id2],
+                ['entity_id' => $id3],
             ],
             'connectionId' => Uuid::randomHex(),
-            'expectedIds' => [$id1, $id2, $id3],
+            'expectedEntityIds' => [$id1, $id2, $id3],
         ];
 
         yield 'empty connectionId treated as null' => [
-            'dbResult' => [['id' => $id1]],
+            'dbResult' => [['entity_id' => $id1]],
             'connectionId' => '',
-            'expectedIds' => [$id1],
+            'expectedEntityIds' => [$id1],
         ];
     }
 
@@ -726,5 +727,74 @@ class LogGroupingServiceTest extends TestCase
             'expectEntityCondition' => true,
             'expectFieldCondition' => false,
         ];
+    }
+
+    public function testGetUnresolvedLogsCountByCodeAndEntity(): void
+    {
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn('1');
+
+        $this->connection->method('executeQuery')->willReturn($result);
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            Uuid::randomHex(),
+            'MISSING_FIELD',
+            'product',
+            'name',
+            Uuid::randomHex(),
+        );
+
+        static::assertSame(1, $count);
+    }
+
+    public function testGetUnresolvedLogsCountByCodeAndEntityIncludesConnectionIdInSqlWhenItsPassed(): void
+    {
+        $connectionId = Uuid::randomHex();
+
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn('1');
+
+        $this->connection->method('executeQuery')
+            ->willReturnCallback(function (string $sql, array $params) use ($result, $connectionId) {
+                static::assertStringContainsString(' AND f.connection_id = :connectionId', $sql);
+                static::assertArrayHasKey('connectionId', $params);
+                static::assertSame($connectionId, Uuid::fromBytesToHex($params['connectionId']));
+
+                return $result;
+            });
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            Uuid::randomHex(),
+            'MISSING_FIELD',
+            'product',
+            'name',
+            $connectionId,
+        );
+
+        static::assertSame(1, $count);
+    }
+
+    public function testGetUnresolvedLogsCountByCodeAndEntityNotIncludesConnectionIdInSqlWhenNullIsPassed(): void
+    {
+        $result = $this->createMock(Result::class);
+        $result->method('fetchOne')->willReturn('1');
+
+        $this->connection->method('executeQuery')
+            ->willReturnCallback(function (string $sql, array $params) use ($result) {
+                static::assertStringNotContainsString(' AND f.connection_id = :connectionId', $sql);
+                static::assertArrayNotHasKey('connectionId', $params);
+
+                return $result;
+            });
+
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
+            Uuid::randomHex(),
+            'MISSING_FIELD',
+            'product',
+            'name',
+            null
+        );
+
+        static::assertSame(1, $count);
     }
 }

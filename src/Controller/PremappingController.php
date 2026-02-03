@@ -36,8 +36,8 @@ class PremappingController extends AbstractController
     #[Route(
         path: '/api/_action/migration/generate-premapping',
         name: 'api.admin.migration.generate-premapping',
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']]
     )]
     public function generatePremapping(Request $request, Context $context): JsonResponse
     {
@@ -54,8 +54,8 @@ class PremappingController extends AbstractController
     #[Route(
         path: '/api/_action/migration/write-premapping',
         name: 'api.admin.migration.write-premapping',
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']],
         methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.editor']]
     )]
     public function writePremapping(Request $request, Context $context): Response
     {
