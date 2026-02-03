@@ -606,7 +606,7 @@ class HistoryControllerTest extends TestCase
     }
 
     #[DataProvider('provideValuesForLimitParameter')]
-    public function testGetLogEntityIdsWithoutFixWithInvalidLimitValueShouldThrowException($limit): void
+    public function testGetLogEntityIdsWithoutFixWithInvalidLimitValueShouldThrowException(int $limit): void
     {
         $request = new Request([], [
             'runId' => $this->runUuid,

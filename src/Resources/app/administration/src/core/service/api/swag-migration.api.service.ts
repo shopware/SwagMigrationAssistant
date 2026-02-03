@@ -575,7 +575,7 @@ export default class MigrationApiService extends ApiService {
         code: string,
         entityName: string,
         fieldName: string,
-        limit: int,
+        limit?: int,
         connectionId?: string,
         additionalHeaders: AdditionalHeaders = {},
     ): Promise<{ entityIds: string[] }> {
