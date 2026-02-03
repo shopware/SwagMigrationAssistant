@@ -144,9 +144,7 @@ async function createWrapper(props = defaultProps) {
                 'swag-migration-error-resolution-field': await Shopware.Component.build(
                     'swag-migration-error-resolution-field',
                 ),
-                'swag-migration-data-grid-extended': await Shopware.Component.build(
-                    'swag-migration-data-grid-extended',
-                ),
+                'swag-migration-data-grid-extended': await Shopware.Component.build('swag-migration-data-grid-extended'),
                 'sw-entity-single-select': await wrapTestComponent('sw-entity-single-select'),
                 'sw-select-result-list': await wrapTestComponent('sw-select-result-list'),
                 'sw-popover-deprecated': await wrapTestComponent('sw-popover-deprecated'),
@@ -218,7 +216,11 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await flushPromises();
 
             wrapper.vm.selectAllMode = false;
-            wrapper.vm.selectedLogIds = ['log-1', 'log-2', 'log-3'];
+            wrapper.vm.selectedLogIds = [
+                'log-1',
+                'log-2',
+                'log-3',
+            ];
 
             expect(wrapper.vm.selectedCount).toBe(3);
         });
@@ -237,9 +239,9 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await flushPromises();
 
             expect(wrapper.vm.loading).toBe(false);
-            expect(
-                wrapper.findComponent('.swag-migration-error-resolution-modal__left-grid').props('isLoading'),
-            ).toBe(false);
+            expect(wrapper.findComponent('.swag-migration-error-resolution-modal__left-grid').props('isLoading')).toBe(
+                false,
+            );
 
             expect(migrationLoggingRepositoryMock.search).toHaveBeenNthCalledWith(
                 1,

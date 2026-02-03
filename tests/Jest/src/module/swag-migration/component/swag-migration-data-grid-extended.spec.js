@@ -17,7 +17,7 @@ const defaultProps = {
 
 async function createWrapper(props = {}) {
     await wrapTestComponent('sw-data-grid');
-    
+
     Shopware.Component.extend('swag-migration-data-grid-extended', 'sw-data-grid', SwagMigrationDataGridExtended);
 
     return mount(await Shopware.Component.build('swag-migration-data-grid-extended'), {
