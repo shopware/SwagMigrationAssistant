@@ -10,6 +10,7 @@ import SwagMigrationErrorResolutionField from 'SwagMigrationAssistant/module/swa
 import SwagMigrationErrorResolutionFieldScalar from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar';
 import SwagMigrationErrorResolutionFieldRelation from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation';
 import SwagMigrationErrorResolutionService from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
+import SwagMigrationDataGridExtended from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-data-grid-extended';
 import { fixtureLogGroups, fixtureLogs, fixtureFixes } from '@/fixture';
 
 const { EntityCollection } = Shopware.Data;
@@ -124,6 +125,9 @@ const repositoryFactoryMock = {
 };
 
 async function createWrapper(props = defaultProps) {
+    await wrapTestComponent('sw-data-grid');
+    Shopware.Component.extend('swag-migration-data-grid-extended', 'sw-data-grid', SwagMigrationDataGridExtended);
+
     return mount(await Shopware.Component.build('swag-migration-error-resolution-modal'), {
         props,
         global: {
@@ -139,6 +143,9 @@ async function createWrapper(props = defaultProps) {
                 ),
                 'swag-migration-error-resolution-field': await Shopware.Component.build(
                     'swag-migration-error-resolution-field',
+                ),
+                'swag-migration-data-grid-extended': await Shopware.Component.build(
+                    'swag-migration-data-grid-extended',
                 ),
                 'sw-entity-single-select': await wrapTestComponent('sw-entity-single-select'),
                 'sw-select-result-list': await wrapTestComponent('sw-select-result-list'),
@@ -195,12 +202,34 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
         });
     });
 
+    describe('selectedCount', () => {
+        it('should return tableTotal when selectAllMode is active', async () => {
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            wrapper.vm.selectAllMode = true;
+            wrapper.vm.tableTotal = 150;
+
+            expect(wrapper.vm.selectedCount).toBe(150);
+        });
+
+        it('should return selectedLogIds length when selectAllMode is inactive', async () => {
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            wrapper.vm.selectAllMode = false;
+            wrapper.vm.selectedLogIds = ['log-1', 'log-2', 'log-3'];
+
+            expect(wrapper.vm.selectedCount).toBe(3);
+        });
+    });
+
     describe('initial loading', () => {
         it('should load initial data when modal is opened', async () => {
             const wrapper = await createWrapper();
 
             expect(wrapper.vm.loading).toBe(true);
-            expect(wrapper.find('.swag-migration-error-resolution-modal__left-grid').attributes('is-loading')).toBe('true');
+            expect(wrapper.findComponent('.swag-migration-error-resolution-modal__left-grid').props('isLoading')).toBe(true);
             expect(
                 wrapper.find('.swag-migration-error-resolution-modal__right-content-button').attributes('disabled'),
             ).toBeDefined();
@@ -209,8 +238,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(wrapper.vm.loading).toBe(false);
             expect(
-                wrapper.find('.swag-migration-error-resolution-modal__left-grid').attributes('is-loading'),
-            ).toBeUndefined();
+                wrapper.findComponent('.swag-migration-error-resolution-modal__left-grid').props('isLoading'),
+            ).toBe(false);
 
             expect(migrationLoggingRepositoryMock.search).toHaveBeenNthCalledWith(
                 1,
