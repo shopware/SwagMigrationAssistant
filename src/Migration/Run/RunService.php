@@ -28,8 +28,9 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\ThemeCompilingErrorRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\WriteThemeCompilingFailedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MessageQueue\Message\MigrationProcessMessage;
@@ -74,6 +75,7 @@ class RunService implements RunServiceInterface
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly PremappingServiceInterface $premappingService,
         private readonly RunTransitionServiceInterface $runTransitionService,
+        private readonly LogGroupingService $logGroupingService,
     ) {
     }
 
@@ -87,13 +89,28 @@ class RunService implements RunServiceInterface
             throw MigrationException::migrationProcessing('checksum reset');
         }
 
+        if ($this->isTruncatingMigrationData()) {
+            throw MigrationException::migrationProcessing('data truncation');
+        }
+
         $connection = $this->getCurrentConnection($context);
 
         if ($connection === null) {
             throw MigrationException::noConnectionFound();
         }
 
-        if (!$this->isPremmappingValid($dataSelectionIds, $connection, $context)) {
+        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+        $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
+
+        if ($environmentInformation->isMigrationDisabled()) {
+            throw MigrationException::migrationDisabledBySource();
+        }
+
+        if (empty($dataSelectionIds)) {
+            throw MigrationException::noDataToMigrate();
+        }
+
+        if (!$this->isPremappingValid($dataSelectionIds, $connection, $context)) {
             throw MigrationException::premappingIsIncomplete();
         }
 
@@ -104,7 +121,7 @@ class RunService implements RunServiceInterface
             throw MigrationException::runCouldNotBeCreated();
         }
 
-        $this->updateMigrationRun($runUuid, $connection, $context, $dataSelectionIds);
+        $this->updateMigrationRun($runUuid, $connection, $environmentInformation, $context, $dataSelectionIds);
         $this->updateUnprocessedMediaFiles($connectionId, $runUuid);
 
         $this->bus->dispatch(new MigrationProcessMessage($context, $runUuid));
@@ -160,26 +177,28 @@ class RunService implements RunServiceInterface
             throw MigrationException::runNotFound();
         }
 
-        $runId = $run->getId();
-        $runningSteps = [
-            MigrationStep::FETCHING->value,
-            MigrationStep::ERROR_RESOLUTION->value,
-            MigrationStep::WRITING->value,
-            MigrationStep::MEDIA_PROCESSING->value,
-        ];
+        $run->getStep()->assertOneOf(
+            MigrationStep::FETCHING,
+            MigrationStep::ERROR_RESOLUTION,
+            MigrationStep::WRITING,
+            MigrationStep::MEDIA_PROCESSING
+        );
 
-        if (!\in_array($run->getStepValue(), $runningSteps, true)) {
-            throw MigrationException::runNotFound();
-        }
+        $this->runTransitionService->transitionToRunStep(
+            $run->getId(),
+            MigrationStep::ABORTING
+        );
 
-        $this->runTransitionService->transitionToRunStep($runId, MigrationStep::ABORTING);
-
-        $this->bus->dispatch(new MigrationProcessMessage($context, $runId));
-        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $runId, $context);
+        $this->bus->dispatch(new MigrationProcessMessage($context, $run->getId()));
+        $this->fireTrackingInformation(self::TRACKING_EVENT_MIGRATION_ABORTED, $run->getId(), $context);
     }
 
     public function startCleanupMappingChecksums(string $connectionId, Context $context): void
     {
+        if ($this->isMigrationRunning($context)) {
+            throw MigrationException::migrationProcessing();
+        }
+
         $connection = $this->connectionRepo->search(
             new Criteria([$connectionId]),
             $context,
@@ -211,9 +230,9 @@ class RunService implements RunServiceInterface
             throw MigrationException::runNotFound();
         }
 
-        if ($run->getStep() !== MigrationStep::WAITING_FOR_APPROVE) {
-            throw MigrationException::runNotFound();
-        }
+        $run->getStep()->assertOneOf(
+            MigrationStep::WAITING_FOR_APPROVE
+        );
 
         $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::FINISHED);
 
@@ -262,7 +281,7 @@ class RunService implements RunServiceInterface
             try {
                 $this->themeService->assignTheme($defaultThemeId, $salesChannelId, $context);
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     (new MigrationLogBuilder(
                         $runUuid,
                         $connection->getProfileName(),
@@ -272,12 +291,10 @@ class RunService implements RunServiceInterface
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName(ThemeDefinition::ENTITY_NAME)
                         ->withEntityId($defaultThemeId)
-                        ->build(ThemeCompilingErrorRunLog::class)
+                        ->build(WriteThemeCompilingFailedLog::class)
                 );
             }
         }
-
-        $this->loggingService->saveLogging($context);
     }
 
     public function resumeAfterFixes(Context $context): void
@@ -288,21 +305,36 @@ class RunService implements RunServiceInterface
             throw MigrationException::runNotFound();
         }
 
-        $runId = $run->getId();
+        $run->getStep()->assertOneOf(
+            MigrationStep::ERROR_RESOLUTION
+        );
 
-        if ($run->getStepValue() !== MigrationStep::ERROR_RESOLUTION->value) {
-            throw MigrationException::migrationNotInStep($runId, MigrationStep::ERROR_RESOLUTION->value);
+        $logResult = $this->logGroupingService->getGroupedLogsByCodeAndEntity(
+            $run->getId(),
+            'error',
+            1,
+            1,
+            'count',
+            'DESC',
+            null,
+            'unresolved',
+            null,
+            null
+        );
+
+        if ($logResult['levelCounts']['error'] > 0) {
+            throw MigrationException::unresolvedErrorsRemaining($logResult['levelCounts']['error']);
         }
 
-        $this->runTransitionService->transitionToRunStep($runId, MigrationStep::WRITING);
+        $this->runTransitionService->transitionToRunStep($run->getId(), MigrationStep::WRITING);
 
-        $this->bus->dispatch(new MigrationProcessMessage($context, $runId));
+        $this->bus->dispatch(new MigrationProcessMessage($context, $run->getId()));
     }
 
     /**
      * @param array<int, string> $dataSelectionIds
      */
-    private function isPremmappingValid(array $dataSelectionIds, SwagMigrationConnectionEntity $connection, Context $context): bool
+    private function isPremappingValid(array $dataSelectionIds, SwagMigrationConnectionEntity $connection, Context $context): bool
     {
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $premapping = $this->premappingService->generatePremapping($context, $migrationContext, $dataSelectionIds);
@@ -339,6 +371,13 @@ class RunService implements RunServiceInterface
     {
         return (bool) $this->dbalConnection->fetchOne(
             'SELECT is_resetting_checksums FROM swag_migration_general_setting LIMIT 1'
+        );
+    }
+
+    private function isTruncatingMigrationData(): bool
+    {
+        return (bool) $this->dbalConnection->fetchOne(
+            'SELECT is_reset FROM swag_migration_general_setting LIMIT 1'
         );
     }
 
@@ -401,6 +440,7 @@ class RunService implements RunServiceInterface
     private function updateMigrationRun(
         string $runUuid,
         SwagMigrationConnectionEntity $connection,
+        EnvironmentInformation $environmentInformation,
         Context $context,
         array $dataSelectionIds,
     ): void {
@@ -411,11 +451,16 @@ class RunService implements RunServiceInterface
         }
 
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $environmentInformation = $this->getEnvironmentInformation($migrationContext, $context);
         $dataSelectionCollection = $this->getDataSelectionCollection($migrationContext, $environmentInformation, $dataSelectionIds);
         $runProgress = $this->calculateRunProgress($environmentInformation, $dataSelectionCollection);
 
-        $this->updateRunWithProgress($runUuid, $credentials, $environmentInformation, $runProgress, $context);
+        $this->updateRunWithProgress(
+            $runUuid,
+            $credentials,
+            $environmentInformation,
+            $runProgress,
+            $context
+        );
     }
 
     private function calculateRunProgress(

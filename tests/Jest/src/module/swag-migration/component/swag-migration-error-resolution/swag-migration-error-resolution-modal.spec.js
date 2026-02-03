@@ -60,9 +60,15 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
-    getAllLogIds: jest.fn(() =>
+    getUnresolvedLogsBatchInformation: jest.fn(() =>
         Promise.resolve({
-            ids: logMocks.map((log) => log.id),
+            count: logMocks.length,
+            limit: 10,
+        }),
+    ),
+    getLogEntityIdsWithoutFix: jest.fn(() =>
+        Promise.resolve({
+            entityIds: logMocks.map((log) => log.entityId),
         }),
     ),
 };
@@ -455,9 +461,56 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             migrationLoggingRepositoryMock.search.mockImplementation(originalSearchMock);
         });
 
+        it('should select and disable all checkboxes when clicking "Select All" and reset selectAllMode when click deselect-all button', async () => {
+            // ensure no logs are already resolved at start
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(false);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
+            expect(wrapper.findAll('.sw-data-grid__body .sw-data-grid__row')).toHaveLength(logMocks.length);
+            expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(
+                logMocks.length,
+            );
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(0);
+
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            expect(rowCheckboxes).toHaveLength(logMocks.length);
+
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(false);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(1);
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            expect(selectAllButton.exists()).toBe(true);
+
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(true);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
+
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(logMocks.length);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[disabled]')).toHaveLength(logMocks.length);
+
+            const deselectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link .bulk-deselect-all');
+            expect(deselectAllButton.exists()).toBe(true);
+
+            await deselectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(false);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(0);
+            expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[disabled]')).toHaveLength(0);
+        });
+
         it('should preselect other page logs when selecting all logs', async () => {
             const originalSearchMock = migrationLoggingRepositoryMock.search.getMockImplementation();
-            const originalGetAllLogIdsMock = migrationApiServiceMock.getAllLogIds.getMockImplementation();
 
             const largeLogMocks = [
                 ...new Array(30).fill(null).map((_, index) => ({
@@ -483,10 +536,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 return Promise.resolve(result);
             });
 
-            migrationApiServiceMock.getAllLogIds.mockImplementation(() => {
-                return Promise.resolve({ ids: largeLogMocks.map((log) => log.id) });
-            });
-
             const wrapper = await createWrapper();
             await flushPromises();
 
@@ -506,7 +555,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
             await flushPromises();
 
-            expect(wrapper.vm.selectedLogIds).toHaveLength(29); // -1 for resolved log
+            expect(wrapper.vm.selectAllMode).toBe(true);
+            expect(wrapper.vm.selectedLogIds).toHaveLength(0);
 
             expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(24);
             await wrapper.find('.sw-pagination__page-button-next').trigger('click');
@@ -515,32 +565,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input[checked]')).toHaveLength(5);
 
             migrationLoggingRepositoryMock.search.mockImplementation(originalSearchMock);
-            migrationApiServiceMock.getAllLogIds.mockImplementation(originalGetAllLogIdsMock);
-        });
-
-        it('should display error notification when fetching all log ids fails', async () => {
-            migrationApiServiceMock.getAllLogIds.mockImplementationOnce(() => {
-                return Promise.reject(new Error('failed to fetch all log ids'));
-            });
-            Shopware.Store.get('notification').$reset();
-
-            const wrapper = await createWrapper();
-            await flushPromises();
-
-            await wrapper.find('.sw-data-grid__header .mt-field--checkbox input').setChecked(true);
-            await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
-            await flushPromises();
-
-            const notifications = Object.values(Shopware.Store.get('notification').notifications);
-
-            expect(notifications).toHaveLength(1);
-            expect(notifications).toStrictEqual(
-                expect.arrayContaining([
-                    expect.objectContaining({
-                        message: 'swag-migration.index.error-resolution.errors.fetchLogsFailed',
-                    }),
-                ]),
-            );
         });
     });
 
@@ -688,7 +712,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.emitted()).toHaveProperty('fixes-created');
         });
 
-        it('should display error notification when creating a fix fails', async () => {
+        it('should display error notification when saving manually selected fixes fails', async () => {
             migrationFixRepositoryMock.saveAll.mockRejectedValueOnce(new Error('failed to save fixes'));
             Shopware.Store.get('notification').$reset();
 
@@ -719,7 +743,88 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
+            expect(wrapper.vm.submitLoading).toBe(false);
+
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
+
+            expect(notifications).toHaveLength(1);
+            expect(notifications).toStrictEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        message: 'swag-migration.index.error-resolution.errors.submitResolutionFailed',
+                    }),
+                ]),
+            );
+        });
+
+        it('should display error notification when saving fixes in batches fails', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+
+            const unresolvedLogsCount = 12;
+            const limit = 5;
+            migrationApiServiceMock.getUnresolvedLogsBatchInformation.mockResolvedValueOnce({
+                count: unresolvedLogsCount,
+                limit: limit,
+            });
+
+            // second batch save will fail
+            // third batch should never be called
+            migrationApiServiceMock.getLogEntityIdsWithoutFix
+                .mockResolvedValueOnce({
+                    entityIds: Array.from({ length: limit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
+                })
+                .mockResolvedValueOnce({
+                    entityIds: Array.from({ length: limit }, (_, i) => `entity-ids-batch-2-${i + 1}`),
+                })
+                .mockResolvedValueOnce({
+                    entityIds: Array.from({ length: 2 }, (_, i) => `entity-ids-batch-3-${i + 1}`),
+                });
+
+            migrationFixRepositoryMock.saveAll
+                .mockResolvedValueOnce('first batch saved successfully')
+                .mockRejectedValueOnce(new Error('failed to save second batch'))
+                .mockResolvedValueOnce('third batch should never be called');
+
+            migrationFixRepositoryMock.saveAll.mockRejectedValueOnce(new Error('failed to save fixes'));
+            Shopware.Store.get('notification').$reset();
+
+            await flushPromises();
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            expect(selectAllButton.exists()).toBe(true);
+
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(true);
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            expect(inputField.exists()).toBe(true);
+
+            await inputField.setValue('New Title');
+            await flushPromises();
+            expect(wrapper.vm.fieldValue).toBe('New Title');
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.submitLoading).toBe(false);
+
+            const notifications = Object.values(Shopware.Store.get('notification').notifications);
+
+            expect(migrationApiServiceMock.getUnresolvedLogsBatchInformation).toHaveBeenCalledTimes(1);
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(2);
+            expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalledTimes(2);
 
             expect(notifications).toHaveLength(1);
             expect(notifications).toStrictEqual(
@@ -760,6 +865,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
+
+            expect(wrapper.vm.submitLoading).toBe(false);
 
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
@@ -817,6 +924,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
+            expect(wrapper.vm.submitLoading).toBe(false);
+
             const notifications = Object.values(Shopware.Store.get('notification').notifications);
 
             expect(notifications).toHaveLength(1);
@@ -829,10 +938,151 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             );
         });
 
-        it('should fetch missing log ids when creating a fix and not all log ids are present', async () => {
-            migrationApiServiceMock.getAllLogIds.mockImplementationOnce(() => {
-                return Promise.resolve({ ids: logMocks.map((log) => log.id).concat(['log-id-3']) });
+        it('should call submitResolutionForSelectedIds when rows are selected manually', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
             });
+            await flushPromises();
+
+            const submitResolutionForSelectedIdsSpy = jest.spyOn(wrapper.vm, 'submitResolutionForSelectedIds');
+            const submitResolutionInBatchesSpy = jest.spyOn(wrapper.vm, 'submitResolutionInBatches');
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            expect(inputField.exists()).toBe(true);
+
+            await inputField.setValue('New Title');
+            await flushPromises();
+            expect(wrapper.vm.fieldValue).toBe('New Title');
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(submitResolutionInBatchesSpy).not.toHaveBeenCalled();
+            expect(submitResolutionForSelectedIdsSpy).toHaveBeenCalledTimes(1);
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).not.toHaveBeenCalled();
+        });
+
+        it('should call submitResolutionInBatches when selectAllMode is active', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            const submitResolutionForSelectedIdsSpy = jest.spyOn(wrapper.vm, 'submitResolutionForSelectedIds');
+            const submitResolutionInBatchesSpy = jest.spyOn(wrapper.vm, 'submitResolutionInBatches');
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            expect(selectAllButton.exists()).toBe(true);
+
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(true);
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            expect(inputField.exists()).toBe(true);
+
+            await inputField.setValue('New Title');
+            await flushPromises();
+            expect(wrapper.vm.fieldValue).toBe('New Title');
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(submitResolutionForSelectedIdsSpy).not.toHaveBeenCalled();
+            expect(submitResolutionInBatchesSpy).toHaveBeenCalledTimes(1);
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(1);
+        });
+
+        it('should fetch entityIds from swag_migration_logging in batches', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            const unresolvedLogsCount = 7;
+            const limit = 5;
+            migrationApiServiceMock.getUnresolvedLogsBatchInformation.mockResolvedValueOnce({
+                count: unresolvedLogsCount,
+                limit: limit,
+            });
+
+            migrationApiServiceMock.getLogEntityIdsWithoutFix
+                .mockResolvedValueOnce({
+                    entityIds: Array.from({ length: limit }, (_, i) => `entity-ids-batch-1-${i + 1}`),
+                })
+                .mockResolvedValueOnce({
+                    entityIds: Array.from({ length: 2 }, (_, i) => `entity-ids-batch-2-${i + 1}`),
+                });
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            expect(selectAllButton.exists()).toBe(true);
+
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.vm.selectAllMode).toBe(true);
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            expect(inputField.exists()).toBe(true);
+
+            await inputField.setValue('New Title');
+            await flushPromises();
+            expect(wrapper.vm.fieldValue).toBe('New Title');
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(migrationApiServiceMock.getUnresolvedLogsBatchInformation).toHaveBeenCalledTimes(1);
+            expect(migrationApiServiceMock.getUnresolvedLogsBatchInformation).toHaveBeenLastCalledWith(
+                defaultProps.runId,
+                wrapper.vm.selectedLog.code,
+                wrapper.vm.selectedLog.entityName,
+                wrapper.vm.selectedLog.fieldName,
+                null,
+            );
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenCalledTimes(2);
+            // just checking the last call because parameters are the same for all calls
+            expect(migrationApiServiceMock.getLogEntityIdsWithoutFix).toHaveBeenLastCalledWith(
+                defaultProps.runId,
+                wrapper.vm.selectedLog.code,
+                wrapper.vm.selectedLog.entityName,
+                wrapper.vm.selectedLog.fieldName,
+                limit,
+                null,
+            );
+            expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalledTimes(2);
+        });
+
+        it('should display error notification when fetching entityIds fails', async () => {
+            migrationApiServiceMock.getLogEntityIdsWithoutFix.mockImplementationOnce(() => {
+                return Promise.reject(new Error('failed to fetch entity ids from swag_migration_logging'));
+            });
+            Shopware.Store.get('notification').$reset();
 
             const wrapper = await createWrapper({
                 ...defaultProps,
@@ -844,35 +1094,32 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             });
             await flushPromises();
 
-            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
-            expect(inputField.exists()).toBe(true);
-
             await wrapper.find('.sw-data-grid__header .mt-field--checkbox input').setChecked(true);
             await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
             await flushPromises();
 
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await wrapper.find('.sw-data-grid__bulk .bulk-link button').trigger('click');
+            await flushPromises();
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
             await inputField.setValue('New Title');
             await flushPromises();
-            expect(wrapper.vm.fieldValue).toBe('New Title');
-
-            expect(
-                wrapper.find('.swag-migration-error-resolution-modal__right-content-button').attributes('disabled'),
-            ).toBeUndefined();
-
-            migrationLoggingRepositoryMock.search.mockClear();
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
-            expect(migrationApiServiceMock.getAllLogIds).toHaveBeenCalled();
-            expect(migrationFixRepositoryMock.create).toHaveBeenCalled();
+            expect(wrapper.vm.submitLoading).toBe(false);
 
-            expect(migrationLoggingRepositoryMock.search).toHaveBeenCalledWith(
-                expect.objectContaining({
-                    page: 1,
-                    limit: 1,
-                    ids: ['log-id-3'],
-                }),
+            const notifications = Object.values(Shopware.Store.get('notification').notifications);
+
+            expect(notifications).toHaveLength(1);
+            expect(notifications).toStrictEqual(
+                expect.arrayContaining([
+                    expect.objectContaining({
+                        message: 'swag-migration.index.error-resolution.errors.submitResolutionFailed',
+                    }),
+                ]),
             );
         });
     });

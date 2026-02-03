@@ -333,7 +333,61 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.get[0].url).toBe('_action/migration/is-truncating-migration-data');
     });
 
-    it('should get all log ids', async () => {
+    it('should get entity ids from swag_migration_logging', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+
+        const data = {
+            runId: '987654321',
+            code: 'MIGRATION_001',
+            entityName: 'product',
+            fieldName: 'name',
+            limit: 5,
+            connectionId: '123456789',
+        };
+
+        await migrationApiService.getLogEntityIdsWithoutFix(
+            data.runId,
+            data.code,
+            data.entityName,
+            data.fieldName,
+            data.limit,
+            data.connectionId,
+            { 'test-header': 'test-value' },
+        );
+
+        expect(clientMock.history.post[0].url).toBe('_action/migration/get-log-entity-ids-without-fix');
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
+        expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
+
+    it('should get entity ids from swag_migration_logging without providing a value for limit', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+
+        const data = {
+            runId: '987654321',
+            code: 'MIGRATION_001',
+            entityName: 'product',
+            fieldName: 'name',
+            limit: null,
+            connectionId: '123456789',
+        };
+
+        await migrationApiService.getLogEntityIdsWithoutFix(
+            data.runId,
+            data.code,
+            data.entityName,
+            data.fieldName,
+            data.limit,
+            data.connectionId,
+            { 'test-header': 'test-value' },
+        );
+
+        expect(clientMock.history.post[0].url).toBe('_action/migration/get-log-entity-ids-without-fix');
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
+        expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
+
+    it('should get unresolved logs information', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 
         const data = {
@@ -344,11 +398,16 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             connectionId: '123456789',
         };
 
-        await migrationApiService.getAllLogIds(data.runId, data.code, data.entityName, data.fieldName, data.connectionId, {
-            'test-header': 'test-value',
-        });
+        await migrationApiService.getUnresolvedLogsBatchInformation(
+            data.runId,
+            data.code,
+            data.entityName,
+            data.fieldName,
+            data.connectionId,
+            { 'test-header': 'test-value' },
+        );
 
-        expect(clientMock.history.post[0].url).toBe('_action/migration/get-all-log-ids');
+        expect(clientMock.history.post[0].url).toBe('_action/migration/get-unresolved-logs-batch-information');
         expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });

@@ -21,8 +21,8 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Gateway\HttpClientInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
@@ -86,13 +86,12 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         if ($client === null) {
             $exception = new \Exception('Connection to the source system could not be established');
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
-            $this->loggingService->saveLogging($context);
 
             return $workload;
         }
@@ -146,7 +145,6 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
         }
 
         $this->setProcessedFlag($runId, $context, $finishedUuids, $failureUuids);
-        $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
     }
@@ -288,13 +286,13 @@ class HttpOrderDocumentGenerationService extends BaseMediaService implements Med
             $failureUuids[] = $uuid;
             $mappedWorkload->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($clientException?->getMessage() ?? 'Unknown error occurred')
                     ->withExceptionTrace($clientException?->getTrace() ?? [])
                     ->withSourceData($additionalData)
                     ->withEntityId($uuid)
-                    ->build(CannotGetFileRunLog::class)
+                    ->build(MediaFileMissingLog::class)
             );
         }
     }

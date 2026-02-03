@@ -18,8 +18,8 @@ use SwagMigrationAssistant\Migration\Converter\ConverterRegistryInterface;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSet;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\NotConvertedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityFailedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\MappingDeltaResult;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -69,19 +69,16 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     WriteContext::createFromContext($context)
                 );
                 $converter->writeMapping($context);
-                $this->loggingService->saveLogging($context);
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
-
-            $this->loggingService->saveLogging($context);
         }
     }
 
@@ -99,11 +96,11 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             try {
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
                 if (!$convertStruct instanceof ConvertStruct) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withSourceData($item)
                             ->withEntityName($dataSet::getEntity())
-                            ->build(NotConvertedLog::class)
+                            ->build(ConvertEntityFailedLog::class)
                     );
 
                     continue;
@@ -129,13 +126,13 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())
                         ->withEntityName($dataSet::getEntity())
                         ->withSourceData($item)
-                        ->build(ExceptionRunLog::class)
+                        ->build(RunExceptionLog::class)
                 );
 
                 $createData[] = [

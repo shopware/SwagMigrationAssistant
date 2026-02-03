@@ -22,8 +22,8 @@ use Shopware\Core\Test\Stub\MessageBus\CollectingMessageBus;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
-use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
@@ -189,8 +189,8 @@ class MediaProcessingProcessorTest extends TestCase
         );
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('addLogEntry')->with(
-            static::isInstanceOf(DataSetNotFoundLog::class)
+        $logging->expects(static::once())->method('log')->with(
+            static::isInstanceOf(FetchDataSetMissingLog::class)
         );
 
         $processor = new MediaProcessingProcessor(
@@ -226,8 +226,8 @@ class MediaProcessingProcessorTest extends TestCase
         $registry->method('getProcessor')->willReturn($processorMock);
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('addLogEntry')->with(
-            static::isInstanceOf(ProcessorNotFoundLog::class)
+        $logging->expects(static::once())->method('log')->with(
+            static::isInstanceOf(FetchProcessorMissingLog::class)
         );
 
         $this->mediaFiles = [

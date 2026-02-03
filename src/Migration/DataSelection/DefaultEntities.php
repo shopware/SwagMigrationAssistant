@@ -183,6 +183,8 @@ final class DefaultEntities
 
     final public const PRODUCT_VISIBILITY = 'product_visibility';
 
+    final public const PRODUCT_MAIN_CATEGORY = 'product_main_category';
+
     final public const PROMOTION = 'promotion';
 
     final public const PROMOTION_DISCOUNT = 'promotion_discount';

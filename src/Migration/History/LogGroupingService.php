@@ -13,6 +13,7 @@ use Doctrine\DBAL\ParameterType;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 /**
  * @internal
@@ -157,16 +158,14 @@ readonly class LogGroupingService
 
     /**
      * @throws Exception
-     *
-     * @return array<string>
      */
-    public function getAllLogIdsByCodeAndEntity(
+    public function getUnresolvedLogsCountByCodeAndEntity(
         string $runId,
         string $code,
         string $entityName,
         string $fieldName,
         ?string $connectionId = null,
-    ): array {
+    ): int {
         $params = [
             'runId' => Uuid::fromHexToBytes($runId),
             'code' => $code,
@@ -183,7 +182,7 @@ readonly class LogGroupingService
         }
 
         $sql = "
-            SELECT LOWER(HEX(l.id)) as id
+            SELECT COUNT(*) as count
             FROM swag_migration_logging l
             LEFT JOIN swag_migration_fix f ON (
                 f.entity_name = l.entity_name
@@ -201,7 +200,68 @@ readonly class LogGroupingService
 
         $result = $this->connection->executeQuery($sql, $params);
 
-        return \array_column($result->fetchAllAssociative(), 'id');
+        return (int) $result->fetchOne();
+    }
+
+    /**
+     * @throws Exception
+     *
+     * @return array<string>
+     */
+    public function getLogEntityIdsWithoutFixByCodeAndEntity(
+        string $runId,
+        string $code,
+        string $entityName,
+        string $fieldName,
+        int $limit,
+        ?string $connectionId = null,
+    ): array {
+        $params = [
+            'runId' => Uuid::fromHexToBytes($runId),
+            'code' => $code,
+            'entityName' => $entityName,
+            'fieldName' => $fieldName,
+            'limit' => $limit,
+        ];
+
+        $types = [
+            'runId' => ParameterType::BINARY,
+            'code' => ParameterType::STRING,
+            'entityName' => ParameterType::STRING,
+            'fieldName' => ParameterType::STRING,
+            'limit' => ParameterType::INTEGER,
+        ];
+
+        // this is safe, it's a static string, not user input
+        $connectionJoinCondition = '';
+
+        if ($connectionId !== null && $connectionId !== '') {
+            $connectionJoinCondition = ' AND f.connection_id = :connectionId';
+            $params['connectionId'] = Uuid::fromHexToBytes($connectionId);
+        }
+
+        $sql = "
+            SELECT LOWER(HEX(l.entity_id)) as entity_id
+            FROM swag_migration_logging l
+            LEFT JOIN swag_migration_fix f ON (
+                f.entity_name = l.entity_name
+                AND f.path = l.field_name
+                AND f.entity_id = l.entity_id
+                {$connectionJoinCondition}
+            )
+            WHERE l.run_id = :runId
+                AND l.code = :code
+                AND l.entity_name = :entityName
+                AND l.field_name = :fieldName
+                AND l.user_fixable = 1
+                AND f.id IS NULL
+            ORDER BY l.auto_increment ASC
+            LIMIT :limit
+        ";
+
+        $result = $this->connection->executeQuery($sql, $params, $types);
+
+        return \array_column($result->fetchAllAssociative(), 'entity_id');
     }
 
     /**
@@ -422,9 +482,9 @@ readonly class LogGroupingService
     private function mapLevelCountsFromRows(array $rows): array
     {
         $counts = [
-            'error' => 0,
-            'warning' => 0,
-            'info' => 0,
+            AbstractMigrationLogEntry::LOG_LEVEL_ERROR => 0,
+            AbstractMigrationLogEntry::LOG_LEVEL_WARNING => 0,
+            AbstractMigrationLogEntry::LOG_LEVEL_INFO => 0,
         ];
 
         foreach ($rows as $row) {

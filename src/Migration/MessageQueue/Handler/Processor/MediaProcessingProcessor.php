@@ -19,9 +19,9 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Data\SwagMigrationDataCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSet\DataSetRegistry;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\DataSetNotFoundLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ProcessorNotFoundLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchDataSetMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\FetchProcessorMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorRegistryInterface;
@@ -100,11 +100,11 @@ class MediaProcessingProcessor extends AbstractProcessor
                     $migrationContext->setDataSet($currentDataSet);
                 } catch (MigrationException $e) {
                     if ($e->getErrorCode() === MigrationException::DATASET_NOT_FOUND) {
-                        $this->loggingService->addLogEntry(
+                        $this->loggingService->log(
                             MigrationLogBuilder::fromMigrationContext($migrationContext)
                                 ->withEntityName($mediaFile['entity'])
                                 ->withEntityId($mediaFile['id'])
-                                ->build(DataSetNotFoundLog::class)
+                                ->build(FetchDataSetMissingLog::class)
                         );
                         continue;
                     }
@@ -138,31 +138,25 @@ class MediaProcessingProcessor extends AbstractProcessor
             $this->processFailures($context, $migrationContext, $processor, $workload);
         } catch (MigrationException $e) {
             if ($e->getErrorCode() === MigrationException::NO_CONNECTION_FOUND) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
                         ->withEntityName($currentDataSet::getEntity())
-                        ->build(ProcessorNotFoundLog::class)
+                        ->build(FetchProcessorMissingLog::class)
                 );
-
-                $this->loggingService->saveLogging($context);
             } else {
                 throw $e;
             }
         } catch (\Throwable $e) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($e->getMessage())
                     ->withExceptionTrace($e->getTrace())
                     ->withEntityName($currentDataSet::getEntity())
-                    ->build(ExceptionRunLog::class)
+                    ->build(RunExceptionLog::class)
             );
-
-            $this->loggingService->saveLogging($context);
         }
-
-        $this->loggingService->saveLogging($context);
 
         $progress->setCurrentEntityProgress($progress->getCurrentEntityProgress() + \count($workload));
         $progress->setProgress($progress->getProgress() + \count($workload));

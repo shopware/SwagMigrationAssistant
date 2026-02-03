@@ -29,7 +29,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Profile\Shopware\Logging\Log\DeactivatedPackLanguageLog;
+use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertLanguagePackDeactivatedLog;
 use SwagMigrationAssistant\Profile\Shopware\Premapping\PaymentMethodReader;
 
 #[Package('fundamentals@after-sales')]
@@ -347,11 +347,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
                     $converted['languageId'] = Defaults::LANGUAGE_SYSTEM;
                 }
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                         ->withEntityName(SalesChannelDefinition::ENTITY_NAME)
                         ->withFieldName('languageId')
-                        ->build(DeactivatedPackLanguageLog::class)
+                        ->build(ConvertLanguagePackDeactivatedLog::class)
                 );
             }
         }

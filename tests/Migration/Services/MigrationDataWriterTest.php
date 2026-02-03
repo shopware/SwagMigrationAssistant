@@ -53,6 +53,8 @@ use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Gateway\GatewayRegistry;
 use SwagMigrationAssistant\Migration\Gateway\Reader\ReaderRegistry;
+use SwagMigrationAssistant\Migration\History\LogGroupingService;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingService;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingCollection;
@@ -312,6 +314,7 @@ class MigrationDataWriterTest extends TestCase
             $migrationContextFactoryMock,
             $premappingService,
             static::getContainer()->get(RunTransitionService::class),
+            static::getContainer()->get(LogGroupingService::class),
         );
     }
 
@@ -375,11 +378,11 @@ class MigrationDataWriterTest extends TestCase
         $loggingServiceProperty->setAccessible(true);
         $loggingService = $loggingServiceProperty->getValue($this->migrationDataWriter);
         static::assertInstanceOf(LoggingServiceInterface::class, $loggingService);
-        $loggingService->saveLogging($this->context);
+        $loggingService->flush();
 
         $log = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities()->first();
         static::assertNotNull($log);
-        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $log->getCode());
+        static::assertSame(RunExceptionLog::getCode(), $log->getCode());
     }
 
     #[DataProvider('requiredProperties')]
@@ -421,7 +424,7 @@ class MigrationDataWriterTest extends TestCase
 
         static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
-        $this->loggingService->resetLogging();
+        $this->loggingService->reset();
 
         $failureConvertCriteria = new Criteria([$data->getId()]);
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));
@@ -661,7 +664,7 @@ class MigrationDataWriterTest extends TestCase
 
         $logs = $this->loggingService->getLoggingArray();
 
-        static::assertSame('SWAG_MIGRATION_RUN_EXCEPTION', $logs[0]['code']);
+        static::assertSame(RunExceptionLog::getCode(), $logs[0]['code']);
         static::assertCount(1, $logs);
     }
 

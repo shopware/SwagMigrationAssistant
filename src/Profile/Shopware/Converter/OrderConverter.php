@@ -33,7 +33,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\UnknownEntityLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryStateLookup;
@@ -379,14 +379,14 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($mapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
                     ->withFieldSourcePath('cleared')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return;
@@ -442,13 +442,13 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if ($paymentMethodMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderTransactionDefinition::ENTITY_NAME)
                     ->withFieldName('paymentMethodId')
                     ->withFieldSourcePath('payment.id')
                     ->withSourceData($originalData)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;
@@ -601,13 +601,13 @@ abstract class OrderConverter extends ShopwareConverter
         $state = ['countryId' => $newCountryId];
 
         if (!isset($oldAddressData['stateID'], $oldAddressData['country']['countryiso'], $oldAddressData['state']['shortcode'])) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('countryStateId')
                     ->withFieldSourcePath('stateID')
                     ->withSourceData($oldAddressData)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -638,13 +638,13 @@ abstract class OrderConverter extends ShopwareConverter
             $oldAddressData['state']['position'],
             $oldAddressData['state']['active']
         )) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('countryStateId')
                     ->withFieldSourcePath('name')
                     ->withSourceData($oldAddressData['state'])
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -721,14 +721,14 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if ($deliveryStateMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
                     ->withFieldName('stateId')
                     ->withFieldSourcePath('status')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return [];
@@ -806,13 +806,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($shippingMethodMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderDeliveryDefinition::ENTITY_NAME)
                     ->withFieldName('shippingMethodId')
                     ->withFieldSourcePath('dispatchID')
                     ->withSourceData(['dispatchID' => $shippingMethodId])
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;
@@ -976,13 +976,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if ($salutationMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderAddressDefinition::ENTITY_NAME)
                     ->withFieldName('salutationId')
                     ->withFieldSourcePath('salutation')
                     ->withSourceData(['salutation' => $salutation])
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;
@@ -1008,13 +1008,13 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         if (!\is_array($mediaMapping)) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                     ->withEntityName(OrderLineItemDefinition::ENTITY_NAME)
                     ->withFieldName('coverId')
                     ->withFieldSourcePath('esd.esdID')
                     ->withSourceData($originalEsdItem)
-                    ->build(UnknownEntityLog::class)
+                    ->build(ConvertEntityUnknownLog::class)
             );
 
             return null;

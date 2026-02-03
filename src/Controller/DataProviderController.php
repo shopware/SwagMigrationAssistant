@@ -20,6 +20,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\DataProvider\Provider\ProviderRegistryInterface;
 use SwagMigrationAssistant\DataProvider\Service\EnvironmentServiceInterface;
 use SwagMigrationAssistant\Exception\MigrationException;
@@ -54,7 +55,7 @@ class DataProviderController extends AbstractController
     #[Route(
         path: '/api/_action/data-provider/get-environment',
         name: 'api.admin.data-provider.get-environment',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getEnvironment(Context $context): JsonResponse
@@ -67,7 +68,7 @@ class DataProviderController extends AbstractController
     #[Route(
         path: '/api/_action/data-provider/get-data',
         name: 'api.admin.data-provider.get-data',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getData(Request $request, Context $context): JsonResponse
@@ -89,7 +90,7 @@ class DataProviderController extends AbstractController
     #[Route(
         path: '/api/_action/data-provider/get-total',
         name: 'api.admin.data-provider.get-total',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getTotal(Request $request, Context $context): JsonResponse
@@ -107,7 +108,7 @@ class DataProviderController extends AbstractController
     #[Route(
         path: '/api/_action/data-provider/get-table',
         name: 'api.admin.data-provider.get-table',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function getTable(Request $request, Context $context): JsonResponse
@@ -127,7 +128,7 @@ class DataProviderController extends AbstractController
     #[Route(
         path: '/api/_action/data-provider/generate-document',
         name: 'api.admin.data-provider.generate-document',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function generateDocument(Request $request, Context $context): JsonResponse
@@ -154,7 +155,7 @@ class DataProviderController extends AbstractController
     #[Route(
         path: '/api/_action/data-provider/download-private-file/{file}',
         name: 'api.admin.data-provider.download-private-file',
-        defaults: ['_acl' => ['admin']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['admin']],
         methods: [Request::METHOD_GET]
     )]
     public function downloadPrivateFile(Request $request, Context $context): StreamedResponse|RedirectResponse

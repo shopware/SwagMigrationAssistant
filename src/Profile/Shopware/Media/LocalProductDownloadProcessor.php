@@ -17,8 +17,8 @@ use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
-use SwagMigrationAssistant\Migration\Logging\Log\CannotGetFileRunLog;
-use SwagMigrationAssistant\Migration\Logging\Log\ExceptionRunLog;
+use SwagMigrationAssistant\Migration\Logging\Log\MediaFileMissingLog;
+use SwagMigrationAssistant\Migration\Logging\Log\RunExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileProcessorInterface;
 use SwagMigrationAssistant\Migration\Media\MediaProcessWorkloadStruct;
@@ -102,7 +102,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
             if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withSourceData([
@@ -111,7 +111,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                             'media' => $mappedWorkload[$mediaId],
                         ])
                         ->withEntityId($mediaId)
-                        ->build(CannotGetFileRunLog::class)
+                        ->build(MediaFileMissingLog::class)
                 );
                 $processedMedia[] = $mediaId;
                 $failedMedia[] = $mediaId;
@@ -130,7 +130,7 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withSourceData([
@@ -141,13 +141,12 @@ class LocalProductDownloadProcessor extends BaseMediaService implements MediaFil
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
                         ->withEntityId($mediaId)
-                        ->build(ExceptionRunLog::class)
+                        ->build(RunExceptionLog::class)
                 );
             }
         }
 
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
-        $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
     }

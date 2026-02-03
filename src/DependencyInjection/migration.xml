@@ -192,6 +192,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\PremappingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunTransitionService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\History\LogGroupingService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Run\RunTransitionService">
@@ -281,6 +282,7 @@
         <service id="SwagMigrationAssistant\Controller\HistoryController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\History\LogGroupingService"/>
+            <argument>%shopware.api.max_limit%</argument>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

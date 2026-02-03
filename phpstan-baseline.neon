@@ -31,12 +31,6 @@ parameters:
 			path: src/Migration/History/HistoryServiceInterface.php
 
 		-
-			message: '#^Property SwagMigrationAssistant\\Migration\\Logging\\LoggingService\:\:\$logging type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: src/Migration/Logging/LoggingService.php
-
-		-
 			message: '#^Method SwagMigrationAssistant\\Migration\\Mapping\\MappingDeltaResult\:\:__construct\(\) has parameter \$migrationData with no value type specified in iterable type array\.$#'
 			identifier: missingType.iterableValue
 			count: 1
