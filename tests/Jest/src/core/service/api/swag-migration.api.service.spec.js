@@ -341,6 +341,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             code: 'MIGRATION_001',
             entityName: 'product',
             fieldName: 'name',
+            limit: 5,
             connectionId: '123456789',
         };
 
@@ -349,6 +350,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             data.code,
             data.entityName,
             data.fieldName,
+            data.limit,
             data.connectionId,
             { 'test-header': 'test-value' },
         );

@@ -230,12 +230,17 @@ class HistoryController extends AbstractController
 
         $connectionId = $request->request->getAlnum('connectionId');
 
+        $limit = $request->request->getInt('limit', $this->maxLimit);
+        if ($limit <= 0 || $limit > $this->maxLimit) {
+            throw MigrationException::invalidValueForLimitParameter($this->maxLimit);
+        }
+
         $logEntityIds = $this->logGroupingService->getLogEntityIdsWithoutFixByCodeAndEntity(
             $runId,
             $code,
             $entityName,
             $fieldName,
-            $request->request->getInt('limit', $this->maxLimit),
+            $limit,
             !empty($connectionId) ? $connectionId : null,
         );
 

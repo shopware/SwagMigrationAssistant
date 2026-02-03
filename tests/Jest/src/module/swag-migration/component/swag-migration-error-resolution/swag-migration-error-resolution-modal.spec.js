@@ -816,16 +816,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.vm.fieldValue).toBe('New Title');
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
-
-            // wait until all promisses in the loop are resolved
-            // 3 batches with 2 promises each = max 6 iterations + some more to be safe
-            let iterations = 10;
-            while (wrapper.vm.submitLoading && iterations > 0) {
-                // async calls created in a loop; we need to wait for them to be resolved
-                // eslint-disable-next-line no-await-in-loop
-                await flushPromises();
-                iterations -= 1;
-            }
+            await flushPromises();
 
             expect(wrapper.vm.submitLoading).toBe(false);
 
@@ -1081,6 +1072,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
                 wrapper.vm.selectedLog.code,
                 wrapper.vm.selectedLog.entityName,
                 wrapper.vm.selectedLog.fieldName,
+                limit,
                 null,
             );
             expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalledTimes(2);
@@ -1116,16 +1108,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
-
-            // wait until all promisses in the loop are resolved
-            // 1 batch, first async call is failing = max 1 iteration + some more to be safe
-            let iterations = 5;
-            while (wrapper.vm.submitLoading && iterations > 0) {
-                // async calls created in a loop; we need to wait for them to be resolved
-                // eslint-disable-next-line no-await-in-loop
-                await flushPromises();
-                iterations -= 1;
-            }
 
             expect(wrapper.vm.submitLoading).toBe(false);
 

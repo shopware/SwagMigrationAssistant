@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Entity;
@@ -16,6 +17,7 @@ use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Controller\HistoryController;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryService;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
@@ -601,6 +603,33 @@ class HistoryControllerTest extends TestCase
         static::assertIsArray($json);
         static::assertArrayHasKey('entityIds', $json);
         static::assertCount(2, $json['entityIds']);
+    }
+
+    #[DataProvider('provideValuesForLimitParameter')]
+    public function testGetLogEntityIdsWithoutFixWithInvalidLimitValueShouldThrowException($limit): void
+    {
+        $request = new Request([], [
+            'runId' => $this->runUuid,
+            'code' => 'CUSTOM_LIMIT_TEST_CODE',
+            'entityName' => 'order',
+            'fieldName' => 'status',
+            'limit' => $limit,
+        ]);
+
+        $this->expectExceptionObject(MigrationException::invalidValueForLimitParameter(self::DEFAULT_MAX_LIMIT));
+
+        $this->controller->getLogEntityIdsWithoutFix($request);
+    }
+
+    public static function provideValuesForLimitParameter(): \Generator
+    {
+        yield 'with negative value' => [
+            'limit' => -1,
+        ];
+
+        yield 'with value greater than default max-limit' => [
+            'limit' => self::DEFAULT_MAX_LIMIT + 1,
+        ];
     }
 
     public function testGetUnresolvedLogsBatchInformation(): void

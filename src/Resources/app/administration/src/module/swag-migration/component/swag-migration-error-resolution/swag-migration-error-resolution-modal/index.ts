@@ -266,6 +266,7 @@ export default Shopware.Component.wrapComponentConfig({
                     this.selectedLog.code,
                     this.selectedLog.entityName,
                     this.selectedLog.fieldName,
+                    limit,
                     this.migrationStore.connectionId,
                 );
 
