@@ -23,9 +23,7 @@ export default Shopware.Component.wrapComponentConfig({
                 return this.lastSelectionCount;
             }
 
-            return this.customSelectionCount !== null
-                ? this.customSelectionCount
-                : Object.values(this.selection).length;
+            return this.customSelectionCount !== null ? this.customSelectionCount : Object.values(this.selection).length;
         },
     },
 

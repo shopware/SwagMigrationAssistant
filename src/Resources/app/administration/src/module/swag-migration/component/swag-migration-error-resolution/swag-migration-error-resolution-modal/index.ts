@@ -191,7 +191,7 @@ export default Shopware.Component.wrapComponentConfig({
             if (this.selectAllMode) {
                 return this.tableTotal;
             }
-            
+
             return this.selectedLogIds.length;
         },
     },
