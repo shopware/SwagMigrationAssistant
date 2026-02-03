@@ -378,7 +378,7 @@ class MigrationDataWriterTest extends TestCase
         $loggingServiceProperty->setAccessible(true);
         $loggingService = $loggingServiceProperty->getValue($this->migrationDataWriter);
         static::assertInstanceOf(LoggingServiceInterface::class, $loggingService);
-        $loggingService->saveLogging($this->context);
+        $loggingService->flush();
 
         $log = $this->loggingRepo->search(new Criteria(), $this->context)->getEntities()->first();
         static::assertNotNull($log);
@@ -424,7 +424,7 @@ class MigrationDataWriterTest extends TestCase
 
         static::assertSame(2, $customerTotalAfter - $customerTotalBefore);
         static::assertCount(1, $this->loggingService->getLoggingArray());
-        $this->loggingService->resetLogging();
+        $this->loggingService->reset();
 
         $failureConvertCriteria = new Criteria([$data->getId()]);
         $failureConvertCriteria->addFilter(new EqualsFilter('writeFailure', true));

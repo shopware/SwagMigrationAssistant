@@ -98,10 +98,8 @@ readonly class MigrationValidationService
         );
 
         foreach ($validationContext->getValidationResult()->getLogs() as $log) {
-            $this->loggingService->addLogEntry($log);
+            $this->loggingService->log($log);
         }
-
-        $this->loggingService->saveLogging($validationContext->getContext());
 
         return $validationContext->getValidationResult();
     }

@@ -169,7 +169,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
             return $documentType;
         }
 
-        $this->loggingService->addLogEntry(
+        $this->loggingService->log(
             MigrationLogBuilder::fromMigrationContext($this->migrationContext)
                 ->withEntityName(DocumentDefinition::ENTITY_NAME)
                 ->withFieldName('documentType')

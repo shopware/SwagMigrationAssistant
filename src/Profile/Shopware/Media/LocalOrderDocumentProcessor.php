@@ -98,7 +98,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
             if (!\is_file($sourcePath)) {
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(MediaDefinition::ENTITY_NAME)
                         ->withSourceData([
@@ -127,7 +127,7 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
 
                 $mappedWorkload[$mediaId]->setState(MediaProcessWorkloadStruct::ERROR_STATE);
 
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($e->getMessage())
                         ->withExceptionTrace($e->getTrace())
@@ -143,7 +143,6 @@ class LocalOrderDocumentProcessor extends BaseMediaService implements MediaFileP
         }
 
         $this->setProcessedFlag($migrationContext->getRunUuid(), $context, $processedMedia, $failedMedia);
-        $this->loggingService->saveLogging($context);
 
         return \array_values($mappedWorkload);
     }

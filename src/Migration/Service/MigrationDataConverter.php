@@ -69,19 +69,16 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     WriteContext::createFromContext($context)
                 );
                 $converter->writeMapping($context);
-                $this->loggingService->saveLogging($context);
                 $this->mediaFileService->writeMediaFile($context);
             }
         } catch (\Throwable $exception) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withExceptionMessage($exception->getMessage())
                     ->withExceptionTrace($exception->getTrace())
                     ->withEntityName($dataSet::getEntity())
                     ->build(RunExceptionLog::class)
             );
-
-            $this->loggingService->saveLogging($context);
         }
     }
 
@@ -99,7 +96,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
             try {
                 $convertStruct = $converter->convert($item, $context, $migrationContext);
                 if (!$convertStruct instanceof ConvertStruct) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withSourceData($item)
                             ->withEntityName($dataSet::getEntity())
@@ -129,7 +126,7 @@ class MigrationDataConverter implements MigrationDataConverterInterface
                     'convertFailure' => $convertFailureFlag,
                 ];
             } catch (\Throwable $exception) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withExceptionMessage($exception->getMessage())
                         ->withExceptionTrace($exception->getTrace())

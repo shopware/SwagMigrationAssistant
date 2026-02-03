@@ -367,7 +367,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 );
 
                 if ($productMapping === null) {
-                    $this->loggingService->addLogEntry(
+                    $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($migrationContext)
                             ->withEntityName(PromotionDefinition::ENTITY_NAME)
                             ->withFieldName('productId')
@@ -502,7 +502,7 @@ abstract class PromotionConverter extends ShopwareConverter
                 unset($data['bindtosupplier']);
                 $oneRuleAdded = true;
             } else {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(PromotionCartRuleDefinition::ENTITY_NAME)
                         ->withFieldName('rule.value.manufacturerId')
@@ -557,7 +557,7 @@ abstract class PromotionConverter extends ShopwareConverter
             );
 
             if ($salesChannelMapping === null) {
-                $this->loggingService->addLogEntry(
+                $this->loggingService->log(
                     MigrationLogBuilder::fromMigrationContext($migrationContext)
                         ->withEntityName(PromotionDefinition::ENTITY_NAME)
                         ->withFieldName('salesChannelId')
@@ -630,7 +630,7 @@ abstract class PromotionConverter extends ShopwareConverter
         );
 
         if ($customerGroupMapping === null) {
-            $this->loggingService->addLogEntry(
+            $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
                     ->withEntityName(PromotionPersonaRuleDefinition::ENTITY_NAME)
                     ->withFieldName('rule.value.customerGroupId')

@@ -7,12 +7,11 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Gateway;
 
-use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 
 #[Package('fundamentals@after-sales')]
 interface TableCountReaderInterface
 {
-    public function readTotals(MigrationContextInterface $migrationContext, Context $context): array;
+    public function readTotals(MigrationContextInterface $migrationContext): array;
 }
