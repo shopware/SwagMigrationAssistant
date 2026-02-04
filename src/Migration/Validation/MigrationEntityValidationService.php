@@ -150,7 +150,7 @@ class MigrationEntityValidationService implements ResetInterface
 
         $requiredFields = $this->getRequiredFields(
             $entityFields,
-            $entityDefinition->getEntityName()
+            $entityDefinition
         );
 
         $convertedData = $validationContext->getConvertedData();
@@ -230,7 +230,7 @@ class MigrationEntityValidationService implements ResetInterface
         }
 
         $fields = $entityDefinition->getFields();
-        $requiredFields = $this->getRequiredFields($fields, $entityName);
+        $requiredFields = $this->getRequiredFields($fields, $entityDefinition);
 
         foreach ($convertedData as $fieldName => $value) {
             $field = $fields->get($fieldName);
@@ -320,7 +320,7 @@ class MigrationEntityValidationService implements ResetInterface
 
         $nestedEntityName = $referenceDefinition->getEntityName();
         $fields = $referenceDefinition->getFields();
-        $requiredFields = $this->getRequiredFields($fields, $nestedEntityName);
+        $requiredFields = $this->getRequiredFields($fields, $referenceDefinition);
 
         $rootEntityName = $validationContext->getEntityDefinition()->getEntityName();
         $rootEntityId = $validationContext->getConvertedData()['id'] ?? null;
@@ -387,12 +387,14 @@ class MigrationEntityValidationService implements ResetInterface
      * A field is considered required if:
      * - It has the Required flag
      * - It is not a system managed field
+     * - Does not have a default value in its entity definition
      * - Its corresponding database column is non-nullable without a default value
      *
      * @return array<string, true>
      */
-    private function getRequiredFields(CompiledFieldCollection $fields, string $entityName): array
+    private function getRequiredFields(CompiledFieldCollection $fields, EntityDefinition $entityDefinition): array
     {
+        $entityName = $entityDefinition->getEntityName();
         if (isset($this->requiredDefinitionFieldsCache[$entityName])) {
             return $this->requiredDefinitionFieldsCache[$entityName];
         }
@@ -405,11 +407,16 @@ class MigrationEntityValidationService implements ResetInterface
                 continue;
             }
 
+            if (\in_array($field->getPropertyName(), \array_keys($entityDefinition->getDefaults()), true)) {
+                continue;
+            }
+
             if (!($field instanceof StorageAware)) {
                 $requiredFields[$field->getPropertyName()] = true;
 
                 continue;
             }
+
 
             if (isset($requiredDbColumns[$field->getStorageName()])) {
                 $requiredFields[$field->getPropertyName()] = true;
@@ -448,6 +455,7 @@ class MigrationEntityValidationService implements ResetInterface
             MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                 ->withEntityName($validationContext->getEntityDefinition()->getEntityName())
                 ->withFieldName($fieldName)
+                ->withSourceData($validationContext->getSourceData())
                 ->withConvertedData($convertedData)
                 ->withEntityId($entityId)
                 ->build(MigrationValidationMissingRequiredFieldLog::class)
@@ -474,7 +482,7 @@ class MigrationEntityValidationService implements ResetInterface
             MigrationLogBuilder::fromMigrationContext($validationContext->getMigrationContext())
                 ->withEntityName($entityName)
                 ->withFieldName($fieldName)
-                ->withConvertedData([$fieldName => $value])
+                ->withConvertedData($validationContext->getConvertedData())
                 ->withSourceData($validationContext->getSourceData())
                 ->withExceptionMessage($exception->getMessage())
                 ->withExceptionTrace($exception->getTrace())
