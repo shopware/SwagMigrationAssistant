@@ -30,7 +30,10 @@
         {% block swag_migration_shop_information_content %}
             <template #grid>
                 <sw-container rows="auto auto">
-                    <sw-card-section :divider="showMoreInformation ? 'bottom' : ''">
+                    <sw-card-section
+                        class="swag-migration-shop-information__connection-section"
+                        :divider="showMoreInformation ? 'bottom' : ''"
+                    >
                         {% block swag_migration_shop_information_connection %}
                             <div class="swag-migration-shop-information__connection">
                                 <div class="swag-migration-shop-information__connection-wrapper-left">
@@ -235,6 +238,7 @@
 
                     <sw-card-section
                         v-if="showMoreInformation"
+                        class="swag-migration-shop-information__metadata-section"
                         secondary
                         slim
                     >

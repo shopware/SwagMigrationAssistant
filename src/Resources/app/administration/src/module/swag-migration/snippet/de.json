@@ -435,7 +435,6 @@
         },
         "result": {
           "title": "Der Migrations-Assistent ist fertig",
-          "logSummary": "Logbuch",
           "historyHint": "Du kannst diese Informationen jederzeit in der Migrations-Historie einsehen."
         }
       },

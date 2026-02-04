@@ -1,4 +1,8 @@
 .swag-migration-history {
+    .sw-data-grid {
+        border-radius: var(--border-radius-card);
+    }
+
     .swag-migration-history__status-icon--finished {
         color: var(--color-icon-positive-default);
     }
@@ -9,6 +13,12 @@
 
     .swag-migration-history__status-icon--loading {
         color: var(--color-icon-primary-disabled);
+    }
+}
+
+.swag-migration-history-detail__modal {
+    .sw-tabs.sw-tabs--small {
+        margin: 0;
     }
 }
 

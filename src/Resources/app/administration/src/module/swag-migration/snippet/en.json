@@ -446,8 +446,7 @@
           "unknown": "Unknown"
         },
         "result": {
-          "title": "The Migration Assistant is done",
-          "logSummary": "Logbook",
+          "title": "The Migration is done",
           "historyHint": "You can view this information any time in the migration history."
         }
       },

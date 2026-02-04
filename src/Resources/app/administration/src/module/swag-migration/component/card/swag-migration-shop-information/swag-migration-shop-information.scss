@@ -91,6 +91,10 @@
         font-weight: var(--font-weight-semibold);
     }
 
+    .swag-migration-shop-information__metadata-section {
+        border-radius: var(--border-radius-card);
+    }
+
     .swag-migration-shop-information__metadata {
         color: var(--color-text-secondary-default);
         font-size: var(--font-size-xs);

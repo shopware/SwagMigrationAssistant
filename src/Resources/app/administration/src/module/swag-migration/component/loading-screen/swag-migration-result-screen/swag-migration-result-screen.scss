@@ -1,36 +1,21 @@
 .swag-migration-result-screen {
-    .swag-migration-result-screen__card {
-        &-content {
-            text-align: center;
-            font-size: var(--font-size-xs);
+    &__log-summary {
+        .mt-card__content {
+            padding: 0 !important;
         }
 
-        &-title {
-            margin-bottom: var(--scale-size-4);
-            font-size: var(--font-size-m);
-            font-weight: var(--font-weight-semibold);
+        &-banner.mt-banner {
+            margin: var(--scale-size-24) var(--scale-size-24) var(--scale-size-20) var(--scale-size-24);
         }
 
-        &-caption {
-            margin: 0 var(--scale-size-128) var(--scale-size-24) var(--scale-size-128);
-            font-size: var(--font-size-xs);
-            color: var(--color-text-secondary-default);
-        }
+        .swag-migration-history-detail-errors {
+            &__description {
+                margin: var(--scale-size-24);
+            }
 
-        &-bubble {
-            margin: var(--scale-size-12) auto var(--scale-size-20) auto;
-            width: var(--scale-size-72);
-            height: var(--scale-size-72);
-            border-radius: var(--border-radius-round);
-            background-color: var(--color-background-positive-default);
-            flex-shrink: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        &-icon {
-            color: var(--color-icon-positive-default);
+            .sw-data-grid__cell-content {
+                padding: var(--scale-size-10) var(--scale-size-24) !important;
+            }
         }
     }
 }
