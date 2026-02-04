@@ -201,28 +201,41 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     });
 
     describe('selectedCount', () => {
-        it('should return tableTotal when selectAllMode is active', async () => {
+        it('should display tableTotal when selectAllMode is active', async () => {
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
             const wrapper = await createWrapper();
             await flushPromises();
 
-            wrapper.vm.selectAllMode = true;
-            wrapper.vm.tableTotal = 150;
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
 
-            expect(wrapper.vm.selectedCount).toBe(150);
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            const row0Checkbox = wrapper.find('.sw-data-grid__row--0 .mt-field--checkbox input');
+            const row1Checkbox = wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input');
+
+            expect(row0Checkbox.attributes('disabled')).toBeDefined();
+            expect(row1Checkbox.attributes('disabled')).toBeDefined();
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('2');
         });
 
-        it('should return selectedLogIds length when selectAllMode is inactive', async () => {
+        it('should display selectedLogIds length when selectAllMode is inactive', async () => {
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
             const wrapper = await createWrapper();
             await flushPromises();
 
-            wrapper.vm.selectAllMode = false;
-            wrapper.vm.selectedLogIds = [
-                'log-1',
-                'log-2',
-                'log-3',
-            ];
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').exists()).toBe(false);
 
-            expect(wrapper.vm.selectedCount).toBe(3);
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('1');
         });
     });
 
