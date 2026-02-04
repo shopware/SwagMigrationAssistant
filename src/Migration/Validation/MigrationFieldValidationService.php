@@ -53,12 +53,16 @@ readonly class MigrationFieldValidationService
         bool $isRequired = true,
     ): void {
         if (!$this->definitionRegistry->has($entityName)) {
+            // silently skip validation for unknown entities as the entity is not available in
+            // the target system and this is not a validation failure
             return;
         }
 
         $resolved = $this->resolveFieldPath($entityName, $fieldName);
 
         if ($resolved === null) {
+            // silently skip validation for unknown fields as the field is not available in
+            // the target system and this is not a validation failure
             return;
         }
 

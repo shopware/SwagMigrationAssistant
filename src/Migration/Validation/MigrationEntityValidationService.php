@@ -101,10 +101,14 @@ class MigrationEntityValidationService implements ResetInterface
         array $sourceData,
     ): ?MigrationValidationResult {
         if (empty($convertedEntity)) {
+            // silently skip validation for empty entities as this is not a validation failure
+            // and indicates the data converter chose not to convert this entity
             return null;
         }
 
         if (!$this->definitionRegistry->has($entityName)) {
+            // silently skip validation for unknown entities as the entity is not available
+            // in the target system and this is not a validation failure
             return null;
         }
 
@@ -268,11 +272,12 @@ class MigrationEntityValidationService implements ResetInterface
         mixed $value,
     ): void {
         if (!\is_array($value)) {
+            // skip as this is handled by field validation
             return;
         }
 
-        // skip translations associations, they are validated by field validation
         if ($field instanceof TranslationsAssociationField) {
+            // skip as this is handled by field validation
             return;
         }
 
@@ -326,6 +331,7 @@ class MigrationEntityValidationService implements ResetInterface
         $rootEntityId = $validationContext->getConvertedData()['id'] ?? null;
 
         if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
+            // skip as we only have an ID and no other fields to validate
             return;
         }
 
@@ -416,7 +422,6 @@ class MigrationEntityValidationService implements ResetInterface
 
                 continue;
             }
-
 
             if (isset($requiredDbColumns[$field->getStorageName()])) {
                 $requiredFields[$field->getPropertyName()] = true;
