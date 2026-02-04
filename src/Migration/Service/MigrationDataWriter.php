@@ -73,7 +73,6 @@ class MigrationDataWriter implements MigrationDataWriterInterface
         $criteria->addFilter(new EqualsFilter('entity', $dataSet::getEntity()));
         $criteria->addFilter(new EqualsFilter('runId', $migrationContext->getRunUuid()));
         $criteria->addFilter(new EqualsFilter('convertFailure', false));
-        $criteria->addFilter(new EqualsFilter('written', false));
         $criteria->setOffset($migrationContext->getOffset());
         $criteria->setLimit($migrationContext->getLimit());
         $criteria->addSorting(new FieldSorting('autoIncrement', FieldSorting::ASCENDING));
@@ -133,7 +132,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             }
             unset($data);
 
-            return $migrationData->count();
+            return $migrationData->getTotal();
         } catch (WriteException $exception) {
             $this->handleWriteException(
                 $exception,
@@ -164,7 +163,7 @@ class MigrationDataWriter implements MigrationDataWriterInterface
             $context
         );
 
-        return $migrationData->count();
+        return $migrationData->getTotal();
     }
 
     /**
