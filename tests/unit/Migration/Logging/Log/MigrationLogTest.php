@@ -39,12 +39,12 @@ use SwagMigrationAssistant\Migration\Logging\Log\RunMessageQueueExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteThemeCompilingFailedLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationAssociationInvalidLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidAssociationLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationOptionalFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredTranslationInvalidLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertLanguagePackDeactivatedLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingCalculationTypeUnsupportedLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingPriceUnsupportedLog;
@@ -113,36 +113,36 @@ class MigrationLogTest extends TestCase
             'userFixable' => false,
         ];
 
-        yield MigrationValidationInvalidAssociationLog::class => [
-            'logClass' => MigrationValidationInvalidAssociationLog::class,
+        yield MigrationValidationAssociationInvalidLog::class => [
+            'logClass' => MigrationValidationAssociationInvalidLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_ASSOCIATION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
-        yield MigrationValidationInvalidOptionalFieldValueLog::class => [
-            'logClass' => MigrationValidationInvalidOptionalFieldValueLog::class,
+        yield MigrationValidationOptionalFieldValueInvalidLog::class => [
+            'logClass' => MigrationValidationOptionalFieldValueInvalidLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => true,
         ];
 
-        yield MigrationValidationInvalidRequiredFieldValueLog::class => [
-            'logClass' => MigrationValidationInvalidRequiredFieldValueLog::class,
+        yield MigrationValidationRequiredFieldValueInvalidLog::class => [
+            'logClass' => MigrationValidationRequiredFieldValueInvalidLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
-        yield MigrationValidationMissingRequiredFieldLog::class => [
-            'logClass' => MigrationValidationMissingRequiredFieldLog::class,
+        yield MigrationValidationRequiredFieldMissingLog::class => [
+            'logClass' => MigrationValidationRequiredFieldMissingLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
-        yield MigrationValidationInvalidRequiredTranslation::class => [
-            'logClass' => MigrationValidationInvalidRequiredTranslation::class,
+        yield MigrationValidationRequiredTranslationInvalidLog::class => [
+            'logClass' => MigrationValidationRequiredTranslationInvalidLog::class,
             'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,

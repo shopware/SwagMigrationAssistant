@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class MigrationValidationInvalidOptionalFieldValueLog extends AbstractMigrationLogEntry
+readonly class MigrationValidationOptionalFieldValueInvalidLog extends AbstractMigrationLogEntry
 {
     public static function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class MigrationValidationInvalidOptionalFieldValueLog extends AbstractM
 
     public static function getCode(): string
     {
-        return 'SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE';
+        return 'SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID';
     }
 }

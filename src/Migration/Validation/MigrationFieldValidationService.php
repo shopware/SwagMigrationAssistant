@@ -210,14 +210,6 @@ readonly class MigrationFieldValidationService
             $entityName = $parameters->getDefinition()->getEntityName();
             $propertyName = $field->getPropertyName();
 
-            if ($field instanceof TranslationsAssociationField) {
-                throw MigrationValidationException::invalidTranslation(
-                    $entityName,
-                    $propertyName,
-                    $e,
-                );
-            }
-
             if ($isRequired) {
                 throw MigrationValidationException::invalidRequiredFieldValue(
                     $entityName,

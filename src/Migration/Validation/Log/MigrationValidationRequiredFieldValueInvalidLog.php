@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class MigrationValidationInvalidRequiredFieldValueLog extends AbstractMigrationLogEntry
+readonly class MigrationValidationRequiredFieldValueInvalidLog extends AbstractMigrationLogEntry
 {
     public static function isUserFixable(): bool
     {

@@ -33,12 +33,12 @@ use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Validation\Event\MigrationPostValidationEvent;
 use SwagMigrationAssistant\Migration\Validation\Event\MigrationPreValidationEvent;
 use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationAssociationInvalidLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidAssociationLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationOptionalFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredTranslationInvalidLog;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Service\ResetInterface;
 
@@ -75,6 +75,13 @@ class MigrationEntityValidationService implements ResetInterface
      */
     private array $requiredDefinitionFieldsCache = [];
 
+    /**
+     * Maps entity name to an associative array of storage name to association property name.
+     *
+     * @var array<string, array<string, string>>
+     */
+    private array $storageToAssociationCache = [];
+
     public function __construct(
         private readonly DefinitionInstanceRegistry $definitionRegistry,
         private readonly EventDispatcherInterface $eventDispatcher,
@@ -87,6 +94,7 @@ class MigrationEntityValidationService implements ResetInterface
     public function reset(): void
     {
         $this->requiredDefinitionFieldsCache = [];
+        $this->storageToAssociationCache = [];
     }
 
     /**
@@ -167,7 +175,8 @@ class MigrationEntityValidationService implements ResetInterface
         $missingRequiredFields = $this->filterSatisfiedFkFields(
             $missingRequiredFields,
             $entityFields,
-            $convertedData
+            $convertedData,
+            $entityDefinition->getEntityName()
         );
 
         foreach ($missingRequiredFields as $missingField) {
@@ -187,15 +196,9 @@ class MigrationEntityValidationService implements ResetInterface
      *
      * @return list<string>
      */
-    private function filterSatisfiedFkFields(array $missingFields, CompiledFieldCollection $fields, array $convertedData): array
+    private function filterSatisfiedFkFields(array $missingFields, CompiledFieldCollection $fields, array $convertedData, string $entityName): array
     {
-        $storageToAssociation = [];
-
-        foreach ($fields as $field) {
-            if ($field instanceof ManyToOneAssociationField || $field instanceof OneToOneAssociationField) {
-                $storageToAssociation[$field->getStorageName()] = $field->getPropertyName();
-            }
-        }
+        $storageToAssociation = $this->getStorageToAssociationMapping($entityName, $fields);
 
         return array_values(array_filter($missingFields, function (string $fieldName) use ($fields, $convertedData, $storageToAssociation): bool {
             $field = $fields->get($fieldName);
@@ -216,6 +219,26 @@ class MigrationEntityValidationService implements ResetInterface
 
             return true;
         }));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    private function getStorageToAssociationMapping(string $entityName, CompiledFieldCollection $fields): array
+    {
+        if (isset($this->storageToAssociationCache[$entityName])) {
+            return $this->storageToAssociationCache[$entityName];
+        }
+
+        $mapping = [];
+
+        foreach ($fields as $field) {
+            if ($field instanceof ManyToOneAssociationField || $field instanceof OneToOneAssociationField) {
+                $mapping[$field->getStorageName()] = $field->getPropertyName();
+            }
+        }
+
+        return $this->storageToAssociationCache[$entityName] = $mapping;
     }
 
     /**
@@ -253,7 +276,7 @@ class MigrationEntityValidationService implements ResetInterface
                     isset($requiredFields[$fieldName])
                 );
             } catch (MigrationValidationException $exception) {
-                $this->addValidationExceptionLog($validationContext, $exception, $entityName, $fieldName, $value, (string) $id);
+                $this->addValidationExceptionLog($validationContext, $exception, $entityName, $fieldName, (string) $id);
             } catch (\Throwable $exception) {
                 $this->addExceptionLog($validationContext, $exception);
             }
@@ -356,7 +379,7 @@ class MigrationEntityValidationService implements ResetInterface
                     isset($requiredFields[$fieldName])
                 );
             } catch (MigrationValidationException $exception) {
-                $this->addValidationExceptionLog($validationContext, $exception, $rootEntityName, $nestedFieldPath, $value, $rootEntityId);
+                $this->addValidationExceptionLog($validationContext, $exception, $rootEntityName, $nestedFieldPath, $rootEntityId);
             } catch (\Throwable $exception) {
                 $this->addExceptionLog($validationContext, $exception);
             }
@@ -463,7 +486,7 @@ class MigrationEntityValidationService implements ResetInterface
                 ->withSourceData($validationContext->getSourceData())
                 ->withConvertedData($convertedData)
                 ->withEntityId($entityId)
-                ->build(MigrationValidationMissingRequiredFieldLog::class)
+                ->build(MigrationValidationRequiredFieldMissingLog::class)
         );
     }
 
@@ -472,14 +495,13 @@ class MigrationEntityValidationService implements ResetInterface
         MigrationValidationException $exception,
         string $entityName,
         string $fieldName,
-        mixed $value,
         ?string $entityId,
     ): void {
         $logClass = match ($exception->getErrorCode()) {
-            MigrationValidationException::VALIDATION_INVALID_ASSOCIATION => MigrationValidationInvalidAssociationLog::class,
-            MigrationValidationException::VALIDATION_INVALID_REQUIRED_FIELD_VALUE => MigrationValidationInvalidRequiredFieldValueLog::class,
-            MigrationValidationException::VALIDATION_INVALID_OPTIONAL_FIELD_VALUE => MigrationValidationInvalidOptionalFieldValueLog::class,
-            MigrationValidationException::VALIDATION_INVALID_TRANSLATION => MigrationValidationInvalidRequiredTranslation::class,
+            MigrationValidationException::VALIDATION_INVALID_ASSOCIATION => MigrationValidationAssociationInvalidLog::class,
+            MigrationValidationException::VALIDATION_INVALID_REQUIRED_FIELD_VALUE => MigrationValidationRequiredFieldValueInvalidLog::class,
+            MigrationValidationException::VALIDATION_INVALID_OPTIONAL_FIELD_VALUE => MigrationValidationOptionalFieldValueInvalidLog::class,
+            MigrationValidationException::VALIDATION_INVALID_TRANSLATION => MigrationValidationRequiredTranslationInvalidLog::class,
             default => MigrationValidationExceptionLog::class,
         };
 

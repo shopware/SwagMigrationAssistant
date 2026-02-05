@@ -28,12 +28,12 @@ use SwagMigrationAssistant\Migration\Run\MigrationStep;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunCollection;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunDefinition;
 use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationAssociationInvalidLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidAssociationLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidOptionalFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidRequiredTranslation;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationOptionalFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredTranslationInvalidLog;
 use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Migration\Validation\MigrationValidationResult;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
@@ -205,8 +205,8 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             ],
             'expectedLogs' => [
-                MigrationValidationMissingRequiredFieldLog::class,
-                MigrationValidationMissingRequiredFieldLog::class,
+                MigrationValidationRequiredFieldMissingLog::class,
+                MigrationValidationRequiredFieldMissingLog::class,
             ],
         ];
 
@@ -216,7 +216,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'userFixable' => 'not_a_boolean',
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
+                MigrationValidationOptionalFieldValueInvalidLog::class,
             ],
         ];
 
@@ -226,7 +226,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'code' => str_repeat('sw', 128),
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationRequiredFieldValueInvalidLog::class,
             ],
         ];
 
@@ -246,7 +246,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'sourceData' => "\xB1\x31",
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
+                MigrationValidationOptionalFieldValueInvalidLog::class,
             ],
         ];
 
@@ -260,10 +260,10 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             ],
             'expectedLogs' => [
-                MigrationValidationMissingRequiredFieldLog::class,
-                MigrationValidationInvalidRequiredFieldValueLog::class,
-                MigrationValidationInvalidRequiredFieldValueLog::class,
-                MigrationValidationInvalidRequiredFieldValueLog::class,
+                MigrationValidationRequiredFieldMissingLog::class,
+                MigrationValidationRequiredFieldValueInvalidLog::class,
+                MigrationValidationRequiredFieldValueInvalidLog::class,
+                MigrationValidationRequiredFieldValueInvalidLog::class,
             ],
         ];
     }
@@ -422,7 +422,7 @@ class MigrationEntityValidationServiceTest extends TestCase
             ],
             'mappings' => [],
             'expectedLogs' => [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
+                MigrationValidationOptionalFieldValueInvalidLog::class,
             ],
         ];
 
@@ -433,7 +433,7 @@ class MigrationEntityValidationServiceTest extends TestCase
             ],
             'mappings' => [],
             'expectedLogs' => [
-                MigrationValidationInvalidOptionalFieldValueLog::class,
+                MigrationValidationOptionalFieldValueInvalidLog::class,
             ],
         ];
     }
@@ -459,7 +459,7 @@ class MigrationEntityValidationServiceTest extends TestCase
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
         static::assertCount(1, $logClasses);
-        static::assertEquals([MigrationValidationInvalidRequiredTranslation::class], $logClasses);
+        static::assertEquals([MigrationValidationRequiredTranslationInvalidLog::class], $logClasses);
     }
 
     public function testValidTranslationAssociation(): void
@@ -553,7 +553,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'categories' => 'not-an-array',
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidAssociationLog::class,
+                MigrationValidationAssociationInvalidLog::class,
             ],
         ];
 
@@ -565,7 +565,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 ],
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidAssociationLog::class,
+                MigrationValidationAssociationInvalidLog::class,
             ],
         ];
 
@@ -577,7 +577,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 ],
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidAssociationLog::class,
+                MigrationValidationAssociationInvalidLog::class,
             ],
         ];
 
@@ -592,7 +592,7 @@ class MigrationEntityValidationServiceTest extends TestCase
             ],
             'expectedLogs' => [
                 // Only first error is logged since validation throws on first failure
-                MigrationValidationInvalidAssociationLog::class,
+                MigrationValidationAssociationInvalidLog::class,
             ],
         ];
     }
@@ -653,7 +653,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'manufacturer' => 'not-an-array',
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidAssociationLog::class,
+                MigrationValidationAssociationInvalidLog::class,
             ],
         ];
 
@@ -663,7 +663,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'manufacturer' => ['id' => 'invalid-uuid'],
             ],
             'expectedLogs' => [
-                MigrationValidationInvalidAssociationLog::class,
+                MigrationValidationAssociationInvalidLog::class,
             ],
         ];
     }
@@ -814,7 +814,7 @@ class MigrationEntityValidationServiceTest extends TestCase
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
-        static::assertContains(MigrationValidationInvalidOptionalFieldValueLog::class, $logClasses);
+        static::assertContains(MigrationValidationOptionalFieldValueInvalidLog::class, $logClasses);
     }
 
     public function testInvalidFieldValueInNestedEntity(): void
@@ -850,7 +850,7 @@ class MigrationEntityValidationServiceTest extends TestCase
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
-        static::assertContains(MigrationValidationInvalidOptionalFieldValueLog::class, $logClasses);
+        static::assertContains(MigrationValidationOptionalFieldValueInvalidLog::class, $logClasses);
     }
 
     public function testNestedFieldPathCorrectness(): void

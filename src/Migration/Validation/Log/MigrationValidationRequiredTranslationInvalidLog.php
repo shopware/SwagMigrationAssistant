@@ -11,7 +11,7 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class MigrationValidationInvalidRequiredTranslation extends AbstractMigrationLogEntry
+readonly class MigrationValidationRequiredTranslationInvalidLog extends AbstractMigrationLogEntry
 {
     public static function isUserFixable(): bool
     {
@@ -25,6 +25,6 @@ readonly class MigrationValidationInvalidRequiredTranslation extends AbstractMig
 
     public static function getCode(): string
     {
-        return 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION';
+        return 'SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID';
     }
 }
