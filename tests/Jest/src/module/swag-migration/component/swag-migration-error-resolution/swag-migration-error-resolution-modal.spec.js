@@ -201,28 +201,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     });
 
     describe('selectedCount', () => {
-        it('should display tableTotal when selectAllMode is active', async () => {
-            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
-
-            const wrapper = await createWrapper();
-            await flushPromises();
-
-            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
-            await rowCheckboxes[0].setChecked(true);
-            await flushPromises();
-
-            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
-            await selectAllButton.trigger('click');
-            await flushPromises();
-
-            const row0Checkbox = wrapper.find('.sw-data-grid__row--0 .mt-field--checkbox input');
-            const row1Checkbox = wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input');
-
-            expect(row0Checkbox.attributes('disabled')).toBeDefined();
-            expect(row1Checkbox.attributes('disabled')).toBeDefined();
-            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('2');
-        });
-
         it('should display selectedLogIds length when selectAllMode is inactive', async () => {
             migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
 
@@ -236,6 +214,52 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await flushPromises();
 
             expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('1');
+        });
+
+        it('should display tableTotal in selectAllMode and persist across page navigation', async () => {
+            const defaultLoggingSearch = migrationLoggingRepositoryMock.search.getMockImplementation();
+            const defaultFixSearch = migrationFixRepositoryMock.search.getMockImplementation();
+
+            const paginatedLogs = Array.from({ length: 28 }, (_, i) => ({
+                ...logMocks[0],
+                id: `log-id-${i + 1}`,
+                entityId: `log-entity-id-${i + 1}`,
+            }));
+
+            migrationLoggingRepositoryMock.search.mockImplementation((criteria) => {
+                const page = criteria.page;
+                const limit = criteria.limit;
+                const start = (page - 1) * limit;
+                const end = start + limit;
+
+                const result = paginatedLogs.slice(start, end);
+                result.total = paginatedLogs.length;
+
+                return Promise.resolve(result);
+            });
+            migrationFixRepositoryMock.search.mockImplementation(() => Promise.resolve([]));
+
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__row--0 .mt-field--checkbox input').attributes('disabled')).toBeDefined();
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('28');
+
+            await wrapper.find('.sw-pagination__page-button-next').trigger('click');
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('28');
+
+            migrationLoggingRepositoryMock.search.mockImplementation(defaultLoggingSearch);
+            migrationFixRepositoryMock.search.mockImplementation(defaultFixSearch);
         });
     });
 
