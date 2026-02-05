@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -109,6 +111,17 @@ abstract class SeoUrlConverter extends ShopwareConverter
                 $converted['pathInfo'] = '/navigation/' . $mapping['entityId'];
                 $this->mappingIds[] = $mapping['id'];
             }
+        } else {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->withEntityName(DefaultEntities::SEO_URL)
+                ->withSourceData($data)
+                ->withFieldName('type')
+                ->build(ConvertObjectTypeUnsupportedLog::class)
+            );
+
+            // skip this entity because we can't migrate this seo type from SW5
+            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }
         unset($data['type'], $data['typeId']);
 

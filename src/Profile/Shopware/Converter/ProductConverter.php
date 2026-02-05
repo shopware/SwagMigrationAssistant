@@ -34,7 +34,7 @@ use SwagMigrationAssistant\Migration\Mapping\Lookup\TaxLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDownloadDataSet;
 
@@ -377,7 +377,7 @@ abstract class ProductConverter extends ShopwareConverter
                     ->withFieldSourcePath('prices')
                     ->withSourceData($data)
                     ->withConvertedData($converted)
-                    ->build(MigrationValidationMissingRequiredFieldLog::class)
+                    ->build(MigrationValidationRequiredFieldMissingLog::class)
             );
         }
 

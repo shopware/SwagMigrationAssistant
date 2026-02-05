@@ -157,11 +157,11 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
             expect(wrapper.vm.tableData).toStrictEqual(
                 expect.arrayContaining([
                     expect.objectContaining({
-                        name: 'swag-migration.index.error-resolution.codes.SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+                        name: 'swag-migration.index.error-resolution.codes.SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING',
                         resolved: true,
                     }),
                     expect.objectContaining({
-                        name: 'swag-migration.index.error-resolution.codes.SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
+                        name: 'swag-migration.index.error-resolution.codes.SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID',
                         resolved: false,
                     }),
                 ]),
@@ -493,7 +493,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                 await flushPromises();
 
                 const filters = {
-                    code: 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+                    code: 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING',
                     status: 'resolved',
                     entity: 'customer',
                     field: 'email',

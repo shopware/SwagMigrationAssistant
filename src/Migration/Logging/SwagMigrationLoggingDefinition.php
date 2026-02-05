@@ -47,7 +47,7 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
     {
         return new FieldCollection([
             (new IdField('id', 'id'))->addFlags(new PrimaryKey(), new Required()),
-            new FkField('run_id', 'runId', SwagMigrationRunDefinition::class),
+            (new FkField('run_id', 'runId', SwagMigrationRunDefinition::class))->addFlags(new Required()),
             (new StringField('profile_name', 'profileName', 64))->addFlags(new Required()),
             (new StringField('gateway_name', 'gatewayName', 64))->addFlags(new Required()),
             (new StringField('level', 'level', 64))->addFlags(new Required()),

@@ -312,7 +312,11 @@ abstract class OrderConverter extends ShopwareConverter
         }
 
         if (isset($data['attributes'])) {
-            $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $this->connectionName, ['id', 'orderID'], $this->context);
+            $customField = $this->getAttributes($data['attributes'], DefaultEntities::ORDER, $this->connectionName, ['id', 'orderID'], $this->context);
+
+            if ($customField !== null) {
+                $converted['customFields'] = $customField;
+            }
         }
         unset($data['attributes']);
 

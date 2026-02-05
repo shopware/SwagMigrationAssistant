@@ -635,7 +635,6 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $this->mappingIds[] = $mapping['id'];
 
             $cost['calculation'] = $calculationType;
-            $cost['shippingMethodId'] = $this->oldShippingMethod;
 
             if (isset($shippingCost['currencyShortName'])) {
                 $currencyMapping = $this->mappingService->getMapping(

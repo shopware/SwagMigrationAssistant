@@ -537,14 +537,14 @@ export default class MigrationApiService extends ApiService {
         );
     }
 
-    async getAllLogIds(
+    async getUnresolvedLogsBatchInformation(
         runId: string,
         code: string,
         entityName: string,
         fieldName: string,
         connectionId?: string,
         additionalHeaders: AdditionalHeaders = {},
-    ): Promise<{ ids: string[] }> {
+    ): Promise<{ count: int; limit: int }> {
         // @ts-ignore
         const headers = this.getBasicHeaders(additionalHeaders);
 
@@ -552,13 +552,104 @@ export default class MigrationApiService extends ApiService {
         return this.httpClient
             .post(
                 // @ts-ignore
-                `_action/${this.getApiBasePath()}/get-all-log-ids`,
+                `_action/${this.getApiBasePath()}/get-unresolved-logs-batch-information`,
                 {
                     runId,
                     code,
                     entityName,
                     fieldName,
                     connectionId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    async getLogEntityIdsWithoutFix(
+        runId: string,
+        code: string,
+        entityName: string,
+        fieldName: string,
+        limit?: int,
+        connectionId?: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<{ entityIds: string[] }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/get-log-entity-ids-without-fix`,
+                {
+                    runId,
+                    code,
+                    entityName,
+                    fieldName,
+                    limit,
+                    connectionId,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    async validateResolution(
+        entityName: string,
+        fieldName: string,
+        fieldValue: unknown,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<{ isValid: boolean; violations: Array<{ message: string; propertyPath?: string }> }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/error-resolution/validate`,
+                {
+                    entityName,
+                    fieldName,
+                    fieldValue,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response);
+            });
+    }
+
+    async getExampleFieldStructure(
+        entityName: string,
+        fieldName: string,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<{ fieldType: string; example: string | null }> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/error-resolution/example-field-structure`,
+                {
+                    entityName,
+                    fieldName,
                 },
                 {
                     ...this.basicConfig,

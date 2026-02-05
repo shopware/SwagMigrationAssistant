@@ -9,7 +9,10 @@ namespace SwagMigrationAssistant\Controller;
 
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\PlatformRequest;
+use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\History\HistoryServiceInterface;
 use SwagMigrationAssistant\Migration\History\LogGroupingService;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,7 +23,7 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
-#[Route(defaults: ['_routeScope' => ['api']])]
+#[Route(defaults: [PlatformRequest::ATTRIBUTE_ROUTE_SCOPE => [ApiRouteScope::ID]])]
 #[Package('fundamentals@after-sales')]
 class HistoryController extends AbstractController
 {
@@ -30,10 +33,16 @@ class HistoryController extends AbstractController
     public function __construct(
         private readonly HistoryServiceInterface $historyService,
         private readonly LogGroupingService $logGroupingService,
+        private readonly int $maxLimit,
     ) {
     }
 
-    #[Route(path: '/api/_action/migration/get-grouped-logs-of-run', name: 'api.admin.migration.get-grouped-logs-of-run', methods: ['GET'], defaults: ['_acl' => ['swag_migration.viewer']])]
+    #[Route(
+        path: '/api/_action/migration/get-grouped-logs-of-run',
+        name: 'api.admin.migration.get-grouped-logs-of-run',
+        methods: [Request::METHOD_GET],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
+    )]
     public function getGroupedLogsOfRun(Request $request, Context $context): JsonResponse
     {
         $runUuid = $request->query->getAlnum('runUuid');
@@ -58,7 +67,12 @@ class HistoryController extends AbstractController
         ]);
     }
 
-    #[Route(path: '/api/_action/migration/download-logs-of-run', name: 'api.admin.migration.download-logs-of-run', methods: ['POST'], defaults: ['auth_required' => false, '_acl' => ['swag_migration.viewer']])]
+    #[Route(
+        path: '/api/_action/migration/download-logs-of-run',
+        name: 'api.admin.migration.download-logs-of-run',
+        methods: [Request::METHOD_POST],
+        defaults: ['auth_required' => false, PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
+    )]
     public function downloadLogsOfRun(Request $request, Context $context): StreamedResponse
     {
         $runUuid = $request->request->getAlnum('runUuid');
@@ -87,8 +101,8 @@ class HistoryController extends AbstractController
     #[Route(
         path: '/api/_action/migration/get-log-groups',
         name: 'api.admin.migration.get-log-groups',
-        methods: ['GET'],
-        defaults: ['_acl' => ['swag_migration.viewer']]
+        methods: [Request::METHOD_GET],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
     )]
     public function getLogGroups(Request $request, Context $context): JsonResponse
     {
@@ -136,12 +150,12 @@ class HistoryController extends AbstractController
     }
 
     #[Route(
-        path: '/api/_action/migration/get-all-log-ids',
-        name: 'api.admin.migration.get-all-log-ids',
-        methods: ['POST'],
-        defaults: ['_acl' => ['swag_migration.viewer']]
+        path: '/api/_action/migration/get-unresolved-logs-batch-information',
+        name: 'api.admin.migration.get-unresolved-logs-batch-information',
+        methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
     )]
-    public function getAllLogIds(Request $request): JsonResponse
+    public function getUnresolvedLogsBatchInformation(Request $request): JsonResponse
     {
         $runId = $request->request->getAlnum('runId');
 
@@ -169,16 +183,70 @@ class HistoryController extends AbstractController
 
         $connectionId = $request->request->getAlnum('connectionId');
 
-        $logIds = $this->logGroupingService->getAllLogIdsByCodeAndEntity(
+        $count = $this->logGroupingService->getUnresolvedLogsCountByCodeAndEntity(
             $runId,
             $code,
             $entityName,
             $fieldName,
-            !empty($connectionId) ? $connectionId : null
+            !empty($connectionId) ? $connectionId : null,
         );
 
         return new JsonResponse([
-            'ids' => $logIds,
+            'count' => $count,
+            'limit' => $this->maxLimit,
+        ]);
+    }
+
+    #[Route(
+        path: '/api/_action/migration/get-log-entity-ids-without-fix',
+        name: 'api.admin.migration.get-log-entity-ids-without-fix',
+        methods: [Request::METHOD_POST],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']]
+    )]
+    public function getLogEntityIdsWithoutFix(Request $request): JsonResponse
+    {
+        $runId = $request->request->getAlnum('runId');
+
+        if (empty($runId)) {
+            throw RoutingException::missingRequestParameter('runId');
+        }
+
+        $code = $request->request->get('code');
+
+        if (!\is_string($code) || empty($code)) {
+            throw RoutingException::missingRequestParameter('code');
+        }
+
+        $entityName = $request->request->get('entityName');
+
+        if (!\is_string($entityName) || empty($entityName)) {
+            throw RoutingException::missingRequestParameter('entityName');
+        }
+
+        $fieldName = $request->request->get('fieldName');
+
+        if (!\is_string($fieldName) || empty($fieldName)) {
+            throw RoutingException::missingRequestParameter('fieldName');
+        }
+
+        $connectionId = $request->request->getAlnum('connectionId');
+
+        $limit = $request->request->getInt('limit', $this->maxLimit);
+        if ($limit <= 0 || $limit > $this->maxLimit) {
+            throw MigrationException::invalidValueForLimitParameter($this->maxLimit);
+        }
+
+        $logEntityIds = $this->logGroupingService->getLogEntityIdsWithoutFixByCodeAndEntity(
+            $runId,
+            $code,
+            $entityName,
+            $fieldName,
+            $limit,
+            !empty($connectionId) ? $connectionId : null,
+        );
+
+        return new JsonResponse([
+            'entityIds' => $logEntityIds,
         ]);
     }
 }

@@ -24,7 +24,7 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
 
     public const REQUIRED_FIELDS = [
         'id' => 'BINARY(16) NOT NULL',
-        'run_id' => 'BINARY(16) NULL',
+        'run_id' => 'BINARY(16) NOT NULL',
         'profile_name' => 'VARCHAR(64) NOT NULL',
         'gateway_name' => 'VARCHAR(64) NOT NULL',
         'level' => 'VARCHAR(64) NOT NULL',

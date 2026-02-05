@@ -39,11 +39,12 @@ use SwagMigrationAssistant\Migration\Logging\Log\RunMessageQueueExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteExceptionLog;
 use SwagMigrationAssistant\Migration\Logging\Log\WriteThemeCompilingFailedLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationAssociationInvalidLog;
 use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationExceptionLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidFieldValueLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationInvalidForeignKeyLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationMissingRequiredFieldLog;
-use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationUnexpectedFieldLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationOptionalFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldMissingLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredFieldValueInvalidLog;
+use SwagMigrationAssistant\Migration\Validation\Log\MigrationValidationRequiredTranslationInvalidLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertLanguagePackDeactivatedLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingCalculationTypeUnsupportedLog;
 use SwagMigrationAssistant\Profile\Shopware\Logging\Log\ConvertShippingPriceUnsupportedLog;
@@ -112,32 +113,39 @@ class MigrationLogTest extends TestCase
             'userFixable' => false,
         ];
 
-        yield MigrationValidationInvalidFieldValueLog::class => [
-            'logClass' => MigrationValidationInvalidFieldValueLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE',
+        yield MigrationValidationAssociationInvalidLog::class => [
+            'logClass' => MigrationValidationAssociationInvalidLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_ASSOCIATION_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
-        yield MigrationValidationInvalidForeignKeyLog::class => [
-            'logClass' => MigrationValidationInvalidForeignKeyLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY',
+        yield MigrationValidationOptionalFieldValueInvalidLog::class => [
+            'logClass' => MigrationValidationOptionalFieldValueInvalidLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => true,
         ];
 
-        yield MigrationValidationMissingRequiredFieldLog::class => [
-            'logClass' => MigrationValidationMissingRequiredFieldLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+        yield MigrationValidationRequiredFieldValueInvalidLog::class => [
+            'logClass' => MigrationValidationRequiredFieldValueInvalidLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'userFixable' => true,
+        ];
+
+        yield MigrationValidationRequiredFieldMissingLog::class => [
+            'logClass' => MigrationValidationRequiredFieldMissingLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING',
+            'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
+            'userFixable' => true,
+        ];
+
+        yield MigrationValidationRequiredTranslationInvalidLog::class => [
+            'logClass' => MigrationValidationRequiredTranslationInvalidLog::class,
+            'code' => 'SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
-        ];
-
-        yield MigrationValidationUnexpectedFieldLog::class => [
-            'logClass' => MigrationValidationUnexpectedFieldLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD',
-            'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
-            'userFixable' => true,
         ];
 
         yield ConvertAssociationMissingLog::class => [
@@ -303,7 +311,7 @@ class MigrationLogTest extends TestCase
 
         yield ConvertShippingPriceUnsupportedLog::class => [
             'logClass' => ConvertShippingPriceUnsupportedLog::class,
-            'code' => 'SWAG_MIGRATION__SHOPWARE_UNSUPPORTED_SHIPPING_PRICE',
+            'code' => 'SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_INFO,
             'userFixable' => false,
         ];

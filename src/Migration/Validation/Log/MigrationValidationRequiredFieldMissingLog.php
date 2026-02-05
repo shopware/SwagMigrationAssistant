@@ -5,26 +5,26 @@
  * file that was distributed with this source code.
  */
 
-namespace SwagMigrationAssistant\Profile\Shopware\Logging\Log;
+namespace SwagMigrationAssistant\Migration\Validation\Log;
 
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class ConvertShippingPriceUnsupportedLog extends AbstractMigrationLogEntry
+readonly class MigrationValidationRequiredFieldMissingLog extends AbstractMigrationLogEntry
 {
     public static function isUserFixable(): bool
     {
-        return false;
+        return true;
     }
 
     public static function getLevel(): string
     {
-        return self::LOG_LEVEL_INFO;
+        return self::LOG_LEVEL_ERROR;
     }
 
     public static function getCode(): string
     {
-        return 'SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED';
+        return 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING';
     }
 }
