@@ -92,10 +92,6 @@ test.describe('Migration Tests @migration @visual', () => {
                     return 'relation';
                 }
 
-                if ((await page.locator('.swag-migration-error-resolution-field-unhandled__banner').count()) > 0) {
-                    return 'textarea';
-                }
-
                 if ((await page.locator('.sw-migration-error-resolution-field__text').count()) > 0) {
                     return 'text';
                 }
@@ -116,20 +112,13 @@ test.describe('Migration Tests @migration @visual', () => {
             const processTextField = async () => {
                 const input = page.locator('.sw-migration-error-resolution-field__text input');
                 await input.first().waitFor();
-                await input.fill('Fixed via migration assistant');
+                await input.fill('test@test.com');
             };
 
             const processNumberField = async () => {
                 const input = page.locator('.sw-migration-error-resolution-field__number input');
                 await input.first().waitFor();
                 await input.fill('42');
-            };
-
-            const processTextareaField = async () => {
-                const input = page.locator('.sw-code-editor textarea');
-                await input.first().waitFor();
-                await input.clear();
-                await input.fill('019c1db803ad709ebdb37d5f67487a44');
             };
 
             const processLogEntry = async (index: number) => {
@@ -146,11 +135,6 @@ test.describe('Migration Tests @migration @visual', () => {
 
                 if (type === 'relation') {
                     await processRelationField();
-                    return;
-                }
-
-                if (type === 'textarea') {
-                    await processTextareaField();
                     return;
                 }
 
