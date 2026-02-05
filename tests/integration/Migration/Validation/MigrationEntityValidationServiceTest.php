@@ -180,15 +180,19 @@ class MigrationEntityValidationServiceTest extends TestCase
     {
         $log = [
             'id' => Uuid::randomHex(),
+            'runId' => Uuid::randomHex(),
+            'entityId' => Uuid::randomHex(),
             'profileName' => 'profile',
             'gatewayName' => 'gateway',
+            'entityName' => 'product',
+            'fieldName' => 'name',
             'level' => 'error',
             'code' => 'some_code',
             'userFixable' => true,
+            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             'sourceData' => [
                 'some' => 'data',
             ],
-            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
         ];
 
         yield 'valid' => [
@@ -205,6 +209,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             ],
             'expectedLogs' => [
+                MigrationValidationRequiredFieldMissingLog::class,
                 MigrationValidationRequiredFieldMissingLog::class,
                 MigrationValidationRequiredFieldMissingLog::class,
             ],
@@ -260,6 +265,7 @@ class MigrationEntityValidationServiceTest extends TestCase
                 'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             ],
             'expectedLogs' => [
+                MigrationValidationRequiredFieldMissingLog::class,
                 MigrationValidationRequiredFieldMissingLog::class,
                 MigrationValidationRequiredFieldValueInvalidLog::class,
                 MigrationValidationRequiredFieldValueInvalidLog::class,
@@ -380,15 +386,19 @@ class MigrationEntityValidationServiceTest extends TestCase
     {
         $log = [
             'id' => Uuid::randomHex(),
+            'runId' => Uuid::randomHex(),
+            'entityId' => Uuid::randomHex(),
             'profileName' => 'profile',
             'gatewayName' => 'gateway',
+            'entityName' => 'product',
+            'fieldName' => 'name',
             'level' => 'error',
             'code' => 'some_code',
             'userFixable' => true,
+            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
             'sourceData' => [
                 'some' => 'data',
             ],
-            'createdAt' => (new \DateTime())->format(\DATE_ATOM),
         ];
 
         $runId = Uuid::randomHex();
@@ -433,7 +443,7 @@ class MigrationEntityValidationServiceTest extends TestCase
             ],
             'mappings' => [],
             'expectedLogs' => [
-                MigrationValidationOptionalFieldValueInvalidLog::class,
+                MigrationValidationRequiredFieldValueInvalidLog::class,
             ],
         ];
     }
@@ -507,7 +517,6 @@ class MigrationEntityValidationServiceTest extends TestCase
         static::assertInstanceOf(MigrationValidationResult::class, $result);
 
         $logClasses = \array_map(static fn ($log) => $log::class, $result->getLogs());
-        \var_dump($logClasses);
 
         static::assertEquals($expectedLogs, $logClasses);
     }
