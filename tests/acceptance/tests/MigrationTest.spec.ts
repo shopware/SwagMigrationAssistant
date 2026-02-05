@@ -113,12 +113,14 @@ test.describe('Migration Tests @migration @visual', () => {
                 const input = page.locator('.sw-migration-error-resolution-field__text input');
                 await input.first().waitFor();
                 await input.fill('test@test.com');
+                await page.locator('.sw-modal__title').first().click();
             };
 
             const processNumberField = async () => {
                 const input = page.locator('.sw-migration-error-resolution-field__number input');
                 await input.first().waitFor();
                 await input.fill('42');
+                await page.locator('.sw-modal__title').first().click();
             };
 
             const processLogEntry = async (index: number) => {

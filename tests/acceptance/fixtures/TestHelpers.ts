@@ -23,6 +23,8 @@ export const dynamicElementSelectors = [
     '.mt-progress-bar__track',
     '[class*="timestamp"]',
     '[class*="date"]',
+    '[class*="createdAt"]',
+    '[class*="updatedAt"]',
     ...loaderSelectors,
 ] as const;
 
