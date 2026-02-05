@@ -415,14 +415,14 @@ class MigrationEntityValidationServiceTest extends TestCase
             'expectedLogs' => [],
         ];
 
-        yield 'fk value is null' => [
+        yield 'fk value is null & required' => [
             'convertedData' => [
                 ...$log,
                 'runId' => null,
             ],
             'mappings' => [],
             'expectedLogs' => [
-                MigrationValidationOptionalFieldValueInvalidLog::class,
+                MigrationValidationRequiredFieldValueInvalidLog::class,
             ],
         ];
 

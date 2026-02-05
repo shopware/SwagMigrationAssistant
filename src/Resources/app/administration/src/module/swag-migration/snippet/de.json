@@ -480,10 +480,11 @@
           "SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED": "Versandpreistyp wird nicht unterstützt",
           "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Standard-Medienordner wird nicht unterstützt",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validierungsfehler aufgetreten",
-          "SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE": "Pflichtfeld hat einen ungültigen Wert",
-          "SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE": "Optionales Feld hat einen ungültigen Wert",
-          "SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION": "Erforderliche Übersetzung ist ungültig",
-          "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Erforderliches Feld fehlt",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING": "Erforderliches Feld fehlt",
+          "SWAG_MIGRATION_VALIDATION_ASSOCIATION_INVALID": "Entitätszuordnung ist ungültig",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID": "Pflichtfeld hat einen ungültigen Wert",
+          "SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID": "Optionales Feld hat einen ungültigen Wert",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID": "Erforderliche Übersetzung ist ungültig",
           "unknown": "Unbekannter Fehler"
         },
         "errors": {

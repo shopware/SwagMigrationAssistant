@@ -158,6 +158,12 @@ readonly class MigrationFieldValidationService
         EntityDefinition $entityDefinition,
         Context $context,
     ): void {
+        if (!$isRequired && $value === null) {
+            // skip validation for optional fields with null value as the serializer could
+            // throw an error for missing required fields
+            return;
+        }
+
         $existence = EntityExistence::createForEntity(
             $entityDefinition->getEntityName(),
             ['id' => Uuid::randomHex()],

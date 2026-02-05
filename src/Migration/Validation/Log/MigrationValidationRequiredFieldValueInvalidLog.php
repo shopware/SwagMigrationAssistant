@@ -25,6 +25,6 @@ readonly class MigrationValidationRequiredFieldValueInvalidLog extends AbstractM
 
     public static function getCode(): string
     {
-        return 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE';
+        return 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID';
     }
 }
