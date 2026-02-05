@@ -21,33 +21,33 @@ parameters:
         narrow_param: false
 
     ignoreErrors:
-        # XML config format will be migrated step by step, so we ignore errors for now, see https://github.com/shopware/shopware/issues/13072
-        - message: '#deprecated class Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader#'
-
         - message: '#Service ".*" is private#'
           paths:
               - tests/**/*Test.php
 
-        - # To fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
-            message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
-            path: src/DataProvider/Provider/Data/AbstractProvider.php
+        # TODO: XML config format will be migrated step by step, so we ignore errors for now, see https://github.com/shopware/shopware/issues/13072
+        - message: '#deprecated class Symfony\\Component\\DependencyInjection\\Loader\\XmlFileLoader#'
+
+        # TODO: to fix those issues, the AbstractProvider needs a generic type, which could then be used further down in the methods as typehints for other generic typed parameters
+        - message: '#(readTotalFromRepo|readTableFromRepo|cleanupSearchResult)\(\) has parameter .* with generic class#'
+          path: src/DataProvider/Provider/Data/AbstractProvider.php
 
         # TODO remove this for 6.8 compatibility
         - message: '#Access to constant on deprecated class Shopware\\Core\\Checkout\\Payment\\Cart\\PaymentHandler\\DebitPayment#'
           paths:
               - src/Profile/Shopware/Premapping/PaymentMethodReader.php
               - tests/Profile/Shopware/Premapping/PaymentMethodReaderTest.php
-
         - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityDefinition#'
-
-        # TODO remove with 6.8
         - message: '#Call to deprecated method columnExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
         - message: '#Call to deprecated method columnExists\(\) of class SwagMigrationAssistant\\Core\\Migration\\Migration1762346793RenameColumnOfMappingTable#'
         - message: '#Call to deprecated method addColumn\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
         - message: '#Call to deprecated method indexExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
+        - message: '#Call to deprecated method listTableColumns\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
+        - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
+        - message: '#Call to deprecated method getName\(\) of class Doctrine\\DBAL\\Schema\\AbstractAsset#'
+        - message: '#Call to deprecated method listTableForeignKeys\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
 
 rules:
-    # Shopware core rules
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Deprecation\DeprecatedMethodsThrowDeprecationRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\CoversAttributeRule
     - Shopware\Core\DevOps\StaticAnalyze\PHPStan\Rules\Tests\MockingSimpleObjectsNotAllowedRule

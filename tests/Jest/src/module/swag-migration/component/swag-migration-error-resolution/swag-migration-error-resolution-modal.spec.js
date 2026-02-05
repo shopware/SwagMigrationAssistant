@@ -60,6 +60,7 @@ const defaultProps = {
 };
 
 const migrationApiServiceMock = {
+    validateResolution: jest.fn(() => Promise.resolve({ valid: true })),
     getUnresolvedLogsBatchInformation: jest.fn(() =>
         Promise.resolve({
             count: logMocks.length,
@@ -188,9 +189,9 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     describe('constants', () => {
         it('should provide error code to component mapping', () => {
             expect(ERROR_CODE_COMPONENT_MAPPING).toStrictEqual({
-                SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE: 'DEFAULT',
-                SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY: 'DEFAULT',
-                SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING: 'DEFAULT',
             });
         });
     });
@@ -569,6 +570,93 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     });
 
     describe('create resolution fix', () => {
+        it('should save fix when backend validation passes', async () => {
+            migrationApiServiceMock.validateResolution.mockResolvedValueOnce({ valid: true, violations: [] });
+
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            await inputField.setValue('Valid Title');
+            await flushPromises();
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(migrationApiServiceMock.validateResolution).toHaveBeenCalledWith('media', 'title', 'Valid Title');
+            expect(wrapper.vm.fieldError).toBeNull();
+            expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalled();
+        });
+
+        it('should not save fix when backend validation fails without message', async () => {
+            migrationApiServiceMock.validateResolution.mockResolvedValueOnce({ valid: false, violations: [] });
+
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            await inputField.setValue('Invalid Value');
+            await flushPromises();
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(migrationApiServiceMock.validateResolution).toHaveBeenCalledWith('media', 'title', 'Invalid Value');
+            expect(wrapper.vm.fieldError).toBeNull();
+            expect(migrationFixRepositoryMock.saveAll).not.toHaveBeenCalled();
+        });
+
+        it('should display field error when backend validation fails with message', async () => {
+            migrationApiServiceMock.validateResolution.mockResolvedValueOnce({
+                valid: false,
+                violations: [{ message: 'This value is invalid.' }],
+            });
+
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...fixtureLogGroups.at(1),
+                    entityName: 'media',
+                    fieldName: 'title',
+                },
+            });
+            await flushPromises();
+
+            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await flushPromises();
+
+            const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
+            await inputField.setValue('Invalid Value');
+            await flushPromises();
+
+            await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
+            await flushPromises();
+
+            expect(migrationApiServiceMock.validateResolution).toHaveBeenCalledWith('media', 'title', 'Invalid Value');
+            expect(wrapper.vm.fieldError).toStrictEqual({ detail: 'This value is invalid.' });
+            expect(migrationFixRepositoryMock.saveAll).not.toHaveBeenCalled();
+        });
+
         it.each(Object.keys(ERROR_CODE_COMPONENT_MAPPING).map((code) => ({ code })))(
             'should render default resolve component for defined codes: $code',
             async ({ code }) => {

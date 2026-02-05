@@ -20,7 +20,7 @@ use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
 use SwagMigrationAssistant\Migration\Media\MediaFileServiceInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
-use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
+use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
 use SwagMigrationAssistant\Test\Mock\DataSet\DataSetMock;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 
@@ -61,7 +61,7 @@ class MigrationDataConverterTest extends TestCase
         ?LoggingServiceInterface $loggingService = null,
         ?EntityDefinition $dataDefinition = null,
         ?MappingServiceInterface $mappingService = null,
-        ?MigrationValidationService $validationService = null,
+        ?MigrationEntityValidationService $validationService = null,
     ): MigrationDataConverter {
         if ($entityWriter === null) {
             $entityWriter = $this->createMock(EntityWriter::class);
@@ -88,7 +88,7 @@ class MigrationDataConverterTest extends TestCase
         }
 
         if ($validationService === null) {
-            $validationService = $this->createMock(MigrationValidationService::class);
+            $validationService = $this->createMock(MigrationEntityValidationService::class);
         }
 
         return new MigrationDataConverter(

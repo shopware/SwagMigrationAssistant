@@ -4,8 +4,7 @@ import template from './swag-migration-error-resolution-field-unhandled.html.twi
  * @private
  */
 export interface SwagMigrationErrorResolutionFieldUnhandledData {
-    fieldValue: string;
-    error: { detail: string } | null;
+    fieldValue: string | null;
 }
 
 /**
@@ -27,12 +26,21 @@ export default Shopware.Component.wrapComponentConfig({
             required: false,
             default: false,
         },
+        error: {
+            type: Object as PropType<{ detail: string }>,
+            required: false,
+            default: null,
+        },
+        exampleValue: {
+            type: String as PropType<string | null>,
+            required: false,
+            default: null,
+        },
     },
 
     data(): SwagMigrationErrorResolutionFieldUnhandledData {
         return {
-            fieldValue: '',
-            error: null,
+            fieldValue: null,
         };
     },
 
@@ -40,35 +48,18 @@ export default Shopware.Component.wrapComponentConfig({
         fieldValue: {
             handler() {
                 if (this.updateFieldValue) {
-                    const parsedValue = this.parseJsonFieldValue();
-
-                    this.updateFieldValue(parsedValue);
+                    this.updateFieldValue(this.fieldValue);
                 }
             },
             immediate: true,
         },
-    },
-
-    methods: {
-        parseJsonFieldValue(): string | number | boolean | null | object | unknown[] {
-            if (!this.fieldValue || typeof this.fieldValue !== 'string') {
-                this.error = null;
-
-                return this.fieldValue;
-            }
-
-            try {
-                const value = JSON.parse(this.fieldValue);
-                this.error = null;
-
-                return value;
-            } catch {
-                this.error = {
-                    detail: this.$tc('swag-migration.index.error-resolution.errors.invalidJsonInput'),
-                };
-
-                return null;
-            }
+        exampleValue: {
+            handler(newValue: string | null) {
+                if (newValue !== null && this.fieldValue === null) {
+                    this.fieldValue = newValue;
+                }
+            },
+            immediate: true,
         },
     },
 });

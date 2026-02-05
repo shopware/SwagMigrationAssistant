@@ -87,15 +87,13 @@ class MigrationException extends HttpException
 
     final public const API_CONNECTION_ERROR = 'SWAG_MIGRATION__API_CONNECTION_ERROR';
 
-    final public const UNEXPECTED_NULL_VALUE = 'SWAG_MIGRATION__UNEXPECTED_NULL_VALUE';
-
     final public const COULD_NOT_CONVERT_FIX = 'SWAG_MIGRATION__COULD_NOT_CONVERT_FIX';
 
     final public const MIGRATION_NOT_IN_STEP = 'SWAG_MIGRATION__MIGRATION_NOT_IN_STEP';
 
-    final public const INVALID_ID = 'SWAG_MIGRATION__INVALID_ID';
+    final public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
 
-    public const DUPLICATE_SOURCE_CONNECTION = 'SWAG_MIGRATION__DUPLICATE_SOURCE_CONNECTION';
+    final public const MISSING_REQUEST_PARAMETER = 'SWAG_MIGRATION__MISSING_REQUEST_PARAMETER';
 
     public const MIGRATION_DISABLED_BY_SOURCE = 'SWAG_MIGRATION__MIGRATION_DISABLED_BY_SOURCE';
 
@@ -458,16 +456,6 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function unexpectedNullValue(string $fieldName): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::UNEXPECTED_NULL_VALUE,
-            'Unexpected null value for field "{{ fieldName }}".',
-            ['fieldName' => $fieldName]
-        );
-    }
-
     public static function couldNotConvertFix(string $missingKey): self
     {
         return new self(
@@ -488,22 +476,22 @@ class MigrationException extends HttpException
         );
     }
 
-    public static function invalidId(string $entityId, string $entityName): self
-    {
-        return new self(
-            Response::HTTP_INTERNAL_SERVER_ERROR,
-            self::INVALID_ID,
-            'The id "{{ entityId }}" for entity "{{ entityName }}" is not a valid Uuid',
-            ['entityId' => $entityId, 'entityName' => $entityName]
-        );
-    }
-
     public static function duplicateSourceConnection(): self
     {
         return new self(
             Response::HTTP_CONFLICT,
             self::DUPLICATE_SOURCE_CONNECTION,
             'A connection to this source system already exists.',
+        );
+    }
+
+    public static function missingRequestParameter(string $parameterName): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::MISSING_REQUEST_PARAMETER,
+            'Required request parameter "{{ parameterName }}" is missing.',
+            ['parameterName' => $parameterName]
         );
     }
 

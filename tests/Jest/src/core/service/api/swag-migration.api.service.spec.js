@@ -411,4 +411,39 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });
+
+    it('should validate resolution', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+
+        const data = {
+            entityName: 'product',
+            fieldName: 'name',
+            fieldValue: 'New Product Name',
+        };
+
+        await migrationApiService.validateResolution(data.entityName, data.fieldName, data.fieldValue, {
+            'test-header': 'test-value',
+        });
+
+        expect(clientMock.history.post[0].url).toBe('_action/migration/error-resolution/validate');
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
+        expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
+
+    it('should get example field structure', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+
+        const data = {
+            entityName: 'product',
+            fieldName: 'name',
+        };
+
+        await migrationApiService.getExampleFieldStructure(data.entityName, data.fieldName, {
+            'test-header': 'test-value',
+        });
+
+        expect(clientMock.history.post[0].url).toBe('_action/migration/error-resolution/example-field-structure');
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
+        expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
 });

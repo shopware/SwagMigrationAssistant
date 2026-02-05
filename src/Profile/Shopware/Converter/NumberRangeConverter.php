@@ -17,6 +17,8 @@ use Shopware\Core\System\NumberRange\NumberRangeCollection;
 use Shopware\Core\System\NumberRange\NumberRangeEntity;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
@@ -71,6 +73,16 @@ abstract class NumberRangeConverter extends ShopwareConverter
         $converted['id'] = $this->getUuid($data, $migrationContext, $context);
         if (\array_key_exists($data['name'], self::TYPE_MAPPING)) {
             $converted['typeId'] = $this->getProductNumberRangeTypeUuid($data['name']);
+        } else {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                ->withEntityName(DefaultEntities::NUMBER_RANGE)
+                ->withSourceData($data)
+                ->withFieldName('name')
+                ->build(ConvertObjectTypeUnsupportedLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
         }
 
         $converted['global'] = $this->getGlobal($data['name']);
