@@ -101,7 +101,7 @@ export const fixtureEnvironmentInformation = Object.freeze({
 export const fixtureLogGroups = Object.freeze([
     {
         // scalar
-        code: 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+        code: 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING',
         count: 591,
         entityName: 'media',
         fieldName: 'createdAt',
@@ -112,7 +112,7 @@ export const fixtureLogGroups = Object.freeze([
     },
     {
         // relation
-        code: 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE',
+        code: 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID',
         count: 161,
         entityName: 'product',
         fieldName: 'options',

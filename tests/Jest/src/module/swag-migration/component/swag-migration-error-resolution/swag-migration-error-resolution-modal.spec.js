@@ -189,9 +189,9 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
     describe('constants', () => {
         it('should provide error code to component mapping', () => {
             expect(ERROR_CODE_COMPONENT_MAPPING).toStrictEqual({
-                SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE: 'DEFAULT',
-                SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE: 'DEFAULT',
-                SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID: 'DEFAULT',
+                SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING: 'DEFAULT',
             });
         });
     });

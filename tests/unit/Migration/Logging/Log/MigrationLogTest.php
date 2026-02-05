@@ -115,35 +115,35 @@ class MigrationLogTest extends TestCase
 
         yield MigrationValidationAssociationInvalidLog::class => [
             'logClass' => MigrationValidationAssociationInvalidLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_ASSOCIATION',
+            'code' => 'SWAG_MIGRATION_VALIDATION_ASSOCIATION_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
         yield MigrationValidationOptionalFieldValueInvalidLog::class => [
             'logClass' => MigrationValidationOptionalFieldValueInvalidLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_OPTIONAL_FIELD_VALUE',
+            'code' => 'SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_WARNING,
             'userFixable' => true,
         ];
 
         yield MigrationValidationRequiredFieldValueInvalidLog::class => [
             'logClass' => MigrationValidationRequiredFieldValueInvalidLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_FIELD_VALUE',
+            'code' => 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
         yield MigrationValidationRequiredFieldMissingLog::class => [
             'logClass' => MigrationValidationRequiredFieldMissingLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD',
+            'code' => 'SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => true,
         ];
 
         yield MigrationValidationRequiredTranslationInvalidLog::class => [
             'logClass' => MigrationValidationRequiredTranslationInvalidLog::class,
-            'code' => 'SWAG_MIGRATION_VALIDATION_INVALID_REQUIRED_TRANSLATION',
+            'code' => 'SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID',
             'level' => AbstractMigrationLogEntry::LOG_LEVEL_ERROR,
             'userFixable' => false,
         ];
