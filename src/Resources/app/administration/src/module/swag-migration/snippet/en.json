@@ -451,6 +451,7 @@
         }
       },
       "error-resolution": {
+        "descriptionTitle": "Field description",
         "codes": {
           "SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING": "Associated entity missing",
           "SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED": "Child entity conversion failed",

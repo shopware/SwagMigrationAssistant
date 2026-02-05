@@ -451,6 +451,7 @@
         "info": "Information"
       },
       "error-resolution": {
+        "descriptionTitle": "Feldbeschreibung",
         "codes": {
           "SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING": "Zugeordnete Entität fehlt",
           "SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED": "Konvertierung einer untergeordneten Entität fehlgeschlagen",
