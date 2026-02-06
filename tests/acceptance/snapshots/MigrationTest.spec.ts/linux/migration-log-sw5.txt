@@ -1,0 +1,3796 @@
+########## MIGRATION LOG ##########
+
+########## RUN INFORMATION ##########
+Generated at: [timestamp]
+Run ID: [uuid]
+Status: finished
+Created at: [timestamp]
+Updated at: [timestamp]
+
+########## CONNECTION INFORMATION ##########
+Connection ID: [uuid]
+Connection name: shopware
+Profile name: shopware55
+Gateway name: local
+
+########## SELECTED DATASETS ##########
+- language (Total: 1)
+- category_custom_field (Total: 1)
+- category (Total: 60)
+- customer_group_custom_field (Total: 1)
+- customer_group (Total: 2)
+- currency (Total: 2)
+- sales_channel (Total: 2)
+- number_range (Total: 9)
+- media_folder (Total: 1)
+- product_custom_field (Total: 1)
+- product_price_custom_field (Total: 1)
+- product_manufacturer_custom_field (Total: 1)
+- product (Total: 401)
+- property_group_option (Total: 94)
+- product_option_relation (Total: 282)
+- product_property_relation (Total: 57)
+- translation (Total: 126)
+- product_cross_selling (Total: 217)
+- main_variant_relation (Total: 27)
+- customer_custom_field (Total: 1)
+- customer (Total: 3)
+- shipping_method (Total: 5)
+- order_custom_field (Total: 1)
+- order (Total: 2)
+- order_document_custom_field (Total: 1)
+- order_document (Total: 8)
+- seo_url (Total: 495)
+- promotion (Total: 4)
+- product_review (Total: 2)
+- media (Total: 591)
+
+########## ADDITIONAL METADATA ##########
+Environment information (JSON):
+{
+    "extensions": [],
+    "sourceSystemName": "Shopware",
+    "sourceSystemVersion": "5.5",
+    "sourceSystemDomain": "[domain]",
+    "totals": {
+        "category": {
+            "extensions": [],
+            "entityName": "category",
+            "total": 60
+        },
+        "currency": {
+            "extensions": [],
+            "entityName": "currency",
+            "total": 2
+        },
+        "newsletter_recipient": {
+            "extensions": [],
+            "entityName": "newsletter_recipient",
+            "total": 0
+        },
+        "customer_group": {
+            "extensions": [],
+            "entityName": "customer_group",
+            "total": 2
+        },
+        "customer": {
+            "extensions": [],
+            "entityName": "customer",
+            "total": 3
+        },
+        "media": {
+            "extensions": [],
+            "entityName": "media",
+            "total": 591
+        },
+        "number_range": {
+            "extensions": [],
+            "entityName": "number_range",
+            "total": 9
+        },
+        "order": {
+            "extensions": [],
+            "entityName": "order",
+            "total": 2
+        },
+        "product": {
+            "extensions": [],
+            "entityName": "product",
+            "total": 401
+        },
+        "product_option_relation": {
+            "extensions": [],
+            "entityName": "product_option_relation",
+            "total": 282
+        },
+        "product_property_relation": {
+            "extensions": [],
+            "entityName": "product_property_relation",
+            "total": 57
+        },
+        "property_group_option": {
+            "extensions": [],
+            "entityName": "property_group_option",
+            "total": 94
+        },
+        "sales_channel": {
+            "extensions": [],
+            "entityName": "sales_channel",
+            "total": 2
+        },
+        "translation": {
+            "extensions": [],
+            "entityName": "translation",
+            "total": 126
+        },
+        "order_document": {
+            "extensions": [],
+            "entityName": "order_document",
+            "total": 8
+        },
+        "shipping_method": {
+            "extensions": [],
+            "entityName": "shipping_method",
+            "total": 5
+        },
+        "product_review": {
+            "extensions": [],
+            "entityName": "product_review",
+            "total": 2
+        },
+        "seo_url": {
+            "extensions": [],
+            "entityName": "seo_url",
+            "total": 495
+        },
+        "product_cross_selling": {
+            "extensions": [],
+            "entityName": "product_cross_selling",
+            "total": 217
+        },
+        "main_variant_relation": {
+            "extensions": [],
+            "entityName": "main_variant_relation",
+            "total": 27
+        },
+        "promotion": {
+            "extensions": [],
+            "entityName": "promotion",
+            "total": 4
+        },
+        "customer_wishlist": {
+            "extensions": [],
+            "entityName": "customer_wishlist",
+            "total": 0
+        }
+    },
+    "additionalData": [
+        {
+            "id": "1",
+            "main_id": null,
+            "name": "Deutsch",
+            "title": null,
+            "position": "0",
+            "host": "sw55.local",
+            "base_path": "",
+            "base_url": null,
+            "hosts": "",
+            "secure": "0",
+            "template_id": "23",
+            "document_template_id": "23",
+            "category_id": "3",
+            "locale_id": "1",
+            "currency_id": "1",
+            "customer_group_id": "1",
+            "fallback_id": null,
+            "customer_scope": "0",
+            "default": "1",
+            "active": "1",
+            "locale": {
+                "id": "1",
+                "locale": "de_DE",
+                "language": "Deutsch",
+                "territory": "Deutschland"
+            },
+            "children": [
+                {
+                    "id": "2",
+                    "main_id": "1",
+                    "name": "English",
+                    "title": "English",
+                    "position": "0",
+                    "host": null,
+                    "base_path": null,
+                    "base_url": null,
+                    "hosts": "",
+                    "secure": "0",
+                    "template_id": null,
+                    "document_template_id": null,
+                    "category_id": "39",
+                    "locale_id": "2",
+                    "currency_id": "1",
+                    "customer_group_id": "1",
+                    "fallback_id": "2",
+                    "customer_scope": "0",
+                    "default": "0",
+                    "active": "1",
+                    "locale": {
+                        "id": "2",
+                        "locale": "en_GB",
+                        "language": "Englisch",
+                        "territory": "Vereinigtes K\u00f6nigreich"
+                    }
+                }
+            ]
+        }
+    ],
+    "requestStatus": {
+        "extensions": [],
+        "errorFile": null,
+        "errorLine": null,
+        "code": "",
+        "message": "No error.",
+        "isWarning": false
+    },
+    "migrationDisabled": false,
+    "displayWarnings": [],
+    "targetSystemCurrency": "EUR",
+    "sourceSystemCurrency": "EUR",
+    "sourceSystemLocale": "de-DE",
+    "targetSystemLocale": "en-GB",
+    "fingerprint": "[uuid]"
+}
+
+Pre-mapping (JSON):
+[
+    {
+        "extensions": [],
+        "entity": "order_state",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "-1",
+                "description": "Abgebrochen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "1",
+                "description": "In Bearbeitung (Wartet)",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "8",
+                "description": "Kl\u00e4rung notwendig",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "2",
+                "description": "Komplett abgeschlossen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "7",
+                "description": "Komplett ausgeliefert",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "0",
+                "description": "Offen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "4",
+                "description": "Storniert \/ Abgelehnt",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "3",
+                "description": "Teilweise abgeschlossen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "Teilweise ausgeliefert",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "5",
+                "description": "Zur Lieferung bereit",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "order_delivery_state",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "-1",
+                "description": "Abgebrochen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "1",
+                "description": "In Bearbeitung (Wartet)",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "8",
+                "description": "Kl\u00e4rung notwendig",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "2",
+                "description": "Komplett abgeschlossen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "7",
+                "description": "Komplett ausgeliefert",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "0",
+                "description": "Offen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "4",
+                "description": "Storniert \/ Abgelehnt",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "3",
+                "description": "Teilweise abgeschlossen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "Teilweise ausgeliefert",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "5",
+                "description": "Zur Lieferung bereit",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "transaction_state",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "13",
+                "description": "1. Mahnung",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "14",
+                "description": "2. Mahnung",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "15",
+                "description": "3. Mahnung",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "32",
+                "description": "Der Kredit wurde genehmigt.",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "31",
+                "description": "Der Kredit wurde vorlaeufig akzeptiert.",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "33",
+                "description": "Die Zahlung wurde angewiesen.",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "34",
+                "description": "Es wurde eine Zeitverlaengerung eingetragen.",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "30",
+                "description": "Es wurde kein Kredit genehmigt.",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "16",
+                "description": "Inkasso",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "12",
+                "description": "Komplett bezahlt",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "10",
+                "description": "Komplett in Rechnung gestellt",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "17",
+                "description": "Offen",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "18",
+                "description": "Reserviert",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "11",
+                "description": "Teilweise bezahlt",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "9",
+                "description": "Teilweise in Rechnung gestellt",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "19",
+                "description": "Verzoegert",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "35",
+                "description": "Vorgang wurde abgebrochen.",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "20",
+                "description": "Wiedergutschrift",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "21",
+                "description": "\u00dcberpr\u00fcfung notwendig",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "payment_method",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "default_payment_method",
+                "description": "Standard Payment Method",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "6",
+                "description": "SEPA",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "2",
+                "description": "Lastschrift",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "3",
+                "description": "Nachnahme",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "4",
+                "description": "Rechnung",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "5",
+                "description": "Vorkasse",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "salutation",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "ms",
+                "description": "ms",
+                "destinationUuid": "[uuid]"
+            },
+            {
+                "extensions": [],
+                "sourceId": "mr",
+                "description": "mr",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "delivery_time",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "default_delivery_time",
+                "description": "Standard delivery time",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    },
+    {
+        "extensions": [],
+        "entity": "shipping_availability_rule",
+        "mapping": [
+            {
+                "extensions": [],
+                "sourceId": "default_shipping_availability_rule",
+                "description": "Standard shipping availability rule",
+                "destinationUuid": "[uuid]"
+            }
+        ],
+        "choices": []
+    }
+]
+
+########## LOG ENTRIES ##########
+----- Log Entry #1 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_ENTITY_FAILED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: language
+Source data (JSON):
+{
+    "id": "1",
+    "locale": "de-DE",
+    "_locale": "de-DE",
+    "language": "Deutsch",
+    "translations": [
+        {
+            "value": "Deutsch",
+            "locale": "de_DE"
+        },
+        {
+            "value": "German",
+            "locale": "en_GB"
+        }
+    ]
+}
+
+----- Log Entry #2 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_ENTITY_FAILED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: language
+Source data (JSON):
+{
+    "id": "2",
+    "locale": "en-GB",
+    "_locale": "de-DE",
+    "language": "Englisch",
+    "translations": [
+        {
+            "value": "Englisch",
+            "locale": "de_DE"
+        },
+        {
+            "value": "English",
+            "locale": "en_GB"
+        }
+    ]
+}
+
+----- Log Entry #3 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: number_range
+Field: name
+Source data (JSON):
+{
+    "id": "926",
+    "desc": "Service - 1",
+    "name": "sSERVICE1",
+    "number": "10000",
+    "prefix": "SW",
+    "_locale": "de-DE"
+}
+
+----- Log Entry #4 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: number_range
+Field: name
+Source data (JSON):
+{
+    "id": "927",
+    "desc": "Service - 2",
+    "name": "sSERVICE2",
+    "number": "10000",
+    "prefix": "SW",
+    "_locale": "de-DE"
+}
+
+----- Log Entry #5 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: number_range
+Field: name
+Source data (JSON):
+{
+    "id": "928",
+    "desc": "Blog - ID",
+    "name": "blogordernumber",
+    "number": "110",
+    "prefix": "SW",
+    "_locale": "de-DE"
+}
+
+----- Log Entry #7 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: product_media
+Field: mediaId
+Source path: media.id
+Source data (JSON):
+{
+    "id": "396",
+    "img": "Navigator-Lederhaube-schwarz-Seitenansicht",
+    "main": "2",
+    "width": "0",
+    "height": "0",
+    "media_id": "401",
+    "position": "2",
+    "articleID": "144",
+    "extension": "jpg",
+    "parent_id": null,
+    "relations": "",
+    "description": "",
+    "article_detail_id": null
+}
+
+----- Log Entry #8 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: product_translation
+Source path: objectdata
+Exception message: Unserialization failed
+Source data (JSON):
+{
+    "id": "170",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "211",
+    "objectdata": "a:3:{s:10:\"txtArtikel\";s:55:\"Bonus article with shopping cart value of over 250 Euro\";s:19:\"txtshortdescription\";s:122:\"Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euros.\";s:19:\"txtlangbeschreibung\";s:225:\"<p>Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euro.<\/p>\n<p>This function needs to be activated in your backend under Configuration --&gt; Frontend<\/p>\";}",
+    "objecttype": "article",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #9 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_UNSERIALIZED_DATA_INVALID
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: product_translation
+Source path: objectdata
+Exception message: Unserialization failed
+Source data (JSON):
+{
+    "id": "172",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "210",
+    "objectdata": "a:3:{s:10:\"txtArtikel\";s:54:\"Bonus article with shopping cart value of over 50 Euro\";s:19:\"txtshortdescription\";s:122:\"Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 250 Euros.\";s:19:\"txtlangbeschreibung\";s:224:\"<p>Your customers can either buy this article or get it as a free bonus article from a shopping cart value of over 50 Euro.<\/p>\n<p>This function needs to be activated in your backend under Configuration --&gt; Frontend<\/p>\";}",
+    "objecttype": "article",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #10 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "1",
+    "name": null,
+    "dirty": "0",
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "64",
+    "objectdata": "a:4:{s:8:\"fromMail\";s:18:\"{config name=mail}\";s:8:\"fromName\";s:22:\"{config name=shopName}\";s:7:\"subject\";s:38:\"Documents to your order {$orderNumber}\";s:7:\"content\";s:331:\"{include file=\"string:{config name=emailheaderplain}\"}\n\nHello {$sUser.salutation|salutation} {$sUser.firstname} {$sUser.lastname},\n\nThank you for your order at {config name=shopName}. In the attachement you will find documents about your order as PDF.\nWe wish you a nice day.\n\n{include file=\"string:{config name=emailfooterplain}\"}\";}",
+    "objecttype": "config_mails",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #11 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "2",
+    "name": null,
+    "dirty": "0",
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "1",
+    "objectdata": "a:4:{i:1;a:1:{s:4:\"name\";s:7:\"Invoice\";}i:2;a:1:{s:4:\"name\";s:18:\"Notice of delivery\";}i:3;a:1:{s:4:\"name\";s:6:\"Credit\";}i:4;a:1:{s:4:\"name\";s:12:\"Cancellation\";}}",
+    "objecttype": "documents",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #12 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "3",
+    "name": null,
+    "dirty": "0",
+    "locale": "de-DE",
+    "mediaId": null,
+    "objectkey": "1",
+    "objectdata": "a:1:{i:0;a:1:{s:5:\"label\";s:9:\"Varianten\";}}",
+    "objecttype": "custom_facet",
+    "ordernumber": null,
+    "objectlanguage": "1"
+}
+
+----- Log Entry #13 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "4",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "1",
+    "objectdata": "a:5:{i:14;a:2:{s:13:\"dispatch_name\";s:16:\"Express Delivery\";s:20:\"dispatch_description\";s:22:\"Delivery within 2 days\";}i:9;a:1:{s:13:\"dispatch_name\";s:17:\"Standard delivery\";}i:16;a:2:{s:13:\"dispatch_name\";s:31:\"Standard international delivery\";s:20:\"dispatch_description\";s:52:\"Standard delivery into countries other than Germany.\";}i:10;a:2:{s:13:\"dispatch_name\";s:29:\"Shipping cost based on weight\";s:20:\"dispatch_description\";s:128:\"If the weight of a product exceeds 1 kilogram, the shipping method will switch automatically to \"Shipping cost based on weight\".\";}i:12;a:1:{s:13:\"dispatch_name\";s:10:\"Discounted\";}}",
+    "objecttype": "config_dispatch",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #14 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "121",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "1",
+    "objectdata": "a:1:{s:9:\"groupName\";s:6:\"Brandy\";}",
+    "objecttype": "propertygroup",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #15 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "272",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "1",
+    "objectdata": "a:5:{i:4;a:2:{s:11:\"description\";s:7:\"Invoice\";s:21:\"additionalDescription\";s:141:\"Payment by invoice. Shopware provides automatic invoicing for all customers on orders after the first, in order to avoid defaults on payment.\";}i:2;a:2:{s:11:\"description\";s:5:\"Debit\";s:21:\"additionalDescription\";s:15:\"Additional text\";}i:3;a:2:{s:11:\"description\";s:16:\"Cash on delivery\";s:21:\"additionalDescription\";s:25:\"(including 2.00 Euro VAT)\";}i:5;a:2:{s:11:\"description\";s:15:\"Paid in advance\";s:21:\"additionalDescription\";s:57:\"The goods are delivered directly upon receipt of payment.\";}i:6;a:1:{s:21:\"additionalDescription\";s:17:\"SEPA direct debit\";}}",
+    "objecttype": "config_payment",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #16 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: unknown_translation
+Source path: objecttype
+Source data (JSON):
+{
+    "id": "273",
+    "name": null,
+    "dirty": null,
+    "locale": "en-GB",
+    "mediaId": null,
+    "objectkey": "3",
+    "objectdata": "a:1:{s:11:\"description\";s:7:\"Imprint\";}",
+    "objecttype": "page",
+    "ordernumber": null,
+    "objectlanguage": "2"
+}
+
+----- Log Entry #19 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_CONVERT_ENTITY_UNKNOWN
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: order_line_item
+Field: coverId
+Source path: esd.esdID
+Source data (JSON):
+{
+    "id": "1",
+    "datum": "2012-08-30 10:15:54",
+    "esdID": "1",
+    "userID": "2",
+    "orderID": "15",
+    "serialID": "2",
+    "orderdetailsID": "42",
+    "downloadAvailablePaymentStatus": "a:1:{i:0;i:12;}"
+}
+
+----- Log Entry #20 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/der-sommer-wird-bunt",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=3"
+}
+
+----- Log Entry #21 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/sonnenschutz-so-gehoeren-sie-zur-creme-de-la-creme",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=4"
+}
+
+----- Log Entry #22 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/ich-packe-meinen-koffer",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=5"
+}
+
+----- Log Entry #23 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "sommerwelten\/stop-the-water-while-using-me",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=6&emotionId=5"
+}
+
+----- Log Entry #24 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "sommerwelten\/stop-the-water-while-using-me",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=6&emotionId=5"
+}
+
+----- Log Entry #25 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "genusswelten\/the-deli-garage",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=5&emotionId=6"
+}
+
+----- Log Entry #26 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "genusswelten\/the-deli-garage",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=5&emotionId=6"
+}
+
+----- Log Entry #27 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "0",
+    "path": "trends-news\/der-sommer-wirenglisch",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=6"
+}
+
+----- Log Entry #28 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "sommerwelten\/passend-fuer-ihren-sommerurlaub",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=6&emotionId=9"
+}
+
+----- Log Entry #29 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/the-summer-will-be-colorful",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=6"
+}
+
+----- Log Entry #30 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/sun-cream-be-part-of-the-creme-de-la-creme",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=7"
+}
+
+----- Log Entry #31 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/i-pack-my-bag",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=8"
+}
+
+----- Log Entry #32 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "sommerwelten\/passend-fuer-ihren-sommerurlaub",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=6&emotionId=9"
+}
+
+----- Log Entry #33 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/",
+    "type": "blog",
+    "org_path": "sViewport=blog&sCategory=17"
+}
+
+----- Log Entry #34 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/der-sommer-wird-bunt",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=3"
+}
+
+----- Log Entry #35 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/sonnenschutz-so-gehoeren-sie-zur-creme-de-la-creme",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=4"
+}
+
+----- Log Entry #36 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trends-news\/ich-packe-meinen-koffer",
+    "type": "blog",
+    "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=5"
+}
+
+----- Log Entry #37 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "stop-the-water-while-using-me",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&emotionId=5"
+}
+
+----- Log Entry #38 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "passend-fuer-ihren-sommerurlaub",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&emotionId=9"
+}
+
+----- Log Entry #39 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "0",
+    "path": "hilfe-support",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=2"
+}
+
+----- Log Entry #40 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "0",
+    "path": "versand-und-zahlungsbedingungen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry #41 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "hilfe-support",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=2"
+}
+
+----- Log Entry #42 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "impressum",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=3"
+}
+
+----- Log Entry #43 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "agb",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=4"
+}
+
+----- Log Entry #44 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "0",
+    "path": "versand-und-zahlungsbedingungen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry #45 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "datenschutz",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=7"
+}
+
+----- Log Entry #46 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "widerrufsrecht",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=8"
+}
+
+----- Log Entry #47 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "ueber-uns",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=9"
+}
+
+----- Log Entry #48 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "versand-und-zahlung",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry #49 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "stellenangebote",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=52"
+}
+
+----- Log Entry #50 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "messen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=54"
+}
+
+----- Log Entry #51 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "das-team",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=55"
+}
+
+----- Log Entry #52 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "unternehmensgeschichte",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=56"
+}
+
+----- Log Entry #53 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "hilfe\/support",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=2"
+}
+
+----- Log Entry #54 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "impressum",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=3"
+}
+
+----- Log Entry #55 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "agb",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=4"
+}
+
+----- Log Entry #56 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "versand-und-zahlung",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=6"
+}
+
+----- Log Entry #57 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "datenschutz",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=7"
+}
+
+----- Log Entry #58 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "widerrufsrecht",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=8"
+}
+
+----- Log Entry #59 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "ueber-uns",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=9"
+}
+
+----- Log Entry #60 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "stellenangebote",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=52"
+}
+
+----- Log Entry #61 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "messen",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=54"
+}
+
+----- Log Entry #62 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "das-team",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=55"
+}
+
+----- Log Entry #63 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "unternehmensgeschichte",
+    "type": "custom",
+    "org_path": "sViewport=custom&sCustom=56"
+}
+
+----- Log Entry #64 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "kontaktformular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=5"
+}
+
+----- Log Entry #65 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "partnerformular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=8"
+}
+
+----- Log Entry #66 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "defektes-produkt",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=9"
+}
+
+----- Log Entry #67 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "rueckgabe",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=10"
+}
+
+----- Log Entry #68 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "anfrage-formular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=16"
+}
+
+----- Log Entry #69 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "partner-form",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=17"
+}
+
+----- Log Entry #70 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "contact",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=18"
+}
+
+----- Log Entry #71 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "defective-product",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=19"
+}
+
+----- Log Entry #72 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "return",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=20"
+}
+
+----- Log Entry #73 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "inquiry-form",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=21"
+}
+
+----- Log Entry #74 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "support-beantragen",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=22"
+}
+
+----- Log Entry #75 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "kontaktformular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=5"
+}
+
+----- Log Entry #76 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "partnerformular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=8"
+}
+
+----- Log Entry #77 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "defektes-produkt",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=9"
+}
+
+----- Log Entry #78 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "rueckgabe",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=10"
+}
+
+----- Log Entry #79 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "anfrage-formular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=16"
+}
+
+----- Log Entry #80 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "partner-form",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=17"
+}
+
+----- Log Entry #81 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "contact",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=18"
+}
+
+----- Log Entry #82 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "defective-product",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=19"
+}
+
+----- Log Entry #83 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "return",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=20"
+}
+
+----- Log Entry #84 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "inquiry-form",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=21"
+}
+
+----- Log Entry #85 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "support-beantragen",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=22"
+}
+
+----- Log Entry #86 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "shopware-ag\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=1"
+}
+
+----- Log Entry #87 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "feinbrennerei-sasse\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=2"
+}
+
+----- Log Entry #88 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "teapavilion\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=3"
+}
+
+----- Log Entry #89 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "the-deli-garage\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=4"
+}
+
+----- Log Entry #90 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "access-oires-sisters\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=5"
+}
+
+----- Log Entry #91 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "kwon\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=6"
+}
+
+----- Log Entry #92 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "vintage-driver\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=7"
+}
+
+----- Log Entry #93 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "das-blaue-haus\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=8"
+}
+
+----- Log Entry #94 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "heiku\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=9"
+}
+
+----- Log Entry #95 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "sonnenschirm-versand\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=11"
+}
+
+----- Log Entry #96 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "beachdreams-clothes\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=12"
+}
+
+----- Log Entry #97 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "sun-smile-and-protect\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=13"
+}
+
+----- Log Entry #98 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "example\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=14"
+}
+
+----- Log Entry #99 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "stop-the-water-while-using-me\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=15"
+}
+
+----- Log Entry #100 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "lorem\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=16"
+}
+
+----- Log Entry #101 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
+    "path": "trusted-shops\/",
+    "type": "listing",
+    "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=17"
+}
+
+----- Log Entry #102 -----
+ID: [uuid]
+Level: error
+Code: SWAG_MIGRATION_WRITE_EXCEPTION
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: order
+Exception message: There are 1 error(s) while writing data.
+
+1. [/1/orderCustomer/email] This value should not be blank.
+Source data (JSON):
+{
+    "id": "57",
+    "net": "0",
+    "locale": "de-DE",
+    "status": "0",
+    "userID": "1",
+    "_locale": "de-DE",
+    "changed": null,
+    "cleared": "17",
+    "comment": "",
+    "details": [
+        {
+            "id": "201",
+            "ean": null,
+            "tax": {
+                "id": "1",
+                "tax": "19.00",
+                "description": "19%"
+            },
+            "name": "Versandkostenfreier Artikel",
+            "unit": null,
+            "modus": "0",
+            "price": "35.99",
+            "taxID": "1",
+            "config": "",
+            "status": "0",
+            "orderID": "57",
+            "shipped": "0",
+            "quantity": "1",
+            "tax_rate": "19",
+            "articleID": "220",
+            "pack_unit": null,
+            "attributes": {
+                "id": "4",
+                "detailID": "201",
+                "attribute1": "",
+                "attribute2": "",
+                "attribute3": "",
+                "attribute4": "",
+                "attribute5": "",
+                "attribute6": ""
+            },
+            "esdarticle": "0",
+            "ordernumber": "20002",
+            "releasedate": "0000-00-00",
+            "shippedgroup": "0",
+            "articleDetailID": null,
+            "articleordernumber": "SW10001"
+        },
+        {
+            "id": "202",
+            "ean": null,
+            "tax": {
+                "id": "1",
+                "tax": "19.00",
+                "description": "19%"
+            },
+            "name": "Aufschlag bei Zahlungsarten",
+            "unit": null,
+            "modus": "0",
+            "price": "35.99",
+            "taxID": "1",
+            "config": "",
+            "status": "0",
+            "orderID": "57",
+            "shipped": "0",
+            "quantity": "1",
+            "tax_rate": "19",
+            "articleID": "227",
+            "pack_unit": null,
+            "attributes": {
+                "id": "5",
+                "detailID": "202",
+                "attribute1": "",
+                "attribute2": "",
+                "attribute3": "",
+                "attribute4": "",
+                "attribute5": "",
+                "attribute6": ""
+            },
+            "esdarticle": "0",
+            "ordernumber": "20002",
+            "releasedate": "0000-00-00",
+            "shippedgroup": "0",
+            "articleDetailID": null,
+            "articleordernumber": "SW10002841"
+        },
+        {
+            "id": "203",
+            "ean": null,
+            "tax": {
+                "id": "1",
+                "tax": "19.00",
+                "description": "19%"
+            },
+            "name": "Express Versand",
+            "unit": null,
+            "modus": "0",
+            "price": "54.9",
+            "taxID": "1",
+            "config": "",
+            "status": "0",
+            "orderID": "57",
+            "shipped": "0",
+            "quantity": "1",
+            "tax_rate": "19",
+            "articleID": "219",
+            "pack_unit": null,
+            "attributes": {
+                "id": "6",
+                "detailID": "203",
+                "attribute1": "",
+                "attribute2": "",
+                "attribute3": "",
+                "attribute4": "",
+                "attribute5": "",
+                "attribute6": ""
+            },
+            "esdarticle": "0",
+            "ordernumber": "20002",
+            "releasedate": "0000-00-00",
+            "shippedgroup": "0",
+            "articleDetailID": null,
+            "articleordernumber": "SW10185"
+        },
+        {
+            "id": "204",
+            "ean": null,
+            "esd": {
+                "id": "2",
+                "datum": "2012-08-31 08:51:47",
+                "esdID": "2",
+                "userID": "1",
+                "orderID": "57",
+                "serialID": "6",
+                "orderdetailsID": "204",
+                "downloadAvailablePaymentStatus": "a:1:{i:0;i:12;}"
+            },
+            "tax": {
+                "id": "1",
+                "tax": "19.00",
+                "description": "19%"
+            },
+            "name": "ESD Download Artikel",
+            "unit": null,
+            "modus": "0",
+            "price": "34.99",
+            "taxID": "1",
+            "config": "",
+            "status": "0",
+            "orderID": "57",
+            "shipped": "0",
+            "quantity": "2",
+            "tax_rate": "19",
+            "articleID": "197",
+            "pack_unit": null,
+            "attributes": {
+                "id": "7",
+                "detailID": "204",
+                "attribute1": "",
+                "attribute2": "",
+                "attribute3": "",
+                "attribute4": "",
+                "attribute5": "",
+                "attribute6": ""
+            },
+            "esdarticle": "1",
+            "ordernumber": "20002",
+            "releasedate": "0000-00-00",
+            "shippedgroup": "0",
+            "articleDetailID": null,
+            "articleordernumber": "SW10196"
+        },
+        {
+            "id": "205",
+            "ean": null,
+            "tax": {
+                "id": "4",
+                "tax": "7.00",
+                "description": "7 %"
+            },
+            "name": "Zuschlag f\u00fcr Zahlungsart",
+            "unit": null,
+            "modus": "4",
+            "price": "5",
+            "taxID": "4",
+            "config": "",
+            "status": "0",
+            "orderID": "57",
+            "shipped": "0",
+            "quantity": "1",
+            "tax_rate": "19",
+            "articleID": "0",
+            "pack_unit": null,
+            "attributes": {
+                "id": "8",
+                "detailID": "205",
+                "attribute1": "",
+                "attribute2": "",
+                "attribute3": "",
+                "attribute4": "",
+                "attribute5": "",
+                "attribute6": ""
+            },
+            "esdarticle": "0",
+            "ordernumber": "20002",
+            "releasedate": "0000-00-00",
+            "shippedgroup": "0",
+            "articleDetailID": null,
+            "articleordernumber": "sw-payment-absolute"
+        }
+    ],
+    "payment": {
+        "id": "4",
+        "hide": "0",
+        "name": "invoice",
+        "class": "invoice.php",
+        "table": "",
+        "action": "",
+        "active": "1",
+        "source": null,
+        "pluginID": null,
+        "position": "3",
+        "template": "invoice.tpl",
+        "esdactive": "1",
+        "surcharge": "5",
+        "description": "Rechnung",
+        "embediframe": "",
+        "hideprospect": "0",
+        "debit_percent": "0",
+        "mobile_inactive": "0",
+        "surchargestring": "",
+        "additionaldescription": "Sie zahlen einfach und bequem auf Rechnung. Shopware bietet z.B. auch die M\u00f6glichkeit, Rechnung automatisiert erst ab der 2. Bestellung f\u00fcr Kunden zur Verf\u00fcgung zu stellen, um Zahlungsausf\u00e4lle zu vermeiden."
+    },
+    "referer": "",
+    "taxfree": "0",
+    "currency": "EUR",
+    "customer": {
+        "id": "1",
+        "email": null,
+        "title": null,
+        "active": "1",
+        "changed": null,
+        "encoder": "md5",
+        "referer": "",
+        "birthday": null,
+        "language": null,
+        "lastname": "Mustermann",
+        "password": "[uuid]",
+        "affiliate": "0",
+        "firstname": "Max",
+        "lastlogin": "2012-01-04 14:12:05",
+        "paymentID": "5",
+        "sessionID": "uiorqd755gaar8dn89ukp178c7",
+        "subshopID": "1",
+        "firstlogin": "2011-11-23",
+        "newsletter": "0",
+        "salutation": "mr",
+        "validation": "",
+        "accountmode": "0",
+        "lockeduntil": null,
+        "login_token": null,
+        "failedlogins": "0",
+        "pricegroupID": null,
+        "customergroup": "EK",
+        "paymentpreset": "0",
+        "customernumber": "20001",
+        "confirmationkey": "",
+        "internalcomment": "",
+        "register_opt_in_id": null,
+        "doubleOptinRegister": "0",
+        "password_change_date": "2019-11-13 13:47:27",
+        "doubleOptinConfirmDate": null,
+        "doubleOptinEmailSentDate": null,
+        "default_billing_address_id": "1",
+        "default_shipping_address_id": "3"
+    },
+    "language": "1",
+    "documents": [
+        {
+            "id": "5",
+            "date": "2019-12-12",
+            "hash": "[uuid]",
+            "type": "1",
+            "docID": "20002",
+            "amount": "201.86",
+            "userID": "1",
+            "orderID": "57",
+            "attributes": {
+                "id": "5",
+                "documentID": "5"
+            },
+            "documenttype": {
+                "id": "1",
+                "key": "invoice",
+                "top": "20",
+                "left": "25",
+                "name": "Rechnung",
+                "right": "10",
+                "bottom": "20",
+                "numbers": "doc_0",
+                "template": "index.tpl",
+                "pagebreak": "10"
+            }
+        },
+        {
+            "id": "6",
+            "date": "2019-12-12",
+            "hash": "[uuid]",
+            "type": "2",
+            "docID": "20002",
+            "amount": "201.86",
+            "userID": "1",
+            "orderID": "57",
+            "attributes": {
+                "id": "6",
+                "documentID": "6"
+            },
+            "documenttype": {
+                "id": "2",
+                "key": "delivery_note",
+                "top": "20",
+                "left": "25",
+                "name": "Lieferschein",
+                "right": "10",
+                "bottom": "20",
+                "numbers": "doc_1",
+                "template": "index_ls.tpl",
+                "pagebreak": "10"
+            }
+        },
+        {
+            "id": "7",
+            "date": "2019-12-12",
+            "hash": "[uuid]",
+            "type": "3",
+            "docID": "20002",
+            "amount": "201.86",
+            "userID": "1",
+            "orderID": "57",
+            "attributes": {
+                "id": "7",
+                "documentID": "7"
+            },
+            "documenttype": {
+                "id": "3",
+                "key": "credit",
+                "top": "20",
+                "left": "25",
+                "name": "Gutschrift",
+                "right": "10",
+                "bottom": "20",
+                "numbers": "doc_2",
+                "template": "index_gs.tpl",
+                "pagebreak": "10"
+            }
+        },
+        {
+            "id": "8",
+            "date": "2019-12-12",
+            "hash": "[uuid]",
+            "type": "4",
+            "docID": "111111",
+            "amount": "-201.86",
+            "userID": "1",
+            "orderID": "57",
+            "attributes": {
+                "id": "8",
+                "documentID": "8"
+            },
+            "documenttype": {
+                "id": "4",
+                "key": "cancellation",
+                "top": "20",
+                "left": "25",
+                "name": "Stornorechnung",
+                "right": "10",
+                "bottom": "20",
+                "numbers": "doc_3",
+                "template": "index_sr.tpl",
+                "pagebreak": "10"
+            }
+        }
+    ],
+    "ordertime": "2012-08-31 08:51:46",
+    "partnerID": "",
+    "paymentID": "4",
+    "subshopID": "1",
+    "attributes": {
+        "id": "2",
+        "orderID": "57",
+        "attribute1": "",
+        "attribute2": "",
+        "attribute3": "",
+        "attribute4": "",
+        "attribute5": "",
+        "attribute6": ""
+    },
+    "deviceType": null,
+    "dispatchID": "9",
+    "cleareddate": null,
+    "ordernumber": "20002",
+    "orderstatus": {
+        "id": "0",
+        "mail": "1",
+        "name": "open",
+        "group": "state",
+        "position": "1",
+        "description": "Offen"
+    },
+    "remote_addr": "217.86.205.141",
+    "temporaryID": "",
+    "trackingcode": "",
+    "paymentstatus": {
+        "id": "17",
+        "mail": "0",
+        "name": "open",
+        "group": "payment",
+        "position": "0",
+        "description": "Offen"
+    },
+    "transactionID": "",
+    "billingaddress": {
+        "id": "2",
+        "city": "Sch\u00f6ppingen",
+        "phone": "",
+        "state": {
+            "id": "3",
+            "name": "Nordrhein-Westfalen",
+            "active": "1",
+            "position": "0",
+            "countryID": "2",
+            "shortcode": "NW"
+        },
+        "title": null,
+        "ustid": "",
+        "street": "Mustermannstra\u00dfe 92",
+        "userID": "1",
+        "company": "shopware AG",
+        "country": {
+            "id": "2",
+            "iso3": "DEU",
+            "active": "1",
+            "areaID": "1",
+            "notice": "",
+            "taxfree": "0",
+            "position": "1",
+            "countryen": "GERMANY",
+            "countryiso": "DE",
+            "countryname": "Deutschland",
+            "taxfree_ustid": "0",
+            "allow_shipping": "1",
+            "taxfree_ustid_checked": "0",
+            "force_state_in_registration": "0",
+            "display_state_in_registration": "0"
+        },
+        "orderID": "57",
+        "stateID": "3",
+        "zipcode": "48624",
+        "lastname": "Mustermann",
+        "countryID": "2",
+        "firstname": "Max",
+        "attributes": {
+            "id": "2",
+            "text1": null,
+            "text2": null,
+            "text3": null,
+            "text4": null,
+            "text5": null,
+            "text6": null,
+            "billingID": "2"
+        },
+        "department": "",
+        "salutation": "mr",
+        "customernumber": null,
+        "additional_address_line1": null,
+        "additional_address_line2": null
+    },
+    "currencyFactor": "1",
+    "invoice_amount": "201.86",
+    "customercomment": "",
+    "internalcomment": "",
+    "shippingaddress": {
+        "id": "2",
+        "city": "Sch\u00f6ppingen",
+        "phone": null,
+        "state": {
+            "id": "3",
+            "name": "Nordrhein-Westfalen",
+            "active": "1",
+            "position": "0",
+            "countryID": "2",
+            "shortcode": "NW"
+        },
+        "title": null,
+        "street": "Mustermannstra\u00dfe 92",
+        "userID": "1",
+        "company": "shopware AG",
+        "country": {
+            "id": "2",
+            "iso3": "DEU",
+            "active": "1",
+            "areaID": "1",
+            "notice": "",
+            "taxfree": "0",
+            "position": "1",
+            "countryen": "GERMANY",
+            "countryiso": "DE",
+            "countryname": "Deutschland",
+            "taxfree_ustid": "0",
+            "allow_shipping": "1",
+            "taxfree_ustid_checked": "0",
+            "force_state_in_registration": "0",
+            "display_state_in_registration": "0"
+        },
+        "orderID": "57",
+        "stateID": "3",
+        "zipcode": "48624",
+        "lastname": "Mustermann",
+        "countryID": "2",
+        "firstname": "Max",
+        "attributes": {
+            "id": "2",
+            "text1": null,
+            "text2": null,
+            "text3": null,
+            "text4": null,
+            "text5": null,
+            "text6": null,
+            "shippingID": "2"
+        },
+        "department": "",
+        "salutation": "mr",
+        "additional_address_line1": null,
+        "additional_address_line2": null
+    },
+    "invoice_shipping": "0",
+    "invoice_amount_net": "169.63",
+    "invoice_shipping_net": "0",
+    "invoice_shipping_tax_rate": null,
+    "is_proportional_calculation": "0"
+}
+Converted data (JSON):
+{
+    "id": "[uuid]",
+    "price": {
+        "netPrice": 169.63,
+        "rawTotal": 201.86,
+        "taxRules": [
+            {
+                "taxRate": 19,
+                "extensions": [],
+                "percentage": 100
+            }
+        ],
+        "taxStatus": "gross",
+        "extensions": [],
+        "totalPrice": 201.86,
+        "positionPrice": 201.86,
+        "calculatedTaxes": []
+    },
+    "stateId": "[uuid]",
+    "addresses": [
+        {
+            "id": "[uuid]",
+            "city": "Sch\u00f6ppingen",
+            "street": "Mustermannstra\u00dfe 92",
+            "company": "shopware AG",
+            "country": {
+                "id": "[uuid]",
+                "iso": "DE",
+                "iso3": "DEU",
+                "name": "Deutschland",
+                "active": true,
+                "taxFree": false,
+                "position": 1,
+                "translations": {
+                    "[uuid]": {
+                        "id": "[uuid]",
+                        "name": "Deutschland",
+                        "countryId": "[uuid]",
+                        "languageId": "[uuid]"
+                    }
+                },
+                "taxfreeForVatId": false,
+                "taxfreeVatidChecked": false,
+                "forceStateInRegistration": false,
+                "displayStateInRegistration": false
+            },
+            "zipcode": "48624",
+            "lastName": "Mustermann",
+            "firstName": "Max",
+            "countryState": {
+                "id": "[uuid]",
+                "countryId": "[uuid]"
+            },
+            "salutationId": "[uuid]"
+        }
+    ],
+    "lineItems": [
+        {
+            "id": "[uuid]",
+            "type": "product",
+            "label": "Versandkostenfreier Artikel",
+            "price": {
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 35.99,
+                "extensions": [],
+                "totalPrice": 35.99,
+                "referencePrice": null,
+                "calculatedTaxes": [
+                    {
+                        "tax": 5.7463025210084,
+                        "label": null,
+                        "price": 35.99,
+                        "taxRate": 19,
+                        "extensions": []
+                    }
+                ],
+                "regulationPrice": null
+            },
+            "payload": {
+                "options": [],
+                "productNumber": "SW10001"
+            },
+            "quantity": 1,
+            "productId": "[uuid]",
+            "identifier": "[uuid]",
+            "referencedId": "[uuid]",
+            "priceDefinition": {
+                "type": "quantity",
+                "price": 35.99,
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "extensions": [],
+                "isCalculated": true,
+                "regulationPrice": null,
+                "referencePriceDefinition": null
+            }
+        },
+        {
+            "id": "[uuid]",
+            "type": "product",
+            "label": "Aufschlag bei Zahlungsarten",
+            "price": {
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 35.99,
+                "extensions": [],
+                "totalPrice": 35.99,
+                "referencePrice": null,
+                "calculatedTaxes": [
+                    {
+                        "tax": 5.7463025210084,
+                        "label": null,
+                        "price": 35.99,
+                        "taxRate": 19,
+                        "extensions": []
+                    }
+                ],
+                "regulationPrice": null
+            },
+            "payload": {
+                "options": [],
+                "productNumber": "SW10002841"
+            },
+            "quantity": 1,
+            "productId": "[uuid]",
+            "identifier": "[uuid]",
+            "referencedId": "[uuid]",
+            "priceDefinition": {
+                "type": "quantity",
+                "price": 35.99,
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "extensions": [],
+                "isCalculated": true,
+                "regulationPrice": null,
+                "referencePriceDefinition": null
+            }
+        },
+        {
+            "id": "[uuid]",
+            "type": "product",
+            "label": "Express Versand",
+            "price": {
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 54.9,
+                "extensions": [],
+                "totalPrice": 54.9,
+                "referencePrice": null,
+                "calculatedTaxes": [
+                    {
+                        "tax": 8.7655462184874,
+                        "label": null,
+                        "price": 54.9,
+                        "taxRate": 19,
+                        "extensions": []
+                    }
+                ],
+                "regulationPrice": null
+            },
+            "payload": {
+                "options": [],
+                "productNumber": "SW10185"
+            },
+            "quantity": 1,
+            "productId": "[uuid]",
+            "identifier": "[uuid]",
+            "referencedId": "[uuid]",
+            "priceDefinition": {
+                "type": "quantity",
+                "price": 54.9,
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "extensions": [],
+                "isCalculated": true,
+                "regulationPrice": null,
+                "referencePriceDefinition": null
+            }
+        },
+        {
+            "id": "[uuid]",
+            "type": "product",
+            "label": "ESD Download Artikel",
+            "price": {
+                "quantity": 2,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 34.99,
+                "extensions": [],
+                "totalPrice": 69.98,
+                "referencePrice": null,
+                "calculatedTaxes": [
+                    {
+                        "tax": 11.173277310924,
+                        "label": null,
+                        "price": 69.98,
+                        "taxRate": 19,
+                        "extensions": []
+                    }
+                ],
+                "regulationPrice": null
+            },
+            "payload": {
+                "options": [],
+                "productNumber": "SW10196"
+            },
+            "quantity": 2,
+            "downloads": [
+                {
+                    "id": "[uuid]",
+                    "mediaId": "[uuid]",
+                    "position": 0,
+                    "accessGranted": false
+                }
+            ],
+            "productId": "[uuid]",
+            "identifier": "[uuid]",
+            "referencedId": "[uuid]",
+            "priceDefinition": {
+                "type": "quantity",
+                "price": 34.99,
+                "quantity": 2,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "extensions": [],
+                "isCalculated": true,
+                "regulationPrice": null,
+                "referencePriceDefinition": null
+            }
+        },
+        {
+            "id": "[uuid]",
+            "type": "custom",
+            "label": "Zuschlag f\u00fcr Zahlungsart",
+            "price": {
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 5,
+                "extensions": [],
+                "totalPrice": 5,
+                "referencePrice": null,
+                "calculatedTaxes": [
+                    {
+                        "tax": 0.79831932773109,
+                        "label": null,
+                        "price": 5,
+                        "taxRate": 19,
+                        "extensions": []
+                    }
+                ],
+                "regulationPrice": null
+            },
+            "payload": {
+                "options": []
+            },
+            "quantity": 1,
+            "identifier": "[uuid]",
+            "priceDefinition": {
+                "type": "quantity",
+                "price": 5,
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "extensions": [],
+                "isCalculated": true,
+                "regulationPrice": null,
+                "referencePriceDefinition": null
+            }
+        }
+    ],
+    "currencyId": "[uuid]",
+    "deliveries": [
+        {
+            "id": "[uuid]",
+            "stateId": "[uuid]",
+            "positions": [
+                {
+                    "id": "[uuid]",
+                    "price": {
+                        "quantity": 1,
+                        "taxRules": [
+                            {
+                                "taxRate": 19,
+                                "extensions": [],
+                                "percentage": 100
+                            }
+                        ],
+                        "listPrice": null,
+                        "unitPrice": 35.99,
+                        "extensions": [],
+                        "totalPrice": 35.99,
+                        "referencePrice": null,
+                        "calculatedTaxes": [
+                            {
+                                "tax": 5.7463025210084,
+                                "label": null,
+                                "price": 35.99,
+                                "taxRate": 19,
+                                "extensions": []
+                            }
+                        ],
+                        "regulationPrice": null
+                    },
+                    "orderLineItemId": "[uuid]"
+                },
+                {
+                    "id": "[uuid]",
+                    "price": {
+                        "quantity": 1,
+                        "taxRules": [
+                            {
+                                "taxRate": 19,
+                                "extensions": [],
+                                "percentage": 100
+                            }
+                        ],
+                        "listPrice": null,
+                        "unitPrice": 35.99,
+                        "extensions": [],
+                        "totalPrice": 35.99,
+                        "referencePrice": null,
+                        "calculatedTaxes": [
+                            {
+                                "tax": 5.7463025210084,
+                                "label": null,
+                                "price": 35.99,
+                                "taxRate": 19,
+                                "extensions": []
+                            }
+                        ],
+                        "regulationPrice": null
+                    },
+                    "orderLineItemId": "[uuid]"
+                },
+                {
+                    "id": "[uuid]",
+                    "price": {
+                        "quantity": 1,
+                        "taxRules": [
+                            {
+                                "taxRate": 19,
+                                "extensions": [],
+                                "percentage": 100
+                            }
+                        ],
+                        "listPrice": null,
+                        "unitPrice": 54.9,
+                        "extensions": [],
+                        "totalPrice": 54.9,
+                        "referencePrice": null,
+                        "calculatedTaxes": [
+                            {
+                                "tax": 8.7655462184874,
+                                "label": null,
+                                "price": 54.9,
+                                "taxRate": 19,
+                                "extensions": []
+                            }
+                        ],
+                        "regulationPrice": null
+                    },
+                    "orderLineItemId": "[uuid]"
+                },
+                {
+                    "id": "[uuid]",
+                    "price": {
+                        "quantity": 2,
+                        "taxRules": [
+                            {
+                                "taxRate": 19,
+                                "extensions": [],
+                                "percentage": 100
+                            }
+                        ],
+                        "listPrice": null,
+                        "unitPrice": 34.99,
+                        "extensions": [],
+                        "totalPrice": 69.98,
+                        "referencePrice": null,
+                        "calculatedTaxes": [
+                            {
+                                "tax": 11.173277310924,
+                                "label": null,
+                                "price": 69.98,
+                                "taxRate": 19,
+                                "extensions": []
+                            }
+                        ],
+                        "regulationPrice": null
+                    },
+                    "orderLineItemId": "[uuid]"
+                },
+                {
+                    "id": "[uuid]",
+                    "price": {
+                        "quantity": 1,
+                        "taxRules": [
+                            {
+                                "taxRate": 19,
+                                "extensions": [],
+                                "percentage": 100
+                            }
+                        ],
+                        "listPrice": null,
+                        "unitPrice": 5,
+                        "extensions": [],
+                        "totalPrice": 5,
+                        "referencePrice": null,
+                        "calculatedTaxes": [
+                            {
+                                "tax": 0.79831932773109,
+                                "label": null,
+                                "price": 5,
+                                "taxRate": 19,
+                                "extensions": []
+                            }
+                        ],
+                        "regulationPrice": null
+                    },
+                    "orderLineItemId": "[uuid]"
+                }
+            ],
+            "shippingCosts": {
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 0,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 0,
+                "extensions": [],
+                "totalPrice": 0,
+                "referencePrice": null,
+                "calculatedTaxes": [
+                    {
+                        "tax": 0,
+                        "label": null,
+                        "price": 0,
+                        "taxRate": 0,
+                        "extensions": []
+                    }
+                ],
+                "regulationPrice": null
+            },
+            "shippingMethodId": "[uuid]",
+            "shippingDateLatest": "2012-08-31 08:51:46",
+            "shippingDateEarliest": "2012-08-31 08:51:46",
+            "shippingOrderAddress": {
+                "id": "[uuid]",
+                "city": "Sch\u00f6ppingen",
+                "street": "Mustermannstra\u00dfe 92",
+                "company": "shopware AG",
+                "country": {
+                    "id": "[uuid]",
+                    "iso": "DE",
+                    "iso3": "DEU",
+                    "name": "Deutschland",
+                    "active": true,
+                    "taxFree": false,
+                    "position": 1,
+                    "translations": {
+                        "[uuid]": {
+                            "id": "[uuid]",
+                            "name": "Deutschland",
+                            "countryId": "[uuid]",
+                            "languageId": "[uuid]"
+                        }
+                    },
+                    "taxfreeForVatId": false,
+                    "taxfreeVatidChecked": false,
+                    "forceStateInRegistration": false,
+                    "displayStateInRegistration": false
+                },
+                "zipcode": "48624",
+                "lastName": "Mustermann",
+                "firstName": "Max",
+                "countryState": {
+                    "id": "[uuid]",
+                    "countryId": "[uuid]"
+                },
+                "salutationId": "[uuid]"
+            }
+        }
+    ],
+    "languageId": "[uuid]",
+    "orderNumber": "20002",
+    "deepLinkCode": "[uuid]",
+    "itemRounding": {
+        "decimals": 2,
+        "interval": 0.01,
+        "roundForNet": true
+    },
+    "transactions": [
+        {
+            "id": "[uuid]",
+            "amount": {
+                "quantity": 1,
+                "taxRules": [
+                    {
+                        "taxRate": 19,
+                        "extensions": [],
+                        "percentage": 100
+                    }
+                ],
+                "listPrice": null,
+                "unitPrice": 201.86,
+                "extensions": [],
+                "totalPrice": 201.86,
+                "referencePrice": null,
+                "calculatedTaxes": [],
+                "regulationPrice": null
+            },
+            "stateId": "[uuid]",
+            "paymentMethodId": "[uuid]"
+        }
+    ],
+    "orderCustomer": {
+        "id": "[uuid]",
+        "lastName": "Mustermann",
+        "firstName": "Max",
+        "customerId": "[uuid]",
+        "salutationId": "[uuid]",
+        "customerNumber": "20001"
+    },
+    "orderDateTime": "2012-08-31 08:51:46",
+    "shippingCosts": {
+        "quantity": 1,
+        "taxRules": [
+            {
+                "taxRate": 0,
+                "extensions": [],
+                "percentage": 100
+            }
+        ],
+        "listPrice": null,
+        "unitPrice": 0,
+        "extensions": [],
+        "totalPrice": 0,
+        "referencePrice": null,
+        "calculatedTaxes": [
+            {
+                "tax": 0,
+                "label": null,
+                "price": 0,
+                "taxRate": 0,
+                "extensions": []
+            }
+        ],
+        "regulationPrice": null
+    },
+    "totalRounding": {
+        "decimals": 2,
+        "interval": 0.01,
+        "roundForNet": true
+    },
+    "currencyFactor": 1,
+    "salesChannelId": "[uuid]",
+    "billingAddressId": "[uuid]",
+    "primaryOrderDeliveryId": "[uuid]",
+    "primaryOrderTransactionId": "[uuid]"
+}
+Exception trace (JSON):
+[
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/DataAbstractionLayer\/Write\/WriteContext.php",
+        "line": 79,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\DataAbstractionLayer\\Write\\WriteContext",
+        "function": "__construct"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Writer\/AbstractWriter.php",
+        "line": 63,
+        "type": "::",
+        "class": "Shopware\\Core\\Framework\\DataAbstractionLayer\\Write\\WriteContext",
+        "function": "createFromContext"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/Context.php",
+        "line": 201,
+        "type": "->",
+        "class": "SwagMigrationAssistant\\Migration\\Writer\\AbstractWriter",
+        "function": "SwagMigrationAssistant\\Migration\\Writer\\{closure}"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Writer\/AbstractWriter.php",
+        "line": 59,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\Context",
+        "function": "scope"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Writer\/OrderWriter.php",
+        "line": 43,
+        "type": "->",
+        "class": "SwagMigrationAssistant\\Migration\\Writer\\AbstractWriter",
+        "function": "writeData"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Service\/MigrationDataWriter.php",
+        "line": 118,
+        "type": "->",
+        "class": "SwagMigrationAssistant\\Migration\\Writer\\OrderWriter",
+        "function": "writeData"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/MessageQueue\/Handler\/Processor\/WritingProcessor.php",
+        "line": 60,
+        "type": "->",
+        "class": "SwagMigrationAssistant\\Migration\\Service\\MigrationDataWriter",
+        "function": "writeData"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/MessageQueue\/Handler\/MigrationProcessHandler.php",
+        "line": 57,
+        "type": "->",
+        "class": "SwagMigrationAssistant\\Migration\\MessageQueue\\Handler\\Processor\\WritingProcessor",
+        "function": "process"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/HandleMessageMiddleware.php",
+        "line": 148,
+        "type": "->",
+        "class": "SwagMigrationAssistant\\Migration\\MessageQueue\\Handler\\MigrationProcessHandler",
+        "function": "__invoke"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/HandleMessageMiddleware.php",
+        "line": 90,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\HandleMessageMiddleware",
+        "function": "callHandler"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/SendMessageMiddleware.php",
+        "line": 78,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\HandleMessageMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/Adapter\/Messenger\/Middleware\/QueuedTimeMiddleware.php",
+        "line": 23,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\SendMessageMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/DeduplicateMiddleware.php",
+        "line": 28,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\Adapter\\Messenger\\Middleware\\QueuedTimeMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/FailedMessageProcessingMiddleware.php",
+        "line": 34,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\DeduplicateMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/DispatchAfterCurrentBusMiddleware.php",
+        "line": 68,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\FailedMessageProcessingMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/RejectRedeliveredMessageMiddleware.php",
+        "line": 41,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\DispatchAfterCurrentBusMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/AddBusNameStampMiddleware.php",
+        "line": 35,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\RejectRedeliveredMessageMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/AddDefaultStampsMiddleware.php",
+        "line": 33,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\AddBusNameStampMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/MessageQueue\/Middleware\/RoutingOverwriteMiddleware.php",
+        "line": 28,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Middleware\\AddDefaultStampsMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/MessageBus.php",
+        "line": 69,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\MessageQueue\\Middleware\\RoutingOverwriteMiddleware",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Worker.php",
+        "line": 170,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\MessageBus",
+        "function": "dispatch"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Worker.php",
+        "line": 119,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Worker",
+        "function": "handleMessage"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/MessageQueue\/Api\/ConsumeMessagesController.php",
+        "line": 83,
+        "type": "->",
+        "class": "Symfony\\Component\\Messenger\\Worker",
+        "function": "run"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpKernel.php",
+        "line": 183,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\MessageQueue\\Api\\ConsumeMessagesController",
+        "function": "consumeMessages"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpKernel.php",
+        "line": 76,
+        "type": "->",
+        "class": "Symfony\\Component\\HttpKernel\\HttpKernel",
+        "function": "handleRaw"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/Adapter\/Kernel\/HttpKernel.php",
+        "line": 72,
+        "type": "->",
+        "class": "Symfony\\Component\\HttpKernel\\HttpKernel",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpCache\/SubRequestHandler.php",
+        "line": 86,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\Adapter\\Kernel\\HttpKernel",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpCache\/HttpCache.php",
+        "line": 466,
+        "type": "::",
+        "class": "Symfony\\Component\\HttpKernel\\HttpCache\\SubRequestHandler",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpCache\/HttpCache.php",
+        "line": 268,
+        "type": "->",
+        "class": "Symfony\\Component\\HttpKernel\\HttpCache\\HttpCache",
+        "function": "forward"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpCache\/HttpCache.php",
+        "line": 282,
+        "type": "->",
+        "class": "Symfony\\Component\\HttpKernel\\HttpCache\\HttpCache",
+        "function": "pass"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/http-kernel\/HttpCache\/HttpCache.php",
+        "line": 202,
+        "type": "->",
+        "class": "Symfony\\Component\\HttpKernel\\HttpCache\\HttpCache",
+        "function": "invalidate"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/Adapter\/Kernel\/HttpCacheKernel.php",
+        "line": 61,
+        "type": "->",
+        "class": "Symfony\\Component\\HttpKernel\\HttpCache\\HttpCache",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Kernel.php",
+        "line": 129,
+        "type": "->",
+        "class": "Shopware\\Core\\Framework\\Adapter\\Kernel\\HttpCacheKernel",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/runtime\/Runner\/Symfony\/HttpKernelRunner.php",
+        "line": 35,
+        "type": "->",
+        "class": "Shopware\\Core\\Kernel",
+        "function": "handle"
+    },
+    {
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/autoload_runtime.php",
+        "line": 32,
+        "type": "->",
+        "class": "Symfony\\Component\\Runtime\\Runner\\Symfony\\HttpKernelRunner",
+        "function": "run"
+    },
+    {
+        "args": [
+            "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/autoload_runtime.php"
+        ],
+        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/public\/index.php",
+        "line": 11,
+        "function": "require_once"
+    }
+]
+
