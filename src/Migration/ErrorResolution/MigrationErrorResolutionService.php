@@ -44,6 +44,10 @@ readonly class MigrationErrorResolutionService
 
         $this->loadFixes($errorResolutionContext);
 
+        if (empty($errorResolutionContext->getFixes())) {
+            return;
+        }
+
         $this->eventDispatcher->dispatch(
             new MigrationPreErrorResolutionEvent($errorResolutionContext),
         );

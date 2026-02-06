@@ -480,10 +480,11 @@
           "SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED": "Shipping price type unsupported",
           "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Media default folder unsupported",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validation exception occurred",
-          "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Field has an invalid value",
-          "SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY": "Invalid foreign key reference",
-          "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Required field is missing",
-          "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unexpected field found in data",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING": "Required field is missing",
+          "SWAG_MIGRATION_VALIDATION_ASSOCIATION_INVALID": "Entity association is invalid",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID": "Required translation is invalid",
+          "SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID": "Optional field has an invalid value",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID": "Required field has an invalid value",
           "unknown": "Unknown error"
         },
         "errors": {
@@ -498,8 +499,9 @@
           "noEntityIdsFound": "No valid entity IDs found in the selected log entries.",
           "fetchFilterDataFailed": "Failed fetching filter data.",
           "fetchExistingFixesFailed": "Failed fetching existing fixes.",
-          "invalidJsonInput": "This input is not valid JSON.",
-          "resetResolutionFailed": "Failed resetting error resolution."
+          "resetResolutionFailed": "Failed resetting error resolution.",
+          "fetchExampleFailed": "Failed fetching example data.",
+          "validationFailed": "Validation failed."
         },
         "step": {
           "continue-modal": {

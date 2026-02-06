@@ -4,6 +4,7 @@
 import SwagMigrationErrorResolutionService, {
     DATA_TYPES,
     UNHANDLED_FIELD_TYPES,
+    UNHANDLED_FIELD_NAMES,
     HANDLED_RELATION_TYPES,
     FIELD_COMPONENT_TYPES,
     FIELD_TYPE_COMPONENT_MAPPING,
@@ -110,7 +111,7 @@ const ENTITY_FIELD_TESTS = [
     {
         name: 'forbidden field name',
         entityName: 'product',
-        fieldName: UNHANDLED_FIELD_TYPES.at(0),
+        fieldName: UNHANDLED_FIELD_NAMES.at(0),
         expected: null,
     },
     {
@@ -452,7 +453,7 @@ const CORRESPONDING_ASSOCIATION_FIELD_TESTS = [
         name: 'field without corresponding association or translation match',
         entityName: 'category',
         fieldName: 'afterCategoryVersionId',
-        expected: undefined,
+        expected: null,
     },
     {
         name: 'infer translation association from field name',
@@ -656,7 +657,7 @@ const HIGHEST_PRIORITY_FIELD_TESTS = [
     {
         name: 'seo_url entity',
         entityName: 'seo_url',
-        expected: 'foreignKey',
+        expected: 'url',
     },
 ];
 
@@ -812,7 +813,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
         entityName: 'product',
         fieldProperties: [],
         convertedData: { id: 'prod-1', name: 'Product 1' },
-        fieldName: null,
         expected: {},
     },
     {
@@ -824,7 +824,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             'productNumber',
         ],
         convertedData: { id: 'prod-1', name: 'Product 1', productNumber: 'P-001' },
-        fieldName: null,
         expected: { id: 'prod-1', name: 'Product 1', productNumber: 'P-001' },
     },
     {
@@ -836,7 +835,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             'description',
         ],
         convertedData: { id: 'prod-1', name: 'Product 1' },
-        fieldName: null,
         expected: { id: 'prod-1', name: 'Product 1' },
     },
     {
@@ -850,7 +848,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             id: 'prod-1',
             manufacturer: { id: 'manu-1', name: 'Manufacturer 1' },
         },
-        fieldName: null,
         expected: {
             id: 'prod-1',
             manufacturer: 'manu-1',
@@ -870,7 +867,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
                 { id: 'cat-2' },
             ],
         },
-        fieldName: null,
         expected: {
             id: 'prod-1',
             categories: 'cat-1, cat-2',
@@ -890,9 +886,8 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
                 'cat-2': { id: 'cat-2', name: 'Category 2' },
             },
         },
-        fieldName: 'categories',
         expected: {
-            id: 'cat-1',
+            id: 'prod-1',
             categories: 'cat-1, cat-2',
         },
     },
@@ -907,8 +902,8 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
             id: 'prod-1',
             categories: null,
         },
-        fieldName: 'categories',
         expected: {
+            id: 'prod-1',
             categories: '',
         },
     },
@@ -921,7 +916,6 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
         convertedData: {
             customerComment: 'A'.repeat(CONTENT_TEXT_MAX_LENGTH + 1),
         },
-        fieldName: 'customerComment',
         expected: {
             customerComment: `${'A'.repeat(CONTENT_TEXT_MAX_LENGTH)}...`,
         },
@@ -1420,10 +1414,8 @@ describe('module/swag-migration/service/swag-migration-error-resolution.service'
 
         it.each(testCases.mapEntityFieldProperties)(
             'should map entity field properties: $name',
-            ({ entityName, fieldProperties, convertedData, fieldName, expected }) => {
-                expect(
-                    service.mapEntityFieldProperties(entityName, fieldProperties, convertedData, fieldName),
-                ).toStrictEqual(expected);
+            ({ entityName, fieldProperties, convertedData, expected }) => {
+                expect(service.mapEntityFieldProperties(entityName, fieldProperties, convertedData)).toStrictEqual(expected);
             },
         );
     });

@@ -58,7 +58,6 @@ export const UNHANDLED_FIELD_TYPES = [
 export const UNHANDLED_FIELD_NAMES = [
     'id',
     'autoIncrement',
-    'translated',
 ] as const;
 
 /**
@@ -106,11 +105,11 @@ export const FIELD_TYPE_COMPONENT_MAPPING = {
  */
 export const PRIORITY_FIELDS = [
     'name',
+    'technicalName',
     'number',
     'productNumber',
     'orderNumber',
     'customerNumber',
-    'technicalName',
     'code',
     'active',
     'visible',
@@ -171,6 +170,16 @@ export const PRIORITY_FIELD_MAP: Map<string, number> = new Map(
  * @private
  */
 export const CONTENT_TEXT_MAX_LENGTH = 100;
+
+/**
+ * @private
+ * result of resolving a nested field path.
+ */
+export interface ResolvedFieldPath {
+    schema: EntityDefinition<never>;
+    property: Property;
+    fieldName: string;
+}
 
 /**
  * @private
@@ -255,65 +264,84 @@ export default class SwagMigrationErrorResolutionService {
      * grouped by scalar fields, associations, and required fields.
      */
     extractEntityFields(entityName: string | null | undefined): EntityFields {
-        const fields = {
-            scalar: {},
-            associations: {},
-            required: {},
-        } as EntityFields;
-
-        if (!entityName) {
-            return fields;
-        }
-
-        if (!Shopware.EntityDefinition.has(entityName)) {
-            return fields;
+        if (!entityName || !Shopware.EntityDefinition.has(entityName)) {
+            return { scalar: {}, associations: {}, required: {} };
         }
 
         const definition = Shopware.EntityDefinition.get(entityName);
 
-        definition.forEachField((property: Property, propertyName: string) => {
-            if (definition.isScalarField(property)) {
-                fields.scalar[propertyName] = property;
-            }
-
-            if (property.type === 'association' && definition.isToOneAssociation(property)) {
-                fields.associations[propertyName] = property;
-            }
-
-            if (property.flags?.required) {
-                fields.required[propertyName] = property;
-            }
-        });
-
-        return fields;
+        return {
+            scalar: definition.filterProperties((property) => definition.isScalarField(property)),
+            associations: definition.getToOneAssociations(),
+            required: definition.getRequiredFields(),
+        };
     }
 
     /**
      * gets the entity schema for a given entity name.
      */
-    getEntitySchema(entityName: string | null | undefined): EntityDefinition<never> {
-        if (entityName && Shopware.EntityDefinition.has(entityName)) {
-            return Shopware.EntityDefinition.get(entityName);
+    getEntitySchema(entityName: string | null | undefined): EntityDefinition<never> | null {
+        return entityName && Shopware.EntityDefinition.has(entityName) ? Shopware.EntityDefinition.get(entityName) : null;
+    }
+
+    /**
+     * resolves a potentially nested field path (e.g., "prices.shippingMethodId") to its target.
+     * traverses through association fields to find the final schema and property.
+     */
+    resolveFieldPath(entityName: string | null | undefined, fieldPath: string | null | undefined): ResolvedFieldPath | null {
+        if (!fieldPath || !entityName) {
+            return null;
         }
 
-        return null;
+        const initialSchema = this.getEntitySchema(entityName);
+
+        if (!initialSchema) {
+            return null;
+        }
+
+        const paths = fieldPath.split('.');
+
+        return (
+            paths.reduce<{ schema: EntityDefinition<never>; result: ResolvedFieldPath | null } | null>(
+                (acc, path, index) => {
+                    if (!acc || acc.result) {
+                        return acc;
+                    }
+
+                    const property = acc.schema.getField(path);
+
+                    if (!property) {
+                        return null;
+                    }
+
+                    if (index === paths.length - 1) {
+                        return { ...acc, result: { schema: acc.schema, property, fieldName: path } };
+                    }
+
+                    if (property.type !== DATA_TYPES.ASSOCIATION || !property.entity) {
+                        return null;
+                    }
+
+                    const nextSchema = this.getEntitySchema(property.entity);
+
+                    return nextSchema ? { schema: nextSchema, result: null } : null;
+                },
+                { schema: initialSchema, result: null },
+            )?.result ?? null
+        );
     }
 
     /**
      * gets the entity field definition for a specific field.
      */
     getEntityField(entityName: string | null | undefined, fieldName: string | null | undefined): Property | null {
-        if (!fieldName || (UNHANDLED_FIELD_NAMES as readonly string[]).includes(fieldName)) {
+        const lastFieldName = fieldName?.split('.').pop();
+
+        if (!lastFieldName || (UNHANDLED_FIELD_NAMES as readonly string[]).includes(lastFieldName)) {
             return null;
         }
 
-        const schema = this.getEntitySchema(entityName);
-
-        if (!schema) {
-            return null;
-        }
-
-        return schema.getField(fieldName) ?? null;
+        return this.resolveFieldPath(entityName, fieldName)?.property ?? null;
     }
 
     /**
@@ -324,69 +352,55 @@ export default class SwagMigrationErrorResolutionService {
         entityName: string | null | undefined,
         fieldName: string | null | undefined,
     ): Property | null {
-        const schema = this.getEntitySchema(entityName);
-        const entityField = this.getEntityField(entityName, fieldName);
+        const resolved = this.resolveFieldPath(entityName, fieldName);
 
-        if (!schema || !entityField || !fieldName) {
+        if (!resolved) {
             return null;
         }
 
-        // only id fields can have corresponding association fields
-        if (entityField.type !== DATA_TYPES.UUID) {
+        const { schema, property, fieldName: actualFieldName } = resolved;
+
+        if (property.type !== DATA_TYPES.UUID || property.flags?.primary_key) {
             return null;
         }
 
-        // primary key fields do not have corresponding association fields
-        if (entityField.flags?.primary_key === true) {
-            return null;
-        }
-
-        // try to find association field by checking all fields for matching localField
-        let associationField = Object.values(schema.properties).find(
-            (property) =>
-                property.type === DATA_TYPES.ASSOCIATION &&
-                (property as Property & { localField?: string }).localField === fieldName,
+        const byLocalField = Object.values(schema.properties).find(
+            (prop) =>
+                prop.type === DATA_TYPES.ASSOCIATION &&
+                (prop as Property & { localField?: string }).localField === actualFieldName,
         );
+
+        if (byLocalField) {
+            return byLocalField;
+        }
 
         const versionIdSuffix = 'VersionId';
 
-        // fallback: try to infer association name from field name
-        // example: "productVersionId" -> "product"
-        if (!associationField && fieldName.endsWith(versionIdSuffix) && fieldName !== 'versionId') {
-            const inferredName = fieldName.slice(0, -versionIdSuffix.length);
-            const inferredField = schema.getField(inferredName);
+        if (actualFieldName.endsWith(versionIdSuffix) && actualFieldName !== 'versionId') {
+            const inferredField = schema.getField(actualFieldName.slice(0, -versionIdSuffix.length));
 
             if (inferredField?.type === DATA_TYPES.ASSOCIATION) {
-                associationField = inferredField;
+                return inferredField;
             }
         }
 
-        return associationField;
+        return null;
     }
 
     /**
      * determines if a field is unhandled (not recognized or unsupported).
      */
     isUnhandledField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
-        if (!entityName) {
-            return true;
-        }
-
-        if (!Shopware.EntityDefinition.has(entityName)) {
+        if (!entityName || !Shopware.EntityDefinition.has(entityName)) {
             return true;
         }
 
         const entityField = this.getEntityField(entityName, fieldName);
 
-        if (!entityField) {
+        if (!entityField || (UNHANDLED_FIELD_TYPES as readonly string[]).includes(entityField.type)) {
             return true;
         }
 
-        if ((UNHANDLED_FIELD_NAMES as readonly string[]).includes(entityField.type)) {
-            return true;
-        }
-
-        // field type is not supported
         return this.getFieldType(entityName, fieldName) === null;
     }
 
@@ -396,15 +410,10 @@ export default class SwagMigrationErrorResolutionService {
     isScalarField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
         const entityField = this.getEntityField(entityName, fieldName);
 
-        if (!entityField) {
+        if (!entityField || entityField.type === DATA_TYPES.ASSOCIATION) {
             return false;
         }
 
-        if (entityField.type === DATA_TYPES.ASSOCIATION) {
-            return false;
-        }
-
-        // id fields with corresponding association fields are treated as relation fields
         const correspondingAssociation = this.findCorrespondingAssociationField(entityName, fieldName);
 
         return !(entityField.type === DATA_TYPES.UUID && correspondingAssociation);
@@ -412,16 +421,12 @@ export default class SwagMigrationErrorResolutionService {
 
     /**
      * checks if a field is a "to many" association (one_to_many or many_to_many).
+     * supports nested field paths like "prices.shippingMethodId".
      */
     isToManyAssociationField(entityName: string | null | undefined, fieldName: string | null | undefined): boolean {
-        const schema = this.getEntitySchema(entityName);
-        const entityField = this.getEntityField(entityName, fieldName);
+        const resolved = this.resolveFieldPath(entityName, fieldName);
 
-        if (!schema || !entityField) {
-            return false;
-        }
-
-        return schema.isToManyAssociation(entityField);
+        return resolved ? resolved.schema.isToManyAssociation(resolved.property) : false;
     }
 
     /**
@@ -429,13 +434,7 @@ export default class SwagMigrationErrorResolutionService {
      * for id fields with associations, returns the association field instead.
      */
     getEffectiveEntityField(entityName: string | null | undefined, fieldName: string | null | undefined): Property | null {
-        const correspondingAssociation = this.findCorrespondingAssociationField(entityName, fieldName);
-
-        if (correspondingAssociation) {
-            return correspondingAssociation;
-        }
-
-        return this.getEntityField(entityName, fieldName);
+        return this.findCorrespondingAssociationField(entityName, fieldName) ?? this.getEntityField(entityName, fieldName);
     }
 
     /**
@@ -444,7 +443,7 @@ export default class SwagMigrationErrorResolutionService {
     getFieldType(entityName: string | null | undefined, fieldName: string | null | undefined): string | null {
         const entityField = this.getEntityField(entityName, fieldName);
 
-        if (!entityField || (UNHANDLED_FIELD_NAMES as readonly string[]).includes(entityField.type)) {
+        if (!entityField || (UNHANDLED_FIELD_TYPES as readonly string[]).includes(entityField.type)) {
             return null;
         }
 
@@ -490,15 +489,7 @@ export default class SwagMigrationErrorResolutionService {
             }
 
             // fallback to alphabetical order
-            if (a < b) {
-                return -1;
-            }
-
-            if (a > b) {
-                return 1;
-            }
-
-            return 0;
+            return a.localeCompare(b);
         });
     }
 
@@ -567,12 +558,21 @@ export default class SwagMigrationErrorResolutionService {
      */
     getHighestPriorityFieldName(entityName: string | null | undefined): string | null {
         const entityFields = this.extractEntityFields(entityName);
-        const allFields = this.getSortedScalarFields(entityFields, [
+        const excludeFields = [
             'id',
             'createdAt',
-        ]);
+            'global',
+        ];
 
-        return allFields[0] || null;
+        const scalarFields = Object.keys(entityFields.scalar).filter((field) => !excludeFields.includes(field));
+
+        if (scalarFields.length === 0) {
+            return null;
+        }
+
+        const sortedByPriority = this.sortFieldsByPriority(scalarFields);
+
+        return sortedByPriority[0] || null;
     }
 
     /**
@@ -609,56 +609,36 @@ export default class SwagMigrationErrorResolutionService {
     /**
      * maps entity field properties from converted data and formats association fields.
      * extracts only the specified properties and formats "to many" association fields to display ids.
+     * supports nested field paths like "prices.shippingMethodId".
      */
     mapEntityFieldProperties(
         entityName: string | null | undefined,
         fieldProperties: string[],
         convertedData: Record<string, unknown>,
-        fieldName?: string | null | undefined,
     ): Record<string, unknown> {
-        const isToManyRelation = fieldName && this.isToManyAssociationField(entityName, fieldName);
-        const dataToMap = isToManyRelation ? this.getFirstNestedItem(convertedData[fieldName]) : convertedData;
-
         return fieldProperties.reduce<Record<string, unknown>>((acc, property) => {
-            if (isToManyRelation && property === fieldName) {
-                acc[property] = this.formatAssociationFieldValue(entityName, property, convertedData[property]);
+            const value = Shopware.Utils.object.get(convertedData, property) as unknown;
 
+            if (value === undefined) {
                 return acc;
             }
 
-            if (property in dataToMap) {
-                const value = dataToMap[property];
+            const shouldFormat =
+                this.isToManyAssociationField(entityName, property) ||
+                Array.isArray(value) ||
+                (typeof value === 'object' && value !== null && 'id' in value);
 
-                const shouldFormat =
-                    this.isToManyAssociationField(entityName, property) ||
-                    Array.isArray(value) ||
-                    (typeof value === 'object' && value !== null && 'id' in value);
+            let finalValue = shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value;
 
-                let finalValue = shouldFormat ? this.formatAssociationFieldValue(entityName, property, value) : value;
-
-                // truncate long text values
-                if (typeof finalValue === 'string' && finalValue.length > CONTENT_TEXT_MAX_LENGTH) {
-                    finalValue = `${finalValue.substring(0, CONTENT_TEXT_MAX_LENGTH)}...`;
-                }
-
-                acc[property] = finalValue;
+            // truncate long text values
+            if (typeof finalValue === 'string' && finalValue.length > CONTENT_TEXT_MAX_LENGTH) {
+                finalValue = `${finalValue.substring(0, CONTENT_TEXT_MAX_LENGTH)}...`;
             }
+
+            acc[property] = finalValue;
 
             return acc;
         }, {});
-    }
-
-    private getFirstNestedItem(fieldValue: unknown): Record<string, unknown> {
-        if (fieldValue && typeof fieldValue === 'object' && !Array.isArray(fieldValue)) {
-            const firstKey = Object.keys(fieldValue)[0];
-            const firstItem = firstKey ? (fieldValue as Record<string, unknown>)[firstKey] : null;
-
-            if (firstItem && typeof firstItem === 'object') {
-                return firstItem as Record<string, unknown>;
-            }
-        }
-
-        return {};
     }
 
     /**

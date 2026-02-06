@@ -8,26 +8,31 @@
 namespace SwagMigrationAssistant\Migration\Validation;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Util\Hasher;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogEntry;
 
 /**
  * @final
+ *
+ * @codeCoverageIgnore
  */
 #[Package('fundamentals@after-sales')]
 class MigrationValidationResult
 {
     /**
-     * @param MigrationLogEntry[] $logs
+     * @var array<string, MigrationLogEntry>
      */
+    private array $logs = [];
+
     public function __construct(
         private readonly string $entityName,
-        private array $logs = [],
     ) {
     }
 
     public function addLog(MigrationLogEntry $log): void
     {
-        $this->logs[] = $log;
+        $key = $this->createLogKey($log);
+        $this->logs[$key] = $log;
     }
 
     /**
@@ -35,12 +40,17 @@ class MigrationValidationResult
      */
     public function getLogs(): array
     {
-        return $this->logs;
+        return \array_values($this->logs);
     }
 
-    public function hasLogs(): bool
+    private function createLogKey(MigrationLogEntry $log): string
     {
-        return \count($this->logs) !== 0;
+        return Hasher::hash(\implode('.', [
+            $log->getCode(),
+            $log->getEntityName() ?? '',
+            $log->getEntityId() ?? '',
+            $log->getFieldName() ?? '',
+        ]));
     }
 
     public function getEntityName(): string

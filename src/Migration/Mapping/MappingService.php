@@ -17,8 +17,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\EntitySearchResult;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsAnyFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Write\EntityWriterInterface;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
@@ -212,22 +210,6 @@ class MappingService implements MappingServiceInterface, ResetInterface
         $criteria->addFilter(new EqualsAnyFilter('oldIdentifier', $ids));
 
         return $this->migrationMappingRepo->search($criteria, $context);
-    }
-
-    public function hasValidMappingByEntityId(string $connectionId, string $entityName, string $entityId, Context $context): bool
-    {
-        $criteria = new Criteria();
-        $criteria->addFilter(
-            new EqualsFilter('connectionId', $connectionId),
-            new EqualsFilter('entity', $entityName),
-            new EqualsFilter('entityId', $entityId),
-            new NotFilter(MultiFilter::CONNECTION_AND, [
-                new EqualsFilter('oldIdentifier', null),
-            ]),
-        );
-        $criteria->setLimit(1);
-
-        return $this->migrationMappingRepo->searchIds($criteria, $context)->getTotal() > 0;
     }
 
     public function preloadMappings(array $mappingIds, Context $context): void

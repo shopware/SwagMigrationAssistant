@@ -17,9 +17,9 @@ const { Criteria } = Shopware.Data;
  * null will render an unresolvable message.
  */
 export const ERROR_CODE_COMPONENT_MAPPING: Record<string, string> = {
-    SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE: 'DEFAULT',
-    SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY: 'DEFAULT',
-    SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD: 'DEFAULT',
+    SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID: 'DEFAULT',
+    SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID: 'DEFAULT',
+    SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING: 'DEFAULT',
 } as const;
 
 /**
@@ -47,6 +47,7 @@ export interface SwagMigrationErrorResolutionModalData {
     loading: boolean;
     submitLoading: boolean;
     fieldValue: string[] | string | boolean | number | null;
+    fieldError: { detail: string } | null;
     migrationStore: MigrationStore;
 }
 
@@ -89,6 +90,7 @@ export default Shopware.Component.wrapComponentConfig({
             loading: false,
             submitLoading: false,
             fieldValue: null,
+            fieldError: null,
             migrationStore: Shopware.Store.get(MIGRATION_STORE_ID),
             selectedLogIds: [],
             selectAllMode: false,
@@ -163,6 +165,7 @@ export default Shopware.Component.wrapComponentConfig({
                         selection[row.logId] = row;
                     }
                 });
+
                 return selection;
             }
 
@@ -194,21 +197,13 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onSubmitResolution() {
-            const validationError = this.swagMigrationErrorResolutionService.validateFieldValue(
-                this.selectedLog.entityName,
-                this.selectedLog.fieldName,
-                this.fieldValue,
-            );
+            this.submitLoading = true;
+            this.fieldError = null;
 
-            if (validationError) {
-                this.createNotificationError({
-                    message: this.$tc(`swag-migration.index.error-resolution.errors.${validationError}`),
-                });
-
+            if (!(await this.validateResolution())) {
+                this.submitLoading = false;
                 return;
             }
-
-            this.submitLoading = true;
 
             try {
                 if (this.selectAllMode) {
@@ -229,6 +224,49 @@ export default Shopware.Component.wrapComponentConfig({
             } finally {
                 this.submitLoading = false;
             }
+        },
+
+        async validateResolution(): Promise<boolean> {
+            const validationError = this.swagMigrationErrorResolutionService.validateFieldValue(
+                this.selectedLog.entityName,
+                this.selectedLog.fieldName,
+                this.fieldValue,
+            );
+
+            if (validationError) {
+                this.createNotificationError({
+                    message: this.$tc(`swag-migration.index.error-resolution.errors.${validationError}`),
+                });
+
+                return false;
+            }
+
+            const serializationError = await this.migrationApiService
+                .validateResolution(this.selectedLog.entityName, this.selectedLog.fieldName, this.fieldValue)
+                .catch(() => {
+                    this.createNotificationError({
+                        message: this.$tc('swag-migration.index.error-resolution.errors.validationFailed'),
+                    });
+                    return null;
+                });
+
+            if (!serializationError) {
+                return false;
+            }
+
+            if (serializationError.valid === true) {
+                return true;
+            }
+
+            const message = serializationError.violations?.at(0)?.message;
+
+            if (!message) {
+                return false;
+            }
+
+            this.fieldError = { detail: message };
+
+            return false;
         },
 
         async submitResolutionForSelectedIds() {
@@ -501,6 +539,7 @@ export default Shopware.Component.wrapComponentConfig({
                         gridRef.selectItem(true, row);
                     }
                 });
+
                 return;
             }
 

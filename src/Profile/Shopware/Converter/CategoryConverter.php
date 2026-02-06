@@ -153,7 +153,6 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($converted, 'metaDescription', $data, 'metadescription');
         $this->convertValue($converted, 'keywords', $data, 'metakeywords');
 
-        $converted['type'] = CategoryDefinition::TYPE_PAGE;
         if (!empty($converted['externalLink'])) {
             $converted['type'] = CategoryDefinition::TYPE_LINK;
         }

@@ -7,6 +7,7 @@
 
 namespace SwagMigrationAssistant\Test;
 
+use Doctrine\DBAL\Connection;
 use Psr\Log\NullLogger;
 use Shopware\Core\Checkout\Cart\Tax\TaxCalculator;
 use Shopware\Core\Checkout\Order\Aggregate\OrderDelivery\OrderDeliveryStates;
@@ -53,7 +54,8 @@ use SwagMigrationAssistant\Migration\Service\MigrationDataConverter;
 use SwagMigrationAssistant\Migration\Service\MigrationDataConverterInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcher;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
-use SwagMigrationAssistant\Migration\Validation\MigrationValidationService;
+use SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService;
+use SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\EnvironmentReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableCountReader;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\Reader\TableReader;
@@ -207,11 +209,12 @@ trait MigrationServicesTrait
             )
         );
 
-        $validationService = new MigrationValidationService(
+        $validationService = new MigrationEntityValidationService(
             $this->getContainer()->get(DefinitionInstanceRegistry::class),
             $this->getContainer()->get('event_dispatcher'),
             $loggingService,
-            $mappingService,
+            $this->getContainer()->get(MigrationFieldValidationService::class),
+            $this->getContainer()->get(Connection::class),
         );
 
         return new MigrationDataConverter(
@@ -221,7 +224,7 @@ trait MigrationServicesTrait
             $loggingService,
             $dataDefinition,
             new DummyMappingService(),
-            $validationService
+            $validationService,
         );
     }
 

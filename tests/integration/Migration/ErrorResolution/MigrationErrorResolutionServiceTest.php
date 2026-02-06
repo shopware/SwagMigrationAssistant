@@ -12,15 +12,18 @@ use PHPUnit\Framework\TestCase;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\Framework\Test\TestCaseBase\EventDispatcherBehaviour;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\ErrorResolution\Entity\SwagMigrationFixEntity;
+use SwagMigrationAssistant\Migration\ErrorResolution\Event\MigrationPreErrorResolutionEvent;
 use SwagMigrationAssistant\Migration\ErrorResolution\MigrationErrorResolutionService;
 use SwagMigrationAssistant\Migration\Logging\SwagMigrationLoggingEntity;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Migration\Run\SwagMigrationRunEntity;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal
@@ -28,7 +31,105 @@ use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 #[Package('fundamentals@after-sales')]
 class MigrationErrorResolutionServiceTest extends TestCase
 {
+    use EventDispatcherBehaviour;
     use IntegrationTestBehaviour;
+
+    private EventDispatcherInterface $eventDispatcher;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->eventDispatcher = $this->getContainer()->get('event_dispatcher');
+    }
+
+    public function testEarlyReturnIfNoFixesExist(): void
+    {
+        $connectionId = Uuid::randomHex();
+        $connection = $this->createConnection($connectionId);
+        $run = $this->createRun($connection);
+
+        $data = [
+            ['id' => Uuid::randomHex(), 'some' => ['data' => 'value']],
+            ['id' => Uuid::randomHex(), 'other' => ['data' => 'value']],
+        ];
+
+        $originalData = $data;
+
+        $service = new MigrationErrorResolutionService(
+            $this->getContainer()->get(Connection::class),
+            $this->eventDispatcher,
+        );
+
+        $events = [];
+        $this->addEventListener($this->eventDispatcher, MigrationPreErrorResolutionEvent::class, function (MigrationPreErrorResolutionEvent $event) use (&$events): void {
+            $events[] = $event;
+        });
+
+        $service->applyFixes($data, $connection->getId(), $run->getId(), Context::createDefaultContext());
+
+        static::assertCount(0, $events);
+        static::assertSame($originalData, $data);
+    }
+
+    public function testApplyToManyArray(): void
+    {
+        $connectionId = Uuid::randomHex();
+        $connection = $this->createConnection($connectionId);
+        $run = $this->createRun($connection);
+
+        $id = Uuid::randomHex();
+
+        $service = new MigrationErrorResolutionService(
+            $this->getContainer()->get(Connection::class),
+            $this->eventDispatcher,
+        );
+
+        // if path is prop in array, apply to all items in array ('items.[index].missingId' -> 'items.missingId')
+        $this->createFixAndLogging($connection->getId(), $id, 'someId', 'items.missingId', $run);
+
+        $data = [
+            [
+                'id' => $id,
+                'items' => [
+                    [
+                        'value' => 'oldValue1',
+                        'missingId' => null,
+                    ],
+                    [
+                        'value' => 'oldValue2',
+                        'missingId' => null,
+                    ],
+                    [
+                        'value' => 'oldValue3',
+                        'missingId' => null,
+                    ],
+                ],
+            ],
+        ];
+
+        $service->applyFixes($data, $connection->getId(), $run->getId(), Context::createDefaultContext());
+
+        $expected = [[
+            'id' => $id,
+            'items' => [
+                [
+                    'value' => 'oldValue1',
+                    'missingId' => 'someId',
+                ],
+                [
+                    'value' => 'oldValue2',
+                    'missingId' => 'someId',
+                ],
+                [
+                    'value' => 'oldValue3',
+                    'missingId' => 'someId',
+                ],
+            ],
+        ]];
+
+        static::assertSame($expected, $data);
+    }
 
     public function testApply(): void
     {
@@ -42,7 +143,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
 
         $service = new MigrationErrorResolutionService(
             $this->getContainer()->get(Connection::class),
-            $this->getContainer()->get('event_dispatcher')
+            $this->eventDispatcher,
         );
 
         $this->createFixAndLogging($connection->getId(), $idOne, 'val1', 'first.path', $run);
@@ -63,6 +164,11 @@ class MigrationErrorResolutionServiceTest extends TestCase
             ['id' => $idTwo, 'third' => ['path' => 'oldValueShouldNotExistAfterApply']],
             ['id' => $idThree],
         ];
+
+        $events = [];
+        $this->addEventListener($this->eventDispatcher, MigrationPreErrorResolutionEvent::class, function (MigrationPreErrorResolutionEvent $event) use (&$events): void {
+            $events[] = $event;
+        });
 
         $service->applyFixes($data, $connection->getId(), $run->getId(), Context::createDefaultContext());
 
@@ -90,6 +196,7 @@ class MigrationErrorResolutionServiceTest extends TestCase
             'id' => $idThree,
         ]];
 
+        static::assertCount(1, $events);
         static::assertSame($expected, $data);
     }
 

@@ -28,10 +28,13 @@ readonly class MigrationFix
 
     /**
      * @param array<string, string> $data
+     *
+     * @throws MigrationException
      */
     public static function fromDatabaseQuery(array $data): self
     {
         $expectedArrayKeys = ['id', 'value', 'path'];
+
         foreach ($expectedArrayKeys as $expectedKey) {
             if (!\array_key_exists($expectedKey, $data)) {
                 throw MigrationException::couldNotConvertFix($expectedKey);
@@ -50,38 +53,57 @@ readonly class MigrationFix
      */
     public function apply(array &$item): void
     {
-        /*
+        /**
          * Explode the path to an array
          * Path example: 'category.language.name'
          * Results in an array like: ['category', 'language', 'name']
          */
         $pathArray = explode(self::PATH_SEPARATOR, $this->path);
+        $decodedValue = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
 
-        /*
-         * Set current item as pointer
-         * Item structure for example has no valid value for name and looks like:
-         *  [
-         *       'someOtherKeys',
-         *       ...
-         *       category => [
-         *           ...
-         *           'language' => [
-         *               ...
-         *               'name' => null,
-         *           ]
-         *       ]
-         *  ]
-         */
-        $nestedPointer = &$item;
+        $this->applyToPath($item, $pathArray, $decodedValue);
+    }
 
-        // Iterating over the path to follow them and set the nested pointer to the last key in pathArray
-        // In this example the result pointer is: $item['category']['language']['name']
-        foreach ($pathArray as $key) {
-            $nestedPointer = &$nestedPointer[$key];
+    /**
+     * Recursively applies the fix value to the specified path.
+     * When encountering a list (numerically-indexed array), applies the fix to all items.
+     *
+     * @param array<string|int, mixed> $data
+     * @param array<int, string> $path
+     */
+    private function applyToPath(array &$data, array $path, mixed $value): void
+    {
+        if (empty($path)) {
+            return;
         }
 
-        // Now set the value to the pointer like: $item['category']['language']['name'] = 'new Value'
-        $nestedPointer = \json_decode($this->value, true, 512, \JSON_THROW_ON_ERROR);
-        unset($nestedPointer);
+        $nextSegment = \array_shift($path);
+
+        // last segment of the path, "normal" set operation
+        if (empty($path)) {
+            $data[$nextSegment] = $value;
+
+            return;
+        }
+
+        $nextSegmentIsList = isset($data[$nextSegment])
+            && \is_array($data[$nextSegment])
+            && \array_is_list($data[$nextSegment]);
+
+        if ($nextSegmentIsList) {
+            foreach ($data[$nextSegment] as &$arrayItem) {
+                if (\is_array($arrayItem)) {
+                    $this->applyToPath($arrayItem, $path, $value);
+                }
+            }
+
+            return;
+        }
+
+        if (!isset($data[$nextSegment]) || !\is_array($data[$nextSegment])) {
+            $data[$nextSegment] = [];
+        }
+
+        $this->applyToPath($data[$nextSegment], $path, $value);
     }
 }

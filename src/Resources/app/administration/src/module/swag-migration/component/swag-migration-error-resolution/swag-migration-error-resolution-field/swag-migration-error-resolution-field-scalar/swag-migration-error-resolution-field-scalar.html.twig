@@ -8,6 +8,7 @@
             name="migration-resolution--number"
             :label="fieldName"
             :number-type="numberFieldType"
+            :error="error"
             :disabled="disabled"
         />
     {% endblock %}
@@ -19,6 +20,7 @@
             class="sw-migration-error-resolution-field__textarea"
             name="migration-resolution--textarea"
             :label="fieldName"
+            :error="error"
             :disabled="disabled"
         />
     {% endblock %}
@@ -30,6 +32,7 @@
             class="sw-migration-error-resolution-field__text"
             name="migration-resolution--text"
             :label="fieldName"
+            :error="error"
             :disabled="disabled"
         />
     {% endblock %}
@@ -41,6 +44,7 @@
             class="sw-migration-error-resolution-field__switch"
             name="migration-resolution--switch"
             :label="fieldName"
+            :error="error"
             :disabled="disabled"
         />
     {% endblock %}
@@ -53,6 +57,7 @@
             name="migration-resolution--datepicker"
             date-type="datetime"
             :label="fieldName"
+            :error="error"
             :disabled="disabled"
         />
     {% endblock %}
@@ -63,6 +68,7 @@
             v-model:value="fieldValue"
             class="sw-migration-error-resolution-field__editor"
             name="migration-resolution--code-editor"
+            :error="error"
             :label="fieldName"
         />
     {% endblock %}

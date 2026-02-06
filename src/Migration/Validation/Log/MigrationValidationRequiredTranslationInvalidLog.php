@@ -11,20 +11,20 @@ use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\AbstractMigrationLogEntry;
 
 #[Package('fundamentals@after-sales')]
-readonly class MigrationValidationInvalidForeignKeyLog extends AbstractMigrationLogEntry
+readonly class MigrationValidationRequiredTranslationInvalidLog extends AbstractMigrationLogEntry
 {
     public static function isUserFixable(): bool
     {
-        return true;
+        return false;
     }
 
     public static function getLevel(): string
     {
-        return self::LOG_LEVEL_WARNING;
+        return self::LOG_LEVEL_ERROR;
     }
 
     public static function getCode(): string
     {
-        return 'SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY';
+        return 'SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID';
     }
 }

@@ -225,7 +225,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Data\SwagMigrationDataDefinition"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationValidationService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService"/>
         </service>
 
         <service id="SwagMigrationAssistant\Migration\Service\MigrationDataWriter" public="true">
@@ -283,6 +283,14 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\History\HistoryService"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\History\LogGroupingService"/>
             <argument>%shopware.api.max_limit%</argument>
+
+            <call method="setContainer">
+                <argument type="service" id="service_container"/>
+            </call>
+        </service>
+
+        <service id="SwagMigrationAssistant\Controller\ErrorResolutionController" public="true">
+            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>
@@ -410,11 +418,18 @@
                       id="SwagMigrationAssistant\Core\Content\Product\Stock\StockStorageDecorator.inner"/>
         </service>
 
-        <service id="SwagMigrationAssistant\Migration\Validation\MigrationValidationService">
+        <service id="SwagMigrationAssistant\Migration\Validation\MigrationEntityValidationService">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
             <argument type="service" id="Symfony\Component\EventDispatcher\EventDispatcherInterface"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Logging\LoggingService"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Mapping\MappingService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService"/>
+            <argument type="service" id="Doctrine\DBAL\Connection"/>
+
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService">
+            <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
         </service>
     </services>
 </container>

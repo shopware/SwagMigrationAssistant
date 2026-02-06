@@ -480,10 +480,11 @@
           "SWAG_MIGRATION_CONVERT_SHIPPING_PRICE_UNSUPPORTED": "Versandpreistyp wird nicht unterstützt",
           "SWAG_MIGRATION_MEDIA_DEFAULT_FOLDER_UNSUPPORTED": "Standard-Medienordner wird nicht unterstützt",
           "SWAG_MIGRATION_VALIDATION_EXCEPTION": "Validierungsfehler aufgetreten",
-          "SWAG_MIGRATION_VALIDATION_INVALID_FIELD_VALUE": "Feld hat einen ungültigen Wert",
-          "SWAG_MIGRATION_VALIDATION_INVALID_FOREIGN_KEY": "Ungültige Fremdschlüssel-Referenz",
-          "SWAG_MIGRATION_VALIDATION_MISSING_REQUIRED_FIELD": "Erforderliches Feld fehlt",
-          "SWAG_MIGRATION_VALIDATION_UNEXPECTED_FIELD": "Unerwartetes Feld in Daten gefunden",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_MISSING": "Erforderliches Feld fehlt",
+          "SWAG_MIGRATION_VALIDATION_ASSOCIATION_INVALID": "Entitätszuordnung ist ungültig",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_FIELD_VALUE_INVALID": "Pflichtfeld hat einen ungültigen Wert",
+          "SWAG_MIGRATION_VALIDATION_OPTIONAL_FIELD_VALUE_INVALID": "Optionales Feld hat einen ungültigen Wert",
+          "SWAG_MIGRATION_VALIDATION_REQUIRED_TRANSLATION_INVALID": "Erforderliche Übersetzung ist ungültig",
           "unknown": "Unbekannter Fehler"
         },
         "errors": {
@@ -498,7 +499,8 @@
           "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
           "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
           "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
-          "invalidJsonInput": "Diese Eingabe ist kein gültiges JSON.",
+          "fetchExampleFailed": "Beispieldaten konnten nicht abgerufen werden.",
+          "validationFailed": "Validierung fehlgeschlagen.",
           "resetResolutionFailed": "Fehler beim Zurücksetzen der Fehlerbehebung."
         },
         "step": {
