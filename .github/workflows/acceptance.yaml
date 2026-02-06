@@ -9,7 +9,7 @@ on:
         description: 'Update snapshots'
         required: false
         type: boolean
-        default: false
+        default: true
   push:
     branches:
       - trunk
@@ -78,7 +78,7 @@ jobs:
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/shopware55
-          UPDATE_SNAPSHOTS: 1 #${{ github.event.inputs.update_snapshots == 'true' && '1' || '' }}
+          UPDATE_SNAPSHOTS: ${{ github.event.inputs.update_snapshots == 'true' && '1' || '' }}
         run: npm run test
 
       - uses: actions/upload-artifact@v4
