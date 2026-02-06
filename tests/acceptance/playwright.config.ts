@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { VIEWPORT } from './fixtures/TestHelpers';
 
 const IS_CI = !!process.env.CI;
+const UPDATE_SNAPSHOTS = !!process.env.UPDATE_SNAPSHOTS;
 
 const REQUIRED_ENV_VARS = [
     'APP_URL',
@@ -37,6 +38,7 @@ export default defineConfig({
     reporter: 'html',
     timeout: 5 * 60_000,
     globalTimeout: 10 * 60_000,
+    updateSnapshots: UPDATE_SNAPSHOTS ? 'all' : 'missing',
 
     use: {
         baseURL: process.env.APP_URL,

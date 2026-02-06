@@ -6,7 +6,7 @@
     "types": "tsc",
     "test": "npx playwright test",
     "test:ui": "npx playwright test --ui --headed --ui-port=3000",
-    "test:update": "npx playwright test --update-snapshots",
+    "test:update": "UPDATE_SNAPSHOTS=1 npx playwright test",
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./",
     "format": "prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",

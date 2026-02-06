@@ -79,7 +79,7 @@ jobs:
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/shopware57
         #run: npx playwright test ${{ github.event.inputs.update_snapshots == 'true' && '--update-snapshots' || '' }}
-        run: npx playwright test --update-snapshots
+        run: npm run test:update
 
       - uses: actions/upload-artifact@v4
         if: always()
