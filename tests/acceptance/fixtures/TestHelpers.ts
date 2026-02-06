@@ -23,12 +23,10 @@ export const dynamicElementSelectors = [
     '.mt-progress-bar__track',
     '[class*="timestamp"]',
     '[class*="date"]',
-    '[class*="createdAt"]',
-    '[class*="updatedAt"]',
     ...loaderSelectors,
 ] as const;
 
-export function getMask(page: Page, additional = []): Locator[] {
+export function getMask(page: Page, additional: string[] = []): Locator[] {
     return [
         ...dynamicElementSelectors,
         ...additional,

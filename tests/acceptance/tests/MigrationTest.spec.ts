@@ -110,17 +110,17 @@ test.describe('Migration Tests @migration @visual', () => {
             };
 
             const processTextField = async () => {
-                const input = page.locator('.sw-migration-error-resolution-field__text input');
-                await input.first().waitFor();
+                const input = page.locator('.sw-migration-error-resolution-field__text input').first();
+                await input.waitFor();
                 await input.fill('test@test.com');
-                await page.locator('.sw-modal__title').first().click();
+                await input.blur();
             };
 
             const processNumberField = async () => {
-                const input = page.locator('.sw-migration-error-resolution-field__number input');
-                await input.first().waitFor();
+                const input = page.locator('.sw-migration-error-resolution-field__number input').first();
+                await input.waitFor();
                 await input.fill('42');
-                await page.locator('.sw-modal__title').first().click();
+                await input.blur();
             };
 
             const processLogEntry = async (index: number) => {
@@ -205,7 +205,9 @@ test.describe('Migration Tests @migration @visual', () => {
             await page.getByTitle('History').click();
             await waitForLoaders(page);
 
-            await expect(page).toHaveScreenshot('migration-history-list.png', { mask });
+            await expect(page).toHaveScreenshot('migration-history-list.png', {
+                mask: getMask(page, ['.sw-data-grid__cell--createdAt']),
+            });
 
             await page.locator('.sw-data-grid__body .sw-data-grid__cell--actions').getByRole('button').click();
             await waitForLoaders(page);
