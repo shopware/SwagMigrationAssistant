@@ -9,7 +9,7 @@ on:
         description: 'Update snapshots'
         required: false
         type: boolean
-        default: true
+        default: false
   push:
     branches:
       - trunk
@@ -60,7 +60,7 @@ jobs:
         run: |
           composer run build:js:admin
           cd custom/plugins/${{ github.event.repository.name }}/tests
-          mysql -uroot < _fixtures/database/shopware55.sql
+          mysql -uroot < _fixtures/database/shopware55corrupted.sql
 
       - name: Cache Playwright browsers
         uses: actions/cache@v4
@@ -78,7 +78,7 @@ jobs:
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/shopware55
-          UPDATE_SNAPSHOTS: ${{ github.event.inputs.update_snapshots == 'true' && '1' || '' }}
+          UPDATE_SNAPSHOTS: true
         run: npm run test
 
       - uses: actions/upload-artifact@v4
@@ -91,7 +91,7 @@ jobs:
           retention-days: 3
 
       - name: Upload updated snapshots
-        if: github.event.inputs.update_snapshots == 'true'
+        #if: github.event.inputs.update_snapshots == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}
