@@ -21,26 +21,26 @@
                 </p>
 
                 <template #modal-footer>
-                        <mt-button
-                            class="swag-migration-error-resolution-step__continue-modal-cancel"
-                            size="small"
-                            variant="secondary"
-                            @click="() => openContinueModal = false"
-                        >
-                            {{ $tc('global.default.cancel') }}
-                        </mt-button>
+                    <mt-button
+                        class="swag-migration-error-resolution-step__continue-modal-cancel"
+                        size="small"
+                        variant="secondary"
+                        @click="() => openContinueModal = false"
+                    >
+                        {{ $tc('global.default.cancel') }}
+                    </mt-button>
 
-                        <mt-button
-                            v-tooltip="continueMigrationButtonTooltip"
-                            class="swag-migration-error-resolution-step__continue-modal-confirm"
-                            variant="critical"
-                            size="small"
-                            :disabled="continueLoading || totalUnresolvedErrors > 0"
-                            :is-loading="continueLoading"
-                            @click="commitContinueMigration"
-                        >
-                            {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
-                        </mt-button>
+                    <mt-button
+                        v-tooltip="continueMigrationButtonTooltip"
+                        class="swag-migration-error-resolution-step__continue-modal-confirm"
+                        variant="critical"
+                        size="small"
+                        :disabled="continueLoading || totalUnresolvedErrors > 0"
+                        :is-loading="continueLoading"
+                        @click="commitContinueMigration"
+                    >
+                        {{ $tc('swag-migration.index.error-resolution.step.header.continue') }}
+                    </mt-button>
                 </template>
             </sw-modal>
         {% endblock %}

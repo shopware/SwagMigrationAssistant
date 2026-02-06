@@ -158,9 +158,9 @@
             "alertErrorTitle": "Achtung",
             "undefinedErrorMsg": "Interner Server-Fehler. Bitte versuche es erneut.",
             "SWAG_MIGRATION__API_CONNECTION_ERROR": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
-            "SWAG_MIGRATION__API_CONNECTION_ERROR__HINT": "Wenn beim Herstellen einer Verbindung Probleme auftreten, lohnt es sich möglicherweise, die aktuell auf Ihrem Server installierte Curl-Version zu überprüfen und zu aktualisieren.",
+            "SWAG_MIGRATION__API_CONNECTION_ERROR__HINT": "Wenn beim Herstellen einer Verbindung Probleme auftreten, lohnt es sich möglicherweise, die aktuell auf deinem Server installierte Curl-Version zu überprüfen und zu aktualisieren.",
             "SWAG_MIGRATION__GATEWAY_READ": "Es konnte keine Verbindung zum angegebenen Server hergestellt werden. Bitte überprüfe die angegebene Shop-Domain.",
-            "SWAG_MIGRATION__GATEWAY_READ__HINT": "Wenn beim Herstellen einer Verbindung Probleme auftreten, lohnt es sich möglicherweise, die aktuell auf Ihrem Server installierte Curl-Version zu überprüfen und zu aktualisieren.",
+            "SWAG_MIGRATION__GATEWAY_READ__HINT": "Wenn beim Herstellen einer Verbindung Probleme auftreten, lohnt es sich möglicherweise, die aktuell auf deinem Server installierte Curl-Version zu überprüfen und zu aktualisieren.",
             "SWAG_MIGRATION__INVALID_CONNECTION_CREDENTIALS": "Die Zugangsdaten der Verbindung zum Quellsystem sind nicht vorhanden oder nicht korrekt. Bitte überprüfe sie und versuche es erneut.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED": "Das benötigte Plugin „Migration Connector“ ist nicht in Shopware 5 installiert. Bitte installiere das kostenlose Plugin und versuche es erneut.",
             "SWAG_MIGRATION__PLUGIN_NOT_INSTALLED__HINT": "Falls Du den „Migration Connector“ schon installiert und den Cache über das Shopware-5-Backend gelöscht hast (Einstellungen > Caches/Performance), versuche den Shopware-5-Cache-Ordner (var/cache) manuell zu löschen.",
@@ -226,7 +226,7 @@
         "gateway": "Schnittstelle:",
         "connectionCheck": "Verbindungscheck:",
         "lastMigration": "Letzte Migration:",
-        "noMigrationDoneYet": "bisher keine durchgeführt",
+        "noMigrationDoneYet": "Noch keine Migration durchgeführt",
         "removeCredentialsConfirmDialog": {
           "title": "Zugangsdaten löschen",
           "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
@@ -236,7 +236,7 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
-          "content": "Durch das Zurücksetzen der Prüfsummen wird Ihr Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn Sie sich entscheiden, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
+          "content": "Durch das Zurücksetzen der Prüfsummen wird dein Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn du dich entscheidest, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
           "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
           "abortButtonText": "Behalten",
           "confirmButtonText": "Zurücksetzen"
@@ -347,17 +347,11 @@
       "confirmWarningCard": {
         "currencyMismatch": {
           "title": "Unterschiedliche Standardwährungen erkannt",
-          "info": "Eine Migration mit unterschiedlichen Standardwährungen kann zu korrumpierten Datensätzen führen und unvorhersehbare Nebeneffekte verursachen.",
-          "text": "Die Standardwährungen des Quellsystems [{sourceSystemCurrency}] und Zielsystems [{targetSystemCurrency}] stimmen nicht überein. Die Daten können migriert werden, sie werden aber nicht automatisch umgerechnet.",
-          "question": "Bist Du sicher, dass Du die Migration mit unterschiedlichen Standardwährungen durchführen möchtest?",
-          "checkboxLabel": "Ja, ich möchte fortfahren"
+          "text": "Die Standardwährungen des Quellsystems [{sourceSystemCurrency}] und Zielsystems [{targetSystemCurrency}] stimmen nicht überein. Die Daten können migriert werden, sie werden aber nicht automatisch umgerechnet."
         },
         "languageMismatch": {
-            "title": "Unterschiedliche Standardsprachen erkannt",
-            "info": "Eine Migration mit unterschiedlichen Standardsprachen kann zu korrumpierten Datensätzen führen und unvorhersehbare Nebeneffekte verursachen.",
-            "text": "Die Standardsprachen des Quellsystems [{sourceSystemLanguage}] und Zielsystems [{targetSystemLanguage}] stimmen nicht überein. Die Daten können migriert werden, sie werden aber nicht automatisch zugeordnet.",
-            "question": "Bist Du sicher, dass Du die Migration mit unterschiedlichen Standardsprachen durchführen möchtest?",
-            "checkboxLabel": "Ja, ich möchte fortfahren"
+          "title": "Unterschiedliche Standardsprachen erkannt",
+          "text": "Die Standardsprachen des Quellsystems [{sourceSystemLanguage}] und Zielsystems [{targetSystemLanguage}] stimmen nicht überein. Die Daten können migriert werden, sie werden aber nicht automatisch zugeordnet."
         }
       },
       "premappingCard": {
@@ -417,7 +411,7 @@
           },
           "aborting": {
             "long": "Die Migration wird abgebrochen",
-            "caption": "Nicht geschriebene Daten werden aufgeräumt. Bereits migrierte Daten bleiben sind eventuell unbrauchbar",
+            "caption": "Nicht geschriebene Daten werden aufgeräumt. Bereits migrierte Daten sind eventuell unbrauchbar.",
             "short": "Abbrechen"
           },
           "cleanup": {
@@ -495,7 +489,7 @@
           "submitResolutionFailed": "Fehler beim Senden der Fehlerbehebung.",
           "invalidFieldValueFormat": "Ungültiges Feldwertformat.",
           "fieldValueNotSet": "Feldwert nicht festgelegt.",
-          "noLogsSelected": "Bitte wählen Sie mindestens einen Log-Eintrag zur Behebung aus.",
+          "noLogsSelected": "Wähle mindestens einen Log-Eintrag zur Behebung aus.",
           "noEntityIdsFound": "Keine gültigen Entitäts-IDs in den ausgewählten Log-Einträgen gefunden.",
           "fetchFilterDataFailed": "Das Abrufen der Filterdaten ist fehlgeschlagen.",
           "fetchExistingFixesFailed": "Das Abrufen vorhandener Korrekturen ist fehlgeschlagen.",
@@ -506,23 +500,23 @@
         "step": {
           "continue-modal": {
             "title": "Fortfahren",
-            "text-unfixable": "Es gibt {count} nicht behebbare Fehler, die noch ungelöst sind. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten.",
-            "text-fixable": "Es gibt {count} Gruppen von behebbaren Fehlern, die noch nicht behoben sind. Wenn Sie fortfahren, ohne die verbleibenden Fehler zu beheben, können Folgefehler auftreten."
+            "text-unfixable": "Es gibt {count} nicht behebbare Fehler, die noch ungelöst sind. Das Fortfahren, ohne die verbleibenden Fehler zu beheben, kann zu Folgefehler führen.",
+            "text-fixable": "Es gibt {count} Gruppen von behebbaren Fehlern, die noch nicht behoben sind. Bitte behebe diese Fehler, bevor Du fortfährst, um Folgefehler zu vermeiden."
           },
           "header": {
             "title": "Fehlerbehebung",
-            "description": "Überprüfen und beheben Sie Migrationsfehler, die während des Imports aufgetreten sind. Beheben Sie Datenprobleme direkt in dieser Ansicht oder laden Sie die Protokolldatei für detaillierte Informationen herunter. Setzen Sie fort, sobald alle lösbaren Fehler behoben sind.",
+            "description": "Überprüfe und behebe Migrationsfehler, die während des Imports aufgetreten sind. Behebe Datenprobleme direkt in dieser Ansicht oder lade die Protokolldatei für detaillierte Informationen herunter. Fahre fort, sobald alle lösbaren Fehler behoben sind. Du kannst diese Ansicht verlassen und später wieder zurückkommen.",
             "documentation": "Dokumentation",
             "download": "Log-Datei herunterladen",
             "continue": "Fortfahren",
-            "continueTooltip": "Bitte beheben Sie alle behebbaren Fehler, bevor Sie fortfahren.",
+            "continueTooltip": "Bitte behebe alle behebbaren Fehler, bevor du fortfährst.",
             "banner": {
-              "title": "Einige Fehler können möglicherweise nicht über diese Ansicht behoben werden",
-              "content": "Es gibt {count} Fehler, die nicht über diese Ansicht behoben werden können. Bitte laden Sie die Protokolldatei herunter, um weitere Informationen zu erhalten."
+              "title": "Einige Fehler können nicht über diese Ansicht behoben werden",
+              "content": "Es gibt {count} Fehler, die in dieser Ansicht nicht behoben werden können. Lade zur Untersuchung die Protokolldatei herunter und prüfe die detaillierten Fehlermeldungen. Die zugrunde liegenden Probleme müssen möglicherweise im Quellsystem behoben werden. Sobald dies erledigt ist, führe die Migration erneut aus, um fortzufahren."
             }
           },
           "card": {
-            "title": "Fehler",
+            "title": "Lösbare Fehler",
             "filter": {
               "title": "Filter | Filter ({count}) | Filter ({count})",
               "reset": "Filter zurücksetzen",
@@ -564,7 +558,7 @@
               },
               "empty-state": {
                 "headline": "Keine Ergebnisse",
-                "description": "Wir konnten keine Logs finden, die Ihren aktuellen Filtern entsprechen."
+                "description": "Wir konnten keine Logs finden, die deinen aktuellen Filtern entsprechen."
               }
             },
             "action": {
@@ -593,12 +587,12 @@
               "title": "Bearbeiten: {count} Elemente",
               "banner": {
                 "title": "Keine Option verfügbar",
-                "content": "Bitte erstellen Sie mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich.",
+                "content": "Bitte erstelle mindestens eine Option zur Auswahl im entsprechenden Administrationsbereich.",
                 "link": "Option hinzufügen"
               },
               "unhandledBanner": {
                 "title": "Unbekannter Feldtyp",
-                "content": "Der Feldtyp konnte nicht ermittelt werden. Bitte korrigieren Sie die Rohdaten."
+                "content": "Der Feldtyp konnte nicht ermittelt werden. Bitte korrigiere die Rohdaten."
               },
               "unresolvableBanner": {
                 "title": "Dieser Fehler kann derzeit nicht über den Migration Assistant behoben werden.",
