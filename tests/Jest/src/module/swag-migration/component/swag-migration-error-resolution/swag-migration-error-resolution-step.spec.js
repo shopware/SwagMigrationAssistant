@@ -179,6 +179,7 @@ describe('src/module/swag-migration/component/swag-migration-error-resolution/sw
                     filters: [
                         expect.objectContaining({ type: 'equals', field: 'userFixable', value: false }),
                         expect.objectContaining({ type: 'equals', field: 'runId', value: 'run-id-1' }),
+                        expect.objectContaining({ type: 'equalsAny', field: 'level', value: 'error|warning' }),
                     ],
                 }),
             );

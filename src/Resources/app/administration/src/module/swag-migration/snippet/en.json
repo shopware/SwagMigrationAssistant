@@ -500,7 +500,7 @@
             "continueTooltip": "Please fix all fixable errors before continuing.",
             "banner": {
               "title": "Some errors are not fixable via this view",
-              "content": "There are {count} errors that can't be resolved from this screen. To investigate, download the log file and review the detailed error messages. The underlying issues may need to be fixed in the source system. Once resolved, re-run the migration to continue."
+              "content": "There are {count} errors or warnings that can't be resolved from this screen. To investigate, download the log file and review the detailed error messages. The underlying issues may need to be fixed in the source system. Once resolved, re-run the migration to continue."
             }
           },
           "card": {
