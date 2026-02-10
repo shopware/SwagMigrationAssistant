@@ -236,15 +236,15 @@
         },
         "resetChecksumsConfirmDialog": {
           "title": "Reset der Prüfsummen",
-          "content": "Durch das Zurücksetzen der Prüfsummen wird dein Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn du dich entscheidest, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
-          "contentHint": "Möchtest du die Prüfsummen zurücksetzen?",
+          "content": "Durch das Zurücksetzen der Prüfsummen wird dein Quellsystem in einen Zustand zurückversetzt, der dem Zustand vor dem ersten Migrationsversuch ähnelt. Wenn Du dich entscheidest, erneut eine Migration durchzuführen, werden alle Änderungen, die in der Zwischenzeit am neueren Shopware 6-Zielsystem vorgenommen wurden, möglicherweise überschrieben.",
+          "contentHint": "Möchtest Du die Prüfsummen zurücksetzen?",
           "abortButtonText": "Behalten",
           "confirmButtonText": "Zurücksetzen"
         },
         "resetMigrationConfirmDialog": {
             "title": "Migration archivieren",
-            "header": "Hast du deine Shopdaten fertig migriert?",
-            "content": "Wenn du alle deine Shop-Daten erfolgreich migriert hast, kannst du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
+            "header": "Hast Du deine Shopdaten fertig migriert?",
+            "content": "Wenn Du alle deine Shop-Daten erfolgreich migriert hast, kannst Du diese Migration archivieren. Dadurch kann das System temporäre Dateien und ungenutzte Daten bereinigen.",
             "abortButtonText": "Behalten",
             "confirmButtonText": "Archivieren",
             "errorNotification": {
@@ -509,7 +509,7 @@
             "documentation": "Dokumentation",
             "download": "Log-Datei herunterladen",
             "continue": "Fortfahren",
-            "continueTooltip": "Bitte behebe alle behebbaren Fehler, bevor du fortfährst.",
+            "continueTooltip": "Bitte behebe alle behebbaren Fehler, bevor Du fortfährst.",
             "banner": {
               "title": "Einige Fehler können nicht über diese Ansicht behoben werden",
               "content": "Es gibt {count} Fehler or Warnungen, die in dieser Ansicht nicht behoben werden können. Lade zur Untersuchung die Protokolldatei herunter und prüfe die detaillierten Fehlermeldungen. Die zugrunde liegenden Probleme müssen möglicherweise im Quellsystem behoben werden. Sobald dies erledigt ist, führe die Migration erneut aus, um fortzufahren."
