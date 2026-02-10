@@ -76,6 +76,7 @@ export interface SwagMigrationWizardData {
     connectionNameErrorCode: string;
     currentErrorCode: string;
     migrationStore: MigrationStore;
+    isNewConnection: boolean;
 }
 
 /**
@@ -115,6 +116,7 @@ export default Shopware.Component.wrapComponentConfig({
             connectionNameErrorCode: '',
             currentErrorCode: '',
             migrationStore: Store.get(MIGRATION_STORE_ID),
+            isNewConnection: false,
         };
     },
 
@@ -133,11 +135,15 @@ export default Shopware.Component.wrapComponentConfig({
         ),
 
         migrationConnectionRepository(): TRepository<'swag_migration_connection'> {
-            return this.repositoryFactory.create('swag_migration_connection');
+            const conn = this.repositoryFactory.create('swag_migration_connection');
+            // return this.repositoryFactory.create('swag_migration_connection');
+            return conn;
         },
 
         migrationGeneralSettingRepository(): TRepository<'swag_migration_general_setting'> {
-            return this.repositoryFactory.create('swag_migration_general_setting');
+            const settingRepo = this.repositoryFactory.create('swag_migration_general_setting');
+            // return this.repositoryFactory.create('swag_migration_general_setting');
+            return settingRepo;
         },
 
         modalSize() {
@@ -287,21 +293,40 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         async onConnect() {
+            console.log('swag-migration-wizard/index.ts::onConnect - STARTS');
             this.isLoading = true;
             this.errorMessageSnippet = '';
 
             this.trimCredentials();
 
             try {
-                const isValid = await this.doConnectionCheck(this.connection.credentialFields);
-
-                if (isValid) {
-                    await this.migrationApiService.updateConnectionCredentials(
+                if (this.isNewConnection) {
+                    const environmentInformation = await this.migrationApiService.createNewConnection(
                         this.connection.id,
+                        this.connectionName,
+                        this.selectedProfile.profile,
+                        this.selectedProfile.gateway,
                         this.connection.credentialFields,
                     );
+
+                    console.log('swag-migration-wizard/index.ts::onConnect - createNewConnection response', environmentInformation);
+
+                    await this.saveSelectedConnection(this.connection);
+                    this.migrationStore.setEnvironmentInformation(environmentInformation);
+
+                    this.navigateToRoute(this.routes.credentialsSuccess);
+                } else {
+                    const isValid = await this.doConnectionCheck(this.connection.credentialFields);
+
+                    if (isValid) {
+                        await this.migrationApiService.updateConnectionCredentials(
+                            this.connection.id,
+                            this.connection.credentialFields,
+                        );
+                    }
                 }
             } catch (error) {
+                console.log('swag-migration-wizard/index.ts::onConnect - error', error);
                 this.onResponseError(error.response.data.errors[0].code);
             } finally {
                 this.isLoading = false;
@@ -309,6 +334,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         doConnectionCheck(credentialFields?: Record<string, string>) {
+            console.log('swag-migration-wizard/index.ts::doConnectionCheck - STARTS');
             this.isLoading = true;
 
             return this.migrationApiService
@@ -430,7 +456,11 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onButtonPrimaryClick() {
-            if (this.currentRoute === this.routes.connectionCreate) {
+            console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - STARTS');
+            console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - current route:', this.currentRoute);
+            console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - current route name:', this.currentRoute.name);
+            if (this.currentRoute.name === this.routes.connectionCreate.name) {
+                console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - route connectionCreate');
                 // clicked Next (save selected profile)
                 this.createNewConnection()
                     .then(() => {
@@ -443,7 +473,8 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            if (this.currentRoute === this.routes.connectionSelect) {
+            if (this.currentRoute.name === this.routes.connectionSelect.name) {
+                console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - route connectionSelect');
                 this.saveSelectedConnection(this.connection)
                     .then(() => {
                         return this.doConnectionCheck();
@@ -454,19 +485,22 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            if (this.currentRoute === this.routes.credentials) {
+            if (this.currentRoute.name === this.routes.credentials.name) {
+                console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - route credentials');
                 // clicked Connect.
                 this.onConnect();
                 return;
             }
 
-            if (this.currentRoute === this.routes.credentialsSuccess) {
+            if (this.currentRoute.name === this.routes.credentialsSuccess.name) {
+                console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - route credentialsSuccess');
                 // clicked Finish.
                 this.onCloseModal();
                 return;
             }
 
             if (this.currentRoute === this.routes.credentialsError) {
+                console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - route credentialsError');
                 if (this.currentErrorCode === SSL_REQUIRED_ERROR_CODE) {
                     this.connection.credentialFields.endpoint = this.connection.credentialFields.endpoint.replace(
                         'http:',
@@ -482,6 +516,7 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             if (this.currentRoute === this.routes.profileInstallation) {
+                console.log('swag-migration-wizard/index.ts::onButtonPrimaryClick - route profileInstallation');
                 this.navigateToRoute(this.routes.connectionCreate);
                 return;
             }
@@ -520,6 +555,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         fetchConnection(connectionId: string) {
+            console.log('swag-migration-wizard/index.ts::fetchConnection - STARTS');
             return new Promise((resolve) => {
                 const criteria = new Criteria(1, 1);
                 criteria.addFilter(Criteria.equals('id', connectionId));
@@ -540,6 +576,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onNoConnectionSelected() {
+            console.log('swag-migration-wizard/index.ts::onNoConnectionSelected - STARTS');
             if (
                 [
                     this.routes.chooseAction,
@@ -556,20 +593,33 @@ export default Shopware.Component.wrapComponentConfig({
             this.isLoading = true;
 
             return this.checkConnectionName(this.connectionName).then((valid) => {
+                console.log('swag-migration-wizard/index.ts::createNewConnection - checkConnectionName result', valid);
                 if (!valid) {
                     this.isLoading = false;
                     return Promise.reject();
                 }
 
-                this.connectionNameErrorCode = '';
-                const newConnection = this.migrationConnectionRepository.create(this.context);
-                newConnection.profileName = this.selectedProfile.profile;
-                newConnection.gatewayName = this.selectedProfile.gateway;
-                newConnection.name = this.connectionName;
+                // old way
+                // this.connectionNameErrorCode = '';
+                //  const newConnection = this.migrationConnectionRepository.create(this.context);
+                // newConnection.profileName = this.selectedProfile.profile;
+                // newConnection.gatewayName = this.selectedProfile.gateway;
+                // newConnection.name = this.connectionName;
+                //
+                // return this.migrationConnectionRepository.save(newConnection, this.context).then(() => {
+                //     return this.saveSelectedConnection(newConnection);
+                //  });
 
-                return this.migrationConnectionRepository.save(newConnection, this.context).then(() => {
-                    return this.saveSelectedConnection(newConnection);
-                });
+                this.connectionNameErrorCode = '';
+                this.connection = this.migrationConnectionRepository.create(this.context);
+                console.log('swag-migration-wizard/index.ts::createNewConnection - created connection', this.connection);
+                console.log('swag-migration-wizard/index.ts::createNewConnection - created connection', this.connection.id);
+                this.connection.profileName = this.selectedProfile.profile;
+                this.connection.gatewayName = this.selectedProfile.gateway;
+                this.connection.name = this.connectionName;
+
+                this.isNewConnection = true;
+                this.isLoading = false;
             });
         },
 
@@ -583,6 +633,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         saveSelectedConnection(connection: MigrationConnection) {
+            console.log('swag-migration-wizard/index.ts::saveSelectedConnection - STARTS');
             return new Promise((resolve, reject) => {
                 this.isLoading = true;
 
@@ -597,6 +648,7 @@ export default Shopware.Component.wrapComponentConfig({
                 this.migrationGeneralSettingRepository
                     .search(criteria, this.context)
                     .then((items) => {
+                        console.log('swag-migration-wizard/index.ts::saveSelectedConnection - search general settings result', items);
                         if (items.length < 1) {
                             this.isLoading = false;
                             reject();

@@ -7,12 +7,15 @@
 
 namespace SwagMigrationAssistant\Controller;
 
+use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
+use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
@@ -52,6 +55,7 @@ class StatusController extends AbstractController
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly EntityRepository $generalSettingRepo,
         private readonly MigrationFingerprintServiceInterface $fingerprintService,
+        private readonly Connection $connection,
     ) {
     }
 
@@ -234,6 +238,134 @@ class StatusController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/migration/create-new-connection',
+        name: 'api.admin.migration.create-new-connection',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function createNewConnection(Request $request, Context $context): JsonResponse
+    {
+        $id = $request->request->getAlnum('connectionId');
+        $connectionName = (string) $request->request->get('connectionName');
+        $profileName = (string) $request->request->get('profileName');
+        $gatewayName = (string) $request->request->get('gatewayName');
+        $credentialFields = $request->request->all('credentialFields');
+
+        if ($id === '') {
+            throw RoutingException::missingRequestParameter('id');
+        }
+
+        if ($connectionName === '') {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty connectionName\n", true), FILE_APPEND);
+            throw RoutingException::missingRequestParameter('connectionName');
+        }
+
+        if ($profileName === '') {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty profileName\n", true), FILE_APPEND);
+            throw RoutingException::missingRequestParameter('profileName');
+        }
+
+        if ($gatewayName === '') {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty gatewayName\n", true), FILE_APPEND);
+            throw RoutingException::missingRequestParameter('gatewayName');
+        }
+
+        if( empty($credentialFields)) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty credentialFields\n", true), FILE_APPEND);
+            throw RoutingException::missingRequestParameter('credentialFields');
+        }
+
+        // check that connection name is unique
+        $criteria = new Criteria();
+        $criteria->addFilter(new EqualsFilter('name', $connectionName) );
+
+        $existingConnection = $this->migrationConnectionRepo->search($criteria, $context)->getEntities()->first();
+
+        if ($existingConnection !== null) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createConnection - existing connection name\n", true), FILE_APPEND);
+            throw MigrationException::connectionNameNotUnique();
+        }
+
+        $jsonResponse = $this->connection->transactional(
+            function () use ($id, $connectionName, $profileName, $gatewayName, $credentialFields, $context): JsonResponse {
+                $context->scope(
+                    MigrationContext::SOURCE_CONTEXT,
+                    function (Context $scopedContext) use ($id, $connectionName, $profileName, $gatewayName, $credentialFields): void {
+                    $this->migrationConnectionRepo->create([
+                        [
+                            'id' => $id,
+                            'name' => $connectionName,
+                            'profileName' => $profileName,
+                            'gatewayName' => $gatewayName,
+                            'credentialFields' => $credentialFields,
+                        ],
+                    ], $scopedContext);
+            });
+
+
+            $connection = $this->migrationConnectionRepo->search(new Criteria([$id]), $context)->getEntities()->first();
+
+            if ($connection === null) {
+                throw MigrationException::noConnectionFound();
+            }
+
+            $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+            $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - getEnvironmentInformation:\n", true), FILE_APPEND);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($information, true), FILE_APPEND);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+
+            $requestStatus = $information->getRequestStatus();
+                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - information->getRequestStatus():\n", true), FILE_APPEND);
+                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($requestStatus, true), FILE_APPEND);
+                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+            if($requestStatus !== null && $requestStatus->getCode() !== '') {
+                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - requestStatus is not success\n", true), FILE_APPEND);
+                throw MigrationException::connectionValidationFailed(
+                    $requestStatus->getCode(),
+                    $requestStatus->getMessage())
+                ;
+            }
+
+            $fingerprint = $information->getFingerprint();
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - fingerprint:\n", true), FILE_APPEND);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($fingerprint, true), FILE_APPEND);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+
+            $hasDuplicate = $this->fingerprintService->searchDuplicates(
+                $fingerprint,
+                $context,
+                $id,
+            );
+
+            if ($hasDuplicate) {
+                throw MigrationException::duplicateSourceConnection();
+            }
+
+            $updateData = [
+                'id' => $id,
+                'credentialFields' => $credentialFields,
+            ];
+
+            if ($fingerprint !== null) {
+                $updateData['sourceSystemFingerprint'] = $fingerprint;
+            }
+
+            $context->scope(
+                MigrationContext::SOURCE_CONTEXT,
+                function (Context $scopedContext) use ($updateData): void {
+                    $this->migrationConnectionRepo->update([
+                        $updateData
+                    ], $scopedContext);
+                });
+
+            return new JsonResponse($information);
+        });
+
+        return $jsonResponse;
+    }
+
+    #[Route(
         path: '/api/_action/migration/check-connection',
         name: 'api.admin.migration.check-connection',
         defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
@@ -241,6 +373,7 @@ class StatusController extends AbstractController
     )]
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Controller\StatusController::checkConnection - STARTS\n", true), FILE_APPEND);
         $connectionId = $request->request->getAlnum('connectionId');
 
         if ($connectionId === '') {
@@ -262,14 +395,16 @@ class StatusController extends AbstractController
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 
-        if ($information->getFingerprint() === null) {
+        $fingerprint = $information->getFingerprint();
+
+        if ($fingerprint === null) {
             return new JsonResponse($information);
         }
 
         $hasDuplicate = $this->fingerprintService->searchDuplicates(
-            $information->getFingerprint(),
+            $fingerprint,
             $context,
-            $connectionId
+            $connectionId,
         );
 
         if ($hasDuplicate) {

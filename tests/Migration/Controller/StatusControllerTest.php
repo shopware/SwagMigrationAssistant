@@ -8,6 +8,7 @@
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use Doctrine\DBAL\Connection;
+use horstoeko\zugferd\entities\en16931\ram\TradeSettlementFinancialCardType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -62,11 +63,14 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupO
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
+use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
+use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGatewayFail;
 use SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local\LocalCredentialTrait;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -599,6 +603,169 @@ class StatusControllerTest extends TestCase
         static::assertSame($fingerprint, $connection->getSourceSystemFingerprint());
     }
 
+    public function testCreateNewConnectionSuccess():void
+    {
+        $connectionId = Uuid::randomHex();
+        $connectionName = 'new connection';
+
+        $request = new Request([], [
+            'connectionId' => $connectionId,
+            'connectionName' => $connectionName,
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+            'credentialFields' => $this->connection->getCredentialFields(),
+        ]);
+
+        $response = $this->controller->createNewConnection($request, $this->context);
+
+        static::assertSame(Response::HTTP_OK, $response->getStatusCode());
+        $jsonResponse = $this->jsonResponseToArray($response);
+        static::assertArrayHasKey('connection', $jsonResponse);
+        static::assertArrayHasKey('environmentInformation', $jsonResponse);
+
+        $newConnectionEntity = $this->connectionRepo->search(
+            new Criteria([$connectionId]),
+            $this->context
+        )->getEntities()->first();
+
+        static::assertNotNull($newConnectionEntity);
+        static::assertSame($connectionName, $newConnectionEntity->getName());
+    }
+
+    #[DataProvider('provideParamsForCreateNewConnectionToTestExceptions')]
+    public function testCreateNewConnectionWithMissingParameterShouldThrowException(
+        array $requestData,
+        string $exceptionParameter
+    ):void
+    {
+        $request = new Request([], $requestData);
+
+        $this->expectExceptionObject(RoutingException::missingRequestParameter($exceptionParameter));
+        $this->controller->createNewConnection($request, $this->context);
+    }
+
+    public static function provideParamsForCreateNewConnectionToTestExceptions(): \Generator
+    {
+        yield 'missing connectionId' => [
+            'requestData' => [
+                'connectionName' => 'new connection',
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'credentialFields' => [
+                    'dbName' => 'shopware',
+                ],
+            ],
+            'exceptionParameter' => 'id',
+        ];
+
+        yield 'missing connectionName' => [
+            'requestData' => [
+                'connectionId' => 'example-id',
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'credentialFields' => [
+                    'dbName' => 'shopware',
+                ],
+            ],
+            'exceptionParameter' => 'connectionName',
+        ];
+
+        yield 'missing profileName' => [
+            'requestData' => [
+                'connectionId' => 'example-id',
+                'connectionName' => 'new connection',
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+                'credentialFields' => [
+                    'dbName' => 'shopware',
+                ],
+            ],
+            'exceptionParameter' => 'profileName',
+        ];
+
+        yield 'missing gatewayName' => [
+            'requestData' => [
+                'connectionId' => 'example-id',
+                'connectionName' => 'new connection',
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'credentialFields' => [
+                    'dbName' => 'shopware',
+                ],
+            ],
+            'exceptionParameter' => 'gatewayName',
+        ];
+
+        yield 'missing credentialFields' => [
+            'requestData' => [
+                'connectionId' => 'example-id',
+                'connectionName' => 'new connection',
+                'profileName' => Shopware55Profile::PROFILE_NAME,
+                'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+            ],
+            'exceptionParameter' => 'credentialFields',
+        ];
+    }
+
+    public function testCreateNewConnectionWithDuplicateNameShouldThrowException():void
+    {
+        $request = new Request([], [
+            'connectionId' => Uuid::randomHex(),
+            'connectionName' => 'myConnection',
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'gatewayName' => ShopwareLocalGateway::GATEWAY_NAME,
+            'credentialFields' => $this->connection->getCredentialFields(),
+        ]);
+
+        $this->expectExceptionObject(MigrationException::connectionNameNotUnique());
+
+        $this->controller->createNewConnection($request, $this->context);
+    }
+
+    public function testCreateNewConnectionWithInvalidCredentialsRollsBack():void
+    {
+        $failingDataFetcher = $this->getFailingMigrationDataFetcher(
+            static::getContainer()->get('swag_migration_logging.repository'),
+            static::getContainer()->get('currency.repository'),
+            static::getContainer()->get('language.repository'),
+            static::getContainer()->get(ReaderRegistry::class)
+        );
+        $controller = $this->createStatusController($failingDataFetcher);
+
+        $connectionId = Uuid::randomHex();
+
+        $request = new Request([], [
+            'connectionId' => $connectionId,
+            'connectionName' => 'new connection with invalid credentials',
+            'profileName' => Shopware55Profile::PROFILE_NAME,
+            'gatewayName' => DummyLocalGatewayFail::GATEWAY_NAME,
+            'credentialFields' => [
+                'dbName' => 'non_existent_database',
+            ],
+        ]);
+
+        $throwsException = false;
+
+        try {
+            $controller->createNewConnection($request, $this->context);
+        } catch ( \Throwable $exception) {
+            $throwsException = true;
+
+            static::assertSame(DummyLocalGatewayFail::ERROR_CODE, $exception->getErrorCode());
+            static::assertSame(DummyLocalGatewayFail::ERROR_MESSAGE, $exception->getMessage());
+        }
+
+        static::assertTrue($throwsException, 'Expected exception was not thrown.');
+
+        $newConnectionEntity = $this->connectionRepo->search(
+            new Criteria([$connectionId]),
+            $this->context
+        )->getEntities()->first();
+
+        static::assertNull(
+            $newConnectionEntity,
+            'Connection entity should not have been created when exception was thrown.'
+        );
+    }
+
     public function testAbortMigrationWithoutRunningMigration(): void
     {
         $this->runRepo->update(
@@ -783,7 +950,8 @@ class StatusControllerTest extends TestCase
             static::getContainer()->get(GatewayRegistry::class),
             $migrationContextFactory,
             $this->generalSettingRepo,
-            new MigrationFingerprintService($this->connectionRepo)
+            new MigrationFingerprintService($this->connectionRepo),
+            static::getContainer()->get(Connection::class),
         );
     }
 

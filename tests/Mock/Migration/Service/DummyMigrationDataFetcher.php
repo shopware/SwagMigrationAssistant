@@ -18,6 +18,7 @@ class DummyMigrationDataFetcher extends MigrationDataFetcher
 {
     public function getEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
+        var_dump('DummyMigrationDataFetcher::getEnvironmentInformation STARTS');
         $environmentInformation = parent::getEnvironmentInformation($migrationContext, $context);
 
         return new EnvironmentInformation(

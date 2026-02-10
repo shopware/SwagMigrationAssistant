@@ -78,16 +78,19 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
             $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
             $connection->executeQuery('SELECT 1');
         } catch (\Throwable $exception) {
-            $response = new RequestStatusStruct(
-                '',
-                $exception->getMessage(),
-                false,
-                $exception
-            );
-
-            if ($exception instanceof MigrationException) {
-                $response->setCode($exception->getErrorCode());
+            if (!$exception instanceof MigrationException) {
+                $migrationException = MigrationException::localDatabaseConnectionError(
+                    $exception->getMessage(),
+                    $exception
+                );
             }
+
+            $response = new RequestStatusStruct(
+                $migrationException->getErrorCode(),
+                $migrationException->getMessage(),
+                false,
+                $migrationException
+            );
 
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),

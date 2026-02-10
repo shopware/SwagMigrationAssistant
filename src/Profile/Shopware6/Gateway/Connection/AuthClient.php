@@ -39,15 +39,25 @@ class AuthClient implements HttpClientInterface
 
     public function get(string $uri, array $options = []): ResponseInterface
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::get - STARTS\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::get - options param:\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($options, true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::get - this bearer-token:\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($this->bearerToken, true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
         $this->setupBearerTokenIfNeeded();
 
         try {
+
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::get - try STARTS\n", true), FILE_APPEND);
             return $this->apiClient->get($uri, \array_merge($options, [
                 'headers' => [
                     'Authorization' => 'Bearer ' . $this->bearerToken,
                 ],
             ]));
         } catch (ClientException $clientException) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::get - catch STARTS\n", true), FILE_APPEND);
             if ($clientException->getCode() !== Response::HTTP_UNAUTHORIZED) {
                 throw $clientException;
             }
@@ -64,6 +74,7 @@ class AuthClient implements HttpClientInterface
 
     public function getAsync(string $uri, array $options = []): PromiseInterface
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::getAsync - try STARTS\n", true), FILE_APPEND);
         $this->setupBearerTokenIfNeeded();
 
         try {
@@ -89,13 +100,16 @@ class AuthClient implements HttpClientInterface
 
     private function setupBearerTokenIfNeeded(): void
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::setupBearerTokenIfNeeded - STARTS\n", true), FILE_APPEND);
         if (empty($this->bearerToken)) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::setupBearerTokenIfNeeded - empty bearerToken\n", true), FILE_APPEND);
             $this->loadBearerToken();
         }
     }
 
     private function renewBearerToken(): void
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::renewBearerToken - STARTS\n", true), FILE_APPEND);
         $credentials = $this->migrationContext->getConnection()->getCredentialFields();
 
         if ($credentials === null) {
@@ -142,15 +156,23 @@ class AuthClient implements HttpClientInterface
 
     private function loadBearerToken(): void
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::loadBearerToken - STARTS\n", true), FILE_APPEND);
         $credentials = $this->migrationContext->getConnection()->getCredentialFields();
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::loadBearerToken - get credetialfields\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($credentials, true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
 
         if ($credentials === null) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::loadBearerToken - empty credentials\n", true), FILE_APPEND);
             $this->renewBearerToken();
 
             return;
         }
 
         if (empty($credentials['bearer_token'])) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Connection\AuthClient::loadBearerToken - no bearer token in credentials\n", true), FILE_APPEND);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($credentials, true), FILE_APPEND);
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
             $this->renewBearerToken();
 
             return;

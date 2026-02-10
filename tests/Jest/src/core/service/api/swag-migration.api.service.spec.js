@@ -88,6 +88,34 @@ describe('src/core/service/api/swag-migration.api.service', () => {
         expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
     });
 
+    it('should create new connection', async () => {
+        const { migrationApiService, clientMock } = createMigrationApiService();
+
+        const data = {
+            connectionId: '1234567890',
+            connectionName: 'Test Connection',
+            profileName: 'shopware55',
+            credentialFields: {
+                local: {
+                    endpoint: 'http://shopware.local',
+                },
+            },
+        };
+
+        await migrationApiService.createNewConnection(
+            data.connectionId,
+            data.connectionName,
+            data.profileName,
+            data.credentialFields,
+            {
+                'test-header': 'test-value',
+            });
+
+        expect(clientMock.history.post[0].url).toBe('_action/migration/create-new-connection');
+        expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));
+        expect(clientMock.history.post[0].headers['test-header']).toBe('test-value');
+    });
+
     it('should get data selection', async () => {
         const { migrationApiService, clientMock } = createMigrationApiService();
 

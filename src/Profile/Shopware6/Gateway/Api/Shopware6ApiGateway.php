@@ -69,11 +69,24 @@ class Shopware6ApiGateway implements ShopwareGatewayInterface
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Shopware6ApiGateway::readEnvironmentInformation - STARTS\n", true), FILE_APPEND);
         $environmentData = $this->environmentReader->read($migrationContext);
         $environmentDataArray = $environmentData['environmentInformation'];
         $profile = $migrationContext->getProfile();
 
+
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway::readEnvironmentInformation - environmentDataArray:\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($environmentDataArray, true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway::readEnvironmentInformation - profile getSourceSystemName:\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($profile->getSourceSystemName(), true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway::readEnvironmentInformation - profile getVersion:\n", true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($profile->getVersion(), true), FILE_APPEND);
+        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
+
         if (empty($environmentDataArray)) {
+            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway::readEnvironmentInformation - empty environmentDataArray:\n", true), FILE_APPEND);
             return new EnvironmentInformation(
                 $profile->getSourceSystemName(),
                 $profile->getVersion(),

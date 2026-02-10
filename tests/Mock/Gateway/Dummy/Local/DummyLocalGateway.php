@@ -73,6 +73,7 @@ class DummyLocalGateway implements GatewayInterface
 
     public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
     {
+        var_dump('\SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway::readEnvironmentInformation STARTS');
         $environmentData = require __DIR__ . '/../../../../_fixtures/environment_data.php';
 
         $environmentDataArray = $environmentData['environmentInformation'];
