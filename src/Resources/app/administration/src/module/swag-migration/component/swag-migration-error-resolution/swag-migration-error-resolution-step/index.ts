@@ -256,6 +256,12 @@ export default Shopware.Component.wrapComponentConfig({
                 const criteria = new Criteria(1, 1)
                     .addFilter(Criteria.equals('userFixable', false))
                     .addFilter(Criteria.equals('runId', this.runId))
+                    .addFilter(
+                        Criteria.equalsAny('level', [
+                            MIGRATION_LOG_LEVEL.ERROR,
+                            MIGRATION_LOG_LEVEL.WARNING,
+                        ]),
+                    )
                     .addIncludes({ swag_migration_logging: ['id'] });
 
                 const result = await this.migrationLoggingRepository.search(criteria);

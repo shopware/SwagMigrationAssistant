@@ -1,5 +1,3 @@
-@import "~scss/variables";
-
 .swag-migration-shop-information__updating-info {
     max-width: 60rem;
     margin: 0 auto var(--scale-size-40);
@@ -11,19 +9,10 @@
         align-items: center;
     }
 
-    &__more-information {
-        border-radius: var(--border-radius-card);
-    }
-
     .swag-migration-shop-information__header-right {
         display: flex;
         align-items: center;
         height: 100%;
-
-        a {
-            font-size: var(--font-size-xs);
-            line-height: var(--font-line-height-xs);
-        }
     }
 
     .swag-migration-shop-information__connection {
@@ -103,6 +92,10 @@
         margin: auto 0;
         font-size: var(--font-size-xs);
         font-weight: var(--font-weight-semibold);
+    }
+
+    .swag-migration-shop-information__metadata-section {
+        border-radius: var(--border-radius-card);
     }
 
     .swag-migration-shop-information__metadata {
