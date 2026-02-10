@@ -241,12 +241,6 @@ test.describe('Migration Tests @migration @visual', () => {
             const finalBuffer = Buffer.concat(buffers);
             let logString = finalBuffer.toString();
 
-            // remove media warning logs
-            logString = logString.replaceAll(
-                /----- Log Entry #[0-9]+ -----\nID: [0-9a-f]{32}\nLevel: warning\nCode: SWAG_MIGRATION_MEDIA_FILE_MISSING(.|\n)+?\n\n/g,
-                '',
-            );
-
             // replace timestamps
             logString = logString.replaceAll(/[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC/g, '[timestamp]');
 
