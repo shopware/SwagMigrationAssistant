@@ -262,7 +262,7 @@ test.describe('Migration Tests @migration @visual', () => {
             let logString = finalBuffer.toString();
 
             // replace timestamps
-            logString = logString.replaceAll(/[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}\sUTC/g, '[timestamp]');
+            logString = logString.replaceAll(/[0-9]{4}-[0-9]{2}-[0-9]{2}\s[0-9]{2}:[0-9]{2}:[0-9]{2}(\.[0-9]+)?(\sUTC)?/g, '[timestamp]');
 
             // replace domain
             logString = logString.replaceAll(/"sourceSystemDomain":\s".*"/g, '"sourceSystemDomain": "[domain]"');
