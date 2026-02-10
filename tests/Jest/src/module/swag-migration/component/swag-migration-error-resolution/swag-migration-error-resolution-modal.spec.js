@@ -10,6 +10,7 @@ import SwagMigrationErrorResolutionField from 'SwagMigrationAssistant/module/swa
 import SwagMigrationErrorResolutionFieldScalar from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-scalar';
 import SwagMigrationErrorResolutionFieldRelation from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-error-resolution/swag-migration-error-resolution-field/swag-migration-error-resolution-field-relation';
 import SwagMigrationErrorResolutionService from 'SwagMigrationAssistant/module/swag-migration/service/swag-migration-error-resolution.service';
+import SwagMigrationDataGridExtended from 'SwagMigrationAssistant/module/swag-migration/component/swag-migration-data-grid-extended';
 import { fixtureLogGroups, fixtureLogs, fixtureFixes } from '@/fixture';
 
 const { EntityCollection } = Shopware.Data;
@@ -125,6 +126,9 @@ const repositoryFactoryMock = {
 };
 
 async function createWrapper(props = defaultProps) {
+    await wrapTestComponent('sw-data-grid');
+    Shopware.Component.extend('swag-migration-data-grid-extended', 'sw-data-grid', SwagMigrationDataGridExtended);
+
     return mount(await Shopware.Component.build('swag-migration-error-resolution-modal'), {
         props,
         global: {
@@ -141,6 +145,7 @@ async function createWrapper(props = defaultProps) {
                 'swag-migration-error-resolution-field': await Shopware.Component.build(
                     'swag-migration-error-resolution-field',
                 ),
+                'swag-migration-data-grid-extended': await Shopware.Component.build('swag-migration-data-grid-extended'),
                 'sw-entity-single-select': await wrapTestComponent('sw-entity-single-select'),
                 'sw-select-result-list': await wrapTestComponent('sw-select-result-list'),
                 'sw-popover-deprecated': await wrapTestComponent('sw-popover-deprecated'),
@@ -196,12 +201,75 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
         });
     });
 
+    describe('selectedCount', () => {
+        it('should display selectedLogIds length when selectAllMode is inactive', async () => {
+            migrationFixRepositoryMock.search.mockReturnValueOnce(Promise.resolve([]));
+
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').exists()).toBe(false);
+
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('1');
+        });
+
+        it('should display tableTotal in selectAllMode and persist across page navigation', async () => {
+            const defaultLoggingSearch = migrationLoggingRepositoryMock.search.getMockImplementation();
+            const defaultFixSearch = migrationFixRepositoryMock.search.getMockImplementation();
+
+            const paginatedLogs = Array.from({ length: 28 }, (_, i) => ({
+                ...logMocks[0],
+                id: `log-id-${i + 1}`,
+                entityId: `log-entity-id-${i + 1}`,
+            }));
+
+            migrationLoggingRepositoryMock.search.mockImplementation((criteria) => {
+                const page = criteria.page;
+                const limit = criteria.limit;
+                const start = (page - 1) * limit;
+                const end = start + limit;
+
+                const result = paginatedLogs.slice(start, end);
+                result.total = paginatedLogs.length;
+
+                return Promise.resolve(result);
+            });
+            migrationFixRepositoryMock.search.mockImplementation(() => Promise.resolve([]));
+
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            const rowCheckboxes = wrapper.findAll('.sw-data-grid__body .mt-field--checkbox input');
+            await rowCheckboxes[0].setChecked(true);
+            await flushPromises();
+
+            const selectAllButton = wrapper.find('.sw-data-grid__bulk .bulk-link button');
+            await selectAllButton.trigger('click');
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__row--0 .mt-field--checkbox input').attributes('disabled')).toBeDefined();
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('28');
+
+            await wrapper.find('.sw-pagination__page-button-next').trigger('click');
+            await flushPromises();
+
+            expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('28');
+
+            migrationLoggingRepositoryMock.search.mockImplementation(defaultLoggingSearch);
+            migrationFixRepositoryMock.search.mockImplementation(defaultFixSearch);
+        });
+    });
+
     describe('initial loading', () => {
         it('should load initial data when modal is opened', async () => {
             const wrapper = await createWrapper();
 
             expect(wrapper.vm.loading).toBe(true);
-            expect(wrapper.find('.swag-migration-error-resolution-modal__left-grid').attributes('is-loading')).toBe('true');
+            expect(wrapper.findComponent('.swag-migration-error-resolution-modal__left-grid').props('isLoading')).toBe(true);
             expect(
                 wrapper.find('.swag-migration-error-resolution-modal__right-content-button').attributes('disabled'),
             ).toBeDefined();
@@ -209,9 +277,9 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await flushPromises();
 
             expect(wrapper.vm.loading).toBe(false);
-            expect(
-                wrapper.find('.swag-migration-error-resolution-modal__left-grid').attributes('is-loading'),
-            ).toBeUndefined();
+            expect(wrapper.findComponent('.swag-migration-error-resolution-modal__left-grid').props('isLoading')).toBe(
+                false,
+            );
 
             expect(migrationLoggingRepositoryMock.search).toHaveBeenNthCalledWith(
                 1,

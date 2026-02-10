@@ -189,6 +189,14 @@ export default Shopware.Component.wrapComponentConfig({
         isResolutionDisabled(): boolean {
             return this.loading || (this.selectedLogIds.length === 0 && !this.selectAllMode);
         },
+
+        selectedCount(): number {
+            if (this.selectAllMode) {
+                return this.tableTotal;
+            }
+
+            return this.selectedLogIds.length;
+        },
     },
 
     methods: {
