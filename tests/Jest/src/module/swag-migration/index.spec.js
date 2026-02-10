@@ -143,6 +143,7 @@ describe('src/module/swag-migration/index', () => {
         ];
 
         const componentsExtended = [
+            'swag-migration-data-grid-extended',
             'swag-migration-grid-extended',
             'swag-migration-index',
             'swag-migration-process-screen',

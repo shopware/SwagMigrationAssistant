@@ -55,7 +55,7 @@ jobs:
             }
       - name: Import SW5 TestData DB
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests
-        run: mysql -uroot < _fixtures/database/sw55.sql
+        run: mysql -uroot < _fixtures/database/shopware55.sql
       - name: Run PHPUnit
         working-directory: custom/plugins/${{ github.event.repository.name }}
         run: php -d pcov.enabled=1 -d pcov.directory=${PWD} -d pcov.exclude='~(vendor|tests|node_modules)~' ${GITHUB_WORKSPACE}/vendor/bin/phpunit --configuration phpunit.xml.dist

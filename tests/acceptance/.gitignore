@@ -1,2 +1,8 @@
 playwright-report/
 test-results/
+
+# Ignore all snapshots except for the ones in the linux folder
+snapshots/**
+!snapshots/*/
+!snapshots/*/linux/
+!snapshots/*/linux/**

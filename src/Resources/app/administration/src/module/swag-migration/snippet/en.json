@@ -225,6 +225,7 @@
         "profile": "System profile:",
         "gateway": "Gateway:",
         "connectionCheck": "Connection check:",
+        "noConnectionCheckDoneYet": "No connection check performed yet",
         "lastMigration": "Last migration:",
         "noMigrationDoneYet": "No migration performed yet",
         "removeCredentialsConfirmDialog": {
