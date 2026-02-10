@@ -191,7 +191,7 @@ test.describe('Migration Tests @migration @visual', () => {
             }
 
             await waitForLoaders(page);
-            await expect(page.getByText('The Migration Assistant is done')).toBeVisible({ timeout: 300_000 });
+            await expect(page.getByText('The Migration is done')).toBeVisible({ timeout: 300_000 });
 
             await expect(page).toHaveScreenshot('migration-process-summary.png', { mask });
 
