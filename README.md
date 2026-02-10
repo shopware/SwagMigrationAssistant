@@ -123,7 +123,7 @@ Visual regression tests compare screenshots against baseline images. When UI cha
 
 ### Import Shopware 5 fixture database (optional)
 
-This imports `tests/_fixtures/database/sw55.sql` into the database configured in your Shopware root `.env` via `DATABASE_URL`.
+This imports `tests/_fixtures/database/shopware55.sql` into the database configured in your Shopware root `.env` via `DATABASE_URL`.
 
 ```bash
 composer install5db

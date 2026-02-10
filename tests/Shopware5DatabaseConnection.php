@@ -12,7 +12,7 @@ use Shopware\Core\Framework\Log\Package;
 #[Package('fundamentals@after-sales')]
 final class Shopware5DatabaseConnection
 {
-    final public const DB_NAME = 'sw55';
+    final public const DB_NAME = 'shopware55';
     final public const DB_USER = 'root';
     final public const DB_PASSWORD = 'app';
     final public const DB_HOST = 'mysql';

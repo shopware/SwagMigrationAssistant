@@ -181,4 +181,40 @@ class LoggingServiceTest extends TestCase
         $result = $this->loggingRepo->search(new Criteria(), $this->context);
         static::assertSame(LoggingService::BUFFER_SIZE + 10, $result->getTotal());
     }
+
+    public function testLimitExceptionTrace(): void
+    {
+        $trace = [];
+
+        for ($i = 0; $i < LoggingService::TRACE_ITEM_LIMIT + 5; ++$i) {
+            $trace[] = [
+                'file' => __FILE__,
+                'type' => '->',
+                'args' => [],
+            ];
+        }
+
+        $log = (new MigrationLogBuilder(
+            $this->runUuid,
+            'Profile name',
+            'Gateway name',
+            Uuid::randomHex(),
+        ))
+            ->withExceptionTrace($trace)
+            ->build(ConvertAssociationMissingLog::class);
+
+        $this->loggingService->log($log);
+        $this->loggingService->flush();
+
+        $result = $this->loggingRepo->search(new Criteria(), $this->context);
+        static::assertSame(1, $result->getTotal());
+
+        $resultLog = $result->getEntities()->first();
+        static::assertInstanceOf(SwagMigrationLoggingEntity::class, $resultLog);
+
+        $resultTrace = $resultLog->getExceptionTrace();
+        static::assertIsArray($resultTrace);
+
+        static::assertCount(LoggingService::TRACE_ITEM_LIMIT, $resultTrace);
+    }
 }

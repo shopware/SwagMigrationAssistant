@@ -23,7 +23,7 @@ export const DatabaseCredentials = base.extend<FixtureTypes>({
             password: match![2],
             host: match![3],
             port: match![4],
-            database: 'sw55',
+            database: match![5],
         };
 
         await use(credentials);

@@ -26,4 +26,4 @@ echo "MySQL host: $host"
 echo "MySQL user: $user"
 
 # import test data
-mysql -u"$user" -p"$password" --host "$host" < tests/_fixtures/database/sw55.sql
+mysql -u"$user" -p"$password" --host "$host" < tests/_fixtures/database/shopware55.sql

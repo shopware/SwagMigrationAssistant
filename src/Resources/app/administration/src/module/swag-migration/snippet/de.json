@@ -225,8 +225,9 @@
         "profile": "System-Profil:",
         "gateway": "Schnittstelle:",
         "connectionCheck": "Verbindungscheck:",
+        "noConnectionCheckDoneYet": "Es wurde noch keine Verbindungsprüfung durchgeführt",
         "lastMigration": "Letzte Migration:",
-        "noMigrationDoneYet": "bisher keine durchgeführt",
+        "noMigrationDoneYet": "Noch keine Migration durchgeführt",
         "removeCredentialsConfirmDialog": {
           "title": "Zugangsdaten löschen",
           "content": "Danach besteht keine aktive Verbindung mehr. Gib Deine Zugangsdaten erneut ein, um die Verbindung wiederherzustellen.",
