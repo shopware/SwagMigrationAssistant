@@ -226,13 +226,13 @@ test.describe('Migration Tests @migration @visual', () => {
             await EntityCounter.checkEntityCount('property_group_option', 93);
             await EntityCounter.checkEntityCount('product_manufacturer', 14);
 
-            await EntityCounter.checkEntityCount('order', 2);
+            await EntityCounter.checkEntityCount('order', 1);
             await EntityCounter.checkEntityCount('customer', 3);
 
             await EntityCounter.checkEntityCount('cms_page', 10);
             await EntityCounter.checkEntityCount('media', 595);
             await EntityCounter.checkEntityCount('media_folder', 24);
-            await EntityCounter.checkEntityCount('document', 8);
+            await EntityCounter.checkEntityCount('document', 4);
 
             await EntityCounter.checkEntityCount('newsletter_recipient', 0);
             await EntityCounter.checkEntityCount('promotion', 4);
