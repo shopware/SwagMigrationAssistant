@@ -78,7 +78,7 @@ jobs:
         working-directory: custom/plugins/${{ github.event.repository.name }}/tests/acceptance
         env:
           DATABASE_URL: mysql://root:root@127.0.0.1:3306/shopware55
-          UPDATE_SNAPSHOTS: ${{ github.event.inputs.update_snapshots }}
+          UPDATE_SNAPSHOTS: true #${{ github.event.inputs.update_snapshots }}
         run: npm run test
 
       - uses: actions/upload-artifact@v4
@@ -91,7 +91,8 @@ jobs:
           retention-days: 3
 
       - name: Upload updated snapshots
-        if: github.event.inputs.update_snapshots == 'true'
+        if: always()
+        #if: github.event.inputs.update_snapshots == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: visual-snapshots-${{ matrix.PLATFORM_BRANCH }}

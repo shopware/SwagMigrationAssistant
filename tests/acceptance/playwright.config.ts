@@ -4,7 +4,7 @@ import dotenv from 'dotenv';
 import { VIEWPORT } from './fixtures/TestHelpers';
 
 const IS_CI = !!process.env.CI;
-const UPDATE_SNAPSHOTS = process.env.UPDATE_SNAPSHOTS ===  'true' || process.env.UPDATE_SNAPSHOTS === '1';
+const UPDATE_SNAPSHOTS = process.env.UPDATE_SNAPSHOTS === 'true' || process.env.UPDATE_SNAPSHOTS === '1';
 
 const REQUIRED_ENV_VARS = [
     'APP_URL',
