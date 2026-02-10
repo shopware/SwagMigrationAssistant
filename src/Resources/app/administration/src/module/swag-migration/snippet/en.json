@@ -225,8 +225,9 @@
         "profile": "System profile:",
         "gateway": "Gateway:",
         "connectionCheck": "Connection check:",
+        "noConnectionCheckDoneYet": "No connection check performed yet",
         "lastMigration": "Last migration:",
-        "noMigrationDoneYet": "-",
+        "noMigrationDoneYet": "No migration performed yet",
         "removeCredentialsConfirmDialog": {
           "title": "Delete access data",
           "content": "There will be no active connection after this. Enter your access data again to restore the connection.",

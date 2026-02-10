@@ -19,6 +19,8 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 {
     final public const BUFFER_SIZE = 50;
 
+    final public const TRACE_ITEM_LIMIT = 10;
+
     /**
      * @var array<array-key, array<string, mixed>>
      */
@@ -76,6 +78,12 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
 
     public function log(MigrationLogEntry $logEntry): self
     {
+        $trace = $logEntry->getExceptionTrace();
+
+        if ($trace !== null && \count($trace) > self::TRACE_ITEM_LIMIT) {
+            $trace = \array_slice($trace, 0, self::TRACE_ITEM_LIMIT);
+        }
+
         $this->buffer[] = [
             'runId' => $logEntry->getRunId(),
             'profileName' => $logEntry->getProfileName(),
@@ -90,7 +98,7 @@ class LoggingService implements LoggingServiceInterface, ResetInterface
             'sourceData' => $logEntry->getSourceData(),
             'convertedData' => $logEntry->getConvertedData(),
             'exceptionMessage' => $logEntry->getExceptionMessage(),
-            'exceptionTrace' => $logEntry->getExceptionTrace(),
+            'exceptionTrace' => $trace,
         ];
 
         if (\count($this->buffer) >= self::BUFFER_SIZE) {
