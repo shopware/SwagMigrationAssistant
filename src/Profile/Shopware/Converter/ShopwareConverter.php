@@ -80,7 +80,7 @@ abstract class ShopwareConverter extends Converter
             new \DateTime($value);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }
@@ -112,8 +112,10 @@ abstract class ShopwareConverter extends Converter
             }
 
             $connection = $this->migrationContext->getConnection();
+
             if ($context !== null) {
                 $connectionId = $connection->getId();
+
                 $mapping = $this->mappingService->getMapping(
                     $connectionId,
                     $entityName . '_custom_field',

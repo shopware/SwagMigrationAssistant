@@ -7,11 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Seo\SeoUrl\SeoUrlDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -40,6 +42,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
+        $originalData = $data;
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
@@ -62,13 +65,26 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $context
         );
 
-        if ($mapping !== null) {
-            $converted['salesChannelId'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
-            unset($data['subshopID']);
+        if ($mapping === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('subshopID')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $originalData);
         }
 
+        $converted['salesChannelId'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
+        unset($data['subshopID']);
+
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
+
         if ($converted['languageId'] !== null) {
             $this->mappingIds[] = $converted['languageId'];
             unset($data['_locale']);
@@ -89,14 +105,25 @@ abstract class SeoUrlConverter extends ShopwareConverter
                     $data['typeId'],
                     $context
                 );
+
+                if ($mapping === null) {
+                    $this->loggingService->log(
+                        MigrationLogBuilder::fromMigrationContext($migrationContext)
+                            ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                            ->withFieldName('foreignKey')
+                            ->withFieldSourcePath('type')
+                            ->withSourceData($data)
+                            ->build(ConvertAssociationMissingLog::class)
+                    );
+
+                    return new ConvertStruct(null, $originalData);
+                }
             }
 
-            if ($mapping !== null) {
-                $converted['foreignKey'] = $mapping['entityId'];
-                $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
-                $converted['pathInfo'] = '/detail/' . $mapping['entityId'];
-                $this->mappingIds[] = $mapping['id'];
-            }
+            $converted['foreignKey'] = $mapping['entityId'];
+            $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
+            $converted['pathInfo'] = '/detail/' . $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
         } elseif ($data['type'] === self::TYPE_CATEGORY && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -105,19 +132,30 @@ abstract class SeoUrlConverter extends ShopwareConverter
                 $context
             );
 
-            if ($mapping !== null) {
-                $converted['foreignKey'] = $mapping['entityId'];
-                $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
-                $converted['pathInfo'] = '/navigation/' . $mapping['entityId'];
-                $this->mappingIds[] = $mapping['id'];
+            if ($mapping === null) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                        ->withFieldName('foreignKey')
+                        ->withFieldSourcePath('type')
+                        ->withSourceData($data)
+                        ->build(ConvertAssociationMissingLog::class)
+                );
+
+                return new ConvertStruct(null, $originalData);
             }
+
+            $converted['foreignKey'] = $mapping['entityId'];
+            $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
+            $converted['pathInfo'] = '/navigation/' . $mapping['entityId'];
+            $this->mappingIds[] = $mapping['id'];
         } else {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->withEntityName(DefaultEntities::SEO_URL)
-                ->withSourceData($data)
-                ->withFieldName('type')
-                ->build(ConvertObjectTypeUnsupportedLog::class)
+                    ->withEntityName(DefaultEntities::SEO_URL)
+                    ->withSourceData($data)
+                    ->withFieldName('type')
+                    ->build(ConvertObjectTypeUnsupportedLog::class)
             );
 
             // skip this entity because we can't migrate this seo type from SW5

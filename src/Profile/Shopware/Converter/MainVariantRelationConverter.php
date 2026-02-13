@@ -27,7 +27,7 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         return $data['id'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
         $this->context = $context;
@@ -37,13 +37,13 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         if (!isset($data['id'], $data['ordernumber'])) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($migrationContext)
-                ->withSourceData($data)
-                ->withExceptionMessage('MainVariantRelation requires ID and order number, to be converted successful')
-                ->withExceptionTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2))
-                ->build(ConvertMainVariantRelationFailedLog::class)
+                    ->withSourceData($data)
+                    ->withExceptionMessage('MainVariantRelation requires ID and order number, to be converted successful')
+                    ->withExceptionTrace(\debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 2))
+                    ->build(ConvertMainVariantRelationFailedLog::class)
             );
 
-            return null;
+            return new ConvertStruct(null, $data);
         }
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -68,24 +68,32 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
             $context
         );
 
-        $converted = [];
+        $mainProductId = null;
 
         if ($mainProductMapping !== null) {
             $this->mappingIds[] = $mainProductMapping['id'];
-            $converted['id'] = $mainProductMapping['entityId'];
+            $mainProductId = $mainProductMapping['entityId'];
         }
+
+        $variantProductId = null;
 
         if ($variantProductMapping !== null) {
             $this->mappingIds[] = $variantProductMapping['id'];
-            $converted['variantListingConfig'] = [
-                'displayParent' => true,
-                'mainVariantId' => $variantProductMapping['entityId'],
-            ];
+            $variantProductId = $variantProductMapping['entityId'];
         }
+
+        $converted = [];
+        $converted['id'] = $mainProductId;
+
+        $converted['variantListingConfig'] = [
+            'displayParent' => true,
+            'mainVariantId' => $variantProductId,
+        ];
 
         unset($data['id'], $data['ordernumber']);
 
         $returnData = $data;
+
         if (empty($returnData)) {
             $returnData = null;
         }

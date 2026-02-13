@@ -98,10 +98,10 @@ class CurrencyConverterTest extends TestCase
         $currencyData = require __DIR__ . '/../../../_fixtures/currency_data.php';
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
         $this->converter->writeMapping($this->context);
-        $converted = $convertResult?->getConverted();
+        $converted = $convertResult->getConverted();
 
-        static::assertNull($convertResult?->getUnmapped());
-        static::assertNotNull($convertResult?->getMappingUuid());
+        static::assertNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getMappingUuid());
         static::assertNotNull($converted);
         static::assertArrayHasKey('id', $converted);
         static::assertArrayHasKey('translations', $converted);
@@ -141,7 +141,6 @@ class CurrencyConverterTest extends TestCase
 
         $convertResult = $this->converter->convert($currencyData[0], $this->context, $this->migrationContext);
 
-        static::assertNotNull($convertResult);
         static::assertNull($convertResult->getConverted());
     }
 }

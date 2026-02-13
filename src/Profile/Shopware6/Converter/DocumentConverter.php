@@ -7,9 +7,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Checkout\Document\DocumentDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DocumentTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -61,12 +64,23 @@ class DocumentConverter extends ShopwareMediaConverter
         );
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
-        if ($converted['documentTypeId'] !== null) {
-            if (isset($converted['config']['documentTypeId'])) {
-                $converted['config']['documentTypeId'] = $converted['documentTypeId'];
-            }
+        if ($converted['documentTypeId'] === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(DocumentDefinition::ENTITY_NAME)
+                    ->withFieldName('documentTypeId')
+                    ->withFieldSourcePath('id')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertObjectTypeUnsupportedLog::class)
+            );
 
-            unset($converted['documentType']);
+            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+        }
+        unset($converted['documentType']);
+
+        if (isset($converted['config']['documentTypeId'])) {
+            $converted['config']['documentTypeId'] = $converted['documentTypeId'];
         }
 
         if (isset($converted['documentMediaFile'])) {

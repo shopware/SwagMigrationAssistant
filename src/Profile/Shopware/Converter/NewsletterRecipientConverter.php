@@ -14,7 +14,9 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -50,8 +52,20 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
     ): ConvertStruct {
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
-
         $this->runId = $migrationContext->getRunUuid();
+        $oldData = $data;
+
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $oldData);
+        }
 
         $this->generateChecksum($data);
         $this->context = $context;
@@ -83,23 +97,21 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
 
             if (isset($address['salutation'])) {
                 $salutationUuid = $this->getSalutation($address['salutation'], $migrationContext);
+
                 if ($salutationUuid !== null) {
                     $converted['salutationId'] = $salutationUuid;
                 }
             }
+
             unset($data['address'], $address);
         }
+
         $converted['hash'] = Uuid::randomHex();
 
         if (isset($converted['confirmedAt'])) {
             $status = 'optIn';
         } else {
-            $status = $this->mappingService->getValue(
-                $this->connectionId,
-                NewsletterRecipientStatusReader::getMappingName(),
-                NewsletterRecipientStatusReader::SOURCE_ID,
-                $this->context
-            );
+            $status = $this->getStatus($migrationContext);
         }
 
         if ($status !== null) {
@@ -107,14 +119,12 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         $converted['languageId'] = $this->languageLookup->get($this->locale, $context);
-
         $salesChannelUuid = $this->getSalesChannel($data);
-        if ($salesChannelUuid !== null) {
-            $converted['salesChannelId'] = $salesChannelUuid;
-        }
+
+        unset($data['shopId']);
+        $converted['salesChannelId'] = $salesChannelUuid;
 
         unset(
-            $data['shopId'],
             $data['id'],
             $data['groupID'],
             $data['lastmailing'],
@@ -123,9 +133,11 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         );
 
         $returnData = $data;
+
         if (empty($returnData)) {
             $returnData = null;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -161,21 +173,51 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
      */
     protected function getSalesChannel(array $data): ?string
     {
-        if (isset($data['shopId'])) {
-            $salesChannelMapping = $this->mappingService->getMapping(
-                $this->connectionId,
-                DefaultEntities::SALES_CHANNEL,
-                $data['shopId'],
-                $this->context
-            );
-        }
+        $salesChannelMapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::SALES_CHANNEL,
+            $data['shopId'],
+            $this->context
+        );
 
-        if (!isset($salesChannelMapping)) {
+        if ($salesChannelMapping === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('shopId')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
             return null;
         }
 
         $this->mappingIds[] = $salesChannelMapping['id'];
 
         return $salesChannelMapping['entityId'];
+    }
+
+    protected function getStatus(MigrationContextInterface $migrationContext): ?string
+    {
+        $status = $this->mappingService->getValue(
+            $this->connectionId,
+            NewsletterRecipientStatusReader::getMappingName(),
+            NewsletterRecipientStatusReader::SOURCE_ID,
+            $this->context
+        );
+
+        if ($status === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(NewsletterRecipientDefinition::ENTITY_NAME)
+                    ->withFieldName('status')
+                    ->withFieldSourcePath('status')
+                    ->withSourceData(['status' => NewsletterRecipientStatusReader::SOURCE_ID])
+                    ->build(ConvertEntityUnknownLog::class)
+            );
+        }
+
+        return $status;
     }
 }

@@ -33,20 +33,23 @@ class SeoUrlConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === SeoUrlDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ?ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         if (isset($data['isModified']) && $data['isModified'] === false) {
-            return null;
+            return new ConvertStruct(null, $data);
         }
 
         $converted = $data;
 
         if (isset($converted['foreignKey'])) {
             $relatedEntity = null;
-            if ($converted['routeName'] === self::CATEGORY_ROUTE_NAME) {
+
+            if (($converted['routeName'] ?? null) === self::CATEGORY_ROUTE_NAME) {
                 $relatedEntity = DefaultEntities::CATEGORY;
-            } elseif ($converted['routeName'] === self::PRODUCT_ROUTE_NAME) {
+            } elseif (($converted['routeName'] ?? null) === self::PRODUCT_ROUTE_NAME) {
                 $relatedEntity = DefaultEntities::PRODUCT;
+            } elseif (isset($converted['routeName'])) {
+                return new ConvertStruct(null, $data);
             }
 
             if ($relatedEntity !== null) {
@@ -54,16 +57,16 @@ class SeoUrlConverter extends ShopwareConverter
                     $relatedEntity,
                     $converted['foreignKey']
                 );
+            } else {
+                $converted['foreignKey'] = null;
             }
         }
 
-        if (isset($data['id']) && isset($converted['id'])) {
-            $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-                DefaultEntities::SEO_URL,
-                $data['id'],
-                $converted['id']
-            );
-        }
+        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
+            DefaultEntities::SEO_URL,
+            $data['id'],
+            $converted['id']
+        );
 
         if (isset($converted['salesChannelId'])) {
             $converted['salesChannelId'] = $this->getMappingIdFacade(

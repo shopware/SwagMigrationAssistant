@@ -44,16 +44,33 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
             $context
         );
 
-        $relationMapping = null;
+        $productContainerId = null;
+
         if ($productContainerMapping !== null) {
             $this->mappingIds[] = $productContainerMapping['id'];
-            $relationMapping = $this->mappingService->getMapping(
-                $this->connectionId,
-                DefaultEntities::PRODUCT_PROPERTY,
-                $data['id'] . '_' . $productContainerMapping['entityId'],
-                $context
-            );
+            $productContainerId = $productContainerMapping['entityId'];
         }
+
+        $optionMapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::PROPERTY_GROUP_OPTION,
+            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
+            $context
+        );
+
+        $optionId = null;
+
+        if ($optionMapping !== null) {
+            $this->mappingIds[] = $optionMapping['id'];
+            $optionId = $optionMapping['entityId'];
+        }
+
+        $relationMapping = $this->mappingService->getMapping(
+            $this->connectionId,
+            DefaultEntities::PRODUCT_PROPERTY,
+            $data['id'] . '_' . $productContainerId,
+            $context
+        );
 
         // use "old" relation mapping if exists < v.1.3
         if ($relationMapping !== null) {
@@ -75,27 +92,12 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
             );
         }
 
-        $optionMapping = $this->mappingService->getMapping(
-            $this->connectionId,
-            DefaultEntities::PROPERTY_GROUP_OPTION,
-            Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
-            $context
-        );
-
         $converted = [];
-
-        if ($optionMapping !== null) {
-            $this->mappingIds[] = $optionMapping['id'];
-            $converted['configuratorSettings'][] = [
-                'id' => $this->mainMapping['entityId'],
-                'optionId' => $optionMapping['entityId'],
-            ];
-        }
-
-        if (isset($productContainerMapping['entityId'])) {
-            $converted['id'] = $productContainerMapping['entityId'];
-        }
-
+        $converted['id'] = $productContainerId;
+        $converted['configuratorSettings'][] = [
+            'id' => $this->mainMapping['entityId'],
+            'optionId' => $optionId,
+        ];
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, null, $this->mainMapping['id'] ?? null);

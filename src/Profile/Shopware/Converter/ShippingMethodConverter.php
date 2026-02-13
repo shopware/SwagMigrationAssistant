@@ -88,17 +88,39 @@ abstract class ShippingMethodConverter extends ShopwareConverter
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
 
+        if (empty($data['id'])) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withFieldSourcePath('id')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->generateChecksum($data);
         $this->context = $context;
         $this->runId = $migrationContext->getRunUuid();
-        $converted = [];
+        $this->oldShippingMethod = $data['id'];
 
-        if (!empty($data['id'])) {
-            $this->oldShippingMethod = $data['id'];
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
         }
 
         $this->mainLocale = $data['_locale'];
 
+        $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::SHIPPING_METHOD,
@@ -215,6 +237,19 @@ abstract class ShippingMethodConverter extends ShopwareConverter
             $returnData = null;
         }
         $this->updateMainMapping($migrationContext, $context);
+
+        if (!\is_array($this->mainMapping) || !\array_key_exists('id', $this->mainMapping)) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ShippingMethodDefinition::ENTITY_NAME)
+                    ->withFieldName('id')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
     }

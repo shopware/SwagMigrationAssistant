@@ -40,6 +40,7 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
         $converted = [];
 
         $customerMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CUSTOMER, $data['userID'], $context);
+
         if ($customerMapping !== null) {
             $this->mappingIds[] = $customerMapping['id'];
             $converted['customerId'] = $customerMapping['entityId'];
@@ -47,12 +48,14 @@ abstract class CustomerWishlistConverter extends ShopwareConverter
 
         $productId = null;
         $productMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::PRODUCT, $data['ordernumber'], $context);
+
         if ($productMapping !== null) {
             $this->mappingIds[] = $productMapping['id'];
             $productId = $productMapping['entityId'];
         }
 
         $shopMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::SALES_CHANNEL, $data['subshopID'], $context);
+
         if ($shopMapping !== null) {
             $converted['salesChannelId'] = $shopMapping['entityId'];
         }

@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -40,8 +42,20 @@ abstract class CurrencyConverter extends ShopwareConverter
         return $data['currency'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DefaultEntities::CURRENCY)
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
@@ -50,8 +64,10 @@ abstract class CurrencyConverter extends ShopwareConverter
         $this->connectionId = $connection->getId();
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
+
         if ($currencyUuid !== null) {
             $currencyMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CURRENCY, $data['currency'], $context);
+
             if ($currencyMapping === null) {
                 $this->mappingService->createMapping(
                     $this->connectionId,
@@ -74,18 +90,21 @@ abstract class CurrencyConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityId'];
 
+        $converted['id'] = $this->mainMapping['entityId'];
         $converted['isDefault'] = false;
         unset($data['standard']);
+
         $this->getCurrencyTranslation($converted, $data);
         $converted['shortName'] = $data['currency'];
         $converted['isoCode'] = $data['currency'];
         unset($data['currency']);
+
         $this->convertValue($converted, 'name', $data, 'name');
         $this->convertValue($converted, 'factor', $data, 'factor', self::TYPE_FLOAT);
         $this->convertValue($converted, 'position', $data, 'position', self::TYPE_INTEGER);
         $this->convertValue($converted, 'symbol', $data, 'templatechar');
+
         $converted['placedInFront'] = ((int) $data['symbol_position']) > 16;
 
         $converted['itemRounding'] = [
@@ -103,9 +122,11 @@ abstract class CurrencyConverter extends ShopwareConverter
         );
 
         $returnData = $data;
+
         if (empty($returnData)) {
             $returnData = null;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -114,11 +135,13 @@ abstract class CurrencyConverter extends ShopwareConverter
     protected function getCurrencyTranslation(array &$currency, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
+
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
+
         if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
@@ -134,10 +157,12 @@ abstract class CurrencyConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
+
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $currency['translations'][$languageUuid] = $localeTranslation;

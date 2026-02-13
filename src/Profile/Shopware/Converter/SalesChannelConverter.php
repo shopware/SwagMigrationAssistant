@@ -95,36 +95,42 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context
         );
 
+        $customerGroupUuid = null;
+
         if ($customerGroupMapping !== null) {
+            $customerGroupUuid = $customerGroupMapping['entityId'];
             $this->mappingIds[] = $customerGroupMapping['id'];
-            $converted['customerGroupId'] = $customerGroupMapping['entityId'];
         }
 
+        $converted['customerGroupId'] = $customerGroupUuid;
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
-        if ($languageUuid !== null) {
-            $converted['languageId'] = $languageUuid;
-            $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
-        }
 
-        if (isset($converted['languages'])) {
+        if ($languageUuid !== null) {
+            $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
             $this->filterExistingLanguageSalesChannelRelation($converted['id'], $converted['languages']);
         }
 
-        $this->filterDisabledPackLanguages($converted);
+        $converted['languageId'] = $languageUuid;
+
+        if (isset($converted['languages'])) {
+            $this->filterDisabledPackLanguages($converted);
+        }
 
         if (empty($converted['languages'])) {
             unset($converted['languages']);
         }
 
         $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
+
         if ($currencyUuid !== null) {
-            $converted['currencyId'] = $currencyUuid;
             $converted['currencies'] = [
                 [
                     'id' => $currencyUuid,
                 ],
             ];
         }
+
+        $converted['currencyId'] = $currencyUuid;
 
         $categoryMapping = $this->mappingService->getMapping(
             $this->connectionId,
@@ -133,10 +139,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context
         );
 
+        $categoryUuid = null;
+
         if ($categoryMapping !== null) {
+            $categoryUuid = $categoryMapping['entityId'];
             $this->mappingIds[] = $categoryMapping['id'];
-            $converted['navigationCategoryId'] = $categoryMapping['entityId'];
         }
+
+        $converted['navigationCategoryId'] = $categoryUuid;
 
         $countryUuid = $this->getFirstActiveCountryId();
         $converted['countryId'] = $countryUuid;
@@ -194,9 +204,11 @@ abstract class SalesChannelConverter extends ShopwareConverter
         );
 
         $returnData = $data;
+
         if (empty($returnData)) {
             $returnData = null;
         }
+
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -209,11 +221,13 @@ abstract class SalesChannelConverter extends ShopwareConverter
     protected function setSalesChannelTranslation(array &$salesChannel, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
+
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
+
         if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
@@ -228,10 +242,12 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
+
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
+
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $salesChannel['translations'][$languageUuid] = $localeTranslation;
@@ -303,6 +319,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
     protected function filterExistingLanguageSalesChannelRelation(string $salesChannelUuid, array &$languageIds): void
     {
         $insertLanguages = [];
+
         foreach ($languageIds as $languageId) {
             $criteria = (new Criteria())
                 ->setLimit(1)
@@ -341,6 +358,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
                         $language['id'] = Defaults::LANGUAGE_SYSTEM;
                     }
                 }
+
                 unset($language);
 
                 if ($converted['languageId'] === $packLanguageId) {
@@ -372,6 +390,7 @@ abstract class SalesChannelConverter extends ShopwareConverter
         if (isset($data['children'])) {
             foreach ($data['children'] as $subShop) {
                 $uuid = $this->languageLookup->get($subShop['locale'], $context);
+
                 if ($uuid === null) {
                     continue;
                 }

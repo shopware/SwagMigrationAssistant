@@ -7,10 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -31,14 +34,24 @@ abstract class ProductReviewConverter extends ShopwareConverter
     {
         $connection = $migrationContext->getConnection();
         $connectionId = $connection->getId();
-
         $this->generateChecksum($data);
+        $originalData = $data;
 
-        $mainLocale = null;
-        if (isset($data['_locale'])) {
-            $mainLocale = $data['_locale'];
-            unset($data['_locale']);
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $originalData);
         }
+
+        $mainLocale = $data['_locale'];
+        unset($data['_locale']);
 
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -48,7 +61,6 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-
         $converted['id'] = $this->mainMapping['entityId'];
         unset($data['id']);
 
@@ -66,13 +78,27 @@ abstract class ProductReviewConverter extends ShopwareConverter
                 $data['articleID'] ?? '',
                 $context
             );
+
+            if ($mapping === null) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                        ->withFieldName('productId')
+                        ->withFieldSourcePath('articleID')
+                        ->withSourceData($data)
+                        ->withConvertedData($converted)
+                        ->build(ConvertAssociationMissingLog::class)
+                );
+            }
         }
 
+        $converted['productId'] = $mapping['entityId'] ?? null;
+
         if ($mapping !== null) {
-            $converted['productId'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
-            unset($data['articleID']);
         }
+
+        unset($data['articleID']);
 
         if (isset($data['email'])) {
             $mapping = $this->mappingService->getMapping(
@@ -99,18 +125,33 @@ abstract class ProductReviewConverter extends ShopwareConverter
             $context
         );
 
-        if ($mapping !== null) {
-            $converted['salesChannelId'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
-            unset($data['shop_id'], $data['mainShopId']);
+        if ($mapping === null) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldName('salesChannelId')
+                    ->withFieldSourcePath('shop_id')
+                    ->withSourceData($data)
+                    ->withConvertedData($converted)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
         }
 
-        $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
+        $converted['salesChannelId'] = $mapping['entityId'] ?? null;
 
+        if ($mapping !== null) {
+            $this->mappingIds[] = $mapping['id'];
+        }
+
+        unset($data['shop_id'], $data['mainShopId']);
+
+        $converted['languageId'] = $this->languageLookup->get($mainLocale, $context);
         $this->convertValue($converted, 'title', $data, 'headline');
+
         if (empty($converted['title'])) {
             $converted['title'] = \mb_substr($data['comment'], 0, 30) . '...';
         }
+
         $this->convertValue($converted, 'content', $data, 'comment');
         $this->convertValue($converted, 'points', $data, 'points', self::TYPE_FLOAT);
         $this->convertValue($converted, 'status', $data, 'active', self::TYPE_BOOLEAN);
@@ -125,6 +166,7 @@ abstract class ProductReviewConverter extends ShopwareConverter
         );
 
         $resultData = $data;
+
         if (empty($resultData)) {
             $resultData = null;
         }

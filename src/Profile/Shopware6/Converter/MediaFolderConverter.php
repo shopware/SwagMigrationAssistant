@@ -39,7 +39,7 @@ class MediaFolderConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === MediaFolderDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ?ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
 
@@ -53,7 +53,7 @@ class MediaFolderConverter extends ShopwareConverter
             // edge case for hidden download products media folder
             // this doesn't need to be migrated, just map the files into it
             // otherwise the code below would lead to a self-referential parentId
-            return null;
+            return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }
 
         if (isset($converted['defaultFolder'])) {

@@ -93,6 +93,8 @@ class SalutationReader extends AbstractPremappingReader
         }
 
         $salutations = [];
+
+        /** @phpstan-ignore shopware.unserializeUsage */
         $salutations[] = \explode(',', \unserialize($result[0]['value'], ['allowed_classes' => false]));
         $salutations = \array_filter($salutations);
 
@@ -102,6 +104,7 @@ class SalutationReader extends AbstractPremappingReader
             foreach ($configuredSalutations as $configuredSalutation) {
                 $salutations[] = \explode(
                     ',',
+                    /** @phpstan-ignore shopware.unserializeUsage */
                     \unserialize($configuredSalutation['value'], ['allowed_classes' => false])
                 );
             }
