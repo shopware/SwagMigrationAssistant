@@ -894,6 +894,7 @@ abstract class ProductConverter extends ShopwareConverter
             }
 
             try {
+                /** @phpstan-ignore shopware.unserializeUsage */
                 $path = \unserialize($esdFile['path'], ['allowed_classes' => false]);
             } catch (\Throwable $e) {
                 $this->loggingService->log(
