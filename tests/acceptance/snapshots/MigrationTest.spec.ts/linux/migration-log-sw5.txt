@@ -591,12 +591,13 @@ Pre-mapping (JSON):
 ########## LOG ENTRIES ##########
 ----- Log Entry #1 -----
 ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_CONVERT_ENTITY_FAILED
+Level: info
+Code: SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS
 Profile name: shopware55
 Gateway name: local
 Created at: [timestamp]
 Entity: language
+Source path: locale
 Source data (JSON):
 {
     "id": "1",
@@ -618,11 +619,12 @@ Source data (JSON):
 ----- Log Entry #2 -----
 ID: [uuid]
 Level: warning
-Code: SWAG_MIGRATION_CONVERT_ENTITY_FAILED
+Code: SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS
 Profile name: shopware55
 Gateway name: local
 Created at: [timestamp]
 Entity: language
+Source path: locale
 Source data (JSON):
 {
     "id": "2",
