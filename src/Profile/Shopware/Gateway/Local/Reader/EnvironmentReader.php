@@ -56,6 +56,7 @@ class EnvironmentReader extends AbstractReader implements EnvironmentReaderInter
         $result = [];
 
         foreach ($rows as $row) {
+            /** @phpstan-ignore shopware.unserializeUsage */
             $result[$row['name']] = \unserialize($row['value'], ['allowed_classes' => false]);
         }
 

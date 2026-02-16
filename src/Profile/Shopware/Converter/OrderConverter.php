@@ -1035,6 +1035,7 @@ abstract class OrderConverter extends ShopwareConverter
 
         $accessGranted = false;
         if (isset($originalEsdItem['downloadAvailablePaymentStatus'])) {
+            /** @phpstan-ignore shopware.unserializeUsage */
             $paymentStatusArray = \unserialize($originalEsdItem['downloadAvailablePaymentStatus'], ['allowed_classes' => false]);
 
             if (\is_array($paymentStatusArray) && isset($this->paymentStatusId)) {

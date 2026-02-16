@@ -35,6 +35,7 @@ class NumberRangeReader extends AbstractReader implements ReaderInterface
     public function read(MigrationContextInterface $migrationContext): array
     {
         $numberRanges = $this->fetchNumberRanges($migrationContext->getOffset(), $migrationContext->getLimit(), $migrationContext);
+        /** @phpstan-ignore shopware.unserializeUsage */
         $prefix = \unserialize($this->fetchPrefix($migrationContext), ['allowed_classes' => false]);
 
         if (!$prefix) {
