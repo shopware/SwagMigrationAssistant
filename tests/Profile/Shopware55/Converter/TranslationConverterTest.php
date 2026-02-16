@@ -392,6 +392,7 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey('translations', $converted);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
 
+        /** @phpstan-ignore shopware.unserializeUsage */
         $originalData = \unserialize($translationData['category']['objectdata'], ['allowed_classes' => false]);
         $translations = $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID];
 

@@ -943,6 +943,7 @@ abstract class TranslationConverter extends ShopwareConverter
         $exception = null;
 
         try {
+            /** @phpstan-ignore shopware.unserializeUsage */
             $objectData = \unserialize($objectDataSerialized, ['allowed_classes' => false]);
         } catch (\Throwable $e) {
             $objectData = null;
