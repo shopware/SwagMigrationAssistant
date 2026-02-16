@@ -26,15 +26,23 @@ use Shopware\Core\Framework\DataAbstractionLayer\Write\WriteParameterBag;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Validation\Exception\MigrationValidationException;
+use Symfony\Contracts\Service\ResetInterface;
 
 /**
  * @internal
  */
 #[Package('fundamentals@after-sales')]
-readonly class MigrationFieldValidationService
+class MigrationFieldValidationService implements ResetInterface
 {
+    private ?WriteContext $writeContext = null;
+
+    /**
+     * @var array<string, array{EntityDefinition, Field}> keyed by entityName + fieldPath
+     */
+    private array $definitionFieldCache = [];
+
     public function __construct(
-        private DefinitionInstanceRegistry $definitionRegistry,
+        private readonly DefinitionInstanceRegistry $definitionRegistry,
     ) {
     }
 
@@ -68,9 +76,6 @@ readonly class MigrationFieldValidationService
 
         [$entityDefinition, $field] = $resolved;
 
-        // needed to avoid side effects when modifying flags later
-        $field = clone $field;
-
         if ($field instanceof AssociationField) {
             $this->validateAssociationStructure($field, $value, $entityDefinition->getEntityName());
 
@@ -93,6 +98,10 @@ readonly class MigrationFieldValidationService
         }
 
         $currentDefinition = $this->definitionRegistry->getByEntityName($entityName);
+        if (isset($this->definitionFieldCache[$entityName . $fieldPath])) {
+            return $this->definitionFieldCache[$entityName . $fieldPath];
+        }
+
         $paths = \explode('.', $fieldPath);
 
         foreach ($paths as $index => $path) {
@@ -105,6 +114,16 @@ readonly class MigrationFieldValidationService
             $field = $fields->get($path);
 
             if ($index === \count($paths) - 1) {
+                // needed to avoid side effects when modifying flags
+                $field = clone $field;
+                /**
+                 * Replace all flags with Required to force the serializer to validate this field.
+                 * AbstractFieldSerializer::requiresValidation() skips validation for fields without Required flag.
+                 * The field is cloned before this method is called to avoid mutating the original definition.
+                 */
+                $field->setFlags(new Required());
+                $this->definitionFieldCache[$entityName . $fieldPath] = [$currentDefinition, $field];
+
                 return [$currentDefinition, $field];
             }
 
@@ -124,6 +143,12 @@ readonly class MigrationFieldValidationService
         }
 
         return null;
+    }
+
+    public function reset(): void
+    {
+        $this->writeContext = null;
+        $this->definitionFieldCache = [];
     }
 
     /**
@@ -166,12 +191,12 @@ readonly class MigrationFieldValidationService
 
         $existence = EntityExistence::createForEntity(
             $entityDefinition->getEntityName(),
-            ['id' => Uuid::randomHex()],
+            ['id' => '019c4cb1f42c71faaf555445277a6250'], // random uuid does not need to be unique
         );
 
         $parameters = new WriteParameterBag(
             $entityDefinition,
-            WriteContext::createFromContext($context),
+            $this->getWriteContext($context),
             '',
             new WriteCommandQueue(),
         );
@@ -189,13 +214,6 @@ readonly class MigrationFieldValidationService
         EntityExistence $existence,
         WriteParameterBag $parameters,
     ): void {
-        /**
-         * Replace all flags with Required to force the serializer to validate this field.
-         * AbstractFieldSerializer::requiresValidation() skips validation for fields without Required flag.
-         * The field is cloned before this method is called to avoid mutating the original definition.
-         */
-        $field->setFlags(new Required());
-
         $keyValue = new KeyValuePair(
             $field->getPropertyName(),
             $value,
@@ -205,13 +223,15 @@ readonly class MigrationFieldValidationService
         $serializer = $field->getSerializer();
 
         try {
-            // consume the generator to trigger validation. Keys are not needed
-            \iterator_to_array($serializer->encode(
+            $iterator = $serializer->encode(
                 $field,
                 $existence,
                 $keyValue,
                 $parameters
-            ), false);
+            );
+            foreach ($iterator as $_) {
+                // consume the generator to trigger validation. serialization results are not needed
+            }
         } catch (\Throwable $e) {
             $entityName = $parameters->getDefinition()->getEntityName();
             $propertyName = $field->getPropertyName();
@@ -306,5 +326,14 @@ readonly class MigrationFieldValidationService
                 );
             }
         }
+    }
+
+    private function getWriteContext(Context $context): WriteContext
+    {
+        if ($this->writeContext === null) {
+            $this->writeContext = WriteContext::createFromContext($context);
+        }
+
+        return $this->writeContext;
     }
 }
