@@ -225,8 +225,9 @@
         "profile": "System profile:",
         "gateway": "Gateway:",
         "connectionCheck": "Connection check:",
+        "noConnectionCheckDoneYet": "No connection check performed yet",
         "lastMigration": "Last migration:",
-        "noMigrationDoneYet": "-",
+        "noMigrationDoneYet": "No migration performed yet",
         "removeCredentialsConfirmDialog": {
           "title": "Delete access data",
           "content": "There will be no active connection after this. Enter your access data again to restore the connection.",
@@ -251,24 +252,6 @@
                 "title": "Error occurred while archiving the migration",
                 "message": "A migration is currently in progress."
             }
-        }
-      },
-      "assistantCard": {
-        "title": "Information",
-        "headline": "How the migration works",
-        "finish": "Done!",
-        "connection": {
-          "title": "Set up a connection",
-          "content": "The Migration Assistant will help establish a connection between your shop system and Shopware 6 to transfer and migrate your data.",
-          "link": "Help & documentation"
-        },
-        "dataSelection": {
-          "title": "Specify data for migration",
-          "content": "Select the data you want to migrate. It is possible to include plugin data as well, should the plugin already be available for Shopware 6. Check for plugin availability in your Shopware account."
-        },
-        "migrationOverview": {
-          "title": "Migration steps",
-          "content": "1. An automatic process checks the selected data for missing assignments. Prepare to complete the automatic process by adding manual assignments.\n2. Your shop‘s data is read and assigned.\n3. All selected and properly assigned data gets transferred to Shopware 6.\n4. Media items are downloaded."
         }
       },
       "selectDataCard": {
@@ -364,11 +347,11 @@
       },
       "confirmWarningCard": {
         "currencyMismatch": {
-          "title": "Different default currencies recognised",
+          "title": "Different default currencies detected",
           "text": "The default currencies of the source system [{sourceSystemCurrency}] and target system [{targetSystemCurrency}] do not match. The data can be migrated, but it is not converted automatically."
         },
         "languageMismatch": {
-          "title": "Different default languages recognised",
+          "title": "Different default languages detected",
           "text": "The default languages of the source system [{sourceSystemLanguage}] and target system [{targetSystemLanguage}] do not match. The data can be migrated, but it is not automatically assigned."
         }
       },
@@ -446,12 +429,12 @@
           "unknown": "Unknown"
         },
         "result": {
-          "title": "The Migration Assistant is done",
-          "logSummary": "Logbook",
+          "title": "The Migration is done",
           "historyHint": "You can view this information any time in the migration history."
         }
       },
       "error-resolution": {
+        "descriptionTitle": "Field description",
         "codes": {
           "SWAG_MIGRATION_CONVERT_ASSOCIATION_MISSING": "Associated entity missing",
           "SWAG_MIGRATION_CONVERT_CHILD_ENTITY_FAILED": "Child entity conversion failed",
@@ -507,22 +490,22 @@
           "continue-modal": {
             "title": "Continue",
             "text-unfixable": "There are {count} unfixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear.",
-            "text-fixable": "There are {count} groups of fixable errors that are still unresolved. If you continue without solving the remaining errors, follow-up errors could appear."
+            "text-fixable": "There are {count} groups of fixable errors that are still unresolved. Please correct these errors before continuing to avoid follow-up errors."
           },
           "header": {
             "title": "Error resolution",
-            "description": "Review and resolve migration errors that occurred during the import. Fix data issues directly in this view or download the log file for detailed information. Continue once all fixable errors are resolved.",
+            "description": "Review and resolve migration errors that occurred during the import. Fix data issues directly in this view or download the log file for detailed information. Continue once all fixable errors are resolved. You can leave this view and come back to it later",
             "documentation": "Documentation",
             "download": "Download log file",
             "continue": "Continue",
             "continueTooltip": "Please fix all fixable errors before continuing.",
             "banner": {
-              "title": "Some errors may not be fixable via this view",
-              "content": "There are {count} errors that cannot be fixed via this view. Please download log file to get more info."
+              "title": "Some errors are not fixable via this view",
+              "content": "There are {count} errors or warnings that can't be resolved from this screen. To investigate, download the log file and review the detailed error messages. The underlying issues may need to be fixed in the source system. Once resolved, re-run the migration to continue."
             }
           },
           "card": {
-            "title": "Errors",
+            "title": "Fixable Errors",
             "filter": {
               "title": "Filters | Filters ({count}) | Filters ({count})",
               "reset": "Reset filters",

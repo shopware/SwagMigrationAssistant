@@ -14,7 +14,7 @@
         <div class="swag-migration-error-resolution-modal__container">
             {% block swag_migration_error_resolution_modal_left %}
                 <div class="swag-migration-error-resolution-modal__left">
-                    <sw-data-grid
+                    <swag-migration-data-grid-extended
                         class="swag-migration-error-resolution-modal__left-grid"
                         ref="errorResolutionGrid"
                         :identifier="tableIdentifier"
@@ -28,6 +28,7 @@
                         :skeleton-item-amount="tableLimit"
                         :pre-selection="preSelection"
                         :is-record-selectable="isRecordSelectable"
+                        :custom-selection-count="selectedCount"
                         @selection-change="onSelectionChanged"
                     >
                         <template #column-status="{ item }">
@@ -83,7 +84,7 @@
                                 @page-change="onPageChange"
                             />
                         </template>
-                    </sw-data-grid>
+                    </swag-migration-data-grid-extended>
                 </div>
             {% endblock %}
 
@@ -91,7 +92,7 @@
                 <div class="swag-migration-error-resolution-modal__right">
                     <div class="swag-migration-error-resolution-modal__right-header">
                         <h2 class="swag-migration-error-resolution-modal__right-header-title">
-                            {{ $tc('swag-migration.index.error-resolution.modals.error.right.title', { count: selectedLogIds?.length }) }}
+                            {{ $tc('swag-migration.index.error-resolution.modals.error.right.title', { count: selectedCount }) }}
                         </h2>
                     </div>
 

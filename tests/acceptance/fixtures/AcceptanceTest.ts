@@ -6,6 +6,7 @@ import { EntityCounter, type EntityCounterStruct } from './EntityCounter';
 import { MigrationConnection, type MigrationConnectionStruct } from './MigrationConnection';
 
 export * from '@shopware-ag/acceptance-test-suite';
+export * from './TestHelpers';
 
 export interface MigrationFixtureTypes {
     DatabaseCredentials: DatabaseCredentialsStruct;

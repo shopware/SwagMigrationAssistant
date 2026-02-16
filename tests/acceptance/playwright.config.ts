@@ -1,79 +1,54 @@
 import { defineConfig, devices } from '@playwright/test';
 import path from 'path';
 import dotenv from 'dotenv';
+import { VIEWPORT } from './fixtures/TestHelpers';
 
-// read 'SwagMigrationAssistant/tests/acceptance/.env'
-dotenv.config();
+const IS_CI = !!process.env.CI;
+const UPDATE_SNAPSHOTS = process.env.UPDATE_SNAPSHOTS === 'true' || process.env.UPDATE_SNAPSHOTS === '1';
 
-// read 'platform/.env'
-const platformDir = path.resolve(process.cwd(), '../../../../..');
-
-const platformEnv = {} as {
-    DATABASE_URL?: string;
-    APP_URL?: string;
-};
-
-dotenv.config({
-    path: path.resolve(platformDir, '.env'),
-    processEnv: platformEnv,
-});
-
-if (!process.env.DATABASE_URL && platformEnv?.DATABASE_URL) {
-    process.env.DATABASE_URL = platformEnv?.DATABASE_URL;
-}
-
-if (!process.env.APP_URL && platformEnv?.APP_URL) {
-    process.env.APP_URL = platformEnv?.APP_URL;
-}
-
-const missingEnvVars = [
+const REQUIRED_ENV_VARS = [
     'APP_URL',
     'DATABASE_URL',
-].filter((envVar) => {
-    return process.env[envVar] === undefined;
-});
+];
 
-if (missingEnvVars.length > 0) {
-    const envPath = path.resolve('.env');
+const PRIORITY_PLATFORM_ENV_VARS = [
+    'APP_URL',
+    'DATABASE_URL',
+    'SHOPWARE_PLAYWRIGHT_IGNORE_HTTPS_ERRORS',
+];
 
-    process.stdout.write(`Please provide the following env vars (loaded env: ${envPath}):\n`);
-    process.stdout.write(`- ${missingEnvVars.join('\n- ')}\n`);
+loadEnvFiles();
+validateRequiredEnvVars();
+normalizeUrls();
 
-    process.exit(1);
-}
+process.env.SHOPWARE_ADMIN_USERNAME ??= 'admin';
+process.env.SHOPWARE_ADMIN_PASSWORD ??= 'shopware';
 
-process.env.SHOPWARE_ADMIN_USERNAME = process.env.SHOPWARE_ADMIN_USERNAME ?? 'admin';
-process.env.SHOPWARE_ADMIN_PASSWORD = process.env.SHOPWARE_ADMIN_PASSWORD ?? 'shopware';
-
-const ignoreHTTPSErrors =
-    process.env.SHOPWARE_PLAYWRIGHT_IGNORE_HTTPS_ERRORS === 'true' ||
-    process.env.SHOPWARE_PLAYWRIGHT_IGNORE_HTTPS_ERRORS === '1';
-
-// make sure APP_URL ends with a slash
-process.env.APP_URL = `${process.env.APP_URL?.replace(/\/+$/, '')}/`;
-
-if (process.env.ADMIN_URL) {
-    process.env.ADMIN_URL = `${process.env.ADMIN_URL.replace(/\/+$/, '')}/`;
-} else {
-    process.env.ADMIN_URL = `${process.env.APP_URL}admin/`;
-}
+const ignoreHTTPSErrors = [
+    'true',
+    '1',
+].includes(process.env.SHOPWARE_PLAYWRIGHT_IGNORE_HTTPS_ERRORS ?? '');
 
 export default defineConfig({
     testDir: './tests',
     fullyParallel: true,
-    forbidOnly: !!process.env.CI,
-    retries: process.env.CI ? 2 : 0,
-    workers: process.env.CI ? 1 : 1,
+    forbidOnly: IS_CI,
+    retries: IS_CI ? 2 : 0,
+    workers: 1,
     reporter: 'html',
-    timeout: 300_000, // 5 min
-    globalTimeout: 600_000, // 10 min
+    timeout: 5 * 60_000,
+    globalTimeout: 10 * 60_000,
+    updateSnapshots: UPDATE_SNAPSHOTS ? 'all' : 'missing',
 
     use: {
         baseURL: process.env.APP_URL,
-        trace: 'retain-on-failure',
-        video: 'retain-on-failure',
-        screenshot: 'only-on-failure',
         ignoreHTTPSErrors,
+        trace: IS_CI ? 'retain-on-failure' : 'on',
+        video: IS_CI ? 'retain-on-failure' : 'on',
+        screenshot: IS_CI ? 'only-on-failure' : 'on',
+        launchOptions: {
+            args: IS_CI ? ['--disable-gpu'] : [],
+        },
     },
 
     expect: {
@@ -99,8 +74,38 @@ export default defineConfig({
             name: 'SwagMigrationAssistant',
             use: {
                 ...devices['Desktop Chrome'],
-                viewport: { width: 1440, height: 1080 },
+                viewport: VIEWPORT.DEFAULT,
             },
         },
     ],
 });
+
+function loadEnvFiles(): void {
+    dotenv.config();
+
+    const platformEnvPath = path.resolve(process.cwd(), '../../../../../.env');
+    const platformEnv: Record<string, string> = {};
+
+    dotenv.config({ path: platformEnvPath, processEnv: platformEnv });
+
+    for (const key of PRIORITY_PLATFORM_ENV_VARS) {
+        process.env[key] ??= platformEnv[key];
+    }
+}
+
+function validateRequiredEnvVars(): void {
+    const missing = REQUIRED_ENV_VARS.filter((key) => !process.env[key]);
+
+    if (missing.length > 0) {
+        console.error(`Missing required environment variables:\n- ${missing.join('\n- ')}`);
+        console.error(`\nCreate a .env file in: ${path.resolve('.env')}`);
+        process.exit(1);
+    }
+}
+
+function normalizeUrls(): void {
+    const normalize = (url: string) => `${url.replace(/\/+$/, '')}/`;
+
+    process.env.APP_URL = normalize(process.env.APP_URL!);
+    process.env.ADMIN_URL = process.env.ADMIN_URL ? normalize(process.env.ADMIN_URL) : `${process.env.APP_URL}admin/`;
+}

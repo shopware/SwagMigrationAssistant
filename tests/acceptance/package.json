@@ -4,7 +4,9 @@
   "version": "1.0.0",
   "scripts": {
     "types": "tsc",
-    "test": "npx playwright test --ui",
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --headed",
+    "test:update": "UPDATE_SNAPSHOTS=1 npx playwright test",
     "lint": "eslint ./",
     "lint:fix": "eslint --fix ./",
     "format": "prettier --check \"./**/*.{spec.ts,ts}\" --config ../../.prettierrc.json --cache",
