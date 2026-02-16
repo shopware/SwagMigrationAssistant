@@ -305,8 +305,14 @@ class OrderConverterTest extends TestCase
 
         $convertResult = $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
 
-        static::assertNull($convertResult->getConverted());
-        static::assertNotNull($convertResult->getUnmapped());
+        static::assertNotNull($convertResult->getConverted());
+        static::assertArrayHasKey('orderCustomer', $convertResult->getConverted());
+        static::assertIsArray($convertResult->getConverted()['orderCustomer']);
+        $orderCustomer = $convertResult->getConverted()['orderCustomer'];
+
+        static::assertSame('test@example.com', $orderCustomer['email']);
+        static::assertSame('20001', $orderCustomer['customerNumber']);
+        static::assertNull($orderCustomer['customerId']);
     }
 
     public function testConvertNetOrder(): void
