@@ -430,6 +430,8 @@
 
         <service id="SwagMigrationAssistant\Migration\Validation\MigrationFieldValidationService">
             <argument type="service" id="Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry"/>
+
+            <tag name="kernel.reset" method="reset"/>
         </service>
     </services>
 </container>
