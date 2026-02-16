@@ -618,7 +618,7 @@ Source data (JSON):
 
 ----- Log Entry #2 -----
 ID: [uuid]
-Level: warning
+Level: info
 Code: SWAG_MIGRATION_CONVERT_ENTITY_ALREADY_EXISTS
 Profile name: shopware55
 Gateway name: local
