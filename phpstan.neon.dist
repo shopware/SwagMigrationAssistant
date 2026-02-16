@@ -40,7 +40,6 @@ parameters:
         - message: '#Call to deprecated method __construct\(\) of class Shopware\\Core\\Framework\\DataAbstractionLayer\\EntityDefinition#'
         - message: '#Call to deprecated method columnExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
         - message: '#Call to deprecated method columnExists\(\) of class SwagMigrationAssistant\\Core\\Migration\\Migration1762346793RenameColumnOfMappingTable#'
-        - message: '#Call to deprecated method addColumn\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
         - message: '#Call to deprecated method indexExists\(\) of class Shopware\\Core\\Framework\\Migration\\MigrationStep#'
         - message: '#Call to deprecated method listTableColumns\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
         - message: '#Call to deprecated method listTableIndexes\(\) of class Doctrine\\DBAL\\Schema\\AbstractSchemaManager#'
