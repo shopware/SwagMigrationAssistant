@@ -48,7 +48,6 @@ abstract class AttributeConverter extends Converter
             $this->getCustomFieldEntityName() . 'CustomFieldSet',
             $context
         );
-
         $converted['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -61,14 +60,12 @@ abstract class AttributeConverter extends Converter
             ],
             'translated' => true,
         ];
-
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
             DefaultEntities::CUSTOM_FIELD_SET_RELATION,
             $this->getCustomFieldEntityName() . 'CustomFieldSetRelation',
             $context
         );
-
         $this->mappingIds[] = $mapping['id'];
 
         $converted['relations'] = [
@@ -79,7 +76,6 @@ abstract class AttributeConverter extends Converter
         ];
 
         $additionalData = [];
-
         if (isset($data['configuration']['column_type'])) {
             $additionalData['columnType'] = $data['configuration']['column_type'];
         }

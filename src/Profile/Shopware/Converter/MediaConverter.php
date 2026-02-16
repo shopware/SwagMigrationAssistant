@@ -67,7 +67,6 @@ abstract class MediaConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-
         $converted['id'] = $this->mainMapping['entityId'];
 
         if (empty($data['name'])) {
@@ -84,7 +83,6 @@ abstract class MediaConverter extends ShopwareConverter
                 'mediaId' => $converted['id'],
             ]
         );
-
         unset($data['uri'], $data['file_size']);
 
         $this->getMediaTranslation($converted, $data);
@@ -118,11 +116,9 @@ abstract class MediaConverter extends ShopwareConverter
         );
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
-
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);

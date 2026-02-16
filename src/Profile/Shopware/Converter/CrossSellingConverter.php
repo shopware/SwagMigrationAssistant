@@ -55,6 +55,7 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $converted['id'] = $crossSellingMapping['entityId'];
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
+
         $sourceProductId = null;
 
         if ($sourceProductMapping !== null) {
@@ -103,11 +104,9 @@ abstract class CrossSellingConverter extends ShopwareConverter
         );
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
-
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);

@@ -76,7 +76,6 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
         }
 
         $variantProductId = null;
-
         if ($variantProductMapping !== null) {
             $this->mappingIds[] = $variantProductMapping['id'];
             $variantProductId = $variantProductMapping['entityId'];
@@ -84,16 +83,13 @@ abstract class MainVariantRelationConverter extends ShopwareConverter
 
         $converted = [];
         $converted['id'] = $mainProductId;
-
         $converted['variantListingConfig'] = [
             'displayParent' => true,
             'mainVariantId' => $variantProductId,
         ];
-
         unset($data['id'], $data['ordernumber']);
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }

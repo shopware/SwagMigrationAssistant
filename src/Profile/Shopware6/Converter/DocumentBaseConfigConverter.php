@@ -58,6 +58,7 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
         $converted = $data;
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
+
         if ($converted['documentTypeId'] === null) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
@@ -71,10 +72,12 @@ class DocumentBaseConfigConverter extends ShopwareMediaConverter
 
             return new ConvertStruct(null, $data, $converted['id'] ?? null);
         }
+
         unset($converted['documentType']);
 
         if ($data['global']) {
             $converted['id'] = $this->globalDocumentBaseConfigLookup->get($converted['documentTypeId'], $this->context);
+
             if ($converted['id'] === null) {
                 $converted['id'] = $data['id'];
             }

@@ -63,14 +63,12 @@ abstract class NumberRangeConverter extends ShopwareConverter
     public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
         $this->generateChecksum($data);
-
         if (!$this->numberRangeTypes instanceof EntityCollection) {
             $this->numberRangeTypes = $this->numberRangeTypeRepo->search(new Criteria(), $context)->getEntities();
         }
 
         $connection = $migrationContext->getConnection();
         $this->connectionId = $connection->getId();
-
         $converted = [];
         $converted['id'] = $this->getUuid($data, $context);
 
@@ -114,7 +112,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
         );
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
@@ -146,7 +143,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
         // use global number range uuid for products if available
         if ($data['name'] === 'articleordernumber') {
             $productNumberRageUuid = $this->numberRangeLookup->get('product', $context);
-
             if ($productNumberRageUuid !== null) {
                 $this->mappingService->updateMapping(
                     $this->connectionId,
@@ -185,8 +181,8 @@ abstract class NumberRangeConverter extends ShopwareConverter
         }
 
         $collection = $this->numberRangeTypes->filterByProperty('technicalName', self::TYPE_MAPPING[$type]);
-        $first = $collection->first();
 
+        $first = $collection->first();
         if ($first === null) {
             return null;
         }
@@ -209,13 +205,11 @@ abstract class NumberRangeConverter extends ShopwareConverter
         Context $context,
     ): void {
         $language = $this->languageLookup->getLanguageEntity($context);
-
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $data['_locale']) {
             return;
         }
@@ -233,7 +227,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
 
         $localeTranslation['id'] = $mapping['entityId'];
         $languageUuid = $this->languageLookup->get($data['_locale'], $context);
-
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $converted['translations'][$languageUuid] = $localeTranslation;
@@ -255,7 +248,6 @@ abstract class NumberRangeConverter extends ShopwareConverter
                 $converted['id'] . ':' . $saleChannelId,
                 $context
             );
-
             $numberRangeSalesChannel = [];
             $numberRangeSalesChannel['id'] = $mapping['entityId'];
             $numberRangeSalesChannel['numberRangeId'] = $converted['id'];

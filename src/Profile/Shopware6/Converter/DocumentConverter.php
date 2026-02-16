@@ -64,6 +64,7 @@ class DocumentConverter extends ShopwareMediaConverter
         );
 
         $converted['documentTypeId'] = $this->documentTypeLookup->get($converted['documentType']['technicalName'], $this->context);
+
         if ($converted['documentTypeId'] === null) {
             $this->loggingService->log(
                 MigrationLogBuilder::fromMigrationContext($this->migrationContext)
@@ -77,6 +78,7 @@ class DocumentConverter extends ShopwareMediaConverter
 
             return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
         }
+
         unset($converted['documentType']);
 
         if (isset($converted['config']['documentTypeId'])) {

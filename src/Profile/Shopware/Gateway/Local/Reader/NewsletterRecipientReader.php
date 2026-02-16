@@ -189,11 +189,9 @@ class NewsletterRecipientReader extends AbstractReader implements ReaderInterfac
         foreach ($shops as $shop) {
             /** @phpstan-ignore shopware.unserializeUsage */
             $groupId = \unserialize($shop['groupID'], ['allowed_classes' => false]);
-
             if (!isset($resultSet[$groupId])) {
                 $resultSet[$groupId] = [];
             }
-
             $resultSet[$groupId][] = $shop;
         }
 

@@ -74,11 +74,9 @@ abstract class CustomerGroupConverter extends ShopwareConverter
         unset($data['id'], $data['groupkey'], $data['discounts']);
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
-
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -87,13 +85,11 @@ abstract class CustomerGroupConverter extends ShopwareConverter
     public function getCustomerGroupTranslation(array &$customerGroup, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
@@ -109,7 +105,6 @@ abstract class CustomerGroupConverter extends ShopwareConverter
             $data['id'] . ':' . $this->locale,
             $this->context
         );
-
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 

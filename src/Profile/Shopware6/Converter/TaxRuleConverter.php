@@ -44,7 +44,6 @@ class TaxRuleConverter extends ShopwareConverter
             DefaultEntities::TAX,
             $converted['taxId']
         );
-
         if ($taxId !== null) {
             $converted['taxId'] = $taxId;
         }
@@ -53,7 +52,6 @@ class TaxRuleConverter extends ShopwareConverter
             DefaultEntities::COUNTRY,
             $converted['countryId']
         );
-
         if ($countryId !== null) {
             $converted['countryId'] = $countryId;
         }

@@ -56,7 +56,6 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
     public function getMediaUuids(array $converted): ?array
     {
         $mediaUuids = [];
-
         foreach ($converted as $data) {
             if (!isset($data['media']['id'])) {
                 continue;
@@ -97,6 +96,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             Hasher::hash(\mb_strtolower($data['name'] . '_' . $data['group']['name']), 'md5'),
             $context
         );
+
         $this->mappingIds[] = $mapping['id'];
 
         $propertyGroupMapping = $this->mappingService->getOrCreateMapping(
@@ -105,6 +105,7 @@ abstract class PropertyGroupOptionConverter extends ShopwareConverter
             Hasher::hash(\mb_strtolower($data['group']['name']), 'md5'),
             $context
         );
+
         $this->mappingIds[] = $propertyGroupMapping['id'];
 
         $converted = [

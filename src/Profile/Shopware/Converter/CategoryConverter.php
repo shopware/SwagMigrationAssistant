@@ -55,7 +55,6 @@ abstract class CategoryConverter extends ShopwareConverter
     public function getMediaUuids(array $converted): ?array
     {
         $mediaUuids = [];
-
         foreach ($converted as $data) {
             if (!isset($data['media']['id'])) {
                 continue;
@@ -99,9 +98,7 @@ abstract class CategoryConverter extends ShopwareConverter
 
         $this->locale = $data['_locale'];
         $converted = [];
-
         $cmsPageUuid = $this->defaultCmsPageLookup->get($context);
-
         if ($cmsPageUuid !== null) {
             $converted['cmsPageId'] = $cmsPageUuid;
         }
@@ -117,22 +114,18 @@ abstract class CategoryConverter extends ShopwareConverter
             if ($parentMapping === null) {
                 throw MigrationException::parentEntityForChildNotFound(DefaultEntities::CATEGORY, $this->oldCategoryId);
             }
-
             $this->mappingIds[] = $parentMapping['id'];
             $converted['parentId'] = $parentMapping['entityId'];
-
             unset($parentMapping);
         } elseif (!isset($data['previousSiblingId'])) {
             // get last root category as previous sibling
             $previousSiblingUuid = $this->lowestRootCategoryLookup->get($context);
-
             if ($previousSiblingUuid !== null) {
                 $converted['afterCategoryId'] = $previousSiblingUuid;
             }
         }
 
         unset($data['parent']);
-
         if (isset($data['previousSiblingId'])) {
             $previousSiblingMapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -146,7 +139,6 @@ abstract class CategoryConverter extends ShopwareConverter
                 $this->mappingIds[] = $previousSiblingMapping['id'];
             }
         }
-
         unset($data['previousSiblingId'], $data['categoryPosition'], $previousSiblingMapping);
 
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
@@ -172,12 +164,10 @@ abstract class CategoryConverter extends ShopwareConverter
         if (!empty($converted['externalLink'])) {
             $converted['type'] = CategoryDefinition::TYPE_LINK;
         }
-
         if (isset($converted['metaDescription'])) {
             // meta description has a limit of 255 characters in SW6
             $converted['metaDescription'] = \mb_substr($converted['metaDescription'], 0, 255);
         }
-
         if (isset($converted['keywords'])) {
             // keywords has a limit of 255 characters in SW6
             $converted['keywords'] = \mb_substr($converted['keywords'], 0, 255);
@@ -197,7 +187,6 @@ abstract class CategoryConverter extends ShopwareConverter
                 $this->context
             );
         }
-
         unset($data['attributes']);
 
         $converted['translations'] = [];
@@ -231,7 +220,6 @@ abstract class CategoryConverter extends ShopwareConverter
         );
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
@@ -253,13 +241,11 @@ abstract class CategoryConverter extends ShopwareConverter
         $this->convertValue($converted, 'name', $data, 'description');
 
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if (!$language instanceof LanguageEntity) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }
@@ -275,7 +261,6 @@ abstract class CategoryConverter extends ShopwareConverter
             $this->oldCategoryId . ':' . $this->locale,
             $this->context
         );
-
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -357,13 +342,11 @@ abstract class CategoryConverter extends ShopwareConverter
     protected function addMediaTranslation(array &$media, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if (!$language instanceof LanguageEntity) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->locale) {
             return;
         }

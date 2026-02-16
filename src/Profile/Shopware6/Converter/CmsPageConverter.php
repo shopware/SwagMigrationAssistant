@@ -37,11 +37,9 @@ class CmsPageConverter extends ShopwareConverter
     protected function convertData(array $data): ConvertStruct
     {
         $converted = $data;
-
         // handle locked default layouts
         if (isset($converted['locked']) && $converted['locked'] === true) {
             $cmsPageMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CMS_PAGE, $data['id'], $this->context);
-
             if ($cmsPageMapping !== null) {
                 return new ConvertStruct(null, $data, $cmsPageMapping['id']);
             }
@@ -118,10 +116,8 @@ class CmsPageConverter extends ShopwareConverter
                         $block['backgroundMediaId'] = $this->getMappingIdFacade(DefaultEntities::MEDIA, $block['backgroundMediaId']);
                     }
                 }
-
                 unset($block);
             }
-
             if (isset($section['backgroundMediaId'])) {
                 $section['backgroundMediaId'] = $this->getMappingIdFacade(DefaultEntities::MEDIA, $section['backgroundMediaId']);
             }
@@ -132,7 +128,6 @@ class CmsPageConverter extends ShopwareConverter
     {
         $names = \array_column($converted['translations'], 'name');
         $names[] = $converted['name'];
-
         $duplicatePageUuid = $this->cmsPageLookup->getByNames($names, $this->context);
         $isDuplicated = $duplicatePageUuid !== null && $converted['id'] !== $duplicatePageUuid;
 
@@ -148,7 +143,6 @@ class CmsPageConverter extends ShopwareConverter
                 foreach ($converted['translations'] as &$translation) {
                     $translation['name'] .= ' (Migration)';
                 }
-
                 unset($translation);
             }
         }

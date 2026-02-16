@@ -54,7 +54,6 @@ abstract class OrderDocumentConverter extends ShopwareConverter
     public function getMediaUuids(array $converted): ?array
     {
         $mediaUuids = [];
-
         foreach ($converted as $data) {
             if (!isset($data['documentMediaFile']['id'])) {
                 continue;
@@ -103,12 +102,10 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         );
 
         $orderId = null;
-
         if ($orderMapping !== null) {
             $this->mappingIds[] = $orderMapping['id'];
             $orderId = $orderMapping['entityId'];
         }
-
         $converted['orderId'] = $orderId;
         unset($data['orderID']);
 
@@ -153,6 +150,11 @@ abstract class OrderDocumentConverter extends ShopwareConverter
         unset($data['attributes']);
 
         $converted['documentMediaFile'] = $this->getMediaFile($data);
+
+        if ($converted['documentMediaFile'] === null) {
+            return new ConvertStruct(null, $oldData);
+        }
+
         unset(
             $data['id'],
             $data['hash'],
@@ -238,7 +240,7 @@ abstract class OrderDocumentConverter extends ShopwareConverter
      *
      * @return array<mixed>
      */
-    protected function getMediaFile(array $data): array
+    protected function getMediaFile(array $data): ?array
     {
         $mapping = $this->mappingService->getOrCreateMapping(
             $this->connectionId,
@@ -272,13 +274,14 @@ abstract class OrderDocumentConverter extends ShopwareConverter
                     ->withConvertedData($newMedia)
                     ->build(ConvertSourceDataIncompleteLog::class)
             );
+
+            return null;
         }
 
         $newMedia['private'] = true;
         $this->convertValue($newMedia, 'title', $data, 'hash');
 
         $albumUuid = $this->mediaFolderLookup->get(DocumentDefinition::ENTITY_NAME, $this->context);
-
         if ($albumUuid !== null) {
             $newMedia['mediaFolderId'] = $albumUuid;
         }

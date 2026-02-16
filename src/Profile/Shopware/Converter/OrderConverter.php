@@ -116,7 +116,6 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context,
             $this->checksum
         );
-
         $converted['id'] = (string) $this->mainMapping['entityId'];
         unset($data['id']);
         $this->uuid = $converted['id'];
@@ -153,7 +152,6 @@ abstract class OrderConverter extends ShopwareConverter
             'id' => $orderCustomerMapping['entityId'],
             'customerId' => $customerId,
         ];
-
         $this->mappingIds[] = $orderCustomerMapping['id'];
         unset($customerMapping);
 
@@ -171,8 +169,8 @@ abstract class OrderConverter extends ShopwareConverter
             $this->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
             $this->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
         }
-        unset($data['userID'], $data['customer']);
 
+        unset($data['userID'], $data['customer']);
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
 
         if (isset($data['currency'])) {
@@ -182,7 +180,6 @@ abstract class OrderConverter extends ShopwareConverter
                 $converted['currencyId'] = $currencyUuid;
             }
         }
-
         $converted['itemRounding'] = [
             'decimals' => $context->getRounding()->getDecimals(),
             'interval' => 0.01,
@@ -242,7 +239,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             $converted['shippingCosts'] = $shippingCosts;
         }
-
         unset(
             $data['net'],
             $data['taxfree'],
@@ -255,11 +251,9 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         $converted['deliveries'] = $this->getDeliveries($data, $converted, $shippingCosts);
-
         if (isset($data['shippingaddress']['ustid']) && $data['shippingaddress']['ustid'] !== '') {
             $converted['orderCustomer']['vatIds'][] = $data['shippingaddress']['ustid'];
         }
-
         unset(
             $data['trackingcode'],
             $data['shippingMethod'],
@@ -275,18 +269,15 @@ abstract class OrderConverter extends ShopwareConverter
         if (!empty($converted['deliveries'])) {
             $converted['primaryOrderDeliveryId'] = $converted['deliveries'][0]['id'];
         }
-
         if (!empty($converted['transactions'])) {
             $converted['primaryOrderTransactionId'] = $converted['transactions'][0]['id'];
         }
 
         if (isset($data['billingaddress']) && \is_array($data['billingaddress'])) {
             $billingAddress = $this->getAddress($data['billingaddress']);
-
             if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
                 $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
             }
-
             if (!empty($billingAddress)) {
                 $converted['billingAddressId'] = $billingAddress['id'];
                 $converted['addresses'][] = $billingAddress;
@@ -324,12 +315,10 @@ abstract class OrderConverter extends ShopwareConverter
                 $converted['customFields'] = $customField;
             }
         }
-
         unset($data['attributes']);
 
         if (isset($data['locale'])) {
             $languageMapping = $this->languageLookup->get($data['locale'], $this->context);
-
             if ($languageMapping !== null) {
                 $converted['languageId'] = $languageMapping;
             }
@@ -359,11 +348,9 @@ abstract class OrderConverter extends ShopwareConverter
         );
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
-
         $this->updateMainMapping($migrationContext, $context);
 
         return new ConvertStruct($converted, $returnData, $this->mainMapping['id'] ?? null);
@@ -376,13 +363,11 @@ abstract class OrderConverter extends ShopwareConverter
     protected function applyTransactions(array $data, array &$converted): void
     {
         $converted['transactions'] = [];
-
         if (!isset($converted['lineItems'])) {
             return;
         }
 
         $cartPrice = $converted['price'];
-
         if (!$cartPrice instanceof CartPrice) {
             return;
         }
@@ -407,7 +392,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             return;
         }
-
         $stateId = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -423,7 +407,6 @@ abstract class OrderConverter extends ShopwareConverter
         if ($paymentMethodUuid === null) {
             return;
         }
-
         $id = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
@@ -450,12 +433,11 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getPaymentMethod(array $originalData): ?string
     {
         $paymentMethodMapping = null;
-
         if (isset($originalData['payment']['id'])) {
             $paymentMethodMapping = $this->mappingService->getMapping(
                 $this->connectionId,
                 PaymentMethodReader::getMappingName(),
-                (string) $originalData['payment']['id'],
+                $originalData['payment']['id'],
                 $this->context
             );
         }
@@ -488,9 +470,7 @@ abstract class OrderConverter extends ShopwareConverter
         if ($originalData === null || !isset($originalData['id'])) {
             return [];
         }
-
         $entityName = DefaultEntities::ORDER_ADDRESS;
-
         if ($type !== self::BILLING_ADDRESS) {
             $entityName = DefaultEntities::ORDER_ADDRESS . '_' . $type;
         }
@@ -502,23 +482,20 @@ abstract class OrderConverter extends ShopwareConverter
             $originalData['id'],
             $this->context
         );
-
         $address['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $address['country'] = $this->getCountry($originalData['country']);
-        $countryState = $this->getCountryState($originalData, $address['country']['id']);
 
+        $countryState = $this->getCountryState($originalData, $address['country']['id']);
         if (!empty($countryState)) {
             $address['countryState'] = $countryState;
         }
 
         $salutationUuid = $this->getSalutation($originalData['salutation']);
-
         if ($salutationUuid === null) {
             return [];
         }
-
         $address['salutationId'] = $salutationUuid;
 
         $this->convertValue($address, 'firstName', $originalData, 'firstname');
@@ -545,7 +522,6 @@ abstract class OrderConverter extends ShopwareConverter
     {
         $country = [];
         $countryUuid = null;
-
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
             $countryUuid = $this->countryLookup->getByIso3($oldCountryData['iso3'], $this->context);
         }
@@ -585,13 +561,11 @@ abstract class OrderConverter extends ShopwareConverter
     protected function applyCountryTranslation(array &$country, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
@@ -607,12 +581,10 @@ abstract class OrderConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
-
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $country['translations'][$languageUuid] = $localeTranslation;
@@ -703,13 +675,11 @@ abstract class OrderConverter extends ShopwareConverter
     protected function applyCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
@@ -725,12 +695,10 @@ abstract class OrderConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
-
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $state['translations'][$languageUuid] = $localeTranslation;
@@ -747,7 +715,6 @@ abstract class OrderConverter extends ShopwareConverter
     {
         $deliveries = [];
         $deliveryStateMapping = null;
-
         if (isset($data['status'])) {
             $deliveryStateMapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -770,7 +737,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             return [];
         }
-
         $this->mappingIds[] = $deliveryStateMapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -810,7 +776,6 @@ abstract class OrderConverter extends ShopwareConverter
 
         if (isset($converted['lineItems'])) {
             $positions = [];
-
             foreach ($converted['lineItems'] as $lineItem) {
                 $mapping = $this->mappingService->getOrCreateMapping(
                     $this->connectionId,
@@ -856,7 +821,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             return null;
         }
-
         $this->mappingIds[] = $shippingMethodMapping['id'];
 
         return $shippingMethodMapping['entityId'];
@@ -921,7 +885,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             $calculatedTax = null;
             $totalPrice = $lineItem['quantity'] * $originalLineItem['price'];
-
             if ($taxStatus === CartPrice::TAX_STATE_NET) {
                 $calculatedTax = $this->taxCalculator->calculateNetTaxes($totalPrice, $lineItemTaxRules);
             }
@@ -997,11 +960,9 @@ abstract class OrderConverter extends ShopwareConverter
     protected function getTaxStatus(array $originalData): string
     {
         $taxStatus = CartPrice::TAX_STATE_GROSS;
-
         if (isset($originalData['net']) && (bool) $originalData['net']) {
             $taxStatus = CartPrice::TAX_STATE_NET;
         }
-
         if (isset($originalData['taxfree']) && (bool) $originalData['taxfree']) {
             $taxStatus = CartPrice::TAX_STATE_FREE;
         }
@@ -1062,7 +1023,6 @@ abstract class OrderConverter extends ShopwareConverter
 
             return null;
         }
-
         $this->mappingIds[] = $mediaMapping['id'];
 
         $mapping = $this->mappingService->getOrCreateMapping(
@@ -1074,7 +1034,6 @@ abstract class OrderConverter extends ShopwareConverter
         $this->mappingIds[] = $mapping['id'];
 
         $accessGranted = false;
-
         if (isset($originalEsdItem['downloadAvailablePaymentStatus'])) {
             /** @phpstan-ignore shopware.unserializeUsage */
             $paymentStatusArray = \unserialize($originalEsdItem['downloadAvailablePaymentStatus'], ['allowed_classes' => false]);

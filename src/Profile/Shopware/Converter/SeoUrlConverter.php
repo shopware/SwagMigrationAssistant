@@ -84,7 +84,6 @@ abstract class SeoUrlConverter extends ShopwareConverter
         unset($data['subshopID']);
 
         $converted['languageId'] = $this->languageLookup->get($data['_locale'], $context);
-
         if ($converted['languageId'] !== null) {
             $this->mappingIds[] = $converted['languageId'];
             unset($data['_locale']);
@@ -105,24 +104,25 @@ abstract class SeoUrlConverter extends ShopwareConverter
                     $data['typeId'],
                     $context
                 );
+            }
 
-                if ($mapping === null) {
-                    $this->loggingService->log(
-                        MigrationLogBuilder::fromMigrationContext($migrationContext)
-                            ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
-                            ->withFieldName('foreignKey')
-                            ->withFieldSourcePath('type')
-                            ->withSourceData($data)
-                            ->build(ConvertAssociationMissingLog::class)
-                    );
+            if ($mapping === null) {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($migrationContext)
+                        ->withEntityName(SeoUrlDefinition::ENTITY_NAME)
+                        ->withFieldName('foreignKey')
+                        ->withFieldSourcePath('type')
+                        ->withSourceData($data)
+                        ->build(ConvertAssociationMissingLog::class)
+                );
 
-                    return new ConvertStruct(null, $originalData);
-                }
+                return new ConvertStruct(null, $originalData);
             }
 
             $converted['foreignKey'] = $mapping['entityId'];
             $converted['routeName'] = self::ROUTE_NAME_PRODUCT;
             $converted['pathInfo'] = '/detail/' . $mapping['entityId'];
+
             $this->mappingIds[] = $mapping['id'];
         } elseif ($data['type'] === self::TYPE_CATEGORY && isset($data['typeId'])) {
             $mapping = $this->mappingService->getMapping(
@@ -148,6 +148,7 @@ abstract class SeoUrlConverter extends ShopwareConverter
             $converted['foreignKey'] = $mapping['entityId'];
             $converted['routeName'] = self::ROUTE_NAME_NAVIGATION;
             $converted['pathInfo'] = '/navigation/' . $mapping['entityId'];
+
             $this->mappingIds[] = $mapping['id'];
         } else {
             $this->loggingService->log(

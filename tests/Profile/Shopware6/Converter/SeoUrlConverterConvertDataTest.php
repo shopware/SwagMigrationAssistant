@@ -12,6 +12,7 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Test\TestCaseBase\IntegrationTestBehaviour;
 use Shopware\Core\Framework\Uuid\Uuid;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\MigrationContext;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Converter\SeoUrlConverter;
@@ -36,11 +37,30 @@ class SeoUrlConverterConvertDataTest extends TestCase
         static::assertNull($result->getConverted());
     }
 
-    private function createSeoUrlConverter(): SeoUrlConverter
+    public function testConvertLogsAndReturnsIfForeignKeyMappingIsMissing(): void
+    {
+        $loggingService = new DummyLoggingService();
+        $seoUrlConverter = $this->createSeoUrlConverter($loggingService);
+
+        $result = $seoUrlConverter->convert([
+            'id' => Uuid::randomHex(),
+            'routeName' => 'frontend.navigation.page',
+            'foreignKey' => Uuid::randomHex(),
+        ], Context::createDefaultContext(), $this->createMigrationContext());
+
+        static::assertNotNull($result);
+        static::assertNull($result->getConverted());
+
+        $logs = $loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
+        static::assertSame(ConvertAssociationMissingLog::getCode(), $logs[0]['code']);
+    }
+
+    private function createSeoUrlConverter(?DummyLoggingService $loggingService = null): SeoUrlConverter
     {
         return new SeoUrlConverter(
             new Dummy6MappingService(),
-            new DummyLoggingService()
+            $loggingService ?? new DummyLoggingService()
         );
     }
 

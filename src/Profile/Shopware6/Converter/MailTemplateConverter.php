@@ -61,10 +61,12 @@ class MailTemplateConverter extends ShopwareMediaConverter
 
         if (isset($converted['mailTemplateType']['technicalName'])) {
             $mailTemplateTypeMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::MAIL_TEMPLATE_TYPE, $data['mailTemplateTypeId'], $this->context);
+
             if ($mailTemplateTypeMapping !== null) {
                 $typeUuid = $mailTemplateTypeMapping['entityId'];
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
+
                 if ($typeUuid === null) {
                     $this->loggingService->log(
                         MigrationLogBuilder::fromMigrationContext($this->migrationContext)

@@ -92,7 +92,6 @@ abstract class CustomerConverter extends ShopwareConverter
 
             return new ConvertStruct(null, $data);
         }
-
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
         unset($data['_locale']);
@@ -216,12 +215,10 @@ abstract class CustomerConverter extends ShopwareConverter
         if (isset($data['attributes'])) {
             $converted['customFields'] = $this->getAttributes($data['attributes'], DefaultEntities::CUSTOMER, $this->connectionName, ['id', 'userID'], $this->context);
         }
-
         unset($data['attributes']);
 
         if (isset($data['customerlanguage']['locale'])) {
             $languageUuid = $this->languageLookup->get($data['customerlanguage']['locale'], $context);
-
             if ($languageUuid !== null) {
                 $converted['languageId'] = $languageUuid;
             }
@@ -247,7 +244,6 @@ abstract class CustomerConverter extends ShopwareConverter
         );
 
         $returnData = $data;
-
         if (empty($returnData)) {
             $returnData = null;
         }
@@ -307,7 +303,6 @@ abstract class CustomerConverter extends ShopwareConverter
 
             return null;
         }
-
         $this->mappingIds[] = $paymentMethodMapping['id'];
 
         return $paymentMethodMapping['entityId'];
@@ -340,7 +335,6 @@ abstract class CustomerConverter extends ShopwareConverter
                 $address['id'],
                 $this->context
             );
-
             $newAddress['id'] = $addressMapping['entityId'];
             $this->mappingIds[] = $addressMapping['id'];
             $newAddress['salutationId'] = $salutationUuid;
@@ -348,7 +342,6 @@ abstract class CustomerConverter extends ShopwareConverter
             if (isset($originalData['default_billing_address_id']) && $address['id'] === $originalData['default_billing_address_id']) {
                 $converted['defaultBillingAddressId'] = $newAddress['id'];
                 unset($originalData['default_billing_address_id']);
-
                 if (empty($mainVatId) && isset($address['ustid']) && $address['ustid'] !== '') {
                     $mainVatId = $address['ustid'];
                 }
@@ -357,7 +350,6 @@ abstract class CustomerConverter extends ShopwareConverter
             if (isset($originalData['default_shipping_address_id']) && $address['id'] === $originalData['default_shipping_address_id']) {
                 $converted['defaultShippingAddressId'] = $newAddress['id'];
                 unset($originalData['default_shipping_address_id']);
-
                 if (isset($address['ustid']) && $address['ustid'] !== '') {
                     $mainVatId = $address['ustid'];
                 }
@@ -371,7 +363,6 @@ abstract class CustomerConverter extends ShopwareConverter
             $newAddress['country'] = $this->getCountry($address['country']);
 
             $countryState = $this->getCountryState($address, $newAddress['country']['id']);
-
             if (!empty($countryState)) {
                 $newAddress['countryState'] = $countryState;
             }
@@ -391,7 +382,6 @@ abstract class CustomerConverter extends ShopwareConverter
             if (isset($address['ustid']) && $address['ustid'] !== '') {
                 $converted['vatIds'][] = $address['ustid'];
             }
-
             $addresses[] = $newAddress;
         }
 
@@ -425,7 +415,6 @@ abstract class CustomerConverter extends ShopwareConverter
     {
         $country = [];
         $countryUuid = null;
-
         if (isset($oldCountryData['countryiso'], $oldCountryData['iso3'])) {
             $countryUuid = $this->countryLookup->getByIso3($oldCountryData['iso3'], $this->context);
         }
@@ -439,7 +428,6 @@ abstract class CustomerConverter extends ShopwareConverter
                 $oldCountryData['id'],
                 $this->context
             );
-
             $country['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
         }
@@ -466,13 +454,11 @@ abstract class CustomerConverter extends ShopwareConverter
     protected function applyCountryTranslation(array &$country, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
@@ -488,12 +474,10 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
-
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $country['translations'][$languageUuid] = $localeTranslation;
@@ -584,13 +568,11 @@ abstract class CustomerConverter extends ShopwareConverter
     protected function applyCountryStateTranslation(array &$state, array $data): void
     {
         $language = $this->languageLookup->getLanguageEntity($this->context);
-
         if ($language === null) {
             return;
         }
 
         $locale = $language->getLocale();
-
         if ($locale === null || $locale->getCode() === $this->mainLocale) {
             return;
         }
@@ -606,12 +588,10 @@ abstract class CustomerConverter extends ShopwareConverter
             $data['id'] . ':' . $this->mainLocale,
             $this->context
         );
-
         $localeTranslation['id'] = $mapping['entityId'];
         $this->mappingIds[] = $mapping['id'];
 
         $languageUuid = $this->languageLookup->get($this->mainLocale, $this->context);
-
         if ($languageUuid !== null) {
             $localeTranslation['languageId'] = $languageUuid;
             $state['translations'][$languageUuid] = $localeTranslation;
@@ -708,7 +688,6 @@ abstract class CustomerConverter extends ShopwareConverter
 
             return null;
         }
-
         $this->mappingIds[] = $mapping['id'];
 
         return $mapping['entityId'];
@@ -725,7 +704,7 @@ abstract class CustomerConverter extends ShopwareConverter
     {
         $converted['accountType'] = CustomerEntity::ACCOUNT_TYPE_PRIVATE;
 
-        $defaultBillingAddress = isset($data['default_billing_address_id']) ? $this->getAddressWithId($data, (string) $data['default_billing_address_id']) : null;
+        $defaultBillingAddress = isset($data['default_billing_address_id']) ? $this->getAddressWithId($data, $data['default_billing_address_id']) : null;
 
         if ($defaultBillingAddress !== null
             && isset($defaultBillingAddress['company'])
@@ -737,7 +716,7 @@ abstract class CustomerConverter extends ShopwareConverter
             return;
         }
 
-        $defaultShippingAddress = isset($data['default_shipping_address_id']) ? $this->getAddressWithId($data, (string) $data['default_shipping_address_id']) : null;
+        $defaultShippingAddress = isset($data['default_shipping_address_id']) ? $this->getAddressWithId($data, $data['default_shipping_address_id']) : null;
 
         if ($defaultShippingAddress !== null
             && isset($defaultShippingAddress['company'])

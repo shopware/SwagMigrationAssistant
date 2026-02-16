@@ -152,7 +152,6 @@ abstract class TranslationConverter extends ShopwareConverter
             $product['id'] = $mapping['entityId'];
             $this->mappingIds[] = $mapping['id'];
         }
-
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_TRANSLATION);
@@ -216,6 +215,7 @@ abstract class TranslationConverter extends ShopwareConverter
         unset($data['id']);
 
         $languageUuid = $this->languageLookup->get($data['locale'], $this->context);
+
         if ($languageUuid !== null) {
             $productTranslation['languageId'] = $languageUuid;
             $product['translations'][$languageUuid] = $productTranslation;
@@ -260,12 +260,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $product['id'] = null;
-        } else {
-            $product['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $product['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_TRANSLATION);
@@ -338,12 +337,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $manufacturer['id'] = null;
-        } else {
-            $manufacturer['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $manufacturer['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $manufacturer['entityDefinitionClass'] = ProductManufacturerDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_MANUFACTURER_TRANSLATION);
@@ -422,12 +420,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $unit['id'] = null;
-        } else {
-            $unit['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $unit['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $unit['entityDefinitionClass'] = UnitDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::UNIT_TRANSLATION);
@@ -511,19 +508,17 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $category['id'] = null;
-        } else {
-            $category['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $category['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $category['entityDefinitionClass'] = CategoryDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::CATEGORY_TRANSLATION);
         if ($objectData === null) {
             return new ConvertStruct(null, $sourceData);
         }
-
         // no equivalent in category translation definition
         unset(
             $objectData['streamId'],
@@ -610,12 +605,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $configuratorOption['id'] = null;
-        } else {
-            $configuratorOption['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $configuratorOption['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $configuratorOption['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION);
@@ -691,12 +685,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $configuratorOptionGroup['id'] = null;
-        } else {
-            $configuratorOptionGroup['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $configuratorOptionGroup['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $configuratorOptionGroup['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_TRANSLATION);
@@ -775,12 +768,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $propertyValue['id'] = null;
-        } else {
-            $propertyValue['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $propertyValue['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $propertyValue['entityDefinitionClass'] = PropertyGroupOptionDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_OPTION_TRANSLATION);
@@ -854,12 +846,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $propertyOption['id'] = null;
-        } else {
-            $propertyOption['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
 
+        $propertyOption['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $propertyOption['entityDefinitionClass'] = PropertyGroupDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PROPERTY_GROUP_TRANSLATION);
@@ -1025,13 +1016,12 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $media['id'] = null;
-        } else {
-            $media['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
-
         unset($data['objectkey'], $data['mediaId']);
+
+        $media['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $media['entityDefinitionClass'] = MediaDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::MEDIA);

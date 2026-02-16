@@ -45,7 +45,6 @@ abstract class ProductOptionRelationConverter extends ShopwareConverter
         );
 
         $productContainerId = null;
-
         if ($productContainerMapping !== null) {
             $this->mappingIds[] = $productContainerMapping['id'];
             $productContainerId = $productContainerMapping['entityId'];
