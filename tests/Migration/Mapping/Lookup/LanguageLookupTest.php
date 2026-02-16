@@ -196,6 +196,23 @@ class LanguageLookupTest extends TestCase
         return $returnData;
     }
 
+    /**
+     * @return array<string, LanguageEntity>
+     */
+    public function getDefaultLanguageCacheData(): array
+    {
+        $languageRepository = self::getContainer()->get('language.repository');
+        $list = $languageRepository->search(new Criteria(), Context::createDefaultContext())->getEntities();
+
+        $defaultLanguageCacheData = [];
+        foreach ($list as $language) {
+            static::assertInstanceOf(LanguageEntity::class, $language);
+            $defaultLanguageCacheData[$language->getId()] = $language;
+        }
+
+        return $defaultLanguageCacheData;
+    }
+
     private function getLanguageLookup(): LanguageLookup
     {
         return new LanguageLookup(
@@ -238,22 +255,5 @@ class LanguageLookupTest extends TestCase
         }
 
         return $cacheData;
-    }
-
-    /**
-     * @return array<string, LanguageEntity>
-     */
-    public function getDefaultLanguageCacheData(): array
-    {
-        $languageRepository = self::getContainer()->get('language.repository');
-        $list = $languageRepository->search(new Criteria(), Context::createDefaultContext())->getEntities();
-
-        $defaultLanguageCacheData = [];
-        foreach ($list as $language) {
-            static::assertInstanceOf(LanguageEntity::class, $language);
-            $defaultLanguageCacheData[$language->getId()] = $language;
-        }
-
-        return $defaultLanguageCacheData;
     }
 }

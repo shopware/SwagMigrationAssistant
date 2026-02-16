@@ -13,16 +13,6 @@ use SwagMigrationAssistant\Exception\MigrationException;
 #[Package('fundamentals@after-sales')]
 enum MigrationStep: string
 {
-    final public const MANUAL_STEPS = [
-        self::ERROR_RESOLUTION,
-        self::WAITING_FOR_APPROVE,
-    ];
-
-    final public const FINAL_STEPS = [
-        self::FINISHED,
-        self::ABORTED,
-    ];
-
     case IDLE = 'idle';
 
     case FETCHING = 'fetching';
@@ -44,6 +34,15 @@ enum MigrationStep: string
     case FINISHED = 'finished';
 
     case ABORTED = 'aborted';
+    final public const MANUAL_STEPS = [
+        self::ERROR_RESOLUTION,
+        self::WAITING_FOR_APPROVE,
+    ];
+
+    final public const FINAL_STEPS = [
+        self::FINISHED,
+        self::ABORTED,
+    ];
 
     public function isRunning(): bool
     {

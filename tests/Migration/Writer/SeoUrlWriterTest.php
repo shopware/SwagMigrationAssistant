@@ -75,11 +75,11 @@ class SeoUrlWriterTest extends TestCase
 
         $salesChannelSearchResult = $this->getSalesChannelSearchResult($context);
 
-        $this->salesChannelRepository->expects(static::once())
+        $this->salesChannelRepository->expects($this->once())
             ->method('search')
             ->willReturn($salesChannelSearchResult);
 
-        $this->seoUrlPersister->expects(static::once())
+        $this->seoUrlPersister->expects($this->once())
             ->method('updateSeoUrls');
 
         $result = $this->seoUrlWriter->writeData($seoUrlData, $context);
@@ -105,11 +105,11 @@ class SeoUrlWriterTest extends TestCase
 
         $salesChannelSearchResult = $this->getSalesChannelSearchResult($context);
 
-        $this->salesChannelRepository->expects(static::once())
+        $this->salesChannelRepository->expects($this->once())
             ->method('search')
             ->willReturn($salesChannelSearchResult);
 
-        $this->seoUrlPersister->expects(static::never())
+        $this->seoUrlPersister->expects($this->never())
             ->method('updateSeoUrls');
 
         $result = $this->seoUrlWriter->writeData($seoUrlData, $context);

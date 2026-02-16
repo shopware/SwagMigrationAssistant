@@ -164,6 +164,16 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         );
     }
 
+    public function readTotals(MigrationContextInterface $migrationContext): array
+    {
+        return $this->tableCountReader->readTotals($migrationContext);
+    }
+
+    public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
+    {
+        return $this->tableReader->read($migrationContext, $tableName, $filter);
+    }
+
     /**
      * @param array<string, mixed> $environmentData
      */
@@ -180,15 +190,5 @@ class ShopwareApiGateway implements ShopwareGatewayInterface
         }
 
         return Hasher::hash($config['esdKey'] . $config['installationDate']);
-    }
-
-    public function readTotals(MigrationContextInterface $migrationContext): array
-    {
-        return $this->tableCountReader->readTotals($migrationContext);
-    }
-
-    public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
-    {
-        return $this->tableReader->read($migrationContext, $tableName, $filter);
     }
 }

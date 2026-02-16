@@ -20,17 +20,17 @@ use Symfony\Contracts\Service\ResetInterface;
 class SeoUrlTemplateLookup implements ResetInterface
 {
     /**
+     * @var array<string, string|null>
+     */
+    private array $cache = [];
+
+    /**
      * @param EntityRepository<SeoUrlTemplateCollection> $seoUrlTemplateRepository
      */
     public function __construct(
         private readonly EntityRepository $seoUrlTemplateRepository,
     ) {
     }
-
-    /**
-     * @var array<string, string|null>
-     */
-    private array $cache = [];
 
     public function get(
         ?string $salesChannelId,

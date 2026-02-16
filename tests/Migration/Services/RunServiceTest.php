@@ -158,12 +158,12 @@ class RunServiceTest extends TestCase
     {
         $trackingEventClient = $this->createMock(TrackingEventClient::class);
         $trackingEventClient
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('fireTrackingEvent');
 
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function (MigrationProcessMessage $message): bool {
                 static::assertSame($message->getContext(), $this->context);
@@ -189,12 +189,12 @@ class RunServiceTest extends TestCase
     {
         $trackingEventClient = $this->createMock(TrackingEventClient::class);
         $trackingEventClient
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('fireTrackingEvent');
 
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $run = new SwagMigrationRunEntity();
@@ -220,12 +220,12 @@ class RunServiceTest extends TestCase
     {
         $trackingEventClient = $this->createMock(TrackingEventClient::class);
         $trackingEventClient
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('fireTrackingEvent');
 
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->runRepo = new StaticEntityRepository([
@@ -262,16 +262,16 @@ class RunServiceTest extends TestCase
     {
         $trackingEventClient = $this->createMock(TrackingEventClient::class);
         $trackingEventClient
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('fireTrackingEvent');
 
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $premappingService = $this->createMock(PremappingService::class);
-        $premappingService->expects(static::once())->method('generatePremapping')->willReturn([
+        $premappingService->expects($this->once())->method('generatePremapping')->willReturn([
             new PremappingStruct('salutation', [
                 new PremappingEntityStruct('salutation', 'salutation', ''),
             ], []),
@@ -294,12 +294,12 @@ class RunServiceTest extends TestCase
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('transitionToRunStep');
 
         /** @var StaticEntityRepository<SwagMigrationRunCollection> $runRepo */
@@ -332,18 +332,18 @@ class RunServiceTest extends TestCase
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->willReturn(new Envelope(new \stdClass()));
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('transitionToRunStep');
 
         $logGroupingService = $this->createMock(LogGroupingService::class);
         $logGroupingService
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getGroupedLogsByCodeAndEntity')
             ->willReturn([
                 'total' => 0,
@@ -378,17 +378,17 @@ class RunServiceTest extends TestCase
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
         $runTransitionService
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('transitionToRunStep');
 
         $logGroupingService = $this->createMock(LogGroupingService::class);
         $logGroupingService
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getGroupedLogsByCodeAndEntity')
             ->willReturn([
                 'total' => 5,
@@ -424,13 +424,13 @@ class RunServiceTest extends TestCase
     {
         $dbalConnection = $this->createMock(Connection::class);
         $dbalConnection
-            ->expects(static::exactly(2))
+            ->expects($this->exactly(2))
             ->method('fetchOne')
             ->willReturnOnConsecutiveCalls(false, true);
 
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $runService = $this->createRunService(
@@ -457,7 +457,7 @@ class RunServiceTest extends TestCase
 
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $runService = $this->createRunService(
@@ -473,7 +473,7 @@ class RunServiceTest extends TestCase
     {
         $messageBus = $this->createMock(MessageBusInterface::class);
         $messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $runService = $this->createRunService(
