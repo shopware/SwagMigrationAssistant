@@ -121,7 +121,7 @@ class SeoUrlReader extends AbstractReader implements ReaderInterface
         }
 
         /** @phpstan-ignore shopware.unserializeUsage */
-        return (bool) \unserialize($useUrlToLower);
+        return (bool) \unserialize($useUrlToLower, ['allowed_classes' => false]);
     }
 
     /**

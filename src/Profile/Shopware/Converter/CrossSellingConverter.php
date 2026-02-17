@@ -89,8 +89,8 @@ abstract class CrossSellingConverter extends ShopwareConverter
         $converted['productId'] = $sourceProductId;
         $converted['assignedProducts'] = [
             [
-                'id' => $relationMapping['entityId'],
-                'position' => $data['position'],
+                'id' => $relationMapping['entityId'] ?? null,
+                'position' => $data['position'] ?? null,
                 'productId' => $relatedProductId,
             ],
         ];

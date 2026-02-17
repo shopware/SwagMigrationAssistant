@@ -117,8 +117,7 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
         }
 
         $converted['languageId'] = $this->languageLookup->get($this->locale, $context);
-        $salesChannelUuid = $this->getSalesChannel($data);
-        $converted['salesChannelId'] = $salesChannelUuid;
+        $converted['salesChannelId'] = $this->getSalesChannel($data);
 
         unset(
             $data['shopId'],
@@ -168,6 +167,10 @@ abstract class NewsletterRecipientConverter extends ShopwareConverter
      */
     protected function getSalesChannel(array $data): ?string
     {
+        if (!isset($data['shopId']) || $data['shopId'] === '') {
+            return null;
+        }
+
         $salesChannelMapping = $this->mappingService->getMapping(
             $this->connectionId,
             DefaultEntities::SALES_CHANNEL,

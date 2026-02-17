@@ -147,11 +147,11 @@ abstract class TranslationConverter extends ShopwareConverter
                     ->build(ConvertAssociationMissingLog::class)
             );
 
-            $product['id'] = null;
-        } else {
-            $product['id'] = $mapping['entityId'];
-            $this->mappingIds[] = $mapping['id'];
+            return new ConvertStruct(null, $sourceData);
         }
+
+        $product['id'] = $mapping['entityId'];
+        $this->mappingIds[] = $mapping['id'];
         $product['entityDefinitionClass'] = ProductDefinition::class;
 
         $objectData = $this->unserializeTranslation($data, DefaultEntities::PRODUCT_TRANSLATION);
