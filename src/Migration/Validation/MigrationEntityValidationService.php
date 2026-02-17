@@ -349,6 +349,7 @@ class MigrationEntityValidationService implements ResetInterface
         }
 
         if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
+            // skip as we only have an ID and no other fields to validate
             return;
         }
 
