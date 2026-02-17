@@ -37,10 +37,10 @@ class MigrationDataConverterTest extends TestCase
 
         $converter = $this->createMock(ConverterInterface::class);
         // // To pass the test case, return null
-        $converter->expects(static::once())->method('convert')->willReturn(null);
+        $converter->expects($this->once())->method('convert')->willReturn(null);
 
         $converterRegistry = $this->createMock(ConverterRegistryInterface::class);
-        $converterRegistry->expects(static::once())->method('getConverter')->willReturn($converter);
+        $converterRegistry->expects($this->once())->method('getConverter')->willReturn($converter);
 
         $dummyLogger = new DummyLoggingService();
 

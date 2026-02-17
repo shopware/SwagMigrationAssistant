@@ -43,6 +43,11 @@ class MigrationValidationResult
         return \array_values($this->logs);
     }
 
+    public function getEntityName(): string
+    {
+        return $this->entityName;
+    }
+
     private function createLogKey(MigrationLogEntry $log): string
     {
         return Hasher::hash(\implode('.', [
@@ -51,10 +56,5 @@ class MigrationValidationResult
             $log->getEntityId() ?? '',
             $log->getFieldName() ?? '',
         ]));
-    }
-
-    public function getEntityName(): string
-    {
-        return $this->entityName;
     }
 }

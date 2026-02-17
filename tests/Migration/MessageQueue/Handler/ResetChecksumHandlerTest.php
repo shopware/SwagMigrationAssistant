@@ -76,15 +76,15 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockResetChecksumsAndClearFlag(0);
 
         $this->migrationRunRepo
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('update');
 
         $this->migrationRunRepo
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('upsert');
 
         $this->messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->handler->__invoke($message);
@@ -104,11 +104,11 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockResetChecksumsAndClearFlag(2);
 
         $this->migrationRunRepo
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('update');
 
         $this->messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->handler->__invoke($message);
@@ -131,7 +131,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return isset($data[0]['id'])
@@ -140,7 +140,7 @@ class ResetChecksumHandlerTest extends TestCase
             }));
 
         $this->messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->handler->__invoke($message);
@@ -163,14 +163,14 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) use ($connectionId) {
                 return $dispatchedMessage instanceof ResetChecksumMessage
@@ -197,7 +197,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockResetChecksumsOnly(ResetChecksumHandler::BATCH_SIZE);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::isInstanceOf(ResetChecksumMessage::class))
             ->willReturnCallback(fn ($msg) => new Envelope($msg));
@@ -224,12 +224,12 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->runTransitionService
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('forceTransitionToRunStep')
             ->with($runId, MigrationStep::CLEANUP);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 $progress = $data[0]['progress'];
@@ -241,7 +241,7 @@ class ResetChecksumHandlerTest extends TestCase
             }));
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::isInstanceOf(MigrationProcessMessage::class))
             ->willReturnCallback(fn ($msg) => new Envelope($msg));
@@ -270,11 +270,11 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update');
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) use ($connectionId, $runId) {
                 return $dispatchedMessage instanceof ResetChecksumMessage
@@ -304,7 +304,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
@@ -333,14 +333,14 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
             }));
 
         $this->messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->handler->__invoke($message);
@@ -365,7 +365,7 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockRunSearch($runId);
 
         $this->migrationRunRepo
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('update')
             ->with(static::callback(function ($data) use ($runId) {
                 return $data[0]['id'] === $runId && isset($data[0]['progress']);
@@ -388,15 +388,15 @@ class ResetChecksumHandlerTest extends TestCase
         $this->mockResetChecksumsAndClearFlag(2);
 
         $this->migrationRunRepo
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('update');
 
         $this->migrationRunRepo
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('upsert');
 
         $this->messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->handler->__invoke($message);
@@ -416,7 +416,7 @@ class ResetChecksumHandlerTest extends TestCase
         $queryBuilder->method('setParameter')->willReturnSelf();
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('createQueryBuilder')
             ->willReturn($queryBuilder);
     }
@@ -441,7 +441,7 @@ class ResetChecksumHandlerTest extends TestCase
     private function mockResetChecksumsOnly(int $affectedRows): void
     {
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with(static::stringContains('swag_migration_mapping'))
             ->willReturn($affectedRows);

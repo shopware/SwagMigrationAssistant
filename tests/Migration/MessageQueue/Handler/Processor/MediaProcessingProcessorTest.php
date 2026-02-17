@@ -141,7 +141,7 @@ class MediaProcessingProcessorTest extends TestCase
     public function testTransitionsToNextStepIfNoMediaFiles(): void
     {
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
-        $runTransitionService->expects(static::once())
+        $runTransitionService->expects($this->once())
             ->method('transitionToRunStep')
             ->with(
                 $this->migrationContext->getRunUuid(),
@@ -189,7 +189,7 @@ class MediaProcessingProcessorTest extends TestCase
         );
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('log')->with(
+        $logging->expects($this->once())->method('log')->with(
             static::isInstanceOf(FetchDataSetMissingLog::class)
         );
 
@@ -226,7 +226,7 @@ class MediaProcessingProcessorTest extends TestCase
         $registry->method('getProcessor')->willReturn($processorMock);
 
         $logging = $this->createMock(LoggingService::class);
-        $logging->expects(static::once())->method('log')->with(
+        $logging->expects($this->once())->method('log')->with(
             static::isInstanceOf(FetchProcessorMissingLog::class)
         );
 
@@ -280,7 +280,7 @@ class MediaProcessingProcessorTest extends TestCase
             ),
         ];
 
-        $processorMock->expects(static::once())
+        $processorMock->expects($this->once())
             ->method('process')
             ->willReturn($workload);
 
@@ -349,7 +349,7 @@ class MediaProcessingProcessorTest extends TestCase
             ),
         ];
 
-        $processorMock->expects(static::exactly(2))
+        $processorMock->expects($this->exactly(2))
             ->method('process')
             ->willReturnOnConsecutiveCalls($firstWorkload, $secondWorkload);
 
@@ -407,7 +407,7 @@ class MediaProcessingProcessorTest extends TestCase
             ),
         ];
 
-        $processorMock->expects(static::once())
+        $processorMock->expects($this->once())
             ->method('process')
             ->willReturn($workload);
 
@@ -429,7 +429,7 @@ class MediaProcessingProcessorTest extends TestCase
         $dataSetRegistry->method('getDataSet')->willReturn(new MediaDataSet());
 
         $runTransitionService = $this->createMock(RunTransitionServiceInterface::class);
-        $runTransitionService->expects(static::once())
+        $runTransitionService->expects($this->once())
             ->method('transitionToRunStep')
             ->with(
                 $this->migrationContext->getRunUuid(),

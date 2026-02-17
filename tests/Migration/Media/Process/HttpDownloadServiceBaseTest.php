@@ -258,7 +258,7 @@ class HttpDownloadServiceBaseTest extends TestCase
 
         $fileSaverMock = $this->createMock(FileSaver::class);
         // TestCase: Check that the filename starts with "/tmp/", the file exists and the size is correct
-        $fileSaverMock->expects(static::exactly(2))
+        $fileSaverMock->expects($this->exactly(2))
             ->method('persistFileToMedia')
             ->willReturnCallback(function ($mediaFile, $destination, $mediaId): void {
                 static::assertInstanceOf(MediaFile::class, $mediaFile);

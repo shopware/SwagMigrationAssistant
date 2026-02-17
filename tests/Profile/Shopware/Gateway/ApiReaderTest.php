@@ -56,7 +56,7 @@ class ApiReaderTest extends TestCase
             new ProductDataSet(),
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects($this->once())
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);
@@ -88,7 +88,7 @@ class ApiReaderTest extends TestCase
             new ProductDataSet(),
         );
         $mock = $this->getMockBuilder(ConnectionFactory::class)->getMock();
-        $mock->expects(static::once())
+        $mock->expects($this->once())
             ->method('createApiClient')
             ->with($migrationContext)
             ->willReturn($client);

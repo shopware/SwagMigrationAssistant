@@ -25,11 +25,11 @@ class Migration1754896654TruncateMigrationLogsTest extends TestCase
 {
     use KernelTestBehaviour;
 
-    private Connection $connection;
-
     private const MIGRATION_LOGGING_TABLE = 'swag_migration_logging';
 
     private const MIGRATION_LOGGING_COUNT = 12;
+
+    private Connection $connection;
 
     protected function setUp(): void
     {
