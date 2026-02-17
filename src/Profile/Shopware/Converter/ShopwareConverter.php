@@ -80,7 +80,7 @@ abstract class ShopwareConverter extends Converter
             new \DateTime($value);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             return false;
         }
     }

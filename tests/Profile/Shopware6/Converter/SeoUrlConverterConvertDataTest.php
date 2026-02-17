@@ -31,7 +31,9 @@ class SeoUrlConverterConvertDataTest extends TestCase
 
         $seoUrlConverter = $this->createSeoUrlConverter();
 
-        static::assertNull($seoUrlConverter->convert($data, Context::createDefaultContext(), $this->createMigrationContext()));
+        $result = $seoUrlConverter->convert($data, Context::createDefaultContext(), $this->createMigrationContext());
+        static::assertNotNull($result);
+        static::assertNull($result->getConverted());
     }
 
     private function createSeoUrlConverter(): SeoUrlConverter

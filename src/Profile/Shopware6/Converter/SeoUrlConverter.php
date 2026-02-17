@@ -10,6 +10,8 @@ namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\SeoUrlDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -33,37 +35,45 @@ class SeoUrlConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === SeoUrlDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ?ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
         if (isset($data['isModified']) && $data['isModified'] === false) {
-            return null;
+            return new ConvertStruct(null, $data);
         }
 
         $converted = $data;
 
         if (isset($converted['foreignKey'])) {
-            $relatedEntity = null;
-            if ($converted['routeName'] === self::CATEGORY_ROUTE_NAME) {
-                $relatedEntity = DefaultEntities::CATEGORY;
-            } elseif ($converted['routeName'] === self::PRODUCT_ROUTE_NAME) {
-                $relatedEntity = DefaultEntities::PRODUCT;
-            }
-
-            if ($relatedEntity !== null) {
+            if (!isset($converted['routeName'])) {
+                $converted['foreignKey'] = null;
+            } elseif ($converted['routeName'] === self::CATEGORY_ROUTE_NAME) {
                 $converted['foreignKey'] = $this->getMappingIdFacade(
-                    $relatedEntity,
+                    DefaultEntities::CATEGORY,
                     $converted['foreignKey']
                 );
+            } elseif ($converted['routeName'] === self::PRODUCT_ROUTE_NAME) {
+                $converted['foreignKey'] = $this->getMappingIdFacade(
+                    DefaultEntities::PRODUCT,
+                    $converted['foreignKey']
+                );
+            } else {
+                $this->loggingService->log(
+                    MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                        ->withEntityName(DefaultEntities::SEO_URL)
+                        ->withFieldName('routeName')
+                        ->withSourceData($data)
+                        ->build(ConvertObjectTypeUnsupportedLog::class)
+                );
+
+                return new ConvertStruct(null, $data);
             }
         }
 
-        if (isset($data['id']) && isset($converted['id'])) {
-            $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
-                DefaultEntities::SEO_URL,
-                $data['id'],
-                $converted['id']
-            );
-        }
+        $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
+            DefaultEntities::SEO_URL,
+            $data['id'],
+            $converted['id']
+        );
 
         if (isset($converted['salesChannelId'])) {
             $converted['salesChannelId'] = $this->getMappingIdFacade(

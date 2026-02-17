@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CurrencyLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
@@ -40,8 +42,19 @@ abstract class CurrencyConverter extends ShopwareConverter
         return $data['currency'];
     }
 
-    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ?ConvertStruct
+    public function convert(array $data, Context $context, MigrationContextInterface $migrationContext): ConvertStruct
     {
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(DefaultEntities::CURRENCY)
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
         $this->generateChecksum($data);
         $this->context = $context;
         $this->mainLocale = $data['_locale'];
@@ -74,8 +87,8 @@ abstract class CurrencyConverter extends ShopwareConverter
             $context,
             $this->checksum
         );
-        $converted['id'] = $this->mainMapping['entityId'];
 
+        $converted['id'] = $this->mainMapping['entityId'];
         $converted['isDefault'] = false;
         unset($data['standard']);
         $this->getCurrencyTranslation($converted, $data);

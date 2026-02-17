@@ -7,9 +7,12 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
+use Shopware\Core\Content\MailTemplate\MailTemplateDefinition;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\MailTemplateTypeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\SystemDefaultMailTemplateLookup;
@@ -58,27 +61,39 @@ class MailTemplateConverter extends ShopwareMediaConverter
 
         if (isset($converted['mailTemplateType']['technicalName'])) {
             $mailTemplateTypeMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::MAIL_TEMPLATE_TYPE, $data['mailTemplateTypeId'], $this->context);
+
             if ($mailTemplateTypeMapping !== null) {
                 $typeUuid = $mailTemplateTypeMapping['entityId'];
             } else {
                 $typeUuid = $this->mailTemplateTypeLookup->get($converted['mailTemplateType']['technicalName'], $this->context);
-                if ($typeUuid !== null) {
-                    $this->mappingService->createMapping(
-                        $this->connectionId,
-                        DefaultEntities::MAIL_TEMPLATE_TYPE,
-                        $data['mailTemplateTypeId'],
-                        $this->checksum,
-                        null,
-                        $typeUuid,
+
+                if ($typeUuid === null) {
+                    $this->loggingService->log(
+                        MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->withEntityName(MailTemplateDefinition::ENTITY_NAME)
+                            ->withFieldName('mailTemplateTypeId')
+                            ->withFieldSourcePath('mailTemplateType.technicalName')
+                            ->build(ConvertObjectTypeUnsupportedLog::class)
                     );
+
+                    return new ConvertStruct(null, $data, $converted['id'] ?? null);
                 }
+
+                $this->mappingService->createMapping(
+                    $this->connectionId,
+                    DefaultEntities::MAIL_TEMPLATE_TYPE,
+                    $data['mailTemplateTypeId'],
+                    $this->checksum,
+                    null,
+                    $typeUuid,
+                );
             }
 
-            $converted['mailTemplateTypeId'] = $typeUuid;
             unset($converted['mailTemplateType']);
+            $converted['mailTemplateTypeId'] = $typeUuid;
         }
 
-        if ($data['systemDefault'] && isset($converted['mailTemplateTypeId'])) {
+        if ($data['systemDefault']) {
             $defaultMailTemplateMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::MAIL_TEMPLATE, $data['id'], $this->context);
             if ($defaultMailTemplateMapping !== null) {
                 $defaultMailTemplateUuid = $defaultMailTemplateMapping['entityId'];

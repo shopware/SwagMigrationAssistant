@@ -12,8 +12,11 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\System\NumberRange\Aggregate\NumberRangeState\NumberRangeStateCollection;
+use Shopware\Core\System\NumberRange\NumberRangeDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\NumberRangeTypeLookup;
@@ -54,13 +57,26 @@ class NumberRangeConverter extends ShopwareConverter
                 $typeUuid = $numberRangeTypeMapping['entityId'];
             } else {
                 $typeUuid = $this->numberRangeTypeLookup->get($converted['type']['technicalName'], $this->context);
+
+                if ($typeUuid === null) {
+                    $this->loggingService->log(
+                        MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                            ->withEntityName(NumberRangeDefinition::ENTITY_NAME)
+                            ->withFieldName('typeId')
+                            ->withFieldSourcePath('id')
+                            ->withSourceData($data)
+                            ->build(ConvertObjectTypeUnsupportedLog::class)
+                    );
+
+                    return new ConvertStruct(null, $data, $this->mainMapping['id'] ?? null);
+                }
             }
 
             if ($converted['global']) {
                 $this->checkForExistingNumberRange($converted);
             }
 
-            if (isset($converted['numberRangeSalesChannels']) && $typeUuid !== null) {
+            if (isset($converted['numberRangeSalesChannels'])) {
                 foreach ($converted['numberRangeSalesChannels'] as &$numberRangeSalesChannel) {
                     $numberRangeSalesChannel['numberRangeTypeId'] = $typeUuid;
                 }

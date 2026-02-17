@@ -33,6 +33,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\CountryLookup;
@@ -133,11 +134,11 @@ abstract class OrderConverter extends ShopwareConverter
             $this->context
         );
 
-        if ($customerMapping === null) {
-            throw MigrationException::associationEntityRequiredMissing(
-                DefaultEntities::ORDER,
-                DefaultEntities::CUSTOMER
-            );
+        $customerId = null;
+
+        if ($customerMapping !== null) {
+            $customerId = $customerMapping['entityId'];
+            $this->mappingIds[] = $customerMapping['id'];
         }
 
         $orderCustomerMapping = $this->mappingService->getOrCreateMapping(
@@ -149,18 +150,17 @@ abstract class OrderConverter extends ShopwareConverter
 
         $converted['orderCustomer'] = [
             'id' => $orderCustomerMapping['entityId'],
-            'customerId' => $customerMapping['entityId'],
+            'customerId' => $customerId,
         ];
-        $this->mappingIds[] = $customerMapping['id'];
         $this->mappingIds[] = $orderCustomerMapping['id'];
         unset($customerMapping);
 
-        $salutationUuid = null;
         if (isset($data['customer']['salutation'])) {
             $salutationUuid = $this->getSalutation($data['customer']['salutation']);
-        }
-        if ($salutationUuid !== null) {
-            $converted['orderCustomer']['salutationId'] = $salutationUuid;
+
+            if ($salutationUuid !== null) {
+                $converted['orderCustomer']['salutationId'] = $salutationUuid;
+            }
         }
 
         if (isset($data['customer'])) {
@@ -168,19 +168,18 @@ abstract class OrderConverter extends ShopwareConverter
             $this->convertValue($converted['orderCustomer'], 'firstName', $data['customer'], 'firstname');
             $this->convertValue($converted['orderCustomer'], 'lastName', $data['customer'], 'lastname');
             $this->convertValue($converted['orderCustomer'], 'customerNumber', $data['customer'], 'customernumber');
-            unset($data['userID'], $data['customer']);
         }
 
+        unset($data['userID'], $data['customer']);
         $this->convertValue($converted, 'currencyFactor', $data, 'currencyFactor', self::TYPE_FLOAT);
 
-        $currencyUuid = null;
         if (isset($data['currency'])) {
             $currencyUuid = $this->currencyLookup->get($data['currency'], $context);
-        }
-        if ($currencyUuid !== null) {
-            $converted['currencyId'] = $currencyUuid;
-        }
 
+            if ($currencyUuid !== null) {
+                $converted['currencyId'] = $currencyUuid;
+            }
+        }
         $converted['itemRounding'] = [
             'decimals' => $context->getRounding()->getDecimals(),
             'interval' => 0.01,
@@ -190,7 +189,6 @@ abstract class OrderConverter extends ShopwareConverter
 
         $this->convertValue($converted, 'orderDateTime', $data, 'ordertime', self::TYPE_DATETIME);
 
-        $stateMapping = null;
         if (isset($data['status'])) {
             $stateMapping = $this->mappingService->getMapping(
                 $this->connectionId,
@@ -198,11 +196,11 @@ abstract class OrderConverter extends ShopwareConverter
                 (string) $data['status'],
                 $this->context
             );
-        }
 
-        if ($stateMapping !== null) {
-            $converted['stateId'] = $stateMapping['entityId'];
-            $this->mappingIds[] = $stateMapping['id'];
+            if ($stateMapping !== null) {
+                $converted['stateId'] = $stateMapping['entityId'];
+                $this->mappingIds[] = $stateMapping['id'];
+            }
         }
 
         $shippingGross = (float) $data['invoice_shipping'];
@@ -275,18 +273,17 @@ abstract class OrderConverter extends ShopwareConverter
             $converted['primaryOrderTransactionId'] = $converted['transactions'][0]['id'];
         }
 
-        $billingAddress = null;
         if (isset($data['billingaddress']) && \is_array($data['billingaddress'])) {
             $billingAddress = $this->getAddress($data['billingaddress']);
+            if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
+                $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
+            }
+            if (!empty($billingAddress)) {
+                $converted['billingAddressId'] = $billingAddress['id'];
+                $converted['addresses'][] = $billingAddress;
+            }
         }
 
-        if (!empty($billingAddress)) {
-            $converted['billingAddressId'] = $billingAddress['id'];
-            $converted['addresses'][] = $billingAddress;
-        }
-        if (isset($data['billingaddress']['ustid']) && $data['billingaddress']['ustid'] !== '') {
-            $converted['orderCustomer']['vatIds'][] = $data['billingaddress']['ustid'];
-        }
         unset($data['billingaddress']);
 
         if (isset($data['subshopID'])) {
@@ -326,8 +323,8 @@ abstract class OrderConverter extends ShopwareConverter
                 $converted['languageId'] = $languageMapping;
             }
         }
-        unset($data['locale']);
 
+        unset($data['locale']);
         $converted['deepLinkCode'] = Hasher::hash($converted['id']);
 
         // Legacy data which don't need a mapping or there is no equivalent field
@@ -452,7 +449,7 @@ abstract class OrderConverter extends ShopwareConverter
                     ->withFieldName('paymentMethodId')
                     ->withFieldSourcePath('payment.id')
                     ->withSourceData($originalData)
-                    ->build(ConvertEntityUnknownLog::class)
+                    ->build(ConvertAssociationMissingLog::class)
             );
 
             return null;
@@ -468,8 +465,11 @@ abstract class OrderConverter extends ShopwareConverter
      *
      * @return array<string, mixed>
      */
-    protected function getAddress(array $originalData, string $type = self::BILLING_ADDRESS): array
+    protected function getAddress(?array $originalData, string $type = self::BILLING_ADDRESS): array
     {
+        if ($originalData === null || !isset($originalData['id'])) {
+            return [];
+        }
         $entityName = DefaultEntities::ORDER_ADDRESS;
         if ($type !== self::BILLING_ADDRESS) {
             $entityName = DefaultEntities::ORDER_ADDRESS . '_' . $type;
@@ -793,8 +793,8 @@ abstract class OrderConverter extends ShopwareConverter
 
             $delivery['positions'] = $positions;
         }
-        $delivery['shippingCosts'] = $shippingCosts;
 
+        $delivery['shippingCosts'] = $shippingCosts;
         $deliveries[] = $delivery;
 
         return $deliveries;
