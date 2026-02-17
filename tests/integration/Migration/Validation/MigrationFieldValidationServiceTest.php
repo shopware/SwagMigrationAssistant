@@ -196,6 +196,16 @@ class MigrationFieldValidationServiceTest extends TestCase
             'exception' => null,
         ];
 
+        yield 'valid to many field (resolver id)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tags',
+            'value' => [
+                [Uuid::randomHex() => ['resolver' => 'dummy', 'value' => 'tag-1']],
+                [Uuid::randomHex() => ['resolver' => 'dummy', 'value' => 'tag-2']],
+            ],
+            'exception' => null,
+        ];
+
         yield 'invalid to many field (non array)' => [
             'entityName' => 'product',
             'fieldName' => 'tags',
@@ -228,6 +238,15 @@ class MigrationFieldValidationServiceTest extends TestCase
             'fieldName' => 'tax',
             'value' => [
                 'id' => Uuid::randomHex(),
+            ],
+            'exception' => null,
+        ];
+
+        yield 'valid to one field (resolver id)' => [
+            'entityName' => 'product',
+            'fieldName' => 'tax',
+            'value' => [
+                Uuid::randomHex() => ['resolver' => 'dummy', 'value' => 'tax-1'],
             ],
             'exception' => null,
         ];

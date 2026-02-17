@@ -12,10 +12,12 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\CompiledFieldCollection;
 use Shopware\Core\Framework\DataAbstractionLayer\DefinitionInstanceRegistry;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityDefinition;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\AssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\CreatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Field;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\FkField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToManyAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\OneToManyAssociationField;
@@ -346,6 +348,10 @@ class MigrationEntityValidationService implements ResetInterface
             return;
         }
 
+        if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
+            return;
+        }
+
         $nestedEntityName = $referenceDefinition->getEntityName();
         $fields = $referenceDefinition->getFields();
         $requiredFields = $this->getRequiredFields($fields, $referenceDefinition);
@@ -353,9 +359,19 @@ class MigrationEntityValidationService implements ResetInterface
         $rootEntityName = $validationContext->getEntityDefinition()->getEntityName();
         $rootEntityId = $validationContext->getConvertedData()['id'] ?? null;
 
-        if (\count($nestedEntityData) === 1 && isset($nestedEntityData['id'])) {
-            // skip as we only have an ID and no other fields to validate
-            return;
+        foreach ($requiredFields as $fieldName => $_) {
+            $field = $fields->get($fieldName);
+            $nestedFieldPath = $fieldPath . '.' . $fieldName;
+
+            if ($field instanceof IdField || $field instanceof AssociationField || $field instanceof FkField) {
+                continue;
+            }
+
+            if (\array_key_exists($fieldName, $nestedEntityData)) {
+                continue;
+            }
+
+            $this->addMissingRequiredFieldLog($validationContext, $nestedFieldPath);
         }
 
         foreach ($nestedEntityData as $fieldName => $value) {
