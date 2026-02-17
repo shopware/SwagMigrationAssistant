@@ -34,6 +34,7 @@ enum MigrationStep: string
     case FINISHED = 'finished';
 
     case ABORTED = 'aborted';
+
     final public const MANUAL_STEPS = [
         self::ERROR_RESOLUTION,
         self::WAITING_FOR_APPROVE,
