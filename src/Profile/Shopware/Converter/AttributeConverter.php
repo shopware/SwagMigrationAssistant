@@ -287,32 +287,21 @@ abstract class AttributeConverter extends Converter
     private function getCustomFieldType(array $data): string
     {
         if (isset($data['configuration'])) {
-            switch ($data['configuration']['column_type']) {
-                case 'integer':
-                    return 'int';
-                case 'float':
-                    return 'float';
-                case 'html':
-                    return 'html';
-                case 'boolean':
-                    return 'bool';
-                case 'date':
-                case 'datetime':
-                    return 'datetime';
-                case 'combobox':
-                    return 'select';
-                default:
-                    return 'text';
-            }
-        } else {
-            switch ($data['type']) {
-                case 'int':
-                    return 'int';
-                case 'float':
-                    return 'float';
-                default:
-                    return 'text';
-            }
+            return match ($data['configuration']['column_type']) {
+                'integer' => 'int',
+                'float' => 'float',
+                'html' => 'html',
+                'boolean' => 'bool',
+                'date', 'datetime' => 'datetime',
+                'combobox' => 'select',
+                default => 'text',
+            };
         }
+
+        return match ($data['type']) {
+            'int' => 'int',
+            'float' => 'float',
+            default => 'text',
+        };
     }
 }

@@ -154,8 +154,8 @@ class CrossSellingConverterTest extends TestCase
 
         $mappingServiceMock = $this->createMock(MappingService::class);
         $mappingServiceMock->method('getMapping')->willReturn($this->products[0]);
-        $mappingServiceMock->expects(static::once())->method('updateMapping');
-        $mappingServiceMock->expects(static::exactly(3))
+        $mappingServiceMock->expects($this->once())->method('updateMapping');
+        $mappingServiceMock->expects($this->exactly(3))
             ->method('getOrCreateMapping')
             ->willReturnMap([
                 [

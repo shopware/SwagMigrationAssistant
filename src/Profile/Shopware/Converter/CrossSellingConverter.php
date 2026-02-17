@@ -54,15 +54,21 @@ abstract class CrossSellingConverter extends ShopwareConverter
         );
 
         $converted['id'] = $crossSellingMapping['entityId'];
-
         $sourceProductMapping = $this->getProductMapping($data['articleID']);
+
+        $sourceProductId = null;
+
         if ($sourceProductMapping !== null) {
             $this->mappingIds[] = $sourceProductMapping['id'];
+            $sourceProductId = $sourceProductMapping['entityId'];
         }
 
         $relatedProductMapping = $this->getProductMapping($data['relatedarticle']);
+        $relatedProductId = null;
+
         if ($relatedProductMapping !== null) {
             $this->mappingIds[] = $relatedProductMapping['id'];
+            $relatedProductId = $relatedProductMapping['entityId'];
         }
 
         if ($data['type'] === DefaultEntities::CROSS_SELLING_SIMILAR) {
@@ -80,17 +86,15 @@ abstract class CrossSellingConverter extends ShopwareConverter
 
         $converted['type'] = 'productList';
         $converted['active'] = true;
+        $converted['productId'] = $sourceProductId;
         $converted['assignedProducts'] = [
             [
                 'id' => $relationMapping['entityId'] ?? null,
                 'position' => $data['position'] ?? null,
-                'productId' => $relatedProductMapping['entityId'] ?? null,
+                'productId' => $relatedProductId,
             ],
         ];
 
-        if (isset($sourceProductMapping['entityId'])) {
-            $converted['productId'] = $sourceProductMapping['entityId'];
-        }
         unset(
             $data['type'],
             $data['id'],

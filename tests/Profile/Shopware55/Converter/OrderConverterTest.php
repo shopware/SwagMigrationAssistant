@@ -26,7 +26,6 @@ use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\System\Language\LanguageEntity;
 use Shopware\Core\System\Locale\LocaleEntity;
 use Shopware\Core\Test\TestDefaults;
-use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertEntityUnknownLog;
@@ -51,7 +50,6 @@ use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Migration\Logging\DummyLoggingService;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Validation;
 
 #[Package('fundamentals@after-sales')]
@@ -305,18 +303,16 @@ class OrderConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
 
-        try {
-            $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
-        } catch (\Exception $e) {
-            static::assertInstanceOf(MigrationException::class, $e);
-            static::assertSame(Response::HTTP_NOT_FOUND, $e->getStatusCode());
-            static::assertSame(MigrationException::ASSOCIATION_ENTITY_REQUIRED_MISSING, $e->getErrorCode());
+        $convertResult = $this->orderConverter->convert($orderData[0], $context, $this->migrationContext);
 
-            static::assertArrayHasKey('missingEntity', $e->getParameters());
-            static::assertArrayHasKey('entity', $e->getParameters());
-            static::assertSame('order', $e->getParameters()['entity']);
-            static::assertSame('customer', $e->getParameters()['missingEntity']);
-        }
+        static::assertNotNull($convertResult->getConverted());
+        static::assertArrayHasKey('orderCustomer', $convertResult->getConverted());
+        static::assertIsArray($convertResult->getConverted()['orderCustomer']);
+        $orderCustomer = $convertResult->getConverted()['orderCustomer'];
+
+        static::assertSame('test@example.com', $orderCustomer['email']);
+        static::assertSame('20001', $orderCustomer['customerNumber']);
+        static::assertNull($orderCustomer['customerId']);
     }
 
     public function testConvertNetOrder(): void

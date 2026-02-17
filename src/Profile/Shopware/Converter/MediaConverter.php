@@ -104,7 +104,6 @@ abstract class MediaConverter extends ShopwareConverter
         unset(
             $data['id'],
             $data['albumID'],
-
             // Legacy data which don't need a mapping or there is no equivalent field
             $data['path'],
             $data['type'],

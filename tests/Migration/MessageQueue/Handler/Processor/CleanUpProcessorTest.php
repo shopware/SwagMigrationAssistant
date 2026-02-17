@@ -215,7 +215,7 @@ class CleanUpProcessorTest extends TestCase
         $this->dbalConnection->method('createQueryBuilder')->willReturn($selectQueryBuilder);
 
         $this->runTransitionService
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('transitionToRunStep')
             ->with($runId, MigrationStep::INDEXING);
 

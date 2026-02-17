@@ -95,22 +95,26 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context
         );
 
+        $customerGroupUuid = null;
+
         if ($customerGroupMapping !== null) {
+            $customerGroupUuid = $customerGroupMapping['entityId'];
             $this->mappingIds[] = $customerGroupMapping['id'];
-            $converted['customerGroupId'] = $customerGroupMapping['entityId'];
         }
 
+        $converted['customerGroupId'] = $customerGroupUuid;
         $languageUuid = $this->languageLookup->get($data['locale'], $context);
+
         if ($languageUuid !== null) {
-            $converted['languageId'] = $languageUuid;
             $converted['languages'] = $this->getSalesChannelLanguages($languageUuid, $data, $context);
         }
 
+        $converted['languageId'] = $languageUuid;
+
         if (isset($converted['languages'])) {
             $this->filterExistingLanguageSalesChannelRelation($converted['id'], $converted['languages']);
+            $this->filterDisabledPackLanguages($converted);
         }
-
-        $this->filterDisabledPackLanguages($converted);
 
         if (empty($converted['languages'])) {
             unset($converted['languages']);
@@ -133,11 +137,14 @@ abstract class SalesChannelConverter extends ShopwareConverter
             $context
         );
 
+        $categoryUuid = null;
+
         if ($categoryMapping !== null) {
+            $categoryUuid = $categoryMapping['entityId'];
             $this->mappingIds[] = $categoryMapping['id'];
-            $converted['navigationCategoryId'] = $categoryMapping['entityId'];
         }
 
+        $converted['navigationCategoryId'] = $categoryUuid;
         $countryUuid = $this->getFirstActiveCountryId();
         $converted['countryId'] = $countryUuid;
         $converted['countries'] = [

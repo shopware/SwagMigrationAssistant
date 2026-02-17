@@ -42,14 +42,14 @@ class StockStorageDecoratorTest extends TestCase
     {
         $context = $this->createContextWithExtension();
 
-        $this->stockStorage->expects(static::never())->method('alter');
+        $this->stockStorage->expects($this->never())->method('alter');
 
         $this->stockStorageDecorator->alter($this->dummyChanges, $context);
     }
 
     public function testAlterWithoutMigrationSourceShallExecuteStockStorage(): void
     {
-        $this->stockStorage->expects(static::once())->method('alter');
+        $this->stockStorage->expects($this->once())->method('alter');
 
         $this->stockStorageDecorator->alter($this->dummyChanges, Context::createDefaultContext());
     }

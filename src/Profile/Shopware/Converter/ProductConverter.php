@@ -133,6 +133,19 @@ abstract class ProductConverter extends ShopwareConverter
         $this->runId = $migrationContext->getRunUuid();
         $this->oldProductId = $data['detail']['ordernumber'];
         $this->mainProductId = $data['detail']['articleID'];
+
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductDefinition::ENTITY_NAME)
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertSourceDataIncompleteLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->locale = $data['_locale'];
 
         $connection = $migrationContext->getConnection();

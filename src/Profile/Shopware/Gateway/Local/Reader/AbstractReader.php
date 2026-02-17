@@ -23,6 +23,15 @@ abstract class AbstractReader implements ResetInterface
     {
     }
 
+    public function reset(): void
+    {
+        if ($this->cachedConnection instanceof Connection) {
+            $this->cachedConnection->close();
+        }
+
+        $this->cachedConnection = null;
+    }
+
     final protected function getConnection(MigrationContextInterface $migrationContext): Connection
     {
         if ($this->cachedConnection instanceof Connection && $this->cachedConnection->isConnected()) {
@@ -181,14 +190,5 @@ abstract class AbstractReader implements ResetInterface
         }
 
         return $dataSet::getEntity();
-    }
-
-    public function reset(): void
-    {
-        if ($this->cachedConnection instanceof Connection) {
-            $this->cachedConnection->close();
-        }
-
-        $this->cachedConnection = null;
     }
 }
