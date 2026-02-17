@@ -41,14 +41,6 @@ class StockStorageDecorator extends AbstractStockStorage
         $this->innerStockStorage->alter($changes, $context);
     }
 
-    private function isOrderCreatedByMigration(Context $context): bool
-    {
-        $writeEventSource = $context->getExtension(AbstractWriter::EXTENSION_NAME);
-        $writeEventSource = $writeEventSource instanceof ArrayStruct ? $writeEventSource->get(AbstractWriter::EXTENSION_SOURCE_KEY) : null;
-
-        return $writeEventSource === AbstractWriter::EXTENSION_SOURCE_VALUE;
-    }
-
     public function load(StockLoadRequest $stockRequest, SalesChannelContext $context): StockDataCollection
     {
         return $this->innerStockStorage->load($stockRequest, $context);
@@ -57,5 +49,13 @@ class StockStorageDecorator extends AbstractStockStorage
     public function index(array $productIds, Context $context): void
     {
         $this->innerStockStorage->index($productIds, $context);
+    }
+
+    private function isOrderCreatedByMigration(Context $context): bool
+    {
+        $writeEventSource = $context->getExtension(AbstractWriter::EXTENSION_NAME);
+        $writeEventSource = $writeEventSource instanceof ArrayStruct ? $writeEventSource->get(AbstractWriter::EXTENSION_SOURCE_KEY) : null;
+
+        return $writeEventSource === AbstractWriter::EXTENSION_SOURCE_VALUE;
     }
 }

@@ -174,39 +174,10 @@ class CategoryConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->categoryConverter->convert($categoryData, $context, $this->migrationContext);
+        static::assertNull($convertResult->getConverted());
 
-        $converted = $convertResult->getConverted();
-        static::assertNotNull($converted);
-
-        $expected = [
-            'description' => '<p>Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.</p>',
-            'level' => 0,
-            'active' => true,
-            'visible' => true,
-            'name' => 'Lebensmittel',
-        ];
-
-        static::assertArrayHasKey('id', $converted);
-        static::assertTrue(Uuid::isValid($converted['id']));
-
-        static::assertArrayHasKey('afterCategoryId', $converted);
-        static::assertTrue(Uuid::isValid($converted['afterCategoryId']));
-
-        static::assertArrayHasKey('cmsPageId', $converted);
-        static::assertTrue(Uuid::isValid($converted['cmsPageId']));
-
-        foreach ($expected as $key => $value) {
-            static::assertSame($value, $converted[$key]);
-        }
-
-        static::assertArrayHasKey('media', $converted);
-        $media = $converted['media'];
-        static::assertArrayHasKey('id', $media);
-        static::assertArrayHasKey('title', $media);
-        static::assertArrayHasKey('alt', $media);
-        static::assertTrue(Uuid::isValid($media['id']));
-        static::assertSame('brot', $media['title']);
-        static::assertSame('Nices Brot', $media['alt']);
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertCount(1, $logs);
     }
 
     public function testConvertWithExternalLink(): void

@@ -63,7 +63,7 @@ class FetchingProcessorTest extends TestCase
 
         $dataConverter = $this->createMock(MigrationDataConverter::class);
         $dataConverter
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('convert');
 
         $this->processor = new FetchingProcessor(
@@ -115,7 +115,7 @@ class FetchingProcessorTest extends TestCase
 
         $dataConverter = $this->createMock(MigrationDataConverter::class);
         $dataConverter
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('convert');
 
         $this->processor = new FetchingProcessor(
@@ -171,11 +171,11 @@ class FetchingProcessorTest extends TestCase
 
         $dataConverter = $this->createMock(MigrationDataConverter::class);
         // Method "convert" expected to be called 10 times
-        $dataConverter->expects(static::exactly(10))->method('convert');
+        $dataConverter->expects($this->exactly(10))->method('convert');
 
         $dataFetcher = $this->createMock(MigrationDataFetcher::class);
         // Method "fetchData" expected to be called 11 times because the last call will exceed the limit condition
-        $dataFetcher->expects(static::exactly(11))->method('fetchData')->willReturn([]);
+        $dataFetcher->expects($this->exactly(11))->method('fetchData')->willReturn([]);
 
         $this->processor = new FetchingProcessor(
             $this->createMock(EntityRepository::class),

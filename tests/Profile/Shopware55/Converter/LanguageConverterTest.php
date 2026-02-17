@@ -72,7 +72,6 @@ class LanguageConverterTest extends TestCase
 
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($languageData[0], $context, $this->migrationContext);
-        static::assertNotNull($convertResult);
         $this->converter->writeMapping($context);
         $converted = $convertResult->getConverted();
         static::assertNotNull($converted);

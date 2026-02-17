@@ -34,18 +34,19 @@ class CmsPageConverter extends ShopwareConverter
             && $this->getDataSetEntity($migrationContext) === CmsPageDataSet::getEntity();
     }
 
-    protected function convertData(array $data): ?ConvertStruct
+    protected function convertData(array $data): ConvertStruct
     {
+        $converted = $data;
         // handle locked default layouts
-        if (isset($data['locked']) && $data['locked'] === true) {
+        if (isset($converted['locked']) && $converted['locked'] === true) {
             $cmsPageMapping = $this->mappingService->getMapping($this->connectionId, DefaultEntities::CMS_PAGE, $data['id'], $this->context);
             if ($cmsPageMapping !== null) {
-                return null;
+                return new ConvertStruct(null, $data, $cmsPageMapping['id']);
             }
 
             $cmpPageUuid = $this->cmsPageLookup->getLockedByNamesAndType(
-                \array_column($data['translations'], 'name'),
-                $data['type'],
+                \array_column($converted['translations'], 'name'),
+                $converted['type'],
                 $this->context
             );
 
@@ -58,10 +59,8 @@ class CmsPageConverter extends ShopwareConverter
                 $cmpPageUuid,
             );
 
-            return null;
+            return new ConvertStruct(null, $data);
         }
-
-        $converted = $data;
 
         $this->updateTranslations($converted);
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
@@ -119,7 +118,6 @@ class CmsPageConverter extends ShopwareConverter
                 }
                 unset($block);
             }
-
             if (isset($section['backgroundMediaId'])) {
                 $section['backgroundMediaId'] = $this->getMappingIdFacade(DefaultEntities::MEDIA, $section['backgroundMediaId']);
             }

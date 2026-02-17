@@ -513,7 +513,7 @@
             "continueTooltip": "Bitte behebe alle behebbaren Fehler, bevor Du fortfährst.",
             "banner": {
               "title": "Einige Fehler können nicht über diese Ansicht behoben werden",
-              "content": "Es gibt {count} Fehler or Warnungen, die in dieser Ansicht nicht behoben werden können. Lade zur Untersuchung die Protokolldatei herunter und prüfe die detaillierten Fehlermeldungen. Die zugrunde liegenden Probleme müssen möglicherweise im Quellsystem behoben werden. Sobald dies erledigt ist, führe die Migration erneut aus, um fortzufahren."
+              "content": "Es gibt {count} Fehler oder Warnungen, die in dieser Ansicht nicht behoben werden können. Lade zur Untersuchung die Protokolldatei herunter und prüfe die detaillierten Fehlermeldungen. Die zugrunde liegenden Probleme müssen möglicherweise im Quellsystem behoben werden. Sobald dies erledigt ist, führe die Migration erneut aus, um fortzufahren."
             }
           },
           "card": {

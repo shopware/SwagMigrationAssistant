@@ -141,7 +141,7 @@ class MigrationProcessHandlerTest extends TestCase
 
         $processorRegistry = $this->createMock(MigrationProcessorRegistry::class);
         $processorRegistry
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('getProcessor')
             ->willReturn($this->createMock(MigrationProcessorInterface::class));
 

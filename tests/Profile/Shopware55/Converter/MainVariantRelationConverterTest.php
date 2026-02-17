@@ -114,18 +114,18 @@ class MainVariantRelationConverterTest extends TestCase
         $context = Context::createDefaultContext();
         $convertResult = $this->converter->convert($data[0], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
-        $converted = $convertResult?->getConverted();
+        $converted = $convertResult->getConverted();
 
-        static::assertNull($convertResult?->getUnmapped());
+        static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
         static::assertSame($this->productContainer1['entityId'], $converted['id']);
         static::assertSame($this->productVariant1['entityId'], $converted['variantListingConfig']['mainVariantId']);
 
         $convertResult = $this->converter->convert($data[1], $context, $this->migrationContext);
         $this->converter->writeMapping($context);
-        $converted = $convertResult?->getConverted();
+        $converted = $convertResult->getConverted();
 
-        static::assertNull($convertResult?->getUnmapped());
+        static::assertNull($convertResult->getUnmapped());
         static::assertNotNull($converted);
         static::assertSame($this->productContainer2['entityId'], $converted['id']);
         static::assertSame($this->productVariant2['entityId'], $converted['variantListingConfig']['mainVariantId']);

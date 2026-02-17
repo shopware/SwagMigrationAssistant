@@ -152,24 +152,6 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         );
     }
 
-    /**
-     * @param array<string, mixed> $environmentData
-     */
-    private function generateFingerprint(array $environmentData): ?string
-    {
-        if (!isset($environmentData['config'])) {
-            return null;
-        }
-
-        $config = $environmentData['config'];
-
-        if (!isset($config['esdKey'], $config['installationDate'])) {
-            return null;
-        }
-
-        return Hasher::hash($config['esdKey'] . $config['installationDate']);
-    }
-
     public function readTotals(MigrationContextInterface $migrationContext): array
     {
         $readers = $this->readerRegistry->getReaderForTotal($migrationContext);
@@ -191,5 +173,23 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
     public function readTable(MigrationContextInterface $migrationContext, string $tableName, array $filter = []): array
     {
         return $this->localTableReader->read($migrationContext, $tableName, $filter);
+    }
+
+    /**
+     * @param array<string, mixed> $environmentData
+     */
+    private function generateFingerprint(array $environmentData): ?string
+    {
+        if (!isset($environmentData['config'])) {
+            return null;
+        }
+
+        $config = $environmentData['config'];
+
+        if (!isset($config['esdKey'], $config['installationDate'])) {
+            return null;
+        }
+
+        return Hasher::hash($config['esdKey'] . $config['installationDate']);
     }
 }

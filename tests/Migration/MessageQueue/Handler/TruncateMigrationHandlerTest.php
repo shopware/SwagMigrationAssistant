@@ -43,13 +43,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage(null);
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_mapping LIMIT 250')
             ->willReturn(100);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -65,13 +65,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_mapping');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_mapping LIMIT 250')
             ->willReturn(250);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -87,13 +87,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_mapping');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_mapping LIMIT 250')
             ->willReturn(100);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -109,13 +109,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_data');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_data LIMIT 250')
             ->willReturn(250);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -131,13 +131,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_data');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_data LIMIT 250')
             ->willReturn(50);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -153,13 +153,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_connection');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_connection LIMIT 250')
             ->willReturn(250);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -175,7 +175,7 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_connection');
 
         $this->connection
-            ->expects(static::exactly(2))
+            ->expects($this->exactly(2))
             ->method('executeStatement')
             ->willReturnCallback(function ($sql) {
                 if (str_contains($sql, 'DELETE FROM swag_migration_connection')) {
@@ -191,7 +191,7 @@ class TruncateMigrationHandlerTest extends TestCase
             });
 
         $this->messageBus
-            ->expects(static::never())
+            ->expects($this->never())
             ->method('dispatch');
 
         $this->handler->__invoke($message);
@@ -202,13 +202,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_logging');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_logging LIMIT 250')
             ->willReturn(0);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -239,14 +239,14 @@ class TruncateMigrationHandlerTest extends TestCase
 
             if ($index < \count($expectedTables) - 1) {
                 $connection
-                    ->expects(static::once())
+                    ->expects($this->once())
                     ->method('executeStatement')
                     ->with('DELETE FROM ' . $tableName . ' LIMIT 250')
                     ->willReturn(10);
 
                 $nextTable = $expectedTables[$index + 1];
                 $messageBus
-                    ->expects(static::once())
+                    ->expects($this->once())
                     ->method('dispatch')
                     ->with(static::callback(function ($dispatchedMessage) use ($nextTable) {
                         return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -255,7 +255,7 @@ class TruncateMigrationHandlerTest extends TestCase
                     ->willReturnCallback(fn ($msg) => new Envelope($msg));
             } else {
                 $connection
-                    ->expects(static::exactly(2))
+                    ->expects($this->exactly(2))
                     ->method('executeStatement')
                     ->willReturnCallback(function ($sql) use ($tableName) {
                         if (str_contains($sql, 'DELETE FROM ' . $tableName)) {
@@ -269,7 +269,7 @@ class TruncateMigrationHandlerTest extends TestCase
                     });
 
                 $messageBus
-                    ->expects(static::never())
+                    ->expects($this->never())
                     ->method('dispatch');
             }
 
@@ -282,13 +282,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_run');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_run LIMIT 250')
             ->willReturn(250);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage
@@ -304,13 +304,13 @@ class TruncateMigrationHandlerTest extends TestCase
         $message = new TruncateMigrationMessage('swag_migration_media_file');
 
         $this->connection
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('executeStatement')
             ->with('DELETE FROM swag_migration_media_file LIMIT 250')
             ->willReturn(250);
 
         $this->messageBus
-            ->expects(static::once())
+            ->expects($this->once())
             ->method('dispatch')
             ->with(static::callback(function ($dispatchedMessage) {
                 return $dispatchedMessage instanceof TruncateMigrationMessage

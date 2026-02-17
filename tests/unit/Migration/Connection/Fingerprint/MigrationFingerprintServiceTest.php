@@ -85,7 +85,7 @@ class MigrationFingerprintServiceTest extends TestCase
 
         /** @var MockObject&EntityRepository<SwagMigrationConnectionCollection> $connectionRepo */
         $connectionRepo = $this->createMock(EntityRepository::class);
-        $connectionRepo->expects(static::once())
+        $connectionRepo->expects($this->once())
             ->method('searchIds')
             ->with(static::callback(function (Criteria $criteria) use ($connectionId) {
                 static::assertCount(2, $criteria->getFilters());

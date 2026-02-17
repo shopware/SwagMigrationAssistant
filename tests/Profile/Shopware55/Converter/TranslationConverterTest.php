@@ -23,6 +23,7 @@ use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertSourceDataIncompleteLog;
 use SwagMigrationAssistant\Migration\Logging\Log\ConvertUnserializedDataInvalidLog;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DefaultCmsPageLookup;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\DeliveryTimeLookup;
@@ -392,6 +393,7 @@ class TranslationConverterTest extends TestCase
         static::assertArrayHasKey('translations', $converted);
         static::assertArrayHasKey(DummyMappingService::DEFAULT_LANGUAGE_UUID, $converted['translations']);
 
+        /** @phpstan-ignore shopware.unserializeUsage */
         $originalData = \unserialize($translationData['category']['objectdata'], ['allowed_classes' => false]);
         $translations = $converted['translations'][DummyMappingService::DEFAULT_LANGUAGE_UUID];
 
@@ -612,10 +614,10 @@ class TranslationConverterTest extends TestCase
         $translationData = require __DIR__ . '/../../../_fixtures/translation_data.php';
         $convertResult = $this->translationConverter->convert($translationData['productnolocale'], $context, $this->migrationContext);
 
-        $converted = $convertResult->getConverted();
-        static::assertNotNull($converted);
-        static::assertArrayHasKey('id', $converted);
-        static::assertArrayHasKey('entityDefinitionClass', $converted);
+        static::assertNull($convertResult->getConverted());
+        static::assertCount(1, $this->loggingService->getLoggingArray());
+        $logs = $this->loggingService->getLoggingArray();
+        static::assertSame(ConvertSourceDataIncompleteLog::getCode(), $logs[0]['code']);
     }
 
     public function testConvertVariantAttributeTranslation(): void

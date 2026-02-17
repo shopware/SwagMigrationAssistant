@@ -7,10 +7,13 @@
 
 namespace SwagMigrationAssistant\Profile\Shopware\Converter;
 
+use Shopware\Core\Content\Product\Aggregate\ProductReview\ProductReviewDefinition;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertAssociationMissingLog;
 use SwagMigrationAssistant\Migration\Logging\LoggingServiceInterface;
 use SwagMigrationAssistant\Migration\Mapping\Lookup\LanguageLookup;
 use SwagMigrationAssistant\Migration\Mapping\MappingServiceInterface;
@@ -31,15 +34,24 @@ abstract class ProductReviewConverter extends ShopwareConverter
     {
         $connection = $migrationContext->getConnection();
         $connectionId = $connection->getId();
-
         $this->generateChecksum($data);
+        $originalData = $data;
 
-        $mainLocale = null;
-        if (isset($data['_locale'])) {
-            $mainLocale = $data['_locale'];
-            unset($data['_locale']);
+        if (!isset($data['_locale']) || $data['_locale'] === '') {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductReviewDefinition::ENTITY_NAME)
+                    ->withFieldName('languageId')
+                    ->withFieldSourcePath('_locale')
+                    ->withSourceData($data)
+                    ->build(ConvertAssociationMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $originalData);
         }
 
+        $mainLocale = $data['_locale'];
+        unset($data['_locale']);
         $converted = [];
         $this->mainMapping = $this->mappingService->getOrCreateMapping(
             $connectionId,
