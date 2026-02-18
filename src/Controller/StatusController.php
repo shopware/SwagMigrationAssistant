@@ -15,7 +15,6 @@ use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
-use Shopware\Core\Framework\Uuid\Uuid;
 use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
@@ -267,13 +266,13 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('gatewayName');
         }
 
-        if( empty($credentialFields)) {
+        if (empty($credentialFields)) {
             throw RoutingException::missingRequestParameter('credentialFields');
         }
 
         // check that connection name is unique
         $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('name', $connectionName) );
+        $criteria->addFilter(new EqualsFilter('name', $connectionName));
 
         $existingConnection = $this->migrationConnectionRepo->search($criteria, $context)->getEntities()->first();
 
@@ -286,66 +285,69 @@ class StatusController extends AbstractController
                 $context->scope(
                     MigrationContext::SOURCE_CONTEXT,
                     function (Context $scopedContext) use ($id, $connectionName, $profileName, $gatewayName, $credentialFields): void {
-                    $this->migrationConnectionRepo->create([
-                        [
-                            'id' => $id,
-                            'name' => $connectionName,
-                            'profileName' => $profileName,
-                            'gatewayName' => $gatewayName,
-                            'credentialFields' => $credentialFields,
-                        ],
-                    ], $scopedContext);
-            });
+                        $this->migrationConnectionRepo->create([
+                            [
+                                'id' => $id,
+                                'name' => $connectionName,
+                                'profileName' => $profileName,
+                                'gatewayName' => $gatewayName,
+                                'credentialFields' => $credentialFields,
+                            ],
+                        ], $scopedContext);
+                    }
+                );
 
+                $connection = $this->migrationConnectionRepo->search(new Criteria([$id]), $context)->getEntities()->first();
 
-            $connection = $this->migrationConnectionRepo->search(new Criteria([$id]), $context)->getEntities()->first();
+                if ($connection === null) {
+                    throw MigrationException::noConnectionFound();
+                }
 
-            if ($connection === null) {
-                throw MigrationException::noConnectionFound();
+                $migrationContext = $this->migrationContextFactory->createByConnection($connection);
+                $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
+
+                $requestStatus = $information->getRequestStatus();
+                if ($requestStatus !== null && $requestStatus->getCode() !== '') {
+                    throw MigrationException::connectionValidationFailed(
+                        $requestStatus->getCode(),
+                        $requestStatus->getMessage()
+                    )
+                    ;
+                }
+
+                $fingerprint = $information->getFingerprint();
+
+                $hasDuplicate = $this->fingerprintService->searchDuplicates(
+                    $fingerprint,
+                    $context,
+                    $id,
+                );
+
+                if ($hasDuplicate) {
+                    throw MigrationException::duplicateSourceConnection();
+                }
+
+                $updateData = [
+                    'id' => $id,
+                    'credentialFields' => $credentialFields,
+                ];
+
+                if ($fingerprint !== null) {
+                    $updateData['sourceSystemFingerprint'] = $fingerprint;
+                }
+
+                $context->scope(
+                    MigrationContext::SOURCE_CONTEXT,
+                    function (Context $scopedContext) use ($updateData): void {
+                        $this->migrationConnectionRepo->update([
+                            $updateData,
+                        ], $scopedContext);
+                    }
+                );
+
+                return new JsonResponse($information);
             }
-
-            $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-            $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
-
-            $requestStatus = $information->getRequestStatus();
-            if($requestStatus !== null && $requestStatus->getCode() !== '') {
-                throw MigrationException::connectionValidationFailed(
-                    $requestStatus->getCode(),
-                    $requestStatus->getMessage())
-                ;
-            }
-
-            $fingerprint = $information->getFingerprint();
-
-            $hasDuplicate = $this->fingerprintService->searchDuplicates(
-                $fingerprint,
-                $context,
-                $id,
-            );
-
-            if ($hasDuplicate) {
-                throw MigrationException::duplicateSourceConnection();
-            }
-
-            $updateData = [
-                'id' => $id,
-                'credentialFields' => $credentialFields,
-            ];
-
-            if ($fingerprint !== null) {
-                $updateData['sourceSystemFingerprint'] = $fingerprint;
-            }
-
-            $context->scope(
-                MigrationContext::SOURCE_CONTEXT,
-                function (Context $scopedContext) use ($updateData): void {
-                    $this->migrationConnectionRepo->update([
-                        $updateData
-                    ], $scopedContext);
-                });
-
-            return new JsonResponse($information);
-        });
+        );
 
         return $jsonResponse;
     }

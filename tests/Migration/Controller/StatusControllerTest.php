@@ -8,7 +8,6 @@
 namespace SwagMigrationAssistant\Test\Migration\Controller;
 
 use Doctrine\DBAL\Connection;
-use horstoeko\zugferd\entities\en16931\ram\TradeSettlementFinancialCardType;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -63,12 +62,10 @@ use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\PropertyGroupO
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ShippingMethodDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
 use SwagMigrationAssistant\Profile\Shopware\DataSelection\ProductDataSelection;
-use SwagMigrationAssistant\Profile\Shopware\Gateway\Api\ShopwareApiGateway;
 use SwagMigrationAssistant\Profile\Shopware\Gateway\Local\ShopwareLocalGateway;
 use SwagMigrationAssistant\Profile\Shopware54\Shopware54Profile;
 use SwagMigrationAssistant\Profile\Shopware55\Shopware55Profile;
 use SwagMigrationAssistant\Profile\Shopware56\Shopware56Profile;
-use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
 use SwagMigrationAssistant\Test\MigrationServicesTrait;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGatewayFail;
 use SwagMigrationAssistant\Test\Profile\Shopware\Gateway\Local\LocalCredentialTrait;
@@ -603,7 +600,7 @@ class StatusControllerTest extends TestCase
         static::assertSame($fingerprint, $connection->getSourceSystemFingerprint());
     }
 
-    public function testCreateNewConnectionSuccess():void
+    public function testCreateNewConnectionSuccess(): void
     {
         $connectionId = Uuid::randomHex();
         $connectionName = 'new connection';
@@ -636,8 +633,7 @@ class StatusControllerTest extends TestCase
     public function testCreateNewConnectionWithMissingParameterShouldThrowException(
         array $requestData,
         string $exceptionParameter
-    ):void
-    {
+    ): void {
         $request = new Request([], $requestData);
 
         $this->expectExceptionObject(RoutingException::missingRequestParameter($exceptionParameter));
@@ -705,7 +701,7 @@ class StatusControllerTest extends TestCase
         ];
     }
 
-    public function testCreateNewConnectionWithDuplicateNameShouldThrowException():void
+    public function testCreateNewConnectionWithDuplicateNameShouldThrowException(): void
     {
         $request = new Request([], [
             'connectionId' => Uuid::randomHex(),
@@ -720,7 +716,7 @@ class StatusControllerTest extends TestCase
         $this->controller->createNewConnection($request, $this->context);
     }
 
-    public function testCreateNewConnectionWithInvalidCredentialsRollsBack():void
+    public function testCreateNewConnectionWithInvalidCredentialsRollsBack(): void
     {
         $failingDataFetcher = $this->getFailingMigrationDataFetcher(
             static::getContainer()->get('swag_migration_logging.repository'),
@@ -746,7 +742,7 @@ class StatusControllerTest extends TestCase
 
         try {
             $controller->createNewConnection($request, $this->context);
-        } catch ( \Throwable $exception) {
+        } catch (\Throwable $exception) {
             $throwsException = true;
 
             static::assertSame(DummyLocalGatewayFail::ERROR_CODE, $exception->getErrorCode());

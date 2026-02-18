@@ -10,22 +10,11 @@ namespace SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
-use SwagMigrationAssistant\Migration\TotalStruct;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CategoryDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\CustomerDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\MediaDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\OrderDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\ProductDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\SalesChannelDataSet;
-use SwagMigrationAssistant\Profile\Shopware\DataSelection\DataSet\TranslationDataSet;
-use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
-use SwagMigrationAssistant\Test\Mock\DataSet\InvalidCustomerDataSet;
 
 #[Package('fundamentals@after-sales')]
 class DummyLocalGatewayFail implements GatewayInterface
@@ -56,21 +45,21 @@ class DummyLocalGatewayFail implements GatewayInterface
         $profile = $migrationContext->getProfile();
 
         return new EnvironmentInformation(
-                $profile->getSourceSystemName(),
-                $profile->getVersion(),
-                '',
-                [],
-                [],
-                new RequestStatusStruct(
+            $profile->getSourceSystemName(),
+            $profile->getVersion(),
+            '',
+            [],
+            [],
+            new RequestStatusStruct(
+                self::ERROR_CODE,
+                self::ERROR_MESSAGE,
+                false,
+                MigrationException::connectionValidationFailed(
                     self::ERROR_CODE,
                     self::ERROR_MESSAGE,
-                    false,
-                    MigrationException::connectionValidationFailed(
-                        self::ERROR_CODE,
-                        self::ERROR_MESSAGE,
-                    ),
                 ),
-            );
+            ),
+        );
     }
 
     public function readTotals(MigrationContextInterface $migrationContext): array

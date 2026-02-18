@@ -107,7 +107,7 @@ trait MigrationServicesTrait
                 $languageRepository
             ),
             new DummyLocalGateway(),
-//            new DummyLocalGatewayCorrupted(),
+            //            new DummyLocalGatewayCorrupted(),
         ]));
 
         return new MigrationDataFetcher($gatewayRegistry, $loggingService);
