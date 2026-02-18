@@ -958,7 +958,7 @@ Source data (JSON):
     "downloadAvailablePaymentStatus": "a:1:{i:0;i:12;}"
 }
 
------ Log Entry #20 -----
+----- Log Entry #21 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -975,7 +975,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=3"
 }
 
------ Log Entry #21 -----
+----- Log Entry #22 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -992,7 +992,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=4"
 }
 
------ Log Entry #22 -----
+----- Log Entry #23 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1007,23 +1007,6 @@ Source data (JSON):
     "path": "trends-news\/ich-packe-meinen-koffer",
     "type": "blog",
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=5"
-}
-
------ Log Entry #23 -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "sommerwelten\/stop-the-water-while-using-me",
-    "type": "campaign",
-    "org_path": "sViewport=campaign&sCategory=6&emotionId=5"
 }
 
 ----- Log Entry #24 -----
@@ -1055,9 +1038,9 @@ Field: type
 Source data (JSON):
 {
     "main": "1",
-    "path": "genusswelten\/the-deli-garage",
+    "path": "sommerwelten\/stop-the-water-while-using-me",
     "type": "campaign",
-    "org_path": "sViewport=campaign&sCategory=5&emotionId=6"
+    "org_path": "sViewport=campaign&sCategory=6&emotionId=5"
 }
 
 ----- Log Entry #26 -----
@@ -1088,13 +1071,30 @@ Entity: seo_url
 Field: type
 Source data (JSON):
 {
+    "main": "1",
+    "path": "genusswelten\/the-deli-garage",
+    "type": "campaign",
+    "org_path": "sViewport=campaign&sCategory=5&emotionId=6"
+}
+
+----- Log Entry #28 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
     "main": "0",
     "path": "trends-news\/der-sommer-wirenglisch",
     "type": "blog",
     "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=6"
 }
 
------ Log Entry #28 -----
+----- Log Entry #29 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1111,7 +1111,7 @@ Source data (JSON):
     "org_path": "sViewport=campaign&sCategory=6&emotionId=9"
 }
 
------ Log Entry #29 -----
+----- Log Entry #30 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1128,7 +1128,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=6"
 }
 
------ Log Entry #30 -----
+----- Log Entry #31 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1145,7 +1145,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=7"
 }
 
------ Log Entry #31 -----
+----- Log Entry #32 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1162,7 +1162,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=42&blogArticle=8"
 }
 
------ Log Entry #32 -----
+----- Log Entry #33 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1179,7 +1179,7 @@ Source data (JSON):
     "org_path": "sViewport=campaign&sCategory=6&emotionId=9"
 }
 
------ Log Entry #33 -----
+----- Log Entry #34 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1196,7 +1196,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sCategory=17"
 }
 
------ Log Entry #34 -----
+----- Log Entry #35 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1213,7 +1213,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=3"
 }
 
------ Log Entry #35 -----
+----- Log Entry #36 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1230,7 +1230,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=4"
 }
 
------ Log Entry #36 -----
+----- Log Entry #37 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1247,7 +1247,7 @@ Source data (JSON):
     "org_path": "sViewport=blog&sAction=detail&sCategory=17&blogArticle=5"
 }
 
------ Log Entry #37 -----
+----- Log Entry #38 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1264,7 +1264,7 @@ Source data (JSON):
     "org_path": "sViewport=campaign&emotionId=5"
 }
 
------ Log Entry #38 -----
+----- Log Entry #39 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1281,7 +1281,7 @@ Source data (JSON):
     "org_path": "sViewport=campaign&emotionId=9"
 }
 
------ Log Entry #39 -----
+----- Log Entry #40 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1298,7 +1298,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=2"
 }
 
------ Log Entry #40 -----
+----- Log Entry #41 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1315,7 +1315,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=6"
 }
 
------ Log Entry #41 -----
+----- Log Entry #42 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1332,7 +1332,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=2"
 }
 
------ Log Entry #42 -----
+----- Log Entry #43 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1349,7 +1349,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=3"
 }
 
------ Log Entry #43 -----
+----- Log Entry #44 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1366,7 +1366,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=4"
 }
 
------ Log Entry #44 -----
+----- Log Entry #45 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1383,7 +1383,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=6"
 }
 
------ Log Entry #45 -----
+----- Log Entry #46 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1400,7 +1400,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=7"
 }
 
------ Log Entry #46 -----
+----- Log Entry #47 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1417,7 +1417,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=8"
 }
 
------ Log Entry #47 -----
+----- Log Entry #48 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1434,7 +1434,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=9"
 }
 
------ Log Entry #48 -----
+----- Log Entry #49 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1451,7 +1451,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=6"
 }
 
------ Log Entry #49 -----
+----- Log Entry #50 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1468,7 +1468,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=52"
 }
 
------ Log Entry #50 -----
+----- Log Entry #51 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1485,7 +1485,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=54"
 }
 
------ Log Entry #51 -----
+----- Log Entry #52 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1502,7 +1502,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=55"
 }
 
------ Log Entry #52 -----
+----- Log Entry #53 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1519,7 +1519,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=56"
 }
 
------ Log Entry #53 -----
+----- Log Entry #54 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1536,7 +1536,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=2"
 }
 
------ Log Entry #54 -----
+----- Log Entry #55 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1553,7 +1553,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=3"
 }
 
------ Log Entry #55 -----
+----- Log Entry #56 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1570,7 +1570,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=4"
 }
 
------ Log Entry #56 -----
+----- Log Entry #57 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1587,7 +1587,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=6"
 }
 
------ Log Entry #57 -----
+----- Log Entry #58 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1604,7 +1604,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=7"
 }
 
------ Log Entry #58 -----
+----- Log Entry #59 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1621,7 +1621,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=8"
 }
 
------ Log Entry #59 -----
+----- Log Entry #60 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1638,7 +1638,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=9"
 }
 
------ Log Entry #60 -----
+----- Log Entry #61 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1655,7 +1655,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=52"
 }
 
------ Log Entry #61 -----
+----- Log Entry #62 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1672,7 +1672,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=54"
 }
 
------ Log Entry #62 -----
+----- Log Entry #63 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1689,7 +1689,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=55"
 }
 
------ Log Entry #63 -----
+----- Log Entry #64 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1706,7 +1706,7 @@ Source data (JSON):
     "org_path": "sViewport=custom&sCustom=56"
 }
 
------ Log Entry #64 -----
+----- Log Entry #65 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1721,23 +1721,6 @@ Source data (JSON):
     "path": "kontaktformular",
     "type": "forms",
     "org_path": "sViewport=forms&sFid=5"
-}
-
------ Log Entry #65 -----
-ID: [uuid]
-Level: info
-Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: seo_url
-Field: type
-Source data (JSON):
-{
-    "main": "1",
-    "path": "partnerformular",
-    "type": "forms",
-    "org_path": "sViewport=forms&sFid=8"
 }
 
 ----- Log Entry #66 -----
@@ -1752,12 +1735,29 @@ Field: type
 Source data (JSON):
 {
     "main": "1",
+    "path": "partnerformular",
+    "type": "forms",
+    "org_path": "sViewport=forms&sFid=8"
+}
+
+----- Log Entry #67 -----
+ID: [uuid]
+Level: info
+Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: seo_url
+Field: type
+Source data (JSON):
+{
+    "main": "1",
     "path": "defektes-produkt",
     "type": "forms",
     "org_path": "sViewport=forms&sFid=9"
 }
 
------ Log Entry #67 -----
+----- Log Entry #68 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1774,7 +1774,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=10"
 }
 
------ Log Entry #68 -----
+----- Log Entry #69 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1791,7 +1791,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=16"
 }
 
------ Log Entry #69 -----
+----- Log Entry #70 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1808,7 +1808,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=17"
 }
 
------ Log Entry #70 -----
+----- Log Entry #71 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1825,7 +1825,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=18"
 }
 
------ Log Entry #71 -----
+----- Log Entry #72 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1842,7 +1842,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=19"
 }
 
------ Log Entry #72 -----
+----- Log Entry #73 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1859,7 +1859,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=20"
 }
 
------ Log Entry #73 -----
+----- Log Entry #74 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1876,7 +1876,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=21"
 }
 
------ Log Entry #74 -----
+----- Log Entry #75 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1893,7 +1893,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=22"
 }
 
------ Log Entry #75 -----
+----- Log Entry #76 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1910,7 +1910,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=5"
 }
 
------ Log Entry #76 -----
+----- Log Entry #77 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1927,7 +1927,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=8"
 }
 
------ Log Entry #77 -----
+----- Log Entry #78 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1944,7 +1944,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=9"
 }
 
------ Log Entry #78 -----
+----- Log Entry #79 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1961,7 +1961,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=10"
 }
 
------ Log Entry #79 -----
+----- Log Entry #80 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1978,7 +1978,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=16"
 }
 
------ Log Entry #80 -----
+----- Log Entry #81 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -1995,7 +1995,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=17"
 }
 
------ Log Entry #81 -----
+----- Log Entry #82 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2012,7 +2012,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=18"
 }
 
------ Log Entry #82 -----
+----- Log Entry #83 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2029,7 +2029,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=19"
 }
 
------ Log Entry #83 -----
+----- Log Entry #84 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2046,7 +2046,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=20"
 }
 
------ Log Entry #84 -----
+----- Log Entry #85 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2063,7 +2063,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=21"
 }
 
------ Log Entry #85 -----
+----- Log Entry #86 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2080,7 +2080,7 @@ Source data (JSON):
     "org_path": "sViewport=forms&sFid=22"
 }
 
------ Log Entry #86 -----
+----- Log Entry #87 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2097,7 +2097,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=1"
 }
 
------ Log Entry #87 -----
+----- Log Entry #88 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2114,7 +2114,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=2"
 }
 
------ Log Entry #88 -----
+----- Log Entry #89 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2131,7 +2131,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=3"
 }
 
------ Log Entry #89 -----
+----- Log Entry #90 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2148,7 +2148,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=4"
 }
 
------ Log Entry #90 -----
+----- Log Entry #91 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2165,7 +2165,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=5"
 }
 
------ Log Entry #91 -----
+----- Log Entry #92 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2182,7 +2182,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=6"
 }
 
------ Log Entry #92 -----
+----- Log Entry #93 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2199,7 +2199,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=7"
 }
 
------ Log Entry #93 -----
+----- Log Entry #94 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2216,7 +2216,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=8"
 }
 
------ Log Entry #94 -----
+----- Log Entry #95 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2233,7 +2233,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=9"
 }
 
------ Log Entry #95 -----
+----- Log Entry #96 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2250,7 +2250,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=11"
 }
 
------ Log Entry #96 -----
+----- Log Entry #97 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2267,7 +2267,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=12"
 }
 
------ Log Entry #97 -----
+----- Log Entry #98 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2284,7 +2284,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=13"
 }
 
------ Log Entry #98 -----
+----- Log Entry #99 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2301,7 +2301,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=14"
 }
 
------ Log Entry #99 -----
+----- Log Entry #100 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2318,7 +2318,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=15"
 }
 
------ Log Entry #100 -----
+----- Log Entry #101 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2335,7 +2335,7 @@ Source data (JSON):
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=16"
 }
 
------ Log Entry #101 -----
+----- Log Entry #102 -----
 ID: [uuid]
 Level: info
 Code: SWAG_MIGRATION_CONVERT_OBJECT_TYPE_UNSUPPORTED
@@ -2351,1267 +2351,6 @@ Source data (JSON):
     "type": "listing",
     "org_path": "sViewport=listing&sAction=manufacturer&sSupplier=17"
 }
-
------ Log Entry #102 -----
-ID: [uuid]
-Level: error
-Code: SWAG_MIGRATION_WRITE_EXCEPTION
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: order
-Exception message: There are 1 error(s) while writing data.
-
-1. [/1/orderCustomer/email] This value should not be blank.
-Source data (JSON):
-{
-    "id": "57",
-    "net": "0",
-    "locale": "de-DE",
-    "status": "0",
-    "userID": "1",
-    "_locale": "de-DE",
-    "changed": null,
-    "cleared": "17",
-    "comment": "",
-    "details": [
-        {
-            "id": "201",
-            "ean": null,
-            "tax": {
-                "id": "1",
-                "tax": "19.00",
-                "description": "19%"
-            },
-            "name": "Versandkostenfreier Artikel",
-            "unit": null,
-            "modus": "0",
-            "price": "35.99",
-            "taxID": "1",
-            "config": "",
-            "status": "0",
-            "orderID": "57",
-            "shipped": "0",
-            "quantity": "1",
-            "tax_rate": "19",
-            "articleID": "220",
-            "pack_unit": null,
-            "attributes": {
-                "id": "4",
-                "detailID": "201",
-                "attribute1": "",
-                "attribute2": "",
-                "attribute3": "",
-                "attribute4": "",
-                "attribute5": "",
-                "attribute6": ""
-            },
-            "esdarticle": "0",
-            "ordernumber": "20002",
-            "releasedate": "0000-00-00",
-            "shippedgroup": "0",
-            "articleDetailID": null,
-            "articleordernumber": "SW10001"
-        },
-        {
-            "id": "202",
-            "ean": null,
-            "tax": {
-                "id": "1",
-                "tax": "19.00",
-                "description": "19%"
-            },
-            "name": "Aufschlag bei Zahlungsarten",
-            "unit": null,
-            "modus": "0",
-            "price": "35.99",
-            "taxID": "1",
-            "config": "",
-            "status": "0",
-            "orderID": "57",
-            "shipped": "0",
-            "quantity": "1",
-            "tax_rate": "19",
-            "articleID": "227",
-            "pack_unit": null,
-            "attributes": {
-                "id": "5",
-                "detailID": "202",
-                "attribute1": "",
-                "attribute2": "",
-                "attribute3": "",
-                "attribute4": "",
-                "attribute5": "",
-                "attribute6": ""
-            },
-            "esdarticle": "0",
-            "ordernumber": "20002",
-            "releasedate": "0000-00-00",
-            "shippedgroup": "0",
-            "articleDetailID": null,
-            "articleordernumber": "SW10002841"
-        },
-        {
-            "id": "203",
-            "ean": null,
-            "tax": {
-                "id": "1",
-                "tax": "19.00",
-                "description": "19%"
-            },
-            "name": "Express Versand",
-            "unit": null,
-            "modus": "0",
-            "price": "54.9",
-            "taxID": "1",
-            "config": "",
-            "status": "0",
-            "orderID": "57",
-            "shipped": "0",
-            "quantity": "1",
-            "tax_rate": "19",
-            "articleID": "219",
-            "pack_unit": null,
-            "attributes": {
-                "id": "6",
-                "detailID": "203",
-                "attribute1": "",
-                "attribute2": "",
-                "attribute3": "",
-                "attribute4": "",
-                "attribute5": "",
-                "attribute6": ""
-            },
-            "esdarticle": "0",
-            "ordernumber": "20002",
-            "releasedate": "0000-00-00",
-            "shippedgroup": "0",
-            "articleDetailID": null,
-            "articleordernumber": "SW10185"
-        },
-        {
-            "id": "204",
-            "ean": null,
-            "esd": {
-                "id": "2",
-                "datum": "[timestamp]",
-                "esdID": "2",
-                "userID": "1",
-                "orderID": "57",
-                "serialID": "6",
-                "orderdetailsID": "204",
-                "downloadAvailablePaymentStatus": "a:1:{i:0;i:12;}"
-            },
-            "tax": {
-                "id": "1",
-                "tax": "19.00",
-                "description": "19%"
-            },
-            "name": "ESD Download Artikel",
-            "unit": null,
-            "modus": "0",
-            "price": "34.99",
-            "taxID": "1",
-            "config": "",
-            "status": "0",
-            "orderID": "57",
-            "shipped": "0",
-            "quantity": "2",
-            "tax_rate": "19",
-            "articleID": "197",
-            "pack_unit": null,
-            "attributes": {
-                "id": "7",
-                "detailID": "204",
-                "attribute1": "",
-                "attribute2": "",
-                "attribute3": "",
-                "attribute4": "",
-                "attribute5": "",
-                "attribute6": ""
-            },
-            "esdarticle": "1",
-            "ordernumber": "20002",
-            "releasedate": "0000-00-00",
-            "shippedgroup": "0",
-            "articleDetailID": null,
-            "articleordernumber": "SW10196"
-        },
-        {
-            "id": "205",
-            "ean": null,
-            "tax": {
-                "id": "4",
-                "tax": "7.00",
-                "description": "7 %"
-            },
-            "name": "Zuschlag f\u00fcr Zahlungsart",
-            "unit": null,
-            "modus": "4",
-            "price": "5",
-            "taxID": "4",
-            "config": "",
-            "status": "0",
-            "orderID": "57",
-            "shipped": "0",
-            "quantity": "1",
-            "tax_rate": "19",
-            "articleID": "0",
-            "pack_unit": null,
-            "attributes": {
-                "id": "8",
-                "detailID": "205",
-                "attribute1": "",
-                "attribute2": "",
-                "attribute3": "",
-                "attribute4": "",
-                "attribute5": "",
-                "attribute6": ""
-            },
-            "esdarticle": "0",
-            "ordernumber": "20002",
-            "releasedate": "0000-00-00",
-            "shippedgroup": "0",
-            "articleDetailID": null,
-            "articleordernumber": "sw-payment-absolute"
-        }
-    ],
-    "payment": {
-        "id": "4",
-        "hide": "0",
-        "name": "invoice",
-        "class": "invoice.php",
-        "table": "",
-        "action": "",
-        "active": "1",
-        "source": null,
-        "pluginID": null,
-        "position": "3",
-        "template": "invoice.tpl",
-        "esdactive": "1",
-        "surcharge": "5",
-        "description": "Rechnung",
-        "embediframe": "",
-        "hideprospect": "0",
-        "debit_percent": "0",
-        "mobile_inactive": "0",
-        "surchargestring": "",
-        "additionaldescription": "Sie zahlen einfach und bequem auf Rechnung. Shopware bietet z.B. auch die M\u00f6glichkeit, Rechnung automatisiert erst ab der 2. Bestellung f\u00fcr Kunden zur Verf\u00fcgung zu stellen, um Zahlungsausf\u00e4lle zu vermeiden."
-    },
-    "referer": "",
-    "taxfree": "0",
-    "currency": "EUR",
-    "customer": {
-        "id": "1",
-        "email": null,
-        "title": null,
-        "active": "1",
-        "changed": null,
-        "encoder": "md5",
-        "referer": "",
-        "birthday": null,
-        "language": null,
-        "lastname": "Mustermann",
-        "password": "[uuid]",
-        "affiliate": "0",
-        "firstname": "Max",
-        "lastlogin": "[timestamp]",
-        "paymentID": "5",
-        "sessionID": "uiorqd755gaar8dn89ukp178c7",
-        "subshopID": "1",
-        "firstlogin": "2011-11-23",
-        "newsletter": "0",
-        "salutation": "mr",
-        "validation": "",
-        "accountmode": "0",
-        "lockeduntil": null,
-        "login_token": null,
-        "failedlogins": "0",
-        "pricegroupID": null,
-        "customergroup": "EK",
-        "paymentpreset": "0",
-        "customernumber": "20001",
-        "confirmationkey": "",
-        "internalcomment": "",
-        "register_opt_in_id": null,
-        "doubleOptinRegister": "0",
-        "password_change_date": "[timestamp]",
-        "doubleOptinConfirmDate": null,
-        "doubleOptinEmailSentDate": null,
-        "default_billing_address_id": "1",
-        "default_shipping_address_id": "3"
-    },
-    "language": "1",
-    "documents": [
-        {
-            "id": "5",
-            "date": "2019-12-12",
-            "hash": "[uuid]",
-            "type": "1",
-            "docID": "20002",
-            "amount": "201.86",
-            "userID": "1",
-            "orderID": "57",
-            "attributes": {
-                "id": "5",
-                "documentID": "5"
-            },
-            "documenttype": {
-                "id": "1",
-                "key": "invoice",
-                "top": "20",
-                "left": "25",
-                "name": "Rechnung",
-                "right": "10",
-                "bottom": "20",
-                "numbers": "doc_0",
-                "template": "index.tpl",
-                "pagebreak": "10"
-            }
-        },
-        {
-            "id": "6",
-            "date": "2019-12-12",
-            "hash": "[uuid]",
-            "type": "2",
-            "docID": "20002",
-            "amount": "201.86",
-            "userID": "1",
-            "orderID": "57",
-            "attributes": {
-                "id": "6",
-                "documentID": "6"
-            },
-            "documenttype": {
-                "id": "2",
-                "key": "delivery_note",
-                "top": "20",
-                "left": "25",
-                "name": "Lieferschein",
-                "right": "10",
-                "bottom": "20",
-                "numbers": "doc_1",
-                "template": "index_ls.tpl",
-                "pagebreak": "10"
-            }
-        },
-        {
-            "id": "7",
-            "date": "2019-12-12",
-            "hash": "[uuid]",
-            "type": "3",
-            "docID": "20002",
-            "amount": "201.86",
-            "userID": "1",
-            "orderID": "57",
-            "attributes": {
-                "id": "7",
-                "documentID": "7"
-            },
-            "documenttype": {
-                "id": "3",
-                "key": "credit",
-                "top": "20",
-                "left": "25",
-                "name": "Gutschrift",
-                "right": "10",
-                "bottom": "20",
-                "numbers": "doc_2",
-                "template": "index_gs.tpl",
-                "pagebreak": "10"
-            }
-        },
-        {
-            "id": "8",
-            "date": "2019-12-12",
-            "hash": "[uuid]",
-            "type": "4",
-            "docID": "111111",
-            "amount": "-201.86",
-            "userID": "1",
-            "orderID": "57",
-            "attributes": {
-                "id": "8",
-                "documentID": "8"
-            },
-            "documenttype": {
-                "id": "4",
-                "key": "cancellation",
-                "top": "20",
-                "left": "25",
-                "name": "Stornorechnung",
-                "right": "10",
-                "bottom": "20",
-                "numbers": "doc_3",
-                "template": "index_sr.tpl",
-                "pagebreak": "10"
-            }
-        }
-    ],
-    "ordertime": "[timestamp]",
-    "partnerID": "",
-    "paymentID": "4",
-    "subshopID": "1",
-    "attributes": {
-        "id": "2",
-        "orderID": "57",
-        "attribute1": "",
-        "attribute2": "",
-        "attribute3": "",
-        "attribute4": "",
-        "attribute5": "",
-        "attribute6": ""
-    },
-    "deviceType": null,
-    "dispatchID": "9",
-    "cleareddate": null,
-    "ordernumber": "20002",
-    "orderstatus": {
-        "id": "0",
-        "mail": "1",
-        "name": "open",
-        "group": "state",
-        "position": "1",
-        "description": "Offen"
-    },
-    "remote_addr": "217.86.205.141",
-    "temporaryID": "",
-    "trackingcode": "",
-    "paymentstatus": {
-        "id": "17",
-        "mail": "0",
-        "name": "open",
-        "group": "payment",
-        "position": "0",
-        "description": "Offen"
-    },
-    "transactionID": "",
-    "billingaddress": {
-        "id": "2",
-        "city": "Sch\u00f6ppingen",
-        "phone": "",
-        "state": {
-            "id": "3",
-            "name": "Nordrhein-Westfalen",
-            "active": "1",
-            "position": "0",
-            "countryID": "2",
-            "shortcode": "NW"
-        },
-        "title": null,
-        "ustid": "",
-        "street": "Mustermannstra\u00dfe 92",
-        "userID": "1",
-        "company": "shopware AG",
-        "country": {
-            "id": "2",
-            "iso3": "DEU",
-            "active": "1",
-            "areaID": "1",
-            "notice": "",
-            "taxfree": "0",
-            "position": "1",
-            "countryen": "GERMANY",
-            "countryiso": "DE",
-            "countryname": "Deutschland",
-            "taxfree_ustid": "0",
-            "allow_shipping": "1",
-            "taxfree_ustid_checked": "0",
-            "force_state_in_registration": "0",
-            "display_state_in_registration": "0"
-        },
-        "orderID": "57",
-        "stateID": "3",
-        "zipcode": "48624",
-        "lastname": "Mustermann",
-        "countryID": "2",
-        "firstname": "Max",
-        "attributes": {
-            "id": "2",
-            "text1": null,
-            "text2": null,
-            "text3": null,
-            "text4": null,
-            "text5": null,
-            "text6": null,
-            "billingID": "2"
-        },
-        "department": "",
-        "salutation": "mr",
-        "customernumber": null,
-        "additional_address_line1": null,
-        "additional_address_line2": null
-    },
-    "currencyFactor": "1",
-    "invoice_amount": "201.86",
-    "customercomment": "",
-    "internalcomment": "",
-    "shippingaddress": {
-        "id": "2",
-        "city": "Sch\u00f6ppingen",
-        "phone": null,
-        "state": {
-            "id": "3",
-            "name": "Nordrhein-Westfalen",
-            "active": "1",
-            "position": "0",
-            "countryID": "2",
-            "shortcode": "NW"
-        },
-        "title": null,
-        "street": "Mustermannstra\u00dfe 92",
-        "userID": "1",
-        "company": "shopware AG",
-        "country": {
-            "id": "2",
-            "iso3": "DEU",
-            "active": "1",
-            "areaID": "1",
-            "notice": "",
-            "taxfree": "0",
-            "position": "1",
-            "countryen": "GERMANY",
-            "countryiso": "DE",
-            "countryname": "Deutschland",
-            "taxfree_ustid": "0",
-            "allow_shipping": "1",
-            "taxfree_ustid_checked": "0",
-            "force_state_in_registration": "0",
-            "display_state_in_registration": "0"
-        },
-        "orderID": "57",
-        "stateID": "3",
-        "zipcode": "48624",
-        "lastname": "Mustermann",
-        "countryID": "2",
-        "firstname": "Max",
-        "attributes": {
-            "id": "2",
-            "text1": null,
-            "text2": null,
-            "text3": null,
-            "text4": null,
-            "text5": null,
-            "text6": null,
-            "shippingID": "2"
-        },
-        "department": "",
-        "salutation": "mr",
-        "additional_address_line1": null,
-        "additional_address_line2": null
-    },
-    "invoice_shipping": "0",
-    "invoice_amount_net": "169.63",
-    "invoice_shipping_net": "0",
-    "invoice_shipping_tax_rate": null,
-    "is_proportional_calculation": "0"
-}
-Converted data (JSON):
-{
-    "id": "[uuid]",
-    "price": {
-        "netPrice": 169.63,
-        "rawTotal": 201.86,
-        "taxRules": [
-            {
-                "taxRate": 19,
-                "extensions": [],
-                "percentage": 100
-            }
-        ],
-        "taxStatus": "gross",
-        "extensions": [],
-        "totalPrice": 201.86,
-        "positionPrice": 201.86,
-        "calculatedTaxes": []
-    },
-    "stateId": "[uuid]",
-    "addresses": [
-        {
-            "id": "[uuid]",
-            "city": "Sch\u00f6ppingen",
-            "street": "Mustermannstra\u00dfe 92",
-            "company": "shopware AG",
-            "country": {
-                "id": "[uuid]",
-                "iso": "DE",
-                "iso3": "DEU",
-                "name": "Deutschland",
-                "active": true,
-                "taxFree": false,
-                "position": 1,
-                "translations": {
-                    "[uuid]": {
-                        "id": "[uuid]",
-                        "name": "Deutschland",
-                        "countryId": "[uuid]",
-                        "languageId": "[uuid]"
-                    }
-                },
-                "taxfreeForVatId": false,
-                "taxfreeVatidChecked": false,
-                "forceStateInRegistration": false,
-                "displayStateInRegistration": false
-            },
-            "zipcode": "48624",
-            "lastName": "Mustermann",
-            "firstName": "Max",
-            "countryState": {
-                "id": "[uuid]",
-                "countryId": "[uuid]"
-            },
-            "salutationId": "[uuid]"
-        }
-    ],
-    "lineItems": [
-        {
-            "id": "[uuid]",
-            "type": "product",
-            "label": "Versandkostenfreier Artikel",
-            "price": {
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 35.99,
-                "extensions": [],
-                "totalPrice": 35.99,
-                "referencePrice": null,
-                "calculatedTaxes": [
-                    {
-                        "tax": 5.7463025210084,
-                        "label": null,
-                        "price": 35.99,
-                        "taxRate": 19,
-                        "extensions": []
-                    }
-                ],
-                "regulationPrice": null
-            },
-            "payload": {
-                "options": [],
-                "productNumber": "SW10001"
-            },
-            "quantity": 1,
-            "productId": "[uuid]",
-            "identifier": "[uuid]",
-            "referencedId": "[uuid]",
-            "priceDefinition": {
-                "type": "quantity",
-                "price": 35.99,
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "extensions": [],
-                "isCalculated": true,
-                "regulationPrice": null,
-                "referencePriceDefinition": null
-            }
-        },
-        {
-            "id": "[uuid]",
-            "type": "product",
-            "label": "Aufschlag bei Zahlungsarten",
-            "price": {
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 35.99,
-                "extensions": [],
-                "totalPrice": 35.99,
-                "referencePrice": null,
-                "calculatedTaxes": [
-                    {
-                        "tax": 5.7463025210084,
-                        "label": null,
-                        "price": 35.99,
-                        "taxRate": 19,
-                        "extensions": []
-                    }
-                ],
-                "regulationPrice": null
-            },
-            "payload": {
-                "options": [],
-                "productNumber": "SW10002841"
-            },
-            "quantity": 1,
-            "productId": "[uuid]",
-            "identifier": "[uuid]",
-            "referencedId": "[uuid]",
-            "priceDefinition": {
-                "type": "quantity",
-                "price": 35.99,
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "extensions": [],
-                "isCalculated": true,
-                "regulationPrice": null,
-                "referencePriceDefinition": null
-            }
-        },
-        {
-            "id": "[uuid]",
-            "type": "product",
-            "label": "Express Versand",
-            "price": {
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 54.9,
-                "extensions": [],
-                "totalPrice": 54.9,
-                "referencePrice": null,
-                "calculatedTaxes": [
-                    {
-                        "tax": 8.7655462184874,
-                        "label": null,
-                        "price": 54.9,
-                        "taxRate": 19,
-                        "extensions": []
-                    }
-                ],
-                "regulationPrice": null
-            },
-            "payload": {
-                "options": [],
-                "productNumber": "SW10185"
-            },
-            "quantity": 1,
-            "productId": "[uuid]",
-            "identifier": "[uuid]",
-            "referencedId": "[uuid]",
-            "priceDefinition": {
-                "type": "quantity",
-                "price": 54.9,
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "extensions": [],
-                "isCalculated": true,
-                "regulationPrice": null,
-                "referencePriceDefinition": null
-            }
-        },
-        {
-            "id": "[uuid]",
-            "type": "product",
-            "label": "ESD Download Artikel",
-            "price": {
-                "quantity": 2,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 34.99,
-                "extensions": [],
-                "totalPrice": 69.98,
-                "referencePrice": null,
-                "calculatedTaxes": [
-                    {
-                        "tax": 11.173277310924,
-                        "label": null,
-                        "price": 69.98,
-                        "taxRate": 19,
-                        "extensions": []
-                    }
-                ],
-                "regulationPrice": null
-            },
-            "payload": {
-                "options": [],
-                "productNumber": "SW10196"
-            },
-            "quantity": 2,
-            "downloads": [
-                {
-                    "id": "[uuid]",
-                    "mediaId": "[uuid]",
-                    "position": 0,
-                    "accessGranted": false
-                }
-            ],
-            "productId": "[uuid]",
-            "identifier": "[uuid]",
-            "referencedId": "[uuid]",
-            "priceDefinition": {
-                "type": "quantity",
-                "price": 34.99,
-                "quantity": 2,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "extensions": [],
-                "isCalculated": true,
-                "regulationPrice": null,
-                "referencePriceDefinition": null
-            }
-        },
-        {
-            "id": "[uuid]",
-            "type": "custom",
-            "label": "Zuschlag f\u00fcr Zahlungsart",
-            "price": {
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 5,
-                "extensions": [],
-                "totalPrice": 5,
-                "referencePrice": null,
-                "calculatedTaxes": [
-                    {
-                        "tax": 0.79831932773109,
-                        "label": null,
-                        "price": 5,
-                        "taxRate": 19,
-                        "extensions": []
-                    }
-                ],
-                "regulationPrice": null
-            },
-            "payload": {
-                "options": []
-            },
-            "quantity": 1,
-            "identifier": "[uuid]",
-            "priceDefinition": {
-                "type": "quantity",
-                "price": 5,
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "extensions": [],
-                "isCalculated": true,
-                "regulationPrice": null,
-                "referencePriceDefinition": null
-            }
-        }
-    ],
-    "currencyId": "[uuid]",
-    "deliveries": [
-        {
-            "id": "[uuid]",
-            "stateId": "[uuid]",
-            "positions": [
-                {
-                    "id": "[uuid]",
-                    "price": {
-                        "quantity": 1,
-                        "taxRules": [
-                            {
-                                "taxRate": 19,
-                                "extensions": [],
-                                "percentage": 100
-                            }
-                        ],
-                        "listPrice": null,
-                        "unitPrice": 35.99,
-                        "extensions": [],
-                        "totalPrice": 35.99,
-                        "referencePrice": null,
-                        "calculatedTaxes": [
-                            {
-                                "tax": 5.7463025210084,
-                                "label": null,
-                                "price": 35.99,
-                                "taxRate": 19,
-                                "extensions": []
-                            }
-                        ],
-                        "regulationPrice": null
-                    },
-                    "orderLineItemId": "[uuid]"
-                },
-                {
-                    "id": "[uuid]",
-                    "price": {
-                        "quantity": 1,
-                        "taxRules": [
-                            {
-                                "taxRate": 19,
-                                "extensions": [],
-                                "percentage": 100
-                            }
-                        ],
-                        "listPrice": null,
-                        "unitPrice": 35.99,
-                        "extensions": [],
-                        "totalPrice": 35.99,
-                        "referencePrice": null,
-                        "calculatedTaxes": [
-                            {
-                                "tax": 5.7463025210084,
-                                "label": null,
-                                "price": 35.99,
-                                "taxRate": 19,
-                                "extensions": []
-                            }
-                        ],
-                        "regulationPrice": null
-                    },
-                    "orderLineItemId": "[uuid]"
-                },
-                {
-                    "id": "[uuid]",
-                    "price": {
-                        "quantity": 1,
-                        "taxRules": [
-                            {
-                                "taxRate": 19,
-                                "extensions": [],
-                                "percentage": 100
-                            }
-                        ],
-                        "listPrice": null,
-                        "unitPrice": 54.9,
-                        "extensions": [],
-                        "totalPrice": 54.9,
-                        "referencePrice": null,
-                        "calculatedTaxes": [
-                            {
-                                "tax": 8.7655462184874,
-                                "label": null,
-                                "price": 54.9,
-                                "taxRate": 19,
-                                "extensions": []
-                            }
-                        ],
-                        "regulationPrice": null
-                    },
-                    "orderLineItemId": "[uuid]"
-                },
-                {
-                    "id": "[uuid]",
-                    "price": {
-                        "quantity": 2,
-                        "taxRules": [
-                            {
-                                "taxRate": 19,
-                                "extensions": [],
-                                "percentage": 100
-                            }
-                        ],
-                        "listPrice": null,
-                        "unitPrice": 34.99,
-                        "extensions": [],
-                        "totalPrice": 69.98,
-                        "referencePrice": null,
-                        "calculatedTaxes": [
-                            {
-                                "tax": 11.173277310924,
-                                "label": null,
-                                "price": 69.98,
-                                "taxRate": 19,
-                                "extensions": []
-                            }
-                        ],
-                        "regulationPrice": null
-                    },
-                    "orderLineItemId": "[uuid]"
-                },
-                {
-                    "id": "[uuid]",
-                    "price": {
-                        "quantity": 1,
-                        "taxRules": [
-                            {
-                                "taxRate": 19,
-                                "extensions": [],
-                                "percentage": 100
-                            }
-                        ],
-                        "listPrice": null,
-                        "unitPrice": 5,
-                        "extensions": [],
-                        "totalPrice": 5,
-                        "referencePrice": null,
-                        "calculatedTaxes": [
-                            {
-                                "tax": 0.79831932773109,
-                                "label": null,
-                                "price": 5,
-                                "taxRate": 19,
-                                "extensions": []
-                            }
-                        ],
-                        "regulationPrice": null
-                    },
-                    "orderLineItemId": "[uuid]"
-                }
-            ],
-            "shippingCosts": {
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 0,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 0,
-                "extensions": [],
-                "totalPrice": 0,
-                "referencePrice": null,
-                "calculatedTaxes": [
-                    {
-                        "tax": 0,
-                        "label": null,
-                        "price": 0,
-                        "taxRate": 0,
-                        "extensions": []
-                    }
-                ],
-                "regulationPrice": null
-            },
-            "shippingMethodId": "[uuid]",
-            "shippingDateLatest": "[timestamp]",
-            "shippingDateEarliest": "[timestamp]",
-            "shippingOrderAddress": {
-                "id": "[uuid]",
-                "city": "Sch\u00f6ppingen",
-                "street": "Mustermannstra\u00dfe 92",
-                "company": "shopware AG",
-                "country": {
-                    "id": "[uuid]",
-                    "iso": "DE",
-                    "iso3": "DEU",
-                    "name": "Deutschland",
-                    "active": true,
-                    "taxFree": false,
-                    "position": 1,
-                    "translations": {
-                        "[uuid]": {
-                            "id": "[uuid]",
-                            "name": "Deutschland",
-                            "countryId": "[uuid]",
-                            "languageId": "[uuid]"
-                        }
-                    },
-                    "taxfreeForVatId": false,
-                    "taxfreeVatidChecked": false,
-                    "forceStateInRegistration": false,
-                    "displayStateInRegistration": false
-                },
-                "zipcode": "48624",
-                "lastName": "Mustermann",
-                "firstName": "Max",
-                "countryState": {
-                    "id": "[uuid]",
-                    "countryId": "[uuid]"
-                },
-                "salutationId": "[uuid]"
-            }
-        }
-    ],
-    "languageId": "[uuid]",
-    "orderNumber": "20002",
-    "deepLinkCode": "[uuid]",
-    "itemRounding": {
-        "decimals": 2,
-        "interval": 0.01,
-        "roundForNet": true
-    },
-    "transactions": [
-        {
-            "id": "[uuid]",
-            "amount": {
-                "quantity": 1,
-                "taxRules": [
-                    {
-                        "taxRate": 19,
-                        "extensions": [],
-                        "percentage": 100
-                    }
-                ],
-                "listPrice": null,
-                "unitPrice": 201.86,
-                "extensions": [],
-                "totalPrice": 201.86,
-                "referencePrice": null,
-                "calculatedTaxes": [],
-                "regulationPrice": null
-            },
-            "stateId": "[uuid]",
-            "paymentMethodId": "[uuid]"
-        }
-    ],
-    "orderCustomer": {
-        "id": "[uuid]",
-        "lastName": "Mustermann",
-        "firstName": "Max",
-        "customerId": "[uuid]",
-        "salutationId": "[uuid]",
-        "customerNumber": "20001"
-    },
-    "orderDateTime": "[timestamp]",
-    "shippingCosts": {
-        "quantity": 1,
-        "taxRules": [
-            {
-                "taxRate": 0,
-                "extensions": [],
-                "percentage": 100
-            }
-        ],
-        "listPrice": null,
-        "unitPrice": 0,
-        "extensions": [],
-        "totalPrice": 0,
-        "referencePrice": null,
-        "calculatedTaxes": [
-            {
-                "tax": 0,
-                "label": null,
-                "price": 0,
-                "taxRate": 0,
-                "extensions": []
-            }
-        ],
-        "regulationPrice": null
-    },
-    "totalRounding": {
-        "decimals": 2,
-        "interval": 0.01,
-        "roundForNet": true
-    },
-    "currencyFactor": 1,
-    "salesChannelId": "[uuid]",
-    "billingAddressId": "[uuid]",
-    "primaryOrderDeliveryId": "[uuid]",
-    "primaryOrderTransactionId": "[uuid]"
-}
-Exception trace (JSON):
-[
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/DataAbstractionLayer\/Write\/WriteContext.php",
-        "line": 79,
-        "type": "->",
-        "class": "Shopware\\Core\\Framework\\DataAbstractionLayer\\Write\\WriteContext",
-        "function": "__construct"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Writer\/AbstractWriter.php",
-        "line": 63,
-        "type": "::",
-        "class": "Shopware\\Core\\Framework\\DataAbstractionLayer\\Write\\WriteContext",
-        "function": "createFromContext"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/src\/Core\/Framework\/Context.php",
-        "line": 201,
-        "type": "->",
-        "class": "SwagMigrationAssistant\\Migration\\Writer\\AbstractWriter",
-        "function": "SwagMigrationAssistant\\Migration\\Writer\\{closure}"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Writer\/AbstractWriter.php",
-        "line": 59,
-        "type": "->",
-        "class": "Shopware\\Core\\Framework\\Context",
-        "function": "scope"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Writer\/OrderWriter.php",
-        "line": 43,
-        "type": "->",
-        "class": "SwagMigrationAssistant\\Migration\\Writer\\AbstractWriter",
-        "function": "writeData"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/Service\/MigrationDataWriter.php",
-        "line": 118,
-        "type": "->",
-        "class": "SwagMigrationAssistant\\Migration\\Writer\\OrderWriter",
-        "function": "writeData"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/MessageQueue\/Handler\/Processor\/WritingProcessor.php",
-        "line": 60,
-        "type": "->",
-        "class": "SwagMigrationAssistant\\Migration\\Service\\MigrationDataWriter",
-        "function": "writeData"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/custom\/plugins\/SwagMigrationAssistant\/src\/Migration\/MessageQueue\/Handler\/MigrationProcessHandler.php",
-        "line": 57,
-        "type": "->",
-        "class": "SwagMigrationAssistant\\Migration\\MessageQueue\\Handler\\Processor\\WritingProcessor",
-        "function": "process"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/HandleMessageMiddleware.php",
-        "line": 148,
-        "type": "->",
-        "class": "SwagMigrationAssistant\\Migration\\MessageQueue\\Handler\\MigrationProcessHandler",
-        "function": "__invoke"
-    },
-    {
-        "file": "\/home\/runner\/work\/SwagMigrationAssistant\/SwagMigrationAssistant\/vendor\/symfony\/messenger\/Middleware\/HandleMessageMiddleware.php",
-        "line": 90,
-        "type": "->",
-        "class": "Symfony\\Component\\Messenger\\Middleware\\HandleMessageMiddleware",
-        "function": "callHandler"
-    }
-]
 
 ----- Log Entry #103 -----
 ID: [uuid]
@@ -11493,6 +10232,34 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
+        "uri": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Oelwechsel-Sorten-Front502df8eb7b40f",
+        "file_size": "61644",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg"
+}
+
+----- Log Entry #385 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
         "uri": "media\/image\/Heiku-Kicker-Champ-Family-hauptbild.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -11509,7 +10276,7 @@ Source data (JSON):
     "source_path": "media\/image\/Heiku-Kicker-Champ-Family-hauptbild.jpg"
 }
 
------ Log Entry #385 -----
+----- Log Entry #386 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11537,7 +10304,7 @@ Source data (JSON):
     "source_path": "media\/image\/Heiku-Kicker-Champ-Individuell-Hauptbild.jpg"
 }
 
------ Log Entry #386 -----
+----- Log Entry #387 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11565,7 +10332,7 @@ Source data (JSON):
     "source_path": "media\/image\/e_12.jpg"
 }
 
------ Log Entry #387 -----
+----- Log Entry #388 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11593,7 +10360,7 @@ Source data (JSON):
     "source_path": "media\/image\/genuss_wein_banner.jpg"
 }
 
------ Log Entry #388 -----
+----- Log Entry #389 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11619,34 +10386,6 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/genuss_tees_banner.jpg"
-}
-
------ Log Entry #389 -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
-        "uri": "media\/image\/Oelwechsel-Sorten-Front.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Oelwechsel-Sorten-Front",
-        "file_size": "61644",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Oelwechsel-Sorten-Front.jpg"
 }
 
 ----- Log Entry #390 -----
@@ -11801,34 +10540,6 @@ Source data (JSON):
 {
     "media": {
         "id": "[uuid]",
-        "uri": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg",
-        "entity": "media",
-        "run_id": "[uuid]",
-        "written": "1",
-        "media_id": "[uuid]",
-        "file_name": "Oelwechsel-Sorten-Front502df8eb7b40f",
-        "file_size": "61644",
-        "processed": "0",
-        "created_at": "[timestamp]",
-        "updated_at": "[timestamp]",
-        "process_failure": "0"
-    },
-    "media_id": "[uuid]",
-    "source_path": "media\/image\/Oelwechsel-Sorten-Front502df8eb7b40f.jpg"
-}
-
------ Log Entry #396 -----
-ID: [uuid]
-Level: warning
-Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
-Profile name: shopware55
-Gateway name: local
-Created at: [timestamp]
-Entity: media
-Source data (JSON):
-{
-    "media": {
-        "id": "[uuid]",
         "uri": "media\/image\/Schluesselkasten-weiss-offen.jpg",
         "entity": "media",
         "run_id": "[uuid]",
@@ -11845,7 +10556,7 @@ Source data (JSON):
     "source_path": "media\/image\/Schluesselkasten-weiss-offen.jpg"
 }
 
------ Log Entry #397 -----
+----- Log Entry #396 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11873,7 +10584,7 @@ Source data (JSON):
     "source_path": "media\/image\/Schluesselkasten-weiss-zu.jpg"
 }
 
------ Log Entry #398 -----
+----- Log Entry #397 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11901,7 +10612,7 @@ Source data (JSON):
     "source_path": "media\/image\/Eisfoermchen-gruen-detail.jpg"
 }
 
------ Log Entry #399 -----
+----- Log Entry #398 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11929,7 +10640,7 @@ Source data (JSON):
     "source_path": "media\/image\/Ipad-Tasche-mit-Stiftmappe-Mappe-Detail.jpg"
 }
 
------ Log Entry #400 -----
+----- Log Entry #399 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11957,7 +10668,7 @@ Source data (JSON):
     "source_path": "media\/image\/Dart-Set.jpg"
 }
 
------ Log Entry #401 -----
+----- Log Entry #400 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
@@ -11983,6 +10694,34 @@ Source data (JSON):
     },
     "media_id": "[uuid]",
     "source_path": "media\/image\/Ranunkel-Deko-Topf.jpg"
+}
+
+----- Log Entry #401 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "id": "[uuid]",
+        "uri": "media\/image\/Oelwechsel-Sorten-Front.jpg",
+        "entity": "media",
+        "run_id": "[uuid]",
+        "written": "1",
+        "media_id": "[uuid]",
+        "file_name": "Oelwechsel-Sorten-Front",
+        "file_size": "61644",
+        "processed": "0",
+        "created_at": "[timestamp]",
+        "updated_at": "[timestamp]",
+        "process_failure": "0"
+    },
+    "media_id": "[uuid]",
+    "source_path": "media\/image\/Oelwechsel-Sorten-Front.jpg"
 }
 
 ----- Log Entry #402 -----
@@ -20230,6 +18969,74 @@ Source data (JSON):
 }
 
 ----- Log Entry #698 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "extensions": []
+    },
+    "media_id": "[uuid]",
+    "source_path": "\/tmp\/files\/documents\/[uuid].pdf"
+}
+
+----- Log Entry #699 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "extensions": []
+    },
+    "media_id": "[uuid]",
+    "source_path": "\/tmp\/files\/documents\/[uuid].pdf"
+}
+
+----- Log Entry #700 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "extensions": []
+    },
+    "media_id": "[uuid]",
+    "source_path": "\/tmp\/files\/documents\/[uuid].pdf"
+}
+
+----- Log Entry #701 -----
+ID: [uuid]
+Level: warning
+Code: SWAG_MIGRATION_MEDIA_FILE_MISSING
+Profile name: shopware55
+Gateway name: local
+Created at: [timestamp]
+Entity: media
+Source data (JSON):
+{
+    "media": {
+        "extensions": []
+    },
+    "media_id": "[uuid]",
+    "source_path": "\/tmp\/files\/documents\/[uuid].pdf"
+}
+
+----- Log Entry #702 -----
 ID: [uuid]
 Level: warning
 Code: SWAG_MIGRATION_MEDIA_FILE_MISSING

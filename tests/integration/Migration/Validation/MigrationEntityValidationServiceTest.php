@@ -901,4 +901,42 @@ class MigrationEntityValidationServiceTest extends TestCase
         $fieldPaths = \array_map(static fn ($log) => $log->getFieldName(), $result->getLogs());
         static::assertContains('manufacturer.media.mimeType', $fieldPaths);
     }
+
+    public function testNestedEntityStructureValidationForMissingRequiredFields(): void
+    {
+        $convertedData = [
+            'id' => Uuid::randomHex(),
+            'versionId' => Uuid::randomHex(),
+            'stock' => 10,
+            'translations' => [
+                Defaults::LANGUAGE_SYSTEM => [
+                    'name' => 'Test Product',
+                ],
+            ],
+            'visibilities' => [
+                [
+                    'salesChannelId' => Uuid::randomHex(),
+                ],
+            ],
+        ];
+
+        $result = $this->validationService->validate(
+            $this->migrationContext,
+            $this->context,
+            $convertedData,
+            ProductDefinition::ENTITY_NAME,
+            []
+        );
+
+        static::assertInstanceOf(MigrationValidationResult::class, $result);
+
+        $missingFields = \array_map(
+            static fn ($log) => $log->getFieldName(),
+            \array_filter($result->getLogs(), static fn ($log) => $log instanceof MigrationValidationRequiredFieldMissingLog)
+        );
+
+        static::assertContains('visibilities.visibility', $missingFields);
+        static::assertNotContains('visibilities.id', $missingFields);
+        static::assertNotContains('visibilities.productId', $missingFields);
+    }
 }

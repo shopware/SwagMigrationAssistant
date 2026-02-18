@@ -296,6 +296,7 @@ class CustomerConverterTest extends TestCase
         static::assertArrayHasKey('countryState', $converted['addresses'][0]);
         static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
         static::assertSame($expectedStateId, $converted['addresses'][0]['countryState']['id']);
+        static::assertSame('DE-NW', $converted['addresses'][0]['countryState']['shortCode']);
     }
 
     public function testConvertExistingCountryStateWithoutMapping(): void

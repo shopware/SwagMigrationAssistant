@@ -518,6 +518,7 @@ abstract class CustomerConverter extends ShopwareConverter
 
         if ($countryStateUuid !== null) {
             $state['id'] = $countryStateUuid;
+            $state['shortCode'] = $oldAddressData['country']['countryiso'] . '-' . $oldAddressData['state']['shortcode'];
 
             return $state;
         }
@@ -554,7 +555,10 @@ abstract class CustomerConverter extends ShopwareConverter
 
         $this->applyCountryStateTranslation($state, $oldStateData);
         $this->convertValue($state, 'name', $oldStateData, 'name');
-        $this->convertValue($state, 'shortCode', $oldStateData, 'shortcode');
+
+        $state['shortCode'] = $oldAddressData['country']['countryiso'] . '-' . $oldStateData['shortcode'];
+        unset($oldStateData['shortcode']);
+
         $this->convertValue($state, 'position', $oldStateData, 'position', self::TYPE_INTEGER);
         $this->convertValue($state, 'active', $oldStateData, 'active', self::TYPE_BOOLEAN);
 

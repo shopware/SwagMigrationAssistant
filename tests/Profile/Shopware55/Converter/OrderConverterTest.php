@@ -759,12 +759,14 @@ class OrderConverterTest extends TestCase
         static::assertArrayHasKey('countryState', $converted['addresses'][0]);
         static::assertArrayHasKey('id', $converted['addresses'][0]['countryState']);
         static::assertSame($expectedStateId, $converted['addresses'][0]['countryState']['id']);
+        static::assertSame('DE-NW', $converted['addresses'][0]['countryState']['shortCode']);
 
         static::assertArrayHasKey('deliveries', $converted);
         static::assertArrayHasKey('shippingOrderAddress', $converted['deliveries'][0]);
         static::assertArrayHasKey('countryState', $converted['deliveries'][0]['shippingOrderAddress']);
         static::assertArrayHasKey('id', $converted['deliveries'][0]['shippingOrderAddress']['countryState']);
         static::assertSame($expectedStateId, $converted['deliveries'][0]['shippingOrderAddress']['countryState']['id']);
+        static::assertSame('DE-NW', $converted['deliveries'][0]['shippingOrderAddress']['countryState']['shortCode']);
     }
 
     public function testConvertExistingCountryStateWithoutMapping(): void
