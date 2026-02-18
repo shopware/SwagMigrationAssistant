@@ -1,5 +1,4 @@
-// import { createPinia } from 'pinia';
-import {config, mount} from "@vue/test-utils";
+import { config, mount } from '@vue/test-utils';
 import { MtUrlField } from '@shopware-ag/meteor-component-library';
 import SwagMigrationBase from 'SwagMigrationAssistant/module/swag-migration/page/swag-migration-base';
 import { createRouter, createWebHashHistory } from 'vue-router';
@@ -19,17 +18,27 @@ Shopware.Component.register('swag-migration-wizard-page-connection-create', Swag
 Shopware.Component.register('swag-migration-wizard-page-credentials', SwagMigrationWizardPageCredentials);
 Shopware.Component.register('swag-migration-wizard-page-credentials-success', SwagMigrationWizardPageCredentialsSuccess);
 Shopware.Component.register('swag-migration-wizard-page-credentials-error', SwagMigrationWizardPageCredentialsError);
-Shopware.Component.register('swag-migration-profile-shopware-api-credential-form', SwagMigrationProfileShopwareApiCredentialForm);
+Shopware.Component.register(
+    'swag-migration-profile-shopware-api-credential-form',
+    SwagMigrationProfileShopwareApiCredentialForm,
+);
 Shopware.Component.extend(
     'swag-migration-profile-shopware55-api-credential-form',
     'swag-migration-profile-shopware-api-credential-form',
     {},
 );
 
-
 const defaultMigrationState = {
     step: MIGRATION_STEP.IDLE,
 };
+
+const connectionName = 'my connection';
+    const connectionId = 'connection-id';
+    const apiKey = 'dummy40charactersApiKeyMustBeFilledxxxxx';
+    const apiUser = 'user';
+    const profileShopware55 = 'shopware55';
+    const gatewayApi = 'api';
+    const endpoint = 'https://shopware.com';
 
 const environementInformationSuccessMock = {
     sourceSystemName: 'Shopware',
@@ -45,37 +54,22 @@ const environementInformationSuccessMock = {
     sourceSystemLocale: 'de-DE',
     targetSystemLocale: 'en-GB',
     fingerprint: 'sw5-fingerprint',
-}
+};
 
-const environementInformationErrorMock = {
-    sourceSystemName: 'Shopware',
-    sourceSystemVersion: '5.7',
-    sourceSystemDomain: 'sw5.local',
-    totals: [],
-    additionalData: [],
-    requestStatus: {
-        code: 'SWAG_MIGRATION__API_CONNECTION_ERROR',
-        message: 'Could not connect to host.',
-        isWarning: false,
+const createNewConnectionErrorResponseMock = {
+    response: {
+        data: {
+            errors: [
+                {
+                    status: '400',
+                    code: 'ERROR_CODE',
+                    detail: 'Detailed error message',
+                    title: 'Error Title',
+                },
+            ],
+        },
     },
-    migrationDisabled: false,
-    displayWarnings: [],
-    targetSystemCurrency: '',
-    sourceSystemCurrency: '',
-    sourceSystemLocale: '',
-    targetSystemLocale: '',
-    fingerprint: '',
-}
-
-// const profilesMock = [
-//     {
-//         name: 'shopware55',
-//         sourceSystemName: 'Shopware',
-//         version: '5.5',
-//         author: 'shopware AG',
-//
-//     },
-// ];
+};
 
 const migrationApiServiceMock = {
     getState: jest.fn(() => Promise.resolve(defaultMigrationState)),
@@ -85,28 +79,30 @@ const migrationApiServiceMock = {
     getGateways: jest.fn(() => Promise.resolve([])),
     getEnvironmentInformation: jest.fn(() => Promise.resolve(environementInformationSuccessMock)),
     createNewConnection: jest.fn(() => Promise.resolve(environementInformationSuccessMock)),
-}
+};
 
-// repositoryFactory creates 2 repositories
 const connectionRepositoryMock = {
     search: jest.fn(() => Promise.resolve([])),
     create: jest.fn(() => ({
-        id: 'connection-id',
-        name: 'connection-name',
-        profileName: 'shopware55',
-        gatewayName: 'api',
+        id: connectionId,
+        name: connectionName,
+        profileName: profileShopware55,
+        gatewayName: gatewayApi,
         credentialFields: {},
-    } )),
-    save: jest.fn(() => Promise.resolve()), // should never be called
+    })),
+    save: jest.fn(() => Promise.resolve()),
 };
 
 const generalSettingsRepositoryMock = {
-    search: jest.fn(() => Promise.resolve([
-        {
-            id: 'selected-connection-setting-id',
-            selectedConnectionId: 'any-id',
-        },
-    ])),
+    search: jest.fn(() =>
+        Promise.resolve({
+            length: 1,
+            first: () => ({
+                id: 'selected-connection-setting-id',
+                selectedConnectionId: 'any-id',
+            }),
+        }),
+    ),
     save: jest.fn(() => Promise.resolve()),
 };
 
@@ -120,17 +116,13 @@ const repositoryFactoryMock = {
             return generalSettingsRepositoryMock;
         }
 
-        console.log(`Repository ${repositoryName} not found in mock.`);
         return null;
-    }
+    },
 };
 
-// src/Resources/app/administration/src/module/swag-migration/index.ts
-// swag-migration-wizard/index.ts::ROUTES > names
-// whole component needs to be rendered > fields + buttons
 const router = createRouter({
     routes: [
-        {path: '/', component: {template: '<div></div>',}},
+        { path: '/', component: { template: '<div></div>' } },
         {
             path: '/connection/create',
             name: 'swag.migration.wizard.connectionCreate',
@@ -163,7 +155,6 @@ async function createWrapper() {
     return mount(await Shopware.Component.build('swag-migration-wizard'), {
         global: {
             stubs: {
-                // 'sw-modal': await wrapTestComponent('sw-modal'),
                 'sw-modal': {
                     template: `<div class="sw-modal">
                         <div class="sw-modal__body"><slot /></div>
@@ -171,11 +162,11 @@ async function createWrapper() {
                     </div>`,
                 },
                 'swag-migration-profile-shopware55-api-credential-form': await Shopware.Component.build(
-                    'swag-migration-profile-shopware55-api-credential-form'
+                    'swag-migration-profile-shopware55-api-credential-form',
                 ),
                 'sw-single-select': await wrapTestComponent('sw-single-select'),
                 'sw-select-result-list': await wrapTestComponent('sw-select-result-list'),
-                'sw-select-result' : await wrapTestComponent('sw-select-result'),
+                'sw-select-result': await wrapTestComponent('sw-select-result'),
                 'sw-select-base': await wrapTestComponent('sw-select-base'),
                 'sw-block-field': await wrapTestComponent('sw-block-field'),
                 'sw-base-field': await wrapTestComponent('sw-base-field'),
@@ -193,10 +184,7 @@ async function createWrapper() {
                     template: '<div class="i18n-stub"><slot></slot></div>',
                 },
             },
-            plugins: [
-                // createPinia(),
-                router
-            ],
+            plugins: [router],
             provide: {
                 migrationApiService: migrationApiServiceMock,
                 repositoryFactory: repositoryFactoryMock,
@@ -205,7 +193,7 @@ async function createWrapper() {
                     stopEventListener: () => {},
                 },
             },
-        }
+        },
     });
 }
 
@@ -215,13 +203,14 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
     });
 
     describe('create connection page', () => {
-
         it('should render connection-create form', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const fieldName = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
+            const fieldName = wrapper.find(
+                'input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]',
+            );
             expect(fieldName.exists()).toBe(true);
 
             const profile = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.profileLabel"]');
@@ -231,27 +220,27 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             expect(gateway.exists()).toBe(true);
 
             const buttons = wrapper.findAll('.swag-migration-wizard__footer button');
-            expect(buttons.length).toBe(2);
+            expect(buttons).toHaveLength(2);
         });
 
         it('should have "next" button disabled when form is not filled out', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
             const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
             expect(nextButton.exists()).toBe(true);
             expect(nextButton.attributes('disabled')).toBeDefined();
-
         });
 
         it('should enable "next" button when all required fields are filled out', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const connectionNameField = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
-            await connectionNameField.setValue('my connection');
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
 
             // default profile is already set in
             // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
@@ -265,51 +254,53 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
     describe('navigation from "create connection" to "credentials" page', () => {
         it('should navigate to credentials page when form data is valid', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const connectionNameField = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
-            await connectionNameField.setValue('my connection');
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
 
             // use default profile which is already set in
             // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
-            const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
-            await nextButton.trigger('click');
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
 
             await flushPromises();
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
+            const wrapperCredentialsPage = wrapper.find('.swag-migration-wizard-page-credentials');
+            expect(wrapperCredentialsPage.exists()).toBe(true);
+            expect(connectionRepositoryMock.save).not.toHaveBeenCalled();
         });
 
         it('should not navigate to credentials page when connection name already exits', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const connectionNameField = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
-            await connectionNameField.setValue('my connection');
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
 
             // use default profile which is already set in
             // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
-            connectionRepositoryMock.search.mockReturnValueOnce(Promise.resolve([
-                {
-                    id: 'existing-connection-id',
-                    name: 'my connection',
-                },
-            ]));
+            connectionRepositoryMock.search.mockReturnValueOnce(
+                Promise.resolve([
+                    {
+                        id: 'existing-connection-id',
+                        name: 'my connection',
+                    },
+                ]),
+            );
 
-            const connectionNameErrorBefore = wrapper.find('.mt-field__error');
-            expect(connectionNameErrorBefore.exists()).toBe(false);
-
-            const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
-            await nextButton.trigger('click');
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
 
             await flushPromises();
 
@@ -317,25 +308,29 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             expect(connectionNameErrorAfter.exists()).toBe(true);
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.connectionCreate');
+            const wrapperCredentialsPage = wrapper.find('.swag-migration-wizard-page-credentials');
+            expect(wrapperCredentialsPage.exists()).toBe(false);
+            const wrapperProfilPage = wrapper.find('.swag-migration-wizard-page-create-profile');
+            expect(wrapperProfilPage.exists()).toBe(true);
         });
     });
 
     describe('render credentials page', () => {
         it('should render credentials form', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const connectionNameField = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
-            await connectionNameField.setValue('my connection');
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
 
             // use default profile which is already set in
             // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
-            const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
-            await nextButton.trigger('click');
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
 
             await flushPromises();
 
@@ -349,27 +344,28 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             expect(fieldUrl.exists()).toBe(true);
 
             const buttons = wrapper.findAll('.swag-migration-wizard__footer button');
-            expect(buttons.length).toBe(2);
+            expect(buttons).toHaveLength(2);
         });
 
         it('should have "next" button disabled when form is not filled out', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const connectionNameField = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
-            await connectionNameField.setValue('my connection');
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
 
             // use default profile which is already set in
             // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
-            const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
-            await nextButton.trigger('click');
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
 
             await flushPromises();
 
+            // credentials page
             const createConnectionButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
             expect(createConnectionButton.exists()).toBe(true);
             expect(createConnectionButton.attributes('disabled')).toBeDefined();
@@ -377,60 +373,141 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
     });
 
     describe('navigate from "credentials" to result page (error or success)', () => {
-        it.only('should navigate to success page when connection was successfully created', async () => {
-            router.push({name: 'swag.migration.wizard.connectionCreate'});
+        it('should navigate to success page when connection was successfully created', async () => {
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
 
-            const connectionNameField = wrapper.find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]');
-            await connectionNameField.setValue('my connection');
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
 
             // use default profile which is already set in
             // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
-            const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
-            await nextButton.trigger('click');
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
 
             await flushPromises();
 
-            console.log('------------------------------after click next------------------------------');
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
 
-            const fieldApiKey = wrapper.find('input[name="sw-field--apiKey"]');
-            await fieldApiKey.setValue('dummy40charactersApiKeyMustBeFilledxxxxx');
+            // if router route name does not match with this->currentRoute
+            // trigger matchCurrentRoute() execution to update this.currentRoute
+            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
+                wrapper.vm.matchCurrentRoute(false);
+                await flushPromises();
+            }
 
-            const fieldApiUser = wrapper.find('input[name="sw-field--apiUser"]');
-            await fieldApiUser.setValue('user');
-
-            const fieldUrl = wrapper.find('input.mt-url-field__input');
-            await fieldUrl.setValue('shopware.com');
+            await wrapper.find('input[name="sw-field--apiKey"]').setValue(apiKey);
+            await wrapper.find('input[name="sw-field--apiUser"]').setValue(apiUser);
+            await wrapper.find('input.mt-url-field__input').setValue(endpoint);
 
             await flushPromises();
-            // console.log(wrapper.html());
-
-            console.log('wrapper:', wrapper.vm.currentRoute);
-            console.log('router:', router.currentRoute.value.name);
 
             const createConnectionButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
             expect(createConnectionButton.attributes('disabled')).toBeUndefined();
             await createConnectionButton.trigger('click');
 
             await flushPromises();
-            console.log('------------------------------after click createConnection ------------------------------');
 
-            console.log(wrapper.html());
-            console.log('wrapper:', wrapper.vm.currentRoute);
-            console.log(router.currentRoute.value.name);
+            expect(migrationApiServiceMock.createNewConnection).toHaveBeenCalledWith(
+                connectionId,
+                connectionName,
+                profileShopware55,
+                gatewayApi,
+                {
+                    apiKey: apiKey,
+                    apiUser: apiUser,
+                    endpoint: endpoint,
+                },
+            );
 
-            // expect(migrationApiServiceMock.createNewConnection).toHaveBeenCalledWith(
-            //     'my connection',
-            //     'dummy40charactersApiKeyMustBeFilledxxxxx',
-            //     'user',
-            //     'shopware.com',
-            // );
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsSuccess');
 
-            // expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsSuccess');
+            // if router route name does not match with this->currentRoute
+            // trigger matchCurrentRoute() execution to update this.currentRoute
+            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
+                wrapper.vm.matchCurrentRoute(false);
+                await flushPromises();
+            }
+
+            const successWrapper = wrapper.find('.swag-migration-wizard-page-credentials-success');
+            expect(successWrapper.exists()).toBe(true);
+
+            const successButtons = wrapper.findAll('.swag-migration-wizard__footer button');
+            expect(successButtons).toHaveLength(2);
+
+            const successSecondaryButton = wrapper.find('button.mt-button--secondary');
+            expect(successSecondaryButton.exists()).toBe(true);
+            expect(successSecondaryButton.attributes('style')).toContain('display: none');
+
+            const successPrimaryButton = wrapper.find('button.mt-button--primary');
+            expect(successPrimaryButton.exists()).toBe(true);
+            expect(successPrimaryButton.attributes('disabled')).toBeUndefined();
+        });
+
+        it('should navigate to error page when create connection fails', async () => {
+            migrationApiServiceMock.createNewConnection.mockRejectedValueOnce(createNewConnectionErrorResponseMock);
+            router.push({ name: 'swag.migration.wizard.connectionCreate' });
+            const wrapper = await createWrapper();
+            await flushPromises();
+
+            await wrapper
+                .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
+                .setValue(connectionName);
+
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
+
+            await flushPromises();
+
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
+
+            await flushPromises();
+
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
+
+            // if router route name does not match with this->currentRoute
+            // trigger matchCurrentRoute() execution to update this.currentRoute
+            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
+                wrapper.vm.matchCurrentRoute(false);
+                await flushPromises();
+            }
+
+            await wrapper.find('input[name="sw-field--apiKey"]').setValue(apiKey);
+            await wrapper.find('input[name="sw-field--apiUser"]').setValue(apiUser);
+            await wrapper.find('input.mt-url-field__input').setValue(endpoint);
+
+            await flushPromises();
+
+            await wrapper.find('.swag-migration-wizard__footer button.mt-button--primary').trigger('click');
+
+            await flushPromises();
+
+            expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsError');
+
+            // if router route name does not match with this->currentRoute
+            // trigger matchCurrentRoute() execution to update this.currentRoute
+            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
+                wrapper.vm.matchCurrentRoute(false);
+                await flushPromises();
+            }
+
+            const successWrapper = wrapper.find('.swag-migration-wizard-page-credentials-error');
+            expect(successWrapper.exists()).toBe(true);
+
+            const successButtons = wrapper.findAll('.swag-migration-wizard__footer button');
+            expect(successButtons).toHaveLength(2);
+
+            const errorSecondaryButton = wrapper.find('button.mt-button--secondary');
+            expect(errorSecondaryButton.exists()).toBe(true);
+            expect(errorSecondaryButton.attributes('disabled')).toBeUndefined();
+
+            const errorPrimaryButton = wrapper.find('button.mt-button--primary');
+            expect(errorPrimaryButton.exists()).toBe(true);
+            expect(errorPrimaryButton.attributes('disabled')).toBeUndefined();
         });
     });
 });

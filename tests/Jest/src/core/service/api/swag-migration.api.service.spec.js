@@ -95,6 +95,7 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             connectionId: '1234567890',
             connectionName: 'Test Connection',
             profileName: 'shopware55',
+            gatewayName: 'local',
             credentialFields: {
                 local: {
                     endpoint: 'http://shopware.local',
@@ -106,10 +107,12 @@ describe('src/core/service/api/swag-migration.api.service', () => {
             data.connectionId,
             data.connectionName,
             data.profileName,
+            data.gatewayName,
             data.credentialFields,
             {
                 'test-header': 'test-value',
-            });
+            },
+        );
 
         expect(clientMock.history.post[0].url).toBe('_action/migration/create-new-connection');
         expect(clientMock.history.post[0].data).toBe(JSON.stringify(data));

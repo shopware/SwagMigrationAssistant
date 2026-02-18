@@ -185,14 +185,10 @@ export default Shopware.Mixin.register(
                 });
 
                 if (currentRouteFound) {
-                    console.log('swag-wizard.mixin.ts::matchCurrentRoute - FROM:', this.currentRoute.name);
-                    console.log('swag-wizard.mixin.ts::matchCurrentRoute - TO:', currentRoute.name);
                     this.currentRoute = currentRoute;
                     if (notifyCallback) {
                         this.onChildRouteChanged();
                     }
-                } else {
-                    console.log('swag-wizard.mixin.ts::matchCurrentRoute - NOT FOUND:', routerCurrentRoute.name);
                 }
             },
 
@@ -245,7 +241,6 @@ export default Shopware.Mixin.register(
              * @returns {boolean}
              */
             navigateToNext() {
-                console.log('swag-wizard.mixin.ts::navigateToNext - navigateToNextPossible:', this.navigateToNextPossible);
                 if (this.navigateToNextPossible) {
                     this.navigateToRoute(this.routeNext);
                     return true;
