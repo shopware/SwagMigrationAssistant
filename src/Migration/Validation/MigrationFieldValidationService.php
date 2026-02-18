@@ -98,6 +98,7 @@ class MigrationFieldValidationService implements ResetInterface
         }
 
         $currentDefinition = $this->definitionRegistry->getByEntityName($entityName);
+
         if (isset($this->definitionFieldCache[$entityName . $fieldPath])) {
             return $this->definitionFieldCache[$entityName . $fieldPath];
         }
@@ -116,12 +117,14 @@ class MigrationFieldValidationService implements ResetInterface
             if ($index === \count($paths) - 1) {
                 // needed to avoid side effects when modifying flags
                 $field = clone $field;
+
                 /**
                  * Replace all flags with Required to force the serializer to validate this field.
                  * AbstractFieldSerializer::requiresValidation() skips validation for fields without Required flag.
                  * The field is cloned before this method is called to avoid mutating the original definition.
                  */
                 $field->setFlags(new Required());
+
                 $this->definitionFieldCache[$entityName . $fieldPath] = [$currentDefinition, $field];
 
                 return [$currentDefinition, $field];
@@ -229,6 +232,7 @@ class MigrationFieldValidationService implements ResetInterface
                 $keyValue,
                 $parameters
             );
+
             foreach ($iterator as $_) {
                 // consume the generator to trigger validation. serialization results are not needed
             }
