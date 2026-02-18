@@ -36,7 +36,6 @@ export default Shopware.Component.wrapComponentConfig({
 
     computed: {
         componentIsLoaded() {
-            console.log('swag-migration-wizard-page-credentials/index.ts::componentIsLoaded - credentialsComponent', this.credentialsComponent);
             return Shopware.Component.getComponentRegistry().has(this.credentialsComponent);
         },
     },

@@ -35,7 +35,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     public function read(MigrationContextInterface $migrationContext): array
     {
-        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader::read - STARTS\n", true), FILE_APPEND);
         $this->client = $this->connectionFactory->createApiClient($migrationContext);
 
         $information = [
@@ -46,7 +45,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
         try {
             $information['environmentInformation'] = $this->getEnvironment();
         } catch (\Throwable $e) {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader::read - getEnvironment throws error\n", true), FILE_APPEND);
             $information['requestStatus'] = new RequestStatusStruct(
                 method_exists($e, 'getErrorCode') ? $e->getErrorCode() : MigrationException::API_CONNECTION_ERROR,
                 $e->getMessage(),
@@ -63,7 +61,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
      */
     private function getEnvironment(): array
     {
-        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader::getEnvironment - STARTS\n", true), FILE_APPEND);
         if ($this->client === null) {
             throw MigrationException::apiConnectionError(
                 'Could not create API client. Could be due to empty credentials or invalid connection.'
@@ -71,7 +68,6 @@ class EnvironmentReader implements EnvironmentReaderInterface
         }
 
         try {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader::getEnvironment - try client->get('get-environment')\n", true), FILE_APPEND);
             $result = $this->client->get('get-environment');
 
             if ($result->getStatusCode() !== SymfonyResponse::HTTP_OK) {
@@ -80,14 +76,12 @@ class EnvironmentReader implements EnvironmentReaderInterface
 
             return \json_decode($result->getBody()->getContents(), true);
         } catch (ClientException $e) {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader::getEnvironment - catch ClientException\n", true), FILE_APPEND);
             if ($e->getCode() === 401) {
                 throw MigrationException::invalidConnectionCredentials('get-data');
             }
 
             throw $e;
         } catch (RequestException $e) {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Profile\Shopware6\Gateway\Api\Reader\EnvironmentReader::getEnvironment - catch request exception\n", true), FILE_APPEND);
             if ($e->getRequest()->getUri()->getPath() === '/api/oauth/token') {
                 // something went wrong with authentication.
                 throw MigrationException::invalidConnectionCredentials('get-data');

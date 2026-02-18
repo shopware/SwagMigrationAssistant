@@ -40,21 +40,16 @@ class GatewayRegistry implements GatewayRegistryInterface
 
     public function getGateway(MigrationContextInterface $migrationContext): GatewayInterface
     {
-        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Migration\Gateway\GatewayRegistry::getGateway - STARTS\n", true), FILE_APPEND);
         $connection = $migrationContext->getConnection();
         $profileName = $connection->getProfileName();
         $gatewayName = $connection->getGatewayName();
 
         foreach ($this->gateways as $gateway) {
             if ($gateway->supports($migrationContext->getProfile()) && $gateway->getName() === $gatewayName) {
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Migration\Gateway\GatewayRegistry::getGateway - returns gateway:\n", true), FILE_APPEND);
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export(get_class($gateway), true), FILE_APPEND);
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
                 return $gateway;
             }
         }
 
-        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Migration\Gateway\GatewayRegistry::getGateway - no gateway > exception\n", true), FILE_APPEND);
         throw MigrationException::gatewayNotFound($profileName, $gatewayName);
     }
 }

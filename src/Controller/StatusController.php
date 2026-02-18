@@ -256,22 +256,18 @@ class StatusController extends AbstractController
         }
 
         if ($connectionName === '') {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty connectionName\n", true), FILE_APPEND);
             throw RoutingException::missingRequestParameter('connectionName');
         }
 
         if ($profileName === '') {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty profileName\n", true), FILE_APPEND);
             throw RoutingException::missingRequestParameter('profileName');
         }
 
         if ($gatewayName === '') {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty gatewayName\n", true), FILE_APPEND);
             throw RoutingException::missingRequestParameter('gatewayName');
         }
 
         if( empty($credentialFields)) {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - empty credentialFields\n", true), FILE_APPEND);
             throw RoutingException::missingRequestParameter('credentialFields');
         }
 
@@ -282,7 +278,6 @@ class StatusController extends AbstractController
         $existingConnection = $this->migrationConnectionRepo->search($criteria, $context)->getEntities()->first();
 
         if ($existingConnection !== null) {
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createConnection - existing connection name\n", true), FILE_APPEND);
             throw MigrationException::connectionNameNotUnique();
         }
 
@@ -311,16 +306,9 @@ class StatusController extends AbstractController
 
             $migrationContext = $this->migrationContextFactory->createByConnection($connection);
             $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - getEnvironmentInformation:\n", true), FILE_APPEND);
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($information, true), FILE_APPEND);
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
 
             $requestStatus = $information->getRequestStatus();
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - information->getRequestStatus():\n", true), FILE_APPEND);
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($requestStatus, true), FILE_APPEND);
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
             if($requestStatus !== null && $requestStatus->getCode() !== '') {
-                file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - requestStatus is not success\n", true), FILE_APPEND);
                 throw MigrationException::connectionValidationFailed(
                     $requestStatus->getCode(),
                     $requestStatus->getMessage())
@@ -328,9 +316,6 @@ class StatusController extends AbstractController
             }
 
             $fingerprint = $information->getFingerprint();
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\SwagMigrationAssistant\Controller\StatusController::createNewConnection - fingerprint:\n", true), FILE_APPEND);
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export($fingerprint, true), FILE_APPEND);
-            file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n", true), FILE_APPEND);
 
             $hasDuplicate = $this->fingerprintService->searchDuplicates(
                 $fingerprint,
@@ -373,7 +358,6 @@ class StatusController extends AbstractController
     )]
     public function checkConnection(Request $request, Context $context): JsonResponse
     {
-        file_put_contents('/var/www/commercial/custom/plugins/SwagMigrationAssistant/src/migration.connection.log', \var_export("\n\SwagMigrationAssistant\Controller\StatusController::checkConnection - STARTS\n", true), FILE_APPEND);
         $connectionId = $request->request->getAlnum('connectionId');
 
         if ($connectionId === '') {
