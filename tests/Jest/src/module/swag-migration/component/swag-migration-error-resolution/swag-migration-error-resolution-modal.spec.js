@@ -639,31 +639,69 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
     describe('create resolution fix', () => {
         it('should save fix when backend validation passes', async () => {
-            migrationApiServiceMock.validateResolution.mockResolvedValueOnce({ valid: true, violations: [] });
+            migrationApiServiceMock.validateResolution.mockResolvedValueOnce({
+                valid: true,
+                violations: [],
+            });
+
+            const nestedLog = {
+                ...logMocks.at(1),
+                convertedData: {
+                    children: {
+                        stock: null,
+                    },
+                    ...logMocks.at(1).convertedData,
+                },
+            };
+
+            migrationLoggingRepositoryMock.search.mockImplementationOnce(() => {
+                const result = [nestedLog];
+                result.total = 1;
+
+                return Promise.resolve(result);
+            });
+
+            migrationFixRepositoryMock.search.mockResolvedValueOnce([]);
+            migrationLoggingRepositoryMock.search.mockImplementationOnce(() => {
+                const result = [nestedLog];
+                result.total = 1;
+
+                return Promise.resolve(result);
+            });
+
+            migrationFixRepositoryMock.search.mockResolvedValueOnce([
+                {
+                    id: 'new-fix-id',
+                    entityId: 'log-entity-id-2',
+                    value: 42,
+                },
+            ]);
 
             const wrapper = await createWrapper({
                 ...defaultProps,
                 selectedLog: {
                     ...fixtureLogGroups.at(1),
-                    entityName: 'media',
-                    fieldName: 'title',
+                    entityName: 'product',
+                    fieldName: 'children.stock',
                 },
             });
             await flushPromises();
 
-            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
+            await wrapper.find('.sw-data-grid__row--0 .mt-field--checkbox input').setChecked(true);
             await flushPromises();
 
             const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');
-            await inputField.setValue('Valid Title');
+            await inputField.setValue(42);
             await flushPromises();
 
             await wrapper.find('.swag-migration-error-resolution-modal__right-content-button').trigger('click');
             await flushPromises();
 
-            expect(migrationApiServiceMock.validateResolution).toHaveBeenCalledWith('media', 'title', 'Valid Title');
+            expect(migrationApiServiceMock.validateResolution).toHaveBeenCalledWith('product', 'children.stock', 42);
             expect(wrapper.vm.fieldError).toBeNull();
             expect(migrationFixRepositoryMock.saveAll).toHaveBeenCalled();
+
+            expect(wrapper.vm.tableData[0].children.stock).toBe(42);
         });
 
         it('should not save fix when backend validation fails without message', async () => {

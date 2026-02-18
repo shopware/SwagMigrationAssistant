@@ -635,7 +635,7 @@ export default class SwagMigrationErrorResolutionService {
                 finalValue = `${finalValue.substring(0, CONTENT_TEXT_MAX_LENGTH)}...`;
             }
 
-            acc[property] = finalValue;
+            Shopware.Utils.object.set(acc, property, finalValue);
 
             return acc;
         }, {});

@@ -457,12 +457,11 @@ export default Shopware.Component.wrapComponentConfig({
                     this.selectedLog.entityName,
                     entityFieldProperties,
                     convertedData,
-                    this.selectedLog.fieldName,
                 ),
             };
 
             if (hasFixApplied) {
-                row[this.selectedLog.fieldName] = fix.value;
+                Shopware.Utils.object.set(row, this.selectedLog.fieldName, fix.value);
             }
 
             return row;

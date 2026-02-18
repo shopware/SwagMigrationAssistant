@@ -827,6 +827,22 @@ const MAP_ENTITY_FIELD_PROPERTIES_TESTS = [
         expected: { id: 'prod-1', name: 'Product 1', productNumber: 'P-001' },
     },
     {
+        name: 'nested field path',
+        entityName: 'product',
+        fieldProperties: [
+            'id',
+            'children.stock',
+        ],
+        convertedData: {
+            id: 'prod-1',
+            children: { stock: 50 },
+        },
+        expected: {
+            id: 'prod-1',
+            children: { stock: 50 },
+        },
+    },
+    {
         name: 'missing properties in data',
         entityName: 'product',
         fieldProperties: [
