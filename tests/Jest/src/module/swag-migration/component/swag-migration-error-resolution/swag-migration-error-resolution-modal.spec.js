@@ -56,6 +56,7 @@ const defaultProps = {
         ...fixtureLogGroups.at(0),
         entityName: 'media',
         fieldName: 'createdAt',
+        fixCount: 0,
     },
     runId: 'test-run-id',
 };
@@ -251,7 +252,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             await selectAllButton.trigger('click');
             await flushPromises();
 
-            expect(wrapper.find('.sw-data-grid__row--0 .mt-field--checkbox input').attributes('disabled')).toBeDefined();
             expect(wrapper.find('.sw-data-grid__bulk-selected-count').text()).toBe('28');
 
             await wrapper.find('.sw-pagination__page-button-next').trigger('click');
@@ -455,8 +455,14 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             expect(wrapper.vm.selectedDetailsLog).toBeNull();
         });
 
-        it('should be able to reset resolved log if log has fix', async () => {
-            const wrapper = await createWrapper();
+        it('should be able to reset resolved log if log has fix and decrement fixCount', async () => {
+            const wrapper = await createWrapper({
+                ...defaultProps,
+                selectedLog: {
+                    ...defaultProps.selectedLog,
+                    fixCount: 5,
+                },
+            });
             await flushPromises();
 
             expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--resolved')).toHaveLength(1);
@@ -482,6 +488,8 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--resolved')).toHaveLength(0);
             expect(wrapper.findAll('.swag-migration-error-resolution-modal__left-status--unresolved')).toHaveLength(2);
+
+            expect(wrapper.vm.selectedLog.fixCount).toBe(4);
         });
 
         it('should not be able to select logs that are already resolved', async () => {
@@ -776,13 +784,14 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
             ).toBeUndefined();
         });
 
-        it('should be able to create a resolution fixes for a scalar field', async () => {
+        it('should be able to create a resolution fixes for a scalar field and increment fixCount', async () => {
             const wrapper = await createWrapper({
                 ...defaultProps,
                 selectedLog: {
                     ...fixtureLogGroups.at(1),
                     entityName: 'media',
                     fieldName: 'title',
+                    fixCount: 3,
                 },
             });
             await flushPromises();
@@ -818,6 +827,7 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             expect(migrationLoggingRepositoryMock.search).toHaveBeenCalledTimes(1);
             expect(wrapper.emitted()).toHaveProperty('fixes-created');
+            expect(wrapper.vm.selectedLog.fixCount).toBe(4);
         });
 
         it('should be able to create a resolution fixes for a relation field', async () => {
@@ -1252,10 +1262,6 @@ describe('module/swag-migration/component/swag-migration-error-resolution/swag-m
 
             await wrapper.find('.sw-data-grid__header .mt-field--checkbox input').setChecked(true);
             await wrapper.find('.swag-migration-error-resolution-step__header-content-link').trigger('click');
-            await flushPromises();
-
-            await wrapper.find('.sw-data-grid__row--1 .mt-field--checkbox input').setChecked(true);
-            await wrapper.find('.sw-data-grid__bulk .bulk-link button').trigger('click');
             await flushPromises();
 
             const inputField = wrapper.find('.swag-migration-error-resolution-field-scalar input');

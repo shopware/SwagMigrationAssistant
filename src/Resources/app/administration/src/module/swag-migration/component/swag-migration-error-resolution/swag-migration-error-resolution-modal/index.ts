@@ -192,7 +192,7 @@ export default Shopware.Component.wrapComponentConfig({
 
         selectedCount(): number {
             if (this.selectAllMode) {
-                return this.tableTotal;
+                return this.tableTotal - this.selectedLog.fixCount;
             }
 
             return this.selectedLogIds.length;
@@ -289,6 +289,8 @@ export default Shopware.Component.wrapComponentConfig({
             }
 
             const entities = entityIds.map((entityId) => this.createResolutionEntity(entityId));
+
+            this.selectedLog.fixCount += entities.length;
 
             await this.migrationFixRepository.saveAll(entities);
         },
@@ -527,6 +529,8 @@ export default Shopware.Component.wrapComponentConfig({
 
                 await this.fetchLogs();
                 this.resetSelection();
+
+                this.selectedLog.fixCount -= 1;
 
                 this.$emit('fixes-reset');
             } catch {

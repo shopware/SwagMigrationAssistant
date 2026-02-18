@@ -29,6 +29,7 @@
                         :pre-selection="preSelection"
                         :is-record-selectable="isRecordSelectable"
                         :custom-selection-count="selectedCount"
+                        :selected-log="selectedLog"
                         @selection-change="onSelectionChanged"
                     >
                         <template #column-status="{ item }">
@@ -48,10 +49,10 @@
                             <mt-link
                                 as="button"
                                 class="swag-migration-error-resolution-step__header-content-link"
-                                :disabled="loading"
+                                :disabled="loading || selectAllMode"
                                 @click="onSelectAllLogs"
                             >
-                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: tableTotal }) }}
+                                {{ $tc('swag-migration.index.error-resolution.modals.error.left.select-all', { count: tableTotal - selectedLog.fixCount }) }}
                             </mt-link>
                         </template>
 
