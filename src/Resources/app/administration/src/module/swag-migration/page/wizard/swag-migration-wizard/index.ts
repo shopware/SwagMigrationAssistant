@@ -451,7 +451,7 @@ export default Shopware.Component.wrapComponentConfig({
         },
 
         onButtonPrimaryClick() {
-            if (this.currentRoute.name === this.routes.connectionCreate.name) {
+            if (this.currentRoute === this.routes.connectionCreate) {
                 // clicked Next (save selected profile)
                 this.createNewConnection()
                     .then(() => {
@@ -464,7 +464,7 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            if (this.currentRoute.name === this.routes.connectionSelect.name) {
+            if (this.currentRoute === this.routes.connectionSelect) {
                 this.saveSelectedConnection(this.connection)
                     .then(() => {
                         return this.doConnectionCheck();
@@ -475,13 +475,13 @@ export default Shopware.Component.wrapComponentConfig({
                 return;
             }
 
-            if (this.currentRoute.name === this.routes.credentials.name) {
+            if (this.currentRoute === this.routes.credentials) {
                 // clicked Connect.
                 this.onConnect();
                 return;
             }
 
-            if (this.currentRoute.name === this.routes.credentialsSuccess.name) {
+            if (this.currentRoute === this.routes.credentialsSuccess) {
                 // clicked Finish.
                 this.onCloseModal();
                 return;

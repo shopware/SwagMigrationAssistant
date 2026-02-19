@@ -147,6 +147,18 @@ const router = createRouter({
     history: createWebHashHistory(),
 });
 
+// when update() in the mixin is triggered, router.push() may not finished in the test
+// update() triggers matchCurrentRoute() to update this.currentRoute based on the current router route
+// if router.push is not finished, this.currentRoute will not be updated
+// so, if router route name does not match with this->currentRoute
+// trigger matchCurrentRoute() execution to update this.currentRoute
+async function syncCurrentRoute(wrapper, routerCurrentRouteName) {
+    if (wrapper.vm.currentRoute.name !== routerCurrentRouteName) {
+        wrapper.vm.matchCurrentRoute(false);
+        await flushPromises();
+    }
+}
+
 async function createWrapper() {
     // delete global $router and $routes mocks
     delete config.global.mocks.$router;
@@ -203,7 +215,7 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
     });
 
     describe('create connection page', () => {
-        it('should render connection-create form', async () => {
+        it('should render "create profile" form', async () => {
             router.push({ name: 'swag.migration.wizard.connectionCreate' });
             const wrapper = await createWrapper();
             await flushPromises();
@@ -238,12 +250,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // default profile is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -258,12 +270,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // use default profile which is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -282,12 +294,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // use default profile which is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -321,12 +333,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // use default profile which is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -334,6 +346,7 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             await flushPromises();
 
+            // credentials page
             const fieldApiKey = wrapper.find('input[name="sw-field--apiKey"]');
             expect(fieldApiKey.exists()).toBe(true);
 
@@ -352,12 +365,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // use default profile which is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -378,12 +391,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // use default profile which is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -393,13 +406,9 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
 
-            // if router route name does not match with this->currentRoute
-            // trigger matchCurrentRoute() execution to update this.currentRoute
-            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
-                wrapper.vm.matchCurrentRoute(false);
-                await flushPromises();
-            }
+            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
 
+            // credentials page
             await wrapper.find('input[name="sw-field--apiKey"]').setValue(apiKey);
             await wrapper.find('input[name="sw-field--apiUser"]').setValue(apiUser);
             await wrapper.find('input.mt-url-field__input').setValue(endpoint);
@@ -426,13 +435,9 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsSuccess');
 
-            // if router route name does not match with this->currentRoute
-            // trigger matchCurrentRoute() execution to update this.currentRoute
-            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
-                wrapper.vm.matchCurrentRoute(false);
-                await flushPromises();
-            }
+            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
 
+            // success page
             const successWrapper = wrapper.find('.swag-migration-wizard-page-credentials-success');
             expect(successWrapper.exists()).toBe(true);
 
@@ -454,12 +459,12 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
             const wrapper = await createWrapper();
             await flushPromises();
 
+            // profile page
+            // use default profile which is already set in
+            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
             await wrapper
                 .find('input[aria-label="swag-migration.wizard.pages.connectionCreate.connectionLabel"]')
                 .setValue(connectionName);
-
-            // use default profile which is already set in
-            // swag-migration-wizard-page-connection-create/index.ts::selectDefaultProfile
 
             await flushPromises();
 
@@ -469,13 +474,9 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentials');
 
-            // if router route name does not match with this->currentRoute
-            // trigger matchCurrentRoute() execution to update this.currentRoute
-            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
-                wrapper.vm.matchCurrentRoute(false);
-                await flushPromises();
-            }
+            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
 
+            // credentials page
             await wrapper.find('input[name="sw-field--apiKey"]').setValue(apiKey);
             await wrapper.find('input[name="sw-field--apiUser"]').setValue(apiUser);
             await wrapper.find('input.mt-url-field__input').setValue(endpoint);
@@ -488,18 +489,14 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
             expect(router.currentRoute.value.name).toBe('swag.migration.wizard.credentialsError');
 
-            // if router route name does not match with this->currentRoute
-            // trigger matchCurrentRoute() execution to update this.currentRoute
-            if (wrapper.vm.currentRoute.name !== router.currentRoute.value.name) {
-                wrapper.vm.matchCurrentRoute(false);
-                await flushPromises();
-            }
+            await syncCurrentRoute(wrapper, router.currentRoute.value.name);
 
-            const successWrapper = wrapper.find('.swag-migration-wizard-page-credentials-error');
-            expect(successWrapper.exists()).toBe(true);
+            // error page
+            const errorWrapper = wrapper.find('.swag-migration-wizard-page-credentials-error');
+            expect(errorWrapper.exists()).toBe(true);
 
-            const successButtons = wrapper.findAll('.swag-migration-wizard__footer button');
-            expect(successButtons).toHaveLength(2);
+            const errorButtons = wrapper.findAll('.swag-migration-wizard__footer button');
+            expect(errorButtons).toHaveLength(2);
 
             const errorSecondaryButton = wrapper.find('button.mt-button--secondary');
             expect(errorSecondaryButton.exists()).toBe(true);
