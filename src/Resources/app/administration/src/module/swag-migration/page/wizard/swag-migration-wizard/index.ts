@@ -135,15 +135,11 @@ export default Shopware.Component.wrapComponentConfig({
         ),
 
         migrationConnectionRepository(): TRepository<'swag_migration_connection'> {
-            const conn = this.repositoryFactory.create('swag_migration_connection');
-            // return this.repositoryFactory.create('swag_migration_connection');
-            return conn;
+            return this.repositoryFactory.create('swag_migration_connection');
         },
 
         migrationGeneralSettingRepository(): TRepository<'swag_migration_general_setting'> {
-            const settingRepo = this.repositoryFactory.create('swag_migration_general_setting');
-            // return this.repositoryFactory.create('swag_migration_general_setting');
-            return settingRepo;
+            return this.repositoryFactory.create('swag_migration_general_setting');
         },
 
         modalSize() {
