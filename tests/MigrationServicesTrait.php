@@ -107,13 +107,16 @@ trait MigrationServicesTrait
                 $languageRepository
             ),
             new DummyLocalGateway(),
-            //            new DummyLocalGatewayCorrupted(),
         ]));
 
         return new MigrationDataFetcher($gatewayRegistry, $loggingService);
     }
 
-    // getFailingMigrationDataFetcher
+    /**
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
     protected function getFailingMigrationDataFetcher(
         EntityRepository $loggingRepo,
         EntityRepository $currencyRepository,

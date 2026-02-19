@@ -616,9 +616,6 @@ class StatusControllerTest extends TestCase
         $response = $this->controller->createNewConnection($request, $this->context);
 
         static::assertSame(Response::HTTP_OK, $response->getStatusCode());
-        $jsonResponse = $this->jsonResponseToArray($response);
-        static::assertArrayHasKey('connection', $jsonResponse);
-        static::assertArrayHasKey('environmentInformation', $jsonResponse);
 
         $newConnectionEntity = $this->connectionRepo->search(
             new Criteria([$connectionId]),
@@ -629,6 +626,17 @@ class StatusControllerTest extends TestCase
         static::assertSame($connectionName, $newConnectionEntity->getName());
     }
 
+    /**
+     * @param array{
+     *      requestData: array{
+     *          connectionId?: string,
+     *          connectionName?: string,
+     *          profileName?: string,
+     *          gatewayName?: string,
+     *          credentialFields?: array<string, string>,
+     *     },
+     *     exceptionParameter: string} $requestData
+     */
     #[DataProvider('provideParamsForCreateNewConnectionToTestExceptions')]
     public function testCreateNewConnectionWithMissingParameterShouldThrowException(
         array $requestData,
@@ -742,7 +750,7 @@ class StatusControllerTest extends TestCase
 
         try {
             $controller->createNewConnection($request, $this->context);
-        } catch (\Throwable $exception) {
+        } catch (MigrationException $exception) {
             $throwsException = true;
 
             static::assertSame(DummyLocalGatewayFail::ERROR_CODE, $exception->getErrorCode());

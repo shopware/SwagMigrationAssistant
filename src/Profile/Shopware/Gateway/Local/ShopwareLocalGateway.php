@@ -71,19 +71,19 @@ class ShopwareLocalGateway implements ShopwareGatewayInterface
         return $reader->read($migrationContext);
     }
 
-    public function readEnvironmentInformation(MigrationContextInterface $migrationContext, Context $context): EnvironmentInformation
-    {
+    public function readEnvironmentInformation(
+        MigrationContextInterface $migrationContext,
+        Context $context
+    ): EnvironmentInformation {
         $profile = $migrationContext->getProfile();
         try {
             $connection = $this->connectionFactory->createDatabaseConnection($migrationContext);
             $connection->executeQuery('SELECT 1');
         } catch (\Throwable $exception) {
-            if (!$exception instanceof MigrationException) {
-                $migrationException = MigrationException::localDatabaseConnectionError(
-                    $exception->getMessage(),
-                    $exception
-                );
-            }
+            $migrationException = $exception instanceof MigrationException ? $exception : MigrationException::localDatabaseConnectionError(
+                $exception->getMessage(),
+                $exception
+            );
 
             $response = new RequestStatusStruct(
                 $migrationException->getErrorCode(),

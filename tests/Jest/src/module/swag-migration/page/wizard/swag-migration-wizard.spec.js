@@ -28,17 +28,14 @@ Shopware.Component.extend(
     {},
 );
 
-const defaultMigrationState = {
-    step: MIGRATION_STEP.IDLE,
-};
-
+const defaultMigrationState = { step: MIGRATION_STEP.IDLE };
 const connectionName = 'my connection';
-    const connectionId = 'connection-id';
-    const apiKey = 'dummy40charactersApiKeyMustBeFilledxxxxx';
-    const apiUser = 'user';
-    const profileShopware55 = 'shopware55';
-    const gatewayApi = 'api';
-    const endpoint = 'https://shopware.com';
+const connectionId = 'connection-id';
+const apiKey = 'dummy40charactersApiKeyMustBeFilledxxxxx';
+const apiUser = 'user';
+const profileShopware55 = 'shopware55';
+const gatewayApi = 'api';
+const endpoint = 'https://shopware.com';
 
 const environementInformationSuccessMock = {
     sourceSystemName: 'Shopware',

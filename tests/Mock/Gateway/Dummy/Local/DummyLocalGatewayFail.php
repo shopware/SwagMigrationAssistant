@@ -15,6 +15,7 @@ use SwagMigrationAssistant\Migration\Gateway\GatewayInterface;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Migration\Profile\ProfileInterface;
 use SwagMigrationAssistant\Migration\RequestStatusStruct;
+use SwagMigrationAssistant\Profile\Shopware\ShopwareProfileInterface;
 
 #[Package('fundamentals@after-sales')]
 class DummyLocalGatewayFail implements GatewayInterface
@@ -32,7 +33,7 @@ class DummyLocalGatewayFail implements GatewayInterface
 
     public function supports(ProfileInterface $profile): bool
     {
-        return $profile instanceof ProfileInterface;
+        return $profile instanceof ShopwareProfileInterface;
     }
 
     public function read(MigrationContextInterface $migrationContext): array

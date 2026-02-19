@@ -311,8 +311,7 @@ class StatusController extends AbstractController
                     throw MigrationException::connectionValidationFailed(
                         $requestStatus->getCode(),
                         $requestStatus->getMessage()
-                    )
-                    ;
+                    );
                 }
 
                 $fingerprint = $information->getFingerprint();
