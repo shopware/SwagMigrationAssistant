@@ -98,8 +98,8 @@ test.describe('Migration Tests @migration @visual', () => {
                     return 'number';
                 }
 
-                if ((await page.locator('.swag-migration-error-resolution-field-unhandled').count()) > 0) {
-                    return 'unhandled';
+                if ((await page.locator('.sw-migration-error-resolution-field__editor').count()) > 0) {
+                    return 'editor';
                 }
 
                 return null;
