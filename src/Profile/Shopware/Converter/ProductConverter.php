@@ -146,6 +146,19 @@ abstract class ProductConverter extends ShopwareConverter
             return new ConvertStruct(null, $data);
         }
 
+        if (empty($data['prices'][0])) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($migrationContext)
+                    ->withEntityName(ProductDefinition::ENTITY_NAME)
+                    ->withFieldName('price')
+                    ->withFieldSourcePath('prices')
+                    ->withSourceData($data)
+                    ->build(MigrationValidationRequiredFieldMissingLog::class)
+            );
+
+            return new ConvertStruct(null, $data);
+        }
+
         $this->locale = $data['_locale'];
 
         $connection = $migrationContext->getConnection();
