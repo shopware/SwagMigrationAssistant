@@ -17,6 +17,7 @@ use Shopware\Core\Framework\DataAbstractionLayer\Field\Flag\Required;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\IdField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\JsonField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\ManyToOneAssociationField;
+use Shopware\Core\Framework\DataAbstractionLayer\Field\LongTextField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\StringField;
 use Shopware\Core\Framework\DataAbstractionLayer\Field\UpdatedAtField;
 use Shopware\Core\Framework\DataAbstractionLayer\FieldCollection;
@@ -58,7 +59,7 @@ class SwagMigrationLoggingDefinition extends EntityDefinition
             new StringField('field_source_path', 'fieldSourcePath', 255),
             new JsonField('source_data', 'sourceData'),
             new JsonField('converted_data', 'convertedData'),
-            new StringField('exception_message', 'exceptionMessage', 255),
+            new LongTextField('exception_message', 'exceptionMessage'),
             new JsonField('exception_trace', 'exceptionTrace'),
             new IdField('entity_id', 'entityId'),
             new AutoIncrementField(),
