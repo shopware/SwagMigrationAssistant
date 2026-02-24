@@ -125,6 +125,11 @@ test.describe('Migration Tests @migration @visual', () => {
                 await input.blur();
             };
 
+            const processEditorField = async () => {
+                const editor = page.locator('.sw-migration-error-resolution-field__editor').first();
+                await editor.waitFor();
+            };
+
             const processLogEntry = async (index: number) => {
                 await logs.nth(index).getByRole('button', { name: 'Open actions menu' }).click();
                 await page.getByRole('button', { name: 'Edit' }).click();
@@ -149,6 +154,10 @@ test.describe('Migration Tests @migration @visual', () => {
 
                 if (type === 'number') {
                     await processNumberField();
+                }
+
+                if (type === 'editor') {
+                    await processEditorField();
                 }
             };
 
