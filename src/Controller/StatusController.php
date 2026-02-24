@@ -7,17 +7,15 @@
 
 namespace SwagMigrationAssistant\Controller;
 
-use Doctrine\DBAL\Connection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
-use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
 use Shopware\Core\Framework\Log\Package;
 use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
+use SwagMigrationAssistant\Migration\Connection\MigrationConnectionFactory;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
@@ -53,8 +51,7 @@ class StatusController extends AbstractController
         private readonly GatewayRegistryInterface $gatewayRegistry,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly EntityRepository $generalSettingRepo,
-        private readonly MigrationFingerprintServiceInterface $fingerprintService,
-        private readonly Connection $connection,
+        private readonly MigrationConnectionFactory $connectionFactory,
     ) {
     }
 
@@ -270,85 +267,17 @@ class StatusController extends AbstractController
             throw RoutingException::missingRequestParameter('credentialFields');
         }
 
-        // check that connection name is unique
-        $criteria = new Criteria();
-        $criteria->addFilter(new EqualsFilter('name', $connectionName));
+        $connectionEntity = new SwagMigrationConnectionEntity();
+        $connectionEntity->setId($id);
+        $connectionEntity->setName($connectionName);
+        $connectionEntity->setProfileName($profileName);
+        $connectionEntity->setGatewayName($gatewayName);
+        $connectionEntity->setCredentialFields($credentialFields);
 
-        $existingConnection = $this->migrationConnectionRepo->search($criteria, $context)->getEntities()->first();
+        $information = $this->connectionFactory->validate($connectionEntity, $context);
+        $this->connectionFactory->persistNew($connectionEntity, $context);
 
-        if ($existingConnection !== null) {
-            throw MigrationException::connectionNameNotUnique();
-        }
-
-        $jsonResponse = $this->connection->transactional(
-            function () use ($id, $connectionName, $profileName, $gatewayName, $credentialFields, $context): JsonResponse {
-                $context->scope(
-                    MigrationContext::SOURCE_CONTEXT,
-                    function (Context $scopedContext) use ($id, $connectionName, $profileName, $gatewayName, $credentialFields): void {
-                        $this->migrationConnectionRepo->create([
-                            [
-                                'id' => $id,
-                                'name' => $connectionName,
-                                'profileName' => $profileName,
-                                'gatewayName' => $gatewayName,
-                                'credentialFields' => $credentialFields,
-                            ],
-                        ], $scopedContext);
-                    }
-                );
-
-                $connection = $this->migrationConnectionRepo->search(new Criteria([$id]), $context)->getEntities()->first();
-
-                if ($connection === null) {
-                    throw MigrationException::noConnectionFound();
-                }
-
-                $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-                $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
-
-                $requestStatus = $information->getRequestStatus();
-                if ($requestStatus !== null && $requestStatus->getCode() !== '') {
-                    throw MigrationException::connectionValidationFailed(
-                        $requestStatus->getCode(),
-                        $requestStatus->getMessage()
-                    );
-                }
-
-                $fingerprint = $information->getFingerprint();
-
-                $hasDuplicate = $this->fingerprintService->searchDuplicates(
-                    $fingerprint,
-                    $context,
-                    $id,
-                );
-
-                if ($hasDuplicate) {
-                    throw MigrationException::duplicateSourceConnection();
-                }
-
-                $updateData = [
-                    'id' => $id,
-                    'credentialFields' => $credentialFields,
-                ];
-
-                if ($fingerprint !== null) {
-                    $updateData['sourceSystemFingerprint'] = $fingerprint;
-                }
-
-                $context->scope(
-                    MigrationContext::SOURCE_CONTEXT,
-                    function (Context $scopedContext) use ($updateData): void {
-                        $this->migrationConnectionRepo->update([
-                            $updateData,
-                        ], $scopedContext);
-                    }
-                );
-
-                return new JsonResponse($information);
-            }
-        );
-
-        return $jsonResponse;
+        return new JsonResponse($information);
     }
 
     #[Route(
@@ -377,6 +306,7 @@ class StatusController extends AbstractController
             $connection->setCredentialFields($credentialFields);
         }
 
+        // todo: replace below with factory method calls
         $migrationContext = $this->migrationContextFactory->createByConnection($connection);
         $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
 

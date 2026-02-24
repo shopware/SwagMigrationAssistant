@@ -659,7 +659,7 @@ class StatusControllerTest extends TestCase
                     'dbName' => 'shopware',
                 ],
             ],
-            'exceptionParameter' => 'id',
+            'exceptionParameter' => 'connectionId',
         ];
 
         yield 'missing connectionName' => [
