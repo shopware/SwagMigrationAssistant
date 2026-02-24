@@ -239,7 +239,7 @@ class StatusController extends AbstractController
     #[Route(
         path: '/api/_action/migration/create-new-connection',
         name: 'api.admin.migration.create-new-connection',
-        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.creator']],
         methods: [Request::METHOD_POST]
     )]
     public function createNewConnection(Request $request, Context $context): JsonResponse
@@ -251,7 +251,7 @@ class StatusController extends AbstractController
         $credentialFields = $request->request->all('credentialFields');
 
         if ($id === '') {
-            throw RoutingException::missingRequestParameter('id');
+            throw RoutingException::missingRequestParameter('connectionId');
         }
 
         if ($connectionName === '') {

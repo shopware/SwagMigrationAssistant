@@ -117,32 +117,29 @@ const repositoryFactoryMock = {
     },
 };
 
-const router = createRouter({
-    routes: [
-        { path: '/', component: { template: '<div></div>' } },
-        {
-            path: '/connection/create',
-            name: 'swag.migration.wizard.connectionCreate',
-            component: () => Shopware.Component.build('swag-migration-wizard-page-connection-create'),
-        },
-        {
-            path: '/credentials',
-            name: 'swag.migration.wizard.credentials',
-            component: () => Shopware.Component.build('swag-migration-wizard-page-credentials'),
-        },
-        {
-            path: '/credentials/success',
-            name: 'swag.migration.wizard.credentialsSuccess',
-            component: () => Shopware.Component.build('swag-migration-wizard-page-credentials-success'),
-        },
-        {
-            path: '/credentials/error',
-            name: 'swag.migration.wizard.credentialsError',
-            component: () => Shopware.Component.build('swag-migration-wizard-page-credentials-error'),
-        },
-    ],
-    history: createWebHashHistory(),
-});
+const routes = [
+    { path: '/', component: { template: '<div></div>' } },
+    {
+        path: '/connection/create',
+        name: 'swag.migration.wizard.connectionCreate',
+        component: () => Shopware.Component.build('swag-migration-wizard-page-connection-create'),
+    },
+    {
+        path: '/credentials',
+        name: 'swag.migration.wizard.credentials',
+        component: () => Shopware.Component.build('swag-migration-wizard-page-credentials'),
+    },
+    {
+        path: '/credentials/success',
+        name: 'swag.migration.wizard.credentialsSuccess',
+        component: () => Shopware.Component.build('swag-migration-wizard-page-credentials-success'),
+    },
+    {
+        path: '/credentials/error',
+        name: 'swag.migration.wizard.credentialsError',
+        component: () => Shopware.Component.build('swag-migration-wizard-page-credentials-error'),
+    },
+];
 
 // when update() in the mixin is triggered, router.push() may not finished in the test
 // update() triggers matchCurrentRoute() to update this.currentRoute based on the current router route
@@ -161,7 +158,16 @@ async function createWrapper() {
     delete config.global.mocks.$router;
     delete config.global.mocks.$route;
 
-    return mount(await Shopware.Component.build('swag-migration-wizard'), {
+    const router = createRouter({
+        routes: routes,
+        history: createWebHashHistory(),
+    });
+
+    await router.push({ name: 'swag.migration.wizard.connectionCreate' });
+    await router.isReady();
+    await flushPromises();
+
+    const wrapper = await mount(await Shopware.Component.build('swag-migration-wizard'), {
         global: {
             stubs: {
                 'sw-modal': {
@@ -204,6 +210,11 @@ async function createWrapper() {
             },
         },
     });
+
+    expect(wrapper.vm.$router).toBe(router);
+    expect(wrapper.vm.currentRoute.name).toBe('swag.migration.wizard.connectionCreate');
+
+    return { wrapper, router };
 }
 
 describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
@@ -213,8 +224,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
     describe('create connection page', () => {
         it('should render "create profile" form', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             const fieldName = wrapper.find(
@@ -233,8 +244,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
         });
 
         it('should have "next" button disabled when form is not filled out', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             const nextButton = wrapper.find('.swag-migration-wizard__footer button.mt-button--primary');
@@ -243,8 +254,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
         });
 
         it('should enable "next" button when all required fields are filled out', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page
@@ -263,8 +274,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
     describe('navigation from "create connection" to "credentials" page', () => {
         it('should navigate to credentials page when form data is valid', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page
@@ -287,8 +298,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
         });
 
         it('should not navigate to credentials page when connection name already exits', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page
@@ -326,8 +337,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
     describe('render credentials page', () => {
         it('should render credentials form', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page
@@ -358,8 +369,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
         });
 
         it('should have "next" button disabled when form is not filled out', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page
@@ -384,8 +395,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
     describe('navigate from "credentials" to result page (error or success)', () => {
         it('should navigate to success page when connection was successfully created', async () => {
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page
@@ -452,8 +463,8 @@ describe('src/module/swag-migration/page/wizard/swag-migration-wizard', () => {
 
         it('should navigate to error page when create connection fails', async () => {
             migrationApiServiceMock.createNewConnection.mockRejectedValueOnce(createNewConnectionErrorResponseMock);
-            router.push({ name: 'swag.migration.wizard.connectionCreate' });
-            const wrapper = await createWrapper();
+            const { wrapper, router } = await createWrapper();
+            await router.push({ name: 'swag.migration.wizard.connectionCreate' });
             await flushPromises();
 
             // profile page

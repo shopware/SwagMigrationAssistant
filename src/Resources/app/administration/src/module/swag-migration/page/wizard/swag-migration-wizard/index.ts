@@ -303,6 +303,7 @@ export default Shopware.Component.wrapComponentConfig({
                         this.selectedProfile.gateway,
                         this.connection.credentialFields,
                     );
+                    this.isNewConnection = false;
 
                     await this.saveSelectedConnection(this.connection);
                     this.migrationStore.setEnvironmentInformation(environmentInformation);
