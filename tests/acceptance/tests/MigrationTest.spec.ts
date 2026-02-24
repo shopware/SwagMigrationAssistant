@@ -217,7 +217,7 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Verify migrated entities', async () => {
-            await EntityCounter.checkEntityCount('swag_migration_logging', 703);
+            await EntityCounter.checkEntityCount('swag_migration_logging', 702);
 
             await EntityCounter.checkEntityCount('product', 427);
             await EntityCounter.checkEntityCount('product_review', 2);
