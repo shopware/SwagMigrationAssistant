@@ -306,32 +306,13 @@ class StatusController extends AbstractController
             $connection->setCredentialFields($credentialFields);
         }
 
-        // todo: replace below with factory method calls
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
+        $oldFingerprint = $connection->getSourceSystemFingerprint();
+        $information = $this->connectionFactory->validate($connection, $context);
 
-        $fingerprint = $information->getFingerprint();
-
-        if ($fingerprint === null) {
-            return new JsonResponse($information);
+        if ($oldFingerprint !== $connection->getSourceSystemFingerprint()) {
+            // fingerprint updated, persist change to DB
+            $this->connectionFactory->update($connection, $context);
         }
-
-        $hasDuplicate = $this->fingerprintService->searchDuplicates(
-            $fingerprint,
-            $context,
-            $connectionId,
-        );
-
-        if ($hasDuplicate) {
-            throw MigrationException::duplicateSourceConnection();
-        }
-
-        $this->migrationConnectionRepo->update([
-            [
-                'id' => $connectionId,
-                'sourceSystemFingerprint' => $information->getFingerprint(),
-            ],
-        ], $context);
 
         return new JsonResponse($information);
     }

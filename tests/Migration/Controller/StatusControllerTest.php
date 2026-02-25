@@ -24,6 +24,7 @@ use Shopware\Storefront\Theme\ThemeService;
 use SwagMigrationAssistant\Controller\StatusController;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService;
+use SwagMigrationAssistant\Migration\Connection\MigrationConnectionFactory;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistry;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -954,8 +955,12 @@ class StatusControllerTest extends TestCase
             static::getContainer()->get(GatewayRegistry::class),
             $migrationContextFactory,
             $this->generalSettingRepo,
-            new MigrationFingerprintService($this->connectionRepo),
-            static::getContainer()->get(Connection::class),
+            new MigrationConnectionFactory(
+                $this->connectionRepo,
+                $migrationContextFactory,
+                $dataFetcher,
+                new MigrationFingerprintService($this->connectionRepo),
+            ),
         );
     }
 

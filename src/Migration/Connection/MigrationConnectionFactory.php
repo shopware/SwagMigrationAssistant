@@ -11,6 +11,8 @@ use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\MultiFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
@@ -37,11 +39,13 @@ readonly class MigrationConnectionFactory
     }
 
     /**
-     * Tries to create a new connection, checking:
+     * validates a given connection, checking:
      * - the connection name is unique
      * - the connection credentials are valid and the source system is reachable
      * - the fingerprint is unique
-     * And then returning the environment information.
+     * And then:
+     * - updating the connection entity with the fingerprint
+     * - returning the environment information of the source system.
      */
     public function validate(
         SwagMigrationConnectionEntity $connectionEntity,
@@ -50,6 +54,9 @@ readonly class MigrationConnectionFactory
         // check that the connection name is unique
         $criteria = new Criteria();
         $criteria->addFilter(new EqualsFilter('name', $connectionEntity->getName()));
+        $criteria->addFilter(new NotFilter(MultiFilter::CONNECTION_AND, [
+            new EqualsFilter('id', $connectionEntity->getId()),
+        ]));
         $existingConnection = $this->migrationConnectionRepo->search($criteria, $context)->getEntities()->first();
         if ($existingConnection !== null) {
             throw MigrationException::connectionNameNotUnique();
@@ -84,12 +91,37 @@ readonly class MigrationConnectionFactory
         return $information;
     }
 
+    /**
+     * Persists a new connection entity in the DB.
+     *
+     * # Safety:
+     * - you should have called @see validate() before calling this method
+     * - the connection has to be new, otherwise this will throw
+     */
     public function persistNew(SwagMigrationConnectionEntity $connectionEntity, Context $context): void
     {
+        // scope needed because of WriteProtected `credentials` field
         $context->scope(
             MigrationContext::SOURCE_CONTEXT,
             function (Context $scopedContext) use ($connectionEntity): void {
                 $this->migrationConnectionRepo->create([
+                    $connectionEntity->jsonSerialize(),
+                ], $scopedContext);
+            }
+        );
+    }
+
+    /**
+     * # Safety:
+     *  - you should have called @see validate() before calling this method
+     */
+    public function update(SwagMigrationConnectionEntity $connectionEntity, Context $context): void
+    {
+        // scope needed because of WriteProtected `credentials` field
+        $context->scope(
+            MigrationContext::SOURCE_CONTEXT,
+            function (Context $scopedContext) use ($connectionEntity): void {
+                $this->migrationConnectionRepo->update([
                     $connectionEntity->jsonSerialize(),
                 ], $scopedContext);
             }
