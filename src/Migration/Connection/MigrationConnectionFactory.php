@@ -18,7 +18,7 @@ use SwagMigrationAssistant\Exception\MigrationException;
 use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
 use SwagMigrationAssistant\Migration\EnvironmentInformation;
 use SwagMigrationAssistant\Migration\MigrationContext;
-use SwagMigrationAssistant\Migration\MigrationContextFactory;
+use SwagMigrationAssistant\Migration\MigrationContextFactoryInterface;
 use SwagMigrationAssistant\Migration\Service\MigrationDataFetcherInterface;
 
 /**
@@ -32,7 +32,7 @@ readonly class MigrationConnectionFactory
      */
     public function __construct(
         private EntityRepository $migrationConnectionRepo,
-        private MigrationContextFactory $migrationContextFactory,
+        private MigrationContextFactoryInterface $migrationContextFactory,
         private MigrationDataFetcherInterface $migrationDataFetcher,
         private MigrationFingerprintServiceInterface $fingerprintService,
     ) {
