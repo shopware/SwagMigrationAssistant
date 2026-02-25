@@ -39,7 +39,7 @@ class Migration1754897550AddFieldsToMigrationLogs extends MigrationStep
         'field_source_path' => 'VARCHAR(255) NULL',
         'source_data' => 'JSON NULL',
         'converted_data' => 'JSON NULL',
-        'exception_message' => 'VARCHAR(255) NULL',
+        'exception_message' => 'LONGTEXT NULL',
         'exception_trace' => 'JSON NULL',
     ];
 

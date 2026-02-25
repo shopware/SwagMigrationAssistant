@@ -8,8 +8,11 @@
 namespace SwagMigrationAssistant\Profile\Shopware6\Converter;
 
 use Shopware\Core\Framework\Log\Package;
+use Shopware\Core\System\CustomField\Aggregate\CustomFieldSet\CustomFieldSetDefinition;
 use SwagMigrationAssistant\Migration\Converter\ConvertStruct;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
+use SwagMigrationAssistant\Migration\Logging\Log\Builder\MigrationLogBuilder;
+use SwagMigrationAssistant\Migration\Logging\Log\ConvertObjectTypeUnsupportedLog;
 use SwagMigrationAssistant\Migration\MigrationContextInterface;
 use SwagMigrationAssistant\Profile\Shopware6\DataSelection\DataSet\CustomFieldSetDataSet;
 use SwagMigrationAssistant\Profile\Shopware6\Shopware6MajorProfile;
@@ -25,6 +28,18 @@ class CustomFieldSetConverter extends ShopwareConverter
 
     protected function convertData(array $data): ConvertStruct
     {
+        if (!empty($data['appId'])) {
+            $this->loggingService->log(
+                MigrationLogBuilder::fromMigrationContext($this->migrationContext)
+                    ->withEntityName(CustomFieldSetDefinition::ENTITY_NAME)
+                    ->withFieldName('appId')
+                    ->withSourceData($data)
+                    ->build(ConvertObjectTypeUnsupportedLog::class)
+            );
+
+            return new ConvertStruct(null, $data, null);
+        }
+
         $converted = $data;
 
         $this->mainMapping = $this->getOrCreateMappingMainCompleteFacade(
