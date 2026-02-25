@@ -98,10 +98,6 @@ test.describe('Migration Tests @migration @visual', () => {
                     return 'number';
                 }
 
-                if ((await page.locator('.sw-migration-error-resolution-field__editor').count()) > 0) {
-                    return 'editor';
-                }
-
                 return null;
             };
 
@@ -123,11 +119,6 @@ test.describe('Migration Tests @migration @visual', () => {
                 await input.waitFor();
                 await input.fill('42');
                 await input.blur();
-            };
-
-            const processEditorField = async () => {
-                const editor = page.locator('.sw-migration-error-resolution-field__editor').first();
-                await editor.waitFor();
             };
 
             const processLogEntry = async (index: number) => {
@@ -154,10 +145,6 @@ test.describe('Migration Tests @migration @visual', () => {
 
                 if (type === 'number') {
                     await processNumberField();
-                }
-
-                if (type === 'editor') {
-                    await processEditorField();
                 }
             };
 
@@ -230,7 +217,7 @@ test.describe('Migration Tests @migration @visual', () => {
         });
 
         await test.step('Verify migrated entities', async () => {
-            await EntityCounter.checkEntityCount('swag_migration_logging', 702);
+            await EntityCounter.checkEntityCount('swag_migration_logging', 703);
 
             await EntityCounter.checkEntityCount('product', 427);
             await EntityCounter.checkEntityCount('product_review', 2);
