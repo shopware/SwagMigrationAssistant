@@ -73,6 +73,39 @@ export default class MigrationApiService extends ApiService {
         };
     }
 
+    async createNewConnection(
+        connectionId: string,
+        connectionName: string,
+        profileName: string,
+        gatewayName: string,
+        credentialFields: Record<string, MigrationCredentials>,
+        additionalHeaders: AdditionalHeaders = {},
+    ): Promise<ApiResponse<unknown>> {
+        // @ts-ignore
+        const headers = this.getBasicHeaders(additionalHeaders);
+
+        // @ts-ignore
+        return this.httpClient
+            .post(
+                // @ts-ignore
+                `_action/${this.getApiBasePath()}/create-new-connection`,
+                {
+                    connectionId,
+                    connectionName,
+                    profileName,
+                    gatewayName,
+                    credentialFields,
+                },
+                {
+                    ...this.basicConfig,
+                    headers,
+                },
+            )
+            .then((response: AxiosResponse) => {
+                return ApiService.handleResponse(response as AxiosResponse);
+            });
+    }
+
     async updateConnectionCredentials(
         connectionId: string,
         credentialFields: Record<string, MigrationCredentials>,

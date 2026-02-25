@@ -263,6 +263,13 @@
             <argument type="service" id="swag_migration_connection.repository"/>
         </service>
 
+        <service id="SwagMigrationAssistant\Migration\Connection\MigrationConnectionFactory">
+            <argument type="service" id="swag_migration_connection.repository"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService"/>
+        </service>
+
         <service id="SwagMigrationAssistant\Controller\StatusController" public="true">
             <argument type="service" id="SwagMigrationAssistant\Migration\Service\MigrationDataFetcher"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\Run\RunService"/>
@@ -272,7 +279,7 @@
             <argument type="service" id="SwagMigrationAssistant\Migration\Gateway\GatewayRegistry"/>
             <argument type="service" id="SwagMigrationAssistant\Migration\MigrationContextFactory"/>
             <argument type="service" id="swag_migration_general_setting.repository"/>
-            <argument type="service" id="SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintService"/>
+            <argument type="service" id="SwagMigrationAssistant\Migration\Connection\MigrationConnectionFactory"/>
 
             <call method="setContainer">
                 <argument type="service" id="service_container"/>

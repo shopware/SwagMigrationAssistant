@@ -70,6 +70,7 @@ use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55SalesChannelCo
 use SwagMigrationAssistant\Profile\Shopware55\Converter\Shopware55TranslationConverter;
 use SwagMigrationAssistant\Test\Mock\DummyCollection;
 use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGateway;
+use SwagMigrationAssistant\Test\Mock\Gateway\Dummy\Local\DummyLocalGatewayFail;
 use SwagMigrationAssistant\Test\Mock\Migration\Mapping\DummyMappingService;
 use SwagMigrationAssistant\Test\Mock\Profile\Dummy\DummyInvalidCustomerConverter;
 use Symfony\Component\Validator\Validation;
@@ -106,6 +107,38 @@ trait MigrationServicesTrait
                 $languageRepository
             ),
             new DummyLocalGateway(),
+        ]));
+
+        return new MigrationDataFetcher($gatewayRegistry, $loggingService);
+    }
+
+    /**
+     * @param EntityRepository<SwagMigrationLoggingCollection> $loggingRepo
+     * @param EntityRepository<CurrencyCollection> $currencyRepository
+     * @param EntityRepository<LanguageCollection> $languageRepository
+     */
+    protected function getFailingMigrationDataFetcher(
+        EntityRepository $loggingRepo,
+        EntityRepository $currencyRepository,
+        EntityRepository $languageRepository,
+        ReaderRegistryInterface $readerRegistry,
+    ): MigrationDataFetcherInterface {
+        $loggingService = new LoggingService(
+            $loggingRepo,
+            new NullLogger()
+        );
+
+        $connectionFactory = new ConnectionFactory();
+        $gatewayRegistry = new GatewayRegistry(new DummyCollection([
+            new ShopwareApiGateway(
+                $readerRegistry,
+                new EnvironmentReader($connectionFactory),
+                new TableReader($connectionFactory),
+                new TableCountReader($connectionFactory, $loggingService),
+                $currencyRepository,
+                $languageRepository
+            ),
+            new DummyLocalGatewayFail(),
         ]));
 
         return new MigrationDataFetcher($gatewayRegistry, $loggingService);

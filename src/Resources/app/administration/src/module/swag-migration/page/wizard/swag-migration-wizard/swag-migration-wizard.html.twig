@@ -22,7 +22,6 @@
                         :is="Component"
                         v-show="!isLoading && !childIsLoading && !storesInitializing"
                         :current-connection-id="connection?.id"
-                        :profile-information-component="profileInformationComponent"
                         :credentials-component="credentialsComponent"
                         :credentials="connection?.credentialFields"
                         :error-message-snippet="errorMessageSnippet"

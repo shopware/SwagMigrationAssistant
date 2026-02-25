@@ -15,7 +15,7 @@ use Shopware\Core\Framework\Routing\ApiRouteScope;
 use Shopware\Core\Framework\Routing\RoutingException;
 use Shopware\Core\PlatformRequest;
 use SwagMigrationAssistant\Exception\MigrationException;
-use SwagMigrationAssistant\Migration\Connection\Fingerprint\MigrationFingerprintServiceInterface;
+use SwagMigrationAssistant\Migration\Connection\MigrationConnectionFactory;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionCollection;
 use SwagMigrationAssistant\Migration\Connection\SwagMigrationConnectionEntity;
 use SwagMigrationAssistant\Migration\DataSelection\DataSelectionRegistryInterface;
@@ -51,7 +51,7 @@ class StatusController extends AbstractController
         private readonly GatewayRegistryInterface $gatewayRegistry,
         private readonly MigrationContextFactoryInterface $migrationContextFactory,
         private readonly EntityRepository $generalSettingRepo,
-        private readonly MigrationFingerprintServiceInterface $fingerprintService,
+        private readonly MigrationConnectionFactory $connectionFactory,
     ) {
     }
 
@@ -234,6 +234,53 @@ class StatusController extends AbstractController
     }
 
     #[Route(
+        path: '/api/_action/migration/create-new-connection',
+        name: 'api.admin.migration.create-new-connection',
+        defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.creator']],
+        methods: [Request::METHOD_POST]
+    )]
+    public function createNewConnection(Request $request, Context $context): JsonResponse
+    {
+        $id = $request->request->getAlnum('connectionId');
+        $connectionName = (string) $request->request->get('connectionName');
+        $profileName = (string) $request->request->get('profileName');
+        $gatewayName = (string) $request->request->get('gatewayName');
+        $credentialFields = $request->request->all('credentialFields');
+
+        if ($id === '') {
+            throw RoutingException::missingRequestParameter('connectionId');
+        }
+
+        if ($connectionName === '') {
+            throw RoutingException::missingRequestParameter('connectionName');
+        }
+
+        if ($profileName === '') {
+            throw RoutingException::missingRequestParameter('profileName');
+        }
+
+        if ($gatewayName === '') {
+            throw RoutingException::missingRequestParameter('gatewayName');
+        }
+
+        if (empty($credentialFields)) {
+            throw RoutingException::missingRequestParameter('credentialFields');
+        }
+
+        $connectionEntity = new SwagMigrationConnectionEntity();
+        $connectionEntity->setId($id);
+        $connectionEntity->setName($connectionName);
+        $connectionEntity->setProfileName($profileName);
+        $connectionEntity->setGatewayName($gatewayName);
+        $connectionEntity->setCredentialFields($credentialFields);
+
+        $information = $this->connectionFactory->validate($connectionEntity, $context);
+        $this->connectionFactory->persistNew($connectionEntity, $context);
+
+        return new JsonResponse($information);
+    }
+
+    #[Route(
         path: '/api/_action/migration/check-connection',
         name: 'api.admin.migration.check-connection',
         defaults: [PlatformRequest::ATTRIBUTE_ACL => ['swag_migration.viewer']],
@@ -259,29 +306,13 @@ class StatusController extends AbstractController
             $connection->setCredentialFields($credentialFields);
         }
 
-        $migrationContext = $this->migrationContextFactory->createByConnection($connection);
-        $information = $this->migrationDataFetcher->getEnvironmentInformation($migrationContext, $context);
+        $oldFingerprint = $connection->getSourceSystemFingerprint();
+        $information = $this->connectionFactory->validate($connection, $context);
 
-        if ($information->getFingerprint() === null) {
-            return new JsonResponse($information);
+        if ($oldFingerprint !== $connection->getSourceSystemFingerprint()) {
+            // fingerprint updated, persist change to DB
+            $this->connectionFactory->update($connection, $context);
         }
-
-        $hasDuplicate = $this->fingerprintService->searchDuplicates(
-            $information->getFingerprint(),
-            $context,
-            $connectionId
-        );
-
-        if ($hasDuplicate) {
-            throw MigrationException::duplicateSourceConnection();
-        }
-
-        $this->migrationConnectionRepo->update([
-            [
-                'id' => $connectionId,
-                'sourceSystemFingerprint' => $information->getFingerprint(),
-            ],
-        ], $context);
 
         return new JsonResponse($information);
     }

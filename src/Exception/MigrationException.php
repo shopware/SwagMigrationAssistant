@@ -101,6 +101,10 @@ class MigrationException extends HttpException
 
     public const INVALID_VALUE_FOR_LIMIT_PARAMETER = 'SWAG_MIGRATION__INVALID_LIMIT_PARAMETER';
 
+    public const CONNECTION_NAME_NOT_UNIQUE = 'SWAG_MIGRATION__CONNECTION_NAME_NOT_UNIQUE';
+
+    public const LOCAL_DATABASE_CONNECTION_ERROR = 'SWAG_MIGRATION__LOCAL_DATABASE_CONNECTION_ERROR';
+
     public static function associationEntityRequiredMissing(string $entity, string $missingEntity): self
     {
         return new self(
@@ -521,6 +525,35 @@ class MigrationException extends HttpException
             self::INVALID_VALUE_FOR_LIMIT_PARAMETER,
             'Limit has to be a positive integer greater than 0 and not greater than {{ maxLimit }}.',
             ['maxLimit' => $maxLimit]
+        );
+    }
+
+    public static function connectionNameNotUnique(): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::CONNECTION_NAME_NOT_UNIQUE,
+            'Connection name has to be unique.',
+        );
+    }
+
+    public static function localDatabaseConnectionError(string $message, ?\Throwable $previous = null): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            self::LOCAL_DATABASE_CONNECTION_ERROR,
+            'Connection to database failed: {{ message }}',
+            ['message' => $message],
+            $previous
+        );
+    }
+
+    public static function connectionValidationFailed(string $code, string $message): self
+    {
+        return new self(
+            Response::HTTP_BAD_REQUEST,
+            $code,
+            $message,
         );
     }
 }
