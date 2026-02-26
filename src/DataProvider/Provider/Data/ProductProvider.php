@@ -11,6 +11,8 @@ use Shopware\Core\Content\Product\ProductCollection;
 use Shopware\Core\Framework\Context;
 use Shopware\Core\Framework\DataAbstractionLayer\EntityRepository;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Criteria;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\EqualsFilter;
+use Shopware\Core\Framework\DataAbstractionLayer\Search\Filter\NotFilter;
 use Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting;
 use Shopware\Core\Framework\Log\Package;
 use SwagMigrationAssistant\Migration\DataSelection\DefaultEntities;
@@ -20,6 +22,8 @@ use Symfony\Component\Routing\RouterInterface;
 #[Package('fundamentals@after-sales')]
 class ProductProvider extends AbstractProvider
 {
+    private const BUNDLE_PRODUCT_TYPE = 'grouped_bundle';
+
     /**
      * @param EntityRepository<ProductCollection> $productRepo
      */
@@ -55,6 +59,7 @@ class ProductProvider extends AbstractProvider
             new FieldSorting('parentId'), // get 'NULL' parentIds first
             new FieldSorting('id')
         );
+        $this->addBundleExclusionFilter($criteria);
         $result = $this->productRepo->search($criteria, $context);
 
         $cleanResult = $this->cleanupSearchResult($result, [
@@ -112,6 +117,27 @@ class ProductProvider extends AbstractProvider
 
     public function getProvidedTotal(Context $context): int
     {
-        return $this->readTotalFromRepo($this->productRepo, $context);
+        $criteria = new Criteria();
+        $this->addBundleExclusionFilter($criteria);
+
+        return $this->readTotalFromRepo($this->productRepo, $context, $criteria);
+    }
+
+    private function addBundleExclusionFilter(Criteria $criteria): void
+    {
+        if (!$this->hasTypeColumn()) {
+            return;
+        }
+
+        $criteria->addFilter(
+            new NotFilter(NotFilter::CONNECTION_AND, [
+                new EqualsFilter('type', self::BUNDLE_PRODUCT_TYPE),
+            ])
+        );
+    }
+
+    private function hasTypeColumn(): bool
+    {
+        return $this->productRepo->getDefinition()->getField('type') !== null;
     }
 }
